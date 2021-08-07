@@ -1,0 +1,12 @@
+<div>
+
+    <h2 mat-dialog-title>{{data.title}}</h2>
+    <mat-dialog-content>
+    <p display-2>{{data.message}}</p>
+    </mat-dialog-content>
+
+    <div mat-dialog-actions align="end" class="py-4">
+        <button mat-button (click)="onDismiss()">{{'no'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="onConfirm()">{{'yes'|translate}}</button>
+    </div>
+</div>

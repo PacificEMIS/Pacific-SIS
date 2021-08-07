@@ -1,0 +1,224 @@
+<form (ngSubmit)="submit()" #f="ngForm" novalidate appInvalidControlScroll
+    *ngIf="schoolCreateMode==schoolCreate.EDIT || schoolCreateMode==schoolCreate.ADD">
+    <mat-card @fadeInUp class="w-full" fxFlex="auto">
+        <h3 class="font-medium">{{'washInformation'|translate}}</h3>
+
+        <mat-card-content>
+            <div class="pt-6" @stagger fxLayout="column">
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0" *ngIf="schoolAddViewModel?.schoolMaster">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'runningWater'|translate}}</mat-label>
+                            <mat-select name="runningWater"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].runningWater">
+                                <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
+                                <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'mainSourceofDrinkingWater'|translate}}</mat-label>
+                            <input matInput name="mainSourceofDrinkingWater" maxlength="100"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].mainSourceOfDrinkingWater">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'currentlyAvailable'|translate}}</mat-label>
+                            <mat-select name="currentlyAvailable"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].currentlyAvailable">
+                                <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
+                                <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'handwashingAvailable'|translate}}</mat-label>
+                            <mat-select name="handwashingAvailable"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].handwashingAvailable">
+                                <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
+                                <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'soapWaterAvailable'|translate}}</mat-label>
+                            <mat-select name="soapWaterAvailable"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].soapAndWaterAvailable">
+                                <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
+                                <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'hygeneEducation'|translate}}</mat-label>
+                            <input matInput name="hygeneEducation" maxlength="50"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].hygeneEducation">
+                        </mat-form-field>
+                    </li>
+                </ul>
+           </div>
+           <hr class="-mx-5 mt-4 mb-6">
+            <div @stagger fxLayout="column">
+                <div class="pb-3">
+                    <h4 class="text-primary">{{'femaleToiletInformation'|translate}}</h4>
+                </div>
+
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'femaleToiletType'|translate}}</mat-label>
+                            <mat-select name="femaleToiletType"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].femaleToiletType">
+                                <mat-option *ngFor="let femaleToiletType of femaleToiletTypeList" [value]="femaleToiletType.lovColumnValue">
+                                    {{femaleToiletType.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalFemaleToilets'|translate}}</mat-label>
+                            <input matInput name="totalFemaleToilets" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalFemaleToilets">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalFemaleToiletsUsable'|translate}}</mat-label>
+                            <input matInput name="totalFemaleToiletsUsable" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalFemaleToiletsUsable">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'femaleToiletAccessibility'|translate}}</mat-label>
+                            <mat-select name="femaleToiletAccessibility"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].femaleToiletAccessibility">
+                                <mat-option *ngFor="let femaleToiletAccessibility of femaleToiletAccessibilityList" [value]="femaleToiletAccessibility.lovColumnValue">
+                                    {{femaleToiletAccessibility.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                </ul>
+            </div>
+            <hr class="-mx-5 mt-4 mb-6">
+            <div @stagger fxLayout="column">
+                <div class="pb-3">
+                    <h4 class="text-primary">{{'maleToiletInformation'|translate}}</h4>
+                </div>
+
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'maleToiletType'|translate}}</mat-label>
+                            <mat-select name="maleToiletType"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].maleToiletType">
+                                <mat-option *ngFor="let maleToiletType of maleToiletTypeList" [value]="maleToiletType.lovColumnValue">
+                                    {{maleToiletType.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalMaleToilets'|translate}}</mat-label>
+                            <input matInput name="totalMaleToilets" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalMaleToilets">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalMaleToiletsUsable'|translate}}</mat-label>
+                            <input matInput name="totalMaleToiletsUsable" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalMaleToiletsUsable">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'maleToiletAccessibility'|translate}}</mat-label>
+                            <mat-select name="maleToiletAccessibility"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].maleToiletAccessibility">
+                                <mat-option *ngFor="let maleToiletAccessibility of maleToiletAccessibilityList" [value]="maleToiletAccessibility.lovColumnValue">
+                                    {{maleToiletAccessibility.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                </ul>
+            </div>
+            <hr class="-mx-5 mt-4 mb-6">
+            <div @stagger fxLayout="column">
+                <div class="pb-3">
+                    <h4 class="text-primary">{{'commonToiletInformation'|translate}}</h4>
+                </div>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'commonToiletType'|translate}}</mat-label>
+                            <mat-select name="commonToiletType"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].comonToiletType">
+                                <mat-option *ngFor="let commonToiletType of commonToiletTypeList" [value]="commonToiletType.lovColumnValue">
+                                    {{commonToiletType.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalCommonToilets'|translate}}</mat-label>
+                            <input matInput name="totalCommonToilets" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalCommonToilets">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'totalCommonToiletsUsable'|translate}}</mat-label>
+                            <input matInput name="totalCommonToiletsUsable" type="number"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].totalCommonToiletsUsable">
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'commonToiletAccessibility'|translate}}</mat-label>
+                            <mat-select name="commonToiletAccessibility"
+                                [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].commonToiletAccessibility">
+                                <mat-option *ngFor="let commonToiletAccessibility of commonToiletAccessibilityList" [value]="commonToiletAccessibility.lovColumnValue">
+                                    {{commonToiletAccessibility.lovColumnValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                </ul>
+                <!-- <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "categoryId" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form> -->
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <div class="pb-4 text-right">
+                <button mat-button type="button" *ngIf="schoolCreateMode == schoolCreate.EDIT"
+                    (click)="cancelEdit()">{{'cancel'|translate}}</button>
+                <button color="primary" mat-raised-button type="submit">{{formActionButtonTitle|translate}}</button>
+            </div>
+        </mat-card-actions>
+
+    </mat-card>
+</form>
+
+
+
+<mat-card @fadeInUp class="w-full" fxFlex="auto" *ngIf="schoolCreateMode == schoolCreate.VIEW">
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'washInformation'|translate}}</h3>
+        <button  *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editWashInfo()">
+            <mat-icon [icIcon]="icEdit" style="font-size: 20px;" class="mr-0 md:mr-1"></mat-icon> <span class="hidden md:inline-block">{{'editInformation'|translate}}</span>
+        </button>
+    </div>
+    <vex-view-wash-info [schoolCreateMode]="schoolCreateMode"
+    [categoryId]="categoryId"
+    [schoolViewDetails]="schoolDetailsForViewAndEdit"></vex-view-wash-info>
+</mat-card>

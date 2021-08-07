@@ -1,0 +1,216 @@
+<mat-card class="w-full"  *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
+    <form #f="ngForm" novalidate appInvalidControlScroll>
+
+        <div>
+            <h3 class="mb-6">{{'schoolInformation'|translate}}</h3>
+        </div>
+        <mat-card-content #schoolInfo class="mb-0">
+
+        <div @stagger fxLayout="column">
+                <h4 class="text-primary pb-2">{{'officialInformation'|translate}}</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li class="md:col-span-2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'jobTitle'|translate}}</mat-label>
+                        <input #jobTitle="ngModel" name="jobTitle" matInput required [(ngModel)]="staffSchoolInfoModel.jobTitle">
+                        <mat-error *ngIf="jobTitle.errors?.required">{{'jobTitleIsRequired'|translate}}
+                        </mat-error>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'joiningDate'|translate}}</mat-label>
+                        <input matInput name="joiningDate" [matDatepicker]="picker1" [(ngModel)]="staffSchoolInfoModel.joiningDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'endDate'|translate}}</mat-label>
+                        <input matInput name="endDate" [matDatepicker]="picker" [(ngModel)]="staffSchoolInfoModel.endDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'primaryGradeLevelTaught'|translate}}</mat-label>
+                        <mat-select name="primaryGradeLevelTaught" [(ngModel)]="staffSchoolInfoModel.primaryGradeLevelTaught">
+                            <mat-option *ngFor="let grade of getAllGradeLevels.tableGradelevelList" value={{grade.title}}>{{grade.title}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'otherGradeLevelTaught'|translate}}</mat-label>
+                        <mat-select name="otherGradeLevelTaught" multiple [(ngModel)]="otherGradeLevelTaught">
+                            <mat-option *ngFor="let grade of getAllGradeLevels.tableGradelevelList" value={{grade.title}}>{{grade.title}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'primarySubjectTaught'|translate}}</mat-label>
+                        <mat-select name="primarySubjectTaught" [(ngModel)]="staffSchoolInfoModel.primarySubjectTaught">
+                            <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" value={{subject.subjectName}}>{{subject.subjectName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </li>
+                    <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'otherSubjectTaught'|translate}}</mat-label>
+                        <mat-select name="otherSubjectTaught" multiple [(ngModel)]="otherSubjectTaught">
+                            <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" value={{subject.subjectName}}>{{subject.subjectName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    </li>
+                </ul>
+
+                <div class="flex w-full justify-between items-center pb-2 pt-10">
+                <h4 class="text-primary">{{'schoolInformation'|translate}}</h4>
+                <div class="text-right">
+                    <a mat-raised-button color="primary" (click)="addMoreSchoolInfo()">
+                        <mat-icon [icIcon]="icAdd"></mat-icon> {{'addSchoolInfo' |translate}}
+                    </a>
+                </div>
+            </div>
+            <div *ngFor="let info of divCount;let i=index;">
+            <div class="bg-white shadow-md border border-primary-light hover:border-primary rounded px-4 pt-3 mb-4">
+                <div class="flex flex-wrap w-full justify-between">
+                            <div class="w-11/12">
+                                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                    <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{'school'|translate}}</mat-label>
+                                        <mat-select #school="ngModel" (selectionChange)="onSchoolChange($event.value,i)" name="{{'school'+i}}" [disabled]="staffSchoolInfoModel.staffSchoolInfoList[i]?.id!=null || staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide" required [(ngModel)]="staffSchoolInfoModel.staffSchoolInfoList[i].schoolAttachedId">
+                                            <mat-option *ngFor="let school of getSchoolList.schoolMaster" value={{school.schoolId}}
+                                            [disabled]="selectedSchoolId.includes(+school.schoolId)">{{school.schoolName}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="school.errors?.required">{{'schooNameIsRequired'|translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                    </li>
+                                    <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{'profile'|translate}}</mat-label>
+                                        <mat-select #profile="ngModel" name="{{'profile'+i}}" [disabled]="staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide" required [(ngModel)]="staffSchoolInfoModel.staffSchoolInfoList[i].profile">
+                                            <mat-option *ngFor="let profile of getAllMembersList.getAllMemberList" value={{profile.profile}}>{{profile.profile}}</mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="profile.errors?.required">{{'profileIsRequired'|translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                    </li>
+                                    <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{'startDate'|translate}}</mat-label>
+                                        <input #start_date="ngModel" [disabled]="staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide" matInput name="{{'startDate'+i}}" [matDatepicker]="startDate" required [(ngModel)]="staffSchoolInfoModel.staffSchoolInfoList[i].startDate">
+                                        <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #startDate></mat-datepicker>
+                                        <mat-error *ngIf="start_date.errors?.required">{{'startDateIsRequired'|translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                    </li>
+                                    <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{'endDate'|translate}}</mat-label>
+                                        <input matInput #end_date="ngModel" [disabled]="staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide" [min]="staffSchoolInfoModel.staffSchoolInfoList[i].startDate" name="{{'endDate'+i}}" [matDatepicker]="endDate" [(ngModel)]="staffSchoolInfoModel.staffSchoolInfoList[i].endDate">
+                                        <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #endDate></mat-datepicker>
+                                        <mat-error *ngIf="end_date.errors?.nomatch">{{'startDateCannotExceedEndDate'|translate}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                    </li>
+                                </ul>
+                    </div>
+                    <div class="w-1/12 text-center pt-2" >
+                        <a (click)="deleteSchoolInfo(i)" *ngIf="staffSchoolInfoModel.staffSchoolInfoList[i].id==null;else dontDelete"  class="cursor-pointer">
+                            <mat-icon [icIcon]="icClear"></mat-icon>
+                        </a>
+                        <ng-template #dontDelete><mat-icon [icIcon]="icClear" class="text-gray"></mat-icon></ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+            <div class="text-right">
+            <button mat-button *ngIf="staffCreateMode == staffCreate.EDIT"
+                (click)="cancelEdit()">{{'cancel'|translate}}</button>
+            <button color="primary" class="ml-2" mat-raised-button
+                (click)="submitSchoolInfo()">{{'update'|translate}}</button>
+            </div>
+        </mat-card-content>
+    </form>
+</mat-card>
+
+
+<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
+
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'schoolInformation' | translate}}</h3>
+        <button *ngIf="permissions.edit" (click)="editSchoolInfo()" mat-raised-button color="primary">
+            <mat-icon [icIcon]="icEdit"></mat-icon> <span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
+        </button>
+    </div>
+    <mat-card-content>
+
+        <div @stagger fxLayout="column">
+            <h4 class="text-primary pt-6 pb-2">{{'officialInformation'|translate}}</h4>
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'jobTitle' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.jobTitle | EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'joiningDate' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.joiningDate | date |EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'endDate' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.endDate | date|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'primaryGradeLevelTaught' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.primaryGradeLevelTaught|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'otherGradeLevelTaught' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.otherGradeLevelTaught|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'primarySubjectTaught' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.primarySubjectTaught|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'otherSubjectTaught' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffSchoolInfoModel.otherSubjectTaught|EmtyValueCheckPipe}}</p>
+                </li>
+            </ul>
+
+            <hr class="-mx-4 mt-6">
+            <h4 class="text-primary pt-6 pb-2">{{'schoolInformation'|translate}}</h4>
+            <div class="mb-3 overflow-x-auto overflow-y-hidden">
+                <table class="w-full table-auto border-collapse border">
+                    <thead>
+                        <tr>
+                            <th class="text-left p-3 border-b">{{'school'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'profile'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'startDate'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'endDate'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'status'|translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let schoolInfo of staffCloneModel?.staffSchoolInfoList;let index=index">
+                            <td class="p-3">{{schoolInfo.schoolAttachedName | EmtyValueCheckPipe}}</td>
+                            <td class="p-3">{{schoolInfo.profile | EmtyValueCheckPipe}}</td>
+                            <td class="p-3">{{schoolInfo.startDate | date | EmtyValueCheckPipe}}</td>
+                            <td class="p-3">{{schoolInfo.endDate | date | EmtyValueCheckPipe}}</td>
+                            <td class="p-3"><span class="text-green" *ngIf="compareDate(index);else otherSpan">Active</span><ng-template #otherSpan><span class="text-red">{{staffSchoolInfoModel.staffSchoolInfoList[index].startDate==null?'-':'Inactive'}}</span></ng-template></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

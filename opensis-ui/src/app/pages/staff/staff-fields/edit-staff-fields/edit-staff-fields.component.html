@@ -1,0 +1,51 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{'addNewField'|translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column" [formGroup]="form">
+    <mat-form-field class="mt-6" appearance="outline" color="primary">
+        <mat-label>{{'fieldName' | translate}}</mat-label>
+        <input formControlName="title" cdkFocusInitial matInput required>
+        <mat-error *ngIf="form.get('title').hasError('whitespace')">{{'fieldNameIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'fieldType' | translate}}</mat-label>
+        <mat-select name="gender" formControlName="fieldType" required>
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let customFieldOption of customFieldOptionsEnum" [value]="customFieldOption">{{customFieldOption}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('fieldType').hasError('required')">{{'fieldTypeIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="(form.controls.fieldType.value==formfieldcheck[0])||(form.controls.fieldType.value==formfieldcheck[1])||(form.controls.fieldType.value==formfieldcheck[2])" class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'pullDownAutoPullDownCodedPullDownSelectMultipleChoices' | translate}}</mat-label>
+        <textarea formControlName="selectOptions" matInput></textarea>
+        <p class="text-xs text-gray">{{'oneItemPerLine' | translate}}</p>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'default' | translate}}</mat-label>
+        <input type="text" formControlName="defaultSelection" matInput >
+        <p class="text-xs text-gray">{{'defaultFieldHint' | translate}}</p>
+        <mat-error *ngIf="form.get('defaultSelection').hasError('invalidDefaultSelection')">{{'defaultErrorHint'|translate}}</mat-error>
+    </mat-form-field>
+
+    <div class="flex">
+        <mat-slide-toggle class="example-margin mr-6" formControlName="required" color="primary">{{'required' | translate}}</mat-slide-toggle>
+        <mat-slide-toggle class="example-margin mr-6" formControlName="hide" color="primary">{{'hide' | translate}}</mat-slide-toggle>
+        <mat-slide-toggle class="example-margin mr-6" formControlName="isSystemWideField" color="primary">{{'allSchools' | translate}}</mat-slide-toggle>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{buttonType | translate}}</button>
+</mat-dialog-actions>

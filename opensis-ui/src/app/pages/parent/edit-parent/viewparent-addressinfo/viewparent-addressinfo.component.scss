@@ -1,0 +1,24 @@
+.same-as-home-address {
+    @apply bg-green;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 3px 5px;
+    @apply inline-block;
+    @apply text-white;
+    @apply px-2;
+    @apply rounded;
+    @apply ml-4;
+}
+
+.different-from-home-address {
+    @apply bg-warn;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 3px 5px;
+    vertical-align: middle;
+    @apply inline-block;
+    @apply text-white;
+    @apply px-2;
+    @apply rounded;
+    @apply ml-4;
+}

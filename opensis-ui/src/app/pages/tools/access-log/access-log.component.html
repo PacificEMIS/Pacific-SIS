@@ -1,0 +1,110 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="Access Log" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Tools']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="card -mt-16">
+            <h4 class="px-4 pt-4 text-lg font-semibold">{{ 'searchSystemAccessBetweenDateRange' | translate }}</h4>
+            <div class="px-4 py-2">
+                <ul class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 col-gap-6 row-gap-2">
+                    <li>
+                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                            <mat-label>{{ "fromDate" | translate }}</mat-label>
+                            <input matInput [matDatepicker]="fromDate">
+                            <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                            <mat-datepicker #fromDate></mat-datepicker>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                            <mat-label>{{ "toDate" | translate }}</mat-label>
+                            <input matInput [matDatepicker]="toDate">
+                            <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                            <mat-datepicker #toDate></mat-datepicker>
+                        </mat-form-field>
+                    </li>
+                    <li class="sm:col-span-2 md:col-span-1 flex w-full justify-end md:justify-start mb-2">
+                        <button mat-raised-button color="primary" class="py-2 px-8">{{ 'search' | translate }}</button>
+                    </li>
+                </ul>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="bg-white px-4 md:h-14 border-b sticky left-0" fxLayout="row"
+                fxLayoutAlign="start center">
+                <div class="md:flex w-full justify-between">
+                    <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                        <div class="md:flex w-full items-center">
+                            <input class="px-2 py-3 border-0 outline-none w-full bg-transparent table-search"
+                                placeholder="Search..." type="search">
+                            <button class="ml-8 md:ml-4" mat-icon-button type="button">
+                                <mat-icon>search</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <hr class="-mx-4 block md:hidden" />
+                    <div class="py-2 md:pt-2 items-center">
+                        <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel">
+                            <i class="icon icon-file-excel text-lg"></i>
+                        </a>
+                        <button class="ml-4" fxFlex="none" mat-icon-button matTooltip="Filter Columns" type="button">
+                            <mat-icon>filter_list</mat-icon>
+                        </button>
+                        <button mat-raised-button color="primary" class="ml-4">
+                            <mat-icon [icIcon]="icDeleteForever"></mat-icon><span class="hidden md:inline-block ml-2">{{
+                                'deleteLog' | translate }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t overflow-x-auto overflow-y-hidden">
+                <table mat-table [dataSource]="logData" class="mat-elevation-z8">
+
+                    <ng-container matColumnDef="loginTime">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'loginTime' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.loginTime}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="loginEmail">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'loginemail' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.loginEmail}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'name' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="profile">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'profile' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.profile}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="failureCount">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'failureCount' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.failureCount}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'status' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="ipAddress">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'ipAddress' | translate }}</th>
+                        <td mat-cell *matCellDef="let element"> {{element.ipAddress}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons>
+            </mat-paginator>
+
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

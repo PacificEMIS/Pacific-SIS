@@ -1,0 +1,116 @@
+
+    <div class="bg-white h-16 border-b sticky left-0 px-4" fxLayout="row" fxLayoutAlign="start center">
+        <div class="flex w-full justify-between">
+            <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
+                fxLayoutAlign="start center">
+
+                <div class="flex">
+                    <input class="px-2 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                    </button>
+                </div>
+            </div>
+
+
+            <div fxFlex="200px" class="pt-3">
+                <a routerLink="" class="cursor-pointer p-1 mt-1 inline-block align-middle"
+                    matTooltip="Export to Excel"><i class="icon icon-file-excel text-lg"></i></a>
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                    matTooltip="Filter Columns" type="button">
+                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                </button>
+                <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='goToAddPeriod()'>
+                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"
+                        size="24px">
+                    </ic-icon>
+                    <span>{{'addNewPeriod'|translate}}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <table @stagger mat-table [dataSource]="periodsModelList" class="table-auto w-full"
+        matSort>
+
+        <ng-container matColumnDef="periodId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'sortOrder'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon cdkDragHandle>reorder</mat-icon>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="periodTitle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'title'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.periodTitle}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="periodShortName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'shortName'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.periodShortName}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="periodStartTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'startTime'|translate}}
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.periodStartTime}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="periodEndTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'endTime'|translate}}
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.periodEndTime}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="length">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'lengthInMinutes'|translate}}
+            </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.length}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>{{'action'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                <a routerLink="" matTooltip="Edit Info" class="mr-3 cursor-pointer">
+                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                </a>
+                <a routerLink="" matTooltip="Delete Info" class="mr-3 cursor-pointer">
+                    <mat-icon [icIcon]="icDelete"></mat-icon>
+                </a>
+            </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="loading">
+            <mat-footer-cell *matFooterCellDef colspan="6">
+                <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+            </mat-footer-cell>
+        </ng-container> -->
+
+        <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></tr>
+        <!-- <mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></mat-footer-row> -->
+
+    </table>
+    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+    <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+        class="checkbox-item mat-menu-item">
+        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+            {{column.label}}
+        </mat-checkbox>
+    </button>
+</mat-menu>

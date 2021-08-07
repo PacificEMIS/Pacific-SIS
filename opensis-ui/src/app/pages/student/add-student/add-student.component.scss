@@ -1,0 +1,35 @@
+.critical-alert {
+    background: #d2111f;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    position: absolute;
+    right: 30px;
+    top: 40px;
+    color: #fff;
+    padding: 4px 5px;
+
+    .mat-icon {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .critical-alert {
+        right: 61px;
+    }
+    .persistent-bar {
+        .critical-alert {
+            width: 25px;
+            height: 25px;
+            border-width: 1px;
+            right: -2px;
+            top: -2px;
+
+            .mat-icon {
+                font-size: 14px;
+            }
+        }
+    }
+}

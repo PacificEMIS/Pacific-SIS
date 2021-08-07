@@ -1,0 +1,39 @@
+<mat-card class="mb-6 p-0">
+    <div class="pl-gutter pr-2 py-4 flex items-center">
+        <div class="flex-auto">
+            <h3>{{ title }}</h3>
+        </div>
+
+        <button *ngIf="permissions?.edit" [matMenuTriggerFor]="addNewMenu" class="w-10 pt-3" type="button">
+            <mat-icon [icIcon]="icMoreVert" size="20px"></mat-icon>
+        </button>
+
+        <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+            <button *ngIf="permissions?.edit" mat-menu-item (click)="editNotice(noticeId)">
+                <span>{{'editNotice' |translate }}</span>
+            </button>
+
+            <button *ngIf="permissions?.edit" mat-menu-item (click)="deleteNoticeConfirm(noticeId)">
+                <span>{{'deleteItem' |translate}}</span>
+            </button>
+        </mat-menu>
+    </div>
+
+    <div class="px-gutter border-t border-b py-3">
+        <p class="text-secondary font-medium text-xs flex align-center">
+            <mat-icon [icIcon]="icPreview" class="mr-3"></mat-icon><span>{{'visibleFrom' | translate}} {{ visibleFrom }}</span>
+        </p>
+        <p *ngIf="showMember" class="text-secondary font-medium text-xs flex align-center mt-2">
+            <mat-icon [icIcon]="icPeople" class="mr-3"></mat-icon><span>{{'visibleTo' | translate}} {{ visibleTo }}</span>
+        </p>
+    </div>
+
+    <div *ngIf="imageUrl">
+        <img [src]="imageUrl" />
+    </div>
+    <div class="ql-snow">
+        <ng-content></ng-content>
+    </div>
+
+
+</mat-card>

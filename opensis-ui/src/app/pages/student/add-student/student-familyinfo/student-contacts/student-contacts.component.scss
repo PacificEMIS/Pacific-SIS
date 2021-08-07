@@ -1,0 +1,38 @@
+.contact-type span.separator {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+span.no-custody {
+    border: 2px solid #c90000;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    line-height: 28px;
+    text-align: center;
+    position: relative;
+    margin-top: 3px;
+
+    &::after {
+        content: " ";
+    	height: 2px;
+    	width: 100%;
+    	background: #c90000;
+    	display: inline-block;
+    	position: absolute;
+    	left: 1px;
+    	top: 14px;
+    	transform: rotate(-45deg);
+    }
+
+    img {
+	filter: grayscale(100%);
+    	opacity: 60%;
+    	display: inline-block;
+    	width: 70%;
+    }
+}

@@ -1,0 +1,79 @@
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{AddOrEditNotice |translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+<form [formGroup]="form" (ngSubmit)="submitNotice()">
+    <mat-dialog-content fxLayout="column">
+        <mat-form-field class="mt-6" appearance="outline" color="primary">
+            <mat-label>{{'title' |translate}}</mat-label>
+            <input formControlName="Title" [(ngModel)]="noticeAddViewModel.notice.title" name="Title" matInput required>
+            <mat-error *ngIf="form.get('Title').hasError('required')">{{'titleIsRequired'| translate}}</mat-error>
+        </mat-form-field>
+        <div class="mb-6 border rounded">
+            <quill-editor formControlName="Body" name="Body" [(ngModel)]="noticeAddViewModel.notice.body" (onEditorChanged)="changedEditor($event)" [styles]="{ height: '250px' }"></quill-editor>
+
+        </div>
+        <div class="mb-2 md:flex md:flex-wrap -mx-6">
+            <div class="flex flex-1 mx-6 md:w-1/2">
+                <mat-form-field class="w-full" appearance="outline" color="primary">
+                    <mat-label>{{'visibleFromDate' |translate}}</mat-label>
+                    <input formControlName="validFrom"  [(ngModel)]="noticeAddViewModel.notice.validFrom" name="validFrom" [matDatepicker]="begins" matInput required>
+                    <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
+                    <mat-datepicker #begins></mat-datepicker>
+                    <mat-error *ngIf="form.get('validFrom').hasError('required')">{{'visibleFromDateIsRequired' | translate}}</mat-error>
+                    
+                </mat-form-field>
+            </div>
+            <div class="flex flex-1 mx-6 md:w-1/2">
+                <mat-form-field class="w-full" appearance="outline" color="primary">
+                    <mat-label>{{'visibleToDate' | translate}}</mat-label>
+                    <input formControlName="validTo" [(ngModel)]="noticeAddViewModel.notice.validTo" name="validTo" [min]="form.value.validFrom" [matDatepicker]="ends" matInput required>
+                    <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
+                    <mat-datepicker #ends></mat-datepicker>
+                    <mat-error *ngIf="form.get('validTo').hasError('required')">{{'visibleToDateIsRequired' | translate}}</mat-error>
+                    <mat-error *ngIf="form.get('validTo').hasError('matDatepickerMin')">{{"visibleToDateCannotBeEarlierThenVisibleFromDate"|translate}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="flex-1 mx-6 md:w-1/2">
+                <mat-form-field class="w-full" appearance="outline" color="primary">
+                    <mat-label>{{'sortOrder' | translate}}</mat-label>
+                    <input formControlName="sortOrder" name="sortOrder" [(ngModel)]="noticeAddViewModel.notice.sortOrder"
+                        type="number" min="1" matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        
+        <mat-checkbox [checked]="schoolVisibility" (change)="schoolVisibilityCheck($event) " color="primary">Visible to All School</mat-checkbox>
+        <h6 class="text-primary mt-4 mb-1" [hidden]="membercount==0">{{'visibleToProfile' |translate }}</h6>
+
+        <div class="md:mb-3" [hidden]="membercount==0">
+            <mat-checkbox #checkBox [checked]="checkAll" (click)="updateCheck($event)" class="example-margin" color="primary">
+                <b>Select All</b>
+            </mat-checkbox>
+        </div>
+
+        <ul class="md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3"  [hidden]="membercount==0">
+            <li *ngFor="let member of getAllMembersList.getAllMemberList">
+                
+                <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1" (click)="selectChildren($event,member.membershipId)" color="primary">
+                    {{member.profile}}</mat-checkbox>
+            </li>
+            <mat-error id="scrollBottom" *ngIf="profileError">{{'pleaseSelectAnyProfile'|translate}}</mat-error>
+        </ul>
+
+
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+        <button mat-button mat-dialog-close>{{'cancel'| translate }}</button>
+        <button color="primary" mat-raised-button>{{noticeModalActionTitle | translate }}</button>
+
+    </mat-dialog-actions>
+
+</form>

@@ -1,0 +1,105 @@
+<mat-card class="w-full p-0" fxFlex="auto">
+    <div class="bg-white px-4 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row" fxLayoutAlign="start center">
+                <div class="flex">
+                    <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
+                        class="pt-3 pb-2 border-0 outline-none w-full bg-transparent" appearance="outline" color="primary"
+                        placeholder="Search..." type="search">
+                    <button mat-button matSuffix mat-icon-button aria-label="clear" *ngIf="searchKey"
+                        (click)="onSearchClear()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <hr class="-mx-4 block md:hidden" />
+            <div fxFlex="200px" class="pt-2 pb-2 mb:pb-0">
+                <button fxFlex="none" mat-icon-button (click)="exportToExcel()" matTooltip="Export to Excel"
+                    type="button">
+                    <span class="icon icon-file-excel text-lg"></span>
+                </button>
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-3" fxFlex="none" mat-icon-button
+                    matTooltip="Filter Columns" type="button">
+                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                </button>
+
+                <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+                    (click)='openAddNew()'>
+                    <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
+                    </ic-icon>
+                    <span class="hidden md:inline-block">{{'addNewRoom' | translate}}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden">
+        <table @stagger class="w-full" [dataSource]="roomModelList" mat-table matSort>
+            <ng-container matColumnDef="title">
+
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'title' | translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    <a href="javascript:void(0)" (click)="openViewDetails(element)"
+                        class="text-blue">{{element.title}}</a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="capacity">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'capacity' | translate}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.capacity}} </td>
+            </ng-container>
+            <!-- 
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'description' | translate}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.description|EmtyValueCheckPipe}}</td>
+                </ng-container> -->
+            <ng-container matColumnDef="sortOrder">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'sortOrder' | translate}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.sortOrder}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="isActive">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'active' | translate}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.isActive|EmtyBooleanCheckPipe}}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>{{'action' | translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    <a *ngIf="permissions?.edit" class="mr-3 cursor-pointer" (click)="openEditdata(element)">
+                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                    </a>
+                    <a *ngIf="permissions?.edit" class="cursor-pointer" (click)="confirmDelete(element)">
+                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                    </a>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                </mat-footer-cell>
+            </ng-container>
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="6">
+                    No Data
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="roomModelList?.data.length!=0"></tr>
+
+        </table>
+    </div>
+</mat-card>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+    <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+        class="checkbox-item mat-menu-item">
+        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+            {{column.label}}
+        </mat-checkbox>
+    </button>
+</mat-menu>

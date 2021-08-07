@@ -1,0 +1,39 @@
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="Notices" class="w-full">
+            <vex-breadcrumbs [crumbs]="['School Info','Notices']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <div class="-mt-6 w-full" vexContainer>
+        <mat-drawer-container class="bg-transparent -mt-16 px-gutter" vexContainer>
+            <mat-card class="mb-5">
+                <div class="flex items-center pl-0" fxLayout="row" fxLayoutAlign="center center">
+                    <div class="flex-auto">
+                        <mat-button-toggle-group (click)="showRecords(group.value)" #group="matButtonToggleGroup" name="fontStyle" color="primary">
+                            <mat-button-toggle value="current" checked>{{'current' | translate}}</mat-button-toggle>
+                            <mat-button-toggle value="upcoming">{{'upcoming' | translate}}</mat-button-toggle>
+                            <mat-button-toggle value="past">{{'past' | translate}}</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <button *ngIf="permissions?.add" (click)="openAddNew()" type="button" color="primary" mat-raised-button>
+                        <mat-icon class="md:mr-2">add</mat-icon><span class="hidden md:inline-block">{{'addNotice' | translate}}</span>
+                    </button>
+                </div>
+            </mat-card>
+
+            <div *ngFor="let list of noticeList">
+                        <vex-notice-cards [recordFor]="recordFor" [getAllMembersList]='getAllMembersList' [notice]='list' noticeId = {{list.noticeId}} title= {{list.title}}
+                            visibleFrom="{{list.validFrom | date }} - {{list.validTo | date }}"
+                            visibleTo={{list.targetMembershipIds}}>
+                    <div class="p-3">
+                                <div class="ql-editor" [innerHTML]="list.body|safe:'html'"></div>
+                            </div>
+                        </vex-notice-cards>
+            </div>
+            
+        </mat-drawer-container>
+    </div>
+
+</vex-page-layout>

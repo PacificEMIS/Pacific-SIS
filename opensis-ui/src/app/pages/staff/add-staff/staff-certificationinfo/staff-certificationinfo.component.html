@@ -1,0 +1,88 @@
+<mat-card class="w-full pb-0">
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'certificationInformation' | translate}}</h3>
+        <button *ngIf="permissions.add" mat-raised-button color="primary" (click)='openAddNew()'><mat-icon [icIcon]="icAdd"></mat-icon><span class="hidden sm:inline-block ml-2">{{'addNewCertification' |translate}}</span></button>
+    </div>
+    <hr class="-mx-4 mt-4"/>
+    <mat-card-content class="-mx-4">
+        <div class="overflow-x-scroll">
+        <table @stagger mat-table [dataSource]="staffCertificateList" class="table-auto w-full" matSort>
+                
+                <ng-container matColumnDef="certificationName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'certificationName'|translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        <a (click)='openViewDetails(element)' class="text-primary cursor-pointer">{{element.certificationName|EmtyValueCheckPipe}}</a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="shortName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'shortName'|translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.shortName|EmtyValueCheckPipe}}
+                    </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="primaryCertification">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'primaryCertificationIndicator'|translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.primaryCertification|EmtyBooleanCheckPipe}}
+                    </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="certificationDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'certificationDate'|translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.certificationDate|date:'MMM dd, y'|EmtyValueCheckPipe}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="certificationExpiryDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'certificationExpiryDate'|translate}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.certificationExpiryDate|date:'MMM dd, y'|EmtyValueCheckPipe}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'actions'|translate}}
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        <a *ngIf="permissions?.edit" (click)="openEditdata(element)" class="mr-3 cursor-pointer">
+                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                        </a>
+                        <a *ngIf="permissions?.delete" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
+                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                        </a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="loading">
+                    <mat-footer-cell *matFooterCellDef colspan="6">
+                        <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                    </mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="6">
+                        {{loading?'Fetching Data...':'No Data'}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></tr>
+                <tr mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="staffCertificateList?.data.length!=0"></tr>
+
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+    <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+        class="checkbox-item mat-menu-item">
+        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+            {{column.label}}
+        </mat-checkbox>
+    </button>
+</mat-menu>

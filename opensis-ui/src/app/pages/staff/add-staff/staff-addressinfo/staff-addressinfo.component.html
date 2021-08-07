@@ -1,0 +1,314 @@
+<!--Staff Address Add and Edit-->
+
+<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
+    <form (ngSubmit)="f.form.valid && submitAddress()" #f="ngForm" novalidate appInvalidControlScroll>
+
+        <div>
+            <h3 class="mb-6">{{'addressAndContact'|translate}}</h3>
+        </div>
+        <mat-card-content class="mb-0">
+            <div @stagger fxLayout="column">
+                <h4 class="text-primary pb-2">{{'personalContactInformation'|translate}}</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'homePhone'|translate}}</mat-label>
+                            <input #homePhone="ngModel" maxlength="30"
+                                [(ngModel)]="staffAddModel.staffMaster.homePhone" name="homePhone" matInput matInput>
+                            <mat-error *ngIf="homePhone.errors?.invalidPhoneNumber">
+                                {{'invalidTelephoneNumber'|translate}}</mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'mobilePhone'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.mobilePhone" maxlength="30"
+                                #mobilePhone="ngModel" name="mobilePhone" matInput>
+                            <mat-error *ngIf="mobilePhone.errors?.phonevalidator">
+                                {{'pleaseProvideAValidMobileNo'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'officePhone'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.officePhone" maxlength="30"
+                                #officePhone="ngModel" name="officePhone" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'personalEmail'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.personalEmail" appEmailvalidator
+                                #personalEmail="ngModel" name="personalEmail" matInput>
+                            <mat-error *ngIf="personalEmail.errors?.emailvalidator">
+                                {{'pleaseProvideAValidEmailAddress'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'schoolEmail'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.schoolEmail" appEmailvalidator
+                                #schoolEmail="ngModel" name="schoolEmail" matInput>
+                            <mat-error *ngIf="schoolEmail.errors?.emailvalidator">
+                                {{'pleaseProvideAValidEmailAddress'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'twitter'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.twitter" name="twitter" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'facebook'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.facebook" name="facebook" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'instagram'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.instagram" name="instagram" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'youtube'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.youtube" name="youtube" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'linkedIn'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.linkedin" name="linkedin" matInput>
+                        </mat-form-field>
+                    </li>
+                </ul>
+                <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="staffAddModel" [module]="module"
+                    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"></vex-custom-field-without-form>
+
+                <hr class="-mx-4 mt-6">
+
+
+                <h4 class="text-primary pb-2 pt-6">{{'homeAddress'|translate}}</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'streetAddress1'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineOne" name="homeAddressLineOne"
+                                #homeAddressLineOne="ngModel" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'streetAddress2'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineTwo" name="homeAddressLineTwo"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'country'|translate}}</mat-label>
+                            <mat-select [formControl]="homeAddressCountryCtrl" [(ngModel)]="staffAddModel.staffMaster.homeAddressCountry"
+                                name="homeAddressCountry">
+                                <!-- <mat-option value=""></mat-option> -->
+                                <mat-option>
+                                    <ngx-mat-select-search  [formControl]="homeAddressCountryFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found" placeholderLabel="Find country..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let country of filteredHomeAddressCountry| async" [value]='country.id'>
+                                    {{country.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressState" name="homeAddressState"
+                                #homeAddressState="ngModel" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'city'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressCity" name="homeAddressCity"
+                                #homeAddressCity="ngModel" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'zipPostalCode'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressZip" maxlength="20" #homeAddressZip="ngModel"
+                                name="homeAddressZip" matInput>
+                        </mat-form-field>
+                    </li>
+
+
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'busNo'|translate}}</mat-label>
+                            <input  name="busNo" [(ngModel)]="staffAddModel.staffMaster.busNo" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li class="flex flex-1 md:w-1/2 md:pt-3">
+                        <mat-checkbox name="busPickup" [(ngModel)]="staffAddModel.staffMaster.busPickup" color="primary" class="mr-6">{{'busPickup' | translate}}
+                        </mat-checkbox>
+                        <mat-checkbox name="busDropoff"  [(ngModel)]="staffAddModel.staffMaster.busDropoff" color="primary">{{'busDropoff' | translate}}
+                        </mat-checkbox>
+
+                    </li>
+                </ul>
+
+                <hr class="-mx-4 mt-6">
+
+                <h4 class="text-primary pb-2 pt-6">{{'mailingAddress'|translate}}</h4>
+                <div class="pb-3">
+                    <mat-checkbox [checked]="checkBoxChecked" #checkBox
+                        [(ngModel)]="staffAddModel.staffMaster.mailingAddressSameToHome"
+                        (click)="copyHomeAddress($event)" name="mailingAddressSameToHome" color="primary">
+                        {{'sameAsHomeAddress' | translate}}</mat-checkbox>
+                </div>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'streetAddress1'|translate}}</mat-label>
+                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineOne"
+                                name="mailingAddressLineOne" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'streetAddress2'|translate}}</mat-label>
+                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineTwo"
+                                name="mailingAddressLineTwo" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'country'|translate}}</mat-label>
+                            <mat-select [formControl]="mailingAddressCountryCtrl" [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCountry"
+                                name="mailingAddressCountry">
+                                <!-- <mat-option value=""></mat-option> -->
+                                <mat-option>
+                                    <ngx-mat-select-search  [formControl]="mailingAddressCountryFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found" placeholderLabel="Find country..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let country of filteredMailingAddressCountry| async" [value]='country.id'>
+                                    {{country.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
+                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressState"
+                                name="mailingAddressState" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'city'|translate}}</mat-label>
+                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCity" name="mailingAddressCity"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'zip/Postal Code'|translate}}</mat-label>
+                            <input [disabled]="checkBox.checked" maxlength="20" [(ngModel)]="staffAddModel.staffMaster.mailingAddressZip" name="mailingAddressZip"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                </ul>
+
+                <hr class="-mx-4 mt-6">
+
+
+                <h4 class="text-primary pb-2 pt-6">{{'emergencyContactInfo'|translate}}</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'firstName'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyFirstName" name="emergencyFirstName"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'lastName'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyLastName" name="emergencyLastName"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'relationshipToStaff'|translate}}</mat-label>
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.relationshipToStaff"
+                                name="relationshipToStaff">
+                                <mat-option value=""></mat-option>
+                                <mat-option *ngFor="let staffRelation of relationshipList" [value]="staffRelation.lovColumnValue">
+                                    {{staffRelation.lovColumnValue}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'homePhone'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyHomePhone" name="emergencyHomePhone" maxlength="30"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'workPhone'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyWorkPhone" name="emergencyWorkPhone" maxlength="30"
+                                matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'mobilePhone'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyMobilePhone" maxlength="30"
+                                name="emergencyMobilePhone" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'email'|translate}}</mat-label>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyEmail" #emergencyEmail="ngModel" appEmailvalidator name="emergencyEmail"
+                                matInput>
+                            <mat-error *ngIf="emergencyEmail.errors?.emailvalidator">
+                                {{'pleaseProvideAValidEmailAddress'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-right">
+                <button *ngIf="staffCreateMode == staffCreate.EDIT" (click)="cancelEdit()" mat-button class="mr-2">{{'cancel'|translate}}</button>
+                <button color="primary" mat-raised-button>{{actionButton|translate}}</button>
+            </div>
+        </mat-card-content>
+    </form>
+</mat-card>
+
+
+
+<!--Staff Address View -->
+<mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.VIEW">
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'addressAndContact' | translate}}</h3>
+        <button mat-raised-button *ngIf="permissions.edit" (click)="editAddressContactInfo()" color="primary">
+            <mat-icon [icIcon]="icEdit" class="md:mr-2"></mat-icon> <span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
+        </button>
+    </div>
+    <vex-view-staff-addressinfo
+    [staffCreateMode]="staffCreateMode"
+     [categoryId]="categoryId"
+     [staffViewDetails]="staffDetailsForViewAndEdit"
+     [nameOfMiscValues]="nameOfMiscValuesForView">
+    </vex-view-staff-addressinfo>
+</mat-card>

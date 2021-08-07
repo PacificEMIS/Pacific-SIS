@@ -1,0 +1,171 @@
+@import "../../../../../node_modules/angular-calendar/css/angular-calendar.css";
+@import "../../../../@vex/styles/partials/plugins/_angular-calendar.scss";
+
+.calendar-wrap {
+  height: calc(100vh - 315px);
+  overflow: auto;
+}
+
+.mat-form-field {
+  &.select-calendar {
+    margin-bottom: 0 !important;
+
+    .mat-form-field-flex {
+      padding-top: 0 !important;
+    }
+
+    &.mat-form-field-appearance-fill {
+      .mat-select-arrow-wrapper {
+        transform: translateY(-1px) !important;
+      }
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0.3em;
+    }
+  }
+}
+
+.event-calendar {
+.cal-month-view .cal-day-cell {
+  min-height: 80px;
+}
+
+.cal-month-view .cal-day-badge {
+  @media screen and (max-width: 767.98px) {
+    display: none !important;
+  }
+}
+
+vex-calendar {
+  .calendar-bg {
+    background: url("/assets/img/demo/landscape.jpg") no-repeat center;
+    background-size: cover;
+  }
+}
+
+.cal-month-view {
+    background: #ffffff;
+    overflow: auto;
+
+  .cal-events {
+    margin-bottom: 15px;
+
+    .events-wrapper {
+      width: 100%;
+
+      @media screen and (max-width: 767.98px) {
+        width: auto;
+        display: inline-block;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+    .cal-event {
+      display      : block;
+        width: calc((100vw - 426px) / 7);
+      height       : auto;
+      background   : transparent;
+      border-color : unset;
+      color        : #333333;
+      border-radius: unset;
+      margin-bottom: 2px;
+
+        @media screen and (max-width: 1279.98px) {
+          width: calc((100vw - 147px) / 7);
+        }
+
+        @media screen and (max-width: 767.98px) {
+          width: auto;
+        }
+    }
+
+    span {
+        // display: inline-block;
+      white-space   : nowrap;
+      overflow      : hidden;
+      text-overflow : ellipsis;
+      width         : calc(100% - 26px);
+      vertical-align: top;
+      line-height   : 15px;
+    }
+
+    .event-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-left: 4px;
+      margin-right: 6px;
+      margin-top   : 2px;
+
+        @media screen and (max-width: 767.98px) {
+          width: 16px;
+          height: 16px;
+          margin-right: 0;
+        }
+      }
+      }
+    }
+  }
+  .cal-cell {
+    min-width: 150px;
+  }
+
+  .select-container {
+    width: 50%;
+    @media screen and (max-width: 767.98px) {
+      width: 70%;
+    }
+  }
+
+  .calendar-date > span {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    text-align: center;
+    line-height: 30px;
+    color: #2e2e2f;
+    font-weight: bold;
+  }
+
+  .cal-today {
+    .calendar-date > span {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      @apply bg-primary;
+      text-align: center;
+      line-height: 30px;
+      @apply text-white;
+      font-weight: bold;
+      transform: scale(1.2);
+    }
+  }
+
+  .cal-out-month {
+    opacity: 0.5;
+    .calendar-date > span {
+      font-weight: normal;
+    }
+
+    .select-container {
+      display: none;
+    }
+
+    .cal-cell-top > div {
+      justify-content: flex-end;
+    }
+  }
+  .cal-week-view .cal-day-headers mat-select span {
+    opacity: 1;
+  }
+
+  .cal-month-view {
+    .cal-day-cell.cal-in-month.cal-has-events {
+      @apply bg-skyblue-light
+    }
+  }
+}

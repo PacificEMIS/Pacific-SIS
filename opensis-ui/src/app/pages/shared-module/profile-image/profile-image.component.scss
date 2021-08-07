@@ -1,0 +1,58 @@
+.cropper .move {
+    border: 2px solid #0c3e8a !important;
+  }
+
+.show{
+    display: none;
+}
+
+.sm-button{
+  padding: 1px 4px;
+  margin-bottom: 2px;
+}
+
+.upload-photo-link {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(0,0,0,0.7);
+  color: #ffffff;
+  font-weight: 600;
+  left: 0;
+  transition: all 0.4s ease;
+}
+
+.profile-photo-wrapper {
+  &:hover .upload-photo-link {
+    bottom: 0;
+  }
+
+  ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: #ffffff;
+}
+
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-container {
+  display: inline-block;
+  position: relative;
+} 
+
+}
+
+.mat-dialog-actions{
+  display: block !important;
+}
+// ::ng-deep .cdk-overlay-container{
+//   overflow-y: auto !important;
+// }
+

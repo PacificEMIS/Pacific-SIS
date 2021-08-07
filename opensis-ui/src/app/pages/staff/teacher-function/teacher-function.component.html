@@ -1,0 +1,55 @@
+<div class="flex container-sidenav-secondary" [ngClass]="secondarySidebar==0?'' : 'show-secondary-sidebar'">
+    <div class="sidenav-secondary">
+        <button mat-icon-button class="close-secondary-sidebar" (click)="toggleSecondarySidebar()"><mat-icon>close</mat-icon></button>
+        <vex-scrollbar class="flex-auto">
+            <div class="px-gutter sm:px-0 pt-10 md:pt-0">
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple *ngIf="checkViewEnableOrNot('/school/staff/teacher-functions/input-final-grade')"
+                     routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/input-final-grade']">
+                    <img src="assets/img/icons/top-grades.svg" width="24" class="mr-3"> {{ "inputFinalGrade" | translate }}
+                </a>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" *ngIf="checkViewEnableOrNot('/school/staff/teacher-functions/input-effort-grade')" routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/input-effort-grade']"
+                >
+                    <mat-icon class="mr-3">grading</mat-icon> {{ "inputEffortGrade" | translate }}
+                </a>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple>
+                    <img src="assets/img/icons/exam.svg" width="24" class="mr-3"> {{ "gradebookGrades" | translate }}
+                </a>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple >
+                    <mat-icon class="mr-3">insights</mat-icon> {{ "progressReports" | translate }}
+                </a>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" *ngIf="checkViewEnableOrNot('/school/staff/teacher-functions/take-attendance')" routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/take-attendance']">
+                    <mat-icon class="mr-3">alarm_on</mat-icon> {{ "takeAttendance" | translate }}
+                </a>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple>
+                    <mat-icon class="mr-3">alarm_off</mat-icon> {{ "missingAttendance" | translate }}
+                </a>
+            </div>
+        </vex-scrollbar>
+    </div>
+    <div class="right-content">
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+        <vex-page-layout>
+            <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+                <vex-secondary-toolbar [current]="pageStatus" class="w-full">
+                    <vex-breadcrumbs [crumbs]="parentPageStatus" class="flex-auto"></vex-breadcrumbs>
+                </vex-secondary-toolbar>
+            </vex-page-layout-header>
+
+            <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">
+                <div class="flex items-center h-16">
+                    <button mat-icon-button class="text-white mr-2 mt-1" (click)="toggleSecondarySidebar()">
+                        <mat-icon>apps</mat-icon>
+                    </button>
+                    <div class="text-left px-4">
+                        <h4 class="mb-0 text-white">{{activeMenu | translate}}</h4>
+                    </div>
+                </div>
+            </div>        
+            <vex-page-layout-content>
+               <router-outlet></router-outlet>
+            </vex-page-layout-content>
+        </vex-page-layout>
+    </div>
+    <div class="sidebar-overlay"  (click)="toggleSecondarySidebar()"></div>
+</div>

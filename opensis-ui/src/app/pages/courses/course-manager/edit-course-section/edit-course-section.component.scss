@@ -1,0 +1,25 @@
+@import '../../../../../../node_modules/angular-calendar/css/angular-calendar.css';
+@import "../../../../../@vex/styles/partials/plugins/_angular-calendar.scss";
+
+.mat-radio-button {
+    margin-right: 16px;
+    margin-bottom: 10px;
+}
+
+.calendar {
+    li {
+        min-height: 100px;
+        @apply border-r;
+        @apply border-b;
+        border-color: rgba(0,0,0,0.1);
+    }
+}
+
+.calendar-header {
+    li {
+        @apply border-r;
+        @apply border-b;
+        border-color: rgba(0,0,0,0.1);
+        padding: 8px;
+    }
+}

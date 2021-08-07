@@ -1,0 +1,30 @@
+.custom-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    ul {
+
+        li {
+
+            a {
+                @apply font-bold;
+                @apply opacity-50;
+            }
+
+            &.active {
+
+                a {
+                    @apply border-b-2;
+                    @apply border-primary;
+                    @apply opacity-100;
+                    margin-bottom: -1px;
+                }
+            }            
+        }
+    }
+}
+::-webkit-scrollbar {
+    display: none;
+  }

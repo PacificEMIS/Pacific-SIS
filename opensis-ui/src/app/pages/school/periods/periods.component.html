@@ -1,0 +1,238 @@
+<div class="mb-2 lg:flex w-full lg:flex-wrap">
+    <div class="mb-6 lg:w-3/12 lg:pr-4" *ngIf="blockCount > 1">
+        <mat-card class="w-full p-0" fxFlex="auto">
+            <div class="py-4">
+                <h4 class="px-gutter mb-4 font-bold">{{'blockRotationDays'|translate}}</h4>
+                <hr />
+
+                <div *ngFor="let block of blockListViewModel.getBlockListForView"
+                    [ngClass]="{'bg-skyblue-light text-primary':currentBlockId === block.blockId}"
+                    class="flex items-center justify-between px-6 py-1 h-14">
+                    <a class="cursor-pointer" [ngClass]="{'font-bold':currentBlockId === block.blockId}"
+                        (click)="selectBlock(block)">{{block.blockTitle}} </a>
+                    <div>
+                        <a class="cursor-pointer mr-3" *ngIf="permissions?.edit" (click)="editBlock(block)">
+                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                        </a>
+                        <a *ngIf="block.blockId === 1">
+                            <mat-icon></mat-icon>
+                        </a>
+                        <a *ngIf="block.blockId !== 1 && permissions?.edit" class="cursor-pointer"
+                            (click)="confirmDeleteBlock(block)">
+                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                        </a>
+                    </div>
+                </div>
+
+                <div *ngIf="permissions?.add" class="px-4 mt-4">
+                    <button color="primary" class="w-full" mat-raised-button type="button" (click)='goToAddBlock()'>
+                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
+                    </ic-icon>
+                    <span>{{'addBlockRotationDay'|translate}}</span>
+                </button>
+            </div>
+            </div>
+        </mat-card>
+    </div>
+
+    <div [ngClass]="(blockCount > 1)?'lg:w-9/12 lg:pl-4':'flex-1' ">
+        <mat-card class="w-full p-0 mb-4" fxFlex="auto">
+            <div *ngIf="2 > blockCount" class="flex items-center mx-6 py-4">
+                <h4>{{'showingPeriodsForAllDays' | translate}}</h4>
+                <button *ngIf="permissions?.add" color="primary" class="ml-4" mat-raised-button type="button"
+                    (click)='goToAddBlock()'>
+                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
+                    </ic-icon>
+                    <span>{{'addBlockRotationDay'|translate}}</span>
+                </button>
+            </div>
+            <hr />
+            <div class="bg-white border-b sticky left-0 px-4" fxLayout="row" fxLayoutAlign="start center">
+                <div class="md:flex w-full justify-between">
+                    <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
+                        fxLayoutAlign="start center">
+
+                        <div class="flex">
+                            <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
+                                class="pt-3 pb-2 border-0 outline-none w-full bg-transparent" appearance="outline"
+                                color="primary" placeholder="Search..." type="search">
+                            <button mat-button matSuffix mat-icon-button aria-label="clear" *ngIf="searchKey"
+                                (click)="onSearchClear()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="-mx-4 block md:hidden"/>
+                    <div fxFlex="200px" class="pt-2 pb-2 md:pb-0">
+                        <a (click)="exportPeriodListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle"
+                            matTooltip="Export to Excel"><i class="icon icon-file-excel text-lg"></i></a>
+                        <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                            matTooltip="Filter Columns" type="button">
+                            <mat-icon [icIcon]="icFilterList"></mat-icon>
+                        </button>
+
+                        <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button
+                            type="button" (click)='goToAddPeriod()'>
+                            <ic-icon [icon]="icAdd" class="ml-0 md:mr-2" inline="true"
+                                size="24px">
+                            </ic-icon>
+                            <span class="hidden md:inline-block">{{'addNewPeriod'|translate}}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table @stagger mat-table [dataSource]="blockPeriodList" class="table-auto w-full" cdkDropList
+                    (cdkDropListDropped)="dropPeriodList($event)">
+
+                    <ng-container matColumnDef="periodId">
+                        <th mat-header-cell *matHeaderCellDef>{{'sort'|translate}}</th>
+                        <td mat-cell *matCellDef="let element">
+                            <!-- <mat-icon cdkDragHandle>reorder</mat-icon> -->
+                            <mat-icon class="cursor-move" cdkDragHandle>reorder</mat-icon>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="periodTitle">
+                        <mat-header-cell *matHeaderCellDef>{{'title'|translate}}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.periodTitle}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="periodShortName">
+                        <mat-header-cell *matHeaderCellDef>{{'shortName'|translate}}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.periodShortName}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="periodStartTime">
+                        <mat-header-cell *matHeaderCellDef>{{'startTime'|translate}}</mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.periodStartTime|transformTimePipe}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="periodEndTime">
+                        <mat-header-cell *matHeaderCellDef>{{'endTime'|translate}}
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            {{element.periodEndTime |transformTimePipe}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="length">
+                        <mat-header-cell *matHeaderCellDef class="justify-center text-center">
+                            {{'lengthInMinutes'|translate}}
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                            {{element.length}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="calculateAttendance">
+                        <mat-header-cell *matHeaderCellDef class="justify-center text-center">
+                            {{'calculateAttendance'|translate}}
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                            {{element.calculateAttendance? 'Yes': 'No'}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef class="justify-center  text-center">{{'action'|translate}}
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element" class="justify-center  text-center">
+                            <a *ngIf="permissions?.edit" (click)="editPeriod(element)" matTooltip="Edit Info"
+                                class="mx-1 cursor-pointer">
+                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                            </a>
+                            <a *ngIf="permissions?.edit" (click)="confirmDeletePeriod(element)" matTooltip="Delete Info"
+                                class="mx-1 cursor-pointer">
+                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                            </a>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="loading">
+                        <mat-footer-cell *matFooterCellDef colspan="6">
+                            <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                        </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="noData">
+                        <td mat-footer-cell *matFooterCellDef colspan="6">
+                            No Data
+                        </td>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+                    <mat-row cdkDrag cdkDragLockAxis="y" *matRowDef="let row; columns: visibleColumns" @fadeInUp>
+                    </mat-row>
+
+                    <mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></mat-footer-row>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="blockPeriodList?.data.length!=0">
+                    </tr>
+
+                </table>
+            </div>
+            <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+            <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+
+
+            <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+                <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns | slice:1"
+                    class="checkbox-item mat-menu-item">
+                    <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+                        {{column.label}}
+                    </mat-checkbox>
+                </button>
+            </mat-menu>
+        </mat-card>
+        <mat-card *ngIf="blockPeriodForHalfDayFullDayModel?.block?.blockId" class="">
+            <h4 class="text-blue mb-2">{{ 'setFullDayAndHalfDayMinutes' | translate }}</h4>
+            <div *ngIf="viewSetMinutes">
+                <ul class="grid sm:grid-cols-3 col-gap-8 row-gap-6 md:row-gap-10 mb-2">
+                    <li>
+                        <label class="text-sm leading-5 text-gray">{{'fullDayMinutes' | translate}} </label>
+                        <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{blockPeriodForHalfDayFullDayModel?.block?.fullDayMinutes}}</p>
+                    </li>
+                    <li>
+                        <label class="text-sm leading-5 text-gray">{{'halfDayMinutes' | translate}} </label>
+                        <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{blockPeriodForHalfDayFullDayModel?.block?.halfDayMinutes}}</p>
+                    </li>
+                    <li class="flex justify-end">
+                        <a class="cursor-pointer inline-block w-10 h-10 rounded-full bg-primary text-center text-white" (click)="openSetMinutes()"><mat-icon [icIcon]="icEdit" class="mt-2">create</mat-icon></a>
+                    </li>
+                </ul>
+            </div>
+            <div *ngIf="editSetminutes">
+                <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field  class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'fullDayMinutes'|translate}}</mat-label>
+                            <input #fullDayMinutes="ngModel" pattern="^[1-9][0-9]*$"
+                            name="fullDayMinutes" type="number" [(ngModel)]="blockPeriodForHalfDayFullDayModel.block.fullDayMinutes" matInput>
+                            <mat-error *ngIf="fullDayMinutes.errors?.pattern">
+                                {{'invalidNumber'|translate}}</mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'halfDayMinutes'|translate}}</mat-label>
+                            <input #halfDayMinutes="ngModel" pattern="^[1-9][0-9]*$"
+                            name="halfDayMinutes" type="number" [(ngModel)]="blockPeriodForHalfDayFullDayModel.block.halfDayMinutes" matInput>
+                            <mat-error *ngIf="halfDayMinutes.errors?.pattern">
+                                {{'invalidNumber'|translate}}</mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li class="flex justify-end md:block">
+                        <button mat-raised-button color="primary" (click)="updateFullDayHalfDayMinutes()" class="px-6 py-2">{{ 'update' | translate }}</button>
+                    </li>
+                </ul>
+            </div>
+        </mat-card>
+    </div>
+</div>

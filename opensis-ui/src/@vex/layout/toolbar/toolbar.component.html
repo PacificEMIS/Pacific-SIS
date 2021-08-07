@@ -1,0 +1,50 @@
+<div class="toolbar w-full px-gutter" fxLayout="row" fxLayoutAlign="start center" vexContainer>
+  <button (click)="openSidenav()" [fxHide]="!mobileQuery" mat-icon-button type="button">
+    <mat-icon [icIcon]="icMenu"></mat-icon>
+  </button>
+
+  <a [routerLink]="['/school/dashboards']"
+     class="ltr:ml-2 rtl:ml-2 small-mobile-logo">
+    <!-- <img class="w-8 select-none" src="assets/img/demo/logo.svg">
+    <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none">VEX</h1> -->
+    <img src="assets/img/logo-icon.png" class="w-8 select-none" alt="openSIS Logo">
+    <!-- <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none"><img src="assets/img/opensistext.png"></h1> -->
+  </a>
+
+  <div #megaMenuOriginRef class="rtl:mr-2">
+    <div class="-mx-1 flex items-center">
+      <button *ngIf="isHorizontalLayout$ | async"
+              [fxHide]="mobileQuery"
+              (click)="openMegaMenu(megaMenuOriginRef)"
+              color="primary"
+              mat-raised-button
+              type="button"><ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline="true"></ic-icon>ADD NEW
+      </button>
+      <div class="px-1 ml-3">
+        <vex-toolbar-notifications></vex-toolbar-notifications>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div *ngIf="(isVerticalLayout$ | async) && isNavbarInToolbar$ | async"
+       [fxHide]="mobileQuery"
+       class="px-gutter"
+       fxFlex="none"
+       fxLayout="row"
+       fxLayoutAlign="start center">
+    <vex-navigation-item *ngFor="let item of navigationItems" [item]="item"></vex-navigation-item>
+  </div> -->
+
+  <span fxFlex></span>
+
+  <div class="items-right">
+    <div class="px-1">
+      <!-- <vex-select-bar></vex-select-bar> -->
+      <!-- <vex-select-search-bar></vex-select-search-bar> -->
+      <vex-select-bar @stagger></vex-select-bar>
+    </div>
+  </div>
+</div>
+
+<vex-navigation *ngIf="(isVerticalLayout$ | async) && isNavbarBelowToolbar$ | async"
+                [fxHide]="mobileQuery"></vex-navigation>

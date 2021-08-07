@@ -1,0 +1,82 @@
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+<div class="flex container-sidenav-secondary" *ngIf="pageId === 'Profiles & Permissions'; else otherPages" [ngClass]="secondarySidebar==0?'' : 'show-secondary-sidebar'">
+    <div class="sidenav-secondary">
+        <button mat-icon-button class="close-secondary-sidebar" (click)="toggleSecondarySidebar()"><mat-icon>close</mat-icon></button>
+        <vex-scrollbar class="flex-auto">
+            <div class="px-6 py-3 mt-12 lg:mt-0">
+                <button mat-button class="bg-green text-white w-full text-center" (click)='goToAdd()'><mat-icon [icIcon]="icAdd" class="mr-2"></mat-icon>{{'addCustomProfile' | translate}}</button>
+            </div>
+            <hr/>
+            <h4 class="px-6 py-3 text-primary font-bold">{{ 'availableProfiles' | translate }}</h4>
+            <div class="px-gutter sm:px-0 profile-list" *ngFor="let member of memberList;let index=index">
+                <div @fadeInRight (click)="getRolePermission(member.membershipId,member.profile,member.description)"
+                    [ngClass]="selectedMemeber == member.membershipId? 'list-item no-underline flex justify-between items-center active':'list-item no-underline flex justify-between items-center'"
+                    matRipple>
+                    <span>
+                        <span *ngIf="member.icon === null;else className" class="align-middle">
+                            <i [ngClass]="member.className" class="align-middle inline-block"></i>{{member.profile}}
+                        </span>                        
+                        <ng-template #className>                           
+                            <mat-icon [icIcon]="member.icon" class="align-middle inline-block mr-2"></mat-icon>
+                            {{member.profile}}
+                        </ng-template>
+                    </span>
+                    <a *ngIf="member.isSystem === false" [matMenuTriggerFor]="addNewMenu">
+                        <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                        </a>
+                </div> 
+                
+                <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+                    <button mat-menu-item (click) ="editMember(member)">
+                        <span>{{'editItem' | translate}}</span>
+                    </button>
+                    <button mat-menu-item (click) ="deleteMember(member)">
+                        <span>{{'deleteItem' | translate}}</span>
+                    </button>
+                </mat-menu>       
+            </div>
+            
+        </vex-scrollbar>
+    </div>
+    <div class="right-content">
+
+        <vex-page-layout>
+            <vex-page-layout-header class="pb-14" fxLayout="column" fxLayoutAlign="center start">
+                <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="administrationSettings" [pages]="pages"
+                    (selectedPage)="getSelectedPage($event)" class="w-full">
+                    <vex-breadcrumbs [crumbs]="['Settings','Administration']" class="flex-auto"></vex-breadcrumbs>
+                </vex-secondary-toolbar>
+            </vex-page-layout-header>
+            <div class="bg-primary px-4 py-2 rounded -mt-14 mx-4 persistent-bar">
+                <div class="flex items-center">
+                    <button mat-icon-button class="text-white mr-2" (click)="toggleSecondarySidebar()"><mat-icon>apps</mat-icon></button>
+                    <div class="text-left px-4">
+                        <h4 class="mb-0 text-white font-bold">{{ 'availableProfiles' | translate }}</h4>
+                    </div>
+                </div>
+            </div>  
+            <vex-page-layout-content>
+                <div class="w-full">
+                            <vex-access-control></vex-access-control>
+                        </div>
+            </vex-page-layout-content>
+        </vex-page-layout>
+    </div>
+    <div class="sidebar-overlay"  (click)="toggleSecondarySidebar()"></div>
+</div>
+
+<ng-template #otherPages>
+    <vex-page-layout>
+        <vex-page-layout-header class="pb-14" fxLayout="column" fxLayoutAlign="center start">
+            <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="administrationSettings" [pages]="pages"
+                (selectedPage)="getSelectedPage($event)" class="w-full">
+                <vex-breadcrumbs [crumbs]="['Settings','Administration']" class="flex-auto"></vex-breadcrumbs>
+            </vex-secondary-toolbar>
+        </vex-page-layout-header>
+        <vex-page-layout-content class="">
+                        <div *ngIf="pageId === 'profiles-and-permissions'">
+                            <vex-access-control></vex-access-control>
+                        </div>
+        </vex-page-layout-content>
+    </vex-page-layout>
+</ng-template>

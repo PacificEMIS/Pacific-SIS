@@ -1,0 +1,29 @@
+<div class="card overflow-auto w-full" fxLayout="column">
+  <div class="border-b py-4 px-6" fxLayout="row" fxLayoutAlign="start center">
+    <h2 class="m-0 title" fxFlex="auto">Calendar Events</h2>
+    <!-- <button mat-icon-button type="button">
+      <mat-icon [icIcon]="icMoreHoriz" class="text-secondary"></mat-icon>
+    </button> -->
+  </div>
+  <!-- <div  class="px-6 py-4">
+    <h3 class="text-primary font-bold">No events founds!</h3>
+  </div> -->
+  <div class="flex w-full items-center font-bold">
+    <div class="w-6/12 py-3 pl-6 pr-4">Event Title</div>
+    <div class="w-3/12 py-3 px-4">Start Date</div>
+    <div class="w-3/12 py-3 pl-4 pr-6">End Date</div>
+  </div>
+  <hr>
+  <div *ngFor="let calendarEvent of calendarEvents | async">
+    <div class="flex w-full items-center">
+      <div class="w-6/12 py-3 pl-6 pr-4">
+        <div class="truncate"><span class="inline-block w-2 h-2 mr-3 rounded-full align-middle"
+            [style.backgroundColor]="calendarEvent.meta.calendar.eventColor"></span>{{calendarEvent.title}}</div>
+      </div>
+      <div class="w-3/12 py-3 px-4">{{calendarEvent.start | date:'mediumDate'}}</div>
+      <div class="w-3/12 py-3 pl-4 pr-6">{{calendarEvent.end | date:'mediumDate'}}</div>
+    </div>
+    <hr>
+  </div>
+
+</div>

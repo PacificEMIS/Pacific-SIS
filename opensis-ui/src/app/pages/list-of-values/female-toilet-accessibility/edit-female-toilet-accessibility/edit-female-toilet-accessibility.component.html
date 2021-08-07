@@ -1,0 +1,23 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{femaleToiletAccessibilityTitle|translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column" [formGroup]="form">
+
+    <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+        <mat-label>{{'accessibilityName' | translate}}</mat-label>
+        <input type="text" formControlName="lovColumnValue" matInput required>
+        <mat-error *ngIf="form.get('lovColumnValue').hasError('whitespace')">{{'accessibilityNameIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" mat-raised-button (click)="submit()" type="submit">{{buttonType | translate}}</button>
+</mat-dialog-actions>

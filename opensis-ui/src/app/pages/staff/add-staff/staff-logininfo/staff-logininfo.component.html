@@ -1,0 +1,118 @@
+<mat-card class="w-full">
+    <mat-card-header>
+        <mat-card-title>{{'loginInformation'|translate}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div @stagger fxLayout="column">
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex-1 mx-4 md:w-1/2">
+                    <mat-form-field class="flex-none w-full mb-0" appearance="outline" color="primary">
+                        <mat-label>{{'email'|translate}}</mat-label>
+                        <mat-select name="suffix">
+                            <mat-option value="Jr.">Show Personal Email and Work Email info inputted in General Info tab</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <p class="flex-none -mt-3 mb-4 text-gray"><i class="icon icon-info2"></i> Select an email as username from the list which you have entered in Address & Contacts</p>
+                </div>
+                <div class="flex-1 mx-4 md:w-1/2">
+                    <mat-form-field class="flex-none w-full mb-0" appearance="outline" color="primary">
+                        <mat-label>{{'password'|translate}}</mat-label>
+                        <input [type]="inputType" name="password" matInput required>
+                        <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="Toggle Visibility" type="button">
+                            <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
+                            <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <p class="flex-none -mt-3 mb-4"><a routerLink="http://www.google.com" class="text-primary underline cursor-pointer">Auto Generate Password</a></p>
+                </div>
+            </div>
+            <div class="mb-6 mx-4"><mat-slide-toggle color="primary" checked="checked" class="mb-4">{{'portalAccess' | translate}}</mat-slide-toggle></div>
+            <h4 class="text-primary pt-6 pb-2 px-4">{{'secretQuestionAndAnswer'|translate}}</h4>
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretQuestion1'|translate}}</mat-label>
+                        <mat-select name="secretQuestion1" required>
+                            <mat-option value="Jr.">List valu items</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretAnswer1'|translate}}</mat-label>
+                        <input name="password" matInput required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretQuestion2'|translate}}</mat-label>
+                        <mat-select name="secretQuestion2" required>
+                            <mat-option value="Jr.">List valu items</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretAnswer2'|translate}}</mat-label>
+                        <input name="password" matInput required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretQuestion3'|translate}}</mat-label>
+                        <mat-select name="secretQuestion3" required>
+                            <mat-option value="Jr.">List valu items</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretAnswer3'|translate}}</mat-label>
+                        <input name="password" matInput required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretQuestion4'|translate}}</mat-label>
+                        <mat-select name="secretQuestion4" required>
+                            <mat-option value="Jr.">List valu items</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretAnswer4'|translate}}</mat-label>
+                        <input name="password" matInput required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="mb-2 md:flex md:flex-wrap">
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretQuestion5'|translate}}</mat-label>
+                        <mat-select name="secretQuestion5" required>
+                            <mat-option value="Jr.">List value items</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex flex-1 mx-4 md:w-1/2">
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'secretAnswer5'|translate}}</mat-label>
+                        <input name="password" matInput required>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <div class="px-4 mb-2 text-right">
+            <button color="primary" mat-raised-button>{{'submit'|translate}}</button>
+        </div>
+    </mat-card-actions>
+</mat-card>

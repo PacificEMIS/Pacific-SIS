@@ -1,0 +1,18 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">        
+        <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="parentSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Settings','Parent Settings']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>    
+    <vex-page-layout-content class="-mt-6">
+        <mat-drawer-container class="bg-transparent flex-auto flex -mt-16">
+            <mat-drawer-content class="flex-auto flex items-start">
+                <div  class="w-full p-0">
+                    <div *ngIf="displayParentFields">
+                        <vex-parent-fields></vex-parent-fields>
+                    </div>
+                </div>
+            </mat-drawer-content>
+        </mat-drawer-container>
+    </vex-page-layout-content>
+</vex-page-layout>

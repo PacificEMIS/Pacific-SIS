@@ -1,0 +1,122 @@
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="m-0">
+    <h2 class="headline mb-4 float-left" fxFlex="auto">
+        {{ "copySchool" | translate }}
+    </h2>
+    <button class="text-secondary float-right mb-4" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border clear-both my-4"></mat-divider>
+<mat-dialog-content fxLayout="column">
+    <h4 class="mb-2">{{ 'areYouSureYouWantToCopyTheDataFrom' | translate }} <b>{{fromSchoolName}}</b> {{
+        'toAnewSchool'|translate }}</h4>
+
+    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'newSchoolName'|translate}}</mat-label>
+        <input cdkFocusInitial #newSchoolName="ngModel" [(ngModel)]="copySchoolModel.schoolMaster.schoolName"
+            name="newSchoolName" matInput required>
+        <mat-error *ngIf="newSchoolName.errors?.required">{{'newSchoolNameIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+    <h4 class="text-primary font-semibold">{{ 'school' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let schoolField of schoolFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[schoolField.value]" color="primary"
+                (change)="onChange(schoolField.value, $event)">
+                {{schoolField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'student' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let studentField of studentFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[studentField.value]" color="primary"
+                (change)="onChange(studentField.value, $event)">
+                {{studentField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'staff' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let staffField of staffFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[staffField.value]" color="primary"
+                (change)="onChange(staffField.value, $event)">
+                {{staffField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'course' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let courseField of courseFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[courseField.value]" color="primary"
+                (change)="onChange(courseField.value, $event)">
+                {{courseField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'attendance' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let attendanceField of attendanceFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[attendanceField.value]" color="primary"
+                (change)="onChange(attendanceField.value, $event)">
+                {{attendanceField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'grades' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let gradeField of gradeFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[gradeField.value]" color="primary"
+                (change)="onChange(gradeField.value, $event)">
+                {{gradeField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'administration' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let adminField of adminFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[adminField.value]" color="primary"
+                (change)="onChange(adminField.value, $event)">
+                {{adminField.name|translate}}
+            </mat-slide-toggle>
+        </li>
+    </ul>
+
+    <mat-divider class="-mx-6 my-4"></mat-divider>
+
+    <h4 class="text-primary font-semibold">{{ 'listOfValues' | translate }}</h4>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-2">
+        <li class="mb-2" *ngFor="let listOfValuesField of listOfValuesFieldList">
+            <mat-slide-toggle [(ngModel)]="copySchoolModel[listOfValuesField.value]" color="primary"
+                (change)="onChange(listOfValuesField.value, $event)">
+                {{listOfValuesField.name|translate}}</mat-slide-toggle>
+        </li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="pt-4 pb-0 mb-0">
+    <button mat-flat-button mat-dialog-close>
+        {{ 'cancel' | translate }}
+    </button>
+    <button color="primary" mat-flat-button (click)="submit()" type="submit">
+        {{ 'proceed' | translate }}
+    </button>
+</mat-dialog-actions>

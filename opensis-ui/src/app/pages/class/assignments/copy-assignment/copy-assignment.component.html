@@ -1,0 +1,45 @@
+<div *ngIf="showCopyAssignment">
+    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+        <h2 class="headline m-0" fxFlex="auto">
+            {{ "selectCourseSectionsToCopyAssignment" | translate }}
+        </h2>
+        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <mat-divider class="-mx-6 mb-4"></mat-divider>
+
+    <mat-dialog-content class="mb-1">
+        <ul *ngIf="coursecount>0">
+            <li class="mb-2"><mat-checkbox #checkBox [checked]="checkAll" (click)="updateCheck($event)" [hidden]="coursecount==0" class="font-semibold" color="primary">{{ 'selectAll' | translate }}</mat-checkbox></li>
+            <li class="mb-2" *ngFor="let course of allScheduledCourseSectionBasedOnTeacher.courseSectionViewList">
+
+                <mat-checkbox [checked]="courseSectionArray.indexOf(course.courseSectionId) != -1"
+                    (click)="selectChildren($event,course.courseSectionId)" color="primary">
+                    {{course.courseSectionName}}</mat-checkbox>
+            </li>
+        </ul>
+        <ul  *ngIf="coursecount===0">
+            <li class="mb-2">{{'noRecordFound' | translate }}</li>
+        </ul>
+    </mat-dialog-content>
+    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pb-4">
+        <button  mat-dialog-close mat-flat-button>{{ 'cancel' | translate }}</button>
+        <button color="primary" mat-flat-button type="submit" class="text-white ml-2" (click)="showSuccessMsg()">{{ 'copyAssignment' |translate }}</button>
+    </mat-dialog-actions>
+</div>
+
+<div *ngIf="showSuccessAssignment">
+    <div fxLayout="row" mat-dialog-title class="flex w-full justify-end mb-0">
+        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <mat-dialog-content class="mb-6">
+        <div class="text-center">
+            <mat-icon class="w-auto h-auto text-green text-6xl">check_circle</mat-icon>
+            <h3 class="text-green text-2xl mb-2">{{ 'success' | translate }}</h3>
+            <p class="text-base">{{ 'assignmentCopiedToSelectedCourseSections' | translate }}</p>
+        </div>
+    </mat-dialog-content>
+</div>

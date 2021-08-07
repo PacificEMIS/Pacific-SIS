@@ -1,0 +1,47 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">
+            {{'assignmentDetails'|translate}}
+    </h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+<div>
+
+    <ul class="grid sm:grid-cols-2 sm:col-gap-6 row-gap-6 sm:row-gap-8 my-6">
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'assignmentTitle' | translate}}</label>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                {{data.assignmentDetails?.assignmentTitle}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'points' | translate}}</label>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                {{data.assignmentDetails?.points}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'assignedDate' | translate}}</label>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                {{data.assignmentDetails?.assignmentDate | date:'mediumDate'}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'dueDate' | translate}}</label>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                {{data.assignmentDetails?.dueDate | date:'mediumDate' }}
+            </p>
+        </li>
+    </ul>
+</div> 
+<mat-dialog-content>
+
+    <label class="text-sm leading-5 text-gray">{{'assignmentDescription' | translate}}</label>
+    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2" [innerHTML]="data.assignmentDetails.assignmentDescription|safe:'html'">
+        <!-- <div >
+
+        </div> -->
+        <!-- {{data.assignmentDetails.assignmentDescription}} -->
+    </p>
+
+</mat-dialog-content>
+

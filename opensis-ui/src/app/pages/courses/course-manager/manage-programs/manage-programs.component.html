@@ -1,0 +1,56 @@
+<form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+
+    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+        <h2 class="headline m-0" fxFlex="auto">{{'programs'|translate}}</h2>
+    
+        <button class="text-secondary"  mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <mat-divider class="-mx-6 text-border"></mat-divider>
+    
+        <mat-dialog-content fxLayout="column" class="p-0">
+            <!-- Table Header -->
+    
+            <div class="flex my-3 px-6" *ngIf ="programList.length>0">
+                <div class="w-3/4 pr-4 font-bold">{{'programName'|translate}}</div>
+                <div class="w-1/4 font-bold">{{'actions'|translate}}</div>
+            </div>
+            <hr/>
+            <!-- Table Body -->
+    
+            <div class="flex my-3 px-6 items-center" *ngFor="let program of programList;let index=index">
+                
+                <div  [hidden]="hideDiv[index]" class="w-3/4 pr-4">{{program.programName}}</div>  
+                <div *ngIf="permissions?.edit" class="w-3/4 pr-4" [hidden]="hideinput[index]">
+                    <input type="text" [(ngModel)]="updateProgramModel.programList[index].programName"  name="{{'programName'+index}}"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">
+                </div>        
+                <div class="w-1/4">
+                    <a *ngIf="permissions?.edit" (click)="updateProgram(program,index)" [hidden]="hideDiv[index]" matTooltip="Edit Info" class="mr-3 cursor-pointer">
+                        <mat-icon [icIcon]="icEdit"></mat-icon>
+                    </a>
+                    <a (click)="confirmDelete(program)" *ngIf="permissions?.edit" [hidden]="hideDiv[index]" matTooltip="Delete Info" class="mr-3 cursor-pointer">
+                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                    </a>
+                </div>
+            </div>
+            
+            <hr/>
+            <form (ngSubmit)="update.form.valid && submit()" #update="ngForm" novalidate>
+                <div *ngIf="permissions?.edit" class="flex my-3 px-6 items-center">
+                    <div class="w-3/4 pr-4">
+                        <input type="text"  [(ngModel)]="addProgramModel.programList[0].programName" name="programName"  #programName="ngModel"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">                   
+                    </div>
+                    <div class="w-1/4">
+                        <mat-icon [icIcon]="icAdd"></mat-icon>
+                    </div>
+                </div>
+            </form>
+            <hr/>
+        </mat-dialog-content>
+    
+        <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+            <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+            <button *ngIf="permissions?.edit" color="primary" mat-raised-button type="submit">{{'submit' | translate}}</button>
+        </mat-dialog-actions>
+    </form>

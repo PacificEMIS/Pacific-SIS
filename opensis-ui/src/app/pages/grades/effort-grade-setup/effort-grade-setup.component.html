@@ -1,0 +1,20 @@
+<div class="card">
+    <div class="custom-tabs">
+        <ul class="flex border-b">
+            <li [ngClass]="activeLink =='effortGradeLibrary' ? 'active' : ''">
+                <a (click)="updateActiveLink('effortGradeLibrary')" class="cursor-pointer px-6 py-4 inline-block hover:bg-skyblue-light">{{'effortGradeLibrary'|translate}}</a>
+            </li>
+            <li [ngClass]="activeLink =='effortGradeScale' ? 'active' : ''">
+                <a (click)="updateActiveLink('effortGradeScale')" class="cursor-pointer px-6 py-4 inline-block hover:bg-skyblue-light">{{'effortGradeScale'|translate}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="activeLink === 'effortGradeLibrary'" class="p-4">
+        <vex-effort-grade-library></vex-effort-grade-library>
+    </div>
+
+    <div *ngIf="activeLink === 'effortGradeScale'" class="p-4">
+        <vex-effort-grade-scale></vex-effort-grade-scale>
+    </div>
+</div>

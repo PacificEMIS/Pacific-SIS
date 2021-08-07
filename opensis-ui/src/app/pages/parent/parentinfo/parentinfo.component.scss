@@ -1,0 +1,46 @@
+.students-list::after {
+    content: ", ";
+    display: inline-block;
+    padding-right: 5px;
+}
+.students-list:last-child:after {
+    display: none;
+}
+
+.mat-header-cell {
+    color: rgb(0 0 0) !important;
+}
+
+.mat-header-cell {
+    font-size  : 14px !important;
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
+
+.mat-footer-cell {
+    text-align: center;
+    font-style: italic;
+}
+
+.table-search {
+    width: 70px;
+    transition: all 0.3s ease;
+    @media screen and (max-width: 767.98px) {
+        width: 50%;
+    }
+  
+    &:focus {
+      width: 180px;
+        @media screen and (max-width: 767.98px) {
+            width: 50%;
+        }
+    }
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}

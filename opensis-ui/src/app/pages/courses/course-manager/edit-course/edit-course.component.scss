@@ -1,0 +1,31 @@
+.custom-tabs {
+    ul {
+
+        li {
+
+            a {
+                @apply font-bold;
+                @apply opacity-50;
+            }
+
+            &.active {
+
+                a {
+                    @apply border-b-2;
+                    @apply border-primary;
+                    @apply opacity-100;
+                    margin-bottom: -1px;
+                }
+            }
+
+        }
+    }
+}
+
+.mat-green {
+    .mat-slide-toggle.mat-checked {
+        .mat-slide-toggle-thumb {
+            background-color: rgb(76, 175, 80) !important;
+        }
+    }
+}

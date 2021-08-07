@@ -1,0 +1,33 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">        
+        <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="schoolSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Settings','School Settings']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>    
+    <vex-page-layout-content class="-mt-6">
+        <div class="bg-transparent flex-auto flex -mt-16">
+            <div class="flex-auto flex items-start">
+                <div  class="w-full p-0">
+                    <div *ngIf="pageId === 'Periods'">
+                        <vex-periods></vex-periods>
+                    </div>
+                    <div *ngIf="pageId === 'Grade Levels'">
+                        <vex-grade-levels></vex-grade-levels>
+                    </div>
+                    <div *ngIf="pageId === 'Sections'">
+                        <vex-sections></vex-sections>
+                    </div>
+                    <div *ngIf="pageId === 'Rooms'">
+                        <vex-rooms></vex-rooms>
+                    </div>
+                    <div *ngIf="pageId === 'School Fields'">
+                        <vex-school-fields></vex-school-fields>
+                    </div>
+                    <div *ngIf="pageId === 'Preference'">
+                        <vex-preference></vex-preference>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

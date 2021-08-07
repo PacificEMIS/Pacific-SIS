@@ -1,0 +1,122 @@
+::ng-deep {
+  .mat-sidenav {
+    overflow: hidden !important;
+  }
+}
+
+.sidenav {
+  color: var(--sidenav-color);
+  height: 100%;
+  transition: var(--trans-ease-out);
+  width: var(--sidenav-width);
+
+  &.collapsed {
+    @media (min-width: 992px) {
+    width: var(--sidenav-collapsed-width);
+    }
+
+    .logo-small {
+      display: block;
+    }
+
+    .logo-full {
+      display: none;
+    }
+
+    &:not(.open) {
+      .sidenav-toolbar {
+        background: transparent;
+        .title {
+          opacity: 0;
+          padding-inline-start: var(--sidenav-item-padding);
+        }
+      }
+
+      ::ng-deep {
+        .sidenav-items {
+          .item-icon {
+            margin-inline-end: var(--sidenav-item-padding);
+          }
+
+          @media (min-width: 992px) {
+            .subheading,
+            .item-badge,
+            .item-label {
+            opacity: 0;
+          }
+        }
+        }
+
+        .simplebar-track.simplebar-vertical {
+          visibility: hidden !important;
+        }
+      }
+    }
+
+    ::ng-deep {
+      .subheading,
+      .item-badge,
+      .item-label {
+        transition: all 200ms var(--trans-ease-out-timing-function);
+      }
+    }
+
+    &.open {
+      width: var(--sidenav-width);
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+
+      .sidenav-toolbar {
+        background: var(--sidenav-toolbar-background);
+      }
+
+      .logo-small {
+        display: none;
+      }
+
+      .logo-full {
+        display: block;
+      }
+
+      .expand-btn {
+        display: block;
+    }
+
+      + .collapse-btn {
+        display: none;
+  }
+    }
+  }
+}
+
+.expand-btn {
+  display: none;
+}
+
+.collapse-btn {
+  position: absolute;
+  top: 16px;
+  left: 236px;
+  background: transparent;
+}
+
+.sidenav-toolbar {
+  align-items: center;
+  background: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  height: var(--toolbar-height);
+  padding: 0 20px 0 18px;
+  white-space: nowrap;
+  width: var(--sidenav-width);
+  transition: all 0.5s ease;
+
+  .title {
+    transition: padding var(--trans-ease-out-duration) var(--trans-ease-out-timing-function),
+      opacity var(--trans-ease-out-duration) var(--trans-ease-out-timing-function);
+  }
+}
+
+/*.sidenav-items {
+  padding-top: var(--padding);
+}*/

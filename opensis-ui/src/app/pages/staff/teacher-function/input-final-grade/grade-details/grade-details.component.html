@@ -1,0 +1,218 @@
+<div class="card">
+    <div class="flex justify-between items-center mx-gutter flex-wrap pt-4 py-2">
+        <div class="pb-2 pr-8">
+            <a [routerLink]="['/school', 'staff', 'teacher-functions', 'input-final-grade']" class="cursor-pointer">
+                <mat-icon class="mr-4 align-middle">west</mat-icon>
+            </a>
+            <span class="font-medium text-lg">{{staffDetails.staffFullName}}</span>
+        </div>
+        <div>
+            <mat-slide-toggle [(ngModel)]="scheduleStudentListViewModel.includeInactive" color="primary">{{
+                "includeInactiveStudents" | translate }}
+            </mat-slide-toggle>
+        </div>
+    </div>
+    <mat-divider class=""></mat-divider>
+    <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 col-gap-4 row-gap-2 mt-4 mx-gutter">
+        <li>
+            <button
+                class="flex items-center h-12 w-full btn cursor-pointer bg-primary text-white p-2 rounded font-medium">
+                <mat-icon class="mr-2">move_to_inbox</mat-icon><span>{{ "getGradebookGrades" | translate
+                    }}</span>
+            </button>
+        </li>
+        <li>
+            <mat-form-field class="w-full mb-0 align-top" appearance="outline" color="primary">
+                <mat-label>{{ "courseSection" | translate }}</mat-label>
+                <mat-select (selectionChange)="selectedCourseSection($event.value)" name="courseSection"
+                    [(ngModel)]="addUpdateStudentFinalGradeModel.courseSectionId">
+                    <mat-option
+                        *ngFor="let courseSectionDetail of allScheduledCourseSectionBasedOnTeacher?.courseSectionViewList"
+                        [value]="courseSectionDetail.courseSectionId">
+                        {{courseSectionDetail.courseSectionName}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full align-top" appearance="outline" color="primary">
+                <mat-label>{{ "markingPeriod" | translate }}</mat-label>
+                <mat-select name="markingPeriod" [(value)]="addUpdateStudentFinalGradeModel.markingPeriodId"
+                    (selectionChange)="selectedMarkingPeriod($event.value)"
+                    [(ngModel)]="addUpdateStudentFinalGradeModel.markingPeriodId">
+                    <mat-option *ngFor="let period of markingPeriodList" [value]="period.value">
+                        {{period.text}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+    </ul>
+    <mat-divider class=""></mat-divider>
+    <div class="lg:flex lg:flex-wrap" [ngClass]="commentDetails===1 ? 'show-comment-details':''">
+        <div class="lg:w-2/4 content-left border-r">
+            <div class="overflow-x-auto overflow-y-hidden rounded border-b mb-2">
+                <table class="w-full schedule-table">
+                    <thead>
+                        <tr>
+                            <th>{{ "studentDetails" | translate }}</th>
+                            <th width="25%"><span class="mr-4">{{ "percent" | translate }}</span></th>
+                            <th width="25%"
+                                *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric' && courseSectionDetails[0]?.gradeScaleType !== 'Teacher_Scale'"
+                                class="relative whitespace-nowrap">
+                                <span class="switch-wrap -ml-8 pr-2">
+                                    <label class="switch">
+                                        <input checked (change)="onCheckboxChange($event)" type="checkbox" disabled>
+                                        <span class="slider"></span>
+                                    </label>
+                                </span>
+                                <span class="ml-4">{{ "letterGrade" | translate }}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="totalCount===0">
+                            <td colspan="3" class="text-center"><span class="mb-5 italic text-gray">{{ showMessage |
+                                    translate }}</span></td>
+                        </tr>
+                        <tr class="cursor-pointer" [ngClass]="{'active':selectedStudent === i }"
+                            *ngFor="let student of studentMasterList;let i = index"
+                            [matTooltip]="student.studentInternalId != null ? student.firstGivenName + ' ' + student.lastFamilyName + ', Student ID : ' + student.studentInternalId : student.firstGivenName + ' ' + student.lastFamilyName + ', Student ID : '">
+                            <td class="whitespace-nowrap">
+                                <div class="flex cursor-pointer" (click)="addComments(i)">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
+                                            alt="" class="h-10 w-10 rounded-full" />
+                                    </div>
+                                    <div class="ml-3 flex flex-col justify-center">
+                                        <h6 class="text-sm font-semibold">{{student.firstGivenName+" "+
+                                            student.lastFamilyName}}</h6>
+                                        <div>
+                                            <span>{{ student.gradeLevel }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <ng-container
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType === 'Numeric' || this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale'">
+                                <td>
+                                    <input
+                                        class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        min="0" max="100" (keyup)="percentToGrade(i)" name="percentMarks"
+                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks"
+                                        type="number">
+                                </td>
+                                <td>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale'">
+                                <td>{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
+                                    addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%" :
+                                    ""}}</td>
+                                <td>
+                                    <!-- <label>{{'selectGrade'|translate}}</label>    -->
+                                    <div class="select-dropdown">
+                                        <select (change)="selectedGrade($event.target.value ,i)" name="gradeObtained"
+                                            [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained">
+                                            <option value=null disabled selected>{{'select'|translate}}</option>
+                                            <option *ngFor="let report of gradeScaleList" value={{report.title}}>
+                                                {{report.title}}</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </ng-container>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div *ngIf="showComment" class="lg:w-2/4 lg:pr-4 pl-4 content-right">
+            <div class="bg-white p-gutter lg:p-0 rounded relative">
+                <a (click)="closeCommentDetails()"
+                    class="cursor-pointer inline-block absolute top-0 right-0 mt-4 mr-4 lg:hidden">
+                    <mat-icon>close</mat-icon>
+                </a>
+                <h4 class="text-base font-medium text-green py-2">{{ "addPredefinedComments" | translate }}</h4>
+                <div class="w-full">
+                    <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
+                        <mat-label class="mb-2">{{ "searchAndSelectPredefinedComments" | translate }}</mat-label>
+                        <mat-chip-list #chipList aria-label="Fruit selection">
+                            <mat-chip
+                                *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeComments"
+                                [selectable]="selectable" [removable]="removable"
+                                (removed)="removeComment(report.courseCommentId)">
+                                {{report.comments}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                            </mat-chip>
+                            <input placeholder="Add Comments..." #fruitInput [(ngModel)]="studentFinalGradeComments"
+                                [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+                        </mat-chip-list>
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                            <mat-option *ngFor="let report of reportCardComments" [value]="report">
+                                {{report.comments}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <!-- <div class="w-full p-0">
+                            <mat-chip-list #chipList aria-label="Choose a date" (click)="picker.open()">
+                                <mat-chip *ngFor="let report of reportCardComments" [selectable]="false" [removable]="true"
+                                    (removed)="removeComment(removeComment(report.courseCommentId))">
+                                    {{report.comments}}
+                                    <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div> -->
+                    <!-- <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'addPredefinedComments'|translate}}</mat-label>
+                            <mat-select (selectionChange)="selectedReportComment($event.value)"  [compareWith]="compareObjects"  [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeComments" multiple>
+                                <mat-option *ngFor="let report of reportCardComments" [value]="report">
+                                    {{report.comments}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div>
+                            <span *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeComments"
+                                class="rounded-full py-1 px-3 border border-primary inline-block mb-3 mr-3 text-primary">{{report.comments}}
+                                <i (click)="removeComment(report.courseCommentId)" class="icon icon-minus-circle2 ml-2 text-gray text-base align-middle cursor-pointer"></i>
+                            </span>
+                            
+                        </div> -->
+                </div>
+                <h4 class="text-base font-medium text-green py-2">{{ "teacherComments" | translate }}</h4>
+                <div class="w-full border rounded mb-2 p-2">
+                    <textarea placeholder="Comments" name="teacherComment"
+                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment"
+                        class="w-full" rows="3"></textarea>
+                </div>
+                <ng-container *ngIf="courseSectionDetails[0]?.standardGradeScaleId">
+
+                    <h4 class="text-base font-medium text-green py-4">Standard Grades</h4>
+                    <div class="lg:flex lg:flex-wrap mb-4" *ngFor="let standard of courseStandardList; let i = index">
+                        <div class="lg:w-3/4 lg:pr-4">
+                            <h4 class="text-base font-medium">{{standard.gradeUsStandard.standardRefNo}}</h4>
+                            <p class="text-gray">{{standard.gradeUsStandard.standardDetails}}</p>
+                        </div>
+                        <div class="lg:w-1/4" *ngIf="gradeScaleStandardList?.length>0">
+                            <mat-form-field class="w-full mb-0" appearance="outline" color="primary">
+                                <mat-label>{{ "assignGrade" | translate }}</mat-label>
+                                <mat-select
+                                    [(value)]="addUpdateStudentFinalGradeModel?.studentFinalGradeList[selectedStudent]?.studentFinalGradeStandard[i].gradeObtained"
+                                    (selectionChange)="setValue(standard.gradeUsStandard.gradeStandardId, $event.value,i)"
+                                    name="gradeObtained">
+                                    <mat-option *ngFor="let report of gradeScaleStandardList" [value]="report.gradeId">
+                                        {{report.title}}</mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Input Final Grade -->
+<div class="text-right mt-4">
+    <button (click)="submitFinalGrade()" mat-raised-button color="primary">{{ "submit" | translate }}</button>
+</div>

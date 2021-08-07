@@ -1,0 +1,540 @@
+
+<div *ngIf="mode ==='view'; else add">
+    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+        <h2 class="headline m-0" fxFlex="auto">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</h2>
+        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <mat-divider class="-mx-6 text-border"></mat-divider>
+    <mat-dialog-content>
+        <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-6">
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'contactRelationship' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.relationship | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.mobile | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.workPhone | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.homePhone | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.personalEmail | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.workEmail | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.userProfile | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.isPortalUser | EmtyBooleanCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'loginUsername' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.loginEmail | EmtyValueCheckPipe}}</p>
+            </li>
+        </ul>
+        
+        <h6 class="text-primary mt-10 mb-3">{{'address' | translate}}</h6>
+        <ul class="grid grid-cols-2 col-gap-8 row-gap-10">
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.addressLineOne | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'streetAddress2' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.addressLineTwo | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'country' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.country | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'stateProvinceLocality' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.state | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'city' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.city | EmtyValueCheckPipe}}</p>
+            </li>
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'zipPostalCode' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.zip | EmtyValueCheckPipe}}</p>
+            </li>
+          
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'custodyOfStudent' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.isCustodian| EmtyBooleanCheckPipe}}</p>
+            </li>
+        </ul>
+    </mat-dialog-content>
+    <mat-dialog-actions class="py-6"></mat-dialog-actions>
+</div>
+<ng-template #add>
+    <div *ngIf="mode ==='add'; else search">
+        <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+            <h2  *ngIf="editMode === true ; else add" class="headline m-0" fxFlex="auto">Update Contact</h2>
+            <ng-template #add>
+                <h2  class="headline m-0" fxFlex="auto">{{'addAndLinkContact' | translate}}</h2>
+               
+            </ng-template>
+            <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+                <mat-icon [icIcon]="icClose"></mat-icon>
+            </button>
+        </div>
+        <mat-divider class="-mx-6 text-border"></mat-divider>
+        <form  (ngSubmit)="f.form.valid && submit()" #f="ngForm" appInvalidControlScroll novalidate>
+            
+            <mat-dialog-content fxLayout="column">    
+                <div  *ngIf="editMode === false">
+                    <button mat-raised-button type="button" (click)="searchExistingContact()" color="primary" class="w-full mb-4">
+                        Lookup for Existing Contact
+                    </button>            
+                    <p class="text-center">- {{'orAddAsNewContactBelow' | translate}} -</p>
+                </div>     
+                <mat-form-field appearance="outline" class="mt-3" color="primary">
+                    <mat-label>{{'salutation'|translate}}</mat-label>
+                    <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.salutation" name="salutation" #salutation="ngModel">
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let salutation of salutationList" [value]="salutation.lovColumnValue">{{salutation.lovColumnValue}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'firstGivenName' | translate}}</mat-label>
+                    <input   [(ngModel)]="addParentInfoModel.parentInfo.firstname" type="text" name="firstname" #firstname="ngModel" matInput required>
+                    <mat-error class="text-red" *ngIf="firstname.errors?.required">
+                        {{'firstGivenNameIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'middleName' | translate}}</mat-label>
+                    <input   [(ngModel)]="addParentInfoModel.parentInfo.middlename" type="text" name="middlename" #middlename="ngModel" matInput>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'lastFamilyName' | translate}}</mat-label>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.lastname" type="text" name="lastname" #lastname="ngModel" matInput required>
+                    <mat-error class="text-red" *ngIf="lastname.errors?.required">
+                        {{'lastFamilyNameIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'suffix'|translate}}</mat-label>
+                    <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.suffix" name="suffix" #suffix="ngModel">
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let suffix of suffixList" [value]="suffix.lovColumnValue">{{suffix.lovColumnValue}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'contactRelationship' | translate}}</mat-label>
+                    <mat-select   [(ngModel)]="addParentInfoModel.parentAssociationship.relationship" name="relationship" #relationship="ngModel" required>
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
+                    </mat-select>
+                    <mat-error class="text-red" *ngIf="relationship.errors?.required">
+                        {{'contactRelationshipIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'custodyOfStudent' | translate}}</mat-label>
+                    <mat-select   [(ngModel)]="addParentInfoModel.parentAssociationship.isCustodian" (selectionChange) = "disableAddress($event)" name="isCustodian" #isCustodian="ngModel" required>
+                        <mat-option></mat-option>
+
+                        <mat-option [value]="custodyEnum.Yes">{{custodyEnum['true']}}</mat-option>
+                        <mat-option [value]="custodyEnum.No">{{custodyEnum['false']}}</mat-option>
+                    </mat-select>
+                    <mat-error class="text-red" *ngIf="isCustodian.errors?.required">
+                        {{'custodyOfStudentIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'mobilePhone' | translate}}</mat-label>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.mobile" maxlength="30" #mobile="ngModel"  type="text" name="mobile" matInput>
+                    <mat-error  *ngIf="mobile.errors?.phonevalidator">
+                        {{'pleaseProvideAValidMobileNo'|translate}} 
+                      </mat-error>
+
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'workPhone' | translate}}</mat-label>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.workPhone"  maxlength="30"  #workPhone="ngModel" type="text" name="workPhone" matInput>
+                    <mat-error
+                        *ngIf="workPhone.errors?.invalidPhoneNumber">
+                        {{'invalidTelephoneNumber'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'homePhone' | translate}}</mat-label>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.homePhone"  maxlength="30" #homePhone="ngModel"  type="text" name="homePhone" matInput>
+                    <mat-error
+                        *ngIf="homePhone.errors?.invalidPhoneNumber">
+                        {{'invalidTelephoneNumber'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'personalEmail' | translate}}</mat-label>
+                    <input [(ngModel)]="addParentInfoModel.parentInfo.personalEmail" appEmailvalidator #personalEmail="ngModel"  type="text" name="personalEmail" matInput>
+                    <mat-error  *ngIf="personalEmail.errors?.emailvalidator" >
+                        {{'pleaseProvideAValidEmailAddress'|translate}} 
+                      </mat-error>
+                </mat-form-field>
+                <div *ngIf="!personalEmail.errors?.emailvalidator">
+                    <p (click) = "copyEmailAddress('personal')" class="cursor-pointer text-primary -mt-3 mb-6" >{{'usePersonalEmailAsLoginEmail' | translate}}</p>
+                </div>
+               
+        
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'workEmail' | translate}}</mat-label>
+                    <input [(ngModel)]="addParentInfoModel.parentInfo.workEmail" appEmailvalidator #workEmail="ngModel"  type="text" name="workEmail" matInput>
+                    <mat-error  *ngIf="workEmail.errors?.emailvalidator">
+                        {{'pleaseProvideAValidEmailAddress'|translate}} 
+                      </mat-error>
+                </mat-form-field>
+                <div *ngIf="!workEmail.errors?.emailvalidator">
+                    <p (click) = "copyEmailAddress('work')" class="cursor-pointer text-primary -mt-3 mb-6">{{'useWorkEmailAsLoginEmail' | translate}}</p>
+                </div>
+                <mat-form-field appearance="outline" color="primary">
+                    <mat-label>{{'userProfile' | translate}}</mat-label>
+                    <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.userProfile" name="userProfile" #userProfile="ngModel" >
+                        <mat-option value=""></mat-option>
+                        <mat-option *ngFor="let userProfile of userProfileEnum" [value]="userProfile">{{userProfile}}</mat-option>                        
+                    </mat-select>
+                </mat-form-field>
+        
+                <div class="flex flex-auto mb-3">
+                    <mat-slide-toggle  (change)="portalUserCheck($event)"  [checked] = "isPortalUser" color="primary">{{'portalAccess' | translate}}</mat-slide-toggle>
+                </div>
+        
+                <mat-form-field *ngIf="isPortalUser" appearance="outline" color="primary">
+                    <mat-label>{{'loginEmailAddress' | translate}}</mat-label>
+                    <input   [(ngModel)]="addParentInfoModel.parentInfo.loginEmail" type="email" name="loginEmail" #loginEmail="ngModel" matInput required>
+                    <mat-error class="text-red" *ngIf="loginEmail.errors?.required">
+                        {{'loginEmailAddressIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <mat-form-field *ngIf="isPortalUser" appearance="outline" color="primary" class=" mb-6">
+                    <mat-label>{{'password' | translate}}</mat-label>
+                    <input   [(ngModel)]="addParentInfoModel.passwordHash"  type="password" name="passwordHash" #passwordHash="ngModel" [disabled]="disablePassword" matInput required>
+                    <mat-error class="text-red" *ngIf="passwordHash.errors?.required">
+                        {{'passwordIsRequired'|translate}}</mat-error>
+                </mat-form-field>
+        
+                <h6 class="text-primary">{{'address' | translate}}</h6>
+                <div>
+                    <mat-radio-group [value]="val" aria-label="Select an option" color="primary">
+                        <mat-radio-button  value = "Yes" (change)="radioChange($event)" class="mr-3" [disabled] = "disableAddressFlag">{{'sameAsStudentsHomeAddress' | translate}}</mat-radio-button>
+                        <mat-radio-button  value = "No" (change)="radioChange($event)" [disabled] = "disableNewAddressFlag">{{'addNewAddress' | translate}}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                
+                    <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" class="mt-4" appearance="outline" color="primary">
+                        <mat-label>{{'streetAddress1'|translate}}</mat-label>
+                        <input   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].addressLineOne"  name="streetAddress1" #streetAddress1="ngModel" matInput required>
+                        <mat-error class="text-red" *ngIf="streetAddress1.errors?.required">
+                            {{'streetAddress1IsRequired'|translate}}</mat-error>
+                    </mat-form-field>
+            
+                    <mat-form-field  *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
+                        <mat-label>{{'streetAddress2'|translate}}</mat-label>
+                        <input   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].addressLineTwo"  name="addressLineTwo" #addressLineTwo="ngModel" matInput>
+                    </mat-form-field>
+            
+                    <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
+                        <mat-label>{{'country'|translate}}</mat-label>
+                        <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].country" #countryCtrl="ngModel" name="country" required>
+                            <!-- <mat-option value=""></mat-option> -->
+                            <mat-option>
+                                <ngx-mat-select-search  [formControl]="countryFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching nationality found" placeholderLabel="Find nationality..."></ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let country of filteredCountry| async" [value]= 'country.id'>
+                                {{country.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="countryCtrl.errors?.required">
+                            {{'countryIsRequired'|translate}}</mat-error>
+                    </mat-form-field>
+            
+                    <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
+                        <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
+                        <input   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].state" name="state" #state="ngModel" matInput required>
+                        <mat-error class="text-red" *ngIf="state.errors?.required">
+                            {{'stateProvinceLocalityIsRequired'|translate}}</mat-error>
+                    </mat-form-field>
+            
+                    <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
+                        <mat-label>{{'city'|translate}}</mat-label>
+                        <input   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].city" name="city" #city="ngModel" matInput required>
+                        <mat-error class="text-red" *ngIf="city.errors?.required">
+                            {{'cityIsRequired'|translate}}</mat-error>
+                    </mat-form-field>
+            
+                    <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
+                        <mat-label>{{'zipPostalCode'|translate}}</mat-label>
+                        <input   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].zip" maxlength="20" name="zip" #zip="ngModel" matInput required>
+                        <mat-error class="text-red" *ngIf="zip.errors?.required">
+                            {{'zipPostalCodeIsRequired'|translate}}</mat-error>
+                    </mat-form-field>              
+        
+            </mat-dialog-content>
+            <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+                <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+                <button color="primary" mat-raised-button type="submit">{{'submit' | translate}}</button>
+            </mat-dialog-actions>
+        </form>
+    </div>
+   <ng-template #search>
+        <div *ngIf="mode ==='search'; else singleResult">
+            <form  (ngSubmit)="search.form.valid && searchParent()" #search="ngForm" novalidate>
+                <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+                    <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
+                        class="text-primary cursor-pointer inline-block align-middle mr-3">
+                        <mat-icon [icIcon]="icBack" (click)="backToAdd()"></mat-icon>
+                    </a> {{'searchContact' | translate}}</h2>
+                    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+                        <mat-icon [icIcon]="icClose"></mat-icon>
+                    </button>
+                </div>
+                <mat-divider class="-mx-6 text-border"></mat-divider>
+                <mat-dialog-content fxLayout="column" class="pt-4">
+                    <h5 class="mb-4">Search for an existing portal user (parent/guardian) to associate with the student.</h5>
+            
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'firstName' | translate}}</mat-label>
+                        <input name="firstName" [(ngModel)]="parentInfoList.firstname" name="firstName" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'lastName' | translate}}</mat-label>
+                        <input name="lastName" [(ngModel)]="parentInfoList.lastname" name="lastName" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'emailAddress' | translate}}</mat-label>
+                        <input name="emailAddress" [(ngModel)]="parentInfoList.email" name="emailAddress" #salutation="ngModel" type="email" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'mobilePhone' | translate}}</mat-label>
+                        <input name="mobilePhone" [(ngModel)]="parentInfoList.mobile" name="mobilePhone" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'streetAddress' | translate}}</mat-label>
+                        <input name="streetAddress" [(ngModel)]="parentInfoList.streetAddress" name="streetAddress" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'city' | translate}}</mat-label>
+                        <input name="city" [(ngModel)]="parentInfoList.city" name="city" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'state' | translate}}</mat-label>
+                        <input name="state" [(ngModel)]="parentInfoList.state" name="state" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'zip' | translate}}</mat-label>
+                        <input name="zip" [(ngModel)]="parentInfoList.zip" maxlength="20" #salutation="ngModel" type="text" matInput>
+                    </mat-form-field>
+                </mat-dialog-content>
+                <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+                    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+                    <button color="primary" mat-raised-button type="submit">{{'search' | translate}}</button>
+                </mat-dialog-actions>
+            </form>
+        </div>
+        <ng-template #singleResult>
+            <div *ngIf="mode ==='singleResult'; else multipleResult">
+                <form  (ngSubmit)="associateStudents.form.valid && associateStudentToParent()" #associateStudents="ngForm" novalidate>
+                    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+                        <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
+                            class="text-primary cursor-pointer inline-block align-middle mr-3">
+                            <mat-icon [icIcon]="icBack" (click)="backToSearch()"></mat-icon>
+                        </a> {{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</h2>
+                        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+                            <mat-icon [icIcon]="icClose"></mat-icon>
+                        </button>
+                    </div>
+                    <mat-divider class="-mx-6 text-border"></mat-divider>
+                    <mat-dialog-content>
+                        <div class="md:flex md:flex-wrap mt-4">
+                            <div class="pr-4 md:w-2/3">
+                                <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-label>{{'contactRelationship' | translate}}</mat-label>
+                                    <mat-select [(ngModel)]="associateStudent.contactRelationship" #contactRelationship="ngModel" name="contactRelationship" required>
+                                        <mat-option value=""></mat-option>
+                                        <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
+                                    </mat-select>
+                                    <mat-error class="text-red" *ngIf="contactRelationship.errors?.required">
+                                        {{'contactRelationshipIsRequired'|translate}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="pl-4 md:w-1/3 pt-3">
+                                <mat-checkbox color="primary" [(ngModel)]="associateStudent.isCustodian" name="isCustodian" #isCustodian="ngModel">{{'custody' | translate}}</mat-checkbox>
+                            </div>
+                        </div>
+                        <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.mobile}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.workPhone}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.homePhone}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.personalEmail}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.workEmail}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">Parent</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                            </li>
+                            <li>
+                                <label class="text-sm leading-5 text-gray">{{'loginEmail' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.loginEmail}}</p>
+                            </li>
+                            <li class="col-start-1 col-end-3">
+                                <label class="text-sm leading-5 text-gray">{{'Address' | translate}}</label>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a routerLink="" class="text-blue cursor-pointer">{{singleParentInfo.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
+                            </li>
+                        </ul>
+                    </mat-dialog-content>
+                    <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+                        <button color="primary" mat-raised-button type="submit">{{'associateWithStudent' | translate}}</button>
+                    </mat-dialog-actions>
+                    </form>
+
+            </div>
+           
+            <ng-template #multipleResult>
+                <form   (ngSubmit)="associateMultipleStudents.form.valid && associateMultipleStudentsToParent()" #associateMultipleStudents="ngForm" novalidate>
+                    <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+                        <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
+                            class="text-primary cursor-pointer inline-block align-middle mr-3">
+                            <mat-icon [icIcon]="icBack"  (click)="backToSearch()"></mat-icon>
+                        </a> Multiple Results Found.</h2>
+                        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+                            <mat-icon [icIcon]="icClose"></mat-icon>
+                        </button>
+                    </div>
+                    <mat-divider class="-mx-6 text-border"></mat-divider>
+
+                    <mat-dialog-content>
+                        <div class="md:flex md:flex-wrap my-4">
+                            <div class="pr-4 md:w-2/3">
+                                <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-label>{{'contactRelationship' | translate}}</mat-label>
+                                    <mat-select [(ngModel)]="associateStudent.contactRelationship" #contactRelationship="ngModel" name="contactRelationship" required>
+                                        <mat-option value=""></mat-option>
+                                        <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
+                                    </mat-select>
+                                    <mat-error class="text-red" *ngIf="contactRelationship.errors?.required">
+                                        {{'contactRelationshipIsRequired'|translate}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="pl-4 md:w-1/3 pt-3">
+                                <mat-checkbox color="primary" [(ngModel)]="associateStudent.isCustodian" name="isCustodian" #isCustodian="ngModel">{{'custody' | translate}}</mat-checkbox>
+                            </div>
+                        </div>
+                        <h4 class="text-primary mb-3">The following parent matched your search criteria:</h4>
+                        <mat-accordion class="w-full">
+
+                            <mat-expansion-panel  *ngFor="let multipleParent of multipleParentInfo">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title class="font-semibold h-full">
+                                        <div class="flex w-full justify-between items-center h-full">
+                                            <h5 class="inline-block font-medium">{{multipleParent.firstname+' '+multipleParent.lastname}}</h5>
+                                        </div>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="border-t -mx-6">
+                                    <div class="mx-6">
+                                        <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.firstname+' '+multipleParent.lastname}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.mobile}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.workPhone}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.homePhone}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.personalEmail}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.workEmail}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">Parent</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'loginEmail' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.loginEmail}}</p>
+                                            </li>
+                                            <li class="col-start-1 col-end-3">
+                                                <label class="text-sm leading-5 text-gray">{{'address' | translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a routerLink="" class="text-blue cursor-pointer">{{multipleParent.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
+                                            </li>
+                                        </ul>
+                                        <div class="pt-6 w-full text-right">
+                                            <button color="primary" (click) = "getIndexOfParentInfo(multipleParent)" mat-raised-button>{{'associateWithStudent' | translate}}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                            
+                        </mat-accordion>
+                    </mat-dialog-content>
+                </form>
+            </ng-template>
+        </ng-template>
+    </ng-template>
+    
+</ng-template>
+
+
+
+

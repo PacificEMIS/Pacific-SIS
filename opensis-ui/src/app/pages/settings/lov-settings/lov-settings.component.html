@@ -1,0 +1,62 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">        
+        <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="parentSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Settings','List of Values']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>    
+    <vex-page-layout-content class="-mt-6">
+        <mat-drawer-container class="bg-transparent flex-auto flex -mt-16">
+            <mat-drawer-content class="flex-auto flex items-start">
+                <div  class="w-full p-0">
+                    <div *ngIf="pageId === 'School Level'">
+                        <vex-school-level></vex-school-level>
+                    </div>
+
+                    <div *ngIf="pageId === 'School Classification'">
+                        <vex-school-classification></vex-school-classification>
+                    </div>
+
+                    <div *ngIf="pageId === 'Countries'">
+                        <vex-countries></vex-countries>
+                    </div>
+
+                    <div *ngIf="pageId === 'Female Toilet Type'">
+                        <vex-female-toilet-type></vex-female-toilet-type>
+                    </div>
+
+                    <div *ngIf="pageId === 'Female Toilet Accessibility'">
+                        <vex-female-toilet-accessibility></vex-female-toilet-accessibility>
+                    </div>
+
+                    <div *ngIf="pageId === 'Male Toilet Type'">
+                        <vex-male-toilet-type></vex-male-toilet-type>
+                    </div>
+
+                    <div *ngIf="pageId === 'Male Toilet Accessibility'">
+                        <vex-male-toilet-accessibility></vex-male-toilet-accessibility>
+                    </div>
+
+                    <div *ngIf="pageId === 'Common Toilet Type'">
+                        <vex-common-toilet-type></vex-common-toilet-type>
+                    </div>
+
+                    <div *ngIf="pageId === 'Common Toilet Accessibility'">
+                        <vex-common-toilet-accessibility></vex-common-toilet-accessibility>
+                    </div>
+
+                    <div *ngIf="pageId === 'Race'">
+                        <vex-race></vex-race>
+                    </div>
+
+                    <div *ngIf="pageId === 'Ethnicity'">
+                        <vex-ethnicity></vex-ethnicity>
+                    </div>
+
+                    <div *ngIf="pageId === 'Language'">
+                        <vex-language></vex-language>
+                    </div>
+                </div>
+            </mat-drawer-content>
+        </mat-drawer-container>
+    </vex-page-layout-content>
+</vex-page-layout>

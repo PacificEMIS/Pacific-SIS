@@ -1,0 +1,16 @@
+.table {
+  border-bottom: 1px solid #dee2e6;
+  th {
+    border-bottom-width: 1px;
+    text-align: left;
+  }
+  td:first-child {
+    white-space: nowrap;
+  }
+}
+input:focus-visible {
+  outline: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}

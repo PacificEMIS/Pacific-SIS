@@ -1,0 +1,138 @@
+<mat-card-content>
+    <div class="max-w-screen-xl mx-auto">
+        <div class="my-6">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-6 md:col-gap-8 row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'runningWater' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].runningWater|EmtyBooleanCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'mainSourceofDrinkingWater' | translate }}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].mainSourceOfDrinkingWater|EmtyValueCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'currentlyAvailable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].currentlyAvailable|EmtyBooleanCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'handwashingAvailable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].handwashingAvailable|EmtyBooleanCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'soapWaterAvailable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].soapAndWaterAvailable|EmtyBooleanCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'hygeneEducation' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].hygeneEducation|EmtyValueCheckPipe}}
+                    </p>
+                </li>
+            </ul>
+            <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolViewDetails" [categoryId] = "categoryId" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form>
+        </div>
+        <hr class="-mx-5 mt-4 mb-6">
+        <div>
+            <div class="pb-4">
+                <h4 class="text-primary font-medium">{{'femaleToiletInformation' | translate}}</h4>
+            </div>
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-6 md:col-gap-8 row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'femaleToiletType' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].femaleToiletType|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalFemaleToilets' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalFemaleToilets|EmtyNumberCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalFemaleToiletsUsable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalFemaleToiletsUsable|EmtyNumberCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'femaleToiletAccessibility' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].femaleToiletAccessibility|EmtyValueCheckPipe}}
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <hr class="-mx-5 mt-4 mb-6">
+        <div>
+            <div class="pb-4">
+                <h4 class="text-primary font-medium">{{'maleToiletInformation' | translate}}</h4>
+            </div>
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-6 md:col-gap-8 row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'maleToiletType' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].maleToiletType|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalMaleToilets' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalMaleToilets|EmtyNumberCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalMaleToiletsUsable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalMaleToiletsUsable|EmtyNumberCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'maleToiletAccessibility' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].maleToiletAccessibility|EmtyValueCheckPipe}}
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <hr class="-mx-5 mt-4 mb-6">
+        <div class="pb-4">
+            <div class="pb-4">
+                <h4 class="text-primary font-medium">{{'commonToiletInformation' | translate}}</h4>
+            </div>
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-6 md:col-gap-8 row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'commonToiletType' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].comonToiletType|EmtyValueCheckPipe}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalCommonToilets' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalCommonToilets|EmtyNumberCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'totalCommonToiletsUsable' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].totalCommonToiletsUsable|EmtyNumberCheckPipe}}
+                    </p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'commonToiletAccessibility' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                        {{schoolViewDetails.schoolMaster.schoolDetail[0].commonToiletAccessibility|EmtyValueCheckPipe}}
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</mat-card-content>

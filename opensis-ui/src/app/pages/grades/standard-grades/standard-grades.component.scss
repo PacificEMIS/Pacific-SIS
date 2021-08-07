@@ -1,0 +1,54 @@
+.schedule-table {
+  tr {
+    td,
+    th {
+      @apply border-b;
+      border-color: rgba(0, 0, 0, 0.1);
+      @apply px-4;
+      @apply py-2;
+      &:last-child {
+        text-align: right;
+      }
+    }
+    th {
+      text-align: left;
+    }
+  }
+}
+
+.hide{
+  display:none;
+}
+.disabled{
+  pointer-events: none;
+  opacity: 0.2;
+}
+.mat-footer-cell{
+  text-align: center;
+  font-style: italic;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #fff;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+
+.mat-table td.mat-cell, .mat-table th.mat-header-cell {
+  border-bottom-color: transparent !important; 
+}
+

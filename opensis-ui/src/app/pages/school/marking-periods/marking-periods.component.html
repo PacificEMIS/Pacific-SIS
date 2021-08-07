@@ -1,0 +1,148 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="Marking Period" class="w-full">
+            <vex-breadcrumbs [crumbs]="['School Info','Marking Period']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+    <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+
+
+    <div class="md:flex -mt-16 mx-2" [ngClass]="viewDetailsModal===1?'showing-details':''" *ngIf="list.length > 0 ; else noData">
+        <div class="w-full md:w-6/12 lg:w-5/12 px-4">
+                <mat-card @stagger class="w-full">
+                    <div class="flex items-center pl-0" fxLayout="row" fxLayoutAlign="center center">
+                        <h6 class="flex-auto">{{'markingPeriodsList' | translate}}</h6>
+                        <!-- <button (click)="openAddNew()" type="button" color="primary" mat-button><ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 rtl:ml-2 ic-inline" inline="true"></ic-icon></button> -->
+                    </div>
+                    <p class="text-gray text-xs pb-5">{{'clickAnItemToViewDetailsOnTheRightSide' | translate}}</p>
+                    <ul class="marking-period-tree">
+                        <ng-template #recursiveList let-list>
+                            <li *ngFor="let item of list;let indexOfelement=index;">                             
+                            <div class="tree-node card flex justify-between shadow-none border-solid border commonClass"
+                                [ngClass]="indexOfelement === 0 && item.isParent? 'active' :''">
+                                <a (click)="viewDetails(item,$event.target)" class="w-full p-3 cursor-pointer">
+                                    {{item.title}}</a>
+                                    <div>
+                                        <div class="flex items-center">
+                                            <div *ngIf="item.isParent || (item.semesterId > 0 && item.isParent === false) || (item.semesterId > 0 &&  item.isParent === false) || (item.yearId > 0 && item.isParent === false)">
+                                                <button *ngIf="permissions?.add" (click) = "addChildren(item)" matTooltip="Add Child Marking Period" class="px-2 pt-3 pb-1">
+                                                    <mat-icon [icIcon]="icAdd"></mat-icon>
+                                    </button>
+                                            </div>
+                                            <button *ngIf="permissions?.edit" (click) = "editItem(item)" matTooltip="Edit Item" class="px-2 pt-3 pb-1">
+                                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                        </button>
+                                            <button *ngIf="permissions?.edit" (click) = "confirmDelete(item)" matTooltip="Delete Item" class="px-2 pt-3 pb-1">
+                                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>              
+                                
+                                <ul *ngIf="item.children && item.children.length > 0">
+                                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.children }"></ng-container>
+                                   
+                                </ul>
+                            </li>
+                        </ng-template> 
+                        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: list }"></ng-container>
+                    </ul>
+                </mat-card>
+                    </div>
+        <div class="marking-period-details md:w-6/12 lg:w-7/12 px-4">
+            <mat-card @fadeInUp class="w-full pt-2" fxFlex="auto">
+                <div class="flex items-center mb-2" fxLayout="row" fxLayoutAlign="center center">
+                    <h3 class="flex-auto" *ngIf="viewFirstChild != undefined">{{viewFirstChild.title}}</h3>
+                    <div>
+                    <button [matMenuTriggerFor]="addMenu" *ngIf="permissions?.edit || permissions?.delete" mat-icon-button type="button">
+                        <mat-icon [icIcon]="icMoreVert" size="20px"></mat-icon>
+                                        </button>
+                    <button (click)="closeDetailsModal()" class="md:hidden text-primary" mat-icon-button type="button">
+                        <mat-icon>close</mat-icon>
+                                        </button>
+                                </div>              
+                        <mat-menu #addMenu="matMenu" [overlapTrigger]="false" xPosition="before"  yPosition="below">
+                            <button *ngIf="permissions?.edit" (click) = "editItem(viewFirstChild)" mat-menu-item>
+                                <span>{{'editItem' | translate}}</span>
+                            </button>
+
+                            <button *ngIf="permissions?.edit" (click) = "confirmDelete(viewFirstChild)" mat-menu-item>
+                                <span>{{'deleteItem' | translate}}</span>
+                            </button>
+                                                               
+                        </mat-menu>
+                    </div>
+                
+                    <mat-card-content>
+                    <hr class="-mx-4">
+                    <div class="py-3">
+                            <div class="flex items-center mr-6">
+                                <div *ngIf="doesGrades;else doesnotGrades" class="mr-6">
+                                    <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'graded' | translate}}
+                                </div>
+                                <ng-template #doesnotGrades>
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon> <span class="ml-1 mr-6  text-gray-light">{{'graded' | translate}}</span>
+                                </ng-template>
+                                <div *ngIf="doesExam;else doesnotExam" class="mr-6">
+                                    <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'exam' | translate}}
+                                </div>
+                                <ng-template #doesnotExam>
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6  text-gray-light">{{'exam' | translate}}</span>                               
+                                </ng-template>
+                                <div *ngIf="doesComments;else doesnotComments" class="mr-6">
+                                    <mat-icon class="inline-block align-middle">check_circle</mat-icon> {{'comments' | translate}}
+                                </div>
+                                <ng-template #doesnotComments>
+                                    <mat-icon class="inline-block align-middle text-gray-light">cancel</mat-icon><span class="ml-1 mr-6  text-gray-light">{{'comments' | translate}}</span>                               
+                                </ng-template>
+                            </div>
+                        </div>
+                    <hr class="mb-4 -mx-4">
+                            <ul class="grid md:grid md:grid-cols-2 md:col-gap-8 row-gap-5 md:row-gap-10">
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'title' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.title}}</p>
+                                </li>
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'shortName' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.shortName}}</p>
+                                </li>
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'begins' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.startDate}}</p>
+                                </li>
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'ends' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.endDate}}</p>
+                                </li>
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'gradePostingBegins' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.postStartDate}}</p>
+                                </li>
+                                <li>
+                                    <label class="text-sm leading-5 text-gray">{{'gradePostingEnds' | translate}}</label>
+                                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2" *ngIf="viewFirstChild != undefined">{{viewFirstChild.postEndDate}}</p>
+                                </li>
+                            </ul>
+                    </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+            
+        <ng-template #noData>
+        <div class="w-full bg-white rounded text-center py-20 md:py-32">
+                        <div @fadeInUp class="text-center">
+                            <div class="mb-6">
+                                <ic-icon [icon]="icInfo" size="60px"></ic-icon>
+                            </div>
+                            <h1 class="mb-6 opacity-75">No <span class="font-bold">Marking Period</span> Data
+                                Found!</h1>
+                            <button *ngIf="permissions?.add" (click)="openAddNew()" type="button" color="primary" mat-raised-button>
+                                    <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline"
+                                        inline="true">
+                                    </ic-icon> {{'addASchoolYearToBegin' | translate}}
+                                </button>
+            </div>
+        </div>
+        </ng-template>
+</vex-page-layout>

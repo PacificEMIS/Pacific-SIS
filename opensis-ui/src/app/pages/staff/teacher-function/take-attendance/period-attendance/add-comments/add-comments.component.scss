@@ -1,0 +1,71 @@
+.timeline {
+  position: relative;
+  margin-bottom: 20px;
+
+  .timeline-content {
+    padding: 1rem 1.5rem;
+    padding-top: 0;
+    position: relative;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    &::before {
+      content: " ";
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      left: 0px;
+      top: -2px;
+      background: #dedede;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+    &::after {
+      content: " ";
+      border-left: 2px solid #dedede;
+      position: absolute;
+      left: 5px;
+      top: 10px;
+      width: 2px;
+      height: 100%;
+      z-index: 0;
+    }
+  }
+
+  .talk-bubble {
+    margin-bottom: 6px;
+    position: relative;
+    height: auto;
+    background-color: #f9f9f9;
+    padding: 15px 12px;
+    border-radius: 3px;
+
+    &:before {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: 20px;
+      right: 30px;
+      bottom: -25px;
+      border: 12px solid;
+      border-color: #cacaca #cacaca transparent transparent;
+    }
+    &:after {
+      content: " ";
+      position: absolute;
+      width: 0;
+      height: 0;
+      left: 19px;
+      right: 38px;
+      bottom: -23px;
+      border: 12px solid;
+      border-color: #f9f9f9 #f9f9f9 transparent transparent;
+    }
+  }
+  .talk-bubble-text {
+    padding-left: 54px;
+  }
+}

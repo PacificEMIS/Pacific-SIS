@@ -1,0 +1,52 @@
+.child-item {
+    padding-left: 25px;
+}
+
+.bg-light-grey {
+    background-color: rgba(143, 143, 143, 0.1);
+}
+
+.mat-expansion-panel {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-radius: 0 !important;
+    box-shadow: none !important;
+
+    &.mat-expanded {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
+        }
+    }
+
+    .mat-expansion-panel-header{
+        .mat-expansion-indicator::after {
+            border-color: #4caf50 !important;
+        }
+
+        &.mat-expanded {
+            height: 48px !important;
+            @apply bg-skyblue-light;
+            // background: #f9f9f9;
+            // border-bottom: 1px solid rgba(0,0,0,0.2);
+        }
+    }
+}
+
+.mat-expansion-panel-spacing {
+    margin: 0 !important;
+}
+
+.mat-expansion-panel-body {
+    padding-bottom: 0 24px !important;
+}
+
+
+/* CSS to change 'Primary' color */
+
+// ::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+//     background-color:#4caf50;
+// }
+
+// ::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+//     background-color: #89c88c;
+// }

@@ -1,0 +1,579 @@
+<mat-card class="w-full" *ngIf="studentCreateMode==studentCreate.EDIT || studentCreateMode==studentCreate.ADD">
+    <form #form="ngForm" novalidate appInvalidControlScroll>
+        <h3 class="font-medium">{{'schoolAndEnrollmentInfo'|translate}}</h3>
+        <mat-card-content>
+
+            <div @stagger fxLayout="column">
+                <h4 class="text-primary pt-6 pb-2">{{'schoolInformation'|translate}}</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'enrollmentCalendar'|translate}}</mat-label>
+                            <mat-select #calendarId="ngModel" name="enrollment_calendar"
+                                [(ngModel)]="studentEnrollmentModel.calenderId" required>
+                                <mat-option *ngFor="let calendar of calendarListModel.calendarList"
+                                    value={{calendar.calenderId}}>{{calendar.title}}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="calendarId.errors?.required">{{'calendarNameIsRequired'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'rollingRetentionOption'|translate}}</mat-label>
+                            <mat-select #rollingOption="ngModel" name="rolling_retention_option"
+                                [(ngModel)]="studentEnrollmentModel.rollingOption" required>
+                                <mat-option *ngFor="let rollingOption of rollingOptions" value="{{rollingOption}}">
+                                    {{rollingOption}}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="rollingOption.errors?.required">{{'rollingOptionIsRequired'|translate}}
+                            </mat-error>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'section'|translate}}</mat-label>
+                            <mat-select [(ngModel)]="studentEnrollmentModel.sectionId" name="sectionId">
+                                <mat-option value="" *ngIf="sectionList?.tableSectionsList?.length==0">No Sections Found
+                                </mat-option>
+                                <mat-option *ngFor="let section of sectionList.tableSectionsList"
+                                    [value]='section.sectionId'>
+                                    {{section.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'estimatedGraduationDate'|translate}}</mat-label>
+                            <input name="estimatedGradDate" [(ngModel)]="studentEnrollmentModel.estimatedGradDate"
+                                [matDatepicker]="estimatedGradDate" matInput>
+                            <mat-datepicker-toggle [for]="estimatedGradDate" matSuffix></mat-datepicker-toggle>
+                            <mat-datepicker #estimatedGradDate></mat-datepicker>
+                        </mat-form-field>
+                    </li>
+                </ul>
+
+                <ul class="mt-2">
+                    <li>
+                        <mat-checkbox name="eligibility504" [(ngModel)]="studentEnrollmentModel.eligibility504"
+                            color="primary" class="mr-6">
+                            {{'504Eligibility' | translate}}</mat-checkbox>
+                        <mat-checkbox name="economicDisadvantage"
+                            [(ngModel)]="studentEnrollmentModel.economicDisadvantage" color="primary" class="mr-6">
+                            {{'economicDisadvantage' | translate}}</mat-checkbox>
+                        <mat-checkbox name="freeLunchEligibility"
+                            [(ngModel)]="studentEnrollmentModel.freeLunchEligibility" color="primary" class="mr-6">
+                            {{'freeLunchEligibility' | translate}}</mat-checkbox>
+                        <mat-checkbox name="specialEducationIndicator"
+                            [(ngModel)]="studentEnrollmentModel.specialEducationIndicator" color="primary" class="mr-6">
+                            {{'specialEducationIndicator' | translate}}</mat-checkbox>
+                        <mat-checkbox name="lepIndicator" [(ngModel)]="studentEnrollmentModel.lepIndicator"
+                            color="primary">{{'lepIndicator' | translate}}
+                        </mat-checkbox>
+                    </li>
+                </ul>
+
+                <hr class="-mx-3 mt-6" />
+
+
+                <div class="flex w-full justify-between items-center py-4">
+                    <h4 class="text-primary">{{'enrollmentInfo'|translate}}</h4>
+                    <div class="text-right">
+                        <a mat-raised-button color="primary" (click)="addMoreEnrollments()">
+                            <mat-icon [icIcon]="icAdd"></mat-icon> {{'addEnrollmentInfo' |translate}}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="">
+                    <div *ngFor="let enrollment of divCount;let index=index;trackBy: cmpare"
+                        class="bg-white shadow-md border border-primary-light hover:border-primary rounded pt-3 mb-4">
+                        <div class="flex flex-wrap w-full -mx-4">
+                            <div class="w-11/12 ">
+                                <div class="ml-8">
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                                        <li>
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'school'|translate}}</mat-label>
+                                                <mat-select #school_name="ngModel" name="{{'schoolName'+index}}"
+                                                    [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null"
+                                                    (selectionChange)="onSchoolChange($event.value,index)"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].schoolId"
+                                                    required>
+                                                    <mat-option
+                                                        *ngFor="let school of schoolListWithGradeLevelsAndEnrollCodes;let schoolIndex=index"
+                                                        value={{school.schoolId}}
+                                                        [disabled]="selectedSchoolIndex.includes(schoolIndex)||selectedTransferredSchoolIndex.includes(schoolIndex)">
+                                                        {{school.schoolName}}</mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="school_name.errors?.required">
+                                                    {{'schooNameIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li>
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'gradeLevel'|translate}}</mat-label>
+                                                <mat-select #gradeLevel="ngModel" name="{{'gradeLevel'+index}}"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].gradeId"
+                                                    (selectionChange)="onGradeLevelChange(index)" required>
+                                                    <mat-option
+                                                        *ngFor="let gradeLevel of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.gradelevels"
+                                                        value="{{gradeLevel.gradeId}}">{{gradeLevel.title}}</mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="gradeLevel.errors?.required">
+                                                    {{'gradeLevelIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li>
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'enrollmentDate'|translate}}</mat-label>
+                                                <input #enrollment_date="ngModel" name="{{'enrollmentDate'+index}}"
+                                                    matInput [matDatepicker]="enrollmentDate"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentDate"
+                                                    required>
+                                                <mat-datepicker-toggle matSuffix [for]="enrollmentDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #enrollmentDate></mat-datepicker>
+                                                <mat-error *ngIf="enrollment_date.errors?.required">
+                                                    {{'enrollmentDateIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li>
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'enrollmentCode'|translate}}</mat-label>
+                                                <mat-select #transferred_code="ngModel"
+                                                    name="{{'enrollmentCode'+index}}"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentCode"
+                                                    (onSelectionChange)="onEnrollmentCodeChange($event.value,index)"
+                                                    required>
+                                                    <mat-option
+                                                        *ngFor="let enrollmentCode of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.studentEnrollmentCode"
+                                                        [disabled]="enrollmentCode.type!='Add'"
+                                                        value="{{enrollmentCode.enrollmentCode}}">
+                                                        {{enrollmentCode.title}}</mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="transferred_code.errors?.required">
+                                                    {{'enrollmentCodeIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                    </ul>
+                                    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0"
+                                        *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null">
+                                        <li>
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'exitDate'|translate}}</mat-label>
+                                                <input #exit_date="ngModel" name="{{'exitDate'+index}}" matInput
+                                                    [matDatepicker]="endDate"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitDate"
+                                                    [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode">
+                                                <mat-datepicker-toggle matSuffix [for]="endDate">
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #endDate></mat-datepicker>
+                                                <mat-error *ngIf="exit_date.errors?.required">
+                                                    {{'exitDateIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li
+                                            *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null">
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'exitCode'|translate}}</mat-label>
+                                                <mat-select #exit_code="ngModel" name="{{'exitCode'+index}}"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode"
+                                                    [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitDate"
+                                                    (selectionChange)="onExitCodeChange($event.value,index)">
+                                                    <ng-container
+                                                        *ngFor="let exitCode of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.studentEnrollmentCode">
+                                                        <mat-option
+                                                            *ngIf="exitCode.type=='Rolled Over' || exitCode.type=='Drop (Transfer)' || exitCode.type=='Drop'"
+                                                            value="{{exitCode.enrollmentCode}}">{{exitCode.title}}
+                                                        </mat-option>
+                                                    </ng-container>
+
+                                                </mat-select>
+                                                <mat-error *ngIf="exit_code.errors?.required">
+                                                    {{'exitCodeIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'transferToSchool'|translate}}</mat-label>
+                                                <mat-select #transferred_school="ngModel"
+                                                    name="{{'transferToSchool'+index}}"
+                                                    (selectionChange)="onTransferredSchoolChange($event.value,index)"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].transferredSchoolId"
+                                                    required>
+                                                    <mat-option
+                                                        *ngFor="let school of schoolListWithGradeLevelsAndEnrollCodes;let transferredSchoolIndex=index"
+                                                        value={{school.schoolId}}
+                                                        [disabled]="selectedSchoolIndex.includes(transferredSchoolIndex)">
+                                                        {{school.schoolName}}</mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="transferred_school.errors?.required">
+                                                    {{'transferredSchoolNameIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                        <li *ngIf="selectedExitCodes[index]=='Drop (Transfer)'">
+                                            <mat-form-field fxFlex="auto" class="w-full" appearance="outline"
+                                                color="primary" floatLabel="never">
+                                                <mat-label>{{'gradeLevel'|translate}}</mat-label>
+                                                <mat-select #transferred_grade="ngModel"
+                                                    name="{{'transferredGrade'+index}}"
+                                                    [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].transferredGrade"
+                                                    required>
+
+                                                    <mat-option
+                                                        *ngFor="let gradeLevel of schoolListWithGradeLevelsAndEnrollCodes[selectedTransferredSchoolIndex[index]]?.gradelevels"
+                                                        value="{{gradeLevel.title}}">{{gradeLevel.title}}</mat-option>
+                                                </mat-select>
+                                                <mat-error *ngIf="transferred_grade.errors?.required">
+                                                    {{'gradeLevelIsRequired'|translate}}
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="w-1/12 text-right pt-2">
+                                <div class=""
+                                    *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId==null;else dontDelete">
+                                    <a class="cursor-pointer" (click)="deleteDynamicRow(index)">
+                                        <mat-icon [icIcon]="icClear"></mat-icon>
+                                    </a>
+                                </div>
+                                <ng-template #dontDelete>
+                                    <div class="">
+                                        <a class="cursor-pointer text-gray">
+                                            <mat-icon [icIcon]="icClear"></mat-icon>
+                                        </a>
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-footer class="text-right mb-2 px-4">
+            <a mat-button *ngIf="studentCreateMode == studentCreate.EDIT"
+                (click)="cancelEdit()">{{'cancel'|translate}}</a>
+            <button color="primary" class="ml-2" mat-raised-button
+                (click)="updateStudentEnrollment()">{{'update'|translate}}</button>
+        </mat-card-footer>
+    </form>
+</mat-card>
+
+<mat-card class="w-full" *ngIf="studentCreateMode == studentCreate.VIEW">
+
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'schoolAndEnrollmentInfo' | translate}}</h3>
+        <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editEnrollmentInfo()">
+            <mat-icon [icIcon]="icEdit" class="md:mt-1 md:mr-2"></mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span>
+        </button>
+    </div>
+    <mat-card-content>
+
+        <div class="pt-6">
+            <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'enrollmentCalendar' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{calendarNameInViewMode}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'rollingRetentionOption' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{studentEnrollmentModel?.rollingOption}}
+                    </p>
+                </li>
+
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'section' | translate}}</label>
+                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{sectionNameInViewMode}}</p>
+                </li>
+                <li>
+                    <label class="text-sm leading-5 text-gray">{{'estimatedGraduationDate' | translate}}</label>
+                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                        {{studentEnrollmentModel?.estimatedGradDate |date:'mediumDate' |EmtyValueCheckPipe}}</p>
+                </li>
+                <li *ngIf="!isTeacherLogin" class="col-span-2 md:col-span-3 xl:col-span-4">
+                    <div class="flex items-center flex-wrap">
+                        <div class="mr-6" *ngIf="studentEnrollmentModel?.eligibility504; else NOTEligibility">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
+                        </div>
+                        <ng-template #NOTEligibility>
+                            <div class="mr-6">
+                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
+                                </mat-icon>
+                                <span class="inline-block text-base align-middle">{{'504Eligibility' |translate}}</span>
+                            </div>
+                        </ng-template>
+
+
+                        <div class="mr-6" *ngIf="studentEnrollmentModel?.economicDisadvantage; else economicadvantage">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <span class="inline-block text-base align-middle">{{'economicDisadvantage'
+                                |translate}}</span>
+                        </div>
+                        <ng-template #economicadvantage>
+                            <div class="mr-6">
+                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
+                                </mat-icon>
+                                <span class="inline-block text-base align-middle">{{'economicDisadvantage'
+                                    |translate}}</span>
+                            </div>
+                        </ng-template>
+
+                        <div class="mr-6" *ngIf="studentEnrollmentModel?.freeLunchEligibility; else LunchEligibility">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <span class="inline-block text-base align-middle">{{'freeLunchEligibility'
+                                |translate}}</span>
+                        </div>
+                        <ng-template #LunchEligibility>
+                            <div class="mr-6">
+                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
+                                </mat-icon>
+                                <span class="inline-block text-base align-middle">{{'freeLunchEligibility'
+                                    |translate}}</span>
+                            </div>
+                        </ng-template>
+
+                        <div class="mr-6"
+                            *ngIf="studentEnrollmentModel?.specialEducationIndicator; else nonSpecialEducationIndicator">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <span class="inline-block text-base align-middle">{{'specialEducationIndicator'
+                                |translate}}</span>
+                        </div>
+                        <ng-template #nonSpecialEducationIndicator>
+                            <div class="mr-6">
+                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
+                                </mat-icon>
+                                <span class="inline-block text-base align-middle">{{'specialEducationIndicator'
+                                    |translate}}</span>
+                            </div>
+                        </ng-template>
+
+
+                        <div class="mr-6" *ngIf="studentEnrollmentModel.lepIndicator; else Indicator">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>
+                            <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
+                        </div>
+                        <ng-template #Indicator>
+                            <div class="mr-6">
+                                <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2">
+                                </mat-icon>
+                                <span class="inline-block text-base align-middle">{{'lepIndicator' |translate}}</span>
+                            </div>
+                        </ng-template>
+                    </div>
+                </li>
+            </ul>
+
+            <hr class="-mx-3 mt-6" />
+
+
+            <div class="w-full mx-2 pb-2 pt-6">
+                <h4 class="text-primary">{{'enrollmentInfo'|translate}}</h4>
+            </div>
+
+            <ul class="enrollment-timeline mt-4" *ngIf="studentActiveStatus">
+                <ng-container *ngFor="let enrollment of filteredEnrollmentInfoInViewMode; let index=index">
+                    <li>
+                        <span>{{enrollment.academicYear}}</span>
+                        <div class="-mt-2">
+                            <mat-accordion class="w-full">
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header class="pl-0 h-auto">
+                                        <mat-panel-title class="font-semibold">
+                                            <div class="flex items-center w-full h-full">
+                                                <div class="flex h-full">
+                                                    <ng-container *ngIf="enrollment.type=='External' else internal">
+                                                        <span
+                                                            class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Add'">
+                                                            <mat-icon [icIcon]="icExternal" class="align-middle text-white"
+                                                                matTooltip="Enrolled as External">
+                                                            </mat-icon>
+                                                        </span>
+                                                    </ng-container>
+                                                    <ng-template #internal>
+                                                        <span
+                                                            class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Add'">
+                                                            <mat-icon [icIcon]="icAdd" class="text-white"
+                                                                matTooltip="New">
+                                                            </mat-icon>
+                                                        </span>
+                                                        <span
+                                                            class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Drop'">
+                                                            <mat-icon [icIcon]="icDrop" class="text-white"
+                                                                matTooltip="Drop">
+                                                            </mat-icon>
+                                                        </span>
+                                                        <span
+                                                            class="flex items-center bg-green px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Rolled Over'">
+                                                            <mat-icon [icIcon]="icPromoted" class="text-white"
+                                                                matTooltip="Rolled Over">
+                                                            </mat-icon>
+                                                        </span>
+                                                        <span
+                                                            class="flex items-center bg-deep-orange px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Drop (Transfer)'">
+                                                            <mat-icon [icIcon]="icTrasnferOut" class="text-white"
+                                                                matTooltip="Drop (Transfer)">
+                                                            </mat-icon>
+                                                        </span>
+                                                        <span
+                                                            class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Enroll (Transfer)'">
+                                                            <mat-icon [icIcon]="icTrasnferIn" class="text-white"
+                                                                matTooltip="Enroll (Transfer)">
+                                                            </mat-icon>
+                                                        </span>
+                                                    </ng-template>
+                                                </div>
+
+                                                <div class="flex justify-between items-center w-full flex-wrap">
+                                                    <h5 class="inline-block font-medium">{{enrollment.schoolName}}
+                                                        <mat-icon *ngIf="index==0" [icIcon]="icHomeSchool"
+                                                            class="text-deep-purple align-middle ml-2 text-sm mt-2"
+                                                            matTooltip="Home School"></mat-icon>
+                                                    </h5>
+                                                    <div
+                                                        class="inline-block justify-self-stretch md:text-right font-normal">
+                                                        {{enrollment.type=='External'?'Enrolled as ':
+                                                        enrollment.enrollmentCode=='Rolled
+                                                        Over'?'Promoted':enrollment.enrollmentCode}}<span
+                                                            class="font-medium"
+                                                            *ngIf="enrollment.type=='External'">External
+                                                            Student</span> {{enrollment.type=='External'?'at':'to'}}
+                                                        <span class="font-medium">{{enrollment.gradeLevelTitle}}</span>
+                                                        on
+                                                        {{enrollment.enrollmentDate | date}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div class="border-t -mx-6 px-2 pt-3">
+                                        <ul
+                                            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-10 mt-2 mx-2">
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'gradeLevel' |
+                                                    translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                                                    {{enrollment.gradeLevelTitle}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'enrollmentDate' |
+                                                    translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                                                    {{enrollment.enrollmentDate | date}}</p>
+                                            </li>
+                                            <li>
+                                                <label class="text-sm leading-5 text-gray">{{'enrollmentCode' |
+                                                    translate}}</label>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
+                                                    {{enrollment.enrollmentCode}}</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
+                    </li>
+                </ng-container>
+
+            </ul>
+
+            <div class="text-center mb-4"><a class="text-primary cursor-pointer"
+                    (click)="toggleEnrollmentHistory()"><span class="underline">{{'enrollmentHistory' |
+                        translate}}</span>
+                    <mat-icon *ngIf="expandEnrollmentHistory" [icIcon]="icCollapse" class="align-middle"></mat-icon>
+                    <mat-icon *ngIf="!expandEnrollmentHistory" [icIcon]="icExpand" class="align-middle"></mat-icon>
+                </a></div>
+
+
+            <div @fadeInUp class="w-full overflow-x-auto block" *ngIf="expandEnrollmentHistory">
+                <table class="table enrollment-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left">{{'schoolYear' | translate}}</th>
+                            <th class="text-left">{{'enrollmentDateAndCode' | translate}}</th>
+                            <th class="text-left">{{'gradeLevel' | translate}}</th>
+                            <th class="text-left">{{'exitDateAndCode' | translate}}</th>
+                            <th class="text-left">{{'schoolName' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let enrollment of studentEnrollmentModel.studentEnrollmentListForView"
+                            [ngClass]="(enrollment.exitType=='Drop (Transfer)' && enrollment.enrollmentType==null)  || (enrollment.exitType=='Drop' && enrollment.enrollmentType!=='Add' && enrollment.enrollmentType!=='Rolled Over' && enrollment.enrollmentType!='Enroll (Transfer)') || enrollment.enrollmentType=='Drop'?'bg-skyblue-light':''">
+                            <td>{{(enrollment.startYear?enrollment.startYear:'')+'-'+(enrollment.endYear?(enrollment?.endYear.toString()?.substr(-2)):'')}}</td>
+                            <td><span
+                                    *ngIf="((enrollment.exitType!='Drop (Transfer)' && enrollment.enrollmentType!=null) || enrollment.exitType!='Drop') && (enrollment.enrollmentType!='Drop')">{{enrollment.enrollmentDate
+                                    | date}}
+                                    <mat-icon [icIcon]="icExternal" class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='External'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icAdd" class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icPromoted" class="text-green align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Rolled Over' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icTrasnferOut" class="text-deep-orangealign-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop (Transfer)' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icTrasnferIn" class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Enroll (Transfer)' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    {{enrollment.type=="External"?'Enrolled as External
+                                    Student':enrollment.enrollmentCode=='Rolled
+                                    Over'?'Promoted':enrollment.enrollmentCode}}
+                                </span></td>
+                            <td><span>{{enrollment.gradeLevelTitle}}</span></td>
+                            <td><span
+                                    *ngIf="((enrollment.exitType=='Drop (Transfer)' && enrollment.enrollmentType==null) || (enrollment.exitType=='Drop' && enrollment.enrollmentType!=='Add' && enrollment.enrollmentType!=='Rolled Over' && enrollment.enrollmentType!='Enroll (Transfer)') || enrollment.enrollmentType=='Drop') || (enrollment.enrollmentType=='Drop')">{{enrollment.enrollmentType=='Drop'?'':enrollment.exitDate
+                                    | date}}
+                                    <mat-icon [icIcon]="icTrasnferOut" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Drop (Transfer)'"></mat-icon>
+                                    <!-- <mat-icon [icIcon]="icPromoted" class="text-blue align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Rolled Over'"></mat-icon> -->
+                                    <!-- <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType=='Drop'"></mat-icon> -->
+                                    <span *ngIf="enrollment.enrollmentType=='Drop'">
+                                        {{enrollment.enrollmentDate|date}}</span>
+                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentType=='Drop'"></mat-icon>
+
+                                    {{enrollment.enrollmentType=='Drop'?enrollment.enrollmentCode:''}}
+                                    {{enrollment.exitType!="Rolled Over" &&
+                                    enrollment.enrollmentType!='Drop'?enrollment.exitCode:''}}
+                                </span></td>
+
+                            <td>{{enrollment.schoolName}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

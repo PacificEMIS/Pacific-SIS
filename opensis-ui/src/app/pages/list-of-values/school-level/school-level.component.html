@@ -1,0 +1,121 @@
+<div class="card">
+    <div class="bg-white px-6 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
+                fxLayoutAlign="start center">
+
+                <div class="flex">
+                    <input
+                    matInput
+                    [(ngModel)]="searchKey"
+                    (keyup)="applyFilter()"
+                    class="py-3 border-0 outline-none w-full bg-transparent"
+                    appearance="outline" color="primary"
+                     placeholder="Search..."
+                    type="search">
+                    <button mat-button matSuffix mat-icon-button aria-label="clear"
+                    *ngIf="searchKey"
+                    (click)="onSearchClear()">
+                    <mat-icon>close</mat-icon>
+                    </button>
+                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <hr class="-mx-6 block md:hidden"/>
+            <div fxFlex="200px" class="pt-3">
+                <a (click)="exportSchoolLevelListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel"><i class="icon icon-file-excel text-lg"></i></a>
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                    matTooltip="Filter Columns" type="button">
+                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                </button>
+                <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+                    (click)='goToAdd()'>
+                    <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true"
+                        size="24px">
+                    </ic-icon>
+                    <span class="hidden md:inline-block">{{'addSchoolLevel'|translate}}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table @stagger mat-table [dataSource]="schoolLevelList" class="mat-elevation-z8 table-auto w-full"
+            matSort>
+            
+            <ng-container matColumnDef="lovColumnValue">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'title'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.lovColumnValue}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'createdBy'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.createdBy}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdOn">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'createDate'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.createdOn|transformDateTimePipe}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="updatedBy">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'updatedBy'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.updatedBy | EmtyValueCheckPipe}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="updatedOn">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'updateDate'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.updatedOn|transformDateTimePipe}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'action'|translate}}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <a *ngIf="permissions?.edit" matTooltip="Edit Item" class="mr-3 cursor-pointer" (click)="goToEdit(element)"><mat-icon [icIcon]="icEdit"></mat-icon></a>
+                    <a *ngIf="permissions?.edit" (click)="confirmDelete(element)" matTooltip="Delete Item" class="mr-3 cursor-pointer"><mat-icon [icIcon]="icDelete"></mat-icon></a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                </mat-footer-cell>
+            </ng-container>
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="6">
+                {{loading?'Fetching Data...':'No Data'}}
+                </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></tr>
+            <mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></mat-footer-row>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="listCount!=null"></tr>
+        </table>
+    </div>
+    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+</div>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+     <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+        class="checkbox-item mat-menu-item">
+        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+            {{column.label}}
+        </mat-checkbox>
+    </button>
+</mat-menu>

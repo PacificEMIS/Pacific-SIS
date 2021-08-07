@@ -1,0 +1,100 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+<div class="-mt-16">
+    <div class="w-full p-0">
+        <div class="mb-2 lg:flex lg:flex-wrap">
+            <div class="lg:w-3/12 lg:pr-4">
+                <div class="card mb-4 lg:mb-0">
+                    <div class="pt-4">
+                        <h4 class="px-4 mb-4 text-gray">{{'categories'|translate}}</h4>
+                        <hr />
+                        <div class="px-4 py-3" [ngClass]="selectedCategoryIndex==-1?'bg-skyblue-light text-blue':'cursor-pointer'" (click)="onCourseChange(-1)">
+                            <p class="">{{'allCourses'|translate}}</p>
+                        </div>
+                        <hr />
+                        <ng-container *ngFor="let course of getAllCommentsWithUniqueCategory.courseCommentCategories; let index=index">
+                            <div *ngIf="course.courseId" (click)="onCourseChange(index)" class="flex items-center justify-between px-4 py-3" [ngClass]="selectedCategoryIndex==index?'bg-skyblue-light text-blue':'cursor-pointer'" >
+                                <p class="">{{course.courseName}}</p>
+                                <div *ngIf="permissions?.edit">
+                                    <a class="cursor-pointer" (click)="confirmDeleteGradeScale(course,0,index)">
+                                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                                    </a>
+                                </div>
+                            </div>
+                            <hr />
+                        </ng-container>
+                        
+                        <div class="px-4 py-3" *ngIf="permissions?.add">
+                            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                                <mat-label>{{ "addCourse" | translate }}</mat-label>
+                                <mat-select>
+                                <ng-container  *ngFor="let course of getAllCourseListModel?.courseViewModelList">
+                                    <mat-option *ngIf="selectedCoursesForCategory.indexOf(course.course.courseId)==-1" (click)="onCourseSelect(course.course)"  [value]="course.course">{{course.course.courseTitle}}</mat-option>
+                              </ng-container>
+                            </mat-select>
+
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-9/12 lg:pl-4">
+                <div class="card">
+                    <div class="overflow-x-auto overflow-y-hidden">
+                        <table class="w-full schedule-table">
+                            <thead>
+                                <tr>
+                                    <th width="1%"></th>
+                                    <th>{{ "comment" | translate }}</th>
+                                    <th>{{ "actions" | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+                                <tr *ngFor="let comment of commentListBasedOnSelectedCategory;let index=index" cdkDrag cdkDragLockAxis="y">
+                                    <td class="cursor-move" cdkDragHandle>
+                                        <!-- <ng-container [ngTemplateOutlet]="dragHandleTmpl"> </ng-container> -->
+                                        <mat-icon>reorder</mat-icon>
+                                    </td>
+                                    <td *ngIf="!comment.takeInput" class="col-md">{{comment?.comment}}</td>
+                                    <td *ngIf="comment.takeInput" class="col-md">
+                                        <div class="w-full border p-2 rounded">
+                                            <input type="text" [value]="comment.comment" [(ngModel)]="comment.comment"  placeholder="Update Comment" class="w-full">
+                                        </div>
+                                    </td>
+                                    <td class="col-md">
+                                        <ng-container *ngIf="!comment.takeInput">
+                                            <a *ngIf="permissions?.edit" class="cursor-pointer mr-3" (click)="onCommentEdit(comment,index)">
+                                                <mat-icon [icIcon]="icEdit"></mat-icon>
+                                            </a>
+                                            <a *ngIf="permissions?.edit" class="cursor-pointer" (click)="confirmDeleteGradeScale(comment,1)">
+                                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                            </a>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                        
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="icon icon-plus3 text-lg"></i>
+                                    </td>
+                                    <td>
+                                        <div class="w-full border p-2 rounded">
+                                            <input type="text" [(ngModel)]="newComment" placeholder="Add New Comments" class="w-full">
+
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-right p-3" *ngIf="permissions?.add">
+                            <button color="primary" mat-raised-button type="submit" (click)="addComments()">{{editMode?('update'|translate):('submit'|translate)}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

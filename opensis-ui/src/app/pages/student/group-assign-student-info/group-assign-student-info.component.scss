@@ -1,0 +1,36 @@
+.custom-tab {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+::-webkit-scrollbar {
+  display: none;
+}
+.custom-dropzone {
+  display: block;
+  padding: 10px;
+  height: auto;
+  min-height: 180px;
+
+  ngx-dropzone-preview {
+    display: block;
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 0 10px !important;
+    min-height: auto !important;
+    height: auto !important;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid #eee;
+
+    ngx-dropzone-label {
+      width: 100%;
+      text-align: left;
+    }
+  }
+}
+
+.hide{
+  display: none;
+}

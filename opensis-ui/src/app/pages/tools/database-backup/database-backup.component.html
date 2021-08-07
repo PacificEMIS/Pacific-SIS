@@ -1,0 +1,21 @@
+<vex-page-layout>
+    <vex-page-layout-header fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="Database Backup" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Tools']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content>
+        <div class="md:w-3/5 m-auto">
+            <div class="card pt-10 pb-4 px-8 text-center">
+                <img src="assets/img/database-backup.jpeg" width="250" class="inline-block mb-8">
+                <h3 class="text-warn font-bold mb-2 text-xl">{{ 'pleaseNote' | translate }}</h3>
+                <p class="mb-8">{{'thisBackupUtilityWillCreateaBackupOfTheDatabaseAlongWithTheDatabaseStructureYouWillBeAbleToUseThisBackupFileToRestoreTheDatabaseHoweverInOrderToRestoreYouWillNeedToHaveAccessToMysqlAdministrationApplicationLikePhpMyadminAndTheRootUserIdAndPasswordToMysql' | translate }}</p>
+                <div class="text-right">
+                    <button mat-flat-button>{{ 'cancel' | translate }}</button>
+                    <button mat-raised-button color="primary" class="ml-4"><mat-icon>download</mat-icon><span class="ml-2">{{ 'backupDatabase' | translate }}</span></button>
+                </div>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

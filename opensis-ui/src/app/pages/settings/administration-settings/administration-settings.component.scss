@@ -1,0 +1,44 @@
+.profile-list {
+    .list-item {
+        @apply rounded-none;
+
+
+        &.active {
+            @apply bg-skyblue-light;
+            @apply text-blue;
+        }
+    }
+}
+
+.icon-teacher {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url(../../../../assets/img/icons/teacher.svg) no-repeat center;
+    background-size: 80%;
+}
+
+.icon-homeroom-teacher {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url(../../../../assets/img/icons/homeroom_teacher.svg) no-repeat center;
+    background-size: 80%;
+}
+
+.active {
+    .icon-teacher {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+        background: url(../../../../assets/img/icons/teacher_blue.svg) no-repeat center;
+    background-size: 80%;
+    }
+    .icon-homeroom-teacher {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        background: url(../../../../assets/img/icons/homeroom_teacher_blue.svg) no-repeat center;
+        background-size: 80%;
+    }
+}

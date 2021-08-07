@@ -1,0 +1,22 @@
+<vex-page-layout>
+    <vex-page-layout-header [ngClass]="pageId=='Student Bulk Data Import'?'':'pb-16'" fxLayout="column" fxLayoutAlign="center start">        
+        <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="studentSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Settings','Student Settings']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>    
+    <vex-page-layout-content [ngClass]="pageId=='Student Bulk Data Import'?'':'-mt-6'">
+        <div class="bg-transparent" [ngClass]="pageId=='Student Bulk Data Import'?'':'-mt-16'" >
+                <div  class="w-full p-0">
+                    <div *ngIf="pageId=='Student Fields'">
+                        <vex-student-fields></vex-student-fields>
+                    </div>
+                    <div *ngIf="pageId=='Enrollment Codes'">
+                        <vex-enrollment-codes></vex-enrollment-codes>
+                    </div>
+                    <div *ngIf="pageId=='Student Bulk Data Import'">
+                        <vex-student-data-import></vex-student-data-import>
+                </div>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

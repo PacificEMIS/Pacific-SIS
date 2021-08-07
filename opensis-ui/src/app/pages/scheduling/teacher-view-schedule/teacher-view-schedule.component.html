@@ -1,0 +1,292 @@
+<vex-page-layout>
+    <vex-page-layout-header class="" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'viewSchedule' | translate }}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['My Schedule']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+    <vex-page-layout-content>
+        <mat-card class="w-full pt-2 pb-0">
+            <div class="flex justify-between items-center mb-2">
+                <h4 class="font-medium">{{'mySchedule'|translate}}</h4>
+                <div class="text-right">
+                    <button mat-icon-button aria-label="Example icon button with a menu icon" (click)="listAll()"
+                        [class.active]="scheduleSwitch" [ngClass]="scheduleSwitch?'text-blue' : ''"
+                        matTooltip="{{ 'listView' | translate }}" [matTooltipPosition]="'above'">
+                        <mat-icon>list_alt</mat-icon>
+                    </button>
+                    <button [disabled]="!courseSectionDataTable?.length" mat-icon-button aria-label="Example icon button with a menu icon"
+                        (click)="changeCalendarView('routineView')" [class.active]="view === 'routineView' && !scheduleSwitch"
+                        [ngClass]="view === 'routineView' && !scheduleSwitch ?'text-blue' : ''"
+                        matTooltip="{{ 'routineView' | translate }}" [matTooltipPosition]="'above'">
+                        <mat-icon [icIcon]=icPendingActions></mat-icon>
+                    </button>
+                    <button [disabled]="!courseSectionDataTable?.length" mat-icon-button aria-label="Example icon button with a menu icon"
+                        (click)="changeCalendarView(CalendarView.Week)" [class.active]="view === CalendarView.Week"
+                        [ngClass]="view === CalendarView.Week && !scheduleSwitch ? 'text-blue' : ''"
+                        matTooltip="{{ 'weekView' | translate }}" [matTooltipPosition]="'above'">
+                        <mat-icon>date_range</mat-icon>
+                    </button>
+                    <button [disabled]="!courseSectionDataTable?.length" mat-icon-button aria-label="Example icon button with a menu icon"
+                        (click)="changeCalendarView(CalendarView.Month)" [class.active]="view === CalendarView.Month"
+                        [ngClass]="view === CalendarView.Month && !scheduleSwitch ? 'text-blue' : ''"
+                        matTooltip="{{ 'monthView' | translate }}" [matTooltipPosition]="'above'">
+                        <mat-icon [icIcon]=icCalendarToday></mat-icon>
+                    </button>
+                    <button [disabled]="!courseSectionDataTable?.length" mat-button [matMenuTriggerFor]="menu" type="button" mat-flat-button class="p-0 ml-2"
+                        style="min-width: 0;">
+                        <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+                        <button mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate
+                            }}</button>
+                        <button (click)="exportScheduledCourses()" mat-menu-item><i class="icon icon-file-excel mr-4"></i>{{"exportToExcel" | translate
+                            }}</button>
+                    </mat-menu>
+                </div>
+            </div>
+            <mat-card-content>
+                <div *ngIf="scheduleSwitch">
+
+                    <div class="mb-4 -mx-4 border-t overflow-x-auto overflow-y-hidden">
+                        <table mat-table #table [dataSource]="staffCourseReport" class="example-container">
+                    
+                            <!-- course Column -->
+                            <ng-container matColumnDef="courseSection">
+                                <mat-header-cell *matHeaderCellDef> {{'courseSection' | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.courseSection}} </mat-cell>
+                            </ng-container>
+        
+                            <!-- period Column -->
+                            <ng-container matColumnDef="period">
+                                <mat-header-cell *matHeaderCellDef> {{ "period" | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.period}} </mat-cell>
+                            </ng-container>
+        
+                            <!-- markingPeriod Column -->
+                            <ng-container matColumnDef="markingPeriod">
+                                <mat-header-cell *matHeaderCellDef> {{ "markingPeriod" | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.markingPeriod}} </mat-cell>
+                            </ng-container>
+        
+                            <!-- time Column -->
+                            <ng-container matColumnDef="time">
+                                <mat-header-cell *matHeaderCellDef> {{ "time" | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.time}} </mat-cell>
+                            </ng-container>
+        
+                            <!-- room Column -->
+                            <ng-container matColumnDef="room">
+                                <mat-header-cell *matHeaderCellDef> {{ "room" | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element"> {{element.room}} </mat-cell>
+                            </ng-container>
+        
+                            <!-- meetingDays Column -->
+                            <ng-container matColumnDef="meetingDays">
+                                <mat-header-cell *matHeaderCellDef> {{ "meetingDays" | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let element" class="text-primary">
+                                    <!-- {{element.meetingDays}} -->
+                                    <div *ngIf="element.scheduleType == 'Fixed Schedule'">
+                                        <ng-container *ngFor="let day of element.weekDays.split('').sort()">
+                                            <span
+                                                class="w-5 h-5 text-center text-xs rounded inline-block text-white mr-1 font-medium"
+                                                [ngClass]="element.meetingDays?.includes(day)?'bg-primary':'bg-gray-light'"
+                                                [matTooltip]="day|weekDay:false:true"
+                                                [matTooltipPosition]="'above'">{{day|weekDay:true:false}}</span>
+        
+                                        </ng-container>
+                                    </div>
+                                    <div
+                                        *ngIf="element.scheduleType!== 'Fixed Schedule'" class="cursor-pointer">
+                                        {{element.scheduleType}}
+                                    </div>
+                                </mat-cell>
+                            </ng-container>
+        
+                            <!-- Expanded Content Column - The detail row is made up of this one column -->
+                            <ng-container matColumnDef="expandedDetail">
+                                <mat-cell *matCellDef="let detail" class="expand-table">
+                                    <div *ngIf="detail.element.scheduleType == 'Calendar Schedule'" class="flex-1 border rounded mb-4">
+                                        <table mat-table #table [dataSource]="detail.element.scheduleDetails" class="sub-table">
+        
+                                            <ng-container matColumnDef="date">
+                                                <mat-header-cell *matHeaderCellDef> {{'date' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.date|date:'mediumDate'}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="day">
+                                                <mat-header-cell *matHeaderCellDef> {{'day' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.day}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="period">
+                                                <mat-header-cell *matHeaderCellDef> {{'period' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.period}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="time">
+                                                <mat-header-cell *matHeaderCellDef> {{'time' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.time}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="room">
+                                                <mat-header-cell *matHeaderCellDef> {{'room' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.room}} </mat-cell>
+                                            </ng-container>
+        
+                                            <mat-header-row *matHeaderRowDef="displayedCalendarColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedCalendarColumns;"></mat-row>
+                                        </table>
+                                        
+                                    </div>
+        
+                                    <div *ngIf="detail.element.scheduleType == 'Variable Schedule'" class="flex-1 border rounded mb-4">
+                                        <table mat-table #table [dataSource]="detail.element.scheduleDetails" class="sub-table">
+             
+                                            <ng-container matColumnDef="day">
+                                                <mat-header-cell *matHeaderCellDef> {{'day' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.day}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="period">
+                                                <mat-header-cell *matHeaderCellDef> {{'period' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.period}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="time">
+                                                <mat-header-cell *matHeaderCellDef> {{'time' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.time}} </mat-cell>
+                                            </ng-container>
+        
+                                            <ng-container matColumnDef="room">
+                                                <mat-header-cell *matHeaderCellDef> {{'room' | translate }} </mat-header-cell>
+                                                <mat-cell *matCellDef="let element"> {{element.room}} </mat-cell>
+                                            </ng-container>
+        
+                                            <mat-header-row *matHeaderRowDef="displayedVariableColumns"></mat-header-row>
+                                            <mat-row *matRowDef="let row; columns: displayedVariableColumns;"></mat-row>
+                                        </table>
+                                    </div>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="noData">
+                                <td mat-footer-cell *matFooterCellDef colspan="6">
+                                    {{('noData'|translate)}}
+                                </td>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="element-row"
+                                [class.expanded]="expandedElement == row" (click)="expandedElement = row"></mat-row>
+                            <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+                                [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'"
+                                style="overflow: hidden">
+                            </mat-row>
+                        <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="staffCourseReport?.length>0!"></tr>
+        
+                        </table>
+                    </div>
+
+                </div>
+
+                <div *ngIf="!scheduleSwitch">
+                    <mat-divider class="-mx-6 border-t"></mat-divider>
+                    <div class="flex justify-center items-center" *ngIf="view !== 'routineView'">
+                        <div class="flex items-center">
+                            <button [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarPreviousView>
+                                <mat-icon>west</mat-icon>
+                            </button>
+                            <h3 class="text-blue text-center mx-4"> {{ viewDate | calendarDate:(view + 'ViewTitle'):'en'
+                                }}</h3>
+                            <button [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarNextView>
+                                <mat-icon>east</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div [ngSwitch]="view" class="-mx-4 border-t schedule-calendar">
+                        <mwl-calendar-week-view *ngSwitchCase="'week'"  [viewDate]="viewDate" [events]="events">
+                        </mwl-calendar-week-view>
+                        <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
+                        [cellTemplate]="customCellTemplate">
+                        </mwl-calendar-month-view>
+                        <ng-container *ngSwitchCase="'routineView'" [ngTemplateOutlet]="routineViewContent">
+                        </ng-container>
+                    </div>
+                </div>
+
+                <ng-template #customCellTemplate let-day="day" let-locale="locale">
+                    <div class="cal-cell-top">
+                        <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale
+                            }}</span>
+                    </div>
+                    <ng-container *ngIf="day.events.length > 0">
+                            <p [class]="event.meta.color.backgroundColor" class="rounded uppercase text-white m-2 px-2 py-1 mt-0 text-xs text-center"
+                                *ngFor="let event of day.events;let i = index;">
+                                {{ event.meta.monthTitle }}
+                            </p>
+                    </ng-container>
+                </ng-template>
+
+                <ng-template #routineViewContent>
+                    <div class="flex justify-center items-center w-full py-2">
+                        <button (click)="previousWeek()">
+                            <mat-icon class="mt-2">west</mat-icon>
+                          </button>
+                          <h3 class="text-primary mx-4 text-center text-base sm:text-lg">
+                            {{'sunday'|translate}}, {{currentWeek[0]|date:'mediumDate'}} - {{'saturday'|translate}},
+                            {{currentWeek[6]|date:'mediumDate'}}
+                          </h3>
+                          <button (click)="nextWeek()">
+                            <mat-icon class="mt-2">east</mat-icon>
+                          </button>
+                    </div>
+                    <div class="overflow-x-auto overflow-y-hidden">
+                        <table class="w-full schedule-table routineview-table">
+                            <thead>
+                                <tr>
+                                    <th class="bg-skyblue-light">
+                                        <div class="select-dropdown">
+                                            <select [(ngModel)]="routineViewBasedOn">
+                                                <option value="0" selected>
+                                                  {{ "periods" | translate }}
+                                                </option>
+                                                <option value="1">
+                                                  {{ "time" | translate }}
+                                                </option>
+                                              </select>
+                                        </div>
+                                    </th>
+                                    <ng-container *ngFor="let day of currentWeek;let i=index;let first = first;let last=last">
+                                        <th class="bg-skyblue">
+                                          {{ days[i]}}
+                                          <p class="text-primary">{{day|date:'mediumDate'}}</p>
+                                        </th>
+                                      </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let period of routineViewWithEvent.routineView">
+                                    <tr>
+                                                      <td [matTooltip]="routineViewBasedOn==='0'?(period.periodStartTime|transform24to12Pipe)+' - '+(period.periodEndTime|transform24to12Pipe):period.periodName"
+                                                          class="bg-skyblue font-semibold">
+                                                          {{routineViewBasedOn==='0'?period.periodName:(period.periodStartTime|transform24to12Pipe)+'
+                                                          -
+                                        '+(period.periodEndTime|transform24to12Pipe)}}
+                                      </td>
+                                      <ng-container *ngFor="let courseSection of period.filteredEvents;let first=first;let last=last">
+                                        <td>
+                                          <ng-container *ngIf="courseSection">
+                                            <p class="font-semibold" [class]="courseSection.color">{{courseSection.courseSectionName}}</p>
+                                            {{courseSection.gradeLevel}}
+                                          </ng-container>
+                                        </td>
+                                      </ng-container>
+                                    </tr>
+                                  </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-template>
+
+            </mat-card-content>
+        </mat-card>
+    </vex-page-layout-content>
+</vex-page-layout>

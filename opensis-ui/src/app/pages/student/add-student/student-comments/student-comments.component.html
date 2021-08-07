@@ -1,0 +1,49 @@
+<mat-card class="w-full">
+
+    <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
+        <h3 class="flex-auto">{{'comments' | translate}}</h3>
+        <div>
+            <a (click)="exportCommentsToExcel()" class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Export as Excel"><i class="icon icon-file-excel text-lg"></i></a>
+            <a class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Print"><mat-icon [icIcon]="icPrint"></mat-icon></a>
+            <button *ngIf="permissions?.add" mat-raised-button color="primary" class="align-middle" (click)='openAddNew()'>
+                <mat-icon [icIcon]="icAdd"></mat-icon><span class="ml-2 hidden md:inline-block">{{'addComment' |translate}}</span>
+            </button>
+        </div>
+    </div>
+    <mat-card-content>
+        <div @stagger fxLayout="column">
+            <div class="mt-6 mx-4" *ngIf="listCount > 0">
+                <div class="mb-4" *ngFor="let studentComment of studentCommentsListViewModel.studentCommentsList">
+                    <mat-accordion class="w-full">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="font-semibold h-full">
+                                    <div class="flex w-full justify-between items-center h-full">
+                                        <h5 class="inline-block font-medium"><mat-icon [icIcon]="icComment" class="inline-block align-middle mr-3"></mat-icon><span class="text-primary font-medium">{{studentComment.updatedBy}}</span> Commented on {{studentComment.lastUpdated|date:'MMM d, y, h:mm a'}}</h5>
+                                        <div class="font-normal pt-1">
+                                            <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Filter Columns" (click)="editComment(studentComment)" type="button">
+                                                <mat-icon [icIcon]="icEdit" class="mr-2"></mat-icon>
+                                            </button>
+                                            <button *ngIf="permissions?.delete" mat-icon-button matTooltip="Delete Column" (click)="confirmDelete(studentComment)"type="button">
+                                                <mat-icon [icIcon]="icDelete"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="border-t -mx-6">
+                                    <div class="ql-container">
+                                        <div class="mt-2 ql-snow">
+                                            <div class="ql-editor" [innerHTML]="studentComment.comment|safe:'html'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+            </div>
+            <div class="text-center border-t mt-4 pt-2" *ngIf="listCount === null">No Data</div>
+        </div>
+    </mat-card-content>
+</mat-card>

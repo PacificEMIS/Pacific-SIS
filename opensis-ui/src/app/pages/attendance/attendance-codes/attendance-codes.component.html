@@ -1,0 +1,179 @@
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
+<div *ngIf="attendanceCategories?.length>0; else addCategory">
+
+
+    <div class="mb-2 lg:flex lg:flex-wrap">
+        <div class="w-full">
+            <mat-card class="w-full p-0" fxFlex="auto">
+                <div class="lg:flex lg:flex-wrap items-center">
+                    <div class="lg:w-9/12 lg:pr-0 attendance-code-tab-group">
+                        <mat-tab-group #tabs>
+                            <mat-tab *ngFor="let category of attendanceCategories">
+                                <ng-template mat-tab-label class="tabl-list">
+                                    <span (click)="onCategoryChange(category.attendanceCategoryId)"
+                                        class="custom-label"> {{category.title}}</span>
+                                    <div *ngIf="selectedAttendanceCategory==category.attendanceCategoryId">
+                                        <a *ngIf="permissions?.edit" (click)="openEditCategory(category)">
+                                            <mat-icon [icIcon]="icEdit"></mat-icon>
+                                        </a>
+                                        <a *ngIf="permissions?.delete" (click)="openDeleteCategory(category)">
+                                            <mat-icon [icIcon]="icDelete"></mat-icon>
+                                        </a>
+                                    </div>
+                                </ng-template>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                    <div class="lg:w-3/12 lg:pr-4 pb-2 lg:pb-0">
+                        <button *ngIf="permissions?.add" color="" class="w-full text-primary" mat-button type="button"
+                            (click)='goToAddCategory()'>
+                            <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true"
+                                size="24px">
+                            </ic-icon>
+                            <span>{{'addNewCategory'|translate}}</span>
+                        </button>
+                    </div>
+                </div>
+                <hr class="-mt-1" />
+
+                <div class="bg-white px-6 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row"
+                    fxLayoutAlign="start center">
+                    <div class="md:flex w-full justify-between">
+                        <div class="py-2" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row"
+                            fxLayoutAlign="start center">
+
+                            <div class="flex">
+                                <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()"
+                                    class="py-3 border-0 outline-none w-full bg-transparent" appearance="outline"
+                                    color="primary" placeholder="Search..." type="search">
+                                <button mat-button matSuffix mat-icon-button aria-label="clear" *ngIf="searchKey"
+                                    (click)="onSearchClear()">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <hr class="-mx-6 block md:hidden" />
+                        <div fxFlex="200px" class="pt-3">
+                            <button [matMenuTriggerFor]="columnFilterMenu" fxFlex="none" mat-icon-button
+                                matTooltip="Filter Columns" type="button">
+                                <mat-icon [icIcon]="icFilterList"></mat-icon>
+                            </button>
+
+                            <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button
+                                type="button" (click)='goToAddAttendanceCode()'>
+                                <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
+                                </ic-icon>
+                                <span class="hidden md:inline-block">{{'addNewAttendanceCode'|translate}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto overflow-y-hidden">
+                    <table @stagger mat-table [dataSource]="attendanceCodeList" class="w-full" cdkDropList
+                        (cdkDropListDropped)="drop($event)" matSort>
+
+                        <ng-container matColumnDef="id" sticky>
+                            <th mat-header-cell *matHeaderCellDef width="40"></th>
+                            <td mat-cell *matCellDef="let element" width="40">
+                                <mat-icon class="cursor-move" cdkDragHandle>reorder</mat-icon>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="title">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>{{'title'|translate}}
+                            </mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{element.title}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="shortName">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'shortName'|translate}}
+                            </mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{element.shortName}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="allowEntryBy">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'allowEntryBy'|translate}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{element.allowEntryBy==null?'N/A':element.allowEntryBy}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="defaultCode">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'defaultForTeacherAndOffice'|translate}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{element.defaultCode|EmtyBooleanCheckPipe}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stateCode">
+                            <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>
+                                {{'stateCode'|translate}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                {{element.stateCode==null?'N/A':element.stateCode}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action" stickyEnd>
+                            <mat-header-cell mat-header-cell *matHeaderCellDef>{{'action'|translate}}</mat-header-cell>
+                            <mat-cell mat-cell *matCellDef="let element">
+                                <a *ngIf="permissions?.edit" (click)="openEditAttendance(element)"
+                                    class="mr-3 cursor-pointer">
+                                    <mat-icon [icIcon]="icEdit"></mat-icon>
+                                </a>
+                                <a *ngIf="permissions?.delete" (click)="openDeleteAttendance(element)"
+                                    class="cursor-pointer">
+                                    <mat-icon [icIcon]="icDelete"></mat-icon>
+                                </a>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="loading">
+                            <mat-footer-cell *matFooterCellDef colspan="7">
+                                <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                            </mat-footer-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="noData">
+                            <td mat-footer-cell *matFooterCellDef colspan="7">
+                                No Data
+                            </td>
+                        </ng-container>
+
+                        <mat-header-row mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>
+                        <mat-row cdkDrag mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></mat-row>
+                        <mat-footer-row mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading">
+                        </mat-footer-row>
+                        <tr mat-footer-row *matFooterRowDef="['noData']"
+                            [class.hide]="attendanceCodeList?.data.length!=0">
+                        </tr>
+                    </table>
+                </div>
+                
+                <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+                    <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+                        class="checkbox-item mat-menu-item">
+                        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+                            {{column.label}}
+                        </mat-checkbox>
+                    </button>
+                </mat-menu>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<ng-template #addCategory>
+    <button class="w-full text-primary" mat-button type="button" (click)='goToAddCategory()'>
+        <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
+        </ic-icon>
+        <span>{{'addNewCategory'|translate}}</span>
+    </button>
+</ng-template>

@@ -1,0 +1,110 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="flex container-sidenav-secondary" [ngClass]="secondarySidebar==0?'' : 'show-secondary-sidebar'">
+    <div class="sidenav-secondary">
+        <button mat-icon-button class="close-secondary-sidebar" (click)="toggleSecondarySidebar()">
+            <mat-icon>close</mat-icon>
+        </button>
+        <vex-scrollbar class="flex-auto">
+            <div class="h-45 text-center sm:px-0 pt-5 pb-2">
+                <vex-profile-image [enableCropTool]="enableCropTool" [responseImage]="responseImage" class="mx-auto">
+                </vex-profile-image>
+
+            </div>
+            <div class="text-center px-4">
+                <h5 class="text-primary font-semibold mb-0">{{staffTitle}}</h5>
+                <div class="rounded-full py-1 px-3 bg-gray text-white inline-block mt-3" *ngIf="profile">{{profile}}
+                </div>
+            </div>
+            <hr class="mt-4" />
+            <div>
+                <!-- <a @fadeInRight *ngFor="let field of fieldsCategory; let index =index"
+                    (click)="changeCategory(field,index)"
+                    class="list-item mt-2 no-underline flex items-center rounded-none" matRipple
+                    [ngClass]="currentCategory==field.categoryId?'text-primary active' : ''">
+                    <mat-icon *ngIf="field.categoryId==12" [icIcon]="icGeneralInfo" class="mr-3"></mat-icon>
+                    <mat-icon *ngIf="field.categoryId==13" [icIcon]="icSchoolInfo" class="mr-3"></mat-icon>
+                    <mat-icon *ngIf="field.categoryId==14" [icIcon]="icAddressInfo" class="mr-3"></mat-icon>
+                    <mat-icon *ngIf="field.categoryId==15" [icIcon]="icCertificationInfo" class="mr-3"></mat-icon>
+                    <mat-icon *ngIf="field.categoryId>15" [icIcon]="icCustomCategory" class="mr-3"></mat-icon>
+                    {{field.title}}
+                </a> -->
+                <mat-expansion-panel expanded="true">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon [icIcon]="icSchool" class="mr-3"></mat-icon> {{ 'staffDetails' | translate }}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div>
+                        <ul class="nav-sub-item">
+                            <li *ngFor="let field of fieldsCategory; let index =index"
+                            (click)="changeCategory(field,index)">
+                                <a [ngClass]="currentCategory==field.categoryId?'text-primary active' : ''"
+                                    @fadeInRight *ngIf="field.customFields!=''||index<4">{{field.title}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </mat-expansion-panel>
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple
+                    (click)="changeTempCategory(16)" [ngClass]="currentCategory==16 ?'text-primary active' : ''">
+                    <mat-icon [icIcon]="icCalendar" class="mr-3"></mat-icon> {{ 'courseSchedule' | translate }}
+                </a>
+            </div>
+
+        </vex-scrollbar>
+    </div>
+    <div class="right-content">
+
+
+        <vex-page-layout>
+            <vex-page-layout-header class="pb-10 pt-6" fxLayoutAlign="center start">
+                <vex-secondary-toolbar current="Staff Information" class="w-full">
+                    <vex-breadcrumbs [crumbs]="['Staff', pageStatus]" class="flex-auto"></vex-breadcrumbs>
+                </vex-secondary-toolbar>
+            </vex-page-layout-header>
+            <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">
+                <div class="flex items-center">
+                    <button mat-icon-button class="text-white mr-2" (click)="toggleSecondarySidebar()">
+                        <mat-icon>apps</mat-icon>
+                    </button>
+                    <div class="h-45 text-center sm:px-0">
+                        <vex-profile-image [enableCropTool]="enableCropTool" [responseImage]="responseImage"
+                            style="width:50px" class="mx-auto inline-block"></vex-profile-image>
+                    </div>
+                    <div class="text-left px-4">
+                        <h4 class="mb-0 text-white">{{staffTitle}}</h4>
+                        <div class="text-white opacity-50" *ngIf="profile">{{profile}}</div>
+                    </div>
+                </div>
+            </div>
+            <vex-page-layout-content class="-mt-4">
+                <div class="w-full">
+                    <router-outlet></router-outlet>
+                    <!-- <vex-staff-generalinfo *ngIf="currentCategory==12" [staffCreateMode]="staffCreateMode"
+                    (dataAfterSavingGeneralInfo)="afterSavingGeneralInfo($event)" [staffDetailsForViewAndEdit]="staffAddModel" [categoryId]="indexOfCategory">
+                    </vex-staff-generalinfo> -->
+
+                    <!-- <vex-staff-schoolinfo *ngIf="currentCategory==13" [staffCreateMode]="staffCreateMode"
+                        [staffDetailsForViewAndEdit]="staffAddModel" (checkUpdatedProfileName)="profileFromSchoolInfo($event)"></vex-staff-schoolinfo> -->
+
+
+                    <!-- <vex-staff-addressinfo *ngIf="currentCategory==14" [staffCreateMode]="staffCreateMode"
+                        [staffDetailsForViewAndEdit]="staffAddModel" [categoryId]="indexOfCategory">
+                    </vex-staff-addressinfo> -->
+
+                    <!-- <vex-staff-certificationinfo *ngIf="currentCategory==15"></vex-staff-certificationinfo> -->
+
+                    <!-- <div *ngFor="let field of fieldsCategory;let index=index">
+                        <vex-custom-field *ngIf="field.categoryId == currentCategory && currentCategory>15"
+                            [categoryTitle]="field.title" [module]="module"
+                            [schoolDetailsForViewAndEdit]="staffAddModel" [categoryId]="indexOfCategory"
+                            [staffCreateMode]="staffCreateMode" [schoolDetailsForViewAndEdit]="staffAddModel"
+                            [categoryId]="indexOfCategory">
+                        </vex-custom-field>
+                    </div> -->
+
+                </div>
+            </vex-page-layout-content>
+        </vex-page-layout>
+    </div>
+    <div class="sidebar-overlay" (click)="toggleSecondarySidebar()"></div>
+</div>

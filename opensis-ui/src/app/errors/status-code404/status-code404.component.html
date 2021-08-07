@@ -1,0 +1,35 @@
+<!-- <div class="errorbody">
+    <div class="container">
+      <div class="twopanel">
+        <div class="contentprt">
+          <img src="assets/img/oopsimage.png" />
+          <p>We can't seem to find the page</p>
+          <button type="button" (click)="homeClicked()">Home</button>
+        </div>
+      </div>
+    </div>
+</div> -->
+
+<div [ngClass]="!loginService.isAuthenticated()?'outer-error':'absolute'" class="h-full w-full">
+  <div class="error-container flex w-full h-full justify-center items-center">
+    <div class="mb-6 md:mb-0" *ngIf="!loginService.isAuthenticated()">
+		<img src="assets/img/opensis_logo.png">
+	</div>
+  <div class="error-404 flex items-center">
+    <span>4</span>
+    <span class="md:mx-3"><img src="assets/img/owl-clipart-animation.svg"></span>
+    <span>4</span>
+  </div>
+	<div class="text-center mt-3 md:mt-10 px-4 md:px-0">
+    <h1 class="font-bold mt-4 md:mt-0">Oops!</h1>
+		<h2 class="mt-2 text-lg md:text-2xl">We can&rsquo;t find the page that you are looking for</h2>
+  </div>
+	<div class="text-center mt-4"><button type="button" (click)="homeClicked()" class="btn btn-primary">Go to Home</button></div>
+</div>
+
+<div class="snowflakes">
+	<div class="clouds"></div>
+  <div class="snow" *ngFor="let n of numSequence(100);
+  let i = index;"></div>
+  </div>
+</div>

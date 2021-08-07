@@ -1,0 +1,79 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">
+        {{ "comment" | translate }}
+    </h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content class="mb-1 pt-6">
+    <!-- <mat-form-field appearance="outline" color="primary" class="w-full mt-4">
+        <mat-label>Enter Comment</mat-label>
+        <textarea matInput [(ngModel)]="comments"></textarea>
+    </mat-form-field> -->
+    <div class="timeline">
+        <ng-container *ngIf="data?.type === 'update'">
+            <ng-container *ngFor="let comment of data?.commentData">
+                <div class="timeline-content" *ngIf="comment?.membership?.profileType ===  'Super Administrator'">
+                    <div class="talk-bubble border border-gray-light">
+                        <p class="text-base">{{comment?.comment}}</p>
+                    </div>
+                    <p class="talk-bubble-text text-gray"><span
+                            class="font-semibold">{{comment?.membership?.profile}}</span> {{
+                        'commentedOn' |
+                        translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
+                        @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
+                        <span mat-raised-button matTooltip="Administrator"
+                            aria-label="Button that displays a tooltip when focused or hovered over"
+                            [matTooltipPosition]="'above'" class="cursor-pointer">
+                            <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
+                        </span>
+                    </p>
+                </div>
+                <div *ngIf="!tapForEdit">
+                <div class="timeline-content" *ngIf="comment?.membership?.profileType ===  'Homeroom Teacher' || comment?.membership?.profileType === 'Teacher'">
+                    <div class="flex justify-between items-center talk-bubble border border-gray-light">
+                        <p class="text-base">{{comments}}</p>
+                        <span class="cursor-pointer" (click)="tapForEdit = true">
+                            <mat-icon class="text-black ml-2 align-middle">edit</mat-icon>
+                        </span>
+                    </div>
+                    <!-- <div class="mb-2 commentbox"
+                    *ngIf="data?.type === 'submit' || tapForEdit">
+                        <div class="w-full border border-gray-light rounded p-2">
+                            <label class="text-gray block">{{ 'yourComment' | translate }}</label>
+                            <input type="text" [(ngModel)]="comments" class="w-full">
+                        </div>
+                    </div> -->
+                    <p class="talk-bubble-text text-gray"><span class="font-semibold">{{comment?.membership?.profile ?
+                            comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
+                        'commentedOn' |
+                        translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
+                        @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
+                        <span mat-raised-button matTooltip="Teacher"
+                            aria-label="Button that displays a tooltip when focused or hovered over"
+                            [matTooltipPosition]="'above'" class="cursor-pointer">
+                            <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
+                        </span>
+                    </p>
+                </div>
+                </div>
+            </ng-container>
+        </ng-container>
+        <div class="timeline-content mb-6"
+            *ngIf="data?.type === 'submit' || tapForEdit">
+            <div class="w-full border border-gray-light rounded p-2">
+                <label class="text-gray block">{{ 'yourComment' | translate }}</label>
+                <input type="text" [(ngModel)]="comments" class="w-full">
+            </div>
+        </div>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-4">
+    <button mat-button mat-dialog-close>{{ 'cancel' | translate }}</button>
+    <button color="primary" mat-flat-button type="submit" class="text-white ml-2"
+        (click)="addOrUpdateComments()">{{actionButtonTitle|translate}}</button>
+</mat-dialog-actions>

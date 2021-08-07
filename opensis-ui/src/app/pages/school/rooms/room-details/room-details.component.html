@@ -1,0 +1,34 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{roomDetails.info.title}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column">
+    <ul class="md:grid md:grid-cols-2 md:col-gap-8 md:row-gap-10 mt-6">
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'title' | translate}}</label>
+            <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{roomDetails.info.title}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'capacity' | translate}}</label>
+            <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{roomDetails.info.capacity}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'sortOrder' | translate}}</label>
+            <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{roomDetails.info.sortOrder}}</p>
+        </li>
+        <li>
+            <label class="text-sm leading-5 text-gray">{{'active' | translate}}</label>
+            <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{roomDetails.info.isActive|EmtyBooleanCheckPipe}}</p>
+        </li>
+        <li class="col-start-1 col-end-3">
+            <label class=" text-sm leading-5 text-gray">{{'description' | translate}}</label>
+            <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{roomDetails.info.description}}</p>
+        </li>
+        
+    </ul>  
+</mat-dialog-content>

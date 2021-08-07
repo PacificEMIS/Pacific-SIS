@@ -1,0 +1,14 @@
+.mat-expansion-panel-header.mat-expanded {
+    height: 48px;
+}
+
+.mat-expansion-panel:not([class*="mat-elevation-z"]) {
+    box-shadow: none;
+    border: 1px solid var(--foreground-divider);
+
+    .btn-add-enrollment {
+        margin-top: -52px;
+        position: absolute;
+        right: 53px;
+    }
+}

@@ -1,0 +1,7 @@
+mat-dialog-container{
+    padding: 0px !important
+}
+
+.mat-card>:last-child:not(.mat-card-footer){
+    justify-content: flex-end !important;
+}

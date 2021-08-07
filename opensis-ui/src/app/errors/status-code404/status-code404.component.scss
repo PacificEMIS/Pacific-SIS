@@ -1,0 +1,209 @@
+.btn {
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 4px;
+  
+    &.btn-primary {
+        background: #4caf50;
+        color: #ffffff;
+        @apply font-medium;
+    }
+}
+
+.error-container {
+    position: relative;
+        flex-direction: column;
+    z-index: 9;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .error-404 {
+        font-size: 40vh;
+        font-weight: 500;
+        line-height: 40vh;
+        position: relative;
+
+        &::after {
+            content: " ";
+            position: absolute;
+            bottom: -20px;
+            width: 16%;
+            left: calc(50% - 8%);
+            height: 13px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0.4;
+        }
+
+        @media screen and (max-width:767px) {            
+            font-size: 33vw;
+            font-weight: 500;
+            line-height: 33vw;
+        }
+
+        span {
+            color: #071f3e;
+        img {
+                width: 30vh;
+                @media screen and (max-width:767px) {
+                    width: 28vw;
+                }
+            }
+        }
+    }
+        }
+  
+@function random_range($min, $max) {
+    $rand: random();
+    $random_range: $min + floor($rand * (($max - $min) + 1));
+    @return $random_range;
+}
+
+
+@keyframes move-background {
+    from {
+        -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to {
+        -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+}
+
+@-webkit-keyframes move-background {
+    from {
+        -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to {
+        -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+}
+
+@-moz-keyframes move-background {
+    from {
+        -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to {
+        -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+}
+
+@-webkit-keyframes move-background {
+    from {
+        -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+    to {
+        -webkit-transform: translate3d(1000px, 0px, 0px);
+    }
+}
+
+.outer-error {
+    .error-container {
+        background: url(../../../assets/img/branch.svg) no-repeat right bottom;
+        background-size: 30%;
+
+
+        @media screen and (max-width: 767px) {
+            /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e8e9eb+0,d1d4d8+100 */
+            background: #e8e9eb; /* Old browsers */
+            background: -moz-radial-gradient(center, ellipse cover, #ffffff 0%, #b8bfc9 100%); /* FF3.6-15 */
+            background: -webkit-radial-gradient(
+                center,
+                ellipse cover,
+                #ffffff 0%,
+                #b8bfc9 100%
+            ); /* Chrome10-25,Safari5.1-6 */
+            background: radial-gradient(
+                ellipse at center,
+                #ffffff 0%,
+                #b8bfc9 100%
+            ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#b8bfc9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        }
+    }
+
+.snowflakes {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e8e9eb+0,d1d4d8+100 */
+    background: #e8e9eb; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover, #ffffff 0%, #b8bfc9 100%); /* FF3.6-15 */
+    background: -webkit-radial-gradient(center, ellipse cover, #ffffff 0%, #b8bfc9 100%); /* Chrome10-25,Safari5.1-6 */
+    background: radial-gradient(
+        ellipse at center,
+        #ffffff 0%,
+        #b8bfc9 100%
+    ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#b8bfc9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+    @media screen and (max-width: 767px) {
+        display: none;
+    }
+        }
+
+.snow {
+    $total: 200;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    filter: blur(4px);
+
+    @for $i from 1 through $total {
+        $random-x: random(1000000) * 0.0001vw;
+        $random-offset: random_range(-100000, 100000) * 0.0001vw;
+        $random-x-end: $random-x + $random-offset;
+        $random-x-end-yoyo: $random-x + ($random-offset / 2);
+        $random-yoyo-time: random_range(30000, 80000) / 100000;
+        $random-yoyo-y: $random-yoyo-time * 100vh;
+        $random-scale: random(10000) * 0.0001;
+        $fall-duration: random_range(10, 30) * 1s;
+        $fall-delay: random(30) * -1s;
+
+        &:nth-child(#{$i}) {
+            opacity: random(2000) * 0.0001;
+            transform: translate($random-x, -10px) scale($random-scale);
+            animation: fall-#{$i} $fall-duration $fall-delay linear infinite;
+        }
+
+        @keyframes fall-#{$i} {
+            #{percentage($random-yoyo-time)} {
+                transform: translate($random-x-end, $random-yoyo-y) scale($random-scale);
+            }
+
+            to {
+                transform: translate($random-x-end-yoyo, 100vh) scale($random-scale);
+            }
+      }
+    }
+  }
+
+.clouds {
+    width: 10000px;
+    height: 100%;
+    background: transparent url("../../../assets/img/clouds_repeat.jpg") repeat;
+    background-size: 2000px 2000px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 3;
+    opacity: 0.2;
+
+    -moz-animation: move-background 100s linear infinite;
+    -ms-animation: move-background 100s linear infinite;
+    -o-animation: move-background 100s linear infinite;
+    -webkit-animation: move-background 100s linear infinite;
+    animation: move-background 100s linear infinite;
+    }
+
+    
+
+}

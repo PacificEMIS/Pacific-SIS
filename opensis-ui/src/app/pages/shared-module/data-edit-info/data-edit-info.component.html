@@ -1,0 +1,31 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+  <h2 class="headline m-0" fxFlex="auto">
+    {{ "dataEditInfo" | translate }}
+  </h2>
+  <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+    <mat-icon [icIcon]="icClose"></mat-icon>
+  </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content class="mt-3">
+  <ul class="grid grid-cols-2 col-gap-6 row-gap-10 mb-4">
+    <li>
+      <label class="text-sm leading-5 text-gray">{{ "createdBy" | translate }}</label>
+      <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{createdBy}}</p>
+    </li>
+    <li>
+      <label class="text-sm leading-5 text-gray">{{ "createdOn" | translate }}</label>
+      <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{createdOn | date:'mediumDate'}}</p>
+    </li>
+    <li>
+      <label class="text-sm leading-5 text-gray">{{ "modifiedBy" | translate }}</label>
+      <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{modifiedBy | EmtyValueCheckPipe}}</p>
+    </li>
+    <li>
+      <label class="text-sm leading-5 text-gray">{{ "modifiedOn" | translate }}</label>
+      <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{modifiedOn | date:'mediumDate' | EmtyValueCheckPipe}}
+      </p>
+    </li>
+  </ul>
+</mat-dialog-content>

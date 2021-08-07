@@ -1,0 +1,235 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="bg-skyblue px-gutter py-4 border-b border-t">
+    <vex-secondary-toolbar current="Course Manager" class="text-primary">
+        <vex-breadcrumbs [crumbs]="['Courses']" class="flex-auto"></vex-breadcrumbs>
+    </vex-secondary-toolbar>
+</div>
+<vex-page-layout>
+    <vex-page-layout-content>
+       <div *ngIf= "showCourses;else showCourseSections">
+        <div class="flex items-center justify-between mb-6">
+            <form [formGroup]="form">
+                    <div>
+                       
+                <div class="inline-block mr-4">
+                    <mat-form-field class="mb-0 mr-1 bg-white" appearance="outline" color="primary">
+                            <mat-label>{{'Subject'|translate}}</mat-label>
+                            <mat-select name="subject" formControlName="subject" (selectionChange)="onSubjectChange($event.value)">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option *ngFor="let subject of subjectList" [value]='subject.subjectName'>{{subject.subjectName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    <a (click)="openModalManageSubjects()"
+                        class="inline-block align-top cursor-pointer text-blue py-3 px-2">
+                        <mat-icon [icIcon]="icSettings"></mat-icon>
+                    </a>
+                </div>
+        
+                <div class="inline-block mr-4">
+                    <mat-form-field class="mb-0 mr-1 bg-white" appearance="outline" color="primary">
+                            <mat-label>{{'Program'|translate}}</mat-label>
+                            <mat-select  name="program" formControlName="program" (selectionChange)="onProgramChange($event.value)">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option *ngFor="let program of programList" [value]='program.programName'>{{program.programName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    <a (click)="openModalManagePrograms()"
+                        class="inline-block align-top cursor-pointer text-blue py-3 px-2">
+                        <mat-icon [icIcon]="icSettings"></mat-icon>
+                    </a>
+                </div>
+        
+                <mat-form-field class="mb-0 bg-white" appearance="outline" color="primary">
+                            <mat-label>{{'gradeLevel'|translate}}</mat-label>
+                            <mat-select  name="gradeLevel" formControlName="gradeLevel" (selectionChange)="onGradeLevelChange($event.value)">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option *ngFor="let gradeLevel of gradeLevelList" [value]='gradeLevel.title'>{{gradeLevel.title}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </form>
+                </div>
+
+        <div class="lg:flex w-full" [ngClass]="courseDetails === 1?'show-course-details' : ''">
+            <div class="lg:w-1/2 lg:pr-6">
+                <div class="card overflow-auto">
+                    <div class="flex justify-between w-full px-6 py-3 items-center">
+                        <!-- <h3 *ngIf = "filterCourseList.length > 0 ; else noFilterCount">{{filterCourseCount}} Course Found</h3>
+                        <ng-template #noFilterCount>
+                            <h3 *ngIf = "globalFilterCourseList.length > 0; else noGlobalFilterCount">{{globalFilterCourseCount}} Course Found</h3>
+                            <ng-template #noGlobalFilterCount>
+                                <h3 >{{totalCourse}} Course Found</h3>
+                            </ng-template>
+                        </ng-template> -->
+                        <h3>{{courseList?.length}} Course Found</h3>
+
+                            <button *ngIf="permissions?.add" mat-raised-button color="primary"
+                                (click)="openModalEditCourse()">
+                                <mat-icon [icIcon]="icAdd" class="md:mr-2"></mat-icon><span
+                                    class="hidden md:inline-block">{{'addNewCourse'|translate}}</span>
+                        </button>
+                    </div>
+                    <hr />
+                    <input
+                    class="w-full border-0 focus:border-0 focus:border-none focus:outline-none px-6 py-4 box-border"
+                    type="text" placeholder="Search Course..." [(ngModel)]="nameSearch">
+                    <hr />
+
+                    <!-- <div *ngIf = "filterCourseList.length > 0 ; else noFilter">
+                        <ul >
+                            <li *ngFor="let course of filterCourseList | courseFilter:nameSearch:filterFlag;let index=index" [ngClass]="selectedCourses==index?'pl-5 pr-2 py-3 bg-green-light border-l-4 border-green':'pl-6 pr-2 py-3 border-b'">
+                                <div class="flex items-center w-full justify-between">
+                                    <a href="javascript:void(0)" (click)="showDetails(course,index)" class="cursor-pointer">
+                                        <h4 class="text-green font-bold" *ngIf = "index === courseIndex; else notSelected">{{course.courseTitle}}</h4>
+                                        <ng-template #notSelected>
+                                            <h4 class="font-bold">{{course.courseTitle}}</h4>
+                                        </ng-template>
+                                        <p>{{course.courseSubject}}<span class="dot-separator" *ngIf="course.courseProgram"></span>{{course.courseProgram}}</p>
+                                    </a>
+                                    <div>
+                                        <span (click)="courseSections(course)" class="mr-4 text-blue cursor-pointer">Sections
+                                            (0)</span>
+                                        <a [matMenuTriggerFor]="addNewMenu"
+                                            class="cursor-pointer inline-block ml-3 pt-1 align-middle">
+                                            <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                                <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+                                    <button *ngIf="editPermission" mat-menu-item (click) = "editCourse(course)">
+                                        <span>{{'editItem' | translate}}</span>
+                                    </button>
+                                    <button *ngIf="deletePermission" mat-menu-item (click) = "confirmDelete(course,index)">
+                                        <span>{{'deleteItem' | translate}}</span>
+                                    </button>
+                                </mat-menu>
+                            </li>                    
+                        </ul>
+                    </div> -->
+                   
+                      
+                    <div>
+                            <ul class="course-list">
+                                <li *ngFor="let course of courseList | courseFilter:nameSearch:filterFlag;let index=index"
+                                    [ngClass]="selectedCourses==index?'active':''">
+                                    <div class="md:flex items-center w-full justify-between">
+                                        <a href="javascript:void(0)" (click)="showDetails(course.course,index)"
+                                            class="cursor-pointer">
+                                            <h4 class="font-bold">{{course.course.courseTitle}}</h4>
+                                            <p>{{course.course.courseSubject}}<span class="dot-separator"
+                                                    *ngIf="course.course.courseProgram"></span>{{course.course.courseProgram}}
+                                            </p>
+                                        </a>
+                                        <div class="flex items-center w-full md:w-auto justify-between md:justify-end">
+                                            <span (click)="courseSections(course)" [ngClass]="permissions?.edit?'':'mr-5'"
+                                                class="text-blue cursor-pointer">Sections
+                                            ({{course.courseSectionCount}})</span>
+                                        <a [matMenuTriggerFor]="addNewMenu" *ngIf="permissions?.edit"
+                                            class="cursor-pointer inline-block ml-3 pt-1 align-middle">
+                                            <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                                <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+                                    <button *ngIf="permissions?.edit" mat-menu-item (click) = "editCourse(course.course)">
+                                        <span>{{'editItem' | translate}}</span>
+                                    </button>
+                                    <button *ngIf="permissions?.edit" mat-menu-item (click) = "confirmDelete(course.course,index)">
+                                        <span>{{'deleteItem' | translate}}</span>
+                                    </button>
+                                </mat-menu>
+                            </li>                    
+                        </ul>
+                    </div>             
+                   
+                </div>
+            </div>
+            <div class="lg:w-1/2 lg:pl-6 course-details" *ngIf="courseList?.length > 0">
+                <div class="card overflow-auto">
+                    <div class="flex justify-between w-full pl-6 py-3 align-middle">
+                        <h3 class="pt-1">{{selectedCourseObj.courseTitle}}</h3>
+                        <div>
+                            <a [matMenuTriggerFor]="addNewMenu"
+                                *ngIf="permissions?.edit"
+                                class="cursor-pointer inline-block ml-2 px-1 pt-1 align-middle">
+                                <mat-icon [icIcon]="icMoreVertical" class="mr-2"></mat-icon>
+                            </a>
+                            <button class="text-secondary mr-4 lg:hidden" (click)="closeCourseDetails()" mat-icon-button
+                                type="button">
+                                <mat-icon [icIcon]="icClose"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
+                        <button *ngIf="permissions?.edit" mat-menu-item (click) = "editCourse(selectedCourseObj)">
+                            <span>{{'editItem' | translate}}</span>
+                        </button>
+                        <button *ngIf="permissions?.edit" mat-menu-item (click) = "confirmDelete(selectedCourseObj,0)">
+                            <span>{{'deleteItem' | translate}}</span>
+                        </button>
+                    </mat-menu>
+                    <hr />
+                    <ul class="grid sm:grid-cols-2 sm:col-gap-6 row-gap-6 sm:row-gap-8 my-6 px-6">
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'title' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseTitle|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'shortName' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseShortName|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'gradeLevel' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseGradeLevel|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'program' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseProgram|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'subject' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseSubject|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'courseCategory' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseCategory|EmtyValueCheckPipe}}</p>
+                        </li>
+                        <li>
+                            <label class="text-sm leading-5 text-gray">{{'creditHours' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.creditHours?(selectedCourseObj.creditHours | number:'0.2'):selectedCourseObj.creditHours==0?'0.00':'-'}}</p>
+                        </li>
+                        <li class="col-span-2">
+                            <label class="text-sm leading-5 text-gray">{{'standards' | translate}}</label>
+                            <div *ngIf="standard.length > 0">
+                            <div class="standards-list mt-1" *ngFor="let std of standard">
+                                <hr/>
+                                <div class="flex justify-between items-center">
+                                    <div>{{std.gradeUsStandard.standardDetails}}
+                                    </div>
+                                    <div>
+                                        <span class="inline-block opacity-75 p-2 text-gray">
+                                            <mat-icon [icIcon]="icInfo" [matTooltip]="std.gradeUsStandard.standardDetails"></mat-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                            </div>
+                            <div *ngIf="standard.length === 0">-</div>
+                        </li>
+                        <li class="col-span-2">
+                            <label class="text-sm leading-5 text-gray">{{'description' | translate}}</label>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.courseDescription|EmtyValueCheckPipe}}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+       </div>
+        
+
+        <ng-template #showCourseSections>
+            <vex-course-section [courseDetailsFromParent]="selectedCourseDetails" (backToCourseFromCourseSection)="backToCourse($event)"></vex-course-section>
+        </ng-template>
+    </vex-page-layout-content>
+</vex-page-layout>

@@ -1,0 +1,32 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{modalDialogTitle|translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column" [formGroup]="form">
+
+    <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+        <mat-label>{{'value' | translate}}</mat-label>
+        <input type="number" name="gradeScaleValue" formControlName="gradeScaleValue" min=1 matInput required>
+        <mat-error *ngIf="form.get('gradeScaleValue').hasError('required')">{{'gradeScaleValueIsRequired'|translate}}
+        </mat-error>
+        <mat-error *ngIf="form.get('gradeScaleValue').hasError('min')">{{'gradeScaleValueCannotBeLessThanOne'|translate}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'comment' | translate}}</mat-label>
+        <textarea name="gradeScaleComment" formControlName="gradeScaleComment"  matInput required></textarea>
+        <mat-error *ngIf="form.get('gradeScaleComment').hasError('required')">{{'gradeScaleCommentIsRequired'|translate}}
+        </mat-error>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{modalActionButton | translate}}</button>
+</mat-dialog-actions>

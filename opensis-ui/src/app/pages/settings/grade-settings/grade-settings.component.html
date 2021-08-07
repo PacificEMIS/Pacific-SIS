@@ -1,0 +1,40 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">        
+        <vex-secondary-toolbar current={{pageTitle}} [schoolSettings]="parentSettings" [pages]="pages" (selectedPage)="getSelectedPage($event)" class="w-full">
+            <vex-breadcrumbs [crumbs]="['Settings','Grades']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>    
+    <vex-page-layout-content class="-mt-6">
+        <div class="-mt-16">
+                <div  class="w-full p-0">
+                    <div *ngIf="pageId === 'Standard Grade Setup'">
+                        <vex-standard-grade-setup></vex-standard-grade-setup>
+                    </div>
+
+                    <div *ngIf="pageId === 'Effort Grade Setup'">
+                        <vex-effort-grade-setup></vex-effort-grade-setup>
+                    </div>
+
+                    <div *ngIf="pageId === 'Report Card Grades'">
+                        <vex-report-card-grades></vex-report-card-grades>
+                    </div>
+
+                    <div *ngIf="pageId === 'Report Card Comments'">
+                        <vex-report-card-comments></vex-report-card-comments>
+                    </div>
+
+                    <div *ngIf="pageId === 'Honor Roll Setup'">
+                        <vex-honor-roll-setup></vex-honor-roll-setup>
+                    </div>
+
+                    <!-- <div *ngIf="pageId === 'Report Cards'">
+                        <vex-report-cards></vex-report-cards>
+                    </div> -->
+
+                    <!-- <div *ngIf="pageId === 'Transcripts'">
+                        <vex-transcripts></vex-transcripts>
+                    </div> -->
+                </div>
+            </div>
+    </vex-page-layout-content>
+</vex-page-layout>

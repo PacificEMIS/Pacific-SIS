@@ -1,0 +1,114 @@
+
+<form #form="ngForm" novalidate appInvalidControlScroll>
+<div class="card">
+    <div class="px-6 py-3">
+        <h5 class="font-bold text-primary">{{memberProfile}}</h5>
+        <p>{{memberDescription}}</p>
+    </div>
+    <hr>
+    <div class="px-gutter py-3">
+        <a (click)="accordion.openAll()"
+            class="cursor-pointer inline-block px-2 py-1 border rounded text-blue mr-4 bg-light-grey hover:bg-primary hover:text-white">
+            <mat-icon [icIcon]="icExpandAll" class="mr-1 align-middle"></mat-icon> Expand All
+        </a>
+        <a (click)="accordion.closeAll()"
+            class="cursor-pointer inline-block px-2 py-1 border rounded text-blue bg-light-grey hover:bg-primary hover:text-white">
+            <mat-icon [icIcon]="icCollapseAll" class="mr-1 align-middle"></mat-icon> Collapse All
+        </a>
+    </div>
+    <hr />
+    <div class="flex mx-6 my-2">
+        <div class="w-8/12 font-bold">
+            {{'module' | translate}}
+        </div>
+        <div class="w-2/12 font-bold">
+            {{'canView' | translate}}
+        </div>
+        <div class="w-2/12 font-bold">
+            {{'canEdit' | translate}}
+        </div>
+    </div>
+    <hr class="border-gray-light" />
+
+
+    <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel *ngFor="let permission of permissionList;let index=index">
+            <mat-expansion-panel-header>
+                <div class="flex my-2 w-full">
+                    <div class="w-8/12 font-bold text-blue">
+                        {{permission?.permissionGroup.title}}
+                    </div>
+                    <div class="w-2/12 pl-1 font-bold">
+                        <mat-slide-toggle *ngIf="permission?.permissionGroup.title ==='Settings'" [disabled]=true #canViewGroup="ngModel" name="{{'canViewGroup'+index}}" color="primary" 
+                        [(ngModel)]= "rolePermissionListViewModel.permissionList[index]?.permissionGroup.rolePermission[0].canView" 
+                        (click)="$event.stopPropagation()" (change)="changeParentCanView($event,permission)"></mat-slide-toggle>
+                        <mat-slide-toggle *ngIf="permission?.permissionGroup.title !=='Settings'" #canViewGroup="ngModel" name="{{'canViewGroup'+index}}" color="primary" 
+                        [(ngModel)]= "rolePermissionListViewModel.permissionList[index]?.permissionGroup.rolePermission[0].canView" 
+                        (click)="$event.stopPropagation()" [disabled]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.rolePermission[0].canView === null" (change)="changeParentCanView($event,permission)"></mat-slide-toggle>
+                    </div>
+                    <div class="w-2/12 pl-2 font-bold">
+                        <mat-slide-toggle #canEditGroup="ngModel" name="{{'canEditGroup'+index}}" color="primary" 
+                        [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.rolePermission[0].canEdit" 
+                        (click)="$event.stopPropagation()" [disabled]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.rolePermission[0].canEdit === null" (change)="changeParentCanEdit($event,permission)"></mat-slide-toggle>
+                    </div>
+                </div>
+            </mat-expansion-panel-header>
+            <div class="-mx-6">
+                <hr />
+                <div   *ngFor="let permissionCat of permission?.permissionGroup.permissionCategory;let cat=index;let last = last;" >
+                    <div class="px-6 py-3">                   
+                        <div class="flex items-center">
+                            <div class="w-8/12">
+                                {{permissionCat.permissionCategoryName}}
+                            </div>
+                        <div class="w-2/12">
+                                <mat-slide-toggle *ngIf="permissionCat.permissionCategoryName ==='Administration'" #canView="ngModel" [disabled] =true name="{{'canView'+index+cat}}" 
+                                [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup?.permissionCategory[cat]?.rolePermission[0].canView" 
+                                (change) = "changeCategoryCanView($event,index,cat)" color="primary"></mat-slide-toggle>
+                                <mat-slide-toggle *ngIf="permissionCat.permissionCategoryName !=='Administration'" #canView="ngModel" name="{{'canView'+index+cat}}" 
+                                [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup?.permissionCategory[cat]?.rolePermission[0].canView" 
+                                (change) = "changeCategoryCanView($event,index,cat)" [disabled]="rolePermissionListViewModel.permissionList[index]?.permissionGroup?.permissionCategory[cat]?.rolePermission[0].canView=== null" color="primary"></mat-slide-toggle>
+                            </div>
+                            <div class="w-2/12">
+                                <mat-slide-toggle #canEdit="ngModel" name="{{'canEdit'+index+cat}}" [disabled]="rolePermissionListViewModel.permissionList[index]?.permissionGroup?.permissionCategory[cat]?.rolePermission[0].canEdit===null" [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup?.permissionCategory[cat]?.rolePermission[0].canEdit" (change) = "changeCategoryCanEdit($event,index,cat)"  color="primary"></mat-slide-toggle>
+                            </div> 
+                        </div>
+                    </div>
+                    <div *ngIf = "!last">
+                        <hr/>
+                    </div>
+                    
+                    <div *ngIf="permissionCat.permissionSubcategory.length > 0">
+                        <div  *ngFor="let permissionSubCat of permissionCat.permissionSubcategory;let subcat=index">
+                            <div class="px-6 py-3">  
+                            <div class="flex items-center">
+                                <div class="w-8/12 child-item">
+                                    <span class="mr-2">-</span> {{permissionSubCat.permissionSubcategoryName}}
+                                </div>
+                               <div class="w-2/12">
+                                    <mat-slide-toggle *ngIf="permissionSubCat.permissionSubcategoryName ==='Profiles & Permissions'" #canViewSubcat="ngModel" name="{{'canViewSubCat'+index+cat+subcat}}" [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.permissionCategory[cat]?.permissionSubcategory[subcat]?.rolePermission[0].canView"  (change) = "changeSubCategoryCanView(index,cat,subcat,$event)" [disabled] =true color="primary"></mat-slide-toggle>
+                                    <mat-slide-toggle *ngIf="permissionSubCat.permissionSubcategoryName !=='Profiles & Permissions'" #canViewSubcat="ngModel" name="{{'canViewSubCat'+index+cat+subcat}}" [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.permissionCategory[cat]?.permissionSubcategory[subcat]?.rolePermission[0].canView"  (change) = "changeSubCategoryCanView(index,cat,subcat,$event)" [disabled] ="rolePermissionListViewModel.permissionList[index]?.permissionGroup.permissionCategory[cat]?.permissionSubcategory[subcat]?.rolePermission[0].canView===null" color="primary"></mat-slide-toggle>
+                                </div>
+                                <div class="w-2/12">
+                                    <mat-slide-toggle #canEditSubcat="ngModel" name="{{'canEditSubCat'+index+cat+subcat}}" [(ngModel)]="rolePermissionListViewModel.permissionList[index]?.permissionGroup.permissionCategory[cat]?.permissionSubcategory[subcat]?.rolePermission[0].canEdit"  (change) = "changeSubCategoryCanEdit(index,cat,subcat,$event)" [disabled] ="rolePermissionListViewModel.permissionList[index]?.permissionGroup.permissionCategory[cat]?.permissionSubcategory[subcat]?.rolePermission[0].canEdit===null" color="primary"></mat-slide-toggle>
+                                </div> 
+                            </div>
+                            </div>
+                            <hr>
+                        </div>
+                    
+                    </div>
+
+                    
+                </div>       
+                
+                       
+            </div>
+        </mat-expansion-panel>      
+    </mat-accordion>
+
+    <div class="text-right px-6 py-4">
+        <button color="primary" (click) = "submit()" mat-raised-button>{{'update' | translate}}</button>
+    </div>
+</div>
+</form>

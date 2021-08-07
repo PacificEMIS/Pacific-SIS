@@ -1,0 +1,98 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{modalTitle|translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column" [formGroup]="form">
+    <mat-form-field class="mt-6" appearance="outline" color="primary">
+        <mat-label>{{'title' | translate}}</mat-label>
+        <input formControlName="title" cdkFocusInitial matInput required>
+        <mat-error *ngIf="form.get('title').hasError('required')">{{'titleIsRequired'|translate}}</mat-error>
+        <mat-error *ngIf="form.get('title').hasError('maxlength')">{{'maximumFiftyCharCanBeUseInTitle'|translate}}
+        </mat-error>
+
+    </mat-form-field>
+
+    <div class="md:flex md:flex-wrap -mx-6">
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'shortName' | translate}}</mat-label>
+                <input formControlName="shortName" cdkFocusInitial matInput required>
+                <mat-error *ngIf="form.get('shortName').hasError('required')">{{'shortNameIsRequired'|translate}}
+                </mat-error>
+                <mat-error *ngIf="form.get('shortName').hasError('maxlength')">{{'maximumFiveCharCanBeUseInShortName'|translate}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'sortOrder' | translate}}</mat-label>
+                <input type="number" formControlName="sortOrder" min=1 cdkFocusInitial matInput required>
+                <mat-error *ngIf="form.get('sortOrder').hasError('required')">{{'sortOrderIsRequired'|translate}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="md:flex md:flex-wrap -mx-6">
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'gradeLevelEquivalency' | translate}}</mat-label>
+                <mat-select formControlName="equivalencyId" name="equivalencyId" required>
+                    <mat-option *ngFor="let list of getGradeEquivalencyList.gradeEquivalencyList"
+                        [value]="list.equivalencyId">
+                        {{list.gradeLevelEquivalency}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('equivalencyId').hasError('required')">
+                    {{'gradeLevelEquivalencyIsRequired'|translate}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'ageRange' | translate}}</mat-label>
+                <mat-select formControlName="ageRangeId" name="ageRange">
+                    <mat-option value="null">N/A</mat-option>
+                    <mat-option *ngFor="let age of ageRangeList.gradeAgeRangeList" [value]="age.ageRangeId">
+                        {{age.ageRange}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="md:flex md:flex-wrap -mx-6">
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'educationalStage' | translate}}</mat-label>
+                <mat-select formControlName="iscedCode" name="educationalStage">
+                    <mat-option value="null">N/A</mat-option>
+                    <mat-option *ngFor="let educationalStage of educationStageList.gradeEducationalStageList"
+                        [value]="educationalStage.iscedCode">{{educationalStage.educationalStage}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="flex-1 mx-6 md:w-1/2">
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{'nextGrade' | translate}}</mat-label>
+                <mat-select formControlName="nextGradeId" name="nextGrade">
+                    <mat-option value="null">N/A</mat-option>
+                    <mat-option *ngFor="let nextLevel of nextGradeLevelList" [disabled]="disableNextGrade(nextLevel)" [value]="nextLevel.gradeId">
+                        {{nextLevel.title}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('nextGradeId').hasError('required')">{{'nextGradeIsRequired'|translate}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" mat-raised-button type="submit" (click)="submit()">{{modalActionButtonTitle |
+        translate}}</button>
+</mat-dialog-actions>

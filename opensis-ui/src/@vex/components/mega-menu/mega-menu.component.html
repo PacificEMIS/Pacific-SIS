@@ -1,0 +1,27 @@
+<div [ngClass.gt-sm]="['mr-6']" class="card overflow-auto" fxLayout="row" fxLayout.lt-md="column">
+  <div class="p-gutter" fxFlex="400px" fxFlex.lt-md="auto">
+    <!-- <h3 class="body-2 m-0">FEATURES</h3> -->
+
+    <div class="mt-4" gdColumns="1fr 1fr 1fr" gdGap="16px">
+      <a (click)="close()"
+         *ngFor="let feature of features"
+         [routerLink]="feature.route"
+         class="text-dark p-3 text-center hover:bg-hover hover:text-primary trans-ease-out rounded block no-underline">
+        <ic-icon [icon]="feature.icon" class="text-primary" size="32px"></ic-icon>
+        <div class="body-1 mt-2">{{ feature.label }}</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- <div class="p-gutter" fxFlex="350px" fxFlex.lt-md="auto">
+    <h3 class="body-2 m-0">PAGES</h3>
+
+    <div class="mt-6" gdColumns="1fr 1fr" gdGap="16px 48px">
+      <a (click)="close()"
+         *ngFor="let page of pages"
+         [routerLink]="page.route"
+         class="text-dark body-1 no-underline hover:text-primary trans-ease-out">{{ page.label }}</a>
+    </div>
+  </div> -->
+</div>
+

@@ -1,0 +1,155 @@
+<div class="card">
+    <div class="px-6 py-4">
+        <div>
+            <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+                color="primary">
+                <mat-label>{{'Subject'|translate}}</mat-label>
+                <mat-select name="Subject" [value]="selectedOption">
+                    <mat-option value="1">Showing All Subjects</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+                color="primary">
+                <mat-label>{{'course'|translate}}</mat-label>
+                <mat-select name="course" [value]="selectedOption">
+                    <mat-option value="1">Showing All Courses</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="auto" class="md:mb-0 md:mr-4 block md:inline-block" appearance="outline"
+                color="primary">
+                <mat-label>{{'gradeLevel'|translate}}</mat-label>
+                <mat-select name="gradeLevel" [value]="selectedOption">
+                    <mat-option value="1">Showing All Grade Levels</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <button color="primary" class="align-top md:mt-1 block md:inline-block" mat-raised-button type="button">
+                {{'filterResult'|translate}}
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="bg-white px-6 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-3" fxFlex="300px" fxFlex.lt-md="auto" fxHide.xs fxLayout="row" fxLayoutAlign="start center">
+
+                <div class="flex">
+                    <input class="pr-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
+                        <mat-icon [icIcon]="icSearch"></mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <hr class="-mx-6 block md:inline-block" />
+            <div fxFlex="200px" class="pt-3">
+                <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Update">
+                    <mat-icon [icIcon]="icUpdate"></mat-icon>
+                </a>
+                <a class="cursor-pointer p-1 mt-1 ml-4 inline-block align-middle"
+                    matTooltip="Export to Excel">
+                    <i class="icon icon-file-excel text-lg"></i>
+                </a>
+                <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
+                    matTooltip="Filter Columns" type="button">
+                    <mat-icon [icIcon]="icFilterList"></mat-icon>
+                </button>
+                <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button">
+                    <ic-icon [icon]="icImport" class="" inline="true" size="24px">
+                    </ic-icon>
+                    <span class="ml-2 hidden md:inline-block">{{'loadUsCommonCoreStandards'|translate}}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table @stagger mat-table [dataSource]="CommonCoreStandardsModelList" class="table-auto w-full" matSort>
+
+            <ng-container matColumnDef="standard_ref_no" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'standardRefNo'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    <a (click)="openViewDetails()"
+                        class="cursor-pointer text-blue">{{element.standard_ref_no}}</a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'subject'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.subject}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="grade">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'gradeLevel'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.grade}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="course">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'course'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.course}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="domain">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'domain'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.domain}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="topic">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'topic'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.topic}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="standard_details">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'standardDetails'|translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.standard_details}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'action'|translate}}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <a *ngIf="deletePermission" routerLink="" matTooltip="Delete Item" class="mr-3 cursor-pointer">
+                        <mat-icon [icIcon]="icDelete"></mat-icon>
+                    </a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+                </mat-footer-cell>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></tr>
+            <!-- <mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></mat-footer-row> -->
+
+        </table>
+    </div>
+    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
+    <!-- <mat-paginator length="100"  pageSize="10" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons></mat-paginator> -->
+</div>
+
+<mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
+    <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
+        class="checkbox-item mat-menu-item">
+        <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
+            {{column.label}}
+        </mat-checkbox>
+    </button>
+</mat-menu>
