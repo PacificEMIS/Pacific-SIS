@@ -1,4 +1,4 @@
-# PacificSIS
+# Pacific-SIS
 
 # The next generation School Management System
 
