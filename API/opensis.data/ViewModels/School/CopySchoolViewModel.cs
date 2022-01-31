@@ -33,7 +33,7 @@ namespace opensis.data.ViewModels.School
     public class CopySchoolViewModel : CommonFields
     {
 
-        public SchoolMaster schoolMaster { get; set; }
+        public SchoolMaster? schoolMaster { get; set; }
         public Guid TenantId { get; set; }
         public int? FromSchoolId { get; set; }
         public bool? Periods { get; set; }           
@@ -72,6 +72,5 @@ namespace opensis.data.ViewModels.School
         public bool? Race { get; set; }
         public bool? Ethnicity { get; set; }
         //public bool? Language { get; set; }
-
     }
 }

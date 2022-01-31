@@ -66,7 +66,7 @@ namespace opensis.core.Student.Interfaces
         public StudentListModel ReenrollmentForStudent(StudentListModel studentListModel);
         ///public SearchStudentViewModel SearchStudentForSchedule(SearchStudentViewModel searchStudentViewModel);
         public StudentListAddViewModel AddStudentList(StudentListAddViewModel studentListAddViewModel);
-        public TranscriptViewModel TranscriptViewForStudent(TranscriptViewModel transcriptViewModel);
+        public TranscriptViewModel GetTranscriptForStudents(TranscriptViewModel transcriptViewModel);
         public TranscriptAddViewModel AddTranscriptForStudent(TranscriptAddViewModel transcriptAddViewModel); 
         public Task<TranscriptAddViewModel> GenerateTranscriptForStudent(TranscriptAddViewModel transcriptAddViewModel);
         public StudentMedicalAlertAddViewModel AddStudentMedicalAlert(StudentMedicalAlertAddViewModel studentMedicalAlertAddViewModel);
@@ -91,5 +91,6 @@ namespace opensis.core.Student.Interfaces
         public StudentCommentAddViewModel AssignCommentForStudents(StudentCommentAddViewModel studentCommentAddViewModel);
         public StudentDocumentAddViewModel AssignDocumentForStudents(StudentDocumentAddViewModel studentDocumentAddViewModel);
         public StudentEnrollmentAssignModel AssignEnrollmentInfoForStudents(StudentEnrollmentAssignModel studentEnrollmentAssignModel);
+        public StudentListModel GetAllStudentListByDateRange(PageResult pageResult);
     }
 }

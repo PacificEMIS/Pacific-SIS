@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class StateListModel : CommonFields
     {
-        public List<State> TableState { get; set; }
+        public StateListModel()
+        {
+            TableState = new List<State>();
+        }
+        public List<State>? TableState { get; set; }
         public int CountryId { get; set; }
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }

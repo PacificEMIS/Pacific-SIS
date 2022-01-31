@@ -32,19 +32,26 @@ namespace opensis.data.ViewModels.Staff
 {
    public class StaffAddViewModel : CommonFields
     {
-        public StaffMaster staffMaster { get; set; }
+        public StaffAddViewModel()
+        {
+            fieldsCategoryList = new List<FieldsCategory>();
+        }
+        public StaffMaster? staffMaster { get; set; }
         public List<FieldsCategory> fieldsCategoryList { get; set; }
-        public string LoginEmail { get; set; }
-        public string PasswordHash { get; set; }
+        public string? LoginEmail { get; set; }
+        public string? PasswordHash { get; set; }
         public int? SelectedCategoryId { get; set; }
-        public string Profile { get; set; }
-        public string CountryOfBirthName { get; set; }
-        public string NationalityName { get; set; }
-        public string FirstLanguageName { get; set; }
-        public string SecondLanguageName { get; set; }
-        public string ThirdLanguageName { get; set; }
-        public string Dob { get; set; }
-        public string JoiningDate { get; set; }
-        public string StartDate { get; set; }
+        public string? Profile { get; set; }
+        public string? CountryOfBirthName { get; set; }
+        public string? NationalityName { get; set; }
+        public string? FirstLanguageName { get; set; }
+        public string? SecondLanguageName { get; set; }
+        public string? ThirdLanguageName { get; set; }
+        public string? Dob { get; set; }
+        public string? JoiningDate { get; set; }
+        public string? StartDate { get; set; }
+        public int? ExternalSchoolId { get; set; }
+        public string? DefaultSchoolName { get; set; }
+        public int[]? ExternalSchoolIds { get; set; }
     }
 }

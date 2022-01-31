@@ -32,24 +32,33 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentAddViewModel : CommonFields
     {
-        public StudentMaster studentMaster { get; set; }
+        public StudentAddViewModel()
+        {
+            fieldsCategoryList = new List<FieldsCategory>();
+            studentIds = new List<int>();
+        }
+
+        public StudentMaster? studentMaster { get; set; }
         public List<FieldsCategory> fieldsCategoryList { get; set; }
         public List<int> studentIds { get; set; }
         public int? SelectedCategoryId { get; set; }
-        public string AcademicYear { get; set; }
-        public string LoginEmail { get; set; }
-        public string PasswordHash { get; set; }
+        public string? AcademicYear { get; set; }
+        public string? LoginEmail { get; set; }
+        public string? PasswordHash { get; set; }
         public bool? PortalAccess { get; set; }
-        public string CurrentGradeLevel { get; set; }
-        public string EnrollmentDate { get; set; }
-        public string Dob { get; set; }
-        public string EstimatedGradDate { get; set; }
-        public string CreatedOrUpdatedBy { get; set; }
-        public string CountryOfBirthName { get; set; }
-        public string NationalityName { get; set; }
-        public string FirstLanguageName { get; set; }
-        public string SecondLanguageName { get; set; }
-        public string ThirdLanguageName { get; set; }
-        public string SectionName { get; set; }
+        public string? CurrentGradeLevel { get; set; }
+        public string? EnrollmentDate { get; set; }
+        public string? Dob { get; set; }
+        public string? EstimatedGradDate { get; set; }
+        public string? CreatedOrUpdatedBy { get; set; }
+        public string? CountryOfBirthName { get; set; }
+        public string? NationalityName { get; set; }
+        public string? FirstLanguageName { get; set; }
+        public string? SecondLanguageName { get; set; }
+        public string? ThirdLanguageName { get; set; }
+        public string? SectionName { get; set; }
+
+        public bool? allowDuplicate { get; set; }
+        public int? checkDuplicate { get; set; }
     }
 }

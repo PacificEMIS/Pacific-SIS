@@ -6,15 +6,15 @@
     "PermissionGroupId": "2",
     "PermissionCategoryName": "School Information",
     "ShortCode": "si",
-    "Path": "/school/schoolinfo",
+    "Path": "/school/schoolinfo/generalinfo",
     "Title": "School Information",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -30,25 +30,25 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "3",
     "PermissionGroupId": "2",
-    "PermissionCategoryName": "Calenders",
+    "PermissionCategoryName": "Calendars",
     "ShortCode": "cal",
     "Path": "/school/schoolcalendars",
-    "Title": "Calenders",
+    "Title": "Calendars",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -64,8 +64,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -81,8 +81,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -98,25 +98,25 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "7",
     "PermissionGroupId": "3",
-    "PermissionCategoryName": "Student Re Enroll",
+    "PermissionCategoryName": "Re-enroll Student",
     "ShortCode": "sre",
     "Path": "/school/student/student-re-enroll",
-    "Title": "Student Re Enroll",
+    "Title": "Re-enroll Student",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -132,8 +132,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -149,8 +149,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -166,8 +166,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -183,8 +183,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -200,8 +200,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -210,32 +210,32 @@
     "PermissionGroupId": "6",
     "PermissionCategoryName": "Course Catalog",
     "ShortCode": "cc",
-    "Path": "disabled",
+    "Path": "/school/courses/course-catalog",
     "Title": "Course Catalog",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "14",
     "PermissionGroupId": "7",
-    "PermissionCategoryName": "Teacher Reassignment",
+    "PermissionCategoryName": "Reassign Teacher",
     "ShortCode": "tr",
     "Path": "/school/teacher-reassignment",
-    "Title": "Teacher Reassignment",
+    "Title": "Reassign Teacher",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -251,8 +251,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -268,8 +268,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -285,25 +285,25 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": false,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "18",
     "PermissionGroupId": "7",
-    "PermissionCategoryName": "Group Drop",
+    "PermissionCategoryName": "Group Drop Students",
     "ShortCode": "gd",
     "Path": "/school/group-drop",
-    "Title": "Group Drop",
+    "Title": "Group Drop Students",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -319,8 +319,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -336,8 +336,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -353,8 +353,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -370,8 +370,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -387,8 +387,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -404,8 +404,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -421,8 +421,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -438,8 +438,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -455,8 +455,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -472,8 +472,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "7"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -489,8 +489,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": false,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -506,8 +506,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -523,8 +523,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -540,8 +540,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -557,8 +557,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -574,8 +574,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -591,8 +591,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -608,8 +608,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -625,8 +625,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -642,8 +642,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -659,8 +659,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -676,8 +676,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -693,8 +693,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "7"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -710,8 +710,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "8"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -727,8 +727,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "9"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -744,8 +744,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "10"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -761,8 +761,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "11"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -778,8 +778,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -795,8 +795,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "12"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -812,8 +812,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -829,8 +829,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -846,8 +846,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -863,8 +863,8 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -873,15 +873,15 @@
     "PermissionGroupId": "6",
     "PermissionCategoryName": "My Classes",
     "ShortCode": "myc",
-    "Path": "",
+    "Path": "/school/courses/my-classes",
     "Title": "My Classes",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -897,143 +897,228 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "54",
     "PermissionGroupId": "8",
-    "PermissionCategoryName": "Students with Anomalous Grades",
+    "PermissionCategoryName": "Anomalous Grades",
     "ShortCode": "swag",
-    "Path": "",
-    "Title": "Students with Anomalous Grades",
+    "Path": "/school/grades/student-with-anomalous-grades",
+    "Title": "Anomalous Grades",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "55",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Student Advanced Report",
-    "ShortCode": "sar",
+    "PermissionCategoryName": "School",
+    "ShortCode": "schl",
     "Path": "",
-    "Title": "Student Advanced Report",
+    "Title": "School",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "56",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Print Class List",
-    "ShortCode": "pcl",
+    "PermissionCategoryName": "Student",
+    "ShortCode": "std",
     "Path": "",
-    "Title": "Print Class List",
+    "Title": "Student",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "57",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Print Student Schedule",
-    "ShortCode": "pss",
+    "PermissionCategoryName": "Staff",
+    "ShortCode": "stf",
     "Path": "",
-    "Title": "Print Student Schedule",
+    "Title": "Staff",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "58",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Attendance Chart",
-    "ShortCode": "ac",
+    "PermissionCategoryName": "Scheduling",
+    "ShortCode": "scdl",
     "Path": "",
-    "Title": "Attendance Chart",
+    "Title": "Scheduling",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "59",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Absence Summary",
-    "ShortCode": "as",
+    "PermissionCategoryName": "Grades",
+    "ShortCode": "grds",
     "Path": "",
-    "Title": "Absence Summary",
+    "Title": "Grades",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
     "PermissionCategoryId": "60",
     "PermissionGroupId": "11",
-    "PermissionCategoryName": "Student Grades",
-    "ShortCode": "sg",
+    "PermissionCategoryName": "Attendance",
+    "ShortCode": "atnds",
     "Path": "",
-    "Title": "Student Grades",
+    "Title": "Attendance",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6"
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
     "SchoolId": "1",
-    "PermissionCategoryId": "61",
-    "PermissionGroupId": "11",
-    "PermissionCategoryName": "Final Grades",
-    "ShortCode": "fg",
-    "Path": "",
-    "Title": "Final Grades",
+    "PermissionCategoryId": "62",
+    "PermissionGroupId": "8",
+    "PermissionCategoryName": "Administration",
+    "ShortCode": "admis",
+    "Path": "/school/grades/administration",
+    "Title": "Administration",
     "Type": "link",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "63",
+    "PermissionGroupId": "13",
+    "PermissionCategoryName": "API",
+    "ShortCode": "api",
+    "Path": "/school/tools/api",
+    "Title": "API",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "64",
+    "PermissionGroupId": "13",
+    "PermissionCategoryName": "Student Bulk Data Import",
+    "ShortCode": "stubdi",
+    "Path": "/school/tools/student-bulk-data-import",
+    "Title": "Student Bulk Data Import",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "65",
+    "PermissionGroupId": "13",
+    "PermissionCategoryName": "Staff Bulk Data Import",
+    "ShortCode": "stabdi",
+    "Path": "/school/tools/staff-bulk-data-import",
+    "Title": "Staff Bulk Data Import",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "3"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "66",
+    "PermissionGroupId": "9",
+    "PermissionCategoryName": "Missing Attendance",
+    "ShortCode": "ma",
+    "Path": "/school/attendance/teacher-missing-attendance",
+    "Title": "Missing Attendance",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "67",
+    "PermissionGroupId": "13",
+    "PermissionCategoryName": "Rollover",
+    "ShortCode": "rlovr",
+    "Path": "/school/tools/rollover",
+    "Title": "Rollover",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "4"
   }
 ]

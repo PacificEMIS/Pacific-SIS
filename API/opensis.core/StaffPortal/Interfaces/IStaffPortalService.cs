@@ -35,6 +35,7 @@ namespace opensis.core.StaffPortal.Interfaces
     public interface IStaffPortalService
     {
         public ScheduledCourseSectionViewModel MissingAttendanceListForCourseSection(PageResult pageResult);
-        public CourseSectionUpdateViewModel UpdateOnlineClassRoomURLInCourseSection(CourseSectionUpdateViewModel courseSectionUpdateViewModel);        
+        public CourseSectionUpdateViewModel UpdateOnlineClassRoomURLInCourseSection(CourseSectionUpdateViewModel courseSectionUpdateViewModel);
+        public ScheduledCourseSectionViewModel GetAllMissingAttendanceListForStaff(PageResult pageResult);
     }
 }

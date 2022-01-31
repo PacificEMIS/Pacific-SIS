@@ -25,13 +25,17 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class Semesters
     {
+        
+
         public Semesters()
         {
+            AssignmentTypes = new HashSet<AssignmentType>();
             CourseSection = new HashSet<CourseSection>();
             GradebookConfigurationYear = new HashSet<GradebookConfigurationYear>();
             GradebookConfigurationSemester = new HashSet<GradebookConfigurationSemester>();
@@ -46,8 +50,8 @@ namespace opensis.data.Models
         public int MarkingPeriodId { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? YearId { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
         public decimal? SortOrder { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -57,16 +61,18 @@ namespace opensis.data.Models
         public bool? DoesExam { get; set; }
         public bool? DoesComments { get; set; }
         public int? RolloverId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual SchoolMaster SchoolMaster { get; set; }
-        public virtual SchoolYears SchoolYears { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
+        public virtual SchoolYears? SchoolYears { get; set; }
+        public virtual ICollection<AssignmentType> AssignmentTypes { get; set; }
         public virtual ICollection<CourseSection> CourseSection { get; set; }
-        public virtual ICollection<GradebookConfigurationYear> GradebookConfigurationYear { get; set; }
         public virtual ICollection<GradebookConfigurationSemester> GradebookConfigurationSemester { get; set; }
+        public virtual ICollection<GradebookConfigurationYear> GradebookConfigurationYear { get; set; }
         public virtual ICollection<Quarters> Quarters { get; set; }
         public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; }
         public virtual ICollection<StudentEffortGradeMaster> StudentEffortGradeMaster { get; set; }

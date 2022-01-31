@@ -32,6 +32,12 @@ namespace opensis.data.ViewModels.Staff
 {
     public class StaffListModel : CommonFields
     {
+        public StaffListModel()
+        {
+            staffMaster = new List<StaffMaster>();
+            missingAttendanceDateList = new List<DateTime>();
+            getStaffListForView = new List<GetStaffListForView>();
+        }
         public List<StaffMaster> staffMaster { get; set; }
         public List<DateTime> missingAttendanceDateList { get; set; }
         public List<GetStaffListForView> getStaffListForView { get; set; }

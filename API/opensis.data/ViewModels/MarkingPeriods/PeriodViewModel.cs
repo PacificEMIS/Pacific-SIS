@@ -31,6 +31,10 @@ namespace opensis.data.ViewModels.MarkingPeriods
 {
     public class PeriodViewModel : CommonFields
     {
+        public PeriodViewModel()
+        {
+            period = new List<PeriodView>();
+        }
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }
         public decimal AcademicYear { get; set; }

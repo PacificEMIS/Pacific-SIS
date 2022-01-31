@@ -452,6 +452,44 @@ namespace opensis.core.Staff.Services
                 staffCourseSectionView._message = es.Message;
             }
             return staffCourseSectionView;
-        }  
+        }
+
+        public StaffListModel GetAllStaffListByDateRange(PageResult pageResult)
+        {
+            logger.Info("Method GetAllStaffListByDateRange called.");
+            StaffListModel staffList = new StaffListModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    staffList = this.staffRepository.GetAllStaffListByDateRange(pageResult);
+                    if (staffList.staffMaster.Count > 0)
+                    {
+                        staffList._message = SUCCESS;
+                        staffList._failure = false;
+                    }
+                    else
+                    {
+                        staffList._message = "NO RECORD FOUND";
+                        staffList._failure = true;
+                    }
+                    logger.Info("Method getAllStaffList end with success.");
+                }
+
+                else
+                {
+                    staffList._failure = true;
+                    staffList._message = TOKENINVALID;
+                    return staffList;
+                }
+            }
+            catch (Exception ex)
+            {
+                staffList._message = ex.Message;
+                staffList._failure = true;
+                logger.Error("Method GetAllStaffListByDateRange end with error :" + ex.Message);
+            }
+            return staffList;
+        }
     }
 }

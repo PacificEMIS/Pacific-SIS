@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class Assignment
     {
+        
+
         public Assignment()
         {
             GradebookGrades = new HashSet<GradebookGrades>();
@@ -40,19 +43,19 @@ namespace opensis.data.Models
         public int AssignmentTypeId { get; set; }
         public int AssignmentId { get; set; }
         public int? CourseSectionId { get; set; }
-        public string AssignmentTitle { get; set; }
+        public string? AssignmentTitle { get; set; }
         public int? Points { get; set; }
         public DateTime? AssignmentDate { get; set; }
         public DateTime? DueDate { get; set; }
-        public string AssignmentDescription { get; set; }
+        public string? AssignmentDescription { get; set; }
         public int? StaffId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual AssignmentType AssignmentType { get; set; }
-        public virtual StaffMaster StaffMaster { get; set; }
+        [ValidateNever]
+        public virtual AssignmentType AssignmentType { get; set; } = null!;
+        public virtual StaffMaster? StaffMaster { get; set; }
         public virtual ICollection<GradebookGrades> GradebookGrades { get; set; }
     }
 }

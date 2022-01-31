@@ -34,11 +34,11 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public CourseStandardForCourseViewModel()
         {
-            courseStandards = new List<CourseStandard>();
+            CourseStandards = new List<CourseStandard>();
         }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CourseId { get; set; }
-        public List<CourseStandard> courseStandards { get; set; }
+        public List<CourseStandard> CourseStandards { get; set; }
     }
 }

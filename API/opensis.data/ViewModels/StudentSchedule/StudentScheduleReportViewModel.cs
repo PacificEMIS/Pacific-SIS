@@ -34,6 +34,6 @@ namespace opensis.data.ViewModels.StudentSchedule
     {
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public DataTable ScheduleReport { get; set; }
+        public DataTable? ScheduleReport { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace opensis.core.StaffPortal.Services
 {
     public class StaffPortalService : IStaffPortalService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -106,5 +106,34 @@ namespace opensis.core.StaffPortal.Services
             }
             return courseSectionUpdate;
         }
+
+        /// <summary>
+        /// Get All Missing Attendance List For Staff
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public ScheduledCourseSectionViewModel GetAllMissingAttendanceListForStaff(PageResult pageResult)
+        {
+            ScheduledCourseSectionViewModel missingAttendanceView = new ScheduledCourseSectionViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    missingAttendanceView = this.staffPortalRepository.GetAllMissingAttendanceListForStaff(pageResult);
+                }
+                else
+                {
+                    missingAttendanceView._failure = true;
+                    missingAttendanceView._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                missingAttendanceView._failure = true;
+                missingAttendanceView._message = es.Message;
+            }
+            return missingAttendanceView;
+        }
+
     }
 }

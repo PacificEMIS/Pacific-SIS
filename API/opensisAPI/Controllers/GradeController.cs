@@ -560,5 +560,21 @@ namespace opensisAPI.Controllers
             }
             return honorRollDelete;
         }
+
+        [HttpPost("addUsStandardData")]
+        public ActionResult<JurisdictionByIdListViewModel> AddUsStandardData(JurisdictionByIdListViewModel jurisdictionByIdListViewModel)
+        {
+            JurisdictionByIdListViewModel jurisdictionByIdList = new JurisdictionByIdListViewModel();
+            try
+            {
+                jurisdictionByIdList = _gradeService.AddUsStandardData(jurisdictionByIdListViewModel);
+            }
+            catch (Exception es)
+            {
+                jurisdictionByIdList._failure = true;
+                jurisdictionByIdList._message = es.Message;
+            }
+            return jurisdictionByIdList;
+        }
     }
 }

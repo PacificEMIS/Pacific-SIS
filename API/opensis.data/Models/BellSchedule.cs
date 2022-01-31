@@ -30,14 +30,15 @@ namespace opensis.data.Models
 {
     public partial class BellSchedule
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public decimal AcademicYear { get; set; }
         public DateTime BellScheduleDate { get; set; }
         public int? BlockId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }
 }

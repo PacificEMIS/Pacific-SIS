@@ -25,20 +25,27 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class CourseStandard
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CourseId { get; set; }
-        public string StandardRefNo { get; set; }
-        public string CreatedBy { get; set; }
+        [ValidateNever]
+        public string StandardRefNo { get; set; } = null!;
+        public int GradeStandardId { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public virtual Course Course { get; set; }
-        public virtual GradeUsStandard GradeUsStandard { get; set; }
+        [ValidateNever]
+        public virtual Course Course { get; set; } = null!;
+        [ValidateNever]
+        public virtual GradeUsStandard GradeUsStandard { get; set; } = null!;
     }
 }

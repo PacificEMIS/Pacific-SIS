@@ -26,37 +26,70 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
    public partial class CustomFields
     {
+        
+
         public CustomFields()
         {
             CustomFieldsValue = new HashSet<CustomFieldsValue>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
+        /// <summary>
+        /// Take categoryid from custom_category table
+        /// </summary>
         public int CategoryId { get; set; }
         public int FieldId { get; set; }
-        public string Module { get; set; }
-        public string Type { get; set; }
+        /// <summary>
+        /// module like &quot;school&quot;, &quot;student&quot; etc.
+        /// </summary>
+        public string Module { get; set; } = null!;
+        /// <summary>
+        /// Datatype
+        /// </summary>
+        public string? Type { get; set; }
         public bool? Search { get; set; }
-        public string FieldName { get; set; }
-        public string Title { get; set; }
+        public string? FieldName { get; set; }
+        /// <summary>
+        /// Field Name
+        /// </summary>
+        public string? Title { get; set; }
         public int? SortOrder { get; set; }
-        public string SelectOptions { get; set; }
+        /// <summary>
+        /// LOV for dropdown separated by | character.
+        /// </summary>
+        public string? SelectOptions { get; set; }
+        /// <summary>
+        /// wheher it is applicable throughput all forms
+        /// </summary>
         public bool? SystemField { get; set; }
-        public bool? IsSystemWideField { get; set; }
+        /// <summary>
+        /// Whether value input is required
+        /// </summary>
         public bool? Required { get; set; }
-        public string DefaultSelection { get; set; }
+        /// <summary>
+        /// default value selection on form load
+        /// </summary>
+        public string? DefaultSelection { get; set; }
+        /// <summary>
+        /// hide the custom field on UI
+        /// </summary>
         public bool? Hide { get; set; }
-        public string CreatedBy { get; set; }
+        public bool? IsSystemWideField { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-        public virtual FieldsCategory FieldsCategory { get; set; }
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        [ValidateNever]
+        public virtual FieldsCategory FieldsCategory { get; set; } = null!;
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<CustomFieldsValue> CustomFieldsValue { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace opensis.data.ViewModels.Semester
 {
     public class SemesterAddViewModel : CommonFields
     {
-        public Semesters tableSemesters { get; set; }
+        public Semesters? tableSemesters { get; set; }
 
     }
 }

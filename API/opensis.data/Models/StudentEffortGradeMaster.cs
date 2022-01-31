@@ -30,6 +30,8 @@ namespace opensis.data.Models
 {
     public partial class StudentEffortGradeMaster
     {
+        
+
         public StudentEffortGradeMaster()
         {
             StudentEffortGradeDetail = new HashSet<StudentEffortGradeDetail>();
@@ -39,23 +41,26 @@ namespace opensis.data.Models
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public long StudentEffortGradeSrlno { get; set; }
-        public int CourseId { get; set; }
-        public int CourseSectionId { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? CalendarId { get; set; }
+        public int CourseId { get; set; }
+        public int CourseSectionId { get; set; }
         public int? YrMarkingPeriodId { get; set; }
         public int? SmstrMarkingPeriodId { get; set; }
         public int? QtrMarkingPeriodId { get; set; }
-        public string TeacherComment { get; set; }
-        public string CreatedBy { get; set; }
+        public string? TeacherComment { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual Quarters Quarters { get; set; }
-        public virtual SchoolCalendars SchoolCalendars { get; set; }
-        public virtual SchoolYears SchoolYears { get; set; }
-        public virtual Semesters Semesters { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
+        public bool? IsCustomMarkingPeriod { get; set; }
+        public bool? IsExamGrade { get; set; }
+        public virtual ProgressPeriods? ProgressPeriod { get; set; }
+        public virtual Quarters? Quarters { get; set; }
+        public virtual SchoolCalendars? SchoolCalendars { get; set; }
+        public virtual SchoolYears? SchoolYears { get; set; }
+        public virtual Semesters? Semesters { get; set; }
         public virtual ICollection<StudentEffortGradeDetail> StudentEffortGradeDetail { get; set; }
     }
 }

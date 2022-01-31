@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class ReleaseNumberAddViewModel : CommonFields
     {
-        public ReleaseNumber releaseNumber { get; set; }
+        public ReleaseNumber? releaseNumber { get; set; }
     }
 }

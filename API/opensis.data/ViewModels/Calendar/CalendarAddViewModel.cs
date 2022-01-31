@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Calendar
 {
    public class CalendarAddViewModel : CommonFields
     {
-        public SchoolCalendars schoolCalendar { get; set; }
+        public SchoolCalendars? SchoolCalendar { get; set; }
     }
 }

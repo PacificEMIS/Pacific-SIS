@@ -7,7 +7,7 @@ namespace opensis.data.Models
 {
     public class CRMContextMySQL : CRMContext
     {
-        private DbContextOptions contextOptions;
+        private readonly DbContextOptions? contextOptions;
         public CRMContextMySQL() { }
         public CRMContextMySQL(DbContextOptions options) : base(options)
         {
@@ -17,8 +17,15 @@ namespace opensis.data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                string connectionString = "server=localhost;database={tenant};user=root;password=xxxxx";
-                optionsBuilder.UseMySql(connectionString.Replace("{tenant}", "opensisv2new"));
+                var tenant = "opensisv2_ef6";
+                //** Local Server **//
+                //string connectionString = $"server=localhost;database={tenant};user=root;password=";
+                //** ML Server **//
+                string connectionString = $"server=14.99.214.220;port=3306;database={tenant};user=admin;password=methodolog1c;default command timeout=120";
+                //optionsBuilder.UseMySql(connectionString.Replace("{tenant}", "opensisv2new"));
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+
                 /* ********* bob server*********
                  * 
                  string connectionString = "server=xxxx;port=3306;database={tenant};user=xxxx;password=xxxxxxxxxxxxxx";

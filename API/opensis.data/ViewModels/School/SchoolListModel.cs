@@ -32,10 +32,15 @@ namespace opensis.data.ViewModels.School
 {
     public class SchoolListModel: CommonFields
     {
+        public SchoolListModel()
+        {
+            GetSchoolForView = new List<GetSchoolForView>();
+            schoolMaster = new List<SchoolMaster>();
+        }
         public List<GetSchoolForView> GetSchoolForView { get; set; }
         public List<SchoolMaster> schoolMaster { get; set; }
         public Guid? TenantId { get; set; }
-        public string EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
         public int? TotalCount { get; set; }
         public int? PageNumber { get; set; }
         public int? _pageSize { get; set; }

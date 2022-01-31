@@ -36,7 +36,7 @@ namespace opensis.core.AttendanceCode.Services
 {
     public class AttendanceCodeRegister : IAttendanceCodeRegisterService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 

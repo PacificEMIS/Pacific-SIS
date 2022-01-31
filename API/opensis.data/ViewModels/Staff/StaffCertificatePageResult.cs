@@ -56,8 +56,8 @@ namespace opensis.data.ViewModels.Staff
             }
         }
 
-        public SortingModel SortingModel { get; set; }
+        public SortingModel? SortingModel { get; set; }
 
-        public List<FilterParams> FilterParams { get; set; }
+        public List<FilterParams>? FilterParams { get; set; }
     }
 }

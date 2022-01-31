@@ -578,5 +578,21 @@ namespace opensisAPI.Controllers
             }
             return markingPeriodList;
         }
+
+        [HttpPost("getMarkingPeriodsByCourseSection")]
+        public ActionResult<MarkingPeriodsByCourseSectionViewModel> GetMarkingPeriodsByCourseSection(MarkingPeriodsByCourseSectionViewModel markingPeriodsByCourseSectionViewModel)
+        {
+            MarkingPeriodsByCourseSectionViewModel markingPeriodsByCourse = new MarkingPeriodsByCourseSectionViewModel();
+            try
+            {
+                markingPeriodsByCourse = _markingPeriodService.GetMarkingPeriodsByCourseSection(markingPeriodsByCourseSectionViewModel);
+            }
+            catch (Exception es)
+            {
+                markingPeriodsByCourse._failure = true;
+                markingPeriodsByCourse._message = es.Message;
+            }
+            return markingPeriodsByCourse;
+        }
     }
 }

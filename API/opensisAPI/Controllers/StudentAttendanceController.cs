@@ -250,5 +250,21 @@ namespace opensisAPI.Controllers
             }
             return reCalculateDailyAttendance;
         }
+
+        [HttpPost("getStudentAttendanceHistory")]
+        public ActionResult<StudentAttendanceHistoryViewModel> GetStudentAttendanceHistory(StudentAttendanceHistoryViewModel studentAttendanceHistoryViewModel)
+        {
+            StudentAttendanceHistoryViewModel studentAttendanceHistory = new StudentAttendanceHistoryViewModel();
+            try
+            {
+                studentAttendanceHistory = _studentAttendanceService.GetStudentAttendanceHistory(studentAttendanceHistoryViewModel);
+            }
+            catch (Exception ex)
+            {
+                studentAttendanceHistory._message = ex.Message;
+                studentAttendanceHistory._failure = true;
+            }
+            return studentAttendanceHistory;
+        }
     }
 }

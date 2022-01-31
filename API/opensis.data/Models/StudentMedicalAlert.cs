@@ -25,22 +25,25 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentMedicalAlert
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public int Id { get; set; }
-        public string AlertType { get; set; }
-        public string AlertDescription { get; set; }
-        public string CreatedBy { get; set; }
+        public string? AlertType { get; set; }
+        public string? AlertDescription { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentMaster StudentMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
     }
 }

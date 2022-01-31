@@ -52,7 +52,7 @@ namespace opensisAPI.Controllers
             CustomFieldAddViewModel customFieldAdd = new CustomFieldAddViewModel();
             try
             {
-                if (customFieldAddViewModel.customFields.SchoolId > 0)
+                if (customFieldAddViewModel.CustomFields.SchoolId > 0)
                 {
                     customFieldAdd = _customFieldService.SaveCustomField(customFieldAddViewModel);
                 }

@@ -31,22 +31,35 @@ namespace opensis.data.Models
 {
   public partial  class CalendarEvents
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CalendarId { get; set; }
         public int EventId { get; set; }
         public decimal? AcademicYear { get; set; }
-        public DateTime? SchoolDate { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string VisibleToMembershipId { get; set; }
-        public string EventColor { get; set; }
+        public DateTime? SchoolDate { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        /// <summary>
+        /// membershipids separated by comma
+        /// </summary>
+        public string? VisibleToMembershipId { get; set; }
+        /// <summary>
+        /// Event color in HEX code
+        /// </summary>
+        public string? EventColor { get; set; }
+        public bool? IsHoliday { get; set; }
+        public bool? ApplicableToAllSchool { get; set; }
+        /// <summary>
+        /// event applicable to all calenders within academic year
+        /// </summary>
         public bool? SystemWideEvent { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
     }
 }

@@ -25,32 +25,35 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentMedicalProvider
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public int Id { get; set; }
-        public string PrimaryCarePhysician { get; set; }
-        public string PrimaryCarePhysicianPhone { get; set; }
-        public string PreferredMedicalFacility { get; set; }
-        public string PreferredMedicalFacilityPhone { get; set; }
-        public string InsuranceCompany { get; set; }
-        public string InsuranceCompanyPhone { get; set; }
-        public string PolicyNumber { get; set; }
-        public string PolicyHolderName { get; set; }
-        public string DentistName { get; set; }
-        public string DentistPhone { get; set; }
-        public string VisionName { get; set; }
-        public string VisionProviderPhone { get; set; }
-        public string CreatedBy { get; set; }
+        public string? PrimaryCarePhysician { get; set; }
+        public string? PrimaryCarePhysicianPhone { get; set; }
+        public string? PreferredMedicalFacility { get; set; }
+        public string? PreferredMedicalFacilityPhone { get; set; }
+        public string? InsuranceCompany { get; set; }
+        public string? InsuranceCompanyPhone { get; set; }
+        public string? PolicyNumber { get; set; }
+        public string? PolicyHolderName { get; set; }
+        public string? DentistName { get; set; }
+        public string? DentistPhone { get; set; }
+        public string? VisionName { get; set; }
+        public string? VisionProviderPhone { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentMaster StudentMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
     }
 }

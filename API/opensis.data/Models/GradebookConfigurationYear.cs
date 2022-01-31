@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class GradebookConfigurationYear
     {
+        
+
         public int Id { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
@@ -41,13 +44,13 @@ namespace opensis.data.Models
         public int? SmstrMarkingPeriodId { get; set; }
         public int? GradingPercentage { get; set; }
         public int? ExamPercentage { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual GradebookConfiguration GradebookConfiguration { get; set; }
-        public virtual SchoolYears SchoolYears { get; set; }
-        public virtual Semesters Semesters { get; set; }
+        [ValidateNever]
+        public virtual GradebookConfiguration GradebookConfiguration { get; set; } = null!;
+        public virtual SchoolYears? SchoolYears { get; set; }
+        public virtual Semesters? Semesters { get; set; }
     }
 }

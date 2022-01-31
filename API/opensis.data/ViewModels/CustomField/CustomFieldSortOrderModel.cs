@@ -35,6 +35,6 @@ namespace opensis.data.ViewModels.CustomField
         public int? CategoryId { get; set; }
         public int? PreviousSortOrder { get; set; }
         public int? CurrentSortOrder { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

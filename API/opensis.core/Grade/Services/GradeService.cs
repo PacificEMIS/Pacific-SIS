@@ -977,6 +977,34 @@ namespace opensis.core.Grade.Services
             }
             return honorRollDelete;
         }
+
+        /// <summary>
+        /// Add Us Standard Data
+        /// </summary>
+        /// <param name="jurisdictionByIdListViewModel"></param>
+        /// <returns></returns>
+        public JurisdictionByIdListViewModel AddUsStandardData(JurisdictionByIdListViewModel jurisdictionByIdListViewModel)
+        {
+            JurisdictionByIdListViewModel jurisdictionByIdList = new JurisdictionByIdListViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(jurisdictionByIdListViewModel._tenantName + jurisdictionByIdListViewModel._userName, jurisdictionByIdListViewModel._token))
+                {
+                    jurisdictionByIdList = this.gradeRepository.AddUsStandardData(jurisdictionByIdListViewModel);
+                }
+                else
+                {
+                    jurisdictionByIdList._failure = true;
+                    jurisdictionByIdList._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                jurisdictionByIdList._failure = true;
+                jurisdictionByIdList._message = es.Message;
+            }
+            return jurisdictionByIdList;
+        }
     }
 }  
 

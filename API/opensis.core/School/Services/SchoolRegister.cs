@@ -136,19 +136,29 @@ namespace opensis.core.School.Services
         /// <returns></returns>
         public SchoolAddViewModel UpdateSchool(SchoolAddViewModel schools)
         {
+            logger.Info("Method updateSchool called.");
             SchoolAddViewModel SchoolAddViewModel = new SchoolAddViewModel();
-            if (tokenManager.CheckToken(schools._tenantName + schools._userName, schools._token))
+            try
             {
-                SchoolAddViewModel =  this.schoolRepository.UpdateSchool(schools);
-                //return getAllSchools();
-                return SchoolAddViewModel;
+                if (tokenManager.CheckToken(schools._tenantName + schools._userName, schools._token))
+                {
+                    SchoolAddViewModel = this.schoolRepository.UpdateSchool(schools);
+                    logger.Info("Method updateSchool end with success.");
+                }
+                else
+                {
+                    SchoolAddViewModel._failure = true;
+                    SchoolAddViewModel._message = TOKENINVALID;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                SchoolAddViewModel._message = ex.Message;
                 SchoolAddViewModel._failure = true;
-                SchoolAddViewModel._message = TOKENINVALID;
-                return SchoolAddViewModel;
+                logger.Error("Method updateSchool end with error :" + ex.Message);
             }
+
+            return SchoolAddViewModel;
         }
 
         /// <summary>
@@ -158,21 +168,30 @@ namespace opensis.core.School.Services
         /// <returns></returns>
         public SchoolAddViewModel SaveSchool(SchoolAddViewModel schools)
         {
+            logger.Info("Method saveSchool called.");
             SchoolAddViewModel SchoolAddViewModel = new SchoolAddViewModel();
-            if (tokenManager.CheckToken(schools._tenantName + schools._userName, schools._token))
+            try
             {
-                
-                    SchoolAddViewModel = this.schoolRepository.AddSchool(schools);
-                    //return getAllSchools();
-                    return SchoolAddViewModel;               
-            }
-            else
-            {
-                SchoolAddViewModel._failure = true;
-                SchoolAddViewModel._message = TOKENINVALID;
-                return SchoolAddViewModel;
-            }
+                if (tokenManager.CheckToken(schools._tenantName + schools._userName, schools._token))
+                {
 
+                    SchoolAddViewModel = this.schoolRepository.AddSchool(schools);
+                    logger.Info("Method saveSchool end with success.");
+
+                }
+                else
+                {
+                    SchoolAddViewModel._failure = true;
+                    SchoolAddViewModel._message = TOKENINVALID;
+                }
+            }
+            catch(Exception ex)
+            {
+                SchoolAddViewModel._message = ex.Message;
+                SchoolAddViewModel._failure = true;
+                logger.Error("Method saveSchool end with error :" + ex.Message);
+            }
+            return SchoolAddViewModel;
         }
 
         /// <summary>

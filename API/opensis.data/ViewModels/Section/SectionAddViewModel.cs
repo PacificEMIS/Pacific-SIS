@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Section
 {
     public class SectionAddViewModel: CommonFields
     {
-        public Sections tableSections { get; set; }
+        public Sections? tableSections { get; set; }
     }
 }

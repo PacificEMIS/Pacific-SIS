@@ -32,6 +32,15 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentMedicalInfoViewModel : CommonFields
     {
+        public StudentMedicalInfoViewModel()
+        {
+            studentMedicalAlertList = new List<StudentMedicalAlert>();
+            studentMedicalImmunizationList = new List<StudentMedicalImmunization>();
+            studentMedicalNoteList = new List<StudentMedicalNote>();
+            studentMedicalNurseVisitList = new List<StudentMedicalNurseVisit>();
+            studentMedicalProviderList = new List<StudentMedicalProvider>();
+            fieldsCategoryList = new List<FieldsCategory>();
+        }
         public List<StudentMedicalAlert> studentMedicalAlertList { get; set; }
         public List<StudentMedicalImmunization> studentMedicalImmunizationList { get; set; }
         public List<StudentMedicalNote> studentMedicalNoteList { get; set; }
@@ -41,6 +50,6 @@ namespace opensis.data.ViewModels.Student
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StudentId { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

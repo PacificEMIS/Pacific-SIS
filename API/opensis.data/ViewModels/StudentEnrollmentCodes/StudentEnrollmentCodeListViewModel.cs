@@ -32,8 +32,14 @@ namespace opensis.data.ViewModels.StudentEnrollmentCodes
 {
    public class StudentEnrollmentCodeListViewModel:CommonFields
     {
+        public StudentEnrollmentCodeListViewModel()
+        {
+            studentEnrollmentCodeList=new List<StudentEnrollmentCode>();
+        }
         public List<StudentEnrollmentCode> studentEnrollmentCodeList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

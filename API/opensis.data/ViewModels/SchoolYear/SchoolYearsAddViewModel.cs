@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.SchoolYear
 {
     public class SchoolYearsAddViewModel : CommonFields
     {        
-        public SchoolYears tableSchoolYears { get; set; }
+        public SchoolYears? tableSchoolYears { get; set; }
     }
 }

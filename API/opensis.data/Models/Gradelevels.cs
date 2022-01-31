@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 
@@ -30,6 +31,7 @@ namespace opensis.data.Models
 {
     public partial class Gradelevels
     {
+        
         public Gradelevels()
         {
             StudentEnrollment = new HashSet<StudentEnrollment>();
@@ -38,22 +40,23 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int GradeId { get; set; }
-        public string ShortName { get; set; }
-        public string Title { get; set; }
+        public string? ShortName { get; set; }
+        public string? Title { get; set; }
         public int? EquivalencyId { get; set; }
         public int? AgeRangeId { get; set; }
         public int? IscedCode { get; set; }
         public int? NextGradeId { get; set; }
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual GradeAgeRange AgeRange { get; set; }
-        public virtual GradeEquivalency Equivalency { get; set; }
-        public virtual GradeEducationalStage IscedCodeNavigation { get; set; }
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        public virtual GradeAgeRange? AgeRange { get; set; }
+        public virtual GradeEquivalency? Equivalency { get; set; }
+        public virtual GradeEducationalStage? IscedCodeNavigation { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<StudentEnrollment> StudentEnrollment { get; set; }
 
     }

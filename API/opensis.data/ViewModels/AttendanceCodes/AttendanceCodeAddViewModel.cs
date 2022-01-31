@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.AttendanceCodes
 {
     public class AttendanceCodeAddViewModel : CommonFields
     {
-        public AttendanceCode attendanceCode { get; set; }
+        public AttendanceCode? AttendanceCode { get; set; }
     }
 }

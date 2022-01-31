@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class GradebookConfigurationQuarter
     {
+        
+
         public int Id { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
@@ -38,14 +41,16 @@ namespace opensis.data.Models
         public decimal AcademicYear { get; set; }
         public int GradebookConfigurationId { get; set; }
         public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public int? GradingPercentage { get; set; }
         public int? ExamPercentage { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual GradebookConfiguration GradebookConfiguration { get; set; }
-        public virtual Quarters Quarters { get; set; }
+        [ValidateNever]
+        public virtual GradebookConfiguration GradebookConfiguration { get; set; } = null!;
+       
+        public virtual Quarters? Quarters { get; set; }
     }
 }

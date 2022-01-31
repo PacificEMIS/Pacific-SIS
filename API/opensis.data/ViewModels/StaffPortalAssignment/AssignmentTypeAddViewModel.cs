@@ -7,6 +7,6 @@ namespace opensis.data.ViewModels.StaffPortalAssignment
 {
     public class AssignmentTypeAddViewModel : CommonFields
     {
-        public AssignmentType assignmentType { get; set; }
+        public AssignmentType? assignmentType { get; set; }
     }
 }

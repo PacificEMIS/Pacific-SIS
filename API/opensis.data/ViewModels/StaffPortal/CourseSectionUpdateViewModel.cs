@@ -7,6 +7,6 @@ namespace opensis.data.ViewModels.StaffPortal
 {
     public class CourseSectionUpdateViewModel : CommonFields
     {
-        public CourseSection courseSection { get; set; }
+        public CourseSection? courseSection { get; set; }
     }
 }

@@ -40,5 +40,6 @@ namespace opensis.data.ViewModels.GradeLevel
         public List<GradeLevelView> TableGradelevelList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
     }
 }

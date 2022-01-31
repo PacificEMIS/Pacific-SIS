@@ -24,6 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 using Microsoft.AspNetCore.Mvc;
+using opensis.data.Models;
 using opensis.data.ViewModels.CommonModel;
 using opensis.data.ViewModels.StaffSchedule;
 using System;
@@ -34,10 +35,10 @@ namespace opensis.core.Common.Interfaces
 {
     public interface ICommonService
     {
-        public CountryListModel GetAllCountries(CountryListModel countryListModel);
+        public CountryListModel GetAllCountries(PageResult pageResult);
         public StateListModel GetAllStatesByCountry(StateListModel stateListModel);
         public CityListModel GetAllCitiesByState(CityListModel cityListModel);
-        public LanguageListModel GetAllLanguage(LanguageListModel languageListModel);
+        public LanguageListModel GetAllLanguage(PageResult pageResult);
         public DropdownValueAddModel AddDropdownValue(DropdownValueAddModel dpdownValue);
         public DropdownValueAddModel ViewDropdownValue(DropdownValueAddModel dpdownValue);
         public DropdownValueAddModel UpdateDropdownValue(DropdownValueAddModel dpdownValue);
@@ -67,5 +68,6 @@ namespace opensis.core.Common.Interfaces
         public SchoolPreferenceAddViewModel ViewSchoolPreference(SchoolPreferenceAddViewModel schoolPreferenceAddViewModel);
         public ScheduledCourseSectionViewModel GetMissingAttendanceCountForDashboardView(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel);
         public ChangePasswordViewModel ChangePasswordForUser(ChangePasswordViewModel changePasswordViewModel);
+        public ActiveDeactiveUserViewModel ActiveDeactiveUser(ActiveDeactiveUserViewModel activeDeactiveUserViewModel);
     }
 }

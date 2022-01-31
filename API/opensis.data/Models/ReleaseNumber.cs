@@ -30,13 +30,17 @@ namespace opensis.data.Models
 {
     public partial class ReleaseNumber
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public string ReleaseNumber1 { get; set; }
+        /// <summary>
+        /// 999.99.99
+        /// </summary>
+        public string ReleaseNumber1 { get; set; } = null!;
         public DateTime ReleaseDate { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }
 }

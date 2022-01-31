@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class CountryAddModel : CommonFields
     {
-        public Country country { get; set; }
+        public Country? Country { get; set; }
     }
 }

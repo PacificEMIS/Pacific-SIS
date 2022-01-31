@@ -26,11 +26,14 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
    public partial class FieldsCategory
     {
+        
+
         public FieldsCategory()
         {
             CustomFields = new HashSet<CustomFields>();
@@ -40,19 +43,22 @@ namespace opensis.data.Models
         public int SchoolId { get; set; }
         public int CategoryId { get; set; }
         public bool? IsSystemCategory { get; set; }
-        public bool? IsSystemWideCategory { get; set; }
         public bool? Search { get; set; }
-        public string Title { get; set; }
-        public string Module { get; set; }
+        public string? Title { get; set; }
+        /// <summary>
+        /// module like &quot;school&quot;, &quot;student&quot; etc.
+        /// </summary>
+        public string? Module { get; set; }
         public int? SortOrder { get; set; }
         public bool? Required { get; set; }
         public bool? Hide { get; set; }
-        public string CreatedBy { get; set; }
+        public bool? IsSystemWideCategory { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<CustomFields> CustomFields { get; set; }
     }
 }

@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.Calendar
 {
     public class CalendarListModel : CommonFields
     {
+        public CalendarListModel()
+        {
+            CalendarList = new List<SchoolCalendars>();
+        }
         public List<SchoolCalendars> CalendarList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }

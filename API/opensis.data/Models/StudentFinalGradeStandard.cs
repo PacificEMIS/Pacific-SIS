@@ -25,13 +25,15 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentFinalGradeStandard
     {
-       
 
+
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
@@ -39,17 +41,22 @@ namespace opensis.data.Models
         public int Id { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? CalendarId { get; set; }
+        /// <summary>
+        /// table course_standard-&gt;course_us_standard-&gt;standard_grade_scale_id
+        /// </summary>
         public int? StandardGradeScaleId { get; set; }
         public int? YrMarkingPeriodId { get; set; }
         public int? SmstrMarkingPeriodId { get; set; }
         public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public int? GradeObtained { get; set; }
-        public string TeacherComment { get; set; }
-        public string CreatedBy { get; set; }
+        public string? TeacherComment { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentFinalGrade StudentFinalGrade { get; set; }
+        [ValidateNever]
+        public virtual StudentFinalGrade StudentFinalGrade { get; set; } = null!;
     }
 }

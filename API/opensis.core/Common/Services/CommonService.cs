@@ -28,6 +28,7 @@ using opensis.core.Common.Interfaces;
 using opensis.core.helper;
 using opensis.core.helper.Interfaces;
 using opensis.data.Interface;
+using opensis.data.Models;
 using opensis.data.ViewModels.CommonModel;
 using opensis.data.ViewModels.School;
 using opensis.data.ViewModels.StaffSchedule;
@@ -39,7 +40,7 @@ namespace opensis.core.Common.Services
 {
     public class CommonService : ICommonService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -56,12 +57,12 @@ namespace opensis.core.Common.Services
         /// </summary>
         /// <param name="country"></param>
         /// <returns></returns>
-        public CountryListModel GetAllCountries(CountryListModel country)
+        public CountryListModel GetAllCountries(PageResult pageResult)
         {
             CountryListModel countryListModel = new CountryListModel();
-            if (tokenManager.CheckToken(country._tenantName + country._userName, country._token))
+            if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
             {
-                countryListModel = this.commonRepository.GetAllCountries(country);
+                countryListModel = this.commonRepository.GetAllCountries(pageResult);
                 return countryListModel;
             }
             else
@@ -189,15 +190,15 @@ namespace opensis.core.Common.Services
         /// </summary>
         /// <param name="language"></param>
         /// <returns></returns>
-        public LanguageListModel GetAllLanguage(LanguageListModel language)
+        public LanguageListModel GetAllLanguage(PageResult pageResult)
         {
             LanguageListModel languageListModel = new LanguageListModel();
             try
             {
-                languageListModel = this.commonRepository.GetAllLanguage(language);
+                languageListModel = this.commonRepository.GetAllLanguage(pageResult);
                 return languageListModel;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 languageListModel._failure = true;
@@ -422,7 +423,7 @@ namespace opensis.core.Common.Services
                 languageListModel = this.commonRepository.GetAllLanguageForLogin(language);
                 return languageListModel;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 languageListModel._failure = true;
@@ -465,7 +466,7 @@ namespace opensis.core.Common.Services
                 releaseNumberView = this.commonRepository.GetReleaseNumber(releaseNumberAddViewModel);
                 return releaseNumberView;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 releaseNumberView._failure = true;
                 releaseNumberView._message = null;
@@ -815,6 +816,26 @@ namespace opensis.core.Common.Services
                 changePassword._message = TOKENINVALID;
             }
             return changePassword;
+        }
+
+        /// <summary>
+        /// Active Deactive User
+        /// </summary>
+        /// <param name="activeDeactiveUserViewModel"></param>
+        /// <returns></returns>
+        public ActiveDeactiveUserViewModel ActiveDeactiveUser(ActiveDeactiveUserViewModel activeDeactiveUserViewModel)
+        {
+            ActiveDeactiveUserViewModel activeDeactiveUser = new ActiveDeactiveUserViewModel();
+            if (tokenManager.CheckToken(activeDeactiveUserViewModel._tenantName + activeDeactiveUserViewModel._userName, activeDeactiveUserViewModel._token))
+            {
+                activeDeactiveUser = this.commonRepository.ActiveDeactiveUser(activeDeactiveUserViewModel);
+            }
+            else
+            {
+                activeDeactiveUser._failure = true;
+                activeDeactiveUser._message = TOKENINVALID;
+            }
+            return activeDeactiveUser;
         }
     }
 }

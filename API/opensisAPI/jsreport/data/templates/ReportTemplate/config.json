@@ -1,12 +1,17 @@
 {
-    "shortid": "rkJTnK2ce",
+    "shortid": "Hyltu9YnMY",
+    "name": "ReportTemplate",
     "recipe": "chrome-pdf",
     "engine": "handlebars",
-    "data": {
-        "shortid": "Sy5S19ncg"
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631521404856
     },
     "modificationDate": {
-        "$$date": 1498738932509
+        "$$date": 1631521404856
     },
-    "_id": "ulCoekcPKjgTxGLV"
+    "_id": "YmSZtvRP7sytc5DL",
+    "$entitySet": "templates"
 }

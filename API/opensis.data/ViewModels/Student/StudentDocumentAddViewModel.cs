@@ -32,11 +32,16 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentDocumentAddViewModel : CommonFields
     {
+        public StudentDocumentAddViewModel()
+        {
+            studentDocuments = new List<StudentDocuments>();
+            studentIds = new List<int>();
+        }
         public List<StudentDocuments> studentDocuments { get; set; }
         public List<int> studentIds { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

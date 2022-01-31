@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Grades
 {
     public class GradeScaleAddViewModel : CommonFields
     {
-        public GradeScale gradeScale { get; set; }
+        public GradeScale? gradeScale { get; set; }
     }
 }

@@ -41,5 +41,7 @@ namespace opensis.data.Interface
         public LoginViewModel LogOutForUser(LoginViewModel loginViewModel);
         //public  bool CheckLogInToken(CheckUserEmailAddressViewModel checkUserEmailAddressViewModel);
         public  bool AddLoginSession(LoginViewModel returnModel);
+        public UserAccessLogListViewModel GetAllUserAccessLog(PageResult pageResult);
+        public UserAccessLogListViewModel DeleteUserAccessLogs(UserAccessLogListViewModel userAccessLogListViewModel);
     }
 }

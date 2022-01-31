@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CommonModel
 {
    public class DropdownValueAddModel : CommonFields
     {
-        public DpdownValuelist DropdownValue { get; set; }
+        public DpdownValuelist? DropdownValue { get; set; }
     }
 }

@@ -31,22 +31,23 @@ namespace opensis.data.Models
 {
     public partial class StaffCertificateInfo
     {
+        
         public int Id { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
-        public string CertificationName { get; set; }
-        public string ShortName { get; set; }
-        public string CertificationCode { get; set; }
+        public string? CertificationName { get; set; }
+        public string? ShortName { get; set; }
+        public string? CertificationCode { get; set; }
         public bool? PrimaryCertification { get; set; }
         public DateTime? CertificationDate { get; set; }
         public DateTime? CertificationExpiryDate { get; set; }
-        public string CertificationDescription { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CertificationDescription { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StaffMaster StaffMaster { get; set; }
+        public virtual StaffMaster? StaffMaster { get; set; }
     }
 }

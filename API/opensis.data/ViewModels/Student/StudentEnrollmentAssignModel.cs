@@ -7,7 +7,11 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentEnrollmentAssignModel : CommonFields
     {
-        public StudentEnrollment studentEnrollments { get; set; }
+        public StudentEnrollmentAssignModel()
+        {
+            studentIds = new List<int>();
+        }
+        public StudentEnrollment? studentEnrollments { get; set; }
         public List<int> studentIds { get; set; }
         public int? SectionId { get; set; }
         public DateTime? EstimatedGradDate { get; set; }
@@ -16,5 +20,7 @@ namespace opensis.data.ViewModels.Student
         public bool? FreeLunchEligibility { get; set; }
         public bool? SpecialEducationIndicator { get; set; }
         public bool? LepIndicator { get; set; }
+        public Guid? TenantId { get; set; }
+        public int? SchoolId { get; set; }
     }
 }

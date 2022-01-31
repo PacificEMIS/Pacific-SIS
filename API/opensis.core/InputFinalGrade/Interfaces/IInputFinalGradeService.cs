@@ -23,7 +23,9 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using opensis.data.Models;
 using opensis.data.ViewModels.InputFinalGrade;
+using opensis.data.ViewModels.Student;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,6 +36,9 @@ namespace opensis.core.InputFinalGrade.Interfaces
     {
         public StudentFinalGradeListModel AddUpdateStudentFinalGrade(StudentFinalGradeListModel studentFinalGradeListModel);
         public StudentFinalGradeListModel GetAllStudentFinalGradeList(StudentFinalGradeListModel studentFinalGradeListModel);
+        public StudentReportCardGradesViewModel GetStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
+        public StudentReportCardGradesViewModel UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
+        public StudentListModel GetAllStudentListForFinalGrade(PageResult pageResult);
         //public ReportCardCommentListViewModel GetReportCardCommentsForInputFinalGrade(ReportCardCommentListViewModel reportCardCommentListViewModel);
     }
 }

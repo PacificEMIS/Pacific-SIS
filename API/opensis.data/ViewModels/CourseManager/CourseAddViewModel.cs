@@ -32,7 +32,7 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class CourseAddViewModel : CommonFields
     {
-        public Course course { get; set; }
+        public Course? Course { get; set; }
         public int? ProgramId { get; set; }
         public int? SubjectId { get; set; }
 

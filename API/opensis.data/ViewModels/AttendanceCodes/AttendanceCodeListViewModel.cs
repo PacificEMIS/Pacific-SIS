@@ -30,11 +30,17 @@ using System.Text;
 
 namespace opensis.data.ViewModels.AttendanceCodes
 {
-    public class AttendanceCodeListViewModel :CommonFields
+    public class AttendanceCodeListViewModel : CommonFields
     {
-        public List<AttendanceCode> attendanceCodeList { get; set; }
+        public AttendanceCodeListViewModel()
+        {
+            AttendanceCodeList = new List<AttendanceCode>();
+        }
+        public List<AttendanceCode> AttendanceCodeList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? AttendanceCategoryId { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

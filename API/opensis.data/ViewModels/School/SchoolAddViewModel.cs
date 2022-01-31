@@ -25,16 +25,19 @@ All rights reserved.
 
 using Microsoft.AspNetCore.Http;
 using opensis.data.Models;
+using System;
 
 namespace opensis.data.ViewModels.School
 {
     public class SchoolAddViewModel : CommonFields
     {
-        public SchoolMaster schoolMaster { get; set; }
+        public SchoolMaster? schoolMaster { get; set; }
 
         public int? SchoolId { get; set; }
         public int? SelectedCategoryId { get; set; }
         public bool? IsMarkingPeriod { get; set; }
-        public string EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

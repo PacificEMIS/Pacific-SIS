@@ -7,6 +7,7 @@ namespace opensis.data.ViewModels.StudentAttendances
 {
     public class StudentAttendanceCommentsAddViewModel : CommonFields
     {        
-        public StudentAttendanceComments studentAttendanceComments { get; set; }
+        public StudentAttendanceComments? studentAttendanceComments { get; set; }
+        public int? StaffId { get; set; }
     }
 }

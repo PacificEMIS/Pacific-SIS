@@ -31,6 +31,10 @@ namespace opensis.data.ViewModels.MarkingPeriods
 {
     public class DropDownViewModel: CommonFields
     {
+        public DropDownViewModel()
+        {
+            AcademicYears = new List<AcademicYear>();
+        }
         public List<AcademicYear> AcademicYears { get; set; }
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }

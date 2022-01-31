@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class GradeAgeRangeListViewModel : CommonFields
     {
-        public List<GradeAgeRange> gradeAgeRangeList { get; set; }
+        public GradeAgeRangeListViewModel()
+        {
+            GradeAgeRangeList = new List<GradeAgeRange>();
+        }
+        public List<GradeAgeRange> GradeAgeRangeList { get; set; }
         public Guid TenantId { get; set; }
     }
 }

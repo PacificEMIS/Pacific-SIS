@@ -40,13 +40,13 @@ namespace opensis.data.ViewModels.Period
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int BlockId { get; set; }
-        public string BlockTitle { get; set; }
+        public string? BlockTitle { get; set; }
         public long? BlockSortOrder { get; set; }
         public int? FullDayMinutes { get; set; }
         public int? HalfDayMinutes { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public List<BlockPeriod> BlockPeriod { get; set; }
     }

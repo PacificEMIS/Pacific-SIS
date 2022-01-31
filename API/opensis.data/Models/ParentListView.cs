@@ -31,42 +31,45 @@ namespace opensis.data.Models
 {
     public partial class ParentListView
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int ParentId { get; set; }
-        public Guid ParentGuid { get; set; }
-        public byte[] ParentPhoto { get; set; }
-        public string Salutation { get; set; }
-        public string Firstname { get; set; }
-        public string Middlename { get; set; }
-        public string Lastname { get; set; }
-        public string HomePhone { get; set; }
-        public string WorkPhone { get; set; }
-        public string Mobile { get; set; }
-        public string PersonalEmail { get; set; }
-        public string WorkEmail { get; set; }
-        public string UserProfile { get; set; }
+        public string? Firstname { get; set; }
+        public string? Lastname { get; set; }
+        public string? HomePhone { get; set; }
+        public string? WorkPhone { get; set; }
+        public string? Mobile { get; set; }
         public bool IsPortalUser { get; set; }
-        public string LoginEmail { get; set; }
-        public string Suffix { get; set; }
-        public string BusNo { get; set; }
         public bool? BusPickup { get; set; }
         public bool? BusDropoff { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public string? BusNo { get; set; }
+        public string? LoginEmail { get; set; }
+        public string? Middlename { get; set; }
+        public string? PersonalEmail { get; set; }
+        public string? Salutation { get; set; }
+        public string? Suffix { get; set; }
+        public string? UserProfile { get; set; }
+        public string? WorkEmail { get; set; }
+        public byte[]? ParentPhoto { get; set; }
+        public Guid ParentGuid { get; set; }
         public int StudentId { get; set; }
-        public string FirstGivenName { get; set; }
-        public string StudentMiddleName { get; set; }
-        public string LastFamilyName { get; set; }
-        public bool StudentAddressSame { get; set; }
-        public string AddressLineOne { get; set; }
-        public string AddressLineTwo { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Zip { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? StudentMiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
+        public bool? StudentAddressSame { get; set; }
+        public string? AddressLineOne { get; set; }
+        public string? AddressLineTwo { get; set; }
+        public string? Country { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? Zip { get; set; }
         public bool Associationship { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? Relationship { get; set; }
     }
 }

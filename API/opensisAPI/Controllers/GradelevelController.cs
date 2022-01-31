@@ -52,7 +52,7 @@ namespace opensisAPI.Controllers
             GradelevelViewModel gradelevelView = new GradelevelViewModel();
             try
             {
-                if (gradelevel.tblGradelevel.SchoolId > 0)
+                if (gradelevel.TblGradelevel.SchoolId > 0)
                 {
                     gradelevelView = _gradelevelService.AddGradelevel(gradelevel);
                 }
@@ -78,7 +78,7 @@ namespace opensisAPI.Controllers
             GradelevelViewModel gradelevelView = new GradelevelViewModel();
             try
             {
-                if (gradelevel.tblGradelevel.SchoolId > 0)
+                if (gradelevel.TblGradelevel.SchoolId > 0)
                 {
                     gradelevelView = _gradelevelService.ViewGradelevel(gradelevel);
                 }
@@ -105,7 +105,7 @@ namespace opensisAPI.Controllers
             GradelevelViewModel gradelevelUpdate = new GradelevelViewModel();
             try
             {
-                if (gradelevel.tblGradelevel.SchoolId > 0)
+                if (gradelevel.TblGradelevel.SchoolId > 0)
                 {
                     gradelevelUpdate = _gradelevelService.UpdateGradelevel(gradelevel);
                 }
@@ -158,7 +158,7 @@ namespace opensisAPI.Controllers
             GradelevelViewModel gradelevelDelete = new GradelevelViewModel();
             try
             {
-                if (gradelevel.tblGradelevel.SchoolId > 0)
+                if (gradelevel.TblGradelevel.SchoolId > 0)
                 {
                     gradelevelDelete = _gradelevelService.DeleteGradelevel(gradelevel);
                 }

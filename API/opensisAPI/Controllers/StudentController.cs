@@ -620,13 +620,13 @@ namespace opensisAPI.Controllers
             return studentListAdd;
         }
 
-        [HttpPost("transcriptViewForStudent")]
-        public ActionResult<TranscriptViewModel> TranscriptViewForStudent(TranscriptViewModel transcriptViewModel)
+        [HttpPost("getTranscriptForStudents")]
+        public ActionResult<TranscriptViewModel> GetTranscriptForStudents(TranscriptViewModel transcriptViewModel)
         {
             TranscriptViewModel transcriptView = new TranscriptViewModel();
             try
             {
-                transcriptView = _studentService.TranscriptViewForStudent(transcriptViewModel);
+                transcriptView = _studentService.GetTranscriptForStudents(transcriptViewModel);
             }
             catch (Exception es)
             {
@@ -1003,6 +1003,22 @@ namespace opensisAPI.Controllers
                 studentEnrollmentInfoAssign._message = es.Message;
             }
             return studentEnrollmentInfoAssign;
+        }
+
+        [HttpPost("getAllStudentListByDateRange")]
+        public ActionResult<StudentListModel> GetAllStudentListByDateRange(PageResult pageResult)
+        {
+            StudentListModel studentList = new StudentListModel();
+            try
+            {
+                studentList = _studentService.GetAllStudentListByDateRange(pageResult);
+            }
+            catch (Exception es)
+            {
+                studentList._message = es.Message;
+                studentList._failure = true;
+            }
+            return studentList;
         }
     }
 }

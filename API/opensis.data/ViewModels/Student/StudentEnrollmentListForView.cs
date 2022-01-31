@@ -37,26 +37,28 @@ namespace opensis.data.ViewModels.Student
         public int EnrollmentId { get; set; }
         public int? CalenderId { get; set; }
         public decimal? AcademicYear { get; set; }
-        public string RollingOption { get; set; }
-        public string SchoolName { get; set; }
-        public string GradeLevelTitle { get; set; }
+        public string? RollingOption { get; set; }
+        public string? SchoolName { get; set; }
+        public string? GradeLevelTitle { get; set; }
         public DateTime? EnrollmentDate { get; set; }
-        public string EnrollmentCode { get; set; }
+        public string? EnrollmentCode { get; set; }
         public DateTime? ExitDate { get; set; }
-        public string ExitCode { get; set; }
+        public string? ExitCode { get; set; }
         public int? TransferredSchoolId { get; set; }
-        public string SchoolTransferred { get; set; }
-        public string TransferredGrade { get; set; }
+        public string? SchoolTransferred { get; set; }
+        public string? TransferredGrade { get; set; }
+        public int? RolloverId { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public Guid? StudentGuid { get; set; }
-        public string EnrollmentType { get; set; }
-        public string ExitType { get; set; }
-        public string Type { get; set; }
+        public string? EnrollmentType { get; set; }
+        public string? ExitType { get; set; }
+        public string? Type { get; set; }
         public int? GradeId { get; set; }
-        public string StartYear { get; set; }
-        public string EndYear { get; set; }
+        public string? StartYear { get; set; }
+        public string? EndYear { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Grades
 {
     public class HonorRollsAddViewModel : CommonFields
     {
-        public HonorRolls honorRolls { get; set; }
+        public HonorRolls? honorRolls { get; set; }
     }
 }

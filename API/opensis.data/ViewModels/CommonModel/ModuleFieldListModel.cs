@@ -8,9 +8,9 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class ModuleFieldListModel : CommonFields
     {
-        public CustomFields [] CustomfieldTitle { get; set; }
+        public CustomFields []? CustomfieldTitle { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string Module { get; set; }
+        public string? Module { get; set; }
     }
 }

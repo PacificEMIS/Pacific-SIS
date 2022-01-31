@@ -31,45 +31,52 @@ namespace opensis.data.ViewModels.StudentSchedule
 {
     public class ScheduleStudentForView
     {
-        public Guid TenantId { get; set; }
-        public int SchoolId { get; set; }
-        public int StudentId { get; set; }
+        public Guid? TenantId { get; set; }
+        public int? SchoolId { get; set; }
+        public int? StudentId { get; set; }
         public int? GradeId { get; set; }
         public int? GradeScaleId { get; set; }
-        public string FirstGivenName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastFamilyName { get; set; }
-        public string AlternateId { get; set; }
-        public string StudentInternalId { get; set; }
-        public string GradeLevel { get; set; }
-        public string Section { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
+        public string? AlternateId { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? GradeLevel { get; set; }
+        public string? Section { get; set; }
+        public string? PhoneNumber { get; set; }
         public bool? Action { get; set; }
-        public byte[] StudentPhoto { get; set; }
+        public byte[]? StudentPhoto { get; set; }
         public DateTime? ScheduleDate { get; set; }
         public int? CourseSectionId { get; set; }
-        public string AdmissionNumber { get; set; }
-        public string RollNumber { get; set; }
+        public string? AdmissionNumber { get; set; }
+        public string? RollNumber { get; set; }
         public DateTime? Dob { get; set; }
-        public string Gender { get; set; }
-        public string Race { get; set; }
-        public string Ethnicity { get; set; }
-        public string MaritalStatus { get; set; }
+        public string? Gender { get; set; }
+        public string? Race { get; set; }
+        public string? Ethnicity { get; set; }
+        public string? MaritalStatus { get; set; }
         public int? CountryOfBirth { get; set; }
         public int? Nationality { get; set; }
         public int? FirstLanguageId { get; set; }
         public int? SecondLanguageId { get; set; }
         public int? ThirdLanguageId { get; set; }
-        public string HomeAddressLineOne { get; set; }
-        public string HomeAddressLineTwo { get; set; }
-        public string HomeAddressCountry { get; set; }
-        public string HomeAddressCity { get; set; }
-        public string HomeAddressState { get; set; }
-        public string HomeAddressZip { get; set; }
-        public string BusNo { get; set; }
-        public string HomePhone { get; set; }
-        public string MobilePhone { get; set; }
-        public string PersonalEmail { get; set; }
-        public string SchoolEmail { get; set; }
+        public string? HomeAddressLineOne { get; set; }
+        public string? HomeAddressLineTwo { get; set; }
+        public string? HomeAddressCountry { get; set; }
+        public string? HomeAddressCity { get; set; }
+        public string? HomeAddressState { get; set; }
+        public string? HomeAddressZip { get; set; }
+        public string? BusNo { get; set; }
+        public string? HomePhone { get; set; }
+        public string? MobilePhone { get; set; }
+        public string? PersonalEmail { get; set; }
+        public string? SchoolEmail { get; set; }
+        public bool? IsActive { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
+        public bool? IsDropped { get; set; }
+        public string? SchoolName { get; set; }
     }
 }

@@ -32,8 +32,14 @@ namespace opensis.data.ViewModels.Grades
 {
     public class GradeScaleListViewModel : CommonFields
     {
-        public List<GradeScale> gradeScaleList { get; set; }
+        public GradeScaleListViewModel()
+        {
+            GradeScaleList = new List<GradeScale>();
+        }
+        public List<GradeScale> GradeScaleList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

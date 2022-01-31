@@ -1,0 +1,17 @@
+{
+    "shortid": "S1eJGBtnMF",
+    "name": "YapReportTemplate",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631520126369
+    },
+    "modificationDate": {
+        "$$date": 1631520126369
+    },
+    "_id": "aCbmx6pODZnkkTrd",
+    "$entitySet": "templates"
+}

@@ -34,8 +34,8 @@ namespace opensis.data.ViewModels.CustomField
     {
         public CustomFieldAddViewModel()
         {
-            customFields = new CustomFields();
+            CustomFields = new CustomFields();
         }
-        public CustomFields customFields { get; set; }
+        public CustomFields CustomFields { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace opensis.core.CourseManager.Services
 {
     public class CourseManagerService : ICourseManagerService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -670,6 +670,34 @@ namespace opensis.core.CourseManager.Services
                 bellScheduleList._message = es.Message;
             }
             return bellScheduleList;
+        }
+
+        /// <summary>
+        /// Get Course Catelog
+        /// </summary>
+        /// <param name="courseCatelogViewModel"></param>
+        /// <returns></returns>
+        public CourseCatelogViewModel GetCourseCatelog(CourseCatelogViewModel courseCatelogViewModel)
+        {
+            CourseCatelogViewModel courseCatelog = new CourseCatelogViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(courseCatelogViewModel._tenantName + courseCatelogViewModel._userName, courseCatelogViewModel._token))
+                {
+                    courseCatelog = this.courseManagerRepository.GetCourseCatelog(courseCatelogViewModel);
+                }
+                else
+                {
+                    courseCatelog._failure = true;
+                    courseCatelog._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                courseCatelog._failure = true;
+                courseCatelog._message = es.Message;
+            }
+            return courseCatelog;
         }
     }
 }

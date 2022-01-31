@@ -34,9 +34,9 @@ namespace opensis.data.ViewModels.Grades
     {
         public GradeUsStandardListModel()
         {
-            gradeUsStandardList = new List<GradeUsStandard>();
+            GradeUsStandardList = new List<GradeUsStandard>();
         }
-        public List<GradeUsStandard> gradeUsStandardList { get; set; }
+        public List<GradeUsStandard> GradeUsStandardList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? TotalCount { get; set; }

@@ -32,10 +32,10 @@ namespace opensis.data.Interface
 {
    public interface IDbContextFactory
     {
-        string TenantName { get; set; }
+        string? TenantName { get; set; }
 
-        
+        string? ApiKeyValue { get; set; }
 
-        CRMContext Create();
+        CRMContext? Create();
     }
 }

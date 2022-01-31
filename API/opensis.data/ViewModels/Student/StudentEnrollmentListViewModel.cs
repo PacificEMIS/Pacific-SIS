@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using opensis.data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,12 +32,17 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentEnrollmentListViewModel : CommonFields
     {
+        public StudentEnrollmentListViewModel()
+        {
+            studentEnrollmentListForView = new List<StudentEnrollmentListForView>();
+            fieldsCategoryList = new List<FieldsCategory>();
+        }
         public List<StudentEnrollmentListForView> studentEnrollmentListForView { get; set; }
         public Guid? TenantId { get; set; }
         public int StudentId { get; set; }
         public int? CalenderId { get; set; }
-        public string AcademicYear { get; set; }
-        public string RollingOption { get; set; }
+        public string? AcademicYear { get; set; }
+        public string? RollingOption { get; set; }
         public int? SchoolId { get; set; }
         public Guid? StudentGuid { get; set; }
         public int? SectionId { get; set; }
@@ -46,5 +52,6 @@ namespace opensis.data.ViewModels.Student
         public bool? FreeLunchEligibility { get; set; }
         public bool? SpecialEducationIndicator { get; set; }
         public bool? LepIndicator { get; set; }
+        public List<FieldsCategory> fieldsCategoryList { get; set; }
     }
 }

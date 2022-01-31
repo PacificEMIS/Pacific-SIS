@@ -31,6 +31,7 @@ namespace opensis.data.Models
     public partial class RolePermission
     {
 
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int RolePermissionId { get; set; }
@@ -42,14 +43,14 @@ namespace opensis.data.Models
         public bool? CanAdd { get; set; }
         public bool? CanEdit { get; set; }
         public bool? CanDelete { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual Membership Membership { get; set; }
-        public virtual PermissionGroup PermissionGroup { get; set; }
-        public virtual PermissionCategory PermissionCategory { get; set; }
-        public virtual PermissionSubcategory PermissionSubcategory { get; set; }
+        public virtual Membership? Membership { get; set; }
+        public virtual PermissionCategory? PermissionCategory { get; set; }
+        public virtual PermissionGroup? PermissionGroup { get; set; }
+        public virtual PermissionSubcategory? PermissionSubcategory { get; set; }
     }
 }

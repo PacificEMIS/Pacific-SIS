@@ -31,8 +31,8 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class SortingModel
     {
-        public string SortColumn { get; set; }
+        public string? SortColumn { get; set; }
 
-        public string SortDirection { get; set; }
+        public string SortDirection { get; set; } = "asc";
     }
 }

@@ -7,6 +7,10 @@ namespace opensis.data.ViewModels.StudentAttendances
 {
     public class StudentAttendanceListViewModel : CommonFields
     {
+        public StudentAttendanceListViewModel()
+        {
+            studendAttendanceAdministrationList = new List<StudendAttendanceAdministrationViewModel>();
+        }
         //public List<StudentAttendance> studentAttendanceList { get; set; }
         //public List<StudentMaster> studentMasters { get; set; }
         public List<StudendAttendanceAdministrationViewModel> studendAttendanceAdministrationList { get; set; }

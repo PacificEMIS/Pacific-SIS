@@ -32,10 +32,14 @@ namespace opensis.data.ViewModels.Student
 {
     public class SearchContactViewModel:CommonFields
     {
+        public SearchContactViewModel()
+        {
+            studentMaster = new List<StudentMaster>();
+        }
         public List<StudentMaster> studentMaster { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string FilterValue { get; set; }
+        public string? FilterValue { get; set; }
 
     }
 }

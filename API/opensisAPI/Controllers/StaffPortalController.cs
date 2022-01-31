@@ -80,6 +80,23 @@ namespace opensisAPI.Controllers
                 courseSectionUpdate._failure = true;
             }
             return courseSectionUpdate;
-        }  
+        }
+
+        [HttpPost("getAllMissingAttendanceListForStaff")]
+        public ActionResult<ScheduledCourseSectionViewModel> GetAllMissingAttendanceListForStaff(PageResult pageResult)
+        {
+            ScheduledCourseSectionViewModel staffMissingAttendanceListView = new ScheduledCourseSectionViewModel();
+            try
+            {
+                staffMissingAttendanceListView = _staffPortalService.GetAllMissingAttendanceListForStaff(pageResult);
+            }
+            catch (Exception ex)
+            {
+
+                staffMissingAttendanceListView._message = ex.Message;
+                staffMissingAttendanceListView._failure = true;
+            }
+            return staffMissingAttendanceListView;
+        }
     }
 }

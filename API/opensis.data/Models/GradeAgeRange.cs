@@ -30,16 +30,18 @@ namespace opensis.data.Models
 {
     public partial class GradeAgeRange
     {
+        
+
         public GradeAgeRange()
         {
             Gradelevels = new HashSet<Gradelevels>();
         }
 
         public int AgeRangeId { get; set; }
-        public string AgeRange { get; set; }
-        public string CreatedBy { get; set; }
+        public string? AgeRange { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
         public virtual ICollection<Gradelevels> Gradelevels { get; set; }

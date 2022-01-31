@@ -40,7 +40,7 @@ namespace opensis.core.MarkingPeriods.Services
 {
     public class MarkingPeriodService: IMarkingPeriodService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -549,6 +549,34 @@ namespace opensis.core.MarkingPeriods.Services
                 markingPeriodList._message = es.Message;
             }
             return markingPeriodList;
+        }
+
+        /// <summary>
+        /// GetMarkingPeriodsByCourseSection
+        /// </summary>
+        /// <param name="markingPeriodListViewModel"></param>
+        /// <returns></returns>
+        public MarkingPeriodsByCourseSectionViewModel GetMarkingPeriodsByCourseSection(MarkingPeriodsByCourseSectionViewModel markingPeriodsByCourseSectionViewModel)
+        {
+            MarkingPeriodsByCourseSectionViewModel markingPeriodsByCourse = new MarkingPeriodsByCourseSectionViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(markingPeriodsByCourseSectionViewModel._tenantName + markingPeriodsByCourseSectionViewModel._userName, markingPeriodsByCourseSectionViewModel._token))
+                {
+                    markingPeriodsByCourse = this.markingperiodRepository.GetMarkingPeriodsByCourseSection(markingPeriodsByCourseSectionViewModel);
+                }
+                else
+                {
+                    markingPeriodsByCourse._failure = true;
+                    markingPeriodsByCourse._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                markingPeriodsByCourse._failure = true;
+                markingPeriodsByCourse._message = es.Message;
+            }
+            return markingPeriodsByCourse;
         }
     }
 }

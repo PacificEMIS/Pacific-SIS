@@ -31,17 +31,21 @@ namespace opensis.data.Models
 {
     public partial class ParentAssociationship
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int ParentId { get; set; }
         public int StudentId { get; set; }
+        /// <summary>
+        /// tenantid#schoolid#studentid | tenantid#schoolid#studentid | ....
+        /// </summary>
         public bool Associationship { get; set; }
-        public string Relationship { get; set; }
+        public string? Relationship { get; set; }
         public bool? IsCustodian { get; set; }
-        public string ContactType { get; set; }
-        public string CreatedBy { get; set; }
+        public string? ContactType { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
     }
 }

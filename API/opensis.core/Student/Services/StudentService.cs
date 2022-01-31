@@ -692,16 +692,16 @@ namespace opensis.core.Student.Services
         }
 
         /// <summary>
-        /// Generate Transcript For Student
+        /// Get Transcript For Students
         /// </summary>
         /// <param name="transcriptViewModel"></param>
         /// <returns></returns>
-        public TranscriptViewModel TranscriptViewForStudent(TranscriptViewModel transcriptViewModel)
+        public TranscriptViewModel GetTranscriptForStudents(TranscriptViewModel transcriptViewModel)
         {
             TranscriptViewModel transcriptView = new TranscriptViewModel();
             if (tokenManager.CheckToken(transcriptViewModel._tenantName + transcriptViewModel._userName, transcriptViewModel._token))
             {
-                transcriptView = this.studentRepository.TranscriptViewForStudent(transcriptViewModel);
+                transcriptView = this.studentRepository.GetTranscriptForStudents(transcriptViewModel);
             }
             else
             {
@@ -1185,6 +1185,33 @@ namespace opensis.core.Student.Services
                 studentEnrollmentInfoAssign._message = es.Message;
             }
             return studentEnrollmentInfoAssign;
+        }
+
+        public StudentListModel GetAllStudentListByDateRange(PageResult pageResult)
+        {
+            logger.Info("Method GetAllStudentListDateRange called.");
+            StudentListModel studentList = new StudentListModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    studentList = this.studentRepository.GetAllStudentListByDateRange(pageResult);
+                    logger.Info("Method GetAllStudentListDateRange end with success.");
+                }
+                else
+                {
+                    studentList._failure = true;
+                    studentList._message = TOKENINVALID;
+                    return studentList;
+                }
+            }
+            catch (Exception ex)
+            {
+                studentList._message = ex.Message;
+                studentList._failure = true;
+                logger.Error("Method GetAllStudentListDateRange end with error :" + ex.Message);
+            }
+            return studentList;
         }
     }
 }

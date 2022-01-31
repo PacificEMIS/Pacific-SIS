@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.StaffPortalGradebook
 {
     public class GradebookConfigurationAddViewModel : CommonFields
     {
-        public GradebookConfiguration gradebookConfiguration { get; set; }
+        public GradebookConfiguration? gradebookConfiguration { get; set; }
     }
 }

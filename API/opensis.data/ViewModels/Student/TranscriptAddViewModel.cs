@@ -40,9 +40,9 @@ namespace opensis.data.ViewModels.Student
         public bool? SchoolLogo { get; set; }
         public bool? StudentPhoto { get; set; }
         public bool? GradeLagend { get; set; }
-        public string GradeLavels { get; set; }
-        public string CreatedBy { get; set; }
+        public string? GradeLavels { get; set; }
+        public string? CreatedBy { get; set; }
         public List<StudentListForTranscript> studentListForTranscript { get; set; }
-        public string TranscriptPdf { get; set; }
+        public string? TranscriptPdf { get; set; }
     }
 }

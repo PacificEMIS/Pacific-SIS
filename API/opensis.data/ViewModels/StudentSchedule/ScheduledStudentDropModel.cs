@@ -32,12 +32,16 @@ namespace opensis.data.ViewModels.StudentSchedule
 {
     public class ScheduledStudentDropModel : CommonFields
     {
+        public ScheduledStudentDropModel()
+        {
+            studentCoursesectionScheduleList=new List<StudentCoursesectionSchedule>();
+        }
         public List<StudentCoursesectionSchedule> studentCoursesectionScheduleList { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CourseSectionId { get; set; }
         public int StudentId { get; set; }
         public DateTime? EffectiveDropDate { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

@@ -27,7 +27,9 @@ using opensis.core.helper;
 using opensis.core.helper.Interfaces;
 using opensis.core.InputFinalGrade.Interfaces;
 using opensis.data.Interface;
+using opensis.data.Models;
 using opensis.data.ViewModels.InputFinalGrade;
+using opensis.data.ViewModels.Student;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,7 +38,7 @@ namespace opensis.core.InputFinalGrade.Services
 {
     public class InputFinalGradeService : IInputFinalGradeService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -126,5 +128,89 @@ namespace opensis.core.InputFinalGrade.Services
         //    }
         //    return reportCardCommentListView;
         //}
+
+        /// <summary>
+        /// Get Student Report Card Grades
+        /// </summary>
+        /// <param name="studentReportCardGradesViewModel"></param>
+        /// <returns></returns>
+        public StudentReportCardGradesViewModel GetStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel)
+        {
+            StudentReportCardGradesViewModel studentReportCardGrades = new StudentReportCardGradesViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(studentReportCardGradesViewModel._tenantName + studentReportCardGradesViewModel._userName, studentReportCardGradesViewModel._token))
+                {
+                    studentReportCardGrades = this.inputFinalGradeRepository.GetStudentReportCardGrades(studentReportCardGradesViewModel);
+                }
+                else
+                {
+                    studentReportCardGrades._failure = true;
+                    studentReportCardGrades._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentReportCardGrades._failure = true;
+                studentReportCardGrades._message = es.Message;
+            }
+            return studentReportCardGrades;
+        }
+
+        /// <summary>
+        /// UpdateStudent Report Card Grades
+        /// </summary>
+        /// <param name="studentReportCardGradesViewModel"></param>
+        /// <returns></returns>
+        public StudentReportCardGradesViewModel UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel)
+        {
+            StudentReportCardGradesViewModel studentReportCardGrades = new StudentReportCardGradesViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(studentReportCardGradesViewModel._tenantName + studentReportCardGradesViewModel._userName, studentReportCardGradesViewModel._token))
+                {
+                    studentReportCardGrades = this.inputFinalGradeRepository.UpdateStudentReportCardGrades(studentReportCardGradesViewModel);
+                }
+                else
+                {
+                    studentReportCardGrades._failure = true;
+                    studentReportCardGrades._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentReportCardGrades._failure = true;
+                studentReportCardGrades._message = es.Message;
+            }
+            return studentReportCardGrades;
+        }
+
+        /// <summary>
+        /// Get All Student List For Final Grade
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentListModel GetAllStudentListForFinalGrade(PageResult pageResult)
+        {
+            StudentListModel studentList = new StudentListModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    studentList = this.inputFinalGradeRepository.GetAllStudentListForFinalGrade(pageResult);
+                }
+                else
+                {
+                    studentList._failure = true;
+                    studentList._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentList._failure = true;
+                studentList._message = es.Message;
+            }
+            return studentList;
+        }
     }
 }

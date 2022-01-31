@@ -67,5 +67,6 @@ namespace opensis.data.Interface
         public HonorRollsAddViewModel UpdateHonorRoll(HonorRollsAddViewModel honorRollsAddViewModel);
         public HonorRollsListViewModel GetAllHonorRollList(PageResult pageResult);
         public HonorRollsAddViewModel DeleteHonorRoll(HonorRollsAddViewModel honorRollsAddViewModel);
+        public JurisdictionByIdListViewModel AddUsStandardData(JurisdictionByIdListViewModel jurisdictionByIdListViewModel);
     }
 }

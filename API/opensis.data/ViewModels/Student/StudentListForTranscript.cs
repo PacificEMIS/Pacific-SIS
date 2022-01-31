@@ -31,9 +31,9 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentListForTranscript
     {
-        public string FirstGivenName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastFamilyName { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
         public int StudentId { get; set; }
         public Guid? StudentGuid { get; set; }
     }

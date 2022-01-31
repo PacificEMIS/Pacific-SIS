@@ -100,6 +100,7 @@ namespace opensis.core.helper.Services
 
         public bool UpdateLoginSessionForUser(string email, Guid? tenentId, string newToken, string oldToken)
         {
+            string msg = null;
             try
             {
                 if (email != null && tenentId != null && newToken != null && oldToken != null)
@@ -131,6 +132,7 @@ namespace opensis.core.helper.Services
             }
             catch (Exception es)
             {
+                msg=es.Message;
                 return false;
             }
         }

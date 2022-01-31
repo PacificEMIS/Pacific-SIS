@@ -32,8 +32,13 @@ namespace opensis.data.ViewModels.Section
 {
     public class SectionListViewModel: CommonFields
     {
+        public SectionListViewModel()
+        {
+            tableSectionsList = new List<Sections>();
+        }
         public List<Sections> tableSectionsList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
     }
 }

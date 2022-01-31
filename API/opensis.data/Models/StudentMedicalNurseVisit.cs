@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentMedicalNurseVisit
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
@@ -37,14 +40,15 @@ namespace opensis.data.Models
         public DateTime? NurseVisitDate { get; set; }
         public DateTime? TimeIn { get; set; }
         public DateTime? TimeOut { get; set; }
-        public string Reason { get; set; }
-        public string Result { get; set; }
-        public string Comment { get; set; }
-        public string CreatedBy { get; set; }
+        public string? Reason { get; set; }
+        public string? Result { get; set; }
+        public string? Comment { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentMaster StudentMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
     }
 }

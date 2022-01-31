@@ -32,13 +32,18 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentEnrollmentListModel : CommonFields
     {
+        public StudentEnrollmentListModel()
+        {
+            studentEnrollments=new List<StudentEnrollment>();
+            fieldsCategoryList = new List<FieldsCategory>();   
+        }
         public List<StudentEnrollment> studentEnrollments { get; set; }
-        public Guid? TenantId { get; set; }
+        public Guid TenantId { get; set; }
         public int StudentId { get; set; }
         public Guid StudentGuid { get; set; }
         public int SchoolId { get; set; }
         public int? CalenderId { get; set; }
-        public string RollingOption { get; set; }
+        public string? RollingOption { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? SectionId { get; set; }
         public DateTime? EstimatedGradDate { get; set; }
@@ -47,5 +52,7 @@ namespace opensis.data.ViewModels.Student
         public bool? FreeLunchEligibility { get; set; }
         public bool? SpecialEducationIndicator { get; set; }
         public bool? LepIndicator { get; set; }
+        public List<FieldsCategory> fieldsCategoryList { get; set; }
+        public int? SelectedCategoryId { get; set; }
     }
 }

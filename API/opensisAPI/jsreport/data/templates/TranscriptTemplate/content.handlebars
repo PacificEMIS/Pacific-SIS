@@ -229,7 +229,6 @@ incoming API request.
         .name {
             margin: 8px 0;
         }
-
     </style>
 </head>
 <body>
@@ -246,9 +245,9 @@ incoming API request.
                                 </div>
                                 <div class="header-left float-left">
                                     <h2>{{SchoolData.SchoolName}}</h2>
-                                   
+
                                     <p>{{SchoolData.StreetAddress1}},{{#if SchoolData.StreetAddress2}} {{SchoolData.StreetAddress2}},{{/if}} {{SchoolData.City}},{{#if SchoolData.District}} {{SchoolData.District}},{{/if}} {{#if SchoolData.State}}{{SchoolData.State}},{{/if}} {{SchoolData.Country}}, {{SchoolData.Zip}}</p>
-                                   
+
                                 </div>
                             </td>
                             <td>
@@ -328,45 +327,45 @@ incoming API request.
                             </tr>
                             {{/each}}
                             <!--<tr>
-        <td>PRECAL2</td>
-        <td>Calculus</td>
-        <td>3.00</td>
-        <td>3.00</td>
-        <td>B</td>
-        <td>9.00</td>
-    </tr>
-    <tr>
-        <td>SS-AH201</td>
-        <td>American History</td>
-        <td>3.00</td>
-        <td>3.00</td>
-        <td>A</td>
-        <td>12.00</td>
-    </tr>
-    <tr>
-        <td>SC-CHEM1</td>
-        <td>Chemistry w/lab</td>
-        <td>3.00</td>
-        <td>3.00</td>
-        <td>B</td>
-        <td>9.00</td>
-    </tr>
-    <tr>
-        <td>ART-DRW</td>
-        <td>Drawing</td>
-        <td>3.00</td>
-        <td>3.00</td>
-        <td>D</td>
-        <td>6.00</td>
-    </tr>
-    <tr>
-        <td>MUSIC</td>
-        <td>Piano</td>
-        <td>3.00</td>
-        <td>3.00</td>
-        <td>A</td>
-        <td>12.00</td>
-    </tr>-->
+                                <td>PRECAL2</td>
+                                <td>Calculus</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>SS-AH201</td>
+                                <td>American History</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>SC-CHEM1</td>
+                                <td>Chemistry w/lab</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>ART-DRW</td>
+                                <td>Drawing</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>D</td>
+                                <td>6.00</td>
+                            </tr>
+                            <tr>
+                                <td>MUSIC</td>
+                                <td>Piano</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>-->
                             <tr>
                                 <td colspan="6"><b>Credit Attempted: {{CreditAttempted}} / Credit Earned: {{TotalGradeCreditEarned}} / GPA: {{Gpa}}</b></td>
                             </tr>
@@ -376,224 +375,224 @@ incoming API request.
             </tr>
             {{/each}}
             <!--<tr>
-        <td class="semester-table">
-            <table>
-                <caption>
-                    <h2 class="float-left"><b>10th Grade</b><span>(Pathbhaban High school)</span></h2>
-                    <p class="float-right">School Year: 2017-2018</p>
-                </caption>
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Course</th>
-                        <th>Credit Hours</th>
-                        <th>Credits Earned</th>
-                        <th>Grade</th>
-                        <th>GP Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>ELA101</td>
-                        <td>English 10</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>PRECAL2</td>
-                        <td>Calculus</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>SS-AH201</td>
-                        <td>American History</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td>SC-CHEM1</td>
-                        <td>Chemistry w/lab</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>ART-DRW</td>
-                        <td>Drawing</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>D</td>
-                        <td>6.00</td>
-                    </tr>
-                    <tr>
-                        <td>MUSIC</td>
-                        <td>Piano</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td class="semester-table">
-            <table>
-                <caption>
-                    <h2 class="float-left"><b>11th Grade</b><span>(Southpoint High school)</span></h2>
-                    <p class="float-right">School Year: 2018-2019</p>
-                </caption>
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Course</th>
-                        <th>Credit Hours</th>
-                        <th>Credits Earned</th>
-                        <th>Grade</th>
-                        <th>GP Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>ELA101</td>
-                        <td>English 10</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>PRECAL2</td>
-                        <td>Calculus</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>SS-AH201</td>
-                        <td>American History</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td>SC-CHEM1</td>
-                        <td>Chemistry w/lab</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>ART-DRW</td>
-                        <td>Drawing</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>D</td>
-                        <td>6.00</td>
-                    </tr>
-                    <tr>
-                        <td>MUSIC</td>
-                        <td>Piano</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td class="semester-table">
-            <table>
-                <caption>
-                    <h2 class="float-left"><b>12th Grade</b><span>(Southpoint High school)</span></h2>
-                    <p class="float-right">School Year: 2019-2020</p>
-                </caption>
-                <thead>
-                    <tr>
-                        <th>Course Code</th>
-                        <th>Course</th>
-                        <th>Credit Hours</th>
-                        <th>Credits Earned</th>
-                        <th>Grade</th>
-                        <th>GP Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>ELA101</td>
-                        <td>English 10</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>PRECAL2</td>
-                        <td>Calculus</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>SS-AH201</td>
-                        <td>American History</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td>SC-CHEM1</td>
-                        <td>Chemistry w/lab</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>B</td>
-                        <td>9.00</td>
-                    </tr>
-                    <tr>
-                        <td>ART-DRW</td>
-                        <td>Drawing</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>D</td>
-                        <td>6.00</td>
-                    </tr>
-                    <tr>
-                        <td>MUSIC</td>
-                        <td>Piano</td>
-                        <td>3.00</td>
-                        <td>3.00</td>
-                        <td>A</td>
-                        <td>12.00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
-                    </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>-->
+                <td class="semester-table">
+                    <table>
+                        <caption>
+                            <h2 class="float-left"><b>10th Grade</b><span>(Pathbhaban High school)</span></h2>
+                            <p class="float-right">School Year: 2017-2018</p>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course</th>
+                                <th>Credit Hours</th>
+                                <th>Credits Earned</th>
+                                <th>Grade</th>
+                                <th>GP Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ELA101</td>
+                                <td>English 10</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>PRECAL2</td>
+                                <td>Calculus</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>SS-AH201</td>
+                                <td>American History</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>SC-CHEM1</td>
+                                <td>Chemistry w/lab</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>ART-DRW</td>
+                                <td>Drawing</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>D</td>
+                                <td>6.00</td>
+                            </tr>
+                            <tr>
+                                <td>MUSIC</td>
+                                <td>Piano</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="semester-table">
+                    <table>
+                        <caption>
+                            <h2 class="float-left"><b>11th Grade</b><span>(Southpoint High school)</span></h2>
+                            <p class="float-right">School Year: 2018-2019</p>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course</th>
+                                <th>Credit Hours</th>
+                                <th>Credits Earned</th>
+                                <th>Grade</th>
+                                <th>GP Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ELA101</td>
+                                <td>English 10</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>PRECAL2</td>
+                                <td>Calculus</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>SS-AH201</td>
+                                <td>American History</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>SC-CHEM1</td>
+                                <td>Chemistry w/lab</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>ART-DRW</td>
+                                <td>Drawing</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>D</td>
+                                <td>6.00</td>
+                            </tr>
+                            <tr>
+                                <td>MUSIC</td>
+                                <td>Piano</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="semester-table">
+                    <table>
+                        <caption>
+                            <h2 class="float-left"><b>12th Grade</b><span>(Southpoint High school)</span></h2>
+                            <p class="float-right">School Year: 2019-2020</p>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course</th>
+                                <th>Credit Hours</th>
+                                <th>Credits Earned</th>
+                                <th>Grade</th>
+                                <th>GP Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ELA101</td>
+                                <td>English 10</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>PRECAL2</td>
+                                <td>Calculus</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>SS-AH201</td>
+                                <td>American History</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td>SC-CHEM1</td>
+                                <td>Chemistry w/lab</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>B</td>
+                                <td>9.00</td>
+                            </tr>
+                            <tr>
+                                <td>ART-DRW</td>
+                                <td>Drawing</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>D</td>
+                                <td>6.00</td>
+                            </tr>
+                            <tr>
+                                <td>MUSIC</td>
+                                <td>Piano</td>
+                                <td>3.00</td>
+                                <td>3.00</td>
+                                <td>A</td>
+                                <td>12.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6"><b>Credit Attempted: 18.00 / Credit Earned: 18.00 / GPA: 3.17</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>-->
             <tr>
                 <td class="gpa-table">
                     {{#if GradeDetails}}
@@ -619,35 +618,35 @@ incoming API request.
                             </tr>
                             {{/each}}
                             <!--<tr>
-                <td>B</td>
-                <td>0.00</td>
-                <td>3.00</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>C</td>
-                <td>0.00</td>
-                <td>2.00</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>D</td>
-                <td>0.00</td>
-                <td>1.00</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>F</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Inc</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td></td>
-            </tr>-->
+                                <td>B</td>
+                                <td>0.00</td>
+                                <td>3.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>C</td>
+                                <td>0.00</td>
+                                <td>2.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>D</td>
+                                <td>0.00</td>
+                                <td>1.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>F</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Inc</td>
+                                <td>0.00</td>
+                                <td>0.00</td>
+                                <td></td>
+                            </tr>-->
                         </tbody>
                     </table>
                     {{/if}}

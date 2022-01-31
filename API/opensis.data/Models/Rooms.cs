@@ -30,6 +30,8 @@ namespace opensis.data.Models
 {
     public partial class Rooms
     {
+        
+
         public Rooms()
         {
             CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
@@ -37,19 +39,21 @@ namespace opensis.data.Models
             CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
             CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int RoomId { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public int? Capacity { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-
         public bool? IsActive { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public int? RolloverId { get; set; }
         public virtual ICollection<CourseBlockSchedule> CourseBlockSchedule { get; set; }
         public virtual ICollection<CourseCalendarSchedule> CourseCalendarSchedule { get; set; }
         public virtual ICollection<CourseFixedSchedule> CourseFixedSchedule { get; set; }

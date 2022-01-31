@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.EntityFrameworkCore;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
@@ -36,7 +37,7 @@ namespace opensis.data.Repository
 {
     public class StudentEnrollmentCodeRepository: IStudentEnrollmentCodeRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public StudentEnrollmentCodeRepository(IDbContextFactory dbContextFactory)
         {
@@ -52,31 +53,38 @@ namespace opensis.data.Repository
         {
 
             //int? MasterEnrollmentCode = Utility.GetMaxPK(this.context, new Func<StudentEnrollmentCode, int>(x => x.EnrollmentCode));
-
-            int? MasterEnrollmentCode = 1;
-
-            var EnrollmentCodeData = this.context?.StudentEnrollmentCode.Where(x => x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId).OrderByDescending(x => x.EnrollmentCode).FirstOrDefault();
-
-            if (EnrollmentCodeData != null)
+            if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode != null)
             {
-                MasterEnrollmentCode = EnrollmentCodeData.EnrollmentCode + 1;
+                int? MasterEnrollmentCode = 1;
+
+                var EnrollmentCodeData = this.context?.StudentEnrollmentCode.Where(x => x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId).OrderByDescending(x => x.EnrollmentCode).FirstOrDefault();
+
+                if (EnrollmentCodeData != null)
+                {
+                    MasterEnrollmentCode = EnrollmentCodeData.EnrollmentCode + 1;
+                }
+
+                studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode = (int)MasterEnrollmentCode;
+
+                studentEnrollmentCodeAddViewModel.studentEnrollmentCode.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId, studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId);
+
+                //var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.Where(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.Type.ToLower() == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Type.ToLower() && x.Type.ToLower() != "DROP".ToLower() && x.Type.ToLower() != "Add".ToLower()).ToList();
+
+                var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.AsEnumerable().Where(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && String.Compare(x.Type, studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Type, true) == 0 && String.Compare(x.Type, "DROP", true) == 0 && String.Compare(x.Type, "Add", true) == 0).ToList();
+
+                if (studentEnrollmentCodeData!=null && studentEnrollmentCodeData.Any())
+                {
+                    studentEnrollmentCodeAddViewModel._failure = true;
+                    studentEnrollmentCodeAddViewModel._message = "You can't add any enrollment code in this type";
+                    return studentEnrollmentCodeAddViewModel;
+                }
+                studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedOn = DateTime.UtcNow;
+                this.context?.StudentEnrollmentCode.Add(studentEnrollmentCodeAddViewModel.studentEnrollmentCode);
+                //context!.Entry(studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolMaster).State = EntityState.Unchanged;
+                this.context?.SaveChanges();
+                studentEnrollmentCodeAddViewModel._failure = false;
+                studentEnrollmentCodeAddViewModel._message = "Enrollment Code Added Successfully";
             }
-
-            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode = (int)MasterEnrollmentCode;
-
-            var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.Where(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.Type.ToLower() == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Type.ToLower() && x.Type.ToLower() != "DROP".ToLower() && x.Type.ToLower() != "Add".ToLower()).ToList();
-            if (studentEnrollmentCodeData.Count > 0)
-            {
-                studentEnrollmentCodeAddViewModel._failure = true;
-                studentEnrollmentCodeAddViewModel._message = "You can't add any enrollment code in this type";
-                return studentEnrollmentCodeAddViewModel;
-            }
-            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedOn = DateTime.UtcNow;
-            this.context?.StudentEnrollmentCode.Add(studentEnrollmentCodeAddViewModel.studentEnrollmentCode);
-            this.context?.SaveChanges();
-            studentEnrollmentCodeAddViewModel._failure = false;
-            studentEnrollmentCodeAddViewModel._message = "Enrollment Code Added Successfully";
-
             return studentEnrollmentCodeAddViewModel;
         }
 
@@ -91,16 +99,19 @@ namespace opensis.data.Repository
             StudentEnrollmentCodeAddViewModel studentEnrollmentCodeView = new StudentEnrollmentCodeAddViewModel();
             try
             {
-               
-                var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
-                if (studentEnrollmentCodeData != null)
+                if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode != null)
                 {
-                    studentEnrollmentCodeView.studentEnrollmentCode = studentEnrollmentCodeData;
-                }
-                else
-                {
-                    studentEnrollmentCodeView._failure = true;
-                    studentEnrollmentCodeView._message = NORECORDFOUND;
+
+                    var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
+                    if (studentEnrollmentCodeData != null)
+                    {
+                        studentEnrollmentCodeView.studentEnrollmentCode = studentEnrollmentCodeData;
+                    }
+                    else
+                    {
+                        studentEnrollmentCodeView._failure = true;
+                        studentEnrollmentCodeView._message = NORECORDFOUND;
+                    }
                 }
             }
             catch (Exception es)
@@ -120,29 +131,33 @@ namespace opensis.data.Repository
         {
             try
             {
-                var studentEnrollmentCodeDelete = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
-
-                if (studentEnrollmentCodeDelete != null)
+                if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode != null)
                 {
-                    if (studentEnrollmentCodeDelete.Type.ToLower() == "Roll over".ToLower() || studentEnrollmentCodeDelete.Type.ToLower() == "Enroll (Transfer)".ToLower() || studentEnrollmentCodeDelete.Type.ToLower() == "Drop (Transfer)".ToLower())
+                    var studentEnrollmentCodeDelete = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
+
+                    if (studentEnrollmentCodeDelete != null)
                     {
-                        studentEnrollmentCodeAddViewModel._failure = true;
-                        studentEnrollmentCodeAddViewModel._message = "Cannot delete because it is not deletable.";
-                    }
-                    else
-                    {
-                        var studentEnrollmentExits = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeDelete.TenantId && x.SchoolId == studentEnrollmentCodeDelete.SchoolId && (x.EnrollmentCode == studentEnrollmentCodeDelete.Title || x.ExitCode == studentEnrollmentCodeDelete.Title));
-                        if (studentEnrollmentExits != null)
+                        //if (studentEnrollmentCodeDelete.Type?.ToLower() == "Roll over".ToLower() || studentEnrollmentCodeDelete.Type?.ToLower() == "Enroll (Transfer)".ToLower() || studentEnrollmentCodeDelete.Type?.ToLower() == "Drop (Transfer)".ToLower())
+                        if (String.Compare(studentEnrollmentCodeDelete.Type, "Roll over", true) == 0 || String.Compare(studentEnrollmentCodeDelete.Type, "Enroll (Transfer)",true) == 0 || String.Compare(studentEnrollmentCodeDelete.Type, "Drop (Transfer)",true) == 0)
                         {
                             studentEnrollmentCodeAddViewModel._failure = true;
-                            studentEnrollmentCodeAddViewModel._message = "Cannot delete because enrollment codes are associated.";
+                            studentEnrollmentCodeAddViewModel._message = "Cannot delete because it is not deletable.";
                         }
                         else
                         {
-                            this.context?.StudentEnrollmentCode.Remove(studentEnrollmentCodeDelete);
-                            this.context?.SaveChanges();
-                            studentEnrollmentCodeAddViewModel._failure = false;
-                            studentEnrollmentCodeAddViewModel._message = "Enrollment Code Deleted Successfully";
+                            var studentEnrollmentExits = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeDelete.TenantId && x.SchoolId == studentEnrollmentCodeDelete.SchoolId && (x.EnrollmentCode == studentEnrollmentCodeDelete.Title || x.ExitCode == studentEnrollmentCodeDelete.Title));
+                            if (studentEnrollmentExits != null)
+                            {
+                                studentEnrollmentCodeAddViewModel._failure = true;
+                                studentEnrollmentCodeAddViewModel._message = "Cannot delete because enrollment codes are associated.";
+                            }
+                            else
+                            {
+                                this.context?.StudentEnrollmentCode.Remove(studentEnrollmentCodeDelete);
+                                this.context?.SaveChanges();
+                                studentEnrollmentCodeAddViewModel._failure = false;
+                                studentEnrollmentCodeAddViewModel._message = "Enrollment Code Deleted Successfully";
+                            }
                         }
                     }
                 }
@@ -164,38 +179,49 @@ namespace opensis.data.Repository
         {
             try
             {
-                var studentEnrollmentCodeUpdate = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
-
-                var sameTitleExits = this.context?.StudentEnrollment.Where(x => x.SchoolId == studentEnrollmentCodeUpdate.SchoolId && x.TenantId == studentEnrollmentCodeUpdate.TenantId && (x.EnrollmentCode.ToLower() == studentEnrollmentCodeUpdate.Title.ToLower() || x.ExitCode.ToLower() == studentEnrollmentCodeUpdate.Title.ToLower())).ToList();
-                if (sameTitleExits.Count > 0)
+                if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode != null)
                 {
-                    foreach (var title in sameTitleExits)
+                    var studentEnrollmentCodeUpdate = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.TenantId && x.SchoolId == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolId && x.EnrollmentCode == studentEnrollmentCodeAddViewModel.studentEnrollmentCode.EnrollmentCode);
+
+                    if (studentEnrollmentCodeUpdate != null)
                     {
-                        if(title.EnrollmentCode != null && title.EnrollmentCode.ToLower()== studentEnrollmentCodeUpdate.Title.ToLower())
-                        {
-                            title.EnrollmentCode = studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Title;
-                        }
-                        if (title.ExitCode != null && title.ExitCode.ToLower() == studentEnrollmentCodeUpdate.Title.ToLower())
-                        {
-                            title.ExitCode = studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Title;
-                        }                                             
-                    }
-                    this.context?.StudentEnrollment.UpdateRange(sameTitleExits);
-                }
+                        //var sameTitleExits = this.context?.StudentEnrollment.Where(x => x.SchoolId == studentEnrollmentCodeUpdate.SchoolId && x.TenantId == studentEnrollmentCodeUpdate.TenantId && (x.EnrollmentCode.ToLower() == studentEnrollmentCodeUpdate.Title.ToLower() || x.ExitCode.ToLower() == studentEnrollmentCodeUpdate.Title.ToLower())).ToList();
+                        var sameTitleExits = this.context?.StudentEnrollment.AsEnumerable().Where(x => x.SchoolId == studentEnrollmentCodeUpdate.SchoolId && x.TenantId == studentEnrollmentCodeUpdate.TenantId && String.Compare(x.EnrollmentCode, studentEnrollmentCodeUpdate.Title, true) == 0 && String.Compare(x.ExitCode, studentEnrollmentCodeUpdate.Title, true) == 0 && x.AcademicYear == studentEnrollmentCodeUpdate.AcademicYear).ToList();
 
-                if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Type.ToLower() != studentEnrollmentCodeUpdate.Type.ToLower())
-                {
-                    studentEnrollmentCodeAddViewModel._message = "Can't edit Type because it is not editable";
-                }
-                else
-                {
-                    studentEnrollmentCodeAddViewModel.studentEnrollmentCode.UpdatedOn = DateTime.UtcNow;
-                    studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedOn = studentEnrollmentCodeUpdate.CreatedOn;
-                    studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedBy = studentEnrollmentCodeUpdate.CreatedBy;
-                    this.context.Entry(studentEnrollmentCodeUpdate).CurrentValues.SetValues(studentEnrollmentCodeAddViewModel.studentEnrollmentCode);
-                    this.context?.SaveChanges();
-                    studentEnrollmentCodeAddViewModel._failure = false;
-                    studentEnrollmentCodeAddViewModel._message = "Enrollment Code Updated Successfully";
+                        if (sameTitleExits != null && sameTitleExits.Any())
+                        {
+                            foreach (var title in sameTitleExits)
+                            {
+                                //if (title.EnrollmentCode != null && title.EnrollmentCode.ToLower() == studentEnrollmentCodeUpdate?.Title?.ToLower())
+                                if (title.EnrollmentCode != null && String.Compare(title.EnrollmentCode, studentEnrollmentCodeUpdate.Title, true) == 0)
+                                {
+                                    title.EnrollmentCode = studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Title;
+                                }
+                                // if(title.ExitCode != null && title.ExitCode.ToLower() == studentEnrollmentCodeUpdate?.Title?.ToLower())
+                                if (title.ExitCode != null && String.Compare(title.ExitCode, studentEnrollmentCodeUpdate.Title, true) == 0)
+                                {
+                                    title.ExitCode = studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Title;
+                                }
+                            }
+                            this.context?.StudentEnrollment.UpdateRange(sameTitleExits);
+                        }
+
+                        if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode.Type?.ToLower() != studentEnrollmentCodeUpdate?.Type?.ToLower())
+                        {
+                            studentEnrollmentCodeAddViewModel._message = "Can't edit Type because it is not editable";
+                        }
+                        else
+                        {
+                            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.AcademicYear = studentEnrollmentCodeUpdate!.AcademicYear;
+                            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.UpdatedOn = DateTime.UtcNow;
+                            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedOn = studentEnrollmentCodeUpdate.CreatedOn;
+                            studentEnrollmentCodeAddViewModel.studentEnrollmentCode.CreatedBy = studentEnrollmentCodeUpdate.CreatedBy;
+                            this.context?.Entry(studentEnrollmentCodeUpdate).CurrentValues.SetValues(studentEnrollmentCodeAddViewModel.studentEnrollmentCode);
+                            this.context?.SaveChanges();
+                            studentEnrollmentCodeAddViewModel._failure = false;
+                            studentEnrollmentCodeAddViewModel._message = "Enrollment Code Updated Successfully";
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -218,27 +244,25 @@ namespace opensis.data.Repository
             try
             {
 
-                var StudentEnrollmentCodeAll = this.context?.StudentEnrollmentCode.Where(x => x.TenantId == studentEnrollmentCodeListView.TenantId && x.SchoolId == studentEnrollmentCodeListView.SchoolId).Select(e=> new StudentEnrollmentCode()
-                { 
-                    TenantId= e.TenantId,
-                    SchoolId= e.SchoolId,
-                    EnrollmentCode= e.EnrollmentCode,
-                    AcademicYear= e.AcademicYear,
-                    Title= e.Title,
-                    ShortName= e.ShortName,
-                    SortOrder= e.SortOrder,
-                    Type= e.Type,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == studentEnrollmentCodeListView.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == studentEnrollmentCodeListView.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    UpdatedOn=e.UpdatedOn
-                }).ToList();
+                var StudentEnrollmentCodeAll = this.context?.StudentEnrollmentCode.Where(x => x.TenantId == studentEnrollmentCodeListView.TenantId && x.SchoolId == studentEnrollmentCodeListView.SchoolId && x.AcademicYear == studentEnrollmentCodeListView.AcademicYear).ToList();
 
-                studentEnrollmentCodeList.studentEnrollmentCodeList = StudentEnrollmentCodeAll;
+                if (StudentEnrollmentCodeAll!=null && StudentEnrollmentCodeAll.Any())
+                {
+                    if (studentEnrollmentCodeListView.IsListView == true)
+                    {
+                        StudentEnrollmentCodeAll.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, studentEnrollmentCodeListView.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, studentEnrollmentCodeListView.TenantId, c.UpdatedBy);
+                        });
+                    }
+                }
+
+                studentEnrollmentCodeList.studentEnrollmentCodeList = StudentEnrollmentCodeAll ?? new List<StudentEnrollmentCode>();
                 studentEnrollmentCodeList._tenantName = studentEnrollmentCodeListView._tenantName;
                 studentEnrollmentCodeList._token = studentEnrollmentCodeListView._token;
 
-                if (StudentEnrollmentCodeAll.Count > 0)
+                if (StudentEnrollmentCodeAll!=null && StudentEnrollmentCodeAll.Any())
                 {                
                     studentEnrollmentCodeList._failure = false;
                 }

@@ -32,9 +32,13 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class SearchFilterListViewModel : CommonFields
     {
-        public List<SearchFilter> searchFilterList { get; set; }
+        public SearchFilterListViewModel()
+        {
+            SearchFilterList = new List<SearchFilter>();
+        }
+        public List<SearchFilter> SearchFilterList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string Module { get; set; }
+        public string? Module { get; set; }
     }
 }

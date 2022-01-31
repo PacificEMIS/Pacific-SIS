@@ -32,11 +32,16 @@ namespace opensis.data.ViewModels.Room
 {
     public class RoomListModel : CommonFields
     {
-
+        public RoomListModel()
+        {
+            TableroomList = new List<Rooms>();
+        }
         public List<Rooms> TableroomList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public bool? IncludeInactive { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
 
     }
 }

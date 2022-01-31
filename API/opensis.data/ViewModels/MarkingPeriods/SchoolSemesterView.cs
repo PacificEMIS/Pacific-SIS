@@ -38,9 +38,9 @@ namespace opensis.data.ViewModels.MarkingPeriods
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int MarkingPeriodId { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
-        public int YearId { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
+        public int? YearId { get; set; }
         public bool IsParent { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -49,10 +49,10 @@ namespace opensis.data.ViewModels.MarkingPeriods
         public bool? DoesGrades { get; set; }
         public bool? DoesExam { get; set; }
         public bool? DoesComments { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public List<SchoolQuarterView> Children { get; set; }
     }
 }

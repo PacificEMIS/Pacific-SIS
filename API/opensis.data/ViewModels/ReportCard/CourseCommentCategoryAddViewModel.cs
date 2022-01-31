@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.ReportCard
 {
     public class CourseCommentCategoryAddViewModel : CommonFields
     {
+        public CourseCommentCategoryAddViewModel()
+        {
+            courseCommentCategory = new List<CourseCommentCategory>();
+        }
         public List<CourseCommentCategory> courseCommentCategory { get; set; }
     }
 }

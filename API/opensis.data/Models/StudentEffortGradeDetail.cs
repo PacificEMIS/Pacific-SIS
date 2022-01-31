@@ -25,24 +25,36 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentEffortGradeDetail
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public long StudentEffortGradeSrlno { get; set; }
         public long Id { get; set; }
+        /// <summary>
+        /// To get category_name
+        /// </summary>
         public int? EffortCategoryId { get; set; }
+        /// <summary>
+        /// To get effort_item_title
+        /// </summary>
         public int? EffortItemId { get; set; }
+        /// <summary>
+        /// To get grade_scale_value
+        /// </summary>
         public int? EffortGradeScaleId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentEffortGradeMaster StudentEffortGradeMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentEffortGradeMaster StudentEffortGradeMaster { get; set; } = null!;
     }
 }

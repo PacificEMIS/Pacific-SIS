@@ -30,25 +30,30 @@ namespace opensis.data.Models
 {
     public partial class StudentReportCardDetail
     {
+       
+
         public long Id { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
-        public string SchoolYear { get; set; }
-        public string MarkingPeriodTitle { get; set; }
-        public string GradeTitle { get; set; }
-        public string CourseName { get; set; }
-        public string Teacher { get; set; }
-        public string Grade { get; set; }
+        /// <summary>
+        /// year_marking_period_id
+        /// </summary>
+        public string SchoolYear { get; set; } = null!;
+        public string? MarkingPeriodTitle { get; set; }
+        public string GradeTitle { get; set; } = null!;
+        public string? CourseName { get; set; }
+        public string? Teacher { get; set; }
+        public string? Grade { get; set; }
         public decimal? Gpa { get; set; }
-        public string Comments { get; set; }
-        public string TeacherComments { get; set; }
-        public string OverallTeacherComments { get; set; }
-        public string CreatedBy { get; set; }
+        public string? Comments { get; set; }
+        public string? TeacherComments { get; set; }
+        public string? OverallTeacherComments { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentReportCardMaster StudentReportCardMaster { get; set; }
+        public virtual StudentReportCardMaster? StudentReportCardMaster { get; set; }
     }
 }

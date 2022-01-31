@@ -35,7 +35,7 @@ namespace opensis.core.StaffPortalGradebook.Services
 {
     public class StaffPortalGradebookServices: IStaffPortalGradebookServices
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -130,6 +130,174 @@ namespace opensis.core.StaffPortalGradebook.Services
                 finalGradingMarkingPeriod._message = es.Message;
             }
             return finalGradingMarkingPeriod;
+        }
+
+        /// <summary>
+        /// Add Gradebook Grade
+        /// </summary>
+        /// <param name="gradebookGradeAddViewModel"></param>
+        /// <returns></returns>
+        public GradebookGradeListViewModel AddGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel)
+        {
+            GradebookGradeListViewModel gradebookGradeAdd = new GradebookGradeListViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(gradebookGradeListViewModel._tenantName + gradebookGradeListViewModel._userName, gradebookGradeListViewModel._token))
+                {
+                    gradebookGradeAdd = this.staffPortalGradebookRepository.AddGradebookGrade(gradebookGradeListViewModel);
+                }
+                else
+                {
+                    gradebookGradeAdd._failure = true;
+                    gradebookGradeAdd._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                gradebookGradeAdd._failure = true;
+                gradebookGradeAdd._message = es.Message;
+            }
+            return gradebookGradeAdd;
+        }
+
+        /// <summary>
+        /// Get Gradebook Grade
+        /// </summary>
+        /// <param name="gradebookGradeListViewModel"></param>
+        /// <returns></returns>
+        public GradebookGradeListViewModel GetGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel)
+        {
+            GradebookGradeListViewModel gradebookGradeList = new GradebookGradeListViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(gradebookGradeListViewModel._tenantName + gradebookGradeListViewModel._userName, gradebookGradeListViewModel._token))
+                {
+                    gradebookGradeList = this.staffPortalGradebookRepository.GetGradebookGrade(gradebookGradeListViewModel);
+                }
+                else
+                {
+                    gradebookGradeList._failure = true;
+                    gradebookGradeList._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                gradebookGradeList._failure = true;
+                gradebookGradeList._message = es.Message;
+            }
+            return gradebookGradeList;
+        }
+
+        /// <summary>
+        /// Gradebook Grade By Student
+        /// </summary>
+        /// <param name="assignmentForStudentViewModel"></param>
+        /// <returns></returns>
+        public AssignmentForStudentViewModel GradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel)
+        {
+            AssignmentForStudentViewModel assignmentForStudent = new AssignmentForStudentViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(assignmentForStudentViewModel._tenantName + assignmentForStudentViewModel._userName, assignmentForStudentViewModel._token))
+                {
+                    assignmentForStudent = this.staffPortalGradebookRepository.GradebookGradeByStudent(assignmentForStudentViewModel);
+                }
+                else
+                {
+                    assignmentForStudent._failure = true;
+                    assignmentForStudent._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                assignmentForStudent._failure = true;
+                assignmentForStudent._message = es.Message;
+            }
+            return assignmentForStudent;
+        }
+
+        /// <summary>
+        /// Add Gradebook Grade By Student
+        /// </summary>
+        /// <param name="assignmentForStudentViewModel"></param>
+        /// <returns></returns>
+        public AssignmentForStudentViewModel AddGradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel)
+        {
+            AssignmentForStudentViewModel assignmentForStudent = new AssignmentForStudentViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(assignmentForStudentViewModel._tenantName + assignmentForStudentViewModel._userName, assignmentForStudentViewModel._token))
+                {
+                    assignmentForStudent = this.staffPortalGradebookRepository.AddGradebookGradeByStudent(assignmentForStudentViewModel);
+                }
+                else
+                {
+                    assignmentForStudent._failure = true;
+                    assignmentForStudent._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                assignmentForStudent._failure = true;
+                assignmentForStudent._message = es.Message;
+            }
+            return assignmentForStudent;
+        }
+
+        /// <summary>
+        /// Gradebook Grade By Assignment Type
+        /// </summary>
+        /// <param name="studentListByAssignmentTpyeViewModel"></param>
+        /// <returns></returns>
+        public StudentListByAssignmentTpyeViewModel GradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel)
+        {
+            StudentListByAssignmentTpyeViewModel studentListByAssignmentTpye = new StudentListByAssignmentTpyeViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(studentListByAssignmentTpyeViewModel._tenantName + studentListByAssignmentTpyeViewModel._userName, studentListByAssignmentTpyeViewModel._token))
+                {
+                    studentListByAssignmentTpye = this.staffPortalGradebookRepository.GradebookGradeByAssignmentType(studentListByAssignmentTpyeViewModel);
+                }
+                else
+                {
+                    studentListByAssignmentTpye._failure = true;
+                    studentListByAssignmentTpye._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentListByAssignmentTpye._failure = true;
+                studentListByAssignmentTpye._message = es.Message;
+            }
+            return studentListByAssignmentTpye;
+        }
+
+        /// <summary>
+        /// Add gradebook Grade By Assignment Type
+        /// </summary>
+        /// <param name="studentListByAssignmentTpyeViewModel"></param>
+        /// <returns></returns>
+        public StudentListByAssignmentTpyeViewModel AddgradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel)
+        {
+            StudentListByAssignmentTpyeViewModel studentListByAssignmentTpye = new StudentListByAssignmentTpyeViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(studentListByAssignmentTpyeViewModel._tenantName + studentListByAssignmentTpyeViewModel._userName, studentListByAssignmentTpyeViewModel._token))
+                {
+                    studentListByAssignmentTpye = this.staffPortalGradebookRepository.AddgradebookGradeByAssignmentType(studentListByAssignmentTpyeViewModel);
+                }
+                else
+                {
+                    studentListByAssignmentTpye._failure = true;
+                    studentListByAssignmentTpye._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentListByAssignmentTpye._failure = true;
+                studentListByAssignmentTpye._message = es.Message;
+            }
+            return studentListByAssignmentTpye;
         }
     }
 }

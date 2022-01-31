@@ -96,5 +96,107 @@ namespace opensisAPI.Controllers
             }
             return finalGradingMarkingPeriod;
         }
+
+        [HttpPost("addGradebookGrade")]
+        public ActionResult<GradebookGradeListViewModel> AddGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel)
+        {
+            GradebookGradeListViewModel gradebookGradeAdd = new GradebookGradeListViewModel();
+            try
+            {
+                gradebookGradeAdd = _staffPortalGradebookServices.AddGradebookGrade(gradebookGradeListViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                gradebookGradeAdd._message = ex.Message;
+                gradebookGradeAdd._failure = true;
+            }
+            return gradebookGradeAdd;
+        }
+
+        [HttpPost("getGradebookGrade")]
+        public ActionResult<GradebookGradeListViewModel> GetGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel)
+        {
+            GradebookGradeListViewModel gradebookGradeList = new GradebookGradeListViewModel();
+            try
+            {
+                gradebookGradeList = _staffPortalGradebookServices.GetGradebookGrade(gradebookGradeListViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                gradebookGradeList._message = ex.Message;
+                gradebookGradeList._failure = true;
+            }
+            return gradebookGradeList;
+        }
+
+        [HttpPost("gradebookGradeByStudent")]
+        public ActionResult<AssignmentForStudentViewModel> GradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel)
+        {
+            AssignmentForStudentViewModel assignmentForStudent = new AssignmentForStudentViewModel();
+            try
+            {
+                assignmentForStudent = _staffPortalGradebookServices.GradebookGradeByStudent(assignmentForStudentViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                assignmentForStudent._message = ex.Message;
+                assignmentForStudent._failure = true;
+            }
+            return assignmentForStudent;
+        }
+
+        [HttpPost("addGradebookGradeByStudent")]
+        public ActionResult<AssignmentForStudentViewModel> AddGradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel)
+        {
+            AssignmentForStudentViewModel assignmentForStudent = new AssignmentForStudentViewModel();
+            try
+            {
+                assignmentForStudent = _staffPortalGradebookServices.AddGradebookGradeByStudent(assignmentForStudentViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                assignmentForStudent._message = ex.Message;
+                assignmentForStudent._failure = true;
+            }
+            return assignmentForStudent;
+        }
+
+        [HttpPost("gradebookGradeByAssignmentType")]
+        public ActionResult<StudentListByAssignmentTpyeViewModel> GradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel)
+        {
+            StudentListByAssignmentTpyeViewModel studentListByAssignmentTpye = new StudentListByAssignmentTpyeViewModel();
+            try
+            {
+                studentListByAssignmentTpye = _staffPortalGradebookServices.GradebookGradeByAssignmentType(studentListByAssignmentTpyeViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                studentListByAssignmentTpye._message = ex.Message;
+                studentListByAssignmentTpye._failure = true;
+            }
+            return studentListByAssignmentTpye;
+        }
+
+        [HttpPost("addgradebookGradeByAssignmentType")]
+        public ActionResult<StudentListByAssignmentTpyeViewModel> AddgradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel)
+        {
+            StudentListByAssignmentTpyeViewModel studentListByAssignmentTpye = new StudentListByAssignmentTpyeViewModel();
+            try
+            {
+                studentListByAssignmentTpye = _staffPortalGradebookServices.AddgradebookGradeByAssignmentType(studentListByAssignmentTpyeViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                studentListByAssignmentTpye._message = ex.Message;
+                studentListByAssignmentTpye._failure = true;
+            }
+            return studentListByAssignmentTpye;
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace opensis.core.ReportCard.Services
 {
     public class ReportCardService : IReportCardService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -205,12 +205,14 @@ namespace opensis.core.ReportCard.Services
         /// <returns></returns>
         public ReportCardViewModel AddReportCard(ReportCardViewModel reportCardViewModel)
         {
+            logger.Info("Method AddReportCard called.");
             ReportCardViewModel reportCardView = new ReportCardViewModel();
             try
             {
                 if (tokenManager.CheckToken(reportCardViewModel._tenantName + reportCardViewModel._userName, reportCardViewModel._token))
                 {
                     reportCardView = this.reportCardRepository.AddReportCard(reportCardViewModel);
+                    logger.Error("Method AddReportCard end with :" + reportCardView._message);
                 }
                 else
                 {
@@ -222,6 +224,7 @@ namespace opensis.core.ReportCard.Services
             {
                 reportCardView._failure = true;
                 reportCardView._message = es.Message;
+                logger.Error("Method AddReportCard end with error :" + es.Message);
             }
             return reportCardView;
         }
@@ -236,9 +239,38 @@ namespace opensis.core.ReportCard.Services
             ReportCardViewModel reportCardView = new ReportCardViewModel();
             try
             {
+                logger.Info("Method GenerateReportCard called.");
                 if (tokenManager.CheckToken(reportCardViewModel._tenantName + reportCardViewModel._userName, reportCardViewModel._token))
                 {
                     reportCardView = await this.reportCardRepository.GenerateReportCard(reportCardViewModel);
+                    logger.Error("Method GenerateReportCard end with :" + reportCardView._message);
+                }
+                else
+                {
+                    reportCardView._failure = true;
+                    reportCardView._message = TOKENINVALID;
+                   
+                }
+            }
+            catch (Exception es)
+            {
+                reportCardView._failure = true;
+                reportCardView._message = es.Message;
+                logger.Error("Method GenerateReportCard end with error :" + es.Message);
+            }
+            return reportCardView;
+        }
+
+        public ReportCardViewModel GetReportCardForStudents(ReportCardViewModel reportCardViewModel)
+        {
+            logger.Info("Method AddReportCard called.");
+            ReportCardViewModel reportCardView = new ReportCardViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(reportCardViewModel._tenantName + reportCardViewModel._userName, reportCardViewModel._token))
+                {
+                    reportCardView = this.reportCardRepository.GetReportCardForStudents(reportCardViewModel);
+                    logger.Error("Method AddReportCard end with :" + reportCardView._message);
                 }
                 else
                 {
@@ -250,6 +282,7 @@ namespace opensis.core.ReportCard.Services
             {
                 reportCardView._failure = true;
                 reportCardView._message = es.Message;
+                logger.Error("Method AddReportCard end with error :" + es.Message);
             }
             return reportCardView;
         }

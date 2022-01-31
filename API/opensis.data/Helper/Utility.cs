@@ -40,6 +40,7 @@ namespace opensis.data.Helper
     
     public static class Utility
     {
+        static string encryptionKey = "oPen$!$b14Ca5898a4e4133b!456k42g";
         /// <summary>
         /// This method returns a int primarykeyId  for an entity.
         /// </summary>
@@ -47,13 +48,14 @@ namespace opensis.data.Helper
         /// <param name="cRMContext"></param>
         /// <param name="columnSelector"></param>
         /// <returns></returns>
-        public static int? GetMaxPK<TEntity>(CRMContext cRMContext, Func<TEntity, int> columnSelector) where TEntity : class
+        public static int? GetMaxPK<TEntity>(CRMContext? cRMContext, Func<TEntity, int> columnSelector) where TEntity : class
         {
             int? GetMaxId = 0;
            
                 
                 var entityClass = cRMContext?.Set<TEntity>();
-                if (entityClass.Count() == 0)
+           
+                if (entityClass?.Any() != true)
                 {
                     GetMaxId = 1;
                 }
@@ -75,54 +77,7 @@ namespace opensis.data.Helper
         }
 
 
-        //public static int? GetIntMaxPK<TEntity>(CRMContext cRMContext, Func<TEntity, int> columnSelector, string tenantid, string schoolid) where TEntity : class
-        //{
-        //    int? GetMaxId = 0;
-
-        //    List<FilterParams> filters = new List<FilterParams>();
-
-        //    FilterParams param1 = new FilterParams();
-        //    param1.ColumnName = "TenantId";
-        //    param1.FilterValue = tenantid;
-        //    param1.JoinCondition = "AND";
-        //    param1.FilterOption = FilterOptions.IsEqualTo;
-
-        //    FilterParams param2 = new FilterParams();
-        //    param2.ColumnName = "SchoolId";
-        //    param2.FilterValue = schoolid;
-        //    param2.FilterOption = FilterOptions.IsEqualTo;
-
-
-        //    filters.Add(param1);
-        //    filters.Add(param2);
-
-        //    var entityClass = cRMContext?.Set<TEntity>().AsQueryable();
-
-        //    entityClass = entityClass.Where(filters);
-
-        //    if (entityClass.Count() == 0)
-        //    {               
-        //            GetMaxId = 1;                
-        //    }
-        //    else
-        //    {
-        //        GetMaxId = cRMContext?.Set<TEntity>().AsQueryable().Where(filters).Max(columnSelector);
-
-        //        if (GetMaxId == null || GetMaxId <= 0)
-        //        {
-
-        //            GetMaxId = 1;
-        //        }
-        //        else
-        //        {
-        //            GetMaxId = GetMaxId + 1;
-        //        }
-        //    }
-
-
-        //    return GetMaxId;
-        //}
-
+        
         /// <summary>
         /// This method returns a long primarykeyId  for an entity.
         /// </summary>
@@ -130,13 +85,13 @@ namespace opensis.data.Helper
         /// <param name="cRMContext"></param>
         /// <param name="columnSelector"></param>
         /// <returns></returns>
-        public static long? GetMaxLongPK<TEntity>(CRMContext cRMContext, Func<TEntity, long> columnSelector) where TEntity : class
+        public static long? GetMaxLongPK<TEntity>(CRMContext? cRMContext, Func<TEntity, long> columnSelector) where TEntity : class
         {
             long? GetMaxId = 0;
 
 
             var entityClass = cRMContext?.Set<TEntity>();
-            if (entityClass.Count() == 0)
+            if (entityClass !=null && !entityClass.Any())
             {
                 GetMaxId = 1;
             }
@@ -262,7 +217,7 @@ namespace opensis.data.Helper
                     }
                     else
                     {
-                        data = FilterData(filterValues.FirstOrDefault().FilterOption, data, filterColumn, filterValues.FirstOrDefault().FilterValue);
+                        data = FilterData(filterValues!.FirstOrDefault()!.FilterOption, data, filterColumn, filterValues!.FirstOrDefault()!.FilterValue);
                     }
                 }
             }
@@ -287,24 +242,24 @@ namespace opensis.data.Helper
                 #region [StringDataType]  
 
                 case FilterOptions.StartsWith:
-                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower().StartsWith(filterValue.ToString().ToLower())).ToList();
+                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower().StartsWith(filterValue.ToString().ToLower())).ToList();
                     break;
                 case FilterOptions.EndsWith:
-                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower().EndsWith(filterValue.ToString().ToLower())).ToList();
+                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower().EndsWith(filterValue.ToString().ToLower())).ToList();
                     break;
                 case FilterOptions.Contains:
-                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower().Contains(filterValue.ToString().ToLower())).ToList();
+                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower().Contains(filterValue.ToString().ToLower())).ToList();
                     break;
                 case FilterOptions.DoesNotContain:
                     data = data.Where(x => filterColumn.GetValue(x, null) == null ||
-                                     (filterColumn.GetValue(x, null) != null && !filterColumn.GetValue(x, null).ToString().ToLower().Contains(filterValue.ToString().ToLower()))).ToList();
+                                     (filterColumn.GetValue(x, null) != null && !filterColumn.GetValue(x, null)!.ToString()!.ToLower().Contains(filterValue.ToString().ToLower()))).ToList();
                     break;
                 case FilterOptions.IsEmpty:
                     data = data.Where(x => filterColumn.GetValue(x, null) == null ||
-                                     (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString() == string.Empty)).ToList();
+                                     (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString() == string.Empty)).ToList();
                     break;
                 case FilterOptions.IsNotEmpty:
-                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString() != string.Empty).ToList();
+                    data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString() != string.Empty).ToList();
                     break;
                 #endregion
 
@@ -362,7 +317,7 @@ namespace opensis.data.Helper
                     if (filterValue == string.Empty)
                     {
                         data = data.Where(x => filterColumn.GetValue(x, null) == null
-                                        || (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower() == string.Empty)).ToList();
+                                        || (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower() == string.Empty)).ToList();
                     }
                     else
                     {
@@ -377,7 +332,7 @@ namespace opensis.data.Helper
                         }
                         else
                         {
-                            data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower() == filterValue.ToLower()).ToList();
+                            data = data.Where(x => filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower() == filterValue.ToLower()).ToList();
                         }
                     }
                     break;
@@ -395,7 +350,7 @@ namespace opensis.data.Helper
                     else
                     {
                         data = data.Where(x => filterColumn.GetValue(x, null) == null ||
-                                         (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null).ToString().ToLower() != filterValue.ToLower())).ToList();
+                                         (filterColumn.GetValue(x, null) != null && filterColumn.GetValue(x, null)!.ToString()!.ToLower() != filterValue.ToLower())).ToList();
                     }
                     break;
                     #endregion
@@ -422,7 +377,7 @@ namespace opensis.data.Helper
          Func<IEnumerable<T>, TData> dataSelector)
         {
             DataTable table = new DataTable();
-            var rowsName = ((NewExpression)rowSelector.Body).Members.Select(s => s).ToList();
+            var rowsName = ((NewExpression)rowSelector.Body).Members!.Select(s => s).ToList();
             foreach (var row in rowsName)
             {
                 var name = row.Name;
@@ -430,7 +385,7 @@ namespace opensis.data.Helper
             }
             var columns = source.Select(columnSelector).Distinct();
             foreach (var column in columns)
-                table.Columns.Add(new DataColumn(column.ToString()));
+                table.Columns.Add(new DataColumn(column!.ToString()));
             var rows = source.GroupBy(rowSelector.Compile())
                              .Select(rowGroup => new
                              {
@@ -446,7 +401,7 @@ namespace opensis.data.Helper
             {
                 var dataRow = table.NewRow();
                 var items = row.Values.Cast<object>().ToList();
-                string[] keyRow = row.Key.ToString().Split(',');
+                string[] keyRow = row.Key!.ToString()!.Split(',');
                 int index = 0;
                 foreach (var key in keyRow)
                 {
@@ -459,5 +414,190 @@ namespace opensis.data.Helper
             }
             return table;
         }
+
+        public static string CreatedOrUpdatedByForAccessLog(CRMContext? cRMContext,Guid? tenantId, string? UserEmail)
+        {
+            string createdOrUpdatedByName = string.Empty;
+
+            if (!string.IsNullOrEmpty(UserEmail) && cRMContext != null)
+            {
+                var StaffData = cRMContext.StaffMaster.FirstOrDefault(e => e.TenantId == tenantId && e.PortalAccess == true && e.LoginEmailAddress == UserEmail);
+
+                if (StaffData != null)
+                {
+                    createdOrUpdatedByName = $"{StaffData.FirstGivenName} {(StaffData.MiddleName == null ? "" : $"{StaffData.MiddleName} ")}{StaffData.LastFamilyName}";
+                }
+                else
+                {
+                    var ParentData = cRMContext.ParentInfo.FirstOrDefault(e => e.TenantId == tenantId && e.IsPortalUser == true && e.LoginEmail == UserEmail);
+                    if (ParentData != null)
+                    {
+                        createdOrUpdatedByName = $"{ParentData.Firstname} { (ParentData.Middlename == null ? "" : $"{ParentData.Middlename} ")}{ParentData.Lastname}";
+                    }
+                    else
+                    {
+                        var StudentData = cRMContext.StudentMaster.FirstOrDefault(e => e.TenantId == tenantId && e.StudentPortalId != null && e.StudentPortalId == UserEmail);
+                        if (StudentData != null)
+                        {
+                            createdOrUpdatedByName = $"{StudentData.FirstGivenName} { (StudentData.MiddleName == null ? "" : $"{StudentData.MiddleName} ")}{StudentData.LastFamilyName}";
+                        }
+                    }
+                }
+            }
+            return createdOrUpdatedByName;
+        }
+
+        public static int? checkDuplicate(CRMContext? cRMContext,Guid? tenantId,int? schoolId,string? salutation,string? firstGivenName,string? middleName, string? lastFamilyName,string? suffix, DateTime? dob, string? emailAddress,string? ssn,string module,Guid? guid)
+        {
+            int? check=null;
+            if (module== "student")
+            {
+                if (string.IsNullOrEmpty(emailAddress) && string.IsNullOrEmpty(ssn))
+                {
+                    var StudentData = cRMContext?.StudentMaster.FirstOrDefault(c => c.TenantId == tenantId && c.SchoolId == schoolId && (string.IsNullOrEmpty(salutation) || c.Salutation == salutation) && (string.IsNullOrEmpty(firstGivenName) || (c.FirstGivenName??"").ToLower() == firstGivenName.ToLower()) && (string.IsNullOrEmpty(middleName) || (c.MiddleName??"").ToLower() == middleName.ToLower()) && (string.IsNullOrEmpty(lastFamilyName) || (c.LastFamilyName??"").ToLower() == lastFamilyName.ToLower()) && (string.IsNullOrEmpty(suffix) || c.Suffix == suffix) && (dob == null || c.Dob!.Value.Date == dob.Value.Date) && (guid == null || c.StudentGuid != guid));
+
+
+                    if (StudentData != null)
+                    {
+                        check = 1;
+                    }
+                }
+                else
+                {
+                    var studentData = cRMContext?.StudentMaster.FirstOrDefault(c => c.TenantId == tenantId && c.SchoolId == schoolId && (salutation == null || c.Salutation == salutation) && (firstGivenName == null || c.FirstGivenName!.ToLower() == firstGivenName.ToLower()) && (middleName == null || c.MiddleName!.ToLower() == middleName.ToLower()) && (lastFamilyName == null || c.LastFamilyName!.ToLower() == lastFamilyName.ToLower()) && (suffix == null || c.Suffix == suffix) && (dob == null || c.Dob!.Value.Date == dob.Value.Date) && (emailAddress == null || c.PersonalEmail == emailAddress) && (ssn == null || c.SocialSecurityNumber!.ToLower() == ssn.ToLower()) && (guid == null || c.StudentGuid != guid));
+
+                    if (studentData != null)
+                    {
+                        check = 0;
+                    }
+                }
+            }
+            else if (module == "parent")
+            {
+                var parentInfoData = cRMContext?.ParentListView.FirstOrDefault(c => c.TenantId == tenantId && (salutation == null || c.Salutation == salutation) && (firstGivenName == null || (c.Firstname ?? "").ToLower() == firstGivenName.ToLower()) && (middleName == null || (c.Middlename ?? "").ToLower() == middleName.ToLower()) && (lastFamilyName == null || (c.Lastname ?? "").ToLower() == lastFamilyName.ToLower()) && (suffix == null || c.Suffix == suffix) && (emailAddress == null || c.PersonalEmail == emailAddress) && (ssn == null || (c.Mobile ?? "").ToLower() == ssn.ToLower()) && (guid == null || c.ParentGuid != guid));
+
+                if (parentInfoData != null)
+                {
+                    check = 0;
+                }
+            }
+            return check;
+        }
+
+        public static string CreatedOrUpdatedBy(CRMContext? cRMContext, Guid? tenantId, string? userGuid)
+        {
+            string createdOrUpdatedByName =string.Empty;
+
+            if (!string.IsNullOrEmpty(userGuid) && cRMContext!=null)
+            {
+                var StaffData = cRMContext.StaffMaster.FirstOrDefault(e => e.TenantId == tenantId && e.PortalAccess == true && e.StaffGuid.ToString() == userGuid);
+
+                if (StaffData != null)
+                {
+                    createdOrUpdatedByName = $"{StaffData.FirstGivenName} {(StaffData.MiddleName == null ? "" : $"{StaffData.MiddleName} ")}{StaffData.LastFamilyName}";
+                }
+                else
+                {
+                    var ParentData = cRMContext.ParentInfo.FirstOrDefault(e => e.TenantId == tenantId && e.IsPortalUser == true && e.ParentGuid.ToString() == userGuid);
+                    if (ParentData != null)
+                    {
+                        createdOrUpdatedByName = $"{ParentData.Firstname} { (ParentData.Middlename == null ? "" : $"{ParentData.Middlename} ")}{ParentData.Lastname}";
+                    }
+                    else
+                    {
+                        var StudentData = cRMContext.StudentMaster.FirstOrDefault(e => e.TenantId == tenantId && e.StudentPortalId != null && e.StudentGuid.ToString() == userGuid);
+                        if (StudentData != null)
+                        {
+                            createdOrUpdatedByName = $"{StudentData.FirstGivenName} { (StudentData.MiddleName == null ? "" : $"{StudentData.MiddleName} ")}{StudentData.LastFamilyName}";
+                        }
+                    }
+                }
+            }
+
+            return createdOrUpdatedByName;
+        }
+
+        public static decimal? GetAcademicYear(CRMContext cRMContext, Guid? tenantId, int? schoolId)
+        {
+            decimal? AcademicYear = null;
+
+            var schoolYearData = cRMContext.SchoolYears.Where(e => e.TenantId == tenantId && e.SchoolId == schoolId).ToList();
+            if (schoolYearData.Count > 0)
+            {
+                AcademicYear = schoolYearData.Max(x => x.AcademicYear);
+            }
+
+            return AcademicYear;
+        }
+
+        public static string EncryptString(string plainText)
+        {
+            byte[] iv = new byte[16];
+            byte[] array;
+            string key = encryptionKey;
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                        {
+                            streamWriter.Write(plainText);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return Convert.ToBase64String(array);
+        }
+
+
+
+        public static string DecryptString(string cipherText)
+        {
+            byte[] iv = new byte[16];
+            byte[] buffer = Convert.FromBase64String(cipherText);
+            string key = encryptionKey;
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
+
+        public static decimal? GetCurrentAcademicYear(CRMContext cRMContext, Guid? tenantId, int? schoolId)
+        {
+            decimal? AcademicYear = null;
+
+            var calendarData = cRMContext.SchoolCalendars.FirstOrDefault(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
+
+            if (calendarData != null)
+            {
+                AcademicYear = calendarData.AcademicYear;
+            }
+
+            return AcademicYear;
+        }
     }
 }
+

@@ -39,5 +39,7 @@ namespace opensis.core.User.Interfaces
         public CheckUserEmailAddressViewModel CheckUserLoginEmail(CheckUserEmailAddressViewModel checkUserEmailAddressViewModel);
         public LoginViewModel RefreshToken(LoginViewModel ObjModel);
         public LoginViewModel LogOutForUser(LoginViewModel loginViewModel);
+        public UserAccessLogListViewModel GetAllUserAccessLog(PageResult pageResult);
+        public UserAccessLogListViewModel DeleteUserAccessLogs(UserAccessLogListViewModel userAccessLogListViewModel);
     }
 }

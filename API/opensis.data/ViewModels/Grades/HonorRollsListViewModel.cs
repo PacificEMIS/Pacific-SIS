@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.Grades
 {
     public class HonorRollsListViewModel : CommonFields
     {
-        public List<HonorRolls> honorRollList { get; set; }
+        public HonorRollsListViewModel()
+        {
+            HonorRollList = new List<HonorRolls>();
+        }
+        public List<HonorRolls> HonorRollList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? TotalCount { get; set; }

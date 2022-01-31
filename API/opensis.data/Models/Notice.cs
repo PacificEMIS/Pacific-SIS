@@ -30,20 +30,25 @@ namespace opensis.data.Models
 {
     public partial class Notice
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int NoticeId { get; set; }
-        public string TargetMembershipIds { get; set; }
-        public string Title { get; set; }
-        public string Body { get; set; }
+        /// <summary>
+        /// Signifies group of user for whom notice is visible. to be saved as comma separated values. if user&apos;s membership_id falls in any of the value, he can see the notice.
+        /// </summary>
+        public string TargetMembershipIds { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Body { get; set; } = null!;
         public DateTime ValidFrom { get; set; }
         public DateTime ValidTo { get; set; }
         public bool Isactive { get; set; }
         public bool VisibleToAllSchool { get; set; }
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }
 }

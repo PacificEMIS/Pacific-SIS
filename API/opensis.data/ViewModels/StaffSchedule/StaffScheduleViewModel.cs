@@ -40,8 +40,8 @@ namespace opensis.data.ViewModels.StaffSchedule
         public List<CourseSectionViewList> courseSectionViewList { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public int? ExistingStaff { get; set; }
-        public string ConflictInInputCourseSection { get; set; }
+        public string? ConflictInInputCourseSection { get; set; }
     }
 }

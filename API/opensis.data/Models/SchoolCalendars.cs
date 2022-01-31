@@ -25,33 +25,38 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class SchoolCalendars
     {
+        
+
         public SchoolCalendars()
         {
             CourseSection = new HashSet<CourseSection>();
             StudentEffortGradeMaster = new HashSet<StudentEffortGradeMaster>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CalenderId { get; set; }
-        public string Title { get; set; }
-        public decimal? AcademicYear { get; set; }
-        public bool? DefaultCalender { get; set; }
+        public string? Title { get; set; }
+        public decimal AcademicYear { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public string VisibleToMembershipId { get; set; }
-        public string Days { get; set; }
+        public string? VisibleToMembershipId { get; set; }
+        public bool? DefaultCalender { get; set; }
+        public string? Days { get; set; }
         public int? RolloverId { get; set; }
-        public string CreatedBy { get; set; }
+        public bool? SessionCalendar { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<CourseSection> CourseSection { get; set; }
         public virtual ICollection<StudentEffortGradeMaster> StudentEffortGradeMaster { get; set; }
     }

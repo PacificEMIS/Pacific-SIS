@@ -37,7 +37,7 @@ namespace opensis.data.Repository
 {
     public class NoticeRepository : INoticeRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public NoticeRepository(IDbContextFactory dbContextFactory)
         {
@@ -51,6 +51,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public NoticeAddViewModel AddNotice(NoticeAddViewModel notice)
         {
+            if (notice.Notice is null)
+            {
+                return notice;
+            }
             try
             {
                 //int? noticeId = Utility.GetMaxPK(this.context, new Func<Notice, int>(x => x.NoticeId));
@@ -64,19 +68,24 @@ namespace opensis.data.Repository
                     noticeId = NoticeData.NoticeId + 1;
                 }
 
-                notice.Notice.NoticeId = (int)noticeId;
-                notice.Notice.Isactive = true;
-                notice.Notice.CreatedOn = DateTime.UtcNow;
-                this.context?.Notice.Add(notice.Notice);
-                this.context?.SaveChanges();
-                notice._failure = false;
-                notice._message = "Notice Added Successfully";
+                if(notice.Notice != null)
+                {
+                    notice.Notice.NoticeId = (int)noticeId;
+                    notice.Notice.Isactive = true;
+                    notice.Notice.CreatedOn = DateTime.UtcNow;
+                    this.context?.Notice.Add(notice.Notice);
+                    this.context?.SaveChanges();
+                    notice._failure = false;
+                    notice._message = "Notice Added Successfully";
+                }
+                
                 return notice;
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                notice._failure = false;
+                notice._message = ex.Message;
+                return notice;
             }
 
         }
@@ -88,9 +97,13 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public NoticeAddViewModel ViewNotice(NoticeAddViewModel notice)
         {
+            if (notice.Notice is null)
+            {
+                return notice;
+            }
+            NoticeAddViewModel noticeAddViewModel = new NoticeAddViewModel();
             try
             {
-                NoticeAddViewModel noticeAddViewModel = new NoticeAddViewModel();
                 var noticeModel = this.context?.Notice.FirstOrDefault(x => x.TenantId == notice.Notice.TenantId && x.SchoolId == notice.Notice.SchoolId && x.NoticeId == notice.Notice.NoticeId);
                 if (noticeModel != null)
                 {
@@ -100,15 +113,14 @@ namespace opensis.data.Repository
                 {
                     noticeAddViewModel._failure = true;
                     noticeAddViewModel._message = NORECORDFOUND;
-                    return noticeAddViewModel;
                 }
-                return noticeAddViewModel;
             }
             catch (Exception ex)
             {
-                throw ex;
+                noticeAddViewModel._failure = true;
+                noticeAddViewModel._message = ex.Message;
             }
-
+            return noticeAddViewModel;
         }
 
         /// <summary>
@@ -138,7 +150,8 @@ namespace opensis.data.Repository
             catch (Exception ex)
             {
 
-                throw ex;
+                notice._failure = true;
+                notice._message = ex.Message;
             }
             return notice;
         }
@@ -150,25 +163,32 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public NoticeAddViewModel UpdateNotice(NoticeAddViewModel notice)
         {
+            if (notice.Notice is null)
+            {
+                return notice;
+            }
             try
             {
                 var noticeRepository = this.context?.Notice.FirstOrDefault(x => x.TenantId == notice.Notice.TenantId && x.SchoolId == notice.Notice.SchoolId && x.NoticeId == notice.Notice.NoticeId);
 
                 if (noticeRepository != null)
                 {
-                    notice.Notice.Isactive = true;
-                    notice.Notice.CreatedBy = noticeRepository.CreatedBy;
-                    notice.Notice.CreatedOn = noticeRepository.CreatedOn;
-                    notice.Notice.UpdatedOn = DateTime.UtcNow;
-                    this.context.Entry(noticeRepository).CurrentValues.SetValues(notice.Notice);
-                    this.context?.SaveChanges();
-                    notice._failure = false;
-                    notice._message = "Notice Updated Successfully";
+                    if(notice.Notice != null)
+                    {
+                        notice.Notice.Isactive = true;
+                        notice.Notice.CreatedBy = noticeRepository.CreatedBy;
+                        notice.Notice.CreatedOn = noticeRepository.CreatedOn;
+                        notice.Notice.UpdatedOn = DateTime.UtcNow;
+                        this.context?.Entry(noticeRepository).CurrentValues.SetValues(notice.Notice);
+                        this.context?.SaveChanges();
+                        notice._failure = false;
+                        notice._message = "Notice Updated Successfully";
+                    }
+                    
                     return notice;
                 }
                 else
                 {
-                    notice = null;
                     notice._failure = true;
                     notice._message = NORECORDFOUND;
                     return notice;
@@ -176,7 +196,9 @@ namespace opensis.data.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                notice._failure = true;
+                notice._message = ex.Message;
+                return notice;
             }
 
         }
@@ -194,26 +216,12 @@ namespace opensis.data.Repository
 
                 if (membershipData != null)
                 {
-                    var noticeRepository = this.context?.Notice.OrderBy(x => x.ValidFrom).ThenBy(x => x.SortOrder).Where(x => x.TenantId == noticeList.TenantId && (x.SchoolId == noticeList.SchoolId || (x.SchoolId != noticeList.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (membershipData.ProfileType.ToLower() == "Super Administrator".ToLower() || membershipData.ProfileType.ToLower() == "School Administrator".ToLower() || membershipData.ProfileType.ToLower() == "Admin Assistant".ToLower() || x.TargetMembershipIds.Contains(noticeList.MembershipId.ToString()))).Select(e => new Notice()
-                    {
-                        TenantId = e.TenantId,
-                        SchoolId = e.SchoolId,
-                        NoticeId = e.NoticeId,
-                        TargetMembershipIds = e.TargetMembershipIds,
-                        Title = e.Title,
-                        Body = e.Body,
-                        ValidFrom = e.ValidFrom,
-                        ValidTo = e.ValidTo,
-                        Isactive = e.Isactive,
-                        VisibleToAllSchool = e.VisibleToAllSchool,
-                        SortOrder = e.SortOrder,
-                        CreatedOn = e.CreatedOn,
-                        UpdatedOn = e.UpdatedOn,
-                        CreatedBy = (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == noticeList.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                        UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == noticeList.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    }).ToList();
+                    //var noticeRepository = this.context?.Notice.OrderBy(x => x.ValidFrom).ThenBy(x => x.SortOrder).Where(x => x.TenantId == noticeList.TenantId && (x.SchoolId == noticeList.SchoolId || (x.SchoolId != noticeList.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (membershipData.ProfileType == "Super Administrator" || membershipData.ProfileType == "School Administrator"|| membershipData.ProfileType == "Admin Assistant" || x.TargetMembershipIds.Contains(noticeList.MembershipId.ToString()))).ToList();
 
-                    if (noticeRepository.Count > 0)
+                    //var noticeRepository = this.context?.Notice.OrderBy(x => x.ValidFrom).ThenBy(x => x.SortOrder).Where(x => x.TenantId == noticeList.TenantId && (x.SchoolId == noticeList.SchoolId || (x.SchoolId != noticeList.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (membershipData.ProfileType == "Super Administrator" || membershipData.ProfileType == "School Administrator" || membershipData.ProfileType == "Admin Assistant" || (noticeList.MembershipId!=null && x.TargetMembershipIds.Contains(noticeList.MembershipId.ToString()!)))).ToList();
+                    var noticeRepository = this.context?.Notice.OrderBy(x => x.ValidFrom).ThenBy(x => x.SortOrder).AsEnumerable().Where(x => x.TenantId == noticeList.TenantId && (x.SchoolId == noticeList.SchoolId || (x.SchoolId != noticeList.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (String.Compare(membershipData.ProfileType, "Super Administrator", true) == 0 || String.Compare(membershipData.ProfileType, "School Administrator", true) == 0 || String.Compare(membershipData.ProfileType, "Admin Assistant", true) == 0 || (noticeList.MembershipId != null && x.TargetMembershipIds.Contains(noticeList.MembershipId.ToString()!)))).ToList();
+
+                    if (noticeRepository != null && noticeRepository.Any())
                     {
                         foreach (var notice in noticeRepository)
                         {
@@ -222,8 +230,12 @@ namespace opensis.data.Repository
                                 string[] membersList = notice.TargetMembershipIds.Split(",");
                                 int[] memberIds = Array.ConvertAll(membersList, s => int.Parse(s));
                                 var profiles = this.context?.Membership.Where(t => memberIds.Contains(t.MembershipId) && t.SchoolId == noticeList.SchoolId).Select(t => t.Profile).ToArray();
-                                var mebershipIds = string.Join("," + " ", profiles);
-                                notice.TargetMembershipIds = mebershipIds;
+
+                                if(profiles != null)
+                                {
+                                    var mebershipIds = string.Join("," + " ", profiles);
+                                    notice.TargetMembershipIds = mebershipIds;
+                                }
                             }
                         }
 
@@ -242,7 +254,7 @@ namespace opensis.data.Repository
             }
             catch (Exception ex)
             {
-                getAllNoticeList.NoticeList = null;
+                getAllNoticeList.NoticeList = null!;
                 getAllNoticeList._failure = true;
                 getAllNoticeList._message = ex.Message;
                 return getAllNoticeList;

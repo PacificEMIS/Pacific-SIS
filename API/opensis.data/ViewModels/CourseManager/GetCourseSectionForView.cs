@@ -34,20 +34,24 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public GetCourseSectionForView()
         {
-            courseVariableSchedule = new List<CourseVariableSchedule>();
-            courseBlockSchedule = new List<CourseBlockSchedule>();
-            courseCalendarSchedule = new List<CourseCalendarSchedule>();
+            CourseVariableSchedule = new List<CourseVariableSchedule>();
+            CourseBlockSchedule = new List<CourseBlockSchedule>();
+            CourseCalendarSchedule = new List<CourseCalendarSchedule>();
+            BellScheduleList = new List<BellSchedule>();
+            
         }
-        public CourseSection courseSection { get; set; }
-        public CourseFixedSchedule courseFixedSchedule { get; set; }
-        public List<CourseVariableSchedule> courseVariableSchedule { get; set; }
-        public List<CourseCalendarSchedule> courseCalendarSchedule { get; set; }
-        public List<CourseBlockSchedule> courseBlockSchedule { get; set; }
-        public string MarkingPeriod { get; set; }
-        public string StandardGradeScaleName { get; set; }
+        public CourseSection? CourseSection { get; set; }
+        public CourseFixedSchedule? CourseFixedSchedule { get; set; }
+        public List<CourseVariableSchedule> CourseVariableSchedule { get; set; }
+        public List<CourseCalendarSchedule> CourseCalendarSchedule { get; set; }
+        public List<CourseBlockSchedule> CourseBlockSchedule { get; set; }
+        public string? MarkingPeriod { get; set; }
+        public string? StandardGradeScaleName { get; set; }
         public int? AvailableSeat { get; set; }
         public int? TotalStudentSchedule { get; set; }
         public int? TotalStaffSchedule { get; set; }
-        public string StaffName { get; set; }
+        public string? StaffName { get; set; }
+        public List<DateTime>? HolidayList { get; set; }
+        public List<BellSchedule> BellScheduleList { get; set; }
     }
 }

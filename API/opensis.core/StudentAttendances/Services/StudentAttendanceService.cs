@@ -39,7 +39,7 @@ namespace opensis.core.StudentAttendances.Services
 {
     public class StudentAttendanceService : IStudentAttendanceService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -364,6 +364,34 @@ namespace opensis.core.StudentAttendances.Services
                 reCalculateDailyAttendance._message = es.Message;
             }
             return reCalculateDailyAttendance;
+        }
+
+        /// <summary>
+        /// Get Student Attendance History
+        /// </summary>
+        /// <param name="studentAttendanceHistoryViewModel"></param>
+        /// <returns></returns>
+        public StudentAttendanceHistoryViewModel GetStudentAttendanceHistory(StudentAttendanceHistoryViewModel studentAttendanceHistoryViewModel)
+        {
+            StudentAttendanceHistoryViewModel studentAttendanceHistory = new StudentAttendanceHistoryViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(studentAttendanceHistoryViewModel._tenantName + studentAttendanceHistoryViewModel._userName, studentAttendanceHistoryViewModel._token))
+                {
+                    studentAttendanceHistory = this.studentAttendanceRepository.GetStudentAttendanceHistory(studentAttendanceHistoryViewModel);
+                }
+                else
+                {
+                    studentAttendanceHistory._failure = true;
+                    studentAttendanceHistory._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentAttendanceHistory._failure = true;
+                studentAttendanceHistory._message = es.Message;
+            }
+            return studentAttendanceHistory;
         }
     }
 }

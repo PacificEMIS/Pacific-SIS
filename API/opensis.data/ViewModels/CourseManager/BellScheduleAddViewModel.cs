@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class BellScheduleAddViewModel : CommonFields
     {
-        public BellSchedule bellSchedule { get; set; }
+        public BellSchedule? BellSchedule { get; set; }
     }
 }

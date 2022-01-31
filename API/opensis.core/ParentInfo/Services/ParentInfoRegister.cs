@@ -176,7 +176,7 @@ namespace opensis.core.ParentInfo.Services
             }
             catch (Exception ex)
             {
-                parentInfoList._message = ex.Message;
+                parentInfoList._message = parentInfoList._message;
                 parentInfoList._failure = true;
                 logger.Error("Method getAllParentInfoList end with error :" + ex.Message);
             }

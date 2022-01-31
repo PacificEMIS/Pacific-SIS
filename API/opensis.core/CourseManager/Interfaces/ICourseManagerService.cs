@@ -56,6 +56,7 @@ namespace opensis.core.CourseManager.Interfaces
         public SearchCourseScheduleViewModel SearchCourseForSchedule(SearchCourseScheduleViewModel searchCourseScheduleViewModel);
         public BellScheduleAddViewModel AddEditBellSchedule(BellScheduleAddViewModel bellScheduleAddViewModel);
         public BellScheduleListViewModel GetAllBellSchedule(BellScheduleListViewModel bellScheduleListViewModel);
+        public CourseCatelogViewModel GetCourseCatelog(CourseCatelogViewModel courseCatelogViewModel);
     }
 }
 

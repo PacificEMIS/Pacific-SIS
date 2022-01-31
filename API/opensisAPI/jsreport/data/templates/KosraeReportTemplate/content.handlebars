@@ -1,0 +1,623 @@
+<!--
+Invoice dynamically rendered into html using handlebars and converted into pdf
+using chrome-pdf recipe. The styles are extracted into separate asset for
+better readability and later reuse.
+
+Data to this sample are mocked at the design time and should be filled on the
+incoming API request.
+!-->
+
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+</head>
+<body>
+    <style>
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            margin: 0;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .float-left {
+            float: left;
+        }
+
+        .float-right {
+            float: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .ml-auto {
+            margin-left: auto;
+        }
+
+        .m-auto {
+            margin: auto;
+        }
+
+        .report-card {
+            width: 900px;
+            margin: auto;
+            font-family: "Roboto", "Helvetica Neue";
+        }
+
+        .report-card-header td {
+            padding: 20px 10px;
+        }
+
+        .header-left h2 {
+            font-weight: 400;
+            font-size: 30px;
+        }
+
+        .header-left p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .header-right {
+            color: #040404;
+            text-align: center;
+        }
+
+        .student-info-header {
+            padding: 0px 30px 20px;
+        }
+
+            .student-info-header td {
+                padding-bottom: 20px;
+                vertical-align: top;
+            }
+
+            .student-info-header .info-left {
+                padding-top: 20px;
+                width: 100%;
+            }
+
+                .student-info-header .info-left h2 {
+                    font-size: 16px;
+                    margin-bottom: 8px;
+                    font-weight: 600;
+                }
+
+                .student-info-header .info-left .title {
+                    width: 150px;
+                    display: inline-block;
+                }
+
+                .student-info-header .info-left span:not(.title) {
+                    font-weight: 400;
+                }
+
+                .student-info-header .info-left p {
+                    margin-bottom: 10px;
+                    color: #333;
+                }
+
+            .student-info-header .info-right {
+                padding-left: 10px;
+            }
+
+        .semester-table {
+            padding: 0 30px 30px;
+            vertical-align: top;
+        }
+
+            .semester-table table {
+                border: 1px solid #000;
+            }
+
+            .semester-table th,
+            .semester-table td {
+                border-bottom: 1px solid #000;
+                padding: 8px 15px;
+            }
+
+            .semester-table th {
+                text-align: left;
+                background-color: #e5e5e5;
+            }
+
+            .semester-table caption {
+                margin-bottom: 10px;
+                text-align: left;
+            }
+
+                .semester-table caption h2 {
+                    font-size: 18px;
+                }
+
+
+        .gpa-table {
+            padding: 0 30px 30px;
+        }
+
+            .gpa-table table {
+                border: 1px solid #000;
+            }
+
+            .gpa-table caption h4 {
+                text-align: left;
+                margin-bottom: 10px;
+                font-weight: 500;
+            }
+
+            .gpa-table th {
+                padding: 8px 15px;
+                background-color: #e5e5e5;
+                text-align: left;
+                border-bottom: 1px solid #000;
+            }
+
+            .gpa-table td {
+                padding: 8px 15px;
+                text-align: left;
+            }
+
+        .signature-table {
+            padding: 40px 30px;
+        }
+
+        .sign {
+            padding-bottom: 20px;
+        }
+
+        .short-sign {
+            padding-top: 60px;
+        }
+
+        .long-line {
+            width: 90%;
+            margin-bottom: 10px;
+            border-top: 2px solid #000;
+        }
+
+        .small-line {
+            display: inline-block;
+            width: 150px;
+            border-top: 2px solid #000;
+        }
+
+        .name {
+            margin: 8px 0;
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        .header-middle p {
+            font-size: 22px;
+        }
+
+        .report-card-header td.header-right {
+            vertical-align: top;
+            padding-top: 58px;
+            font-weight: 500;
+        }
+
+        .bevaior-table tr td:first-child {
+            width: 20px;
+            font-weight: 500;
+        }
+
+        .bevaior-table td {
+            border-right: 1px solid #333;
+        }
+
+        .comments-table h2 {
+            text-align: left;
+        }
+
+        .semester-table .comments-table caption {
+            margin-bottom: 0;
+        }
+
+        .semester-table .comments-table {
+            border: none;
+        }
+
+        .comments-table td {
+            border-bottom: 1px dashed #b7b4b4;
+            padding: 35px 0 0
+        }
+    </style>
+    <div class="report-card">
+        {{#each TotalData}}
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-card-header" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <div class="float-left">
+                                    {{!-- <img src="chuuklogo.png" alt="School Logo">--}}
+                                    {{#if SchoolData.SchoolDetail.[0].SchoolLogo}}<img src=data:image/png;base64,{{SchoolData.SchoolDetail.[0].SchoolLogo}} style="width:100%; max-width:300px;" />{{/if}}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="header-middle float-left">
+                                    <h2 class="text-uppercase">Student Report Card</h2>
+                                    <p class="text-center">{{SchoolData.SchoolName}}</p>
+                                </div>
+                            </td>
+                            <td class="header-right">
+                                <div>
+                                    <p>SY 2021</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="student-info-header">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="70%">
+                                <div class="info-left float-left">
+                                    <h2><span class="title">Student Name</span> : <span>{{StudentData.FirstGivenName}} {{#if StudentData.MiddleName}}{{StudentData.MiddleName}}{{/if}} {{StudentData.LastFamilyName}}</span></h2>
+                                    <h2><span class="title">Student ID</span> : <span>{{StudentData.StudentInternalId}}</span></h2>
+                                    <h2><span class="title">Gender</span> : <span>{{StudentData.Gender}}</span></h2>
+                                    <h2>
+                                        <span class="title">Address</span> : <span>{{StudentData.HomeAddressLineOne}} {{#if StudentData.HomeAddressLineTwo}}{{StudentData.HomeAddressLineTwo}},{{/if}} {{#if StudentData.HomeAddressCity}} {{StudentData.HomeAddressCity}},{{/if}}{{#if StudentData.HomeAddressState}}{{StudentData.HomeAddressState}},{{/if}} {{#if StudentData.HomeAddressCountry}}{{StudentData.HomeAddressCountry}},{{/if}}{{StudentData.HomeAddressZip}}</span>
+                                    </h2>
+                                </div>
+                            </td>
+                            <td width="30%">
+                                <div class="info-left info-right">
+                                    <h2><span class="title">Marking Period</span> : <span>Multiple</span></h2>
+                                    <h2><span class="title">Grade Level</span> : <span>{{gradeTitle}}</span></h2>
+                                    <h2><span class="title">Section</span> : <span>{{#if StudentData.Sections.Name}}{{StudentData.Sections.Name}} {{/if}}</span></h2>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="semester-table">
+                    <table>
+                        <thead>
+
+                            <tr>
+                                <th>Course</th>
+                                {{#each ReportdetailsData}}
+                                <th>{{MarkingPeriod}}</th>
+                                {{/each}}
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            {{#each CourseSectionWithGradeList}}
+                            <tr>
+
+                                <td>{{courseSectionTitle}}</td>
+                                {{#each gradeList}}
+                                <td>{{grade}}</td>
+                                {{/each}}
+                            </tr>
+                            {{/each}}
+                            <!-- <tr>
+                                 <td>Algebra</td>
+                                 <td>A (97)</td>
+                                 <td>B (82)</td>
+                                 <td>B (84)</td>
+                                 <td>A (97)</td>
+                                 <td>A (97)</td>
+                                 <td>B (88)</td>
+                                 <td>A (85)</td>
+                             </tr>
+                             <tr>
+                                 <td>Social Study</td>
+                                 <td>B (82)</td>
+                                 <td>A (92)</td>
+                                 <td>A (97)</td>
+                                 <td>B (82)</td>
+                                 <td>B (82)</td>
+                                 <td>A (97)</td>
+                                 <td>A (93)</td>
+                             </tr>
+                             <tr>
+                                 <td>Science</td>
+                                 <td>B (88)</td>
+                                 <td>A (95)</td>
+                                 <td>B (81)</td>
+                                 <td>B (88)</td>
+                                 <td>B (88)</td>
+                                 <td>A (96)</td>
+                                 <td>B (81)</td>
+                             </tr>
+                             <tr>
+                                 <td>Coumputer</td>
+                                 <td>A (93)</td>
+                                 <td>B (78)</td>
+                                 <td>B (82)</td>
+                                 <td>A (93)</td>
+                                 <td>A (93)</td>
+                                 <td>B (81)</td>
+                                 <td>A (96)</td>
+                             </tr>-->
+                            {{#if CourseSectionWithGradeList}}
+                            <tr>
+
+                                <td><b>GPA</b></td>
+                                {{#each GPAList}}
+                                <td><b>{{gpaValue}}</b></td>
+                                {{/each}}
+                            </tr>
+                            {{/if}}
+                        </tbody>
+
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="semester-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Attendance</th>
+                                {{#each ReportdetailsData}}
+                                <th>{{MarkingPeriod}}</th>
+                                {{/each}}
+                            </tr>
+                        </thead>
+                        {{#if AttendanceCode }}
+                        <tbody>
+                            {{#each AttendanceCode}}
+                            <tr>
+                                <td>{{AttendanceCodeTitle}}</td>
+                                {{#each AttendanceCountList}}
+                                <td>{{AttendanceCount}}</td>
+                                {{/each}}
+                            </tr>
+                            {{/each}}
+                            <!-- <tr>
+                                 <td>Absent</td>
+                                 <td>45</td>
+                                 <td>45</td>
+                                 <td>90</td>
+
+                             </tr>
+                             <tr>
+                                 <td>Half Day</td>
+                                 <td>45</td>
+                                 <td>45</td>
+                                 <td>90</td>
+                                 <td>45</td>
+                                 <td>45</td>
+                                 <td>90</td>
+                                 <td>180</td>
+                            </tr>-->
+                        </tbody>
+                        {{/if}}
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="semester-table">
+                    <table>
+                        <caption>
+                            <h2><b>Behavior - Kosrae</b></h2>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Department (Behavior)</th>
+                                {{#each ReportdetailsData}}
+                                <th>{{MarkingPeriod}}</th>
+                                {{/each}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Respecte for Teachers</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Respecte for Classmates</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Complete of work</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Care of property</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Cooperation</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Follow Instruction</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Neetness of work</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                            <tr>
+                                <td>Attendance</td>
+                                {{#each ReportdetailsData}}
+                                <td>  </td>
+                                {{/each}}
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div style="page-break-before:always">&nbsp;</div>
+        {{/each}}
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <table>
+                                    <tr>
+                                        <td class="semester-table" style="padding-right: 15px;">
+                                            <table>
+                                                <caption>
+                                                    <h2><b>Grade Scale</b></h2>
+                                                </caption>
+                                                {{#if GradeData}}
+                                                <tbody>
+                                                    {{#each GradeData}}
+                                                    <tr>
+                                                        <td>{{Breakoff}}</td>
+                                                        <td>{{Title}}</td>
+                                                    </tr>
+                                                    {{/each}}
+                                                    <!--<tr>
+                                                        <td>80-189</td>
+                                                        <td>B</td>
+                                                        <td>3</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>70-79</td>
+                                                        <td>C</td>
+                                                        <td>2</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>60-69</td>
+                                                        <td>D</td>
+                                                        <td>1</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>0-59</td>
+                                                        <td>F</td>
+                                                        <td>0</td>
+                                                    </tr>-->
+                                                </tbody>
+                                                {{/if}}
+                                            </table>
+                                        </td>
+                                        <td class="semester-table" style="padding-left: 15px;">
+                                            <table class="bevaior-table">
+                                                <caption>
+                                                    <h2><b>Behavior Legend</b></h2>
+                                                </caption>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>A</td>
+                                                        <td>Superior</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>B</td>
+                                                        <td>Above Average</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>C</td>
+                                                        <td>Average</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>D</td>
+                                                        <td>Below Average</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>F</td>
+                                                        <td>Failure</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="semester-table">
+                    <table class="comments-table">
+                        <caption>
+                            <h2><b>Comments</b></h2>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="signature-table">
+                    <table cell-padding="10">
+                        <tr>
+                            <td width="33.33%">
+                                <p class="long-line"></p>
+                                <p class="text-center sign"><b>Teacher's Signature</b></p>
+                                <p class="text-center"><b>Date:</b>&nbsp;<span class="small-line"></span></p>
+                            </td>
+                            <td width="33.33%">
+                                <p class="long-line m-auto"></p>
+                                <p class="text-center sign"><b>Principal's Signature</b></p>
+                                <p class="text-center"><b>Date:</b>&nbsp;<span class="small-line"></span></p>
+                            </td>
+                            <td width="33.33%">
+                                <p class="long-line ml-auto"></p>
+                                <p class="text-center sign"><b>Parent/Guardian's Signature</b></p>
+                                <p class="text-center"><b>Date:</b>&nbsp;<span class="small-line"></span></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+
+

@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Quarter
 {
     public class QuarterAddViewModel :CommonFields
     {
-        public Quarters tableQuarter { get; set; }
+        public Quarters? tableQuarter { get; set; }
     }
 }

@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using opensis.data.Models;
 using opensis.data.ViewModels.RoleBasedAccess;
 using System;
 using System.Collections.Generic;
@@ -33,21 +34,30 @@ namespace opensis.data.ViewModels.User
 {
     public class LoginViewModel : CommonFields
     {
+
+        public LoginViewModel()
+        {
+            userAccessLog = new UserAccessLog();
+        }
+
         [Required]
-        public string Email { get; set; }
+        public string? Email { get; set; }
        
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? UserId { get; set; }
-        public string Name { get; set; }
-        public string MembershipName { get; set; }
-        public string MembershipType { get; set; }
-        public string CreatedBy { get; set; }
+        public string? Name { get; set; }
+        public string? MembershipName { get; set; }
+        public string? MembershipType { get; set; }
+        public string? CreatedBy { get; set; }
         public int? MembershipId { get; set; }
-        public byte[] UserPhoto { get; set; }
+        public byte[]? UserPhoto { get; set; }
+        public string? FirstGivenName { get; set; }
         public int? LastUsedSchoolId { get; set; }
-        public List<RolePermissionViewModel> PermissionList { get; set; }
+        public List<RolePermissionViewModel>? PermissionList { get; set; }
+        public UserAccessLog? userAccessLog { get; set; }
+        public string? UserGuid { get; set; }
     }
 }

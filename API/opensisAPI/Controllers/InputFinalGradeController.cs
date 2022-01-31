@@ -27,7 +27,9 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.InputFinalGrade.Interfaces;
+using opensis.data.Models;
 using opensis.data.ViewModels.InputFinalGrade;
+using opensis.data.ViewModels.Student;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,5 +107,55 @@ namespace opensisAPI.Controllers
         //    }
         //    return reportCardCommentList;
         //}
+
+        [HttpPost("getStudentReportCardGrades")]
+        public ActionResult<StudentReportCardGradesViewModel> GetStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel)
+        {
+            StudentReportCardGradesViewModel studentReportCardGrades = new StudentReportCardGradesViewModel();
+            try
+            {
+                studentReportCardGrades = _inputFinalGradeService.GetStudentReportCardGrades(studentReportCardGradesViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                studentReportCardGrades._message = ex.Message;
+                studentReportCardGrades._failure = true;
+            }
+            return studentReportCardGrades;
+        }
+
+        [HttpPut("updateStudentReportCardGrades")]
+        public ActionResult<StudentReportCardGradesViewModel> UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel)
+        {
+            StudentReportCardGradesViewModel studentReportCardGrades = new StudentReportCardGradesViewModel();
+            try
+            {
+                studentReportCardGrades = _inputFinalGradeService.UpdateStudentReportCardGrades(studentReportCardGradesViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                studentReportCardGrades._message = ex.Message;
+                studentReportCardGrades._failure = true;
+            }
+            return studentReportCardGrades;
+        }
+
+        [HttpPost("getAllStudentListForFinalGrade")]
+        public ActionResult<StudentListModel> GetAllStudentListForFinalGrade(PageResult pageResult)
+        {
+            StudentListModel studentList = new StudentListModel();
+            try
+            {
+                studentList = _inputFinalGradeService.GetAllStudentListForFinalGrade(pageResult);
+            }
+            catch (Exception es)
+            {
+                studentList._message = es.Message;
+                studentList._failure = true;
+            }
+            return studentList;
+        }
     }
 }

@@ -33,6 +33,7 @@ namespace opensis.data.Models
 {
     public class PageResult: CommonFields
     {
+        
         public Guid TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
@@ -58,18 +59,26 @@ namespace opensis.data.Models
             }
         }
 
-        public SortingModel SortingModel { get; set; }
+        public SortingModel? SortingModel { get; set; }
 
-        public List<FilterParams> FilterParams { get; set; }
+        public List<FilterParams>? FilterParams { get; set; }
         public DateTime? DobStartDate { get; set; }
         public DateTime? DobEndDate { get; set; }
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         public bool? ProfilePhoto { get; set; }
         public bool? IncludeInactive { get; set; }
         public bool? SearchAllSchool { get; set; }
         public DateTime? AttendanceDate { get; set; }
         public int? AttendanceCode { get; set; }
-        public string EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
         public decimal? AcademicYear { get; set; }
+        public bool? IsDelete { get; set; }
+        public bool? IsListView { get; set; }
+        public bool? IsSchoolSpecific { get; set; }
+        public bool? IsDropped { get; set; }
+        public DateTime? MarkingPeriodStartDate { get; set; }
+        public DateTime? MarkingPeriodEndDate { get; set; }
+        public string? GradeLevel { get; set; }
+        public bool? IsHomeRoomTeacher { get; set; }
     }
 }

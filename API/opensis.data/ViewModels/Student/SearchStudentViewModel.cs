@@ -35,14 +35,15 @@ namespace opensis.data.ViewModels.Student
         public SearchStudentViewModel()
         {
             searchStudentForView = new List<SearchStudentForView>();
+            StudentMasters = new List<StudentMaster>();
         }
         public List<SearchStudentForView> searchStudentForView { get; set; }
         public List<StudentMaster> StudentMasters { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string StudentName { get; set; }
+        public string? StudentName { get; set; }
         public int? StudentId { get; set; }
-        public string AlternateId { get; set; }
+        public string? AlternateId { get; set; }
         public int? GradeId { get; set; }
         public int? SectionId { get; set; }
         public int? FirstLanguageId { get; set; }

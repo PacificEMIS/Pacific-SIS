@@ -36,6 +36,7 @@ namespace opensis.data.Interface
     {
         public ScheduledCourseSectionViewModel MissingAttendanceListForCourseSection(PageResult pageResult);
         public CourseSectionUpdateViewModel UpdateOnlineClassRoomURLInCourseSection(CourseSectionUpdateViewModel courseSectionUpdateViewModel);
-        
+        public ScheduledCourseSectionViewModel GetAllMissingAttendanceListForStaff(PageResult pageResult);
+
     }
 }

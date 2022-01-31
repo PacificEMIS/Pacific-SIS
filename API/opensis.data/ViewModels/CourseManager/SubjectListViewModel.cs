@@ -32,8 +32,13 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class SubjectListViewModel : CommonFields
     {
-        public List<Subject> subjectList { get; set; }
+        public SubjectListViewModel()
+        {
+            SubjectList = new List<Subject>();
+        }
+        public List<Subject> SubjectList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

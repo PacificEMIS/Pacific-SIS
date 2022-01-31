@@ -38,7 +38,7 @@ namespace opensis.data.Repository
 {
     public class GradeLevelRepository : IGradelevelRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public GradeLevelRepository(IDbContextFactory dbContextFactory)
         {
@@ -52,9 +52,13 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradelevelViewModel AddGradelevel(GradelevelViewModel gradelevel)
         {
+            if(gradelevel.TblGradelevel is null)
+            {
+                return gradelevel;
+            }
             try
             {
-                var checkGradelevelTitle = this.context?.Gradelevels.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.Title.ToLower() == gradelevel.tblGradelevel.Title.ToLower()).FirstOrDefault();
+                var checkGradelevelTitle = this.context?.Gradelevels.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && String.Compare(x.Title,gradelevel.TblGradelevel.Title,true)==0).FirstOrDefault();
 
                 if (checkGradelevelTitle !=null)
                 {
@@ -64,9 +68,12 @@ namespace opensis.data.Repository
                 else
                 {
                     int? GradeLevelId = Utility.GetMaxPK(this.context, new Func<Gradelevels, int>(x => x.GradeId));
-                    gradelevel.tblGradelevel.GradeId = (int)GradeLevelId;
-                    gradelevel.tblGradelevel.CreatedOn = DateTime.UtcNow;
-                    this.context?.Gradelevels.Add(gradelevel.tblGradelevel);
+                    gradelevel.TblGradelevel.GradeId = (int)GradeLevelId!;
+                    gradelevel.TblGradelevel.CreatedOn = DateTime.UtcNow;
+                    // gradelevel.TblGradelevel.SchoolMaster = null;
+                   // this.context?.Entry(GradeLevels).State = EntityState.Detached;
+                    this.context?.Gradelevels.Add(gradelevel.TblGradelevel);
+                    //context!.Entry(gradelevel.TblGradelevel.SchoolMaster).State = EntityState.Unchanged;
                     this.context?.SaveChanges();
                     gradelevel._failure = false;
                     gradelevel._message = "Grade Level Added Successsfully";
@@ -88,13 +95,17 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradelevelViewModel ViewGradelevel(GradelevelViewModel gradelevel)
         {
-            GradelevelViewModel gradelevelModel = new GradelevelViewModel();
+            if (gradelevel.TblGradelevel is null)
+            {
+                return gradelevel;
+            }
+            GradelevelViewModel gradelevelModel = new ();
             try
             {
-                var Gradelevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.tblGradelevel.TenantId && x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.GradeId == gradelevel.tblGradelevel.GradeId);
+                var Gradelevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.TblGradelevel.TenantId && x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.GradeId == gradelevel.TblGradelevel.GradeId);
                 if (Gradelevel != null)
                 {
-                    gradelevelModel.tblGradelevel = Gradelevel;
+                    gradelevelModel.TblGradelevel = Gradelevel;
                     gradelevelModel._failure = false;
                 }
                 else
@@ -119,14 +130,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradelevelViewModel UpdateGradelevel(GradelevelViewModel gradelevel)
         {
-            GradelevelViewModel gradelevelUpdate = new GradelevelViewModel();
+            if (gradelevel.TblGradelevel is null)
+            {
+                return gradelevel;
+            }
+            GradelevelViewModel gradelevelUpdate = new ();
             try
             {
-                var GradeLevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.tblGradelevel.TenantId && x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.GradeId == gradelevel.tblGradelevel.GradeId);
+                var GradeLevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.TblGradelevel.TenantId && x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.GradeId == gradelevel.TblGradelevel.GradeId);
 
                 if (GradeLevel != null)
                 {
-                    var checkGradelevelTitle = this.context?.Gradelevels.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.GradeId != gradelevel.tblGradelevel.GradeId && x.Title.ToLower() == gradelevel.tblGradelevel.Title.ToLower()).FirstOrDefault();
+                    var checkGradelevelTitle = this.context?.Gradelevels.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && x.GradeId != gradelevel.TblGradelevel.GradeId && String.Compare(x.Title , gradelevel.TblGradelevel.Title,true)==0).FirstOrDefault();
 
                     if (checkGradelevelTitle != null)
                     {
@@ -135,56 +150,56 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        if (GradeLevel.Title.ToLower() != gradelevel.tblGradelevel.Title.ToLower())
+                        if (GradeLevel.Title != gradelevel.TblGradelevel.Title)
                         {
-                            var gradeTitleUsed = this.context?.GradeUsStandard.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.GradeLevel.ToLower() == GradeLevel.Title.ToLower()).ToList();
+                            var gradeTitleUsed = this.context?.GradeUsStandard.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && String.Compare(x.GradeLevel,GradeLevel.Title,true)==0).ToList();
 
-                            if (gradeTitleUsed.Count() > 0)
+                            if (gradeTitleUsed?.Count>0)
                             {
-                                gradeTitleUsed.ForEach(x => x.GradeLevel = gradelevel.tblGradelevel.Title);
+                                gradeTitleUsed.ForEach(x => x.GradeLevel = gradelevel.TblGradelevel.Title);
                             }
 
-                            var gradeTitleUsedInCourse = this.context?.Course.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.CourseGradeLevel.ToLower() == GradeLevel.Title.ToLower()).ToList();
+                            var gradeTitleUsedInCourse = this.context?.Course.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && String.Compare(x.CourseGradeLevel,GradeLevel.Title,true)==0).ToList();
 
-                            if (gradeTitleUsedInCourse.Count() > 0)
+                            if (gradeTitleUsedInCourse?.Any()==true)
                             {
-                                gradeTitleUsedInCourse.ForEach(x => x.CourseGradeLevel = gradelevel.tblGradelevel.Title);
+                                gradeTitleUsedInCourse.ForEach(x => x.CourseGradeLevel = gradelevel.TblGradelevel.Title);
                             }
 
-                            var gradeTitleUsedInStudentEnrollment = this.context?.StudentEnrollment.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.GradeLevelTitle.ToLower() == GradeLevel.Title.ToLower()).ToList();
+                            var gradeTitleUsedInStudentEnrollment = this.context?.StudentEnrollment.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && String.Compare(x.GradeLevelTitle ,GradeLevel.Title,true)==0).ToList();
 
-                            if (gradeTitleUsedInStudentEnrollment.Count() > 0)
+                            if (gradeTitleUsedInStudentEnrollment?.Any()==true)
                             {
-                                gradeTitleUsedInStudentEnrollment.ForEach(x => x.GradeLevelTitle = gradelevel.tblGradelevel.Title);
+                                gradeTitleUsedInStudentEnrollment.ForEach(x => x.GradeLevelTitle = gradelevel.TblGradelevel.Title);
                             }
 
-                            var gradeTitleUsedInStaff = this.context?.StaffMaster.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.PrimaryGradeLevelTaught.ToLower() == GradeLevel.Title.ToLower()).ToList();
+                            var gradeTitleUsedInStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && String.Compare(x.PrimaryGradeLevelTaught,GradeLevel.Title,true)==0).ToList();
 
-                            if (gradeTitleUsedInStaff.Count() > 0)
+                            if (gradeTitleUsedInStaff?.Any()==true)
                             {
-                                gradeTitleUsedInStaff.ForEach(x => x.PrimaryGradeLevelTaught = gradelevel.tblGradelevel.Title) ;
+                                gradeTitleUsedInStaff.ForEach(x => x.PrimaryGradeLevelTaught = gradelevel.TblGradelevel.Title) ;
                             }
 
-                            var StaffData = this.context?.StaffMaster.Where(x => x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.TenantId == gradelevel.tblGradelevel.TenantId && x.OtherGradeLevelTaught.ToLower().Contains(GradeLevel.Title.ToLower())).ToList();
+                            var StaffData = this.context?.StaffMaster.Where(x => x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.TenantId == gradelevel.TblGradelevel.TenantId && x.OtherGradeLevelTaught!.Contains(GradeLevel.Title!=null?GradeLevel.Title:"")).ToList();
 
-                            if (StaffData.Count() > 0)
+                            if (StaffData?.Any()==true)
                             {
                                 foreach (var staff in StaffData)
                                 {
-                                    var otherGradeLevelTaught = staff.OtherGradeLevelTaught.Split(",");
+                                    var otherGradeLevelTaught = (staff.OtherGradeLevelTaught??"").Split(",");
                                     otherGradeLevelTaught = otherGradeLevelTaught.Where(w => w != GradeLevel.Title).ToArray();
                                     var newOtherGradeLevelTaught = string.Join(",", otherGradeLevelTaught);
-                                    newOtherGradeLevelTaught = newOtherGradeLevelTaught + "," + gradelevel.tblGradelevel.Title;
+                                    newOtherGradeLevelTaught = newOtherGradeLevelTaught + "," + gradelevel.TblGradelevel.Title;
                                     staff.OtherSubjectTaught = newOtherGradeLevelTaught;
                                 }
                             }
 
                         }
 
-                        gradelevel.tblGradelevel.UpdatedOn = DateTime.Now;
-                        gradelevel.tblGradelevel.CreatedBy = GradeLevel.CreatedBy;
-                        gradelevel.tblGradelevel.CreatedOn = GradeLevel.CreatedOn;
-                        this.context.Entry(GradeLevel).CurrentValues.SetValues(gradelevel.tblGradelevel);
+                        gradelevel.TblGradelevel.UpdatedOn = DateTime.Now;
+                        gradelevel.TblGradelevel.CreatedBy = GradeLevel.CreatedBy;
+                        gradelevel.TblGradelevel.CreatedOn = GradeLevel.CreatedOn;
+                        this.context?.Entry(GradeLevel).CurrentValues.SetValues(gradelevel.TblGradelevel);
                         this.context?.SaveChanges();
                         gradelevel._failure = false;
                         gradelevel._message = "Grade Level Updated Successsfully";
@@ -192,7 +207,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    gradelevel.tblGradelevel = null;
+                    gradelevel.TblGradelevel = null;
                     gradelevel._failure = true;
                     gradelevel._message = NORECORDFOUND;
                 }
@@ -212,19 +227,25 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradelevelViewModel DeleteGradelevel(GradelevelViewModel gradelevel)
         {
+            if(gradelevel.TblGradelevel is null)
+            {
+                return gradelevel;
+            }
             try
             {
-                var LinkedGradeLevels = this.context?.Gradelevels.Where(x => x.TenantId == gradelevel.tblGradelevel.TenantId && x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.NextGradeId == gradelevel.tblGradelevel.GradeId).ToList();
-                if (LinkedGradeLevels.Count>0)
+                var LinkedGradeLevels = this.context?.Gradelevels.Where(x => x.TenantId == gradelevel.TblGradelevel.TenantId && x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.NextGradeId == gradelevel.TblGradelevel.GradeId).ToList();
+
+                var studentEnrollmentData = this.context?.StudentEnrollment.Where(x => x.TenantId == gradelevel.TblGradelevel.TenantId && x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.GradeId == gradelevel.TblGradelevel.GradeId).ToList();
+                if (LinkedGradeLevels?.Count>0 || studentEnrollmentData?.Count > 0)
                 {
-                    gradelevel.tblGradelevel = null;
+                    gradelevel.TblGradelevel = null;
                     gradelevel._failure = true;
                     gradelevel._message = "Grade Level cannot be deleted because it has its association";
                 }
                 else
                 {
-                    var GradeLevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.tblGradelevel.TenantId && x.SchoolId == gradelevel.tblGradelevel.SchoolId && x.GradeId == gradelevel.tblGradelevel.GradeId);
-                    this.context?.Gradelevels.Remove(GradeLevel);
+                    var GradeLevel = this.context?.Gradelevels.FirstOrDefault(x => x.TenantId == gradelevel.TblGradelevel.TenantId && x.SchoolId == gradelevel.TblGradelevel.SchoolId && x.GradeId == gradelevel.TblGradelevel.GradeId);
+                    this.context?.Gradelevels.Remove(GradeLevel!);
                     this.context?.SaveChanges();
                     gradelevel._failure = false;
                     gradelevel._message = "Grade Level Deleted Successsfully";
@@ -245,14 +266,14 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradelevelListViewModel GetAllGradeLevels(GradelevelListViewModel gradelevelList)
         {
-            GradelevelListViewModel gradelevelListModel = new GradelevelListViewModel();
+            GradelevelListViewModel gradelevelListModel = new ();
             try
             {
 
                 var gradelevelsList = this.context?.Gradelevels.Include(x=>x.Equivalency)
                     .Where(x => x.TenantId == gradelevelList.TenantId && x.SchoolId==gradelevelList.SchoolId).OrderBy(x=>x.SortOrder).ToList();
 
-                if (gradelevelsList.Count > 0)
+                if (gradelevelsList?.Count > 0)
                 {
                     var gradeLevels = from gradelevel in gradelevelsList
                                       select new GradeLevelView()
@@ -267,7 +288,8 @@ namespace opensis.data.Repository
                                           ShortName = gradelevel.ShortName,
                                           SortOrder = gradelevel.SortOrder,
                                           TenantId = gradelevel.TenantId,
-                                          GradeLevelEquivalency = gradelevel.Equivalency != null? gradelevel.Equivalency.GradeLevelEquivalency : null,
+                                          GradeLevelEquivalency = gradelevel.Equivalency?.GradeLevelEquivalency,
+                                          //GradeLevelEquivalency = gradelevel.Equivalency != null? gradelevel.Equivalency.GradeLevelEquivalency : null,
                                           EquivalencyId = gradelevel.EquivalencyId,
                                           AgeRangeId = gradelevel.AgeRangeId,
                                           IscedCode = gradelevel.IscedCode,
@@ -275,12 +297,19 @@ namespace opensis.data.Repository
                                           //AgeRange=gradelevel.AgeRange,
                                           //EducationalStage=gradelevel.EducationalStage,
                                           //GradeLevelEquivalency=gradelevel.GradeLevelEquivalency,
-                                          UpdatedBy = (gradelevel.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.EmailAddress == gradelevel.UpdatedBy).Name : null,
-                                          CreatedBy= (gradelevel.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == gradelevelList.TenantId && u.EmailAddress == gradelevel.CreatedBy).Name : null
-                                      };
-
-
+                                          CreatedBy=gradelevel.CreatedBy,
+                                          UpdatedBy=gradelevel.UpdatedBy
+                                      };                   
+                    
                     gradelevelListModel.TableGradelevelList = gradeLevels.ToList();
+                    if (gradelevelList.IsListView == true)
+                    {
+                        gradelevelListModel.TableGradelevelList.ForEach(e =>
+                        {
+                            e.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, gradelevelList.TenantId, e.CreatedBy);
+                            e.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, gradelevelList.TenantId, e.UpdatedBy);
+                        });
+                    }
                     gradelevelListModel._tenantName = gradelevelList._tenantName;
                     gradelevelListModel._token = gradelevelList._token;
                     gradelevelListModel._failure = false;
@@ -295,7 +324,7 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-                gradelevelListModel.TableGradelevelList = null;
+                gradelevelListModel.TableGradelevelList = null!;
                 gradelevelListModel._message = es.Message;
                 gradelevelListModel._failure = true;
                 gradelevelListModel._tenantName = gradelevelList._tenantName;
@@ -312,25 +341,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeEquivalencyListViewModel GetAllGradeEquivalency(GradeEquivalencyListViewModel gradeEquivalencyList)
         {
-            GradeEquivalencyListViewModel gradeEquivalencyListModel = new GradeEquivalencyListViewModel();
+            GradeEquivalencyListViewModel gradeEquivalencyListModel = new ();
             try
             {
-                var gradeEquivalency = this.context?.GradeEquivalency.Select(e=> new GradeEquivalency()
-                { 
-                    EquivalencyId=e.EquivalencyId,
-                    GradeLevelEquivalency= e.GradeLevelEquivalency,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedOn=e.UpdatedOn,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == gradeEquivalencyList.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == gradeEquivalencyList.TenantId && u.EmailAddress == e.UpdatedBy).Name : null
-                }).ToList();
+                var gradeEquivalency = this.context?.GradeEquivalency.ToList();
                 
-                gradeEquivalencyListModel.GradeEquivalencyList = gradeEquivalency;
+                //gradeEquivalencyListModel.GradeEquivalencyList = gradeEquivalency;
                 gradeEquivalencyListModel._tenantName = gradeEquivalencyList._tenantName;
                 gradeEquivalencyListModel._token = gradeEquivalencyList._token;
 
-                if (gradeEquivalency.Count > 0)
+                if (gradeEquivalency?.Count > 0)
                 {
+                    gradeEquivalencyListModel.GradeEquivalencyList = gradeEquivalency;
                     gradeEquivalencyListModel._failure = false;
                 }
                 else

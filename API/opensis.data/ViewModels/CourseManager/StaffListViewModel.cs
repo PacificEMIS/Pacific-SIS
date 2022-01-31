@@ -34,18 +34,18 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public StaffListViewModel()
         {
-            courseSectionsList = new List<CourseSection>();
+            CourseSectionsList = new List<CourseSection>();
         }
 
-        public List<CourseSection> courseSectionsList { get; set; }
+        public List<CourseSection> CourseSectionsList { get; set; }
 
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? CourseId { get; set; }
         public int? CourseSectionId { get; set; }
         public int? ReScheduleStaffId { get; set; }
-        public string CreatedBy { get; set; }
-        public string ConflictIndexNo { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? ConflictIndexNo { get; set; }
 
     }
 }

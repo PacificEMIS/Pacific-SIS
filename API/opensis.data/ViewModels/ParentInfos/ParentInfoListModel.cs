@@ -40,6 +40,8 @@ namespace opensis.data.ViewModels.ParentInfos
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int StudentId { get; set; }
+        public bool IsShowParentPhoto { get; set; } = true;
+        public bool? IsReport { get; set; }
 
     }
 }

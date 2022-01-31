@@ -1,0 +1,17 @@
+{
+    "shortid": "rklO-GVLGt",
+    "name": "KosraeReportTemplate",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631105540899
+    },
+    "modificationDate": {
+        "$$date": 1631105588116
+    },
+    "_id": "0P2ED8JLHao2cDSQ",
+    "$entitySet": "templates"
+}

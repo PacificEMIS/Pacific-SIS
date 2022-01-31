@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class SearchFilterAddViewModel : CommonFields
     {
-        public SearchFilter searchFilter { get; set; }
+        public SearchFilter? SearchFilter { get; set; }
     }
 }

@@ -340,5 +340,21 @@ namespace opensisAPI.Controllers
             }
             return staffCourseScheduleView;
         }
+
+        [HttpPost("getAllStaffListByDateRange")]
+        public ActionResult<StaffListModel> GetAllStaffListByDateRange(PageResult pageResult)
+        {
+            StaffListModel staffList = new StaffListModel();
+            try
+            {
+                staffList = _staffService.GetAllStaffListByDateRange(pageResult);
+            }
+            catch (Exception es)
+            {
+                staffList._message = es.Message;
+                staffList._failure = true;
+            }
+            return staffList;
+        }
     }
 }

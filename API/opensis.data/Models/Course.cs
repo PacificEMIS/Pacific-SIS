@@ -30,31 +30,41 @@ namespace opensis.data.Models
 {
     public partial class Course
     {
+      
         public Course()
         {
-            CourseStandard = new HashSet<CourseStandard>();
             CourseSection = new HashSet<CourseSection>();
+            CourseStandard = new HashSet<CourseStandard>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CourseId { get; set; }
-        public string CourseTitle { get; set; }
-        public string CourseShortName { get; set; }
-        public string CourseGradeLevel { get; set; }
-        public string CourseProgram { get; set; }
-        public string CourseSubject { get; set; }
-        public string CourseCategory { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public string? CourseTitle { get; set; }
+        public string? CourseShortName { get; set; }
+        public string? CourseGradeLevel { get; set; }
+        public string? CourseProgram { get; set; }
+        public string? CourseSubject { get; set; }
+        /// <summary>
+        /// &apos;Core&apos; or &apos;Elective&apos;
+        /// </summary>
+        public string? CourseCategory { get; set; }
         public double? CreditHours { get; set; }
-        public string Standard { get; set; }
-        public string StandardRefNo { get; set; }
-        public string CourseDescription { get; set; }
+        /// <summary>
+        /// choose between US Common Core library or school specific standards library.
+        /// </summary>
+        public string? Standard { get; set; }
+        public string? StandardRefNo { get; set; }
+        public string? CourseDescription { get; set; }
         public bool? IsCourseActive { get; set; }
-        public string CreatedBy { get; set; }
+        public int? RolloverId { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual ICollection<CourseStandard> CourseStandard { get; set; }
         public virtual ICollection<CourseSection> CourseSection { get; set; }
+        public virtual ICollection<CourseStandard> CourseStandard { get; set; }
     }
 }

@@ -56,5 +56,6 @@ namespace opensis.core.MarkingPeriods.Interfaces
         public DropDownViewModel GetAcademicYearList(DropDownViewModel downViewModel);
         public PeriodViewModel GetMarkingPeriodTitleList(PeriodViewModel dropdownModel);
         public MarkingPeriodListViewModel GetAllMarkingPeriodList(MarkingPeriodListViewModel markingPeriodListViewModel);
+        public MarkingPeriodsByCourseSectionViewModel GetMarkingPeriodsByCourseSection(MarkingPeriodsByCourseSectionViewModel markingPeriodsByCourseSectionViewModel);
     }
 }

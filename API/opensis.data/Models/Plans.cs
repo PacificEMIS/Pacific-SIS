@@ -30,6 +30,8 @@ namespace opensis.data.Models
 {
     public partial class Plans
     {
+        
+
         public Plans()
         {
             SchoolMaster = new HashSet<SchoolMaster>();
@@ -38,12 +40,12 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int PlanId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int? MaxApiChecks { get; set; }
-        public byte[] Features { get; set; }
-        public string CreatedBy { get; set; }
+        public byte[]? Features { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
         public virtual ICollection<SchoolMaster> SchoolMaster { get; set; }

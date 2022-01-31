@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentCommentListViewModel:CommonFields
     {
+        public StudentCommentListViewModel()
+        {
+            studentCommentsList = new List<StudentComments>();
+        }
         public List<StudentComments> studentCommentsList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }

@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.GradeLevel
 {
     public class GradeEquivalencyListViewModel : CommonFields
     {
+        public GradeEquivalencyListViewModel()
+        {
+            GradeEquivalencyList=new List<GradeEquivalency>();
+        }
         public List<GradeEquivalency> GradeEquivalencyList { get; set; } 
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }

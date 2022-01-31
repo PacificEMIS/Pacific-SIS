@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class ProgramListViewModel : CommonFields
     {
-        public List<Programs> programList { get; set; }
+        public ProgramListViewModel()
+        {
+            ProgramList = new List<Programs>();
+        }
+        public List<Programs> ProgramList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
     }

@@ -34,6 +34,8 @@ namespace opensis.data.ViewModels.StaffSchedule
         public ScheduledCourseSectionViewModel()
         {
             courseSectionViewList = new List<CourseSectionViewList>();
+            NotificationList = new List<string>();
+            NoticeList = new List<Models.Notice>();
         }
         public List<CourseSectionViewList> courseSectionViewList { get; set; }
         public Guid? TenantId { get; set; }
@@ -46,5 +48,9 @@ namespace opensis.data.ViewModels.StaffSchedule
         public int? PageNumber { get; set; }
         public int? _pageSize { get; set; }
         public List<opensis.data.Models.Notice> NoticeList { get; set; }
+        public List<string> NotificationList { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public DateTime? MarkingPeriodStartDate { get; set; }
+        public DateTime? MarkingPeriodEndDate { get; set; }
     }
 }

@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class BellScheduleListViewModel : CommonFields
     {
-        public List<BellSchedule> bellScheduleList { get; set; }
+        public BellScheduleListViewModel()
+        {
+            BellScheduleList = new List<BellSchedule>();
+        }
+        public List<BellSchedule> BellScheduleList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public decimal? AcademicYear { get; set; }

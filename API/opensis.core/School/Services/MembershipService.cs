@@ -36,7 +36,7 @@ namespace opensis.core.School.Services
 {
     public class MembershipService : IMembershipService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
         public IMembershipRepository membershipRepository;

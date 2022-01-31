@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class SubjectAddViewModel : CommonFields
     {
-        public Subject subject { get; set; }
+        public Subject? Subject { get; set; }
     }
 }

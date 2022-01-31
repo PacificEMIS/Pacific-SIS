@@ -35,5 +35,12 @@ namespace opensis.core.StaffPortalGradebook.Interfaces
         public GradebookConfigurationAddViewModel AddUpdateGradebookConfiguration(GradebookConfigurationAddViewModel gradebookConfigurationAddViewModel);
         public GradebookConfigurationAddViewModel ViewGradebookConfiguration(GradebookConfigurationAddViewModel gradebookConfigurationAddViewModel);
         public FinalGradingMarkingPeriodList PopulateFinalGrading(FinalGradingMarkingPeriodList finalGradingMarkingPeriodList);
+        public GradebookGradeListViewModel AddGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel);
+        public GradebookGradeListViewModel GetGradebookGrade(GradebookGradeListViewModel gradebookGradeListViewModel);
+        public AssignmentForStudentViewModel GradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel);
+        public AssignmentForStudentViewModel AddGradebookGradeByStudent(AssignmentForStudentViewModel assignmentForStudentViewModel);
+        public StudentListByAssignmentTpyeViewModel GradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel);
+        public StudentListByAssignmentTpyeViewModel AddgradebookGradeByAssignmentType(StudentListByAssignmentTpyeViewModel studentListByAssignmentTpyeViewModel);
+
     }
 }

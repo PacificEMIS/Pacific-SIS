@@ -34,9 +34,9 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public CourseSectionViewModel()
         {
-            getCourseSectionForView = new List<GetCourseSectionForView>();
+            GetCourseSectionForView = new List<GetCourseSectionForView>();
         }
-        public List<GetCourseSectionForView> getCourseSectionForView { get; set; }
+        public List<GetCourseSectionForView> GetCourseSectionForView { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? CourseId { get; set; }

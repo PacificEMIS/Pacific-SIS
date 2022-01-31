@@ -25,11 +25,13 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentTranscriptMaster
     {
+        
         public StudentTranscriptMaster()
         {
             StudentTranscriptDetail = new HashSet<StudentTranscriptDetail>();
@@ -38,23 +40,24 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
-        public string GradeTitle { get; set; }
-        public string SchoolName { get; set; }
-        public string SchoolYear { get; set; }
+        public string GradeTitle { get; set; } = null!;
+        public string? SchoolName { get; set; }
+        public string? SchoolYear { get; set; }
         public decimal? CreditAttempted { get; set; }
         public decimal? TotalGradeCreditEarned { get; set; }
         public decimal? Gpa { get; set; }
-        public string StudentInternalId { get; set; }
+        public string? StudentInternalId { get; set; }
         public decimal? CumulativeGpa { get; set; }
         public decimal? TotalCreditAttempted { get; set; }
         public decimal? TotalCreditEarned { get; set; }
         public DateTime? GeneratedOn { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentMaster StudentMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
         public virtual ICollection<StudentTranscriptDetail> StudentTranscriptDetail { get; set; }
     }
 }

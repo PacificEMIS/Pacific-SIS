@@ -38,7 +38,7 @@ namespace opensis.core.User.Services
 {
     public class UserService : IUserService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
         public IUserRepository userRepository;
@@ -163,6 +163,38 @@ namespace opensis.core.User.Services
             }*/
             loginView = this.userRepository.LogOutForUser(loginViewModel);
             return loginView;
+        }
+
+        public UserAccessLogListViewModel GetAllUserAccessLog(PageResult pageResult)
+        {
+            UserAccessLogListViewModel userAccessLogList = new UserAccessLogListViewModel();
+
+            if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+            {
+                userAccessLogList = this.userRepository.GetAllUserAccessLog(pageResult);
+            }
+            else
+            {
+                userAccessLogList._failure = true;
+                userAccessLogList._message = TOKENINVALID;
+            }
+            return userAccessLogList;
+        }
+
+        public UserAccessLogListViewModel DeleteUserAccessLogs(UserAccessLogListViewModel userAccessLogListViewModel)
+        {
+            UserAccessLogListViewModel userAccessLogListDelete = new UserAccessLogListViewModel();
+
+            if (tokenManager.CheckToken(userAccessLogListViewModel._tenantName + userAccessLogListViewModel._userName, userAccessLogListViewModel._token))
+            {
+                userAccessLogListDelete = this.userRepository.DeleteUserAccessLogs(userAccessLogListViewModel);
+            }
+            else
+            {
+                userAccessLogListDelete._failure = true;
+                userAccessLogListDelete._message = TOKENINVALID;
+            }
+            return userAccessLogListDelete;
         }
     }
 }

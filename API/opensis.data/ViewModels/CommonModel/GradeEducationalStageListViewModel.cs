@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class GradeEducationalStageListViewModel : CommonFields
     {
-        public List<GradeEducationalStage> gradeEducationalStageList { get; set; }
+        public GradeEducationalStageListViewModel()
+        {
+            GradeEducationalStageList = new List<GradeEducationalStage>();
+        }
+        public List<GradeEducationalStage> GradeEducationalStageList { get; set; }
         public Guid TenantId { get; set; }
     }
 }

@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.School
 {
     public class SchoolDetailsAddViewModel : CommonFields
     {
-        public SchoolDetail schoolDetail { get; set; }
+        public SchoolDetail? schoolDetail { get; set; }
     }
 }

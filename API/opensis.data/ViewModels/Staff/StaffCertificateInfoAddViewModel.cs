@@ -32,6 +32,12 @@ namespace opensis.data.ViewModels.Staff
 {
     public class StaffCertificateInfoAddViewModel : CommonFields
     {
-        public StaffCertificateInfo staffCertificateInfo { get; set; }
+        public StaffCertificateInfoAddViewModel()
+        {
+            fieldsCategoryList = new List<FieldsCategory>();
+        }
+        public StaffCertificateInfo? staffCertificateInfo { get; set; }
+        public List<FieldsCategory> fieldsCategoryList { get; set; }
+        public int? SelectedCategoryId { get; set; }
     }
 }

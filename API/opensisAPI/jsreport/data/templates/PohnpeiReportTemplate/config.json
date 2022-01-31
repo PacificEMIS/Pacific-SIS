@@ -1,0 +1,17 @@
+{
+    "shortid": "rkgkT4Y3ft",
+    "name": "PohnpeiReportTemplate",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631519966850
+    },
+    "modificationDate": {
+        "$$date": 1631519966850
+    },
+    "_id": "BDOCZpFgqmbk3Azb",
+    "$entitySet": "templates"
+}

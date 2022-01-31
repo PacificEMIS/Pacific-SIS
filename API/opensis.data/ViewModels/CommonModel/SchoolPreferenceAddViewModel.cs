@@ -8,6 +8,6 @@ namespace opensis.data.ViewModels.CommonModel
     
     public class SchoolPreferenceAddViewModel : CommonFields
     {
-        public SchoolPreference schoolPreference { get; set; }
+        public SchoolPreference? SchoolPreference { get; set; }
     }
 }

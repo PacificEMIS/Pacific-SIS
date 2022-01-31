@@ -40,5 +40,7 @@ namespace opensis.data.ViewModels.Period
         //public List<Block> blockList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Period
 {
     public class BlockAddViewModel : CommonFields
     {
-        public Block block { get; set; }
+        public Block? block { get; set; }
     }
 }

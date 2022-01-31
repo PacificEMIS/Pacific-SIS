@@ -25,12 +25,15 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentFinalGrade
     {
-       
+
+        
+
         public StudentFinalGrade()
         {
             StudentFinalGradeComments = new HashSet<StudentFinalGradeComments>();
@@ -53,19 +56,28 @@ namespace opensis.data.Models
         public int? QtrMarkingPeriodId { get; set; }
         public bool? IsPercent { get; set; }
         public decimal? PercentMarks { get; set; }
-        public string GradeObtained { get; set; }
-        public string TeacherComment { get; set; }
-        public string CreatedBy { get; set; }
+        /// <summary>
+        /// A,A++,A+++,NONAC
+        /// </summary>
+        public string? GradeObtained { get; set; }
+        public string? TeacherComment { get; set; }
+        public decimal? CreditAttempted { get; set; }
+        public decimal? CreditEarned { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual Quarters Quarters { get; set; }
-        public virtual SchoolYears SchoolYears { get; set; }
-        public virtual Semesters Semesters { get; set; }
-        public virtual StudentMaster StudentMaster { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
+        public bool? IsCustomMarkingPeriod { get; set; }
+        public bool? IsExamGrade { get; set; }
+        public virtual ProgressPeriods? ProgressPeriod { get; set; }
+        public virtual Quarters? Quarters { get; set; }
+        public virtual SchoolYears? SchoolYears { get; set; }
+        public virtual Semesters? Semesters { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
         public virtual ICollection<StudentFinalGradeComments> StudentFinalGradeComments { get; set; }
         public virtual ICollection<StudentFinalGradeStandard> StudentFinalGradeStandard { get; set; }
-    
-}
+
+    }
 }

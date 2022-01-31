@@ -38,7 +38,7 @@ namespace opensis.data.Repository
 {
     public class CustomFieldRepository : ICustomFieldRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public CustomFieldRepository(IDbContextFactory dbContextFactory)
         {
@@ -52,13 +52,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public CustomFieldAddViewModel AddCustomField(CustomFieldAddViewModel customFieldAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if(customFieldAddViewModel.CustomFields.Title is null)
+            {
+                return customFieldAddViewModel;
+            }
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
-                    if (!string.IsNullOrWhiteSpace(customFieldAddViewModel.customFields.Type) && !string.IsNullOrWhiteSpace(customFieldAddViewModel.customFields.Module))
+                    List<CustomFields> customFieldList = new List<CustomFields>();
+                    if (!string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Type) && !string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Module))
                     {
-                        var checkCustomFieldTitle = this.context?.CustomFields.Where(x => (customFieldAddViewModel.customFields.IsSystemWideField == true) ? x.TenantId == customFieldAddViewModel.customFields.TenantId && x.Title.ToLower() == customFieldAddViewModel.customFields.Title.ToLower() : x.TenantId == customFieldAddViewModel.customFields.TenantId && x.SchoolId == customFieldAddViewModel.customFields.SchoolId && x.Title.ToLower() == customFieldAddViewModel.customFields.Title.ToLower()).FirstOrDefault();
+                        var checkCustomFieldTitle = this.context?.CustomFields.AsEnumerable().Where(x => (customFieldAddViewModel.CustomFields.IsSystemWideField == true) ? x.TenantId == customFieldAddViewModel.CustomFields.TenantId && x.Title == customFieldAddViewModel.CustomFields.Title : x.TenantId == customFieldAddViewModel.CustomFields.TenantId && x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && String.Compare(x.Title,customFieldAddViewModel.CustomFields.Title,true)==0).FirstOrDefault();
 
                         if (checkCustomFieldTitle != null)
                         {
@@ -70,50 +75,56 @@ namespace opensis.data.Repository
                             int? MasterFieldId = 1;
                             int? SortOrder = 1;
 
-                            var customFieldAllDataList = this.context?.CustomFields.Where(c => c.TenantId == customFieldAddViewModel.customFields.TenantId && c.SchoolId == customFieldAddViewModel.customFields.SchoolId).ToList();
-                            var CustomFieldData = customFieldAllDataList.OrderByDescending(x => x.FieldId).FirstOrDefault();
-
-                            if (CustomFieldData != null)
+                            var customFieldAllDataList = this.context?.CustomFields.Where(c => c.TenantId == customFieldAddViewModel.CustomFields.TenantId && c.SchoolId == customFieldAddViewModel.CustomFields.SchoolId).ToList();
+                            if (customFieldAllDataList != null)
                             {
-                                MasterFieldId = CustomFieldData.FieldId + 1;
-                            }
+                                var CustomFieldData = customFieldAllDataList.OrderByDescending(x => x.FieldId).FirstOrDefault();
 
-                            var SortOrderData = customFieldAllDataList.Where(x => x.CategoryId == customFieldAddViewModel.customFields.CategoryId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
-
-                            if (SortOrderData != null)
-                            {
-                                SortOrder = SortOrderData.SortOrder + 1;
-                            }
-
-                            string fieldName = Regex.Replace(customFieldAddViewModel.customFields.Title, @"\s+", "");
-                            customFieldAddViewModel.customFields.FieldId = (int)MasterFieldId;
-                            customFieldAddViewModel.customFields.SortOrder = (int)SortOrder;
-                            customFieldAddViewModel.customFields.CreatedOn = DateTime.UtcNow;
-                            customFieldAddViewModel.customFields.CreatedBy = customFieldAddViewModel.customFields.CreatedBy;
-                            customFieldAddViewModel.customFields.FieldName = fieldName;
-                            customFieldAddViewModel.customFields.SystemField = false;
-                            this.context?.CustomFields.Add(customFieldAddViewModel.customFields);
-                            this.context?.SaveChanges();
-
-                            if ((bool)customFieldAddViewModel.customFields.IsSystemWideField)
-                            {
-                                CustomFieldAddViewModel customFieldAdd = new CustomFieldAddViewModel();
-
-                                var schoolDataList = this.context?.SchoolMaster.Where(x => x.TenantId == customFieldAddViewModel.customFields.TenantId && x.SchoolId != customFieldAddViewModel.customFields.SchoolId).ToList();
-
-                                var fieldCategoryData = this.context?.FieldsCategory.Where(c => c.TenantId == customFieldAddViewModel.customFields.TenantId).ToList();
-
-                                var customFieldDataList = this.context?.CustomFields.Where(c => c.TenantId == customFieldAddViewModel.customFields.TenantId).ToList();
-
-                                if (schoolDataList.Count > 0)
+                                if (CustomFieldData != null)
                                 {
-                                    var fieldCategoryTitle = fieldCategoryData.FirstOrDefault(c => c.SchoolId == customFieldAddViewModel.customFields.SchoolId && c.CategoryId == customFieldAddViewModel.customFields.CategoryId)?.Title;
+                                    MasterFieldId = CustomFieldData.FieldId + 1;
+                                }
+
+                                var SortOrderData = customFieldAllDataList.Where(x => x.CategoryId == customFieldAddViewModel.CustomFields.CategoryId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
+
+                                if (SortOrderData != null)
+                                {
+                                    SortOrder = SortOrderData.SortOrder + 1;
+                                }
+
+                                string fieldName = Regex.Replace(customFieldAddViewModel.CustomFields.Title, @"\s+", "");
+                                customFieldAddViewModel.CustomFields.FieldId = (int)MasterFieldId;
+                                customFieldAddViewModel.CustomFields.SortOrder = (int)SortOrder!;
+                                customFieldAddViewModel.CustomFields.CreatedOn = DateTime.UtcNow;
+                                customFieldAddViewModel.CustomFields.CreatedBy = customFieldAddViewModel.CustomFields.CreatedBy;
+                                customFieldAddViewModel.CustomFields.FieldName = fieldName;
+                                customFieldAddViewModel.CustomFields.SystemField = false;
+                                customFieldList.Add(customFieldAddViewModel.CustomFields);
+                            }
+                            
+                            //this.context?.CustomFields.Add(customFieldAddViewModel.customFields);
+                            //this.context?.SaveChanges();
+
+                            if (customFieldAddViewModel.CustomFields?.IsSystemWideField==true)
+                            {
+                                //CustomFieldAddViewModel customFieldAdd = new CustomFieldAddViewModel();
+
+                                var schoolDataList = this.context?.SchoolMaster.Where(x => x.TenantId == customFieldAddViewModel.CustomFields.TenantId && x.SchoolId != customFieldAddViewModel.CustomFields.SchoolId).ToList();
+
+                                var fieldCategoryData = this.context?.FieldsCategory.Where(c => c.TenantId == customFieldAddViewModel.CustomFields.TenantId).ToList();
+
+                                var customFieldDataList = this.context?.CustomFields.Where(c => c.TenantId == customFieldAddViewModel.CustomFields.TenantId).ToList();
+
+                                if (schoolDataList!=null && fieldCategoryData!=null && customFieldDataList!=null)
+                                {
+                                    var fieldCategoryTitle = fieldCategoryData.FirstOrDefault(c => c.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && c.CategoryId == customFieldAddViewModel.CustomFields.CategoryId);
 
                                     if (fieldCategoryTitle != null)
                                     {
                                         foreach (var schoolData in schoolDataList)
                                         {
-                                            var checkFieldCategory = fieldCategoryData.FirstOrDefault(c => c.SchoolId == schoolData.SchoolId && c.Title.ToLower() == fieldCategoryTitle.ToLower());
+                                            CustomFieldAddViewModel customFieldAdd = new CustomFieldAddViewModel();
+                                            var checkFieldCategory = fieldCategoryData.FirstOrDefault(c => c.SchoolId == schoolData.SchoolId && String.Compare(c.Title,fieldCategoryTitle.Title,true)==0 && c.Module==fieldCategoryTitle.Module);
 
                                             if (checkFieldCategory != null)
                                             {
@@ -134,47 +145,50 @@ namespace opensis.data.Repository
                                                     sortOrder = sortOrderData.SortOrder + 1;
                                                 }
 
-                                                string FieldName = Regex.Replace(customFieldAddViewModel.customFields.Title, @"\s+", "");
-                                                customFieldAdd.customFields.SchoolId = schoolData.SchoolId;
-                                                customFieldAdd.customFields.TenantId = schoolData.TenantId;
-                                                customFieldAdd.customFields.FieldId = (int)FieldId;
-                                                customFieldAdd.customFields.Type = customFieldAddViewModel.customFields.Type;
-                                                customFieldAdd.customFields.Search = customFieldAddViewModel.customFields.Search;
-                                                customFieldAdd.customFields.Title = customFieldAddViewModel.customFields.Title;
-                                                customFieldAdd.customFields.SortOrder = (int)sortOrder;
-                                                customFieldAdd.customFields.SelectOptions = customFieldAddViewModel.customFields.SelectOptions;
-                                                customFieldAdd.customFields.CategoryId = checkFieldCategory.CategoryId;
-                                                customFieldAdd.customFields.SystemField = false;
-                                                customFieldAdd.customFields.Required = customFieldAddViewModel.customFields.Required;
-                                                customFieldAdd.customFields.DefaultSelection = customFieldAddViewModel.customFields.DefaultSelection;
-                                                customFieldAdd.customFields.Hide = customFieldAddViewModel.customFields.Hide;
-                                                customFieldAdd.customFields.CreatedOn = DateTime.UtcNow;
-                                                customFieldAdd.customFields.CreatedBy = customFieldAddViewModel.customFields.CreatedBy;
-                                                customFieldAdd.customFields.Module = customFieldAddViewModel.customFields.Module;
-                                                customFieldAdd.customFields.IsSystemWideField = customFieldAddViewModel.customFields.IsSystemWideField;
-                                                customFieldAdd.customFields.FieldName = FieldName;
-                                                this.context?.CustomFields.Add(customFieldAdd.customFields);
-                                                this.context?.SaveChanges();
+                                                string FieldName = Regex.Replace(customFieldAddViewModel.CustomFields.Title, @"\s+", "");
+                                                customFieldAdd.CustomFields.SchoolId = schoolData.SchoolId;
+                                                customFieldAdd.CustomFields.TenantId = schoolData.TenantId;
+                                                customFieldAdd.CustomFields.FieldId = (int)FieldId;
+                                                customFieldAdd.CustomFields.Type = customFieldAddViewModel.CustomFields.Type;
+                                                customFieldAdd.CustomFields.Search = customFieldAddViewModel.CustomFields.Search;
+                                                customFieldAdd.CustomFields.Title = customFieldAddViewModel.CustomFields.Title;
+                                                customFieldAdd.CustomFields.SortOrder = (int)sortOrder!;
+                                                customFieldAdd.CustomFields.SelectOptions = customFieldAddViewModel.CustomFields.SelectOptions;
+                                                customFieldAdd.CustomFields.CategoryId = checkFieldCategory.CategoryId;
+                                                customFieldAdd.CustomFields.SystemField = false;
+                                                customFieldAdd.CustomFields.Required = customFieldAddViewModel.CustomFields.Required;
+                                                customFieldAdd.CustomFields.DefaultSelection = customFieldAddViewModel.CustomFields.DefaultSelection;
+                                                customFieldAdd.CustomFields.Hide = customFieldAddViewModel.CustomFields.Hide;
+                                                customFieldAdd.CustomFields.CreatedOn = DateTime.UtcNow;
+                                                customFieldAdd.CustomFields.CreatedBy = customFieldAddViewModel.CustomFields.CreatedBy;
+                                                customFieldAdd.CustomFields.Module = customFieldAddViewModel.CustomFields.Module;
+                                                customFieldAdd.CustomFields.IsSystemWideField = customFieldAddViewModel.CustomFields.IsSystemWideField;
+                                                customFieldAdd.CustomFields.FieldName = FieldName;
+                                                customFieldList.Add(customFieldAdd.CustomFields);
+                                                //this.context?.CustomFields.Add(customFieldAdd.customFields);
+                                                //this.context?.SaveChanges();
                                             }
                                         }
                                     }
                                 }
                             }
-                            transaction.Commit();
+                            this.context?.CustomFields.AddRange(customFieldList);
+                            this.context?.SaveChanges();
+                            transaction?.Commit();
                             customFieldAddViewModel._failure = false;
                             customFieldAddViewModel._message = "Custom Field Added Successfully";
                         }
                     }
                     else
                     {
-                        customFieldAddViewModel.customFields = null;
+                        customFieldAddViewModel.CustomFields = null!;
                         customFieldAddViewModel._failure = true;
                         customFieldAddViewModel._message = "Please enter Type and Module";
                     }
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     customFieldAddViewModel._failure = true;
                     customFieldAddViewModel._message = es.Message;
                 }
@@ -189,15 +203,19 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public CustomFieldAddViewModel UpdateCustomField(CustomFieldAddViewModel customFieldAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if(customFieldAddViewModel.CustomFields.Title is null)
+            {
+                return customFieldAddViewModel;
+            }
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
-                    List<SchoolMaster> schoolMasterList = new List<SchoolMaster>();
+                    List<SchoolMaster>? schoolMasterList = new();
 
-                    if (!string.IsNullOrWhiteSpace(customFieldAddViewModel.customFields.Type) && !string.IsNullOrWhiteSpace(customFieldAddViewModel.customFields.Module))
+                    if (!string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Type) && !string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Module))
                     {
-                        var checkCustomFieldTitle = this.context?.CustomFields.Where(x => x.SchoolId == customFieldAddViewModel.customFields.SchoolId && x.TenantId == customFieldAddViewModel.customFields.TenantId && x.Title.ToLower() == customFieldAddViewModel.customFields.Title.ToLower() && x.FieldId != customFieldAddViewModel.customFields.FieldId).FirstOrDefault();
+                        var checkCustomFieldTitle = this.context?.CustomFields.AsEnumerable().Where(x => x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && x.TenantId == customFieldAddViewModel.CustomFields.TenantId && String.Compare(x.Title , customFieldAddViewModel.CustomFields.Title,true)==0 && x.FieldId != customFieldAddViewModel.CustomFields.FieldId).FirstOrDefault();
 
                         if (checkCustomFieldTitle != null)
                         {
@@ -206,25 +224,28 @@ namespace opensis.data.Repository
                         }
                         else
                         {
-                            var customFieldUpdate = this.context?.CustomFields.FirstOrDefault(x => x.TenantId == customFieldAddViewModel.customFields.TenantId && x.SchoolId == customFieldAddViewModel.customFields.SchoolId && x.FieldId == customFieldAddViewModel.customFields.FieldId);
+                            var customFieldUpdate = this.context?.CustomFields.FirstOrDefault(x => x.TenantId == customFieldAddViewModel.CustomFields.TenantId && x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && x.FieldId == customFieldAddViewModel.CustomFields.FieldId);
 
                             if (customFieldUpdate != null)
                             {
-                                string FieldName = Regex.Replace(customFieldAddViewModel.customFields.Title, @"\s+", "");
+                                string FieldName = Regex.Replace(customFieldAddViewModel.CustomFields.Title, @"\s+", "");
 
                                 if (customFieldUpdate.IsSystemWideField == true)
                                 {
-                                    schoolMasterList = this.context?.SchoolMaster.Include(x => x.CustomFields).Where(c => c.TenantId == customFieldAddViewModel.customFields.TenantId && c.SchoolId != customFieldAddViewModel.customFields.SchoolId).ToList();
+                                    schoolMasterList = this.context?.SchoolMaster.Include(x => x.CustomFields).Where(c => c.TenantId == customFieldAddViewModel.CustomFields.TenantId && c.SchoolId != customFieldAddViewModel.CustomFields.SchoolId).ToList();
+                                    if (schoolMasterList?.Any() == true)
+                                    {
 
+                                   
                                     foreach (var schoolMaster in schoolMasterList)
                                     {
                                         var SchoolCustomField = schoolMaster.CustomFields.Where(x => x.SystemField != true).ToList();
 
-                                        var SchoolCustomFieldUpdate = SchoolCustomField.FirstOrDefault(x => x.SchoolId == schoolMaster.SchoolId && x.Title.ToLower() == customFieldUpdate.Title.ToLower() && x.CategoryId == customFieldUpdate.CategoryId);
+                                        var SchoolCustomFieldUpdate = SchoolCustomField.AsEnumerable().FirstOrDefault(x => x.SchoolId == schoolMaster.SchoolId && String.Compare(x.Title,customFieldUpdate.Title,true)==0 && x.CategoryId == customFieldUpdate.CategoryId);
 
                                         if (SchoolCustomFieldUpdate != null)
                                         {
-                                            var CheckCustomFieldTitle = SchoolCustomField.Where(x => x.SchoolId == schoolMaster.SchoolId && x.TenantId == customFieldAddViewModel.customFields.TenantId && x.Title.ToLower() == customFieldAddViewModel.customFields.Title.ToLower() && x.FieldId != SchoolCustomFieldUpdate.FieldId).FirstOrDefault();
+                                            var CheckCustomFieldTitle = SchoolCustomField.AsEnumerable().Where(x => x.SchoolId == schoolMaster.SchoolId && x.TenantId == customFieldAddViewModel.CustomFields.TenantId && String.Compare(x.Title,customFieldAddViewModel.CustomFields.Title,true)==0 && x.FieldId != SchoolCustomFieldUpdate.FieldId).FirstOrDefault();
 
                                             if (CheckCustomFieldTitle != null)
                                             {
@@ -237,57 +258,60 @@ namespace opensis.data.Repository
 
                                             if (customFieldValue != null)
                                             {
-                                                var CustomFieldDataUpdate = SchoolCustomField.FirstOrDefault(x => x.SchoolId == schoolMaster.SchoolId && x.Title.ToLower() == customFieldUpdate.Title.ToLower() && x.CategoryId == customFieldUpdate.CategoryId);
+                                                var CustomFieldDataUpdate = SchoolCustomField.AsEnumerable().FirstOrDefault(x => x.SchoolId == schoolMaster.SchoolId && String.Compare(x.Title,customFieldUpdate.Title,true)==0 && x.CategoryId == customFieldUpdate.CategoryId);
 
                                                 if (CustomFieldDataUpdate != null)
                                                 {
-                                                    CustomFieldDataUpdate.Title = customFieldAddViewModel.customFields.Title;
+                                                    CustomFieldDataUpdate.Title = customFieldAddViewModel.CustomFields.Title;
                                                     CustomFieldDataUpdate.FieldName = FieldName;
-                                                    CustomFieldDataUpdate.UpdatedBy = customFieldAddViewModel.customFields.UpdatedBy;
+                                                    CustomFieldDataUpdate.UpdatedBy = customFieldAddViewModel.CustomFields.UpdatedBy;
                                                     CustomFieldDataUpdate.UpdatedOn = DateTime.UtcNow;
-                                                    CustomFieldDataUpdate.Required = customFieldAddViewModel.customFields.Required;
-                                                    CustomFieldDataUpdate.Hide = customFieldAddViewModel.customFields.Hide;
+                                                    CustomFieldDataUpdate.Required = customFieldAddViewModel.CustomFields.Required;
+                                                    CustomFieldDataUpdate.Hide = customFieldAddViewModel.CustomFields.Hide;
                                                 }
                                             }
                                             else
                                             {
-                                                SchoolCustomFieldUpdate.Title = customFieldAddViewModel.customFields.Title;
+                                                SchoolCustomFieldUpdate.Title = customFieldAddViewModel.CustomFields.Title;
                                                 SchoolCustomFieldUpdate.FieldName = FieldName;
-                                                SchoolCustomFieldUpdate.Type = customFieldAddViewModel.customFields.Type;
-                                                SchoolCustomFieldUpdate.DefaultSelection = customFieldAddViewModel.customFields.DefaultSelection;
-                                                SchoolCustomFieldUpdate.Required = customFieldAddViewModel.customFields.Required;
-                                                SchoolCustomFieldUpdate.Hide = customFieldAddViewModel.customFields.Hide;
-                                                SchoolCustomFieldUpdate.UpdatedBy = customFieldAddViewModel.customFields.UpdatedBy;
+                                                SchoolCustomFieldUpdate.Type = customFieldAddViewModel.CustomFields.Type;
+                                                SchoolCustomFieldUpdate.DefaultSelection = customFieldAddViewModel.CustomFields.DefaultSelection;
+                                                SchoolCustomFieldUpdate.SelectOptions = customFieldAddViewModel.CustomFields.SelectOptions;
+                                                SchoolCustomFieldUpdate.Required = customFieldAddViewModel.CustomFields.Required;
+                                                SchoolCustomFieldUpdate.Hide = customFieldAddViewModel.CustomFields.Hide;
+                                                SchoolCustomFieldUpdate.UpdatedBy = customFieldAddViewModel.CustomFields.UpdatedBy;
                                                 SchoolCustomFieldUpdate.UpdatedOn = DateTime.UtcNow;
                                             }
-                                            this.context.SaveChanges();
+                                            this.context?.SaveChanges();
                                         }
                                     }
+                                   }
                                 }
                                 var customFieldsValueExists = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == customFieldUpdate.TenantId && x.SchoolId == customFieldUpdate.SchoolId && x.CategoryId == customFieldUpdate.CategoryId && x.FieldId == customFieldUpdate.FieldId);
 
                                 if (customFieldsValueExists != null)
                                 {
-                                    customFieldUpdate.Title = customFieldAddViewModel.customFields.Title;
+                                    customFieldUpdate.Title = customFieldAddViewModel.CustomFields.Title;
                                     customFieldUpdate.FieldName = FieldName;
-                                    customFieldUpdate.UpdatedBy = customFieldAddViewModel.customFields.UpdatedBy;
+                                    customFieldUpdate.UpdatedBy = customFieldAddViewModel.CustomFields.UpdatedBy;
                                     customFieldUpdate.UpdatedOn = DateTime.UtcNow;
-                                    customFieldUpdate.Required = customFieldAddViewModel.customFields.Required;
-                                    customFieldUpdate.Hide = customFieldAddViewModel.customFields.Hide;
+                                    customFieldUpdate.Required = customFieldAddViewModel.CustomFields.Required;
+                                    customFieldUpdate.Hide = customFieldAddViewModel.CustomFields.Hide;
                                 }
                                 else
                                 {
-                                    customFieldUpdate.Title = customFieldAddViewModel.customFields.Title;
+                                    customFieldUpdate.Title = customFieldAddViewModel.CustomFields.Title;
                                     customFieldUpdate.FieldName = FieldName;
-                                    customFieldUpdate.Type = customFieldAddViewModel.customFields.Type;
-                                    customFieldUpdate.DefaultSelection = customFieldAddViewModel.customFields.DefaultSelection;
-                                    customFieldUpdate.Required = customFieldAddViewModel.customFields.Required;
-                                    customFieldUpdate.Hide = customFieldAddViewModel.customFields.Hide;
-                                    customFieldUpdate.UpdatedBy = customFieldAddViewModel.customFields.UpdatedBy;
+                                    customFieldUpdate.Type = customFieldAddViewModel.CustomFields.Type;
+                                    customFieldUpdate.DefaultSelection = customFieldAddViewModel.CustomFields.DefaultSelection;
+                                    customFieldUpdate.SelectOptions = customFieldAddViewModel.CustomFields.SelectOptions;
+                                    customFieldUpdate.Required = customFieldAddViewModel.CustomFields.Required;
+                                    customFieldUpdate.Hide = customFieldAddViewModel.CustomFields.Hide;
+                                    customFieldUpdate.UpdatedBy = customFieldAddViewModel.CustomFields.UpdatedBy;
                                     customFieldUpdate.UpdatedOn = DateTime.UtcNow;
                                 }
                                 this.context?.SaveChanges();
-                                transaction.Commit();
+                                transaction?.Commit();
                                 customFieldAddViewModel._failure = false;
                                 customFieldAddViewModel._message = "Custom Field Updated Successfully";
                             }
@@ -296,8 +320,8 @@ namespace opensis.data.Repository
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
-                    customFieldAddViewModel.customFields = null;
+                    transaction?.Rollback();
+                    customFieldAddViewModel.CustomFields = null!;
                     customFieldAddViewModel._failure = true;
                     customFieldAddViewModel._message = ex.Message;
                 }
@@ -315,7 +339,7 @@ namespace opensis.data.Repository
             try
             {
                 List<CustomFields> customFieldList = new List<CustomFields>();
-                var customFieldDelete = this.context?.CustomFields.FirstOrDefault(x => x.TenantId == customFieldAddViewModel.customFields.TenantId && x.SchoolId == customFieldAddViewModel.customFields.SchoolId && x.FieldId == customFieldAddViewModel.customFields.FieldId);
+                var customFieldDelete = this.context?.CustomFields.FirstOrDefault(x => x.TenantId == customFieldAddViewModel.CustomFields.TenantId && x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && x.FieldId == customFieldAddViewModel.CustomFields.FieldId);
 
                 if (customFieldDelete != null)
                 {
@@ -326,7 +350,7 @@ namespace opensis.data.Repository
                         if (!string.IsNullOrWhiteSpace(customFieldsValueExists.CustomFieldValue))
                         {
                             customFieldAddViewModel._failure = true;
-                            customFieldAddViewModel._message = "It Can't Be Deleted Because It Has Association";
+                            customFieldAddViewModel._message = "This cannot be deleted because it has data associated with it";
                             return customFieldAddViewModel;
                         }
 
@@ -338,20 +362,21 @@ namespace opensis.data.Repository
 
                     if (customFieldDelete.IsSystemWideField == true)
                     {
-                        var schoolMasterList = this.context?.SchoolMaster.Include(x => x.CustomFields).Where(c => c.TenantId == customFieldAddViewModel.customFields.TenantId && c.SchoolId != customFieldAddViewModel.customFields.SchoolId).ToList();
-
+                        var schoolMasterList = this.context?.SchoolMaster.Include(x => x.CustomFields).Where(c => c.TenantId == customFieldAddViewModel.CustomFields.TenantId && c.SchoolId != customFieldAddViewModel.CustomFields.SchoolId).ToList();
+                        if (schoolMasterList?.Any() == true)
+                        {
                         foreach (var schoolMaster in schoolMasterList)
                         {
                             var SchoolCustomField = schoolMaster.CustomFields.Where(x => x.SystemField != true).ToList();
 
-                            var CustomFieldSchoolWise = SchoolCustomField.FirstOrDefault(x => x.TenantId == customFieldDelete.TenantId && x.SchoolId == schoolMaster.SchoolId && x.CategoryId == customFieldDelete.CategoryId && x.Title.ToLower() == customFieldDelete.Title.ToLower());
+                            var CustomFieldSchoolWise = SchoolCustomField.AsEnumerable().FirstOrDefault(x => x.TenantId == customFieldDelete.TenantId && x.SchoolId == schoolMaster.SchoolId && x.CategoryId == customFieldDelete.CategoryId && String.Compare(x.Title ,customFieldDelete.Title,true)==0);
                             if (CustomFieldSchoolWise != null)
                             {
                                 var customFieldsValueExistsSchoolWise = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == customFieldDelete.TenantId && x.SchoolId == CustomFieldSchoolWise.SchoolId && x.CategoryId == CustomFieldSchoolWise.CategoryId && x.FieldId == CustomFieldSchoolWise.FieldId);
                                 if (customFieldsValueExistsSchoolWise != null)
                                 {
                                     customFieldAddViewModel._failure = true;
-                                    customFieldAddViewModel._message = "It Can't Be Deleted Because It Has Association";
+                                    customFieldAddViewModel._message = "This cannot be deleted because it has data associated with it";
                                     return customFieldAddViewModel;
                                 }
                                 else
@@ -359,14 +384,14 @@ namespace opensis.data.Repository
                                     customFieldList.Add(CustomFieldSchoolWise);
                                 }
                             }
-
+                          }
                         }
                     }
 
                     this.context?.CustomFields.RemoveRange(customFieldList);
                     this.context?.SaveChanges();
                     customFieldAddViewModel._failure = false;
-                    customFieldAddViewModel._message = "Custom Field Deleted Successfully";
+                    customFieldAddViewModel._message = "Custom field deleted successfully";
                 }
             }
             catch (Exception es)
@@ -384,20 +409,24 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public FieldsCategoryAddViewModel AddFieldsCategory(FieldsCategoryAddViewModel fieldsCategoryAddViewModel)
         {
+            if(fieldsCategoryAddViewModel.FieldsCategory is null)
+            {
+                return fieldsCategoryAddViewModel;
+            }
             List<FieldsCategory> fieldsCategoryList = new List<FieldsCategory>();
             List<PermissionSubcategory> permissionSubcategoryList = new List<PermissionSubcategory>();
             List<RolePermission> rolePermissionList = new List<RolePermission>();
 
-            using (var transaction = this.context.Database.BeginTransaction())
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
-                    var checkFieldCategoryTitle = this.context?.FieldsCategory.Where(x => /*x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId &&*/ x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.Title.ToLower() == fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower() && x.IsSystemWideCategory == true).FirstOrDefault();
+                    var checkFieldCategoryTitle = this.context?.FieldsCategory.AsEnumerable().Where(x => /*x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId &&*/ x.TenantId == fieldsCategoryAddViewModel.FieldsCategory.TenantId && String.Compare(x.Title ,fieldsCategoryAddViewModel.FieldsCategory.Title,true)==0 && x.IsSystemWideCategory == true).FirstOrDefault();
 
                     if (checkFieldCategoryTitle != null)
                     {
                         fieldsCategoryAddViewModel._failure = true;
-                        fieldsCategoryAddViewModel._message = "Field Category Title Already Exists";
+                        fieldsCategoryAddViewModel._message = "Field category title already exists";
                     }
                     else
                     {
@@ -417,9 +446,9 @@ namespace opensis.data.Repository
                         //this.context?.FieldsCategory.Add(fieldsCategoryAddViewModel.fieldsCategory);
 
 
-                        var schoolDataList = this.context?.SchoolMaster.Where(c => c.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId).ToList();
+                        var schoolDataList = this.context?.SchoolMaster.Where(c => c.TenantId == fieldsCategoryAddViewModel.FieldsCategory!.TenantId).ToList();
 
-                        if (schoolDataList.Count > 0)
+                        if (schoolDataList?.Count > 0)
                         {
                             foreach (var schoolData in schoolDataList)
                             {
@@ -442,22 +471,22 @@ namespace opensis.data.Repository
                                     TenantId = schoolData.TenantId,
                                     SchoolId = schoolData.SchoolId,
                                     CategoryId = (int)CategoryId,
-                                    Hide = fieldsCategoryAddViewModel.fieldsCategory.Hide,
+                                    Hide = fieldsCategoryAddViewModel?.FieldsCategory?.Hide,
                                     IsSystemCategory = false,
                                     IsSystemWideCategory = true,
-                                    Search = fieldsCategoryAddViewModel.fieldsCategory.Search,
-                                    Module = fieldsCategoryAddViewModel.fieldsCategory.Module,
-                                    Required = fieldsCategoryAddViewModel.fieldsCategory.Required,
-                                    SortOrder = fieldsCategoryAddViewModel.fieldsCategory.SortOrder,
-                                    Title = fieldsCategoryAddViewModel.fieldsCategory.Title,
-                                    CreatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy,
+                                    Search = fieldsCategoryAddViewModel?.FieldsCategory?.Search,
+                                    Module = fieldsCategoryAddViewModel?.FieldsCategory?.Module,
+                                    Required = fieldsCategoryAddViewModel?.FieldsCategory?.Required,
+                                    SortOrder = fieldsCategoryAddViewModel?.FieldsCategory?.SortOrder,
+                                    Title = fieldsCategoryAddViewModel?.FieldsCategory?.Title,
+                                    CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory?.UpdatedBy,
                                     CreatedOn = DateTime.UtcNow
                                 };
 
                                 fieldsCategoryList.Add(fieldCategory);
+                        
 
-
-                                var permissionGroupData = this.context?.PermissionGroup.FirstOrDefault(x => x.TenantId == schoolData.TenantId && x.SchoolId == schoolData.SchoolId && x.PermissionGroupName.ToLower().Contains(fieldsCategoryAddViewModel.fieldsCategory.Module.ToLower()));
+                                var permissionGroupData = this.context?.PermissionGroup.FirstOrDefault(x => x.TenantId == schoolData.TenantId && x.SchoolId == schoolData.SchoolId && x.PermissionGroupName.Contains(fieldsCategoryAddViewModel!.FieldsCategory!.Module!));
 
                                 if (permissionGroupData != null)
                                 {
@@ -465,12 +494,12 @@ namespace opensis.data.Repository
 
                                     if (permissionCategory != null)
                                     {
-                                        var checkPermissionSubCategoryName = this.context?.PermissionSubcategory.Where(x => x.SchoolId == schoolData.SchoolId && x.TenantId == schoolData.TenantId && x.PermissionSubcategoryName.ToLower() == fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower()).FirstOrDefault();
+                                        var checkPermissionSubCategoryName = this.context?.PermissionSubcategory.AsEnumerable().Where(x => x.SchoolId == schoolData.SchoolId && x.TenantId == schoolData.TenantId && String.Compare(x.PermissionSubcategoryName,fieldsCategoryAddViewModel!.FieldsCategory.Title,true)==0).FirstOrDefault();
 
                                         if (checkPermissionSubCategoryName != null)
                                         {
-                                            fieldsCategoryAddViewModel._failure = true;
-                                            fieldsCategoryAddViewModel._message = "Permission Subcategory Name Already Exists";
+                                            fieldsCategoryAddViewModel!._failure = true;
+                                            fieldsCategoryAddViewModel._message = "Permission subcategory name already exists";
                                         }
                                         else
                                         {
@@ -483,11 +512,20 @@ namespace opensis.data.Repository
                                                 PermissionSubCategoryId = permissionSubCategoryData.PermissionSubcategoryId + 1;
                                             }
 
-                                            string path = null;
+                                            int? PermissionSubCategorySortOrder = 1;
 
-                                            string[] titleArray = fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower().Split(" ");
+                                            var SubCategoryData = this.context?.PermissionSubcategory.Where(x => x.SchoolId == schoolData.SchoolId && x.TenantId == schoolData.TenantId && x.PermissionCategoryId == permissionCategory.PermissionCategoryId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
 
-                                            var module = fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower() == "school" ? "schoolinfo" : fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower();
+                                            if (SubCategoryData != null)
+                                            {
+                                                PermissionSubCategorySortOrder = SubCategoryData.SortOrder + 1;
+                                            }
+
+                                            string? path = null;
+
+                                            string[] titleArray = (fieldsCategoryAddViewModel?.FieldsCategory.Title??"").ToLower().Split(" ");
+
+                                            string? module = (fieldsCategoryAddViewModel?.FieldsCategory.Module ?? "").ToLower() == "school" ? "schoolinfo" : (fieldsCategoryAddViewModel?.FieldsCategory.Module ?? "").ToLower();
 
                                             if (module == "student")
                                             {
@@ -503,16 +541,18 @@ namespace opensis.data.Repository
                                                 PermissionSubcategoryId = (int)PermissionSubCategoryId,
                                                 PermissionGroupId = permissionCategory.PermissionGroupId,
                                                 PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                                PermissionSubcategoryName = fieldsCategoryAddViewModel.fieldsCategory.Title,
+                                                PermissionSubcategoryName = fieldsCategoryAddViewModel?.FieldsCategory.Title,
                                                 Path = path,
-                                                Title = fieldsCategoryAddViewModel.fieldsCategory.Title,
+                                                Title = fieldsCategoryAddViewModel?.FieldsCategory.Title,
                                                 EnableView = true,
                                                 EnableAdd = true,
                                                 EnableEdit = true,
                                                 EnableDelete = true,
-                                                CreatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy,
+                                                CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
                                                 CreatedOn = DateTime.UtcNow,
-                                                IsActive = true
+                                                IsActive = true,
+                                                SortOrder = PermissionSubCategorySortOrder,
+                                                IsSystem = false
                                             };
                                             //this.context?.PermissionSubcategory.Add(permissionSubCategory);
                                             permissionSubcategoryList.Add(permissionSubCategory);
@@ -525,41 +565,82 @@ namespace opensis.data.Repository
                                             {
                                                 rolePermissionId = rolePermissionData.RolePermissionId + 1;
                                             }
-                                            var rolePermission = new RolePermission()
+
+                                            var membershipData = this.context?.Membership.Where(x => x.SchoolId == schoolData.SchoolId && x.TenantId == schoolData.TenantId).ToList()!;
+
+                                            foreach (var membership in membershipData)
                                             {
-                                                TenantId = schoolData.TenantId,
-                                                SchoolId = schoolData.SchoolId,
-                                                RolePermissionId = (int)rolePermissionId,
-                                                PermissionGroupId = null,
-                                                PermissionCategoryId = null,
-                                                PermissionSubcategoryId = (int)PermissionSubCategoryId,
-                                                CanView = true,
-                                                CanAdd = true,
-                                                CanEdit = true,
-                                                CanDelete = true,
-                                                CreatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy,
-                                                CreatedOn = DateTime.UtcNow,
-                                                MembershipId = this.context?.Membership.FirstOrDefault(e => e.SchoolId == schoolData.SchoolId && e.TenantId == schoolData.TenantId)?.MembershipId
-                                            };
-                                            //this.context?.RolePermission.Add(rolePermission);
-                                            rolePermissionList.Add(rolePermission);
+                                                if (membership.ProfileType == "super administrator" || membership.ProfileType == "school administrator" || membership.ProfileType == "admin assistant")
+                                                {
+                                                    var rolePermission = new RolePermission()
+                                                    {
+                                                        TenantId = schoolData.TenantId,
+                                                        SchoolId = schoolData.SchoolId,
+                                                        RolePermissionId = (int)rolePermissionId,
+                                                        PermissionGroupId = null,
+                                                        PermissionCategoryId = null,
+                                                        PermissionSubcategoryId = (int)PermissionSubCategoryId,
+                                                        CanView = true,
+                                                        CanAdd = true,
+                                                        CanEdit = true,
+                                                        CanDelete = true,
+                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        MembershipId = membership.MembershipId
+                                                    };
+                                                    rolePermissionList.Add(rolePermission);
+                                                }
+                                                else
+                                                {
+                                                    var rolePermission = new RolePermission()
+                                                    {
+                                                        TenantId = schoolData.TenantId,
+                                                        SchoolId = schoolData.SchoolId,
+                                                        RolePermissionId = (int)rolePermissionId,
+                                                        PermissionGroupId = null,
+                                                        PermissionCategoryId = null,
+                                                        PermissionSubcategoryId = (int)PermissionSubCategoryId,
+                                                        CanView = false,
+                                                        CanAdd = false,
+                                                        CanEdit = false,
+                                                        CanDelete = false,
+                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        MembershipId = membership.MembershipId
+                                                    };
+                                                    rolePermissionList.Add(rolePermission);
+                                                }
+                                                rolePermissionId++;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                         this.context?.FieldsCategory.AddRange(fieldsCategoryList);
+
+                        //for (int i = 0; i < fieldsCategoryList.Count; i++)
+                        //{
+                        //    context!.Entry(fieldsCategoryList[i].SchoolMaster).State = EntityState.Unchanged;
+                        //}
+
                         this.context?.PermissionSubcategory.AddRange(permissionSubcategoryList);
                         this.context?.RolePermission.AddRange(rolePermissionList);
+
+                        //for(int i=0; i<permissionSubcategoryList.Count; i++)
+                        //{
+                        //    context!.Entry(permissionSubcategoryList[i].PermissionCategory).State = EntityState.Unchanged;
+                        //}
+                        
                         this.context?.SaveChanges();
-                        transaction.Commit();
+                        transaction?.Commit();
                         fieldsCategoryAddViewModel._failure = false;
-                        fieldsCategoryAddViewModel._message = "Field Category Added Successfully";
+                        fieldsCategoryAddViewModel._message = "Field category added successfully";
                     }
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     fieldsCategoryAddViewModel._failure = false;
                     fieldsCategoryAddViewModel._message = es.Message;
                 }
@@ -574,41 +655,56 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public FieldsCategoryAddViewModel UpdateFieldsCategory(FieldsCategoryAddViewModel fieldsCategoryAddViewModel)
         {
+            if(fieldsCategoryAddViewModel.FieldsCategory is null)
+            {
+                return fieldsCategoryAddViewModel;
+            }
             FieldsCategoryAddViewModel fieldsCategoryUpdateModel = new FieldsCategoryAddViewModel();
             try
             {
-                var fieldCategoryData = this.context?.FieldsCategory.Where(c => c.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId).ToList();
-
-
-                var checkFieldCategoryTitle = fieldCategoryData.Where(x => /*x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId &&*/ x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.Title.ToLower() == fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower() && x.IsSystemWideCategory == true && x.CategoryId != fieldsCategoryAddViewModel.fieldsCategory.CategoryId).FirstOrDefault();
-
-                if (checkFieldCategoryTitle != null)
+                var fieldCategoryData = this.context?.FieldsCategory.Where(c => c.TenantId == fieldsCategoryAddViewModel.FieldsCategory!.TenantId).ToList();
+                if (fieldCategoryData?.Any() == true)
                 {
-                    fieldsCategoryAddViewModel._failure = true;
-                    fieldsCategoryAddViewModel._message = "Field Category Title Already Exists";
-                }
-                else
-                {
-                    if (fieldsCategoryAddViewModel.fieldsCategory.IsSystemWideCategory == true)
+
+
+                    var fieldCategoryDataById = fieldCategoryData.Where(x => x.SchoolId == fieldsCategoryAddViewModel.FieldsCategory.SchoolId && x.TenantId == fieldsCategoryAddViewModel.FieldsCategory.TenantId && x.IsSystemCategory != true && x.CategoryId == fieldsCategoryAddViewModel.FieldsCategory.CategoryId).FirstOrDefault();
+                    if (fieldCategoryDataById != null)
                     {
-                        var fieldsCategoryUpdate = fieldCategoryData.FirstOrDefault(x => /*x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId &&*/ x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && x.CategoryId == fieldsCategoryAddViewModel.fieldsCategory.CategoryId);
+                    if (fieldCategoryDataById.Title != fieldsCategoryAddViewModel.FieldsCategory.Title)
+                    {
+                        var checkFieldCategoryTitle = fieldCategoryData.AsEnumerable().Where(x => x.TenantId == fieldsCategoryAddViewModel.FieldsCategory.TenantId && String.Compare(x.Title , fieldsCategoryAddViewModel.FieldsCategory.Title,true)==0 && x.IsSystemCategory != true && x.CategoryId != fieldsCategoryAddViewModel.FieldsCategory.CategoryId).FirstOrDefault();
+
+                        if (checkFieldCategoryTitle != null)
+                        {
+                            fieldsCategoryAddViewModel._failure = true;
+                            fieldsCategoryAddViewModel._message = "Field category title already exists";
+
+                            return fieldsCategoryAddViewModel;
+                        }
+                    }
+                }
+                //else
+                //{
+                    if (fieldsCategoryAddViewModel.FieldsCategory.IsSystemCategory != true)
+                    {
+                        var fieldsCategoryUpdate = fieldCategoryData.FirstOrDefault(x => /*x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId &&*/ x.SchoolId == fieldsCategoryAddViewModel.FieldsCategory.SchoolId && x.CategoryId == fieldsCategoryAddViewModel.FieldsCategory.CategoryId);
 
                         if (fieldsCategoryUpdate != null)
                         {
-                            var permissionSubCategoryData = this.context?.PermissionSubcategory.FirstOrDefault(c => c.SchoolId == fieldsCategoryUpdate.SchoolId && c.TenantId == fieldsCategoryUpdate.TenantId && c.PermissionSubcategoryName.ToLower() == fieldsCategoryUpdate.Title.ToLower() && c.Title.ToLower() == fieldsCategoryUpdate.Title.ToLower());
+                            var permissionSubCategoryData = this.context?.PermissionSubcategory.AsEnumerable().FirstOrDefault(c => c.SchoolId == fieldsCategoryUpdate.SchoolId && c.TenantId == fieldsCategoryUpdate.TenantId && String.Compare(c.PermissionSubcategoryName , fieldsCategoryUpdate.Title,true)==0 && String.Compare(c.Title , fieldsCategoryUpdate.Title,true)==0);
 
                             if (permissionSubCategoryData != null)
                             {
-                                permissionSubCategoryData.Title = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                                permissionSubCategoryData.PermissionSubcategoryName = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                                permissionSubCategoryData.UpdatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy;
+                                permissionSubCategoryData.Title = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                                permissionSubCategoryData.PermissionSubcategoryName = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                                permissionSubCategoryData.UpdatedBy = fieldsCategoryAddViewModel.FieldsCategory.UpdatedBy;
                                 permissionSubCategoryData.UpdatedOn = DateTime.UtcNow;
 
-                                string path = null;
+                                string? path = null;
 
-                                string[] titleArray = fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower().Split(" ");
+                                string[] titleArray = (fieldsCategoryAddViewModel.FieldsCategory.Title??"").ToLower().Split(" ");
 
-                                var module = fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower() == "school" ? "schoolinfo" : fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower();
+                                string? module = (fieldsCategoryAddViewModel.FieldsCategory.Module??"").ToLower() == "school" ? "schoolinfo" : (fieldsCategoryAddViewModel.FieldsCategory.Module??"").ToLower();
 
                                 if (module == "student")
                                 {
@@ -618,53 +714,53 @@ namespace opensis.data.Repository
                                 permissionSubCategoryData.Path = path;
                             }
 
-                            var schoolDataList = this.context?.SchoolMaster.Where(v => v.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && v.SchoolId != fieldsCategoryAddViewModel.fieldsCategory.SchoolId).ToList();
+                            var schoolDataList = this.context?.SchoolMaster.Where(v => v.TenantId == fieldsCategoryAddViewModel.FieldsCategory.TenantId && v.SchoolId != fieldsCategoryAddViewModel.FieldsCategory.SchoolId).ToList();
 
-                            if (schoolDataList.Count > 0)
+                            if (schoolDataList!=null && schoolDataList.Any())
                             {
                                 foreach (var schoolData in schoolDataList)
                                 {
-                                    var fieldUpdate = fieldCategoryData.FirstOrDefault(x => /*x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId &&*/ x.SchoolId == schoolData.SchoolId && x.Title.ToLower() == fieldsCategoryUpdate.Title.ToLower());
+                                    var fieldUpdate = fieldCategoryData.AsEnumerable().FirstOrDefault(x => /*x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId &&*/ x.SchoolId == schoolData.SchoolId && String.Compare(x.Title , fieldsCategoryUpdate.Title,true)==0);
 
                                     if (fieldUpdate != null)
                                     {
-                                        var permissionSubCategory = this.context?.PermissionSubcategory.FirstOrDefault(c => c.SchoolId == fieldUpdate.SchoolId && c.TenantId == fieldUpdate.TenantId && c.PermissionSubcategoryName.ToLower() == fieldUpdate.Title.ToLower() && c.Title.ToLower() == fieldUpdate.Title.ToLower());
+                                        var permissionSubCategory = this.context?.PermissionSubcategory.AsEnumerable().FirstOrDefault(c => c.SchoolId == fieldUpdate.SchoolId && c.TenantId == fieldUpdate.TenantId && String.Compare(c.PermissionSubcategoryName,fieldUpdate.Title,true)==0 && String.Compare(c.Title , fieldUpdate.Title,true)==0);
 
                                         if (permissionSubCategory != null)
                                         {
-                                            permissionSubCategory.Title = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                                            permissionSubCategory.PermissionSubcategoryName = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                                            permissionSubCategory.UpdatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy;
+                                            permissionSubCategory.Title = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                                            permissionSubCategory.PermissionSubcategoryName = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                                            permissionSubCategory.UpdatedBy = fieldsCategoryAddViewModel.FieldsCategory.UpdatedBy;
                                             permissionSubCategory.UpdatedOn = DateTime.UtcNow;
 
-                                            string path = null;
+                                            string? path = null;
 
-                                            string[] titleArray = fieldsCategoryAddViewModel.fieldsCategory.Title.ToLower().Split(" ");
+                                            string[] titleArray = (fieldsCategoryAddViewModel.FieldsCategory.Title??"").ToLower().Split(" ");
 
-                                            var module = fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower() == "school" ? "schoolinfo" : fieldsCategoryAddViewModel.fieldsCategory.Module.ToString().ToLower();
+                                            string? module = (fieldsCategoryAddViewModel.FieldsCategory.Module ?? "").ToLower() == "school" ? "schoolinfo" : (fieldsCategoryAddViewModel.FieldsCategory.Module ?? "").ToLower();
 
                                             path = "/school/" + module + "/custom/" + string.Join("-", titleArray);
                                             permissionSubCategory.Path = path;
                                         }
 
-                                        fieldUpdate.Title = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                                        fieldUpdate.SortOrder = fieldsCategoryAddViewModel.fieldsCategory.SortOrder;
-                                        fieldUpdate.UpdatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy;
+                                        fieldUpdate.Title = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                                        fieldUpdate.SortOrder = fieldsCategoryAddViewModel.FieldsCategory.SortOrder;
+                                        fieldUpdate.UpdatedBy = fieldsCategoryAddViewModel.FieldsCategory.UpdatedBy;
                                         fieldUpdate.UpdatedOn = DateTime.UtcNow;
 
                                     }
                                 }
                             }
 
-                            fieldsCategoryUpdate.Title = fieldsCategoryAddViewModel.fieldsCategory.Title;
-                            fieldsCategoryUpdate.SortOrder = fieldsCategoryAddViewModel.fieldsCategory.SortOrder;
-                            fieldsCategoryUpdate.UpdatedBy = fieldsCategoryAddViewModel.fieldsCategory.UpdatedBy;
+                            fieldsCategoryUpdate.Title = fieldsCategoryAddViewModel.FieldsCategory.Title;
+                            fieldsCategoryUpdate.SortOrder = fieldsCategoryAddViewModel.FieldsCategory.SortOrder;
+                            fieldsCategoryUpdate.UpdatedBy = fieldsCategoryAddViewModel.FieldsCategory.UpdatedBy;
                             fieldsCategoryUpdate.UpdatedOn = DateTime.UtcNow;
 
                         }
                         this.context?.SaveChanges();
                         fieldsCategoryAddViewModel._failure = false;
-                        fieldsCategoryAddViewModel._message = "Field Category Updated Successfully";
+                        fieldsCategoryAddViewModel._message = "Field category updated successfully";
                     }
                 }
             }
@@ -689,7 +785,7 @@ namespace opensis.data.Repository
                 List<PermissionSubcategory> permissionSubcategories = new List<PermissionSubcategory>();
                 List<RolePermission> rolePermissions = new List<RolePermission>();
 
-                var fieldsCategoryDelete = this.context?.FieldsCategory.FirstOrDefault(x => x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && x.CategoryId == fieldsCategoryAddViewModel.fieldsCategory.CategoryId);
+                var fieldsCategoryDelete = this.context?.FieldsCategory.FirstOrDefault(x => x.TenantId == fieldsCategoryAddViewModel.FieldsCategory!.TenantId && x.SchoolId == fieldsCategoryAddViewModel.FieldsCategory.SchoolId && x.CategoryId == fieldsCategoryAddViewModel.FieldsCategory.CategoryId);
 
                 if (fieldsCategoryDelete != null)
                 {
@@ -698,57 +794,57 @@ namespace opensis.data.Repository
                     if (customFieldsExists != null)
                     {
                         fieldsCategoryAddViewModel._failure = true;
-                        fieldsCategoryAddViewModel._message = "It Can't Be Deleted Because It Has Association";
+                        fieldsCategoryAddViewModel._message = "This cannot be deleted because it has data associated with it";
                         return fieldsCategoryAddViewModel;
                     }
                     else
                     {
                         fieldsCategories.Add(fieldsCategoryDelete);
 
-                        var permissionSubCategory = this.context?.PermissionSubcategory.FirstOrDefault(c => c.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && c.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && c.PermissionSubcategoryName.ToLower() == fieldsCategoryDelete.Title.ToLower() && c.Title.ToLower() == fieldsCategoryDelete.Title.ToLower());
+                        var permissionSubCategory = this.context?.PermissionSubcategory.Include(x => x.RolePermission).AsEnumerable().Where(c => c.SchoolId == fieldsCategoryAddViewModel.FieldsCategory!.SchoolId && c.TenantId == fieldsCategoryAddViewModel.FieldsCategory.TenantId && String.Compare(c.PermissionSubcategoryName , fieldsCategoryDelete.Title,true)==0 && c.Title == fieldsCategoryDelete.Title).ToList();
 
-                        if (permissionSubCategory != null)
+                        if (permissionSubCategory?.Any()==true)
                         {
-                            var rolePermissionData = this.context?.RolePermission.FirstOrDefault(x => x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.PermissionSubcategoryId == permissionSubCategory.PermissionSubcategoryId);
+                            //var rolePermissionData = this.context?.RolePermission.Where(x => x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.PermissionSubcategoryId == permissionSubCategory.PermissionSubcategoryId).ToList();
 
-                            if (rolePermissionData != null)
+                            if (permissionSubCategory.FirstOrDefault()!.RolePermission.Any())
                             {
-                                rolePermissions.Add(rolePermissionData);
+                                rolePermissions.AddRange(permissionSubCategory.FirstOrDefault()!.RolePermission);
                             }
 
-                            permissionSubcategories.Add(permissionSubCategory);
+                            permissionSubcategories.AddRange(permissionSubCategory);
                         }
 
-                        var schoolMasterList = this.context?.SchoolMaster.Where(v => v.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && v.SchoolId != fieldsCategoryAddViewModel.fieldsCategory.SchoolId).ToList();
+                        var schoolMasterList = this.context?.SchoolMaster.Where(v => v.TenantId == fieldsCategoryAddViewModel.FieldsCategory!.TenantId && v.SchoolId != fieldsCategoryAddViewModel.FieldsCategory.SchoolId).ToList();
 
-                        if (schoolMasterList.Count > 0)
+                        if (schoolMasterList?.Count > 0)
                         {
                             foreach (var schoolMaster in schoolMasterList)
                             {
-                                var fieldCategoryData = this.context?.FieldsCategory.Include(x => x.CustomFields).FirstOrDefault(c => c.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && c.SchoolId == schoolMaster.SchoolId && c.Title.ToLower() == fieldsCategoryDelete.Title.ToLower());
+                                var fieldCategoryData = this.context?.FieldsCategory.Include(x => x.CustomFields).AsEnumerable().FirstOrDefault(c => c.TenantId == fieldsCategoryAddViewModel.FieldsCategory!.TenantId && c.SchoolId == schoolMaster.SchoolId &&String.Compare( c.Title,fieldsCategoryDelete.Title,true)==0);
 
-                                if (fieldCategoryData.CustomFields.Count() > 0)
+                                if (fieldCategoryData?.CustomFields.Count > 0)
                                 {
                                     fieldsCategoryAddViewModel._failure = true;
-                                    fieldsCategoryAddViewModel._message = "It Can't Be Deleted Because It Has Association";
+                                    fieldsCategoryAddViewModel._message = "This cannot be deleted because it has data associated with it";
                                     return fieldsCategoryAddViewModel;
                                 }
                                 else
                                 {
-                                    var permissionSubCategoryData = this.context?.PermissionSubcategory.FirstOrDefault(c => c.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && c.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && c.PermissionSubcategoryName.ToLower() == fieldsCategoryDelete.Title.ToLower() && c.Title.ToLower() == fieldsCategoryDelete.Title.ToLower());
+                                    var permissionSubCategoryData = this.context?.PermissionSubcategory.Include(x => x.RolePermission).AsEnumerable().Where(c => c.SchoolId == schoolMaster.SchoolId && c.TenantId == schoolMaster.TenantId && String.Compare(c.PermissionSubcategoryName , fieldsCategoryDelete.Title,true)==0 && String.Compare(c.Title , fieldsCategoryDelete.Title,true)==0).ToList();
 
-                                    if (permissionSubCategoryData != null)
+                                    if (permissionSubCategoryData?.Any()==true)
                                     {
-                                        var rolePermissionData = this.context?.RolePermission.FirstOrDefault(x => x.SchoolId == fieldsCategoryAddViewModel.fieldsCategory.SchoolId && x.TenantId == fieldsCategoryAddViewModel.fieldsCategory.TenantId && x.PermissionSubcategoryId == permissionSubCategoryData.PermissionSubcategoryId);
+                                        //var rolePermissionData = this.context?.RolePermission.Where(x => x.SchoolId == schoolMaster.SchoolId && x.TenantId == schoolMaster.TenantId && x.PermissionSubcategoryId == permissionSubCategoryData.PermissionSubcategoryId).ToList();
 
-                                        if (rolePermissionData != null)
+                                        if (permissionSubCategoryData.FirstOrDefault()!.RolePermission.Any())
                                         {
-                                            rolePermissions.Add(rolePermissionData);
+                                            rolePermissions.AddRange(permissionSubCategoryData.FirstOrDefault()!.RolePermission);
                                         }
 
-                                        permissionSubcategories.Add(permissionSubCategoryData);
+                                        permissionSubcategories.AddRange(permissionSubCategoryData);
                                     }
-                                    fieldsCategories.Add(fieldCategoryData);
+                                    fieldsCategories.Add(fieldCategoryData??null!);
                                 }
                             }
                         }
@@ -757,7 +853,7 @@ namespace opensis.data.Repository
                         this.context?.FieldsCategory.RemoveRange(fieldsCategories);
                         this.context?.SaveChanges();
                         fieldsCategoryAddViewModel._failure = false;
-                        fieldsCategoryAddViewModel._message = "Field Category Deleted Successfully";
+                        fieldsCategoryAddViewModel._message = "Field category deleted successfully";
                     }
                 }
             }
@@ -781,66 +877,32 @@ namespace opensis.data.Repository
             {
 
                 var fieldsCategoryList = this.context?.FieldsCategory
-                    .Include(x => x.CustomFields)
+                    .Include(x => x.CustomFields).AsEnumerable()
                     .Where(x => x.TenantId == fieldsCategoryListViewModel.TenantId &&
                                 x.SchoolId == fieldsCategoryListViewModel.SchoolId &&
-                                x.Module == fieldsCategoryListViewModel.Module)
-                    .OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder).Select(e => new FieldsCategory()
-                    {
-                        TenantId = e.TenantId,
-                        SchoolId = e.SchoolId,
-                        CategoryId = e.CategoryId,
-                        IsSystemCategory = e.IsSystemCategory,
-                        Search = e.Search,
-                        Title = e.Title,
-                        Module = e.Module,
-                        SortOrder = e.SortOrder,
-                        Required = e.Required,
-                        Hide = e.Hide,
-                        IsSystemWideCategory = e.IsSystemWideCategory,
-                        CreatedOn = e.CreatedOn,
-                        UpdatedOn = e.UpdatedOn,
-                        CreatedBy = (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == fieldsCategoryListViewModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                        UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == fieldsCategoryListViewModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                        CustomFields = e.CustomFields.Select(e => new CustomFields()
-                        {
-                            TenantId = e.TenantId,
-                            SchoolId = e.SchoolId,
-                            FieldId = e.FieldId,
-                            Type = e.Type,
-                            Search = e.Search,
-                            Title = e.Title,
-                            SortOrder = e.SortOrder,
-                            SelectOptions = e.SelectOptions,
-                            CategoryId = e.CategoryId,
-                            SystemField = e.SystemField,
-                            Required = e.Required,
-                            DefaultSelection = e.DefaultSelection,
-                            Hide = e.Hide,
-                            Module = e.Module,
-                            FieldName = e.FieldName,
-                            IsSystemWideField = e.IsSystemWideField,
-                            CreatedOn = e.CreatedOn,
-                            UpdatedOn = e.UpdatedOn,
-                            CreatedBy = (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == fieldsCategoryListViewModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                            UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == fieldsCategoryListViewModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null
-                        }).ToList()
-                    }).ToList();
+                                String.Compare(x.Module , fieldsCategoryListViewModel.Module,true)==0)
+                    .OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder).ToList();
 
-                if (fieldsCategoryList.Count > 0)
+                if (fieldsCategoryList?.Any()==true)
                 {
                     foreach (var fieldsCategory in fieldsCategoryList)
                     {
+                        //fieldsCategory.CustomFields.ToList().ForEach(c =>
+                        //{
+                        //    c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, fieldsCategoryListViewModel.TenantId, c.CreatedBy);
+                        //    c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, fieldsCategoryListViewModel.TenantId, c.UpdatedBy);
+                        //});
                         fieldsCategory.CustomFields = fieldsCategory.CustomFields.OrderByDescending(y => y.SystemField).ThenBy(y => y.SortOrder).ToList();
                     }
                     fieldsCategoryListModel._failure = false;
+                    fieldsCategoryListModel.FieldsCategoryList = fieldsCategoryList;
                 }
                 else
                 {
                     fieldsCategoryListModel._failure = true;
                     fieldsCategoryListModel._message = NORECORDFOUND;
                 }
-                fieldsCategoryListModel.fieldsCategoryList = fieldsCategoryList;
+               
                 fieldsCategoryListModel._tenantName = fieldsCategoryListViewModel._tenantName;
                 fieldsCategoryListModel._token = fieldsCategoryListViewModel._token;
 
@@ -869,15 +931,19 @@ namespace opensis.data.Repository
                 var customFieldRecords = new List<CustomFields>();
 
                 var targetCustomField = this.context?.CustomFields.FirstOrDefault(x => x.SortOrder == customFieldSortOrderModel.PreviousSortOrder && x.SchoolId == customFieldSortOrderModel.SchoolId && x.CategoryId == customFieldSortOrderModel.CategoryId);
+                if(targetCustomField != null)
+                {
                 targetCustomField.SortOrder = customFieldSortOrderModel.CurrentSortOrder;
                 targetCustomField.UpdatedBy = customFieldSortOrderModel.UpdatedBy;
                 targetCustomField.UpdatedOn = DateTime.UtcNow;
+                }
+               
 
                 if (customFieldSortOrderModel.PreviousSortOrder > customFieldSortOrderModel.CurrentSortOrder)
                 {
                     customFieldRecords = this.context?.CustomFields.Where(x => x.SortOrder >= customFieldSortOrderModel.CurrentSortOrder && x.SortOrder < customFieldSortOrderModel.PreviousSortOrder && x.SchoolId == customFieldSortOrderModel.SchoolId && x.CategoryId == customFieldSortOrderModel.CategoryId).ToList();
 
-                    if (customFieldRecords.Count > 0)
+                    if (customFieldRecords?.Any()==true)
                     {
                         customFieldRecords.ForEach(x => { x.SortOrder = x.SortOrder + 1; x.UpdatedBy = customFieldSortOrderModel.UpdatedBy; x.UpdatedOn = DateTime.UtcNow; });
                     }
@@ -885,14 +951,14 @@ namespace opensis.data.Repository
                 if (customFieldSortOrderModel.CurrentSortOrder > customFieldSortOrderModel.PreviousSortOrder)
                 {
                     customFieldRecords = this.context?.CustomFields.Where(x => x.SortOrder <= customFieldSortOrderModel.CurrentSortOrder && x.SortOrder > customFieldSortOrderModel.PreviousSortOrder && x.SchoolId == customFieldSortOrderModel.SchoolId && x.CategoryId == customFieldSortOrderModel.CategoryId).ToList();
-                    if (customFieldRecords.Count > 0)
+                    if (customFieldRecords?.Any()==true)
                     {
                         customFieldRecords.ForEach(x => { x.SortOrder = x.SortOrder - 1; x.UpdatedBy = customFieldSortOrderModel.UpdatedBy; x.UpdatedOn = DateTime.UtcNow; });
                     }
                 }
                 this.context?.SaveChanges();
                 customFieldSortOrderModel._failure = false;
-                customFieldSortOrderModel._message = "Custom Field Sort Order Updated Successfully";
+                customFieldSortOrderModel._message = "Custom field sort order updated successfully";
             }
             catch (Exception es)
             {

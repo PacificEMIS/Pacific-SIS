@@ -30,6 +30,8 @@ namespace opensis.data.Models
 {
     public partial class CourseCommentCategory
     {
+        
+
         public CourseCommentCategory()
         {
             StudentFinalGradeComments = new HashSet<StudentFinalGradeComments>();
@@ -39,13 +41,15 @@ namespace opensis.data.Models
         public int SchoolId { get; set; }
         public int CourseCommentId { get; set; }
         public int? CourseId { get; set; }
-        public string CourseName { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public string CourseName { get; set; } = null!;
         public bool ApplicableAllCourses { get; set; }
-        public string Comments { get; set; }
+        public string Comments { get; set; } = null!;
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
+        public int? RolloverId { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
         public virtual ICollection<StudentFinalGradeComments> StudentFinalGradeComments { get; set; }

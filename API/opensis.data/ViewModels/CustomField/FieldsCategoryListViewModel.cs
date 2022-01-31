@@ -32,9 +32,13 @@ namespace opensis.data.ViewModels.CustomField
 {
     public class FieldsCategoryListViewModel : CommonFields
     {
-        public List<FieldsCategory> fieldsCategoryList { get; set; }
+        public FieldsCategoryListViewModel()
+        {
+            FieldsCategoryList = new List<FieldsCategory>();
+        }
+        public List<FieldsCategory> FieldsCategoryList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string Module { get; set; }
+        public string? Module { get; set; }
     }
 }

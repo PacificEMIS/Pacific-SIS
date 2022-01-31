@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class CityListModel : CommonFields
     {
+        public CityListModel()
+        {
+            TableCity = new List<City>();
+        }
         public List<City> TableCity { get; set; }
         public int StateId { get; set; }
         public int SchoolId { get; set; }

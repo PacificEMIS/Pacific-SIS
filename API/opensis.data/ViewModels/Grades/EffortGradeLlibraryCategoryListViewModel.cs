@@ -32,9 +32,14 @@ namespace opensis.data.ViewModels.Grades
 {
     public class EffortGradeLlibraryCategoryListViewModel : CommonFields
     {
-        public List<EffortGradeLibraryCategory> effortGradeLibraryCategoryList { get; set; }
+        public EffortGradeLlibraryCategoryListViewModel()
+        {
+            EffortGradeLibraryCategoryList = new List<EffortGradeLibraryCategory>();
+        }
+        public List<EffortGradeLibraryCategory> EffortGradeLibraryCategoryList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public bool? IsListView { get; set; }
     }
 }
 

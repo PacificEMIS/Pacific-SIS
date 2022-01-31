@@ -51,5 +51,7 @@ namespace opensis.core.Staff.Interfaces
         public StaffAddViewModel AddUpdateStaffPhoto(StaffAddViewModel staffAddViewModel);
         public StaffListAddViewModel AddStaffList(StaffListAddViewModel staffListAddViewModel);
         public ScheduledCourseSectionViewModel GetScheduledCourseSectionsForStaff(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel);
+
+        public StaffListModel GetAllStaffListByDateRange(PageResult pageResult);
     }
 }

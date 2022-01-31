@@ -36,7 +36,7 @@ namespace opensis.data.Repository
 {
     public class RoomRepository : IRoomRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public RoomRepository(IDbContextFactory dbContextFactory)
         {
@@ -55,9 +55,15 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public RoomAddViewModel AddRoom(RoomAddViewModel rooms)
         {
+            if (rooms.tableRoom is null)
+            {
+                return rooms;
+            }
             try
             {
-                var checkRoomTitle = this.context?.Rooms.Where(x => x.SchoolId == rooms.tableRoom.SchoolId && x.TenantId == rooms.tableRoom.TenantId && x.Title.ToLower() == rooms.tableRoom.Title.ToLower() && x.IsActive==true).FirstOrDefault();
+                rooms.tableRoom.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, rooms.tableRoom.TenantId, rooms.tableRoom.SchoolId);
+
+                var checkRoomTitle = this.context?.Rooms.AsEnumerable().Where(x => x.SchoolId == rooms.tableRoom.SchoolId && x.TenantId == rooms.tableRoom.TenantId && String.Compare(x.Title,rooms.tableRoom.Title,true)==0 && x.IsActive==true && x.AcademicYear == rooms.tableRoom.AcademicYear).FirstOrDefault();
 
                 if (checkRoomTitle !=null)
                 {
@@ -76,14 +82,18 @@ namespace opensis.data.Repository
                     {
                         RoomId = RoomData.RoomId + 1;
                     }
-                    rooms.tableRoom.RoomId = (int)RoomId;
-                    rooms.tableRoom.CreatedOn = DateTime.UtcNow;
-                    rooms.tableRoom.TenantId = rooms.tableRoom.TenantId;
-                    rooms.tableRoom.IsActive = rooms.tableRoom.IsActive;
-                    this.context?.Rooms.Add(rooms.tableRoom);
-                    this.context?.SaveChanges();
-                    rooms._failure = false;
-                    rooms._message = "Room Added Successfully";
+
+                    if(rooms.tableRoom != null)
+                    {
+                        rooms.tableRoom.RoomId = (int)RoomId;
+                        rooms.tableRoom.CreatedOn = DateTime.UtcNow;
+                        rooms.tableRoom.TenantId = rooms.tableRoom.TenantId;
+                        rooms.tableRoom.IsActive = rooms.tableRoom.IsActive;
+                        this.context?.Rooms.Add(rooms.tableRoom);
+                        this.context?.SaveChanges();
+                        rooms._failure = false;
+                        rooms._message = "Room Added Successfully";
+                    }
                 }               
             }
             catch (Exception es)
@@ -101,9 +111,13 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public RoomAddViewModel ViewRoom(RoomAddViewModel room)
         {
+            if (room.tableRoom is null)
+            {
+                return room;
+            }
+            RoomAddViewModel roomAddViewModel = new RoomAddViewModel();
             try
             {
-                RoomAddViewModel roomAddViewModel = new RoomAddViewModel();
                 var roomMaster = this.context?.Rooms.FirstOrDefault(x => x.TenantId == room.tableRoom.TenantId && x.SchoolId == room.tableRoom.SchoolId && x.RoomId == room.tableRoom.RoomId);
                 if (roomMaster != null)
                 {
@@ -121,11 +135,12 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-
-                throw;
+                roomAddViewModel._failure = true;
+                roomAddViewModel._message = es.Message;
+                return roomAddViewModel;
             }
         }
-        
+
         /// <summary>
         /// Update Room
         /// </summary>
@@ -133,14 +148,105 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public RoomAddViewModel UpdateRoom(RoomAddViewModel room)
         {
+            if (room.tableRoom is null)
+            {
+                return room;
+            }
             try
             {
                 var roomMaster = this.context?.Rooms.FirstOrDefault(x => x.TenantId == room.tableRoom.TenantId && x.SchoolId == room.tableRoom.SchoolId && x.RoomId == room.tableRoom.RoomId);
-                if (roomMaster !=null)
+                if (roomMaster != null)
                 {
-                    var checkRoomTitle = this.context?.Rooms.Where(x => x.SchoolId == room.tableRoom.SchoolId && x.TenantId == room.tableRoom.TenantId && x.RoomId != room.tableRoom.RoomId && x.Title.ToLower() == room.tableRoom.Title.ToLower() && x.IsActive == true).FirstOrDefault();
+                    var checkRoomTitle = this.context?.Rooms.AsEnumerable().Where(x => x.SchoolId == room.tableRoom.SchoolId && x.TenantId == room.tableRoom.TenantId && x.RoomId != room.tableRoom.RoomId && String.Compare(x.Title, room.tableRoom.Title, true) == 0 && x.IsActive == true && x.AcademicYear == roomMaster.AcademicYear).FirstOrDefault();
 
-                    if (checkRoomTitle !=null)
+                    if (checkRoomTitle != null)
+                    {
+                        room._failure = true;
+                        room._message = "Room Title Already Exists";
+                    }
+                    else
+                    {
+                        //those field are not updated set previous data
+                        room.tableRoom.AcademicYear = roomMaster.AcademicYear;
+                        room.tableRoom.CreatedBy = roomMaster.CreatedBy;
+                        room.tableRoom.CreatedOn = roomMaster.CreatedOn;
+
+                        var courseSectionData = this.context?.AllCourseSectionView.Where(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate!.Value.Date >= DateTime.Today.Date).ToList();
+
+                        if (courseSectionData != null && courseSectionData.Any() == true)
+                        {
+                            if (room.tableRoom.IsActive == false && roomMaster.IsActive == true)
+                            {
+                                room._failure = true;
+                                room._message = "Room Can Not Be InActive. Because It Has Association";
+                                return room;
+                            }
+
+                            List<int> studentCountList = new();
+                            var csIDs = courseSectionData.Select(s => s.CourseSectionId).Distinct().ToList();
+                            foreach (var csId in csIDs)
+                            {
+                                var studentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == room.tableRoom.TenantId && x.SchoolId == room.tableRoom.SchoolId && x.CourseSectionId == csId && x.IsDropped != true).ToList();
+                                if (studentCoursesectionScheduleData?.Any() == true)
+                                {
+                                    studentCountList.Add(studentCoursesectionScheduleData.Count);
+                                }
+                            }
+                            var maxCount = studentCountList.Count > 0 ? studentCountList.Max() : 0;
+                            if (room.tableRoom.Capacity < maxCount)
+                            {
+                                room.tableRoom.Capacity = roomMaster.Capacity;
+                                this.context?.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
+                                this.context?.SaveChanges();
+                                room._failure = false;
+                                room._message = "Room Updated Successfully,but Room Capacity not Updated";
+                            }
+                            else
+                            {
+                                this.context?.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
+                                this.context?.SaveChanges();
+                                room._failure = false;
+                                room._message = "Room Updated Successfully";
+                            }
+                        }
+                        else
+                        {
+                            this.context?.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
+                            this.context?.SaveChanges();
+                            room._failure = false;
+                            room._message = "Room Updated Successfully";
+                        }
+                    }
+                }
+                else
+                {
+                    room.tableRoom = null;
+                    room._failure = true;
+                    room._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception ex)
+            {
+                room._failure = true;
+                room._message = ex.Message;
+            }
+            return room;
+        }
+
+        public RoomAddViewModel UpdateRoom_old(RoomAddViewModel room)
+        {
+            if (room.tableRoom is null)
+            {
+                return room;
+            }
+            try
+            {
+                var roomMaster = this.context?.Rooms.FirstOrDefault(x => x.TenantId == room.tableRoom.TenantId && x.SchoolId == room.tableRoom.SchoolId && x.RoomId == room.tableRoom.RoomId);
+                if (roomMaster != null)
+                {
+                    var checkRoomTitle = this.context?.Rooms.AsEnumerable().Where(x => x.SchoolId == room.tableRoom.SchoolId && x.TenantId == room.tableRoom.TenantId && x.RoomId != room.tableRoom.RoomId && String.Compare(x.Title, room.tableRoom.Title, true) == 0 && x.IsActive == true && x.AcademicYear == roomMaster.AcademicYear).FirstOrDefault();
+
+                    if (checkRoomTitle != null)
                     {
                         room._failure = true;
                         room._message = "Room Title Already Exists";
@@ -155,7 +261,9 @@ namespace opensis.data.Repository
                         //room._failure = false;
                         //room._message = "Room Updated Successfully";
 
-                        var courseSectionData = this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate.Value.Date>=DateTime.Today.Date);
+                        //var courseSectionData = this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate.Value.Date>=DateTime.Today.Date);
+
+                        var courseSectionData = this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate!.Value.Date >= DateTime.Today.Date);
 
                         if (courseSectionData != null)
                         {
@@ -165,11 +273,17 @@ namespace opensis.data.Repository
                         }
                         else
                         {
-                            this.context.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
-                            this.context?.SaveChanges();
-                            room._failure = false;
-                            room._message = "Room Updated Successfully";
-                        }                        
+                            if (room.tableRoom != null)
+                            {
+                                room.tableRoom.AcademicYear = roomMaster.AcademicYear;
+                                room.tableRoom.CreatedBy = roomMaster.CreatedBy;
+                                room.tableRoom.CreatedOn = roomMaster.CreatedOn;
+                                this.context?.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
+                                this.context?.SaveChanges();
+                                room._failure = false;
+                                room._message = "Room Updated Successfully";
+                            }
+                        }
                     }
                 }
                 else
@@ -181,10 +295,10 @@ namespace opensis.data.Repository
             }
             catch (Exception ex)
             {
-                
+
                 room._failure = true;
                 room._message = ex.Message;
-                
+
             }
             return room;
         }
@@ -199,28 +313,22 @@ namespace opensis.data.Repository
             RoomListModel roomListModel = new RoomListModel(); 
             try
             {
-                var room = this.context?.Rooms.Where(x => x.TenantId == roomList.TenantId && x.SchoolId == roomList.SchoolId && (roomList.IncludeInactive == false || roomList.IncludeInactive == null ? x.IsActive != false : true)).OrderBy(x => x.SortOrder).Select(c=>new Rooms()
-                {
-                    TenantId=c.TenantId,
-                    SchoolId=c.SchoolId,
-                    RoomId=c.RoomId,
-                    Title=c.Title,
-                    Capacity=c.Capacity,
-                    CreatedOn=c.CreatedOn,
-                    IsActive=c.IsActive,
-                    Description=c.Description,
-                    SortOrder=c.SortOrder,
-                    UpdatedOn=c.UpdatedOn,
-                    CreatedBy= (c.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == roomList.TenantId && u.EmailAddress==c.CreatedBy).Name:null,
-                    UpdatedBy = (c.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == roomList.TenantId && u.EmailAddress == c.UpdatedBy).Name : null
-                }).ToList();
+                var room = this.context?.Rooms.Where(x => x.TenantId == roomList.TenantId && x.SchoolId == roomList.SchoolId && (roomList.IncludeInactive == false || roomList.IncludeInactive == null ? x.IsActive != false : true) && x.AcademicYear == roomList.AcademicYear).OrderBy(x => x.SortOrder).ToList();
 
-                roomListModel.TableroomList = room;
-                roomListModel._tenantName = roomList._tenantName;
-                roomListModel._token = roomList._token;
-
-                if (room.Count > 0)
+                if (room != null && room.Any())
                 {
+                    if (roomList.IsListView == true)
+                    {
+                        room.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, roomList.TenantId, c.CreatedBy!=null ? c.CreatedBy : "");
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, roomList.TenantId, c.UpdatedBy!=null ? c.UpdatedBy : "");
+                        });
+                    }
+
+                    roomListModel.TableroomList = room;
+                    roomListModel._tenantName = roomList._tenantName;
+                    roomListModel._token = roomList._token;
                     roomListModel._failure = false;
                 }
                 else
@@ -247,13 +355,17 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public RoomAddViewModel DeleteRoom(RoomAddViewModel room)
         {
+            if (room.tableRoom is null)
+            {
+                return room;
+            }
             try
             {
                 var Room= this.context?.Rooms.FirstOrDefault(x => x.TenantId == room.tableRoom.TenantId && x.SchoolId == room.tableRoom.SchoolId && x.RoomId == room.tableRoom.RoomId);
 
                 if (Room != null)
                 {
-                    var courseSectionData= this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate.Value.Date >= DateTime.Today.Date);
+                    var courseSectionData= this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == room.tableRoom.TenantId && b.SchoolId == room.tableRoom.SchoolId && (b.CalRoomId == room.tableRoom.RoomId || b.VarRoomId == room.tableRoom.RoomId || b.FixedRoomId == room.tableRoom.RoomId) && b.IsActive == true && b.DurationEndDate!.Value.Date >= DateTime.Today.Date);
 
                     if (courseSectionData != null)
                     {

@@ -24,26 +24,28 @@ All rights reserved.
 ***********************************************************************************/
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class SchoolPreference
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public long SchoolPreferenceId { get; set; }
         public Guid SchoolGuid { get; set; }
-        public string SchoolInternalId { get; set; }
-        public string SchoolAltId { get; set; }
+        public string? SchoolInternalId { get; set; }
+        public string? SchoolAltId { get; set; }
         public int? FullDayMinutes { get; set; }
         public int? HalfDayMinutes { get; set; }
         public int? MaxLoginFailure { get; set; }
         public int? MaxInactivityDays { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
     }
 }

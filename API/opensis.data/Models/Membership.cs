@@ -25,37 +25,46 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class Membership
     {
+        
         public Membership()
         {
             RolePermission = new HashSet<RolePermission>();
-            StudentAttendance = new HashSet<StudentAttendance>();
             StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
+            StudentAttendance = new HashSet<StudentAttendance>();
             UserMaster = new HashSet<UserMaster>();
         }
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
+        /// <summary>
+        /// can be considered as profileid of Opensis1
+        /// </summary>
         public int MembershipId { get; set; }
-        public string Profile { get; set; }
-        public string ProfileType { get; set; }
+        /// <summary>
+        /// E.g. admin,student,teacher
+        /// </summary>
+        public string Profile { get; set; } = null!;
         public bool IsActive { get; set; }
         public bool? IsSystem { get; set; }
-        public bool? IsSuperadmin { get; set; }
-        public string Description { get; set; }
-        public string CreatedBy { get; set; }
+        public bool IsSuperadmin { get; set; }
+        public string? ProfileType { get; set; }
+        public string? Description { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<RolePermission> RolePermission { get; set; }
-        public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
         public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
+        public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
         public virtual ICollection<UserMaster> UserMaster { get; set; }
     }
 }

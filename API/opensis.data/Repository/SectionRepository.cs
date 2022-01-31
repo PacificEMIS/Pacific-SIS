@@ -37,7 +37,7 @@ namespace opensis.data.Repository
 {
     public class SectionRepository : ISectionRepositiory
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public SectionRepository(IDbContextFactory dbContextFactory)
         {
@@ -50,9 +50,14 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public SectionAddViewModel AddSection(SectionAddViewModel section)
         {
+            if (section.tableSections is null)
+            {
+                return section;
+            }
             try
             {
-                var checkSectionName = this.context?.Sections.Where(x => x.SchoolId == section.tableSections.SchoolId && x.TenantId == section.tableSections.TenantId && x.Name.ToLower() == section.tableSections.Name.ToLower()).FirstOrDefault();
+                var checkSectionName = this.context?.Sections.AsEnumerable().Where(x => x.SchoolId == section.tableSections.SchoolId && x.TenantId == section.tableSections.TenantId && String.Compare(x.Name , section.tableSections.Name,true)==0
+                 ).FirstOrDefault();
 
                 if (checkSectionName != null)
                 {
@@ -71,12 +76,15 @@ namespace opensis.data.Repository
                         MasterSectionId = SectionData.SectionId + 1;
                     }
 
-                    section.tableSections.SectionId = (int)MasterSectionId;
-                    section.tableSections.CreatedOn = DateTime.UtcNow;
-                    this.context?.Sections.Add(section.tableSections);
-                    this.context?.SaveChanges();
-                    section._failure = false;
-                    section._message = "Section Added Successfully";
+                    if(section.tableSections != null)
+                    {
+                        section.tableSections.SectionId = (int)MasterSectionId;
+                        section.tableSections.CreatedOn = DateTime.UtcNow;
+                        this.context?.Sections.Add(section.tableSections);
+                        this.context?.SaveChanges();
+                        section._failure = false;
+                        section._message = "Section Added Successfully";
+                    }
                 }                
             }
             catch(Exception es)
@@ -94,12 +102,16 @@ namespace opensis.data.Repository
        /// <returns></returns>
         public SectionAddViewModel UpdateSection(SectionAddViewModel section)
         {
+            if (section.tableSections is null)
+            {
+                return section;
+            }
             try
             {
                 var sectionUpdate = this.context?.Sections.FirstOrDefault(x => x.TenantId == section.tableSections.TenantId && x.SchoolId == section.tableSections.SchoolId && x.SectionId == section.tableSections.SectionId);
                 if (sectionUpdate!=null)
                 {
-                    var checkSectionName = this.context?.Sections.Where(x => x.SchoolId == section.tableSections.SchoolId && x.TenantId == section.tableSections.TenantId && x.SectionId!=section.tableSections.SectionId && x.Name.ToLower() == section.tableSections.Name.ToLower()).FirstOrDefault();
+                    var checkSectionName = this.context?.Sections.AsEnumerable().Where(x => x.SchoolId == section.tableSections.SchoolId && x.TenantId == section.tableSections.TenantId && x.SectionId!=section.tableSections.SectionId && String.Compare(x.Name, section.tableSections.Name, true) == 0).FirstOrDefault();
 
                     if (checkSectionName != null)
                     {
@@ -108,13 +120,16 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        section.tableSections.UpdatedOn = DateTime.UtcNow;
-                        section.tableSections.CreatedOn = sectionUpdate.CreatedOn;
-                        section.tableSections.CreatedBy = sectionUpdate.CreatedBy;
-                        this.context.Entry(sectionUpdate).CurrentValues.SetValues(section.tableSections);
-                        this.context?.SaveChanges();
-                        section._failure = false;
-                        section._message = "Section Updated Successfully";
+                        if(section.tableSections != null && sectionUpdate != null)
+                        {
+                            section.tableSections.UpdatedOn = DateTime.UtcNow;
+                            section.tableSections.CreatedOn = sectionUpdate.CreatedOn;
+                            section.tableSections.CreatedBy = sectionUpdate.CreatedBy;
+                            this.context?.Entry(sectionUpdate).CurrentValues.SetValues(section.tableSections);
+                            this.context?.SaveChanges();
+                            section._failure = false;
+                            section._message = "Section Updated Successfully";
+                        }
                     }                    
                 }
                 else
@@ -139,9 +154,13 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public SectionAddViewModel ViewSection(SectionAddViewModel section)
         {
+            if (section.tableSections is null)
+            {
+                return section;
+            }
+            SectionAddViewModel sectionView = new SectionAddViewModel();
             try
             {
-                SectionAddViewModel sectionView = new SectionAddViewModel();
                 var sectionById = this.context?.Sections.FirstOrDefault(x => x.TenantId == section.tableSections.TenantId && x.SchoolId == section.tableSections.SchoolId && x.SectionId== section.tableSections.SectionId);
                 if (sectionById != null)
                 {
@@ -157,8 +176,9 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-
-                throw;
+                sectionView._failure = true;
+                sectionView._message = es.Message;
+                return sectionView;
             }
         }
 
@@ -172,25 +192,22 @@ namespace opensis.data.Repository
             SectionListViewModel sectionList = new SectionListViewModel();
             try
             {
-                var sectionAll = this.context?.Sections.Where(x => x.TenantId == section.TenantId && x.SchoolId == section.SchoolId).OrderBy(x => x.SortOrder).Select(e=> new Sections()
-                { 
-                    TenantId=e.TenantId,
-                    SchoolId=e.SchoolId,
-                    SectionId=e.SectionId,
-                    Name=e.Name,
-                    SortOrder=e.SortOrder,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == section.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == section.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    UpdatedOn=e.UpdatedOn
-                }).ToList();
+                var sectionAll = this.context?.Sections.Where(x => x.TenantId == section.TenantId && x.SchoolId == section.SchoolId).OrderBy(x => x.SortOrder).ToList();
 
-                sectionList.tableSectionsList = sectionAll;
-                sectionList._tenantName = section._tenantName;
-                sectionList._token = section._token;
-
-                if (sectionAll.Count > 0)
+                if (sectionAll != null && sectionAll.Any())
                 {
+                    if (section.IsListView == true)
+                    {
+                        sectionAll.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, section.TenantId, c.CreatedBy != null ? c.CreatedBy : "");
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, section.TenantId, c.UpdatedBy != null ? c.UpdatedBy : "");
+                        });
+                    }
+
+                    sectionList.tableSectionsList = sectionAll;
+                    sectionList._tenantName = section._tenantName;
+                    sectionList._token = section._token;
                     sectionList._failure = false;
                 }
                 else
@@ -217,13 +234,21 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public SectionAddViewModel DeleteSection(SectionAddViewModel section)
         {
+            if (section.tableSections is null)
+            {
+                return section;
+            }
             try
             {
                 var sectionDel = this.context?.Sections.FirstOrDefault(x => x.TenantId == section.tableSections.TenantId && x.SchoolId == section.tableSections.SchoolId && x.SectionId == section.tableSections.SectionId);
-                this.context?.Sections.Remove(sectionDel);
-                this.context?.SaveChanges();
-                section._failure = false;
-                section._message = "Section Deleted Successfully";
+
+                if(sectionDel != null)
+                {
+                    this.context?.Sections.Remove(sectionDel);
+                    this.context?.SaveChanges();
+                    section._failure = false;
+                    section._message = "Section Deleted Successfully";
+                }
             }
             catch (Exception es)
             {

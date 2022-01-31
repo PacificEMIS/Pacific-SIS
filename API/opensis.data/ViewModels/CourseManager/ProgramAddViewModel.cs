@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class ProgramAddViewModel :CommonFields
     {
-        public Programs programs { get; set; }
+        public Programs? Programs { get; set; }
     }
 }

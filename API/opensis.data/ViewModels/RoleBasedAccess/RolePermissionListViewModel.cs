@@ -32,6 +32,10 @@ namespace opensis.data.ViewModels.RoleBasedAccess
 {
     public class RolePermissionListViewModel : CommonFields
     {
+        public RolePermissionListViewModel()
+        {
+            PermissionList = new List<RolePermissionViewModel>();
+        }
         public List<RolePermissionViewModel> PermissionList { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }

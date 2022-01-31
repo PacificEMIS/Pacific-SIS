@@ -32,8 +32,13 @@ namespace opensis.data.ViewModels.Grades
 {
     public class EffortGradeScaleListModel : CommonFields
     {
-        public List<GetEffortGradeScaleForView> getEffortGradeScaleForView { get; set; }
-        public List<EffortGradeScale> effortGradeScaleList { get; set; }
+        public EffortGradeScaleListModel()
+        {
+            GetEffortGradeScaleForView = new List<GetEffortGradeScaleForView>();
+            EffortGradeScaleList = new List<EffortGradeScale>();
+        }
+        public List<GetEffortGradeScaleForView> GetEffortGradeScaleForView { get; set; }
+        public List<EffortGradeScale> EffortGradeScaleList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? TotalCount { get; set; }

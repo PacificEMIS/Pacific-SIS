@@ -1,0 +1,17 @@
+{
+    "shortid": "Bkg1otz8GF",
+    "name": "ChuukReportTemplate",
+    "recipe": "chrome-pdf",
+    "engine": "handlebars",
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631099308478
+    },
+    "modificationDate": {
+        "$$date": 1631105754267
+    },
+    "_id": "gw6y21eNWSWqUDHx",
+    "$entitySet": "templates"
+}

@@ -32,7 +32,11 @@ namespace opensis.data.ViewModels.InputFinalGrade
 {
     public class StudentFinalGradeListModel : CommonFields
     {
-        public List<StudentFinalGrade> studentFinalGradeList { get; set; }
+        public StudentFinalGradeListModel()
+        {
+            StudentFinalGradeList = new List<StudentFinalGrade>();
+        }
+        public List<StudentFinalGrade> StudentFinalGradeList { get; set; }
         //public List<CourseStandard> courseStandardList { get; set; }
         //public List<StudentFinalGradeStandard> studentFinalGradeStandardList { get; set; }
         public Guid TenantId { get; set; }
@@ -42,8 +46,10 @@ namespace opensis.data.ViewModels.InputFinalGrade
         public int? StandardGradeScaleId { get; set; }
         public int CourseId { get; set; }
         public bool? IsPercent { get; set; }
-        public string MarkingPeriodId { get; set; }
+        public string? MarkingPeriodId { get; set; }
         public decimal? AcademicYear { get; set; }
-        public string CreatedOrUpdatedBy { get; set; }
+        public string? CreatedOrUpdatedBy { get; set; }
+        public bool? IsCustomMarkingPeriod { get; set; }
+        public bool? IsExamGrade { get; set; }
     }
 }

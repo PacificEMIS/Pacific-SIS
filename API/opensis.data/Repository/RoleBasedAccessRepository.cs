@@ -37,7 +37,7 @@ namespace opensis.data.Repository
 {
     public class RoleBasedAccessRepository : IRoleBasedAccessRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public RoleBasedAccessRepository(IDbContextFactory dbContextFactory)
         {
@@ -54,35 +54,12 @@ namespace opensis.data.Repository
             PermissionGroupListViewModel permissionGroupListView = new PermissionGroupListViewModel();
             try
             {
-                var permission = this.context?.PermissionGroup.Where(x => x.TenantId == permissionGroupListViewModel.TenantId && x.SchoolId == permissionGroupListViewModel.SchoolId && x.IsActive == true).Select(e=> new PermissionGroup()
-                { 
-                    TenantId=e.TenantId,
-                    SchoolId=e.SchoolId,
-                    PermissionGroupId=e.PermissionGroupId,
-                    PermissionGroupName=e.PermissionGroupName,
-                    ShortName=e.ShortName,
-                    IsActive=e.IsActive,
-                    IsSystem=e.IsSystem,
-                    Title=e.Title,
-                    Icon=e.Icon,
-                    IconType=e.IconType,
-                    SortOrder=e.SortOrder,
-                    Type=e.Type,
-                    Path=e.Path,
-                    BadgeType=e.BadgeType,
-                    BadgeValue=e.BadgeValue,
-                    Active=e.Active,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == permissionGroupListViewModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == permissionGroupListViewModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    UpdatedOn=e.UpdatedOn
-                });
+                var permission = this.context?.PermissionGroup.Where(x => x.TenantId == permissionGroupListViewModel.TenantId && x.SchoolId == permissionGroupListViewModel.SchoolId && x.IsActive == true).ToList();
 
-                permissionGroupListView.permissionGroupList = permission.ToList();
-                permissionGroupListView._token = permissionGroupListViewModel._token;
-
-                if (permission.Count() > 0)
+                if(permission != null && permission.Any())
                 {
+                    permissionGroupListView.permissionGroupList = permission.ToList();
+                    permissionGroupListView._token = permissionGroupListViewModel._token;
                     permissionGroupListView._failure = false;
                     permissionGroupListView._message = "Permission Group List Fetched";
                 }
@@ -134,9 +111,9 @@ namespace opensis.data.Repository
                     BadgeType = pg.BadgeType,
                     BadgeValue = pg.BadgeValue,
                     Active = pg.Active,
-                    CreatedBy= (pg.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == pg.CreatedBy).Name : null,
+                    CreatedBy= pg.CreatedBy,
                     CreatedOn =pg.CreatedOn,
-                    UpdatedBy= (pg.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == pg.UpdatedBy).Name : null,
+                    UpdatedBy= pg.UpdatedBy,
                     UpdatedOn =pg.UpdatedOn,
                     PermissionCategory = (ICollection<PermissionCategory>)pg.PermissionCategory.Select(pc => new PermissionCategory
                     {
@@ -154,10 +131,11 @@ namespace opensis.data.Repository
                         EnableAdd = pc.EnableAdd,
                         EnableDelete = pc.EnableDelete,
                         EnableEdit = pc.EnableEdit,
-                        CreatedBy= (pc.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == pc.CreatedBy).Name : null,
+                        CreatedBy= pc.CreatedBy,
                         CreatedOn =pc.CreatedOn,
-                        UpdatedBy= (pc.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == pc.UpdatedBy).Name : null,
+                        UpdatedBy= pc.UpdatedBy,
                         UpdatedOn =pc.UpdatedOn,
+                        SortOrder = pc.SortOrder,
                         PermissionSubcategory = (ICollection<PermissionSubcategory>)pc.PermissionSubcategory.Select(psc => new PermissionSubcategory
                         {
                             TenantId = psc.TenantId,
@@ -175,10 +153,12 @@ namespace opensis.data.Repository
                             EnableAdd = psc.EnableAdd,
                             EnableDelete = psc.EnableDelete,
                             EnableEdit = psc.EnableEdit,
-                            CreatedBy = (psc.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == psc.CreatedBy).Name : null,
+                            CreatedBy =  psc.CreatedBy,
                             CreatedOn = psc.CreatedOn,
-                            UpdatedBy = (psc.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == psc.UpdatedBy).Name : null,
+                            UpdatedBy =  psc.UpdatedBy,
                             UpdatedOn = psc.UpdatedOn,
+                            SortOrder = psc.SortOrder,
+                            IsSystem = psc.IsSystem,
                             RolePermission = (ICollection<RolePermission>)psc.RolePermission.Select(scrp => new RolePermission
                             {
                                 RolePermissionId = scrp.RolePermissionId,
@@ -190,12 +170,12 @@ namespace opensis.data.Repository
                                 CanAdd = scrp.CanAdd,
                                 CanDelete = scrp.CanDelete,
                                 CanEdit = scrp.CanEdit,
-                                CreatedBy = (scrp.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.SchoolId == rolePermissionListViewModel.SchoolId && u.EmailAddress == scrp.CreatedBy).Name : null,
+                                CreatedBy = scrp.CreatedBy,
                                 CreatedOn = scrp.CreatedOn,
-                                UpdatedBy = (scrp.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == scrp.UpdatedBy).Name : null,
+                                UpdatedBy = scrp.UpdatedBy,
                                 UpdatedOn = scrp.UpdatedOn,
                             }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.SchoolId == rolePermissionListViewModel.SchoolId && x.MembershipId == rolePermissionListViewModel.MembershipId)
-                        }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.IsActive == true),
+                        }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.IsActive == true).OrderByDescending(x => x.IsSystem == true).ThenBy(x => x.SortOrder),
                         RolePermission = (ICollection<RolePermission>)pc.RolePermission.Select(crp => new RolePermission
                         {
                             RolePermissionId = crp.RolePermissionId,
@@ -207,12 +187,12 @@ namespace opensis.data.Repository
                             CanAdd = crp.CanAdd,
                             CanDelete = crp.CanDelete,
                             CanEdit = crp.CanEdit,
-                            CreatedBy = (crp.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == crp.CreatedBy).Name : null,
+                            CreatedBy = crp.CreatedBy,
                             CreatedOn = crp.CreatedOn,
-                            UpdatedBy = (crp.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.EmailAddress == crp.UpdatedBy).Name : null,
+                            UpdatedBy = crp.UpdatedBy,
                             UpdatedOn = crp.UpdatedOn,
                         }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.SchoolId == rolePermissionListViewModel.SchoolId && x.MembershipId == rolePermissionListViewModel.MembershipId)
-                    }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.SchoolId == rolePermissionListViewModel.SchoolId && x.IsActive == true),
+                    }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.SchoolId == rolePermissionListViewModel.SchoolId && x.IsActive == true).OrderBy(x => x.SortOrder),
                     RolePermission = (ICollection<RolePermission>)pg.RolePermission.Select(grp => new RolePermission
                     {
                         RolePermissionId = grp.RolePermissionId,
@@ -224,14 +204,14 @@ namespace opensis.data.Repository
                         CanAdd = grp.CanAdd,
                         CanDelete = grp.CanDelete,
                         CanEdit = grp.CanEdit,
-                        CreatedBy = (grp.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId && u.SchoolId == rolePermissionListViewModel.SchoolId && u.EmailAddress == grp.CreatedBy).Name : null,
+                        CreatedBy = grp.CreatedBy,
                         CreatedOn = grp.CreatedOn,
-                        UpdatedBy = (grp.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == rolePermissionListViewModel.TenantId  && u.EmailAddress == grp.UpdatedBy).Name : null,
+                        UpdatedBy =  grp.UpdatedBy,
                         UpdatedOn = grp.UpdatedOn,
                     }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.MembershipId == rolePermissionListViewModel.MembershipId)
                 }).Where(x => x.TenantId == rolePermissionListViewModel.TenantId && x.SchoolId == rolePermissionListViewModel.SchoolId).OrderBy(x => x.SortOrder).ToList();
 
-                if (permissionGroup.Count() > 0)
+                if (permissionGroup != null && permissionGroup.Any())
                 {
                     foreach (PermissionGroup pg in permissionGroup.ToList())
                     {
@@ -245,10 +225,12 @@ namespace opensis.data.Repository
                                 var permissionCategory = pg.PermissionCategory.Where(x => x.RolePermission.Count > 0);
 
                                 pg.PermissionCategory = permissionCategory.ToList();
-                                foreach (var scg in pg.PermissionCategory)
+
+                                foreach (var pc in pg.PermissionCategory)
                                 {
-                                    var permissionSubCategory = scg.PermissionSubcategory.Where(x => x.RolePermission.Count > 0);
-                                    scg.PermissionSubcategory = permissionSubCategory.ToList();
+                                    var permissionSubCategory = pc.PermissionSubcategory.Where(x => x.RolePermission.Count > 0);
+                                    pc.PermissionSubcategory = permissionSubCategory.ToList();
+
                                 }
                             }
 
@@ -257,34 +239,6 @@ namespace opensis.data.Repository
                         }
                     }
 
-                    //foreach (PermissionGroup pg in permissionGroup.ToList())
-                    //{
-                    //    RolePermissionViewModel pgvm = new RolePermissionViewModel();
-                    //    pgvm.permissionGroup = new PermissionGroup();
-                    //    pgvm.permissionGroup = pg;
-
-                    //    //Get Role permission 
-                    //    //foreach (PermissionCategory pc in pg.PermissionCategory)
-                    //    //{
-                    //    //    if (pc.RolePermission.Count == 0)
-                    //    //    {
-
-                    //    //        RolePermission rp = new RolePermission();
-                    //    //        rp.PermissionCategoryId = pc.PermissionCategoryId;
-                    //    //        rp.MembershipId = rolePermissionListViewModel.MembershipId;
-                    //    //        rp.CanAdd = false;
-                    //    //        rp.CanDelete = false;
-                    //    //        rp.CanEdit = false;
-                    //    //        rp.CanView = false;
-                    //    //        rp.TenantId = rolePermissionListViewModel.TenantId;
-                    //    //        rp.SchoolId = rolePermissionListViewModel.SchoolId;
-                    //    //        pc.RolePermission.Add(rp);
-                    //    //    }
-                    //    //}
-
-                    //    rolePermissionListView.PermissionList.Add(pgvm);
-                    //}
-                    //objViewModel.PermissionList = permissionGroup.ToList(); 
                     rolePermissionListView._failure = false;
                     rolePermissionListView._message = "Permission List Fetched";
                 }
@@ -313,6 +267,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public PermissionGroupAddViewModel UpdatePermissionGroup(PermissionGroupAddViewModel permissionGroupAddViewModel)
         {
+            if (permissionGroupAddViewModel.permissionGroup is null)
+            {
+                return permissionGroupAddViewModel;
+            }
             PermissionGroupAddViewModel permissionGroupUpdateModel = new PermissionGroupAddViewModel();
             try
             {
@@ -352,24 +310,29 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public PermissionGroupListViewModel UpdateRolePermission(PermissionGroupListViewModel permissionGroupListViewModel)
         {
-            using var transaction = context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable);
+            if (permissionGroupListViewModel.permissionGroupList is null)
+            {
+                return permissionGroupListViewModel;
+            }
+
+            using var transaction = context?.Database.BeginTransaction(System.Data.IsolationLevel.Serializable);
             PermissionGroupListViewModel PermissionGroupViewModel = new PermissionGroupListViewModel();
             try
             {
                 foreach (PermissionGroup p_group in permissionGroupListViewModel.permissionGroupList)
                 {
-                    if (p_group.RolePermission.ToList().Count() > 0 && p_group.RolePermission != null)
+                    if (p_group.RolePermission != null && p_group.RolePermission.ToList().Any())
                     {
 
-                        var PermissionGroup = this.context?.RolePermission.FirstOrDefault(x => x.TenantId == p_group.TenantId && x.SchoolId == p_group.SchoolId && x.PermissionGroupId == p_group.PermissionGroupId && x.RolePermissionId == p_group.RolePermission.FirstOrDefault().RolePermissionId && x.MembershipId == p_group.RolePermission.FirstOrDefault().MembershipId);
+                        var PermissionGroup = this.context?.RolePermission.FirstOrDefault(x => x.TenantId == p_group.TenantId && x.SchoolId == p_group.SchoolId && x.PermissionGroupId == p_group.PermissionGroupId && x.RolePermissionId == p_group.RolePermission.FirstOrDefault()!.RolePermissionId && x.MembershipId == p_group.RolePermission.FirstOrDefault()!.MembershipId);
 
                         if (PermissionGroup != null)
                         {
-                            PermissionGroup.CanAdd = p_group.RolePermission.FirstOrDefault().CanAdd;
-                            PermissionGroup.CanEdit = p_group.RolePermission.FirstOrDefault().CanEdit;
-                            PermissionGroup.CanDelete = p_group.RolePermission.FirstOrDefault().CanDelete;
-                            PermissionGroup.CanView = p_group.RolePermission.FirstOrDefault().CanView;
-                            PermissionGroup.UpdatedBy = p_group.RolePermission.FirstOrDefault().UpdatedBy;
+                            PermissionGroup.CanAdd = p_group.RolePermission.FirstOrDefault()!.CanAdd;
+                            PermissionGroup.CanEdit = p_group.RolePermission.FirstOrDefault()!.CanEdit;
+                            PermissionGroup.CanDelete = p_group.RolePermission.FirstOrDefault()!.CanDelete;
+                            PermissionGroup.CanView = p_group.RolePermission.FirstOrDefault()!.CanView;
+                            PermissionGroup.UpdatedBy = p_group.RolePermission.FirstOrDefault()!.UpdatedBy;
                             PermissionGroup.UpdatedOn = DateTime.UtcNow;
                             this.context?.SaveChanges();
                         }
@@ -383,29 +346,29 @@ namespace opensis.data.Repository
                             {
                                 AutoId = rolePermissionData.RolePermissionId + 1;
                             }
-                            p_group.RolePermission.FirstOrDefault().RolePermissionId = (int)AutoId;
-                            p_group.RolePermission.FirstOrDefault().PermissionSubcategoryId = null;
-                            p_group.RolePermission.FirstOrDefault().PermissionCategoryId = null;
-                            p_group.RolePermission.FirstOrDefault().CreatedBy = permissionGroupListViewModel.CreatedBy;
-                            p_group.RolePermission.FirstOrDefault().CreatedOn = DateTime.UtcNow;
-                            this.context?.RolePermission.Add(p_group.RolePermission.FirstOrDefault());
+                            p_group.RolePermission.FirstOrDefault()!.RolePermissionId = (int)AutoId;
+                            p_group.RolePermission.FirstOrDefault()!.PermissionSubcategoryId = null;
+                            p_group.RolePermission.FirstOrDefault()!.PermissionCategoryId = null;
+                            p_group.RolePermission.FirstOrDefault()!.CreatedBy = permissionGroupListViewModel.CreatedBy;
+                            p_group.RolePermission.FirstOrDefault()!.CreatedOn = DateTime.UtcNow;
+                            this.context?.RolePermission.Add(p_group.RolePermission.FirstOrDefault()!);
                             this.context?.SaveChanges();
                         }
-                        if (p_group.PermissionCategory.Count() > 0 && p_group.PermissionCategory != null)
+                        if (p_group.PermissionCategory != null && p_group.PermissionCategory.Any())
                         {
                             foreach (PermissionCategory p_cat in p_group.PermissionCategory)
                             {
-                                if (p_cat.RolePermission.ToList().Count() > 0 && p_cat.RolePermission != null)
+                                if (p_cat.RolePermission != null && p_cat.RolePermission.ToList().Any())
                                 {
-                                    var PermissionCatagoary = this.context?.RolePermission.FirstOrDefault(x => x.TenantId == p_cat.TenantId && x.SchoolId == p_cat.SchoolId && x.PermissionCategoryId == p_cat.PermissionCategoryId && x.RolePermissionId == p_cat.RolePermission.FirstOrDefault().RolePermissionId && x.MembershipId == p_cat.RolePermission.FirstOrDefault().MembershipId);
+                                    var PermissionCatagoary = this.context?.RolePermission.FirstOrDefault(x => x.TenantId == p_cat.TenantId && x.SchoolId == p_cat.SchoolId && x.PermissionCategoryId == p_cat.PermissionCategoryId && x.RolePermissionId == p_cat.RolePermission.FirstOrDefault()!.RolePermissionId && x.MembershipId == p_cat.RolePermission.FirstOrDefault()!.MembershipId);
 
                                     if (PermissionCatagoary != null)
                                     {
-                                        PermissionCatagoary.CanAdd = p_cat.RolePermission.FirstOrDefault().CanAdd;
-                                        PermissionCatagoary.CanEdit = p_cat.RolePermission.FirstOrDefault().CanEdit;
-                                        PermissionCatagoary.CanDelete = p_cat.RolePermission.FirstOrDefault().CanDelete;
-                                        PermissionCatagoary.CanView = p_cat.RolePermission.FirstOrDefault().CanView;
-                                        PermissionCatagoary.UpdatedBy = p_cat.RolePermission.FirstOrDefault().UpdatedBy;
+                                        PermissionCatagoary.CanAdd = p_cat.RolePermission.FirstOrDefault()!.CanAdd;
+                                        PermissionCatagoary.CanEdit = p_cat.RolePermission.FirstOrDefault()!.CanEdit;
+                                        PermissionCatagoary.CanDelete = p_cat.RolePermission.FirstOrDefault()!.CanDelete;
+                                        PermissionCatagoary.CanView = p_cat.RolePermission.FirstOrDefault()!.CanView;
+                                        PermissionCatagoary.UpdatedBy = p_cat.RolePermission.FirstOrDefault()!.UpdatedBy;
                                         PermissionCatagoary.UpdatedOn = DateTime.UtcNow;
                                         this.context?.SaveChanges();
                                     }
@@ -419,15 +382,15 @@ namespace opensis.data.Repository
                                         {
                                             AutoId = rolePermissionData.RolePermissionId + 1;
                                         }
-                                        p_cat.RolePermission.FirstOrDefault().RolePermissionId = (int)AutoId;
-                                        p_cat.RolePermission.FirstOrDefault().PermissionGroupId = null;
-                                        p_cat.RolePermission.FirstOrDefault().PermissionSubcategoryId = null;
+                                        p_cat.RolePermission.FirstOrDefault()!.RolePermissionId = (int)AutoId;
+                                        p_cat.RolePermission.FirstOrDefault()!.PermissionGroupId = null;
+                                        p_cat.RolePermission.FirstOrDefault()!.PermissionSubcategoryId = null;
                                         p_cat.CreatedBy = permissionGroupListViewModel.CreatedBy;
                                         p_cat.CreatedOn = DateTime.UtcNow;
-                                        this.context?.RolePermission.Add(p_cat.RolePermission.FirstOrDefault());
+                                        this.context?.RolePermission.Add(p_cat.RolePermission.FirstOrDefault()!);
                                         this.context?.SaveChanges();
                                     }
-                                    if (p_cat.PermissionSubcategory.Count() > 0 && p_cat.PermissionSubcategory != null)
+                                    if (p_cat.PermissionSubcategory != null && p_cat.PermissionSubcategory.Any())
                                     {
 
                                         foreach (PermissionSubcategory p_subcat in p_cat.PermissionSubcategory)
@@ -472,15 +435,16 @@ namespace opensis.data.Repository
                         }
                     }
                 }
-                transaction.Commit();
+                transaction?.Commit();
                 PermissionGroupViewModel.permissionGroupList = permissionGroupListViewModel.permissionGroupList;
                 PermissionGroupViewModel._failure = false;
                 PermissionGroupViewModel._message = "Role Permission Updated Successfully";
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
-                throw ex;
+                transaction?.Rollback();
+                PermissionGroupViewModel._failure = false;
+                PermissionGroupViewModel._message = ex.Message;
             }
             return PermissionGroupViewModel;
         }

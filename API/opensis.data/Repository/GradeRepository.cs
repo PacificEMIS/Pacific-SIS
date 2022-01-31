@@ -24,6 +24,8 @@ All rights reserved.
 ***********************************************************************************/
 
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
@@ -31,13 +33,14 @@ using opensis.data.ViewModels.Grades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 
 namespace opensis.data.Repository
 {
     public class GradeRepository : IGradeRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public GradeRepository(IDbContextFactory dbContextFactory)
         {
@@ -51,9 +54,15 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeScaleAddViewModel AddGradeScale(GradeScaleAddViewModel gradeScaleAddViewModel)
         {
+            if(gradeScaleAddViewModel.gradeScale is null)
+            {
+                return gradeScaleAddViewModel;
+            }
             try
             {
-                var checkGradeScaleName = this.context?.GradeScale.Where(x => x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && x.GradeScaleName.ToLower() == gradeScaleAddViewModel.gradeScale.GradeScaleName.ToLower()).FirstOrDefault();
+                gradeScaleAddViewModel.gradeScale.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, gradeScaleAddViewModel.gradeScale.TenantId, gradeScaleAddViewModel.gradeScale.SchoolId);
+
+                var checkGradeScaleName = this.context?.GradeScale.AsEnumerable().Where(x => x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && String.Compare(x.GradeScaleName, gradeScaleAddViewModel.gradeScale.GradeScaleName,true)==0 && x.AcademicYear == gradeScaleAddViewModel.gradeScale.AcademicYear).FirstOrDefault();
                 if (checkGradeScaleName != null)
                 {
                     gradeScaleAddViewModel._failure = true;
@@ -79,9 +88,10 @@ namespace opensis.data.Repository
                     }
 
                     gradeScaleAddViewModel.gradeScale.GradeScaleId = (int)GradeScaleId;
-                    gradeScaleAddViewModel.gradeScale.SortOrder = (int)SortOrder;
+                    gradeScaleAddViewModel.gradeScale.SortOrder = (int)SortOrder!;
                     gradeScaleAddViewModel.gradeScale.CreatedOn = DateTime.UtcNow;
                     this.context?.GradeScale.Add(gradeScaleAddViewModel.gradeScale);
+                    //context!.Entry(gradeScaleAddViewModel.gradeScale.SchoolMaster).State = EntityState.Unchanged;
                     this.context?.SaveChanges();
                     gradeScaleAddViewModel._failure = false;
                     gradeScaleAddViewModel._message = "Grade Scale Added Successfully";
@@ -101,14 +111,19 @@ namespace opensis.data.Repository
         /// <param name="gradeScaleAddViewModel"></param>
         /// <returns></returns>
         public GradeScaleAddViewModel UpdateGradeScale(GradeScaleAddViewModel gradeScaleAddViewModel)
-        {            
+        {
+            if (gradeScaleAddViewModel.gradeScale is null)
+            {
+                return gradeScaleAddViewModel;
+            }
             try
             {
                 var gradeScaleUpdate = this.context?.GradeScale.FirstOrDefault(x => x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.GradeScaleId == gradeScaleAddViewModel.gradeScale.GradeScaleId);
                 
                 if (gradeScaleUpdate != null)
                 {
-                    var checkGradeScaleName = this.context?.GradeScale.Where(x => x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && x.GradeScaleId != gradeScaleAddViewModel.gradeScale.GradeScaleId && x.GradeScaleName.ToLower() == gradeScaleAddViewModel.gradeScale.GradeScaleName.ToLower()).FirstOrDefault();
+                    var checkGradeScaleName = this.context?.GradeScale.AsEnumerable().Where(x => x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && x.GradeScaleId != gradeScaleAddViewModel.gradeScale.GradeScaleId &&
+                    String.Compare(x.GradeScaleName, gradeScaleAddViewModel.gradeScale.GradeScaleName, true) == 0 && x.AcademicYear == gradeScaleUpdate.AcademicYear).FirstOrDefault();
 
                     if (checkGradeScaleName != null)
                     {
@@ -117,11 +132,12 @@ namespace opensis.data.Repository
                     }
                     else
                     {
+                        gradeScaleAddViewModel.gradeScale.AcademicYear = gradeScaleUpdate.AcademicYear;
                         gradeScaleAddViewModel.gradeScale.CreatedBy = gradeScaleUpdate.CreatedBy;
                         gradeScaleAddViewModel.gradeScale.CreatedOn = gradeScaleUpdate.CreatedOn;
                         gradeScaleAddViewModel.gradeScale.UpdatedOn = DateTime.Now;
                         gradeScaleAddViewModel.gradeScale.SortOrder = gradeScaleUpdate.SortOrder;
-                        this.context.Entry(gradeScaleUpdate).CurrentValues.SetValues(gradeScaleAddViewModel.gradeScale);
+                        this.context?.Entry(gradeScaleUpdate).CurrentValues.SetValues(gradeScaleAddViewModel.gradeScale);
                         this.context?.SaveChanges();
                         gradeScaleAddViewModel._failure = false;
                         gradeScaleAddViewModel._message = "Grade Scale Updated Successfully";
@@ -152,13 +168,13 @@ namespace opensis.data.Repository
         {
             try
             {
-                var gradeScaleDelete = this.context?.GradeScale.FirstOrDefault(x => x.TenantId == gradeScaleAddViewModel.gradeScale.TenantId && x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.GradeScaleId == gradeScaleAddViewModel.gradeScale.GradeScaleId);
+                var gradeScaleDelete = this.context?.GradeScale.FirstOrDefault(x => x.TenantId == gradeScaleAddViewModel.gradeScale!.TenantId && x.SchoolId == gradeScaleAddViewModel.gradeScale.SchoolId && x.GradeScaleId == gradeScaleAddViewModel.gradeScale.GradeScaleId);
                 
-                var gradeList = this.context?.Grade.Where(e => e.GradeScaleId == gradeScaleDelete.GradeScaleId && e.SchoolId == gradeScaleDelete.SchoolId && e.TenantId == gradeScaleDelete.TenantId).ToList();
-                
+          
                 if (gradeScaleDelete!=null)
                 {
-                    if (gradeList.Count > 0)
+                    var gradeList = this.context?.Grade.Where(e => e.GradeScaleId == gradeScaleDelete.GradeScaleId && e.SchoolId == gradeScaleDelete.SchoolId && e.TenantId == gradeScaleDelete.TenantId).ToList();
+                    if (gradeList?.Any()==true)
                     {
                         gradeScaleAddViewModel._message = "It Has Associationship";
                         gradeScaleAddViewModel._failure = true;
@@ -193,9 +209,15 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeAddViewModel AddGrade(GradeAddViewModel gradeAddViewModel)
         {
+            if(gradeAddViewModel.grade is null)
+            {
+                return gradeAddViewModel;
+            }
             try
             {
-                var checkGradeTitle = this.context?.Grade.Where(x => x.SchoolId == gradeAddViewModel.grade.SchoolId && x.TenantId == gradeAddViewModel.grade.TenantId && x.GradeScaleId == gradeAddViewModel.grade.GradeScaleId && x.Title.ToLower()== gradeAddViewModel.grade.Title.ToLower()).FirstOrDefault();
+                var checkGradeTitle = this.context?.Grade.AsEnumerable().Where(x => x.SchoolId == gradeAddViewModel.grade.SchoolId && x.TenantId == gradeAddViewModel.grade.TenantId && x.GradeScaleId == gradeAddViewModel.grade.GradeScaleId &&
+                String.Compare(x.Title, gradeAddViewModel.grade.Title,true)==0
+                /*x.Title.ToLower()== gradeAddViewModel.grade.Title.ToLower()*/).FirstOrDefault();
                 if (checkGradeTitle != null)
                 {
                     gradeAddViewModel._failure = true;
@@ -218,8 +240,8 @@ namespace opensis.data.Repository
                     {
                         SortOrder = gradeSortOrder.SortOrder + 1;
                     }
-                    gradeAddViewModel.grade.GradeId = (int)GradeId;
-                    gradeAddViewModel.grade.SortOrder = (int)SortOrder;
+                    gradeAddViewModel.grade.GradeId = (int)GradeId!;
+                    gradeAddViewModel.grade.SortOrder = (int)SortOrder!;
                     gradeAddViewModel.grade.CreatedOn = DateTime.UtcNow;
                     this.context?.Grade.Add(gradeAddViewModel.grade);
                     this.context?.SaveChanges();
@@ -243,12 +265,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeAddViewModel UpdateGrade(GradeAddViewModel gradeAddViewModel)
         {
+            if(gradeAddViewModel.grade is null)
+            {
+                return gradeAddViewModel;
+            }
             try
             {
                 var gradeUpdate = this.context?.Grade.FirstOrDefault(x => x.TenantId == gradeAddViewModel.grade.TenantId && x.SchoolId == gradeAddViewModel.grade.SchoolId && x.GradeId == gradeAddViewModel.grade.GradeId);
                 if (gradeUpdate != null)
                 {
-                    var checkGradeTitle = this.context?.Grade.Where(x => x.SchoolId == gradeAddViewModel.grade.SchoolId && x.TenantId == gradeAddViewModel.grade.TenantId && x.GradeScaleId == gradeAddViewModel.grade.GradeScaleId && x.GradeId != gradeAddViewModel.grade.GradeId && x.Title.ToLower() == gradeAddViewModel.grade.Title.ToLower()).FirstOrDefault();
+                    var checkGradeTitle = this.context?.Grade.AsEnumerable().Where(x => x.SchoolId == gradeAddViewModel.grade.SchoolId && x.TenantId == gradeAddViewModel.grade.TenantId && x.GradeScaleId == gradeAddViewModel.grade.GradeScaleId && x.GradeId != gradeAddViewModel.grade.GradeId && 
+                    String.Compare(x.Title, gradeAddViewModel.grade.Title)==0
+                    /*x.Title.ToLower() == gradeAddViewModel.grade.Title.ToLower()*/).FirstOrDefault();
 
                     if (checkGradeTitle != null)
                     {
@@ -261,7 +289,7 @@ namespace opensis.data.Repository
                         gradeAddViewModel.grade.CreatedOn = gradeUpdate.CreatedOn;
                         gradeAddViewModel.grade.SortOrder = gradeUpdate.SortOrder;
                         gradeAddViewModel.grade.UpdatedOn = DateTime.Now;
-                        this.context.Entry(gradeUpdate).CurrentValues.SetValues(gradeAddViewModel.grade);                        
+                        this.context?.Entry(gradeUpdate).CurrentValues.SetValues(gradeAddViewModel.grade);                        
                         this.context?.SaveChanges();
                         gradeAddViewModel._failure = false;
                         gradeAddViewModel._message = "Grade Updated Successfully";
@@ -292,7 +320,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var gradeDelete = this.context?.Grade.FirstOrDefault(x => x.TenantId == gradeAddViewModel.grade.TenantId && x.SchoolId == gradeAddViewModel.grade.SchoolId && x.GradeId==gradeAddViewModel.grade.GradeId);
+                var gradeDelete = this.context?.Grade.FirstOrDefault(x => x.TenantId == gradeAddViewModel.grade!.TenantId && x.SchoolId == gradeAddViewModel.grade.SchoolId && x.GradeId==gradeAddViewModel.grade.GradeId);
                 
                 if (gradeDelete != null)
                 {
@@ -322,57 +350,33 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeScaleListViewModel GetAllGradeScaleList(GradeScaleListViewModel gradeScaleListViewModel)
         {
-            GradeScaleListViewModel GradeScaleListModel = new GradeScaleListViewModel();
+            GradeScaleListViewModel GradeScaleListModel = new ();
             try
             {
 
-                var GradeScaleList = this.context?.GradeScale.Include(x => x.Grade).Where(e => e.TenantId == gradeScaleListViewModel.TenantId && e.SchoolId == gradeScaleListViewModel.SchoolId).OrderBy(e=>e.SortOrder).Select(e=> new GradeScale()
-                { 
-                    TenantId=e.TenantId,
-                    SchoolId=e.SchoolId,
-                    GradeScaleId=e.GradeScaleId,
-                    GradeScaleName=e.GradeScaleName,
-                    GradeScaleValue=e.GradeScaleValue,
-                    GradeScaleComment=e.GradeScaleComment,
-                    CalculateGpa=e.CalculateGpa,
-                    UseAsStandardGradeScale=e.UseAsStandardGradeScale,
-                    SortOrder=e.SortOrder,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedOn=e.UpdatedOn,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.SchoolId == gradeScaleListViewModel.SchoolId && u.TenantId == gradeScaleListViewModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.SchoolId == gradeScaleListViewModel.SchoolId && u.TenantId == gradeScaleListViewModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    Grade=e.Grade.Select(f=> new Grade()
-                    { 
-                        TenantId=f.TenantId,
-                        SchoolId=f.SchoolId,
-                        GradeScaleId=f.GradeScaleId,
-                        GradeId=f.GradeId,
-                        Breakoff=f.Breakoff,
-                        WeightedGpValue=f.WeightedGpValue,
-                        UnweightedGpValue=f.UnweightedGpValue,
-                        Comment=f.Comment,
-                        SortOrder=f.SortOrder,
-                        Title=f.Title,
-                        CreatedOn = f.CreatedOn,
-                        UpdatedOn = f.UpdatedOn,
-                        CreatedBy = (f.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.SchoolId == gradeScaleListViewModel.SchoolId && u.TenantId == gradeScaleListViewModel.TenantId && u.EmailAddress == f.CreatedBy).Name : null,
-                        UpdatedBy = (f.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.SchoolId == gradeScaleListViewModel.SchoolId && u.TenantId == gradeScaleListViewModel.TenantId && u.EmailAddress == f.UpdatedBy).Name : null,
-                    }).ToList()
-                }).ToList();                
+                var GradeScaleList = this.context?.GradeScale.Include(x => x.Grade).Where(e => e.TenantId == gradeScaleListViewModel.TenantId && e.SchoolId == gradeScaleListViewModel.SchoolId && e.AcademicYear == gradeScaleListViewModel.AcademicYear).OrderBy(e => e.SortOrder).ToList();       
                 
-                if (GradeScaleList.Count>0)
+                if (GradeScaleList?.Any()==true)
                 {
                     foreach (var GradeScale in GradeScaleList)
                     {
+                        if (gradeScaleListViewModel.IsListView == true)
+                        {
+                            GradeScale.Grade.ToList().ForEach(c =>
+                            {
+                                c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, gradeScaleListViewModel.TenantId, c.CreatedBy);
+                                c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, gradeScaleListViewModel.TenantId, c.UpdatedBy);
+                            });
+                        }
                         GradeScale.Grade = GradeScale.Grade.OrderBy(y => y.SortOrder).ToList();
                     }
 
-                    GradeScaleListModel.gradeScaleList = GradeScaleList;
+                    GradeScaleListModel.GradeScaleList = GradeScaleList;
                     GradeScaleListModel._failure = false;
                 }
                 else
                 {
-                    GradeScaleListModel.gradeScaleList = GradeScaleList;
+                    GradeScaleListModel.GradeScaleList = new();
                     GradeScaleListModel._message = NORECORDFOUND;
                     GradeScaleListModel._failure = true;
                 }
@@ -401,26 +405,28 @@ namespace opensis.data.Repository
                 var GradeRecords = new List<Grade>();
 
                 var targetGrade = this.context?.Grade.FirstOrDefault(x => x.SortOrder == gradeSortOrderModel.PreviousSortOrder && x.SchoolId == gradeSortOrderModel.SchoolId && x.GradeScaleId == gradeSortOrderModel.GradeScaleId && x.TenantId== gradeSortOrderModel.TenantId);
+                if (targetGrade != null)
+                 {
+                    targetGrade.SortOrder = gradeSortOrderModel.CurrentSortOrder;
+                    targetGrade.UpdatedBy = gradeSortOrderModel.UpdatedBy;
+                    targetGrade.UpdatedOn = DateTime.UtcNow;
+                 }
                 
-                targetGrade.SortOrder = gradeSortOrderModel.CurrentSortOrder;
-                targetGrade.UpdatedBy = gradeSortOrderModel.UpdatedBy;
-                targetGrade.UpdatedOn = DateTime.UtcNow;
-
                 if (gradeSortOrderModel.PreviousSortOrder > gradeSortOrderModel.CurrentSortOrder)
                 {
                     GradeRecords = this.context?.Grade.Where(x => x.SortOrder >= gradeSortOrderModel.CurrentSortOrder && x.SortOrder < gradeSortOrderModel.PreviousSortOrder && x.SchoolId == gradeSortOrderModel.SchoolId && x.GradeScaleId == gradeSortOrderModel.GradeScaleId && x.TenantId == gradeSortOrderModel.TenantId).ToList();
 
-                    if (GradeRecords.Count > 0)
+                    if (GradeRecords?.Any()==true)
                     {
-                        GradeRecords.ForEach(x => { x.SortOrder = x.SortOrder + 1; x.UpdatedOn = DateTime.UtcNow;x.UpdatedBy = gradeSortOrderModel.UpdatedBy; });
+                        GradeRecords.ForEach(x => { x.SortOrder++; x.UpdatedOn = DateTime.UtcNow;x.UpdatedBy = gradeSortOrderModel.UpdatedBy; });
                     }
                 }
                 if (gradeSortOrderModel.CurrentSortOrder > gradeSortOrderModel.PreviousSortOrder)
                 {
                     GradeRecords = this.context?.Grade.Where(x => x.SortOrder <= gradeSortOrderModel.CurrentSortOrder && x.SortOrder > gradeSortOrderModel.PreviousSortOrder && x.SchoolId == gradeSortOrderModel.SchoolId && x.GradeScaleId == gradeSortOrderModel.GradeScaleId && x.TenantId == gradeSortOrderModel.TenantId).ToList();
-                    if (GradeRecords.Count > 0)
+                    if (GradeRecords?.Any() == true)
                     {
-                        GradeRecords.ForEach(x => { x.SortOrder = x.SortOrder - 1; x.UpdatedOn = DateTime.UtcNow; x.UpdatedBy = gradeSortOrderModel.UpdatedBy; });
+                        GradeRecords.ForEach(x => { x.SortOrder--; x.UpdatedOn = DateTime.UtcNow; x.UpdatedBy = gradeSortOrderModel.UpdatedBy; });
                     }
                 }
                 this.context?.SaveChanges();
@@ -441,32 +447,38 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeLibraryCategoryAddViewModel AddEffortGradeLibraryCategory(EffortGradeLibraryCategoryAddViewModel effortGradeLibraryCategoryAddViewModel)
         {
+            if(effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory is null)
+            {
+                return effortGradeLibraryCategoryAddViewModel;
+            }
             try
             {
-                var effortGradeLibraryCategoryList = this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId && x.CategoryName.ToLower() == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.CategoryName.ToLower());
+                var effortGradeLibraryCategoryList = this.context?.EffortGradeLibraryCategory.AsEnumerable().FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.TenantId && /*x.CategoryName.ToLower() == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CategoryName.ToLower()*/
+                String.Compare(x.CategoryName, effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CategoryName,true)==0
+                );
 
                 if (effortGradeLibraryCategoryList == null)
                 {
                     int? EffortCategoryId = 1;
                     int? SortOrder = 1;
 
-                    var effortGradeLibraryCategoryData = this.context?.EffortGradeLibraryCategory.Where(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId).OrderByDescending(x => x.EffortCategoryId).FirstOrDefault();
+                    var effortGradeLibraryCategoryData = this.context?.EffortGradeLibraryCategory.Where(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.TenantId).OrderByDescending(x => x.EffortCategoryId).FirstOrDefault();
 
                     if (effortGradeLibraryCategoryData != null)
                     {
                         EffortCategoryId = effortGradeLibraryCategoryData.EffortCategoryId + 1;
                     }
-                    var effortGradeLibraryCategorySortOrder = this.context?.EffortGradeLibraryCategory.Where(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
+                    var effortGradeLibraryCategorySortOrder = this.context?.EffortGradeLibraryCategory.Where(x => x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.TenantId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
 
                     if (effortGradeLibraryCategorySortOrder != null)
                     {
                         SortOrder = effortGradeLibraryCategorySortOrder.SortOrder + 1;
                     }
 
-                    effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.EffortCategoryId = (int)EffortCategoryId;
-                    effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SortOrder = (int)SortOrder;
-                    effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.CreatedOn = DateTime.UtcNow;
-                    this.context?.EffortGradeLibraryCategory.Add(effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory);
+                    effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.EffortCategoryId = (int)EffortCategoryId;
+                    effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SortOrder = (int)SortOrder!;
+                    effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CreatedOn = DateTime.UtcNow;
+                    this.context?.EffortGradeLibraryCategory.Add(effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory);
                     this.context?.SaveChanges();
                     effortGradeLibraryCategoryAddViewModel._failure = false;
                     effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Added Successfully";
@@ -479,7 +491,6 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-
                 effortGradeLibraryCategoryAddViewModel._failure = true;
                 effortGradeLibraryCategoryAddViewModel._message = es.Message;
             }
@@ -492,13 +503,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeLibraryCategoryAddViewModel UpdateEffortGradeLibraryCategory(EffortGradeLibraryCategoryAddViewModel effortGradeLibraryCategoryAddViewModel)
         {
+            if(effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory is null)
+            {
+                return effortGradeLibraryCategoryAddViewModel;
+            }
             try
             {
-                var EffortGradeLibraryCategoryUpdate = this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.EffortCategoryId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.EffortCategoryId);
+                var EffortGradeLibraryCategoryUpdate = this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.EffortCategoryId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.EffortCategoryId);
                 
                 if (EffortGradeLibraryCategoryUpdate != null)
                 {
-                    var EffortGradeLibraryCategoryData= this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.EffortCategoryId != effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.EffortCategoryId && x.CategoryName.ToLower() == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.CategoryName.ToLower());
+                    var EffortGradeLibraryCategoryData= this.context?.EffortGradeLibraryCategory.AsEnumerable().FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.EffortCategoryId != effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.EffortCategoryId && /*x.CategoryName.ToLower() == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CategoryName.ToLower()*/
+                    String.Compare(x.CategoryName, effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CategoryName, true) == 0);
 
                     if (EffortGradeLibraryCategoryData!=null)
                     {
@@ -507,11 +523,11 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.CreatedBy = EffortGradeLibraryCategoryUpdate.CreatedBy;
-                        effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.CreatedOn = EffortGradeLibraryCategoryUpdate.CreatedOn;
-                        effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SortOrder = EffortGradeLibraryCategoryUpdate.SortOrder;
-                        effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.UpdatedOn = DateTime.Now;
-                        this.context.Entry(EffortGradeLibraryCategoryUpdate).CurrentValues.SetValues(effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory);
+                        effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CreatedBy = EffortGradeLibraryCategoryUpdate.CreatedBy;
+                        effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.CreatedOn = EffortGradeLibraryCategoryUpdate.CreatedOn;
+                        effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SortOrder = EffortGradeLibraryCategoryUpdate.SortOrder;
+                        effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.UpdatedOn = DateTime.Now;
+                        this.context?.Entry(EffortGradeLibraryCategoryUpdate).CurrentValues.SetValues(effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory);
                         this.context?.SaveChanges();
                         effortGradeLibraryCategoryAddViewModel._failure = false;
                         effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Updated Successfully";
@@ -519,7 +535,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory = null;
+                    effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory = null;
                     effortGradeLibraryCategoryAddViewModel._failure = true;
                     effortGradeLibraryCategoryAddViewModel._message = NORECORDFOUND;
                 }
@@ -541,7 +557,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var EffortGradeLibraryCategoryDelete = this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.SchoolId && x.EffortCategoryId == effortGradeLibraryCategoryAddViewModel.effortGradeLibraryCategory.EffortCategoryId);
+                var EffortGradeLibraryCategoryDelete = this.context?.EffortGradeLibraryCategory.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory!.TenantId && x.SchoolId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.SchoolId && x.EffortCategoryId == effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory.EffortCategoryId);
 
                 if (EffortGradeLibraryCategoryDelete != null)
                 {
@@ -581,33 +597,39 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeLibraryCategoryItemAddViewModel AddEffortGradeLibraryCategoryItem(EffortGradeLibraryCategoryItemAddViewModel effortGradeLibraryCategoryItemAddViewModel)
         {
+            if(effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem is null)
+            {
+                return effortGradeLibraryCategoryItemAddViewModel;
+            }
             try
             {
-                var effortGradeLibraryCategoryItemList = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortCategoryId && x.EffortItemTitle.ToLower() == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortItemTitle.ToLower());
+                var effortGradeLibraryCategoryItemList = this.context?.EffortGradeLibraryCategoryItem.AsEnumerable().FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.TenantId && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortCategoryId && /*x.EffortItemTitle.ToLower() == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemTitle.ToLower()*/
+                String.Compare(x.EffortItemTitle, effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemTitle, true) == 0
+                );
 
                 if (effortGradeLibraryCategoryItemList == null)
                 {
                     int? EffortCategoryItemId = 1;
                     int? SortOrder = 1;
 
-                    var effortGradeLibraryCategoryItemData = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId).OrderByDescending(x => x.EffortItemId).FirstOrDefault();
+                    var effortGradeLibraryCategoryItemData = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.TenantId).OrderByDescending(x => x.EffortItemId).FirstOrDefault();
 
                     if (effortGradeLibraryCategoryItemData != null)
                     {
                         EffortCategoryItemId = effortGradeLibraryCategoryItemData.EffortItemId + 1;
                     }
 
-                    var effortGradeLibraryCategoryItemSortOrder = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortCategoryId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
+                    var effortGradeLibraryCategoryItemSortOrder = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.TenantId && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortCategoryId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
 
                     if (effortGradeLibraryCategoryItemSortOrder != null)
                     {
                         SortOrder = effortGradeLibraryCategoryItemSortOrder.SortOrder + 1;
                     }
 
-                    effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortItemId = (int)EffortCategoryItemId;
-                    effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SortOrder = (int)SortOrder;
-                    effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.CreatedOn = DateTime.UtcNow;
-                    this.context?.EffortGradeLibraryCategoryItem.Add(effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem);
+                    effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemId = (int)EffortCategoryItemId;
+                    effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SortOrder = (int)SortOrder!;
+                    effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.CreatedOn = DateTime.UtcNow;
+                    this.context?.EffortGradeLibraryCategoryItem.Add(effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem);
                     this.context?.SaveChanges();
                     effortGradeLibraryCategoryItemAddViewModel._failure = false;
                     effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Added Successfully";
@@ -634,12 +656,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeLibraryCategoryItemAddViewModel UpdateEffortGradeLibraryCategoryItem(EffortGradeLibraryCategoryItemAddViewModel effortGradeLibraryCategoryItemAddViewModel)
         {
+            if(effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem is null)
+            {
+                return effortGradeLibraryCategoryItemAddViewModel;
+            }
             try
             {
-                var EffortGradeLibraryCategoryItemUpdate = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId && x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.EffortItemId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortItemId);
+                var EffortGradeLibraryCategoryItemUpdate = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.TenantId && x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.EffortItemId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemId);
                 if (EffortGradeLibraryCategoryItemUpdate != null)
                 {
-                    var effortGradeLibraryCategoryItemList = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId  && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortCategoryId && x.EffortItemId!= EffortGradeLibraryCategoryItemUpdate.EffortItemId && x.EffortItemTitle.ToLower() == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortItemTitle.ToLower());
+                    var effortGradeLibraryCategoryItemList = this.context?.EffortGradeLibraryCategoryItem.AsEnumerable().FirstOrDefault(x => x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.TenantId  && x.EffortCategoryId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortCategoryId && x.EffortItemId!= EffortGradeLibraryCategoryItemUpdate.EffortItemId &&/* x.EffortItemTitle.ToLower() == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemTitle.ToLower()*/
+                    String.Compare(x.EffortItemTitle, effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemTitle, true) == 0
+                    );
                     if (effortGradeLibraryCategoryItemList !=null)
                     {
                         effortGradeLibraryCategoryItemAddViewModel._failure = true;
@@ -647,11 +675,11 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.CreatedBy = EffortGradeLibraryCategoryItemUpdate.CreatedBy;
-                        effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.CreatedOn = EffortGradeLibraryCategoryItemUpdate.CreatedOn;
-                        effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SortOrder = EffortGradeLibraryCategoryItemUpdate.SortOrder;
-                        effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.UpdatedOn = DateTime.Now;
-                        this.context.Entry(EffortGradeLibraryCategoryItemUpdate).CurrentValues.SetValues(effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem);
+                        effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.CreatedBy = EffortGradeLibraryCategoryItemUpdate.CreatedBy;
+                        effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.CreatedOn = EffortGradeLibraryCategoryItemUpdate.CreatedOn;
+                        effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SortOrder = EffortGradeLibraryCategoryItemUpdate.SortOrder;
+                        effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.UpdatedOn = DateTime.Now;
+                        this.context?.Entry(EffortGradeLibraryCategoryItemUpdate).CurrentValues.SetValues(effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem);
 
                         this.context?.SaveChanges();
                         effortGradeLibraryCategoryItemAddViewModel._failure = false;
@@ -660,7 +688,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem = null;
+                    effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem = null;
                     effortGradeLibraryCategoryItemAddViewModel._failure = true;
                     effortGradeLibraryCategoryItemAddViewModel._message = NORECORDFOUND;
                 }
@@ -683,7 +711,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var EffortGradeLibraryCategoryItemDelete = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.TenantId && x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.SchoolId && x.EffortItemId == effortGradeLibraryCategoryItemAddViewModel.effortGradeLibraryCategoryItem.EffortItemId);
+                var EffortGradeLibraryCategoryItemDelete = this.context?.EffortGradeLibraryCategoryItem.FirstOrDefault(x => x.TenantId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem!.TenantId && x.SchoolId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.SchoolId && x.EffortItemId == effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem.EffortItemId);
                 
                 if (EffortGradeLibraryCategoryItemDelete != null)
                 {
@@ -714,7 +742,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeLlibraryCategoryListViewModel GetAllEffortGradeLlibraryCategoryList(EffortGradeLlibraryCategoryListViewModel effortGradeLlibraryCategoryListViewModel)
         {
-            EffortGradeLlibraryCategoryListViewModel effortGradeLlibraryCategoryListModel = new EffortGradeLlibraryCategoryListViewModel();
+            EffortGradeLlibraryCategoryListViewModel effortGradeLlibraryCategoryListModel = new ();
             try
             {
 
@@ -725,33 +753,37 @@ namespace opensis.data.Repository
                         TenantId = p.TenantId,
                         EffortCategoryId = p.EffortCategoryId,
                         CategoryName=p.CategoryName,
-                        CreatedBy= (p.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == effortGradeLlibraryCategoryListViewModel.TenantId && u.EmailAddress == p.CreatedBy).Name : null,
-                        CreatedOn=p.CreatedOn,
+                        CreatedBy= p.CreatedBy,
+                        CreatedOn =p.CreatedOn,
                         SortOrder = p.SortOrder,
-                        UpdatedBy = (p.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == effortGradeLlibraryCategoryListViewModel.TenantId && u.EmailAddress == p.UpdatedBy).Name : null,
+                        UpdatedBy = p.UpdatedBy,
                         UpdatedOn =p.UpdatedOn,
-                        EffortGradeLibraryCategoryItem = p.EffortGradeLibraryCategoryItem.Select(v=> new EffortGradeLibraryCategoryItem()
-                        { 
-                            TenantId=v.TenantId,
-                            SchoolId=v.SchoolId,
-                            EffortCategoryId=v.EffortCategoryId,
-                            EffortItemId=v.EffortItemId,
-                            EffortItemTitle=v.EffortItemTitle,
-                            SortOrder=v.SortOrder,
-                            CreatedOn=v.CreatedOn,
-                            UpdatedOn=v.UpdatedOn,
-                            CreatedBy= (v.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == effortGradeLlibraryCategoryListViewModel.TenantId && u.EmailAddress == v.CreatedBy).Name : null,
-                            UpdatedBy= (v.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == effortGradeLlibraryCategoryListViewModel.TenantId && u.EmailAddress == v.UpdatedBy).Name : null
-                        }).OrderBy(c => c.SortOrder).ToList()
+                        EffortGradeLibraryCategoryItem = p.EffortGradeLibraryCategoryItem.OrderBy(c => c.SortOrder).ToList()
                     }).ToList();
-                if(effortGradeLlibraryCategoryList.Count >0)
+                
+                if(effortGradeLlibraryCategoryList?.Any()==true)
                 {
-                    effortGradeLlibraryCategoryListModel.effortGradeLibraryCategoryList = effortGradeLlibraryCategoryList;
+                    foreach (var effortGradeLlibraryCategory in effortGradeLlibraryCategoryList)
+                    {
+                        if (effortGradeLlibraryCategory.EffortGradeLibraryCategoryItem.Count>0)
+                        {
+                            if (effortGradeLlibraryCategoryListViewModel.IsListView == true)
+                            {
+                                effortGradeLlibraryCategory.EffortGradeLibraryCategoryItem.ToList().ForEach(c =>
+                                {
+                                    c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, effortGradeLlibraryCategoryListViewModel.TenantId, c.CreatedBy);
+                                    c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, effortGradeLlibraryCategoryListViewModel.TenantId, c.UpdatedBy);
+                                });
+                            }
+                        }                        
+                    }
+
+                    effortGradeLlibraryCategoryListModel.EffortGradeLibraryCategoryList = effortGradeLlibraryCategoryList;
                     effortGradeLlibraryCategoryListModel._failure = false;
                 }
                 else
                 {
-                    effortGradeLlibraryCategoryListModel.effortGradeLibraryCategoryList = effortGradeLlibraryCategoryList;
+                    effortGradeLlibraryCategoryListModel.EffortGradeLibraryCategoryList = new();
                     effortGradeLlibraryCategoryListModel._failure = true;
                     effortGradeLlibraryCategoryListModel._message = NORECORDFOUND;
                 }
@@ -791,17 +823,17 @@ namespace opensis.data.Repository
                         {
                             EffortGradeLibraryCategoryItemRecords = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SortOrder >= effortgradeLibraryCategorySortOrderModel.CurrentSortOrder && x.SortOrder < effortgradeLibraryCategorySortOrderModel.PreviousSortOrder && x.SchoolId == effortgradeLibraryCategorySortOrderModel.SchoolId && x.TenantId == effortgradeLibraryCategorySortOrderModel.TenantId && x.EffortCategoryId == effortgradeLibraryCategorySortOrderModel.EffortCategoryId).ToList();
 
-                            if (EffortGradeLibraryCategoryItemRecords.Count > 0)
+                            if (EffortGradeLibraryCategoryItemRecords?.Any()==true)
                             {
-                                EffortGradeLibraryCategoryItemRecords.ForEach(x => x.SortOrder = x.SortOrder + 1);
+                                EffortGradeLibraryCategoryItemRecords.ForEach(x => ++x.SortOrder);
                             }
                         }
                         if (effortgradeLibraryCategorySortOrderModel.CurrentSortOrder > effortgradeLibraryCategorySortOrderModel.PreviousSortOrder)
                         {
                             EffortGradeLibraryCategoryItemRecords = this.context?.EffortGradeLibraryCategoryItem.Where(x => x.SortOrder <= effortgradeLibraryCategorySortOrderModel.CurrentSortOrder && x.SortOrder > effortgradeLibraryCategorySortOrderModel.PreviousSortOrder && x.SchoolId == effortgradeLibraryCategorySortOrderModel.SchoolId && x.TenantId == effortgradeLibraryCategorySortOrderModel.TenantId && x.EffortCategoryId == effortgradeLibraryCategorySortOrderModel.EffortCategoryId).ToList();
-                            if (EffortGradeLibraryCategoryItemRecords.Count > 0)
+                            if (EffortGradeLibraryCategoryItemRecords?.Any()==true)
                             {
-                                EffortGradeLibraryCategoryItemRecords.ForEach(x => x.SortOrder = x.SortOrder - 1);
+                                EffortGradeLibraryCategoryItemRecords.ForEach(x => --x.SortOrder);
                             }
                         }
                     }
@@ -820,17 +852,17 @@ namespace opensis.data.Repository
                         {
                             EffortGradeLibraryCategoryRecords = this.context?.EffortGradeLibraryCategory.Where(x => x.SortOrder >= effortgradeLibraryCategorySortOrderModel.CurrentSortOrder && x.SortOrder < effortgradeLibraryCategorySortOrderModel.PreviousSortOrder && x.SchoolId == effortgradeLibraryCategorySortOrderModel.SchoolId && x.TenantId == effortgradeLibraryCategorySortOrderModel.TenantId).ToList();
 
-                            if (EffortGradeLibraryCategoryRecords.Count > 0)
+                            if (EffortGradeLibraryCategoryRecords?.Any()==true)
                             {
-                                EffortGradeLibraryCategoryRecords.ForEach(x => x.SortOrder = x.SortOrder + 1);
+                                EffortGradeLibraryCategoryRecords.ForEach(x => ++x.SortOrder);
                             }
                         }
                         if (effortgradeLibraryCategorySortOrderModel.CurrentSortOrder > effortgradeLibraryCategorySortOrderModel.PreviousSortOrder)
                         {
                             EffortGradeLibraryCategoryRecords = this.context?.EffortGradeLibraryCategory.Where(x => x.SortOrder <= effortgradeLibraryCategorySortOrderModel.CurrentSortOrder && x.SortOrder > effortgradeLibraryCategorySortOrderModel.PreviousSortOrder && x.SchoolId == effortgradeLibraryCategorySortOrderModel.SchoolId && x.TenantId == effortgradeLibraryCategorySortOrderModel.TenantId).ToList();
-                            if (EffortGradeLibraryCategoryRecords.Count > 0)
+                            if (EffortGradeLibraryCategoryRecords?.Any()==true)
                             {
-                                EffortGradeLibraryCategoryRecords.ForEach(x => x.SortOrder = x.SortOrder - 1);
+                                EffortGradeLibraryCategoryRecords.ForEach(x => --x.SortOrder);
                             }
                         }
                     }
@@ -854,33 +886,38 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeScaleAddViewModel AddEffortGradeScale(EffortGradeScaleAddViewModel effortGradeScaleAddViewModel)
         {
-            EffortGradeScaleAddViewModel effortGradeScaleAdd = new EffortGradeScaleAddViewModel();
+            if (effortGradeScaleAddViewModel.EffortGradeScale is null)
+            {
+                return effortGradeScaleAddViewModel;
+            }
+            EffortGradeScaleAddViewModel effortGradeScaleAdd = new ();
             try
             {
-                var gradeScaleValue = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId && x.GradeScaleValue.ToString() == effortGradeScaleAddViewModel.effortGradeScale.GradeScaleValue.ToString());
+               
+                var gradeScaleValue = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId && x.GradeScaleValue.ToString() == effortGradeScaleAddViewModel.EffortGradeScale.GradeScaleValue.ToString());
 
                 if (gradeScaleValue == null)
                 {
                     int? effortGradeScaleId = 1;
                     int? SortOrder = 1;
 
-                    var effortGradeScaleData = this.context?.EffortGradeScale.Where(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId).OrderByDescending(x => x.EffortGradeScaleId).FirstOrDefault();
+                    var effortGradeScaleData = this.context?.EffortGradeScale.Where(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId).OrderByDescending(x => x.EffortGradeScaleId).FirstOrDefault();
 
                     if (effortGradeScaleData != null)
                     {
                         effortGradeScaleId = effortGradeScaleData.EffortGradeScaleId + 1;
                     }
-                    var sortOrderData = this.context?.EffortGradeScale.Where(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
+                    var sortOrderData = this.context?.EffortGradeScale.Where(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId).OrderByDescending(x => x.SortOrder).FirstOrDefault();
 
                     if (sortOrderData != null)
                     {
                         SortOrder = sortOrderData.SortOrder + 1;
                     }
 
-                    effortGradeScaleAddViewModel.effortGradeScale.EffortGradeScaleId = (int)effortGradeScaleId;
-                    effortGradeScaleAddViewModel.effortGradeScale.SortOrder = (int)SortOrder;
-                    effortGradeScaleAddViewModel.effortGradeScale.CreatedOn = DateTime.UtcNow;
-                    this.context?.EffortGradeScale.Add(effortGradeScaleAddViewModel.effortGradeScale);
+                    effortGradeScaleAddViewModel.EffortGradeScale.EffortGradeScaleId = (int)effortGradeScaleId;
+                    effortGradeScaleAddViewModel.EffortGradeScale.SortOrder = (int)SortOrder!;
+                    effortGradeScaleAddViewModel.EffortGradeScale.CreatedOn = DateTime.UtcNow;
+                    this.context?.EffortGradeScale.Add(effortGradeScaleAddViewModel.EffortGradeScale);
                     this.context?.SaveChanges();
                     effortGradeScaleAddViewModel._failure = false;
                     effortGradeScaleAddViewModel._message = "Effort Grade Scale Added Successfully";
@@ -906,21 +943,25 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeScaleAddViewModel UpdateEffortGradeScale(EffortGradeScaleAddViewModel effortGradeScaleAddViewModel)
         {
+            if (effortGradeScaleAddViewModel.EffortGradeScale is null)
+            {
+                return effortGradeScaleAddViewModel;
+            }
             try
             {
-                var effortGradeScaleUpdate = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId && x.EffortGradeScaleId == effortGradeScaleAddViewModel.effortGradeScale.EffortGradeScaleId);
+                var effortGradeScaleUpdate = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId && x.EffortGradeScaleId == effortGradeScaleAddViewModel.EffortGradeScale.EffortGradeScaleId);
 
                 if (effortGradeScaleUpdate != null)
                 {
-                    var gradeScaleValue = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId && x.GradeScaleValue.ToString() == effortGradeScaleAddViewModel.effortGradeScale.GradeScaleValue.ToString() && x.EffortGradeScaleId != effortGradeScaleUpdate.EffortGradeScaleId);
+                    var gradeScaleValue = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId && x.GradeScaleValue.ToString() == effortGradeScaleAddViewModel.EffortGradeScale.GradeScaleValue.ToString() && x.EffortGradeScaleId != effortGradeScaleUpdate.EffortGradeScaleId);
 
                     if (gradeScaleValue == null)
                     {
-                        effortGradeScaleAddViewModel.effortGradeScale.CreatedBy = effortGradeScaleUpdate.CreatedBy;
-                        effortGradeScaleAddViewModel.effortGradeScale.CreatedOn = effortGradeScaleUpdate.CreatedOn;
-                        effortGradeScaleAddViewModel.effortGradeScale.SortOrder = effortGradeScaleUpdate.SortOrder;
-                        effortGradeScaleAddViewModel.effortGradeScale.UpdatedOn = DateTime.Now;
-                        this.context.Entry(effortGradeScaleUpdate).CurrentValues.SetValues(effortGradeScaleAddViewModel.effortGradeScale);
+                        effortGradeScaleAddViewModel.EffortGradeScale.CreatedBy = effortGradeScaleUpdate.CreatedBy;
+                        effortGradeScaleAddViewModel.EffortGradeScale.CreatedOn = effortGradeScaleUpdate.CreatedOn;
+                        effortGradeScaleAddViewModel.EffortGradeScale.SortOrder = effortGradeScaleUpdate.SortOrder;
+                        effortGradeScaleAddViewModel.EffortGradeScale.UpdatedOn = DateTime.Now;
+                        this.context?.Entry(effortGradeScaleUpdate).CurrentValues.SetValues(effortGradeScaleAddViewModel.EffortGradeScale);
                         this.context?.SaveChanges();
                         effortGradeScaleAddViewModel._failure = false;
                         effortGradeScaleAddViewModel._message = "Effort Grade Scale Updated Successfully";
@@ -933,7 +974,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    effortGradeScaleAddViewModel.effortGradeScale = null;
+                    effortGradeScaleAddViewModel.EffortGradeScale = null;
                     effortGradeScaleAddViewModel._message = NORECORDFOUND;
                     effortGradeScaleAddViewModel._failure = true;
                 }
@@ -955,7 +996,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var effortGradeScaleDelete = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.effortGradeScale.TenantId && x.SchoolId == effortGradeScaleAddViewModel.effortGradeScale.SchoolId && x.EffortGradeScaleId == effortGradeScaleAddViewModel.effortGradeScale.EffortGradeScaleId);
+                var effortGradeScaleDelete = this.context?.EffortGradeScale.FirstOrDefault(x => x.TenantId == effortGradeScaleAddViewModel.EffortGradeScale!.TenantId && x.SchoolId == effortGradeScaleAddViewModel.EffortGradeScale.SchoolId && x.EffortGradeScaleId == effortGradeScaleAddViewModel.EffortGradeScale.EffortGradeScaleId);
 
                 if (effortGradeScaleDelete != null)
                 {
@@ -985,62 +1026,63 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public EffortGradeScaleListModel GetAllEffortGradeScale(PageResult pageResult)
         {
-            EffortGradeScaleListModel effortGradeScaleList = new EffortGradeScaleListModel();
-            IQueryable<EffortGradeScale> transactionIQ = null;
+            EffortGradeScaleListModel effortGradeScaleList = new ();
+            IQueryable<EffortGradeScale>? transactionIQ = null;
 
             var effortGradeScaleData = this.context?.EffortGradeScale.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId==pageResult.SchoolId);
             try
             {
-                if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                int totalCount = 0;
+                if (effortGradeScaleData != null)
                 {
-                    transactionIQ = effortGradeScaleData;
-                }
-                else
-                {
-                    if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                     {
-                        string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        transactionIQ = effortGradeScaleData.Where(x => x.GradeScaleValue != null && x.GradeScaleValue.ToString() == Columnvalue.ToString() || x.GradeScaleComment != null && x.GradeScaleComment.ToLower().Contains(Columnvalue.ToLower()));
+                        transactionIQ = effortGradeScaleData;
                     }
                     else
                     {
-                        transactionIQ = Utility.FilteredData(pageResult.FilterParams, effortGradeScaleData).AsQueryable();
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                        {
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                            transactionIQ = effortGradeScaleData.Where(x => x.GradeScaleValue != null && x.GradeScaleValue.ToString() == Columnvalue.ToString() || x.GradeScaleComment != null && x.GradeScaleComment.ToLower().Contains(Columnvalue.ToLower()));
+                        }
+                        else
+                        {
+                            transactionIQ = Utility.FilteredData(pageResult.FilterParams!, effortGradeScaleData).AsQueryable();
+                        }
                     }
-                }
-                if (pageResult.SortingModel != null)
-                {
-                    transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection.ToLower());
-                }
-                int totalCount = transactionIQ.Count();
-                if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                {
-                    transactionIQ = transactionIQ.Select(e=> new EffortGradeScale()
-                    { 
-                        TenantId=e.TenantId,
-                        SchoolId=e.SchoolId,
-                        EffortGradeScaleId=e.EffortGradeScaleId,
-                        GradeScaleValue=e.GradeScaleValue,
-                        GradeScaleComment=e.GradeScaleComment,
-                        SortOrder=e.SortOrder,
-                        CreatedOn=e.CreatedOn,
-                        UpdatedOn=e.UpdatedOn,
-                        CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                        UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u =>  u.TenantId == pageResult.TenantId && u.EmailAddress == e.UpdatedBy).Name : null
-                    }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
-                }
-                //var effortList = transactionIQ.AsNoTracking().Select(s => new GetEffortGradeScaleForView
-                //{
-                //    TenantId = s.TenantId,
-                //    SchoolId = s.SchoolId,
-                //    EffortGradeScaleId = s.EffortGradeScaleId,
-                //    GradeScaleValue = s.GradeScaleValue,
-                //    GradeScaleComment = s.GradeScaleComment,
-                //    SortOrder = s.SortOrder
-                //}).ToList();
+                    if (pageResult.SortingModel != null)
+                    {
+                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
+                    }
+                     totalCount = transactionIQ.Count();
+                    if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                    {
+                        transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                    }
 
+                    effortGradeScaleList.EffortGradeScaleList = transactionIQ.ToList();
+                    if (pageResult.IsListView == true)
+                    {
+                        effortGradeScaleList.EffortGradeScaleList.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+                    }
+                    //var effortList = transactionIQ.AsNoTracking().Select(s => new GetEffortGradeScaleForView
+                    //{
+                    //    TenantId = s.TenantId,
+                    //    SchoolId = s.SchoolId,
+                    //    EffortGradeScaleId = s.EffortGradeScaleId,
+                    //    GradeScaleValue = s.GradeScaleValue,
+                    //    GradeScaleComment = s.GradeScaleComment,
+                    //    SortOrder = s.SortOrder
+                    //}).ToList();
+                }
                 effortGradeScaleList.TenantId = pageResult.TenantId;
                 effortGradeScaleList.SchoolId = pageResult.SchoolId;
-                effortGradeScaleList.effortGradeScaleList = transactionIQ.ToList();
+                //effortGradeScaleList.effortGradeScaleList = transactionIQ.ToList();
                 //effortGradeScaleList.getEffortGradeScaleForView = effortList;
                 effortGradeScaleList.TotalCount = totalCount;
                 effortGradeScaleList.PageNumber = pageResult.PageNumber;
@@ -1071,23 +1113,25 @@ namespace opensis.data.Repository
                 var effortGradeScaleRecords = new List<EffortGradeScale>();
 
                 var targetEffortGradeScale = this.context?.EffortGradeScale.FirstOrDefault(x => x.SortOrder == effortGradeScaleSortOrderViewModel.PreviousSortOrder && x.SchoolId == effortGradeScaleSortOrderViewModel.SchoolId && x.TenantId == effortGradeScaleSortOrderViewModel.TenantId);
-                targetEffortGradeScale.SortOrder = effortGradeScaleSortOrderViewModel.CurrentSortOrder;
-
+                if (targetEffortGradeScale != null)
+                {
+                  targetEffortGradeScale.SortOrder = effortGradeScaleSortOrderViewModel.CurrentSortOrder;
+                }
                 if (effortGradeScaleSortOrderViewModel.PreviousSortOrder > effortGradeScaleSortOrderViewModel.CurrentSortOrder)
                 {
                     effortGradeScaleRecords = this.context?.EffortGradeScale.Where(x => x.SortOrder >= effortGradeScaleSortOrderViewModel.CurrentSortOrder && x.SortOrder < effortGradeScaleSortOrderViewModel.PreviousSortOrder && x.TenantId == effortGradeScaleSortOrderViewModel.TenantId && x.SchoolId == effortGradeScaleSortOrderViewModel.SchoolId).ToList();
 
-                    if (effortGradeScaleRecords.Count > 0)
+                    if (effortGradeScaleRecords?.Any()==true)
                     {
-                        effortGradeScaleRecords.ForEach(x => x.SortOrder = x.SortOrder + 1);
+                        effortGradeScaleRecords.ForEach(x => ++x.SortOrder);
                     }
                 }
                 if (effortGradeScaleSortOrderViewModel.CurrentSortOrder > effortGradeScaleSortOrderViewModel.PreviousSortOrder)
                 {
                     effortGradeScaleRecords = this.context?.EffortGradeScale.Where(x => x.SortOrder <= effortGradeScaleSortOrderViewModel.CurrentSortOrder && x.SortOrder > effortGradeScaleSortOrderViewModel.PreviousSortOrder && x.SchoolId == effortGradeScaleSortOrderViewModel.SchoolId && x.TenantId == effortGradeScaleSortOrderViewModel.TenantId).ToList();
-                    if (effortGradeScaleRecords.Count > 0)
+                    if (effortGradeScaleRecords?.Any()==true)
                     {
-                        effortGradeScaleRecords.ForEach(x => x.SortOrder = x.SortOrder - 1);
+                        effortGradeScaleRecords.ForEach(x => --x.SortOrder);
                     }
                 }
                 this.context?.SaveChanges();
@@ -1110,17 +1154,17 @@ namespace opensis.data.Repository
         {
             try
             {
-                bool validStandardRefNo = CheckStandardRefNo(gradeUsStandardAddViewModel.gradeUsStandard.TenantId, gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
+                bool validStandardRefNo = CheckStandardRefNo(gradeUsStandardAddViewModel.gradeUsStandard!.TenantId, gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
                 if (validStandardRefNo == true)
                 {
-                    int? GradeStandardId = 1;
+                    int GradeStandardId = 1;
                     var gradeUsStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId).OrderByDescending(x => x.GradeStandardId).FirstOrDefault();
 
                     if (gradeUsStandardData != null)
                     {
                         GradeStandardId = gradeUsStandardData.GradeStandardId + 1;
                     }
-                    gradeUsStandardAddViewModel.gradeUsStandard.GradeStandardId = (int)GradeStandardId;
+                    gradeUsStandardAddViewModel.gradeUsStandard.GradeStandardId = GradeStandardId;
                     gradeUsStandardAddViewModel.gradeUsStandard.CreatedOn = DateTime.UtcNow;                    
                     gradeUsStandardAddViewModel.gradeUsStandard.IsSchoolSpecific = true;
                     this.context?.GradeUsStandard.Add(gradeUsStandardAddViewModel.gradeUsStandard);
@@ -1148,7 +1192,7 @@ namespace opensis.data.Repository
             if (StandardRefNo != null && StandardRefNo != "")
             {
                 var checkStandardRefNo = this.context?.GradeUsStandard.Where(x => x.TenantId == TenantId && x.StandardRefNo == StandardRefNo).ToList();
-                if (checkStandardRefNo.Count() > 0)
+                if (checkStandardRefNo?.Any()==true)
                 {
                     return false;
                 }
@@ -1170,6 +1214,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeUsStandardAddViewModel UpdateGradeUsStandard(GradeUsStandardAddViewModel gradeUsStandardAddViewModel)
         {
+            if (gradeUsStandardAddViewModel.gradeUsStandard is null)
+            {
+                return gradeUsStandardAddViewModel;
+            }
             try
             {
                 var gradeUsStandardUpdate = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId && x.StandardRefNo == gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
@@ -1179,7 +1227,7 @@ namespace opensis.data.Repository
                     gradeUsStandardAddViewModel.gradeUsStandard.CreatedOn = gradeUsStandardUpdate.CreatedOn;
                     gradeUsStandardAddViewModel.gradeUsStandard.UpdatedOn = DateTime.Now;
                     gradeUsStandardAddViewModel.gradeUsStandard.IsSchoolSpecific = true;
-                    this.context.Entry(gradeUsStandardUpdate).CurrentValues.SetValues(gradeUsStandardAddViewModel.gradeUsStandard);
+                    this.context?.Entry(gradeUsStandardUpdate).CurrentValues.SetValues(gradeUsStandardAddViewModel.gradeUsStandard);
                     this.context?.SaveChanges();
                     gradeUsStandardAddViewModel._failure = false;
                     gradeUsStandardAddViewModel._message = "School Specific Standard Updated Successfully";
@@ -1208,7 +1256,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var gradeUsStandardDelete = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId && x.StandardRefNo == gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
+                var gradeUsStandardDelete = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard!.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId && x.StandardRefNo == gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
 
                 if (gradeUsStandardDelete != null)
                 {
@@ -1238,89 +1286,86 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeUsStandardListModel GetAllGradeUsStandardList(PageResult pageResult)
         {
-            GradeUsStandardListModel gradeUsStandardList = new GradeUsStandardListModel();
-            IQueryable<GradeUsStandard> transactionIQ = null;
+            GradeUsStandardListModel gradeUsStandardList = new ();
+            IQueryable<GradeUsStandard>? transactionIQ = null;
 
-            var gradeUsStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.IsSchoolSpecific == true);
+            var gradeUsStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.IsSchoolSpecific == pageResult.IsSchoolSpecific);
             try
             {
-                if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                int? totalCount = 0;
+                if (gradeUsStandardData != null)
                 {
-                    transactionIQ = gradeUsStandardData;
-                }
-                else
-                {
-                    if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                     {
-                        string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        transactionIQ = gradeUsStandardData.Where(x => x.StandardRefNo != null && x.StandardRefNo.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevel != null && x.GradeLevel.ToLower().Contains(Columnvalue.ToLower()) || x.Domain != null && x.Domain.ToLower().Contains(Columnvalue.ToLower()) || x.Subject != null && x.Subject.ToLower().Contains(Columnvalue.ToLower()) || x.Course != null && x.Course.ToLower().Contains(Columnvalue.ToLower()) || x.Topic != null && x.Topic.ToLower().Contains(Columnvalue.ToLower()) || x.StandardDetails != null && x.StandardDetails.ToLower().Contains(Columnvalue.ToLower()));
+                        transactionIQ = gradeUsStandardData;
                     }
                     else
                     {
-                        if (pageResult.FilterParams.Count == 3 && pageResult.FilterParams.ElementAt(0).ColumnName.ToLower() == "subject" && pageResult.FilterParams.ElementAt(1).ColumnName.ToLower() == "course" && pageResult.FilterParams.ElementAt(2).ColumnName.ToLower() == "gradelevel")
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                         {
-                            transactionIQ = gradeUsStandardData.Where(x => x.TenantId == pageResult.TenantId && (pageResult.FilterParams.ElementAt(0).FilterValue == null || (x.Subject == pageResult.FilterParams.ElementAt(0).FilterValue)) && (pageResult.FilterParams.ElementAt(1).FilterValue == null || (x.Course == pageResult.FilterParams.ElementAt(1).FilterValue)) && (pageResult.FilterParams.ElementAt(2).FilterValue == null || (x.GradeLevel == pageResult.FilterParams.ElementAt(2).FilterValue)));                     
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                            transactionIQ = gradeUsStandardData.Where(x => x.StandardRefNo != null && x.StandardRefNo.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevel != null && x.GradeLevel.ToLower().Contains(Columnvalue.ToLower()) || x.Domain != null && x.Domain.ToLower().Contains(Columnvalue.ToLower()) || x.Subject != null && x.Subject.ToLower().Contains(Columnvalue.ToLower()) || x.Course != null && x.Course.ToLower().Contains(Columnvalue.ToLower()) || x.Topic != null && x.Topic.ToLower().Contains(Columnvalue.ToLower()) || x.StandardDetails != null && x.StandardDetails.ToLower().Contains(Columnvalue.ToLower()));
                         }
+                        else
+                        {
+                            if (pageResult.FilterParams?.Count == 3 && pageResult.FilterParams.ElementAt(0).ColumnName.ToLower() == "subject" && pageResult.FilterParams.ElementAt(1).ColumnName.ToLower() == "course" && pageResult.FilterParams.ElementAt(2).ColumnName.ToLower() == "gradelevel")
+                            {
+                                transactionIQ = gradeUsStandardData.Where(x => x.TenantId == pageResult.TenantId && (pageResult.FilterParams.ElementAt(0).FilterValue == null || (x.Subject == pageResult.FilterParams.ElementAt(0).FilterValue)) && (pageResult.FilterParams.ElementAt(1).FilterValue == null || (x.Course == pageResult.FilterParams.ElementAt(1).FilterValue)) && (pageResult.FilterParams.ElementAt(2).FilterValue == null || (x.GradeLevel == pageResult.FilterParams.ElementAt(2).FilterValue)));
+                            }
 
-                        //if (pageResult.FilterParams.Count == 3 && pageResult.FilterParams.ElementAt(0).ColumnName.ToLower() == "subject" && pageResult.FilterParams.ElementAt(1).ColumnName.ToLower() == "course" && pageResult.FilterParams.ElementAt(2).ColumnName.ToLower() == "gradelevel")
-                        //{
-                        //    transactionIQ = Utility.FilteredData(pageResult.FilterParams, gradeUsStandardData).AsQueryable();
-                        //}
-                        //else
-                        //{
-                        //    gradeUsStandardList._message = NORECORDFOUND;
-                        //    gradeUsStandardList._failure = true;
-                        //    gradeUsStandardList._tenantName = pageResult._tenantName;
-                        //    gradeUsStandardList._token = pageResult._token;
-                        //    return gradeUsStandardList;
-                        //}
+                            //if (pageResult.FilterParams.Count == 3 && pageResult.FilterParams.ElementAt(0).ColumnName.ToLower() == "subject" && pageResult.FilterParams.ElementAt(1).ColumnName.ToLower() == "course" && pageResult.FilterParams.ElementAt(2).ColumnName.ToLower() == "gradelevel")
+                            //{
+                            //    transactionIQ = Utility.FilteredData(pageResult.FilterParams, gradeUsStandardData).AsQueryable();
+                            //}
+                            //else
+                            //{
+                            //    gradeUsStandardList._message = NORECORDFOUND;
+                            //    gradeUsStandardList._failure = true;
+                            //    gradeUsStandardList._tenantName = pageResult._tenantName;
+                            //    gradeUsStandardList._token = pageResult._token;
+                            //    return gradeUsStandardList;
+                            //}
 
+                        }
                     }
-                }
-                if (pageResult.SortingModel != null)
-                {
-                    transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection.ToLower());
-                }
-                int totalCount = transactionIQ.Count();
-                if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                {
-                    transactionIQ = transactionIQ.Select(e=> new GradeUsStandard()
-                    { 
-                        TenantId= e.TenantId,
-                        SchoolId=e.SchoolId,
-                        StandardRefNo=e.StandardRefNo,
-                        GradeLevel=e.GradeLevel,
-                        Domain=e.Domain,
-                        Subject=e.Subject,
-                        Course=e.Course,
-                        Topic=e.Topic,
-                        StandardDetails=e.StandardDetails,
-                        GradeStandardId=e.GradeStandardId,
-                        IsSchoolSpecific=e.IsSchoolSpecific,
-                        CreatedOn=e.CreatedOn,
-                        UpdatedOn=e.UpdatedOn,
-                        CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                        UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.UpdatedBy).Name : null
-                    }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
-                }
-                //var gradeUsList = transactionIQ.AsNoTracking().Select(s => new GetGradeUsStandardForView
-                //{
-                //    TenantId = s.TenantId,
-                //    SchoolId = s.SchoolId,
-                //    StandardRefNo = s.StandardRefNo,
-                //    GradeLevel=s.GradeLevel,
-                //    Domain = s.Domain,
-                //    Subject = s.Subject,
-                //    Course = s.Course,
-                //    StandardDetails = s.StandardDetails,
-                //    GradeStandardId=s.GradeStandardId,
-                //    Topic = s.Topic
-                //}).ToList();
+                    if (pageResult.SortingModel != null && transactionIQ!=null)
+                    {
+                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
+                    }
+                    totalCount = transactionIQ?.Count();
+                    if (pageResult.PageNumber > 0 && pageResult.PageSize > 0 && transactionIQ != null)
+                    {
+                        transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                    }
 
+                    gradeUsStandardList.GradeUsStandardList = transactionIQ != null?transactionIQ.ToList():new();
+
+                    if (pageResult.IsListView == true)
+                    {
+                        gradeUsStandardList.GradeUsStandardList.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+                    }
+                    //var gradeUsList = transactionIQ.AsNoTracking().Select(s => new GetGradeUsStandardForView
+                    //{
+                    //    TenantId = s.TenantId,
+                    //    SchoolId = s.SchoolId,
+                    //    StandardRefNo = s.StandardRefNo,
+                    //    GradeLevel=s.GradeLevel,
+                    //    Domain = s.Domain,
+                    //    Subject = s.Subject,
+                    //    Course = s.Course,
+                    //    StandardDetails = s.StandardDetails,
+                    //    GradeStandardId=s.GradeStandardId,
+                    //    Topic = s.Topic
+                    //}).ToList();
+                }
                 gradeUsStandardList.TenantId = pageResult.TenantId;
                 gradeUsStandardList.SchoolId = pageResult.SchoolId;
                 //gradeUsStandardList.getGradeUsStandardView = gradeUsList;
-                gradeUsStandardList.gradeUsStandardList = transactionIQ.ToList();
+                //gradeUsStandardList.gradeUsStandardList = transactionIQ.ToList();
                 gradeUsStandardList.TotalCount = totalCount;
                 gradeUsStandardList.PageNumber = pageResult.PageNumber;
                 gradeUsStandardList._pageSize = pageResult.PageSize;
@@ -1345,12 +1390,12 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeUsStandardListModel GetAllSubjectStandardList(GradeUsStandardListModel gradeUsStandardListModel)
         {
-            GradeUsStandardListModel subjectStandardList = new GradeUsStandardListModel();
+            GradeUsStandardListModel subjectStandardList = new ();
             try
             {
                 var subjectStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == gradeUsStandardListModel.TenantId && x.SchoolId == gradeUsStandardListModel.SchoolId && x.IsSchoolSpecific == true).Select(s => new { s.Subject, s.TenantId, s.SchoolId }).Distinct().ToList();
 
-                if (subjectStandardData.Count > 0)
+                if (subjectStandardData?.Any()==true)
                 {
                     var subjectList = subjectStandardData.Select(s => new GradeUsStandard
                     {
@@ -1360,7 +1405,7 @@ namespace opensis.data.Repository
                     }).ToList();
 
                     //subjectStandardList.getGradeUsStandardView = subjectList;
-                    subjectStandardList.gradeUsStandardList = subjectList;
+                    subjectStandardList.GradeUsStandardList = subjectList;
                     subjectStandardList._failure = false;
                 }
                 else
@@ -1373,7 +1418,7 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-                subjectStandardList.gradeUsStandardList = null;
+                subjectStandardList.GradeUsStandardList = new();
                 subjectStandardList._message = es.Message;
                 subjectStandardList._failure = true;
                 subjectStandardList._tenantName = gradeUsStandardListModel._tenantName;
@@ -1389,12 +1434,12 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GradeUsStandardListModel GetAllCourseStandardList(GradeUsStandardListModel gradeUsStandardListModel)
         {
-            GradeUsStandardListModel courseStandardList = new GradeUsStandardListModel();
+            GradeUsStandardListModel courseStandardList = new ();
             try
             {
                 var subjectCourseData = this.context?.GradeUsStandard.Where(x => x.TenantId == gradeUsStandardListModel.TenantId && x.SchoolId == gradeUsStandardListModel.SchoolId && x.IsSchoolSpecific == true).Select(s => new { s.Course, s.TenantId, s.SchoolId }).Distinct().ToList();
 
-                if (subjectCourseData.Count > 0)
+                if (subjectCourseData?.Any()==true)
                 {
                     var courseList = subjectCourseData.Select(s => new GradeUsStandard
                     {
@@ -1403,7 +1448,7 @@ namespace opensis.data.Repository
                         Course = s.Course
                     }).ToList();
                     //courseStandardList.getGradeUsStandardView = courseList;
-                    courseStandardList.gradeUsStandardList = courseList;
+                    courseStandardList.GradeUsStandardList = courseList;
                     courseStandardList._failure = false;
                 }
                 else
@@ -1416,7 +1461,7 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-                courseStandardList.gradeUsStandardList = null;
+                courseStandardList.GradeUsStandardList = new();
                 courseStandardList._message = es.Message;
                 courseStandardList._failure = true;
                 courseStandardList._tenantName = gradeUsStandardListModel._tenantName;
@@ -1433,7 +1478,7 @@ namespace opensis.data.Repository
         public CheckStandardRefNoViewModel CheckStandardRefNo(CheckStandardRefNoViewModel checkStandardRefNoViewModel)
         {
             var checkStandardRefNo = this.context?.GradeUsStandard.Where(x => x.TenantId == checkStandardRefNoViewModel.TenantId && x.StandardRefNo == checkStandardRefNoViewModel.StandardRefNo).ToList();
-            if (checkStandardRefNo.Count() > 0)
+            if (checkStandardRefNo?.Any()==true)
             {
                 checkStandardRefNoViewModel.IsValidStandardRefNo = false;
                 checkStandardRefNoViewModel._message = "StandardRefNo Already Exist,Please Try Again!!";
@@ -1453,9 +1498,15 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public HonorRollsAddViewModel AddHonorRoll(HonorRollsAddViewModel honorRollsAddViewModel)
         {
+            if(honorRollsAddViewModel.honorRolls is null)
+            {
+                return honorRollsAddViewModel;
+            }
             try
             {
-                var checkHonorRoll = this.context?.HonorRolls.Where(x => x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.TenantId == honorRollsAddViewModel.honorRolls.TenantId && x.HonorRoll.ToLower() == honorRollsAddViewModel.honorRolls.HonorRoll.ToLower()).FirstOrDefault();
+                honorRollsAddViewModel.honorRolls.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, honorRollsAddViewModel.honorRolls.TenantId, honorRollsAddViewModel.honorRolls.SchoolId);
+
+                var checkHonorRoll = this.context?.HonorRolls.AsEnumerable().Where(x => x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.TenantId == honorRollsAddViewModel.honorRolls.TenantId && String.Compare(x.HonorRoll,honorRollsAddViewModel.honorRolls.HonorRoll,true)==0 && x.AcademicYear == honorRollsAddViewModel.honorRolls.AcademicYear).FirstOrDefault();
                 if (checkHonorRoll != null)
                 {
                     honorRollsAddViewModel._failure = false;
@@ -1495,12 +1546,17 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public HonorRollsAddViewModel UpdateHonorRoll(HonorRollsAddViewModel honorRollsAddViewModel)
         {
+            if(honorRollsAddViewModel.honorRolls is null)
+            {
+                return honorRollsAddViewModel;
+            }
             try
             {
                 var honorRollUpdate = this.context?.HonorRolls.FirstOrDefault(x => x.TenantId == honorRollsAddViewModel.honorRolls.TenantId && x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.HonorRollId == honorRollsAddViewModel.honorRolls.HonorRollId);
                 if (honorRollUpdate != null)
                 {
-                    var checkHonorRoll= this.context?.HonorRolls.Where(x => x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.TenantId == honorRollsAddViewModel.honorRolls.TenantId  && x.HonorRollId != honorRollsAddViewModel.honorRolls.HonorRollId && x.HonorRoll.ToLower() == honorRollsAddViewModel.honorRolls.HonorRoll.ToLower()).FirstOrDefault();
+                    var checkHonorRoll= this.context?.HonorRolls.AsEnumerable().Where(x => x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.TenantId == honorRollsAddViewModel.honorRolls.TenantId  && x.HonorRollId != honorRollsAddViewModel.honorRolls.HonorRollId &&
+                    String.Compare(x.HonorRoll, honorRollsAddViewModel.honorRolls.HonorRoll)==0 && x.AcademicYear == honorRollUpdate.AcademicYear).FirstOrDefault();
 
                     if (checkHonorRoll != null)
                     {
@@ -1512,7 +1568,8 @@ namespace opensis.data.Repository
                         honorRollsAddViewModel.honorRolls.CreatedBy = honorRollUpdate.CreatedBy;
                         honorRollsAddViewModel.honorRolls.CreatedOn = honorRollUpdate.CreatedOn;
                         honorRollsAddViewModel.honorRolls.UpdatedOn = DateTime.Now;
-                        this.context.Entry(honorRollUpdate).CurrentValues.SetValues(honorRollsAddViewModel.honorRolls);
+                        honorRollsAddViewModel.honorRolls.AcademicYear = honorRollUpdate.AcademicYear;
+                        this.context?.Entry(honorRollUpdate).CurrentValues.SetValues(honorRollsAddViewModel.honorRolls);
                         this.context?.SaveChanges();
                         honorRollsAddViewModel._failure = false;
                         honorRollsAddViewModel._message = "Honor Roll Updated Successfully";
@@ -1541,50 +1598,63 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public HonorRollsListViewModel GetAllHonorRollList(PageResult pageResult)
         {
-            HonorRollsListViewModel honorRollList = new HonorRollsListViewModel();
-            IQueryable<HonorRolls> transactionIQ = null;
-
-            var honorRollsData = this.context?.HonorRolls.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId);
+            HonorRollsListViewModel honorRollList = new ();
+            IQueryable<HonorRolls>? transactionIQ = null;
+            int? totalCount=0;
+            var honorRollsData = this.context?.HonorRolls.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AcademicYear == pageResult.AcademicYear);
             try
             {
-                if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                if (honorRollsData != null)
                 {
-                    transactionIQ = honorRollsData;
-                }
-                else
-                {
-                    if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                     {
-                        string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        transactionIQ = honorRollsData.Where(x => x.HonorRoll != null && x.Breakoff.ToString() == Columnvalue.ToString() || x.HonorRoll != null && x.HonorRoll.ToLower().Contains(Columnvalue.ToLower()));
+                        transactionIQ = honorRollsData;
                     }
                     else
                     {
-                        transactionIQ = Utility.FilteredData(pageResult.FilterParams, honorRollsData).AsQueryable();
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                        {
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                            transactionIQ = honorRollsData?.Where(x => x.HonorRoll != null && x.Breakoff.ToString() == Columnvalue.ToString() || x.HonorRoll != null && x.HonorRoll.ToLower().Contains(Columnvalue.ToLower()));
+                        }
+                        else
+                        {
+                            transactionIQ = Utility.FilteredData(pageResult.FilterParams!, honorRollsData).AsQueryable();
+                        }
                     }
-                }
-                if (pageResult.SortingModel != null)
-                {
-                    transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection.ToLower());
-                }
-                int totalCount = transactionIQ.Count();
-                if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                {
-                    transactionIQ = transactionIQ.Select(e=>new HonorRolls
-                    {                        
-                        MarkingPeriodId=e.MarkingPeriodId,
-                        HonorRollId=e.HonorRollId,
-                        HonorRoll=e.HonorRoll,
-                        Breakoff=e.Breakoff,
-                        CreatedOn=e.CreatedOn,
-                        UpdatedOn=e.UpdatedOn,
-                        CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                        UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                    if (pageResult.SortingModel != null && transactionIQ!=null)
+                    {
+                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
+                    }
+                    totalCount = transactionIQ?.Count();
+                    if (pageResult.PageNumber > 0 && pageResult.PageSize > 0 && transactionIQ!=null)
+                    {
+                        transactionIQ = transactionIQ.Select(e => new HonorRolls
+                        {
+                            //MarkingPeriodId = e.MarkingPeriodId,
+                            HonorRollId = e.HonorRollId,
+                            HonorRoll = e.HonorRoll,
+                            Breakoff = e.Breakoff,
+                            CreatedOn = e.CreatedOn,
+                            UpdatedOn = e.UpdatedOn,
+                            CreatedBy = e.CreatedBy,
+                            UpdatedBy = e.UpdatedBy
+                        }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                    }
+
+                    honorRollList.HonorRollList = transactionIQ!=null? transactionIQ.ToList():new();
+                    if (pageResult.IsListView == true)
+                    {
+                        honorRollList.HonorRollList.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+                    }
                 }
                 honorRollList.TenantId = pageResult.TenantId;
                 honorRollList.SchoolId = pageResult.SchoolId;
-                honorRollList.honorRollList = transactionIQ.ToList();               
+                //honorRollList.honorRollList = transactionIQ.ToList();               
                 honorRollList.TotalCount = totalCount;
                 honorRollList.PageNumber = pageResult.PageNumber;
                 honorRollList._pageSize = pageResult.PageSize;
@@ -1611,7 +1681,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var honorRollDelete = this.context?.HonorRolls.FirstOrDefault(x => x.TenantId == honorRollsAddViewModel.honorRolls.TenantId && x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.HonorRollId == honorRollsAddViewModel.honorRolls.HonorRollId);
+                var honorRollDelete = this.context?.HonorRolls.FirstOrDefault(x => x.TenantId == honorRollsAddViewModel.honorRolls!.TenantId && x.SchoolId == honorRollsAddViewModel.honorRolls.SchoolId && x.HonorRollId == honorRollsAddViewModel.honorRolls.HonorRollId);
 
                 if (honorRollDelete != null)
                 {
@@ -1633,5 +1703,509 @@ namespace opensis.data.Repository
             }
             return honorRollsAddViewModel;
         }
+
+        /// <summary>
+        /// Add Us Standard Data
+        /// </summary>
+        /// <param name="jurisdictionByIdListViewModel"></param>
+        /// <returns></returns>
+        //public JurisdictionByIdListViewModel AddUsStandardData(JurisdictionByIdListViewModel jurisdictionByIdListViewModel)
+        //{
+        //    JurisdictionByIdListViewModel? jurisdictionByIdListViewModelData = new ();
+        //    try
+        //    {
+        //        //Fetch the JSON string from URL.
+        //        string apiUrl = "https://api.commonstandardsproject.com/api/v1/jurisdictions/67810E9EF6944F9383DCC602A3484C23";
+
+        //        HttpClient client = new ();
+        //        HttpResponseMessage response = client.GetAsync(apiUrl).Result;
+        //        string? jurisdictionData = response.Content.ReadAsStringAsync().Result.ToString();
+
+        //        if (jurisdictionData != null)
+        //        {
+        //            jurisdictionByIdListViewModelData = JsonConvert.DeserializeObject<JurisdictionByIdListViewModel>(jurisdictionData);
+        //            List<GradeUsStandard> gradeUsStandard = new();
+        //            if (jurisdictionByIdListViewModelData?.data != null)
+        //            {
+
+        //                foreach (var data in jurisdictionByIdListViewModelData.data.standardSets)
+        //                {
+        //                    JurisdictionByIdListViewModel gradeUsStandardListViewModel = new();
+        //                    gradeUsStandardListViewModel = this.GetStandardSets(data.id??"", jurisdictionByIdListViewModel.TenantId, jurisdictionByIdListViewModel.SchoolId, jurisdictionByIdListViewModel.CreatedBy);
+        //                    gradeUsStandard.AddRange(gradeUsStandardListViewModel.gradeUsStandardList);
+        //                }
+
+        //            }
+
+        //           jurisdictionByIdListViewModelData?.gradeUsStandardList.AddRange(gradeUsStandard.Take(10));
+        //           jurisdictionByIdListViewModelData._failure = false;
+        //           jurisdictionByIdListViewModelData._message = "US standard data added successfully.";
+        //         }
+
+        //       // return jurisdictionByIdListViewModelData;
+        //    }
+        //    catch (Exception es)
+        //    {
+        //        jurisdictionByIdListViewModelData._failure = true;
+        //        jurisdictionByIdListViewModelData._message = es.Message;
+        //    }
+        //    return jurisdictionByIdListViewModelData;
+        //}
+
+        //private JurisdictionByIdListViewModel GetStandardSets(string standardSetid, Guid tenantId, int schoolId, string? createdBy)
+        //{
+
+        //    //Fetch the JSON string from URL.
+        //    JurisdictionByIdListViewModel jurisdictionByIdListViewModel = new JurisdictionByIdListViewModel();
+        //    StandardSetsListViewModel? standardSetsData = new StandardSetsListViewModel();
+        //    List<standards> standards = new List<standards>();
+
+        //    string apiUrl = "https://api.commonstandardsproject.com/api/v1/standard_sets/" + standardSetid;
+
+        //    HttpClient client = new HttpClient();
+        //    HttpResponseMessage response = client.GetAsync(apiUrl).Result;
+
+        //    var standardSetsData1 = response.Content.ReadAsStringAsync().Result.ToString();
+        //    standardSetsData = JsonConvert.DeserializeObject<StandardSetsListViewModel>(standardSetsData1);
+
+
+        //    JToken jToken = JToken.Parse(standardSetsData1.ToString());
+
+        //    var educationLevels = jToken.SelectToken("data").SelectToken("educationLevels").Value<object>();
+
+        //    var educationLevelsDataList = (JArray)JsonConvert.DeserializeObject(educationLevels.ToString());
+
+        //    List<GradeUsStandard> gradeUsStandardListData = new List<GradeUsStandard>();
+
+        //    int GradeStandardId = 1;
+        //    var gradeUsStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId).OrderByDescending(x => x.GradeStandardId).FirstOrDefault();
+
+        //    if (gradeUsStandardData != null)
+        //    {
+        //        GradeStandardId = gradeUsStandardData.GradeStandardId + 1;
+        //    }
+
+        //    foreach (var educationLevelsData in educationLevelsDataList)
+        //    {
+        //        var data = jToken.SelectToken("data").SelectToken("standards").Value<object>();
+        //        var standardsDataList = (JObject)JsonConvert.DeserializeObject(data.ToString());
+
+        //        if (standardSetsData.data.subject == "Common Core Mathematics")
+        //        {
+        //            foreach (var standardsData in standardsDataList)
+        //            {
+        //                //GradeUsStandardListViewModel gradeUsStandardList = new GradeUsStandardListViewModel();
+        //                if (standardsData.Value.SelectToken("statementLabel") != null && standardsData.Value.SelectToken("statementLabel").Value<string>() == "Domain")
+        //                {
+        //                    var id = standardsData.Value.SelectToken("id").Value<string>();
+
+        //                    List<Notations> subjects = new List<Notations>();
+        //                    string topic = null;
+        //                    foreach (var standardsData2 in standardsDataList)
+        //                    {
+        //                        GradeUsStandard gradeUsStandardList = new GradeUsStandard();
+        //                        if (standardsData2.Value.SelectToken("statementLabel") != null && standardsData2.Value.SelectToken("statementLabel").Value<string>() == "Standard")
+        //                        {
+        //                            foreach (var standardsData3 in standardsDataList)
+        //                            {
+        //                                if (standardsData3.Value.SelectToken("statementLabel") != null && standardsData3.Value.SelectToken("statementLabel").Value<string>() == "Cluster")
+        //                                {
+        //                                    var id1 = standardsData3.Value.SelectToken("id").Value<string>();
+        //                                    var ancestorIdsList1 = standardsData2.Value.SelectToken("ancestorIds").ToArray();
+        //                                    foreach (var ancestorIds1 in ancestorIdsList1)
+        //                                    {
+        //                                        if (id1 == ancestorIds1.ToString())
+        //                                        {
+        //                                            topic = standardsData3.Value.SelectToken("description").Value<string>();
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+
+        //                            var ancestorIdsList = standardsData2.Value.SelectToken("ancestorIds").ToArray();
+
+        //                            foreach (var ancestorIds in ancestorIdsList)
+        //                            {
+        //                                if (id == ancestorIds.ToString())
+        //                                {
+
+        //                                    gradeUsStandardList.GradeStandardId = GradeStandardId;
+        //                                    gradeUsStandardList.TenantId = tenantId;
+        //                                    gradeUsStandardList.SchoolId = schoolId;
+        //                                    gradeUsStandardList.Subject = "Mathematics";
+
+        //                                    if (educationLevelsData.ToObject<string>().ToLower() == "K".ToLower() || educationLevelsData.ToObject<string>().ToLower() == "Kindergarten".ToLower())
+        //                                    {
+        //                                        gradeUsStandardList.GradeLevel = "Kindergarten";
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        gradeUsStandardList.GradeLevel = this.context?.GradeEquivalency.Where(x => x.EquivalencyId == educationLevelsData.ToObject<int>()).Select(y => y.GradeLevelEquivalency).FirstOrDefault();
+        //                                    }
+
+        //                                    gradeUsStandardList.Course = jToken.SelectToken("data").SelectToken("subject").Value<string>();
+        //                                    gradeUsStandardList.StandardRefNo = standardsData2.Value.SelectToken("statementNotation").Value<string>();
+        //                                    gradeUsStandardList.Domain = standardsData.Value.SelectToken("description").Value<string>();
+        //                                    gradeUsStandardList.StandardDetails = standardsData2.Value.SelectToken("description").Value<string>();
+        //                                    gradeUsStandardList.Topic = topic;
+        //                                    gradeUsStandardList.IsSchoolSpecific = false;
+        //                                    gradeUsStandardList.CreatedBy = createdBy;
+        //                                    gradeUsStandardList.CreatedOn = DateTime.UtcNow;
+
+        //                                    gradeUsStandardListData.Add(gradeUsStandardList);
+        //                                    GradeStandardId++;
+
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var standardsData in standardsDataList)
+        //            {
+        //                //GradeUsStandardListViewModel gradeUsStandardList = new GradeUsStandardListViewModel();
+        //                if (standardsData.Value.SelectToken("statementLabel") == null)
+        //                {
+        //                    var id = standardsData.Value.SelectToken("id").Value<string>();
+
+        //                    List<Notations> subjects = new List<Notations>();
+        //                    string topic = null;
+        //                    foreach (var standardsData2 in standardsDataList)
+        //                    {
+        //                        GradeUsStandard gradeUsStandardList = new GradeUsStandard();
+        //                        if (standardsData2.Value.SelectToken("statementLabel") != null && standardsData2.Value.SelectToken("statementLabel").Value<string>() == "Standard")
+        //                        {
+        //                            foreach (var standardsData3 in standardsDataList)
+        //                            {
+        //                                if (standardsData3.Value.SelectToken("statementLabel") == null)
+        //                                {
+        //                                    var id1 = standardsData3.Value.SelectToken("id").Value<string>();
+        //                                    var ancestorIdsList1 = standardsData2.Value.SelectToken("ancestorIds").ToArray();
+        //                                    foreach (var ancestorIds1 in ancestorIdsList1)
+        //                                    {
+        //                                        if (id1 == ancestorIds1.ToString())
+        //                                        {
+        //                                            topic = standardsData3.Value.SelectToken("description").Value<string>();
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+
+        //                            var ancestorIdsList = standardsData2.Value.SelectToken("ancestorIds").ToArray();
+
+        //                            foreach (var ancestorIds in ancestorIdsList)
+        //                            {
+        //                                if (id == ancestorIds.ToString())
+        //                                {
+        //                                    gradeUsStandardList.GradeStandardId = GradeStandardId;
+        //                                    gradeUsStandardList.TenantId = tenantId;
+        //                                    gradeUsStandardList.SchoolId = schoolId;
+        //                                    gradeUsStandardList.Subject = "English";
+
+        //                                    if (educationLevelsData.ToObject<string>().ToLower() == "K".ToLower() || educationLevelsData.ToObject<string>().ToLower() == "Kindergarten".ToLower())
+        //                                    {
+        //                                        gradeUsStandardList.GradeLevel = "Kindergarten";
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        gradeUsStandardList.GradeLevel = this.context?.GradeEquivalency.Where(x => x.EquivalencyId == educationLevelsData.ToObject<int>()).Select(y => y.GradeLevelEquivalency).FirstOrDefault();
+        //                                    }
+
+        //                                    gradeUsStandardList.Course = jToken.SelectToken("data").SelectToken("subject").Value<string>();
+        //                                    gradeUsStandardList.StandardRefNo = standardsData2.Value.SelectToken("statementNotation").Value<string>();
+        //                                    gradeUsStandardList.Domain = standardsData.Value.SelectToken("description").Value<string>();
+        //                                    gradeUsStandardList.StandardDetails = standardsData2.Value.SelectToken("description").Value<string>();
+        //                                    gradeUsStandardList.Topic = topic;
+        //                                    gradeUsStandardList.IsSchoolSpecific = false;
+        //                                    gradeUsStandardList.CreatedBy = createdBy;
+        //                                    gradeUsStandardList.CreatedOn = DateTime.UtcNow;
+
+        //                                    gradeUsStandardListData.Add(gradeUsStandardList);
+        //                                    GradeStandardId++;
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    jurisdictionByIdListViewModel.gradeUsStandardList.AddRange(gradeUsStandardListData);
+        //    this.context?.GradeUsStandard.AddRange(jurisdictionByIdListViewModel.gradeUsStandardList);
+        //    this.context?.SaveChanges();
+
+        //    return jurisdictionByIdListViewModel;
+        //}
+
+
+        public JurisdictionByIdListViewModel AddUsStandardData(JurisdictionByIdListViewModel jurisdictionByIdListViewModel)
+        {
+            JurisdictionByIdListViewModel? jurisdictionByIdListViewModelData = new();
+            try
+            {
+                //Fetch the JSON string from URL.
+                string apiUrl = "https://api.commonstandardsproject.com/api/v1/jurisdictions/67810E9EF6944F9383DCC602A3484C23";
+
+                HttpClient client = new();
+                HttpResponseMessage response = client.GetAsync(apiUrl).Result;
+                string? jurisdictionData = response.Content.ReadAsStringAsync().Result.ToString();
+
+                if (jurisdictionData != null)
+                {
+                    jurisdictionByIdListViewModelData = JsonConvert.DeserializeObject<JurisdictionByIdListViewModel>(jurisdictionData);
+                    List<GradeUsStandard> gradeUsStandard = new();
+
+                    if (jurisdictionByIdListViewModelData != null)
+                    {
+                        if (jurisdictionByIdListViewModelData?.data != null)
+                        {
+
+                            foreach (var data in jurisdictionByIdListViewModelData.data.standardSets)
+                            {
+                                JurisdictionByIdListViewModel gradeUsStandardListViewModel = new();
+                                gradeUsStandardListViewModel = this.GetStandardSets(data.id ?? "", jurisdictionByIdListViewModel.TenantId, jurisdictionByIdListViewModel.SchoolId, jurisdictionByIdListViewModel.CreatedBy);
+                                gradeUsStandard.AddRange(gradeUsStandardListViewModel.gradeUsStandardList);
+                            }
+                            jurisdictionByIdListViewModelData.gradeUsStandardList.AddRange(gradeUsStandard.Take(10));
+                            jurisdictionByIdListViewModelData._failure = false;
+                            jurisdictionByIdListViewModelData._message = "US standard data added successfully.";
+                        }
+                    }
+
+                    //jurisdictionByIdListViewModelData?.gradeUsStandardList.AddRange(gradeUsStandard.Take(10));
+                    //jurisdictionByIdListViewModelData._failure = false;
+                    //jurisdictionByIdListViewModelData._message = "US standard data added successfully.";
+                }
+
+                // return jurisdictionByIdListViewModelData;
+            }
+            catch (Exception es)
+            {
+                jurisdictionByIdListViewModelData!._failure = true;
+                jurisdictionByIdListViewModelData._message = es.Message;
+            }
+            //return jurisdictionByIdListViewModelData;
+            return jurisdictionByIdListViewModelData!;
+        }
+
+        private JurisdictionByIdListViewModel GetStandardSets(string standardSetid, Guid tenantId, int schoolId, string? createdBy)
+        {
+
+            //Fetch the JSON string from URL.
+            JurisdictionByIdListViewModel jurisdictionByIdListViewModel = new ();
+            StandardSetsListViewModel? standardSetsData = new ();
+            List<standards> standards = new ();
+
+            string apiUrl = "https://api.commonstandardsproject.com/api/v1/standard_sets/" + standardSetid;
+
+            HttpClient client = new ();
+            HttpResponseMessage response = client.GetAsync(apiUrl).Result;
+
+            var standardSetsData1 = response.Content.ReadAsStringAsync().Result.ToString();
+            standardSetsData = JsonConvert.DeserializeObject<StandardSetsListViewModel>(standardSetsData1);
+
+
+            JToken jToken = JToken.Parse(standardSetsData1.ToString());
+            if (jToken != null)
+            {
+                var educationLevels = jToken?.SelectToken("data")?.SelectToken("educationLevels")?.Value<object?>();
+                JArray? educationLevelsDataList = JsonConvert.DeserializeObject(educationLevels?.ToString() ?? "") as JArray;
+
+            List<GradeUsStandard> gradeUsStandardListData = new ();
+
+            int GradeStandardId = 1;
+            var gradeUsStandardData = this.context?.GradeUsStandard.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId).OrderByDescending(x => x.GradeStandardId).FirstOrDefault();
+
+            if (gradeUsStandardData != null)
+            {
+                GradeStandardId = gradeUsStandardData.GradeStandardId + 1;
+            }
+                if (educationLevelsDataList != null)
+                {
+                    foreach (var educationLevelsData in educationLevelsDataList)
+                    {
+                        var data = jToken?.SelectToken("data")?.SelectToken("standards")?.Value<object>();
+                        var standardsDataList = JsonConvert.DeserializeObject(data?.ToString() ?? "") as JObject;
+                        if (standardsDataList != null)
+                        {
+                            if (standardSetsData?.data?.subject == "Common Core Mathematics")
+                            {
+                               
+                                    foreach (var standardsData in standardsDataList)
+                                    {
+                                        //GradeUsStandardListViewModel gradeUsStandardList = new GradeUsStandardListViewModel();
+                                        if (standardsData.Value?.SelectToken("statementLabel") != null && standardsData.Value?.SelectToken("statementLabel")?.Value<string>() == "Domain")
+                                        {
+                                            var id = standardsData.Value?.SelectToken("id")?.Value<string>();
+
+                                            List<Notations> subjects = new();
+                                            string? topic = null;
+                                            foreach (var standardsData2 in standardsDataList)
+                                            {
+                                                GradeUsStandard gradeUsStandardList = new GradeUsStandard();
+                                                if (standardsData2.Value?.SelectToken("statementLabel") != null && standardsData2.Value?.SelectToken("statementLabel")?.Value<string>() == "Standard")
+                                                {
+                                                    foreach (var standardsData3 in standardsDataList)
+                                                    {
+                                                        if (standardsData3.Value?.SelectToken("statementLabel") != null && standardsData3.Value.SelectToken("statementLabel")?.Value<string>() == "Cluster")
+                                                        {
+                                                            var id1 = standardsData3.Value.SelectToken("id")?.Value<string>();
+                                                            var ancestorIdsList1 = standardsData2.Value.SelectToken("ancestorIds")?.ToArray();
+                                                            if (ancestorIdsList1 != null)
+                                                            {
+                                                                foreach (var ancestorIds1 in ancestorIdsList1)
+                                                                {
+                                                                    if (id1 == ancestorIds1.ToString())
+                                                                    {
+                                                                        topic = standardsData3.Value.SelectToken("description")?.Value<string>();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                    var ancestorIdsList = standardsData2.Value.SelectToken("ancestorIds")?.ToArray();
+                                                    if (ancestorIdsList != null)
+                                                    {
+                                                        foreach (var ancestorIds in ancestorIdsList)
+                                                        {
+                                                            if (id == ancestorIds.ToString())
+                                                            {
+
+                                                                gradeUsStandardList.GradeStandardId = GradeStandardId;
+                                                                gradeUsStandardList.TenantId = tenantId;
+                                                                gradeUsStandardList.SchoolId = schoolId;
+                                                                gradeUsStandardList.Subject = "Mathematics";
+                                                                //if (educationLevelsData.ToObject<string>().ToLower() == "K".ToLower() || educationLevelsData.ToObject<string>().ToLower() == "Kindergarten".ToLower())
+                                                                if (String.Compare(educationLevelsData.ToObject<string>(), "K", true) == 0 || String.Compare(educationLevelsData.ToObject<string>(), "Kindergarten", true) == 0)
+                                                                {
+                                                                    gradeUsStandardList.GradeLevel = "Kindergarten";
+                                                                }
+                                                                else
+                                                                {
+                                                                    gradeUsStandardList.GradeLevel = this.context?.GradeEquivalency.Where(x => x.EquivalencyId == educationLevelsData.ToObject<int>()).Select(y => y.GradeLevelEquivalency).FirstOrDefault();
+                                                                }
+
+                                                                gradeUsStandardList.Course = jToken!.SelectToken("data")?.SelectToken("subject")?.Value<string>();
+                                                            //gradeUsStandardList.StandardRefNo = standardsData2.Value?.SelectToken("statementNotation")?.Value<string>();
+                                                            gradeUsStandardList.StandardRefNo = standardsData2.Value?.SelectToken("statementNotation")?.Value<string>()!;
+                                                            gradeUsStandardList.Domain = standardsData.Value?.SelectToken("description")?.Value<string>();
+                                                            //gradeUsStandardList.StandardDetails = standardsData2.Value.SelectToken("description").Value<string>();
+                                                            gradeUsStandardList.StandardDetails = standardsData2.Value?.SelectToken("description")?.Value<string>();
+                                                            gradeUsStandardList.Topic = topic;
+                                                                gradeUsStandardList.IsSchoolSpecific = false;
+                                                                gradeUsStandardList.CreatedBy = createdBy;
+                                                                gradeUsStandardList.CreatedOn = DateTime.UtcNow;
+
+                                                                gradeUsStandardListData.Add(gradeUsStandardList);
+                                                                GradeStandardId++;
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                
+                            }
+                            else
+                            {
+                                foreach (var standardsData in standardsDataList)
+                                {
+                                    //GradeUsStandardListViewModel gradeUsStandardList = new GradeUsStandardListViewModel();
+                                    if (standardsData.Value?.SelectToken("statementLabel") == null)
+                                    {
+                                        var id = standardsData.Value?.SelectToken("id")?.Value<string>();
+
+                                        List<Notations> subjects = new List<Notations>();
+                                        string? topic = null;
+                                        foreach (var standardsData2 in standardsDataList)
+                                        {
+                                            GradeUsStandard gradeUsStandardList = new GradeUsStandard();
+                                            if (standardsData2.Value?.SelectToken("statementLabel") != null && standardsData2.Value?.SelectToken("statementLabel")?.Value<string>() == "Standard")
+                                            {
+                                                foreach (var standardsData3 in standardsDataList)
+                                                {
+                                                    if (standardsData3.Value?.SelectToken("statementLabel") == null)
+                                                    {
+                                                        var id1 = standardsData3.Value?.SelectToken("id")?.Value<string>();
+                                                        var ancestorIdsList1 = standardsData2.Value.SelectToken("ancestorIds")?.ToArray();
+                                                        if (ancestorIdsList1 != null)
+                                                        {
+                                                            foreach (var ancestorIds1 in ancestorIdsList1)
+                                                            {
+                                                                if (id1 == ancestorIds1.ToString())
+                                                                {
+                                                                    topic = standardsData3.Value?.SelectToken("description")?.Value<string>();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                var ancestorIdsList = standardsData2.Value?.SelectToken("ancestorIds")?.ToArray();
+                                                if (ancestorIdsList != null) { 
+                                                foreach (var ancestorIds in ancestorIdsList)
+                                                {
+                                                    if (id == ancestorIds.ToString())
+                                                    {
+                                                        gradeUsStandardList.GradeStandardId = GradeStandardId;
+                                                        gradeUsStandardList.TenantId = tenantId;
+                                                        gradeUsStandardList.SchoolId = schoolId;
+                                                        gradeUsStandardList.Subject = "English";
+
+                                                        if (String.Compare(educationLevelsData.ToObject<string>(), "K", true) == 0 || String.Compare(educationLevelsData.ToObject<string>(), "Kindergarten", true) == 0)
+                                                        {
+                                                            gradeUsStandardList.GradeLevel = "Kindergarten";
+                                                        }
+                                                        else
+                                                        {
+                                                            gradeUsStandardList.GradeLevel = this.context?.GradeEquivalency.Where(x => x.EquivalencyId == educationLevelsData.ToObject<int>()).Select(y => y.GradeLevelEquivalency).FirstOrDefault();
+                                                        }
+
+                                                        gradeUsStandardList.Course = jToken!.SelectToken("data")?.SelectToken("subject")?.Value<string>();
+                                                            //gradeUsStandardList.StandardRefNo = standardsData2!.Value!.SelectToken("statementNotation")!.Value<string>();
+                                                            gradeUsStandardList.StandardRefNo = standardsData2.Value?.SelectToken("statementNotation")?.Value<string>()!;
+                                                            gradeUsStandardList.Domain = standardsData.Value?.SelectToken("description")?.Value<string>();
+                                                        gradeUsStandardList.StandardDetails = standardsData2.Value?.SelectToken("description")?.Value<string>();
+                                                        gradeUsStandardList.Topic = topic;
+                                                        gradeUsStandardList.IsSchoolSpecific = false;
+                                                        gradeUsStandardList.CreatedBy = createdBy;
+                                                        gradeUsStandardList.CreatedOn = DateTime.UtcNow;
+
+                                                        gradeUsStandardListData.Add(gradeUsStandardList);
+                                                        GradeStandardId++;
+                                                    }
+                                                }
+                                              }
+                                            
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+
+                jurisdictionByIdListViewModel.gradeUsStandardList.AddRange(gradeUsStandardListData);
+            this.context?.GradeUsStandard.AddRange(jurisdictionByIdListViewModel.gradeUsStandardList);
+            this.context?.SaveChanges();
+            }
+            return jurisdictionByIdListViewModel;
+        }
+
+
+
     }
 }

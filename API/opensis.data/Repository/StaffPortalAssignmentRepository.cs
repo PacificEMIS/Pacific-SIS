@@ -24,6 +24,7 @@ All rights reserved.
 ***********************************************************************************/
 
 using Microsoft.EntityFrameworkCore;
+using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.data.ViewModels.StaffPortalAssignment;
@@ -36,7 +37,7 @@ namespace opensis.data.Repository
 {
     public class StaffPortalAssignmentRepository : IStaffPortalAssignmentRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public StaffPortalAssignmentRepository(IDbContextFactory dbContextFactory)
         {
@@ -50,9 +51,16 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentTypeAddViewModel AddAssignmentType(AssignmentTypeAddViewModel assignmentTypeAddViewModel)
         {
+            if(assignmentTypeAddViewModel.assignmentType is null)
+            {
+                return assignmentTypeAddViewModel;
+            }
             try
             {
-                var checkAssignmentTypeTitle = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.Title.ToLower() == assignmentTypeAddViewModel.assignmentType.Title.ToLower()).FirstOrDefault();
+                assignmentTypeAddViewModel.assignmentType.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, assignmentTypeAddViewModel.assignmentType.TenantId, assignmentTypeAddViewModel.assignmentType.SchoolId);
+                //var checkAssignmentTypeTitle = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.Title.ToLower() == assignmentTypeAddViewModel.assignmentType.Title.ToLower()).FirstOrDefault();
+
+                var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
 
                 if (checkAssignmentTypeTitle != null)
                 {
@@ -94,20 +102,26 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentTypeAddViewModel UpdateAssignmentType(AssignmentTypeAddViewModel assignmentTypeAddViewModel)
         {
+            if (assignmentTypeAddViewModel.assignmentType is null)
+            {
+                return assignmentTypeAddViewModel;
+            }
             try
             {
-                var checkAssignmentTypeTitle = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.Title.ToLower() == assignmentTypeAddViewModel.assignmentType.Title.ToLower() && x.AssignmentTypeId != assignmentTypeAddViewModel.assignmentType.AssignmentTypeId).FirstOrDefault();
+                //var checkAssignmentTypeTitle = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.Title.ToLower() == assignmentTypeAddViewModel.assignmentType.Title.ToLower() && x.AssignmentTypeId != assignmentTypeAddViewModel.assignmentType.AssignmentTypeId).FirstOrDefault();
 
-                if (checkAssignmentTypeTitle != null)
-                {
-                    assignmentTypeAddViewModel._failure = true;
-                    assignmentTypeAddViewModel._message = "Title Already Exists";
-                }
-                else
-                {
-                    var AssignmentTypeData = this.context?.AssignmentType.FirstOrDefault(c => c.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && c.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && c.AssignmentTypeId == assignmentTypeAddViewModel.assignmentType.AssignmentTypeId);
 
-                    if (AssignmentTypeData != null)
+                var AssignmentTypeData = this.context?.AssignmentType.FirstOrDefault(c => c.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && c.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && c.AssignmentTypeId == assignmentTypeAddViewModel.assignmentType.AssignmentTypeId);
+
+                if (AssignmentTypeData != null)
+                {
+                    var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.AssignmentTypeId != assignmentTypeAddViewModel.assignmentType.AssignmentTypeId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == AssignmentTypeData.AcademicYear).FirstOrDefault();
+                    if (checkAssignmentTypeTitle != null)
+                    {
+                        assignmentTypeAddViewModel._failure = true;
+                        assignmentTypeAddViewModel._message = "Title Already Exists";
+                    }
+                    else
                     {
                         AssignmentTypeData.Title = assignmentTypeAddViewModel.assignmentType.Title;
                         AssignmentTypeData.Weightage = assignmentTypeAddViewModel.assignmentType.Weightage;
@@ -117,12 +131,13 @@ namespace opensis.data.Repository
                         assignmentTypeAddViewModel._failure = false;
                         assignmentTypeAddViewModel._message = "Assignment Type Updated Successfully";
                     }
-                    else
-                    {
-                        assignmentTypeAddViewModel._failure = true;
-                        assignmentTypeAddViewModel._message = NORECORDFOUND;
-                    }
                 }
+                else
+                {
+                    assignmentTypeAddViewModel._failure = true;
+                    assignmentTypeAddViewModel._message = NORECORDFOUND;
+                }
+
             }
             catch (Exception es)
             {
@@ -139,6 +154,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentTypeAddViewModel DeleteAssignmentType(AssignmentTypeAddViewModel assignmentTypeAddViewModel)
         {
+            if (assignmentTypeAddViewModel.assignmentType is null)
+            {
+                return assignmentTypeAddViewModel;
+            }
             try
             {
                 var AssignmentTypeData = this.context?.AssignmentType.Include(b => b.Assignment).FirstOrDefault(c => c.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && c.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId /*&& c.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId*/ && c.AssignmentTypeId == assignmentTypeAddViewModel.assignmentType.AssignmentTypeId);
@@ -179,50 +198,59 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentAddViewModel AddAssignment(AssignmentAddViewModel assignmentAddViewModel)
         {
+            if (assignmentAddViewModel.assignment is null)
+            {
+                return assignmentAddViewModel;
+            }
             try
             {
-                var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId).FirstOrDefault();
-
-                if (checkAssignmentTitle != null)
+                if (assignmentAddViewModel.assignment != null)
                 {
-                    assignmentAddViewModel._failure = true;
-                    assignmentAddViewModel._message = "Assignment Title Already Exists";
-                }
-                else
-                {
-                    var courseSectionData = this.context?.CourseSection.FirstOrDefault(e => e.SchoolId == assignmentAddViewModel.assignment.SchoolId && e.SchoolId == assignmentAddViewModel.assignment.SchoolId && e.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId);
+                    //var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId).FirstOrDefault();
 
-                    if (courseSectionData != null)
+                    var checkAssignmentTitle = this.context?.Assignment.AsEnumerable().Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId && String.Compare(x.AssignmentTitle, assignmentAddViewModel.assignment.AssignmentTitle, true) == 0).FirstOrDefault();
+
+                    if (checkAssignmentTitle != null)
                     {
-                        if ((assignmentAddViewModel.assignment.AssignmentDate >= courseSectionData.DurationStartDate && assignmentAddViewModel.assignment.AssignmentDate <= courseSectionData.DurationEndDate) && (assignmentAddViewModel.assignment.DueDate >= courseSectionData.DurationStartDate && assignmentAddViewModel.assignment.DueDate <= courseSectionData.DurationEndDate))
+                        assignmentAddViewModel._failure = true;
+                        assignmentAddViewModel._message = "Assignment Title Already Exists";
+                    }
+                    else
+                    {
+                        var courseSectionData = this.context?.CourseSection.FirstOrDefault(e => e.SchoolId == assignmentAddViewModel.assignment.SchoolId && e.SchoolId == assignmentAddViewModel.assignment.SchoolId && e.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId);
+
+                        if (courseSectionData != null)
                         {
-                            if (assignmentAddViewModel.assignment.DueDate >= assignmentAddViewModel.assignment.AssignmentDate)
+                            if ((assignmentAddViewModel.assignment.AssignmentDate >= courseSectionData.DurationStartDate && assignmentAddViewModel.assignment.AssignmentDate <= courseSectionData.DurationEndDate) && (assignmentAddViewModel.assignment.DueDate >= courseSectionData.DurationStartDate && assignmentAddViewModel.assignment.DueDate <= courseSectionData.DurationEndDate))
                             {
-                                int? assignmentId = 1;
-
-                                var assignmentData = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId /*&& x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId*/).OrderByDescending(x => x.AssignmentId).FirstOrDefault();
-
-                                if (assignmentData != null)
+                                if (assignmentAddViewModel.assignment.DueDate >= assignmentAddViewModel.assignment.AssignmentDate)
                                 {
-                                    assignmentId = assignmentData.AssignmentId + 1;
+                                    int? assignmentId = 1;
+
+                                    var assignmentData = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId /*&& x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId*/).OrderByDescending(x => x.AssignmentId).FirstOrDefault();
+
+                                    if (assignmentData != null)
+                                    {
+                                        assignmentId = assignmentData.AssignmentId + 1;
+                                    }
+                                    assignmentAddViewModel.assignment.AssignmentId = (int)assignmentId;
+                                    assignmentAddViewModel.assignment.CreatedOn = DateTime.UtcNow;
+                                    this.context?.Assignment.Add(assignmentAddViewModel.assignment);
+                                    this.context?.SaveChanges();
+                                    assignmentAddViewModel._failure = false;
+                                    assignmentAddViewModel._message = "Assignment Added Successfully";
                                 }
-                                assignmentAddViewModel.assignment.AssignmentId = (int)assignmentId;
-                                assignmentAddViewModel.assignment.CreatedOn = DateTime.UtcNow;
-                                this.context?.Assignment.Add(assignmentAddViewModel.assignment);
-                                this.context?.SaveChanges();
-                                assignmentAddViewModel._failure = false;
-                                assignmentAddViewModel._message = "Assignment Added Successfully";
+                                else
+                                {
+                                    assignmentAddViewModel._failure = true;
+                                    assignmentAddViewModel._message = "Due Date Should Be Same Or Greater Than Assign Date";
+                                }
                             }
                             else
                             {
                                 assignmentAddViewModel._failure = true;
-                                assignmentAddViewModel._message = "Due Date Should Be Same Or Greater Than Assign Date";
+                                assignmentAddViewModel._message = "Assigned Date And Due Date Must Be Within The Course Section Start Date And End Date.";
                             }
-                        }
-                        else
-                        {
-                            assignmentAddViewModel._failure = true;
-                            assignmentAddViewModel._message = "Assigned Date And Due Date Must Be Within The Course Section Start Date And End Date.";
                         }
                     }
                 }
@@ -242,9 +270,14 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentAddViewModel UpdateAssignment(AssignmentAddViewModel assignmentAddViewModel)
         {
+            if (assignmentAddViewModel.assignment is null)
+            {
+                return assignmentAddViewModel;
+            }
             try
             {
-                var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentId != assignmentAddViewModel.assignment.AssignmentId && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId).FirstOrDefault();
+                //var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentId != assignmentAddViewModel.assignment.AssignmentId && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId).FirstOrDefault();
+                var checkAssignmentTitle = this.context?.Assignment.AsEnumerable().Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId && x.AssignmentId != assignmentAddViewModel.assignment.AssignmentId && x.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId && String.Compare(x.AssignmentTitle, assignmentAddViewModel.assignment.AssignmentTitle, true) == 0).FirstOrDefault();
 
                 if (checkAssignmentTitle != null)
                 {
@@ -269,7 +302,7 @@ namespace opensis.data.Repository
                                     assignmentAddViewModel.assignment.CreatedBy = AssignmentData.CreatedBy;
                                     assignmentAddViewModel.assignment.CreatedOn = AssignmentData.CreatedOn;
                                     assignmentAddViewModel.assignment.UpdatedOn = DateTime.UtcNow;
-                                    this.context.Entry(AssignmentData).CurrentValues.SetValues(assignmentAddViewModel.assignment);
+                                    this.context?.Entry(AssignmentData).CurrentValues.SetValues(assignmentAddViewModel.assignment);
                                     this.context?.SaveChanges();
                                     assignmentAddViewModel._failure = false;
                                     assignmentAddViewModel._message = "Assignment Updated Successfully";
@@ -293,6 +326,7 @@ namespace opensis.data.Repository
                         }
                     }
                 }
+
             }
             catch (Exception es)
             {
@@ -309,16 +343,30 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentAddViewModel DeleteAssignment(AssignmentAddViewModel assignmentAddViewModel)
         {
+            if (assignmentAddViewModel.assignment is null)
+            {
+                return assignmentAddViewModel;
+            }
             try
             {
                 var AssignmentData = this.context?.Assignment.FirstOrDefault(c => c.SchoolId == assignmentAddViewModel.assignment.SchoolId && c.TenantId == assignmentAddViewModel.assignment.TenantId /*&& c.AssignmentTypeId == assignmentAddViewModel.assignment.AssignmentTypeId*/ && c.AssignmentId == assignmentAddViewModel.assignment.AssignmentId /*&& c.CourseSectionId == assignmentAddViewModel.assignment.CourseSectionId*/);
 
                 if (AssignmentData != null)
                 {
-                    this.context?.Assignment.Remove(AssignmentData);
-                    this.context?.SaveChanges();
-                    assignmentAddViewModel._failure = false;
-                    assignmentAddViewModel._message = "Assignment Deleted Succesfully";
+                    var GradebookGradesData = this.context?.GradebookGrades.FirstOrDefault(c => c.SchoolId == assignmentAddViewModel.assignment.SchoolId && c.TenantId == assignmentAddViewModel.assignment.TenantId && c.AssignmentId == assignmentAddViewModel.assignment.AssignmentId);
+
+                    if(GradebookGradesData != null)
+                    {
+                        assignmentAddViewModel._failure = true;
+                        assignmentAddViewModel._message = "Assignment can not be deleted. Because it has association";
+                    }
+                    else
+                    {
+                        this.context?.Assignment.Remove(AssignmentData);
+                        this.context?.SaveChanges();
+                        assignmentAddViewModel._failure = false;
+                        assignmentAddViewModel._message = "Assignment Deleted Succesfully";
+                    }
                 }
                 else
                 {
@@ -347,49 +395,57 @@ namespace opensis.data.Repository
                 int? totalWeightPercent = 0;
                 bool weightedGrades = false;
 
-                var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == assignmentTypeListViewModel.SchoolId && c.TenantId == assignmentTypeListViewModel.TenantId && c.CourseSectionId == assignmentTypeListViewModel.CourseSectionId).Select(e=> new AssignmentType()
-                { 
-                    TenantId=e.TenantId,
-                    SchoolId=e.SchoolId,
-                    AssignmentTypeId=e.AssignmentTypeId,
-                    AcademicYear=e.AcademicYear,
-                    MarkingPeriodId=e.MarkingPeriodId,
-                    CourseSectionId=e.CourseSectionId,
-                    Title=e.Title,
-                    Weightage=e.Weightage,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == assignmentTypeListViewModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == assignmentTypeListViewModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    UpdatedOn=e.UpdatedOn,
-                    Assignment=e.Assignment.Select(f=>new Assignment()
-                    { 
-                        TenantId=f.TenantId,
-                        SchoolId=f.SchoolId,
-                        AssignmentTypeId=f.AssignmentTypeId,
-                        AssignmentId=f.AssignmentId,
-                        CourseSectionId=f.CourseSectionId,
-                        AssignmentTitle=f.AssignmentTitle,
-                        Points=f.Points,
-                        AssignmentDate=f.AssignmentDate,
-                        DueDate=f.DueDate,
-                        AssignmentDescription=f.AssignmentDescription,
-                        StaffId=f.StaffId,
-                        CreatedBy= (f.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == assignmentTypeListViewModel.TenantId && u.EmailAddress == f.CreatedBy).Name : null,
-                        CreatedOn=f.CreatedOn,
-                        UpdatedBy= (f.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == assignmentTypeListViewModel.TenantId && u.EmailAddress == f.UpdatedBy).Name : null,
-                        UpdatedOn=f.UpdatedOn
-                    }).ToList()
-                }).ToList();
+                var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == assignmentTypeListViewModel.SchoolId && c.TenantId == assignmentTypeListViewModel.TenantId && c.CourseSectionId == assignmentTypeListViewModel.CourseSectionId && c.AcademicYear== assignmentTypeListViewModel.AcademicYear).ToList();
 
-                if (assignmentTypeList.Count > 0)
+                if (assignmentTypeList != null && assignmentTypeList.Any())
                 {
                     totalWeightPercent = assignmentTypeList.Select(c => c.Weightage).Sum();
 
-                    var checkWeightGradesData = this.context?.GradebookConfiguration.FirstOrDefault(e => e.SchoolId == assignmentTypeListViewModel.SchoolId && e.TenantId == assignmentTypeListViewModel.TenantId && e.General.ToLower().Contains("weightgrades"));
+                    var gradebookConfigurationData = this.context?.GradebookConfiguration.FirstOrDefault(e => e.SchoolId == assignmentTypeListViewModel.SchoolId && e.TenantId == assignmentTypeListViewModel.TenantId && e.CourseSectionId == assignmentTypeListViewModel.CourseSectionId);
 
-                    if (checkWeightGradesData != null)
+                    if (gradebookConfigurationData != null)
                     {
-                        weightedGrades = true;
+                        if (gradebookConfigurationData.General != null && gradebookConfigurationData.General.ToLower().Contains("weightgrades"))
+                        {
+                            weightedGrades = true;
+                        }
+                        foreach (var assignmentType in assignmentTypeList)
+                        {
+                            if (gradebookConfigurationData.AssignmentSorting?.ToLower() == "newestfirst")
+                            {
+                                assignmentType.Assignment = assignmentType.Assignment.OrderByDescending(x => x.CreatedOn).ToList();
+                            }
+                            if (gradebookConfigurationData.AssignmentSorting?.ToLower() == "duedate")
+                            {
+                                assignmentType.Assignment = assignmentType.Assignment.OrderByDescending(x => x.DueDate).ToList();
+                            }
+                            if (gradebookConfigurationData.AssignmentSorting?.ToLower() == "assigneddate")
+                            {
+                                assignmentType.Assignment = assignmentType.Assignment.OrderByDescending(x => x.AssignmentDate).ToList();
+                            }
+                            if (gradebookConfigurationData.AssignmentSorting?.ToLower() == "ungraded")
+                            {
+                                var gradedAssignmentList = new List<Assignment>();
+                                var ungradedAssignmentList = new List<Assignment>();
+                                var assignmentList = new List<Assignment>();
+                                foreach (var assignment in assignmentType.Assignment)
+                                {
+                                    var gradebookGradesData = this.context?.GradebookGrades.FirstOrDefault(e => e.SchoolId == assignmentTypeListViewModel.SchoolId && e.TenantId == assignmentTypeListViewModel.TenantId && e.CourseSectionId == assignmentTypeListViewModel.CourseSectionId && e.AssignmentTypeId == assignmentType.AssignmentTypeId && e.AssignmentId == assignment.AssignmentId);
+                                    if (gradebookGradesData == null)
+                                    {
+                                        ungradedAssignmentList.Add(assignment);
+                                        ungradedAssignmentList = ungradedAssignmentList.OrderByDescending(x => x.DueDate).ToList();
+                                    }
+                                    else
+                                    {
+                                        gradedAssignmentList.Add(assignment);
+                                    }
+                                }
+                                assignmentList.AddRange(ungradedAssignmentList);
+                                assignmentList.AddRange(gradedAssignmentList);
+                                assignmentType.Assignment = assignmentList;
+                            }
+                        }
                     }
                     assignmentTypeListView._failure = false;
                 }
@@ -398,7 +454,8 @@ namespace opensis.data.Repository
                     assignmentTypeListView._failure = true;
                     assignmentTypeListView._message = NORECORDFOUND;
                 }
-                assignmentTypeListView.assignmentTypeList = assignmentTypeList;
+                //assignmentTypeListView.assignmentTypeList = assignmentTypeList?;
+                assignmentTypeListView.assignmentTypeList = assignmentTypeList ?? new();
                 assignmentTypeListView.TotalWeightage = totalWeightPercent;
                 assignmentTypeListView.WeightedGrades = weightedGrades;
                 assignmentTypeListView.TenantId = assignmentTypeListViewModel.TenantId;
@@ -418,13 +475,17 @@ namespace opensis.data.Repository
 
         public AssignmentAddViewModel CopyAssignmentForCourseSection(AssignmentAddViewModel assignmentAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if (assignmentAddViewModel.assignment is null)
+            {
+                return assignmentAddViewModel;
+            }
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
                     var assignmentTypeDataList = this.context?.AssignmentType.Where(e => e.SchoolId == assignmentAddViewModel.assignment.SchoolId && e.TenantId == assignmentAddViewModel.assignment.TenantId).ToList();
 
-                    if (assignmentTypeDataList.Count > 0)
+                    if (assignmentTypeDataList != null && assignmentTypeDataList.Any())
                     {
                         // Generate Assignment ID
                         int? assignmentId = 1;
@@ -452,11 +513,14 @@ namespace opensis.data.Repository
                         {
                             foreach (var courseSectionId in assignmentAddViewModel.courseSectionIds)
                             {
-                                var checkAssignmentType = assignmentTypeDataList.FirstOrDefault(x => x.CourseSectionId == courseSectionId && x.Title.ToLower() == assignmentTypeData.Title.ToLower());
+                                //var checkAssignmentType = assignmentTypeDataList.FirstOrDefault(x => x.CourseSectionId == courseSectionId && x.Title.ToLower() == assignmentTypeData.Title.ToLower());
+                                var checkAssignmentType = assignmentTypeDataList.AsEnumerable().FirstOrDefault(x => x.CourseSectionId == courseSectionId && String.Compare(x.Title, assignmentTypeData.Title, true) == 0);
 
                                 if (checkAssignmentType != null)
                                 {
-                                    var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == courseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentTypeId == checkAssignmentType.AssignmentTypeId).FirstOrDefault();
+                                    //var checkAssignmentTitle = this.context?.Assignment.Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == courseSectionId && x.AssignmentTitle.ToLower() == assignmentAddViewModel.assignment.AssignmentTitle.ToLower() && x.AssignmentTypeId == checkAssignmentType.AssignmentTypeId).FirstOrDefault();
+
+                                    var checkAssignmentTitle = this.context?.Assignment.AsEnumerable().Where(x => x.SchoolId == assignmentAddViewModel.assignment.SchoolId && x.TenantId == assignmentAddViewModel.assignment.TenantId && x.CourseSectionId == courseSectionId && String.Compare(x.AssignmentTitle, assignmentAddViewModel.assignment.AssignmentTitle, true) == 0 && x.AssignmentTypeId == checkAssignmentType.AssignmentTypeId).FirstOrDefault();
 
                                     if (checkAssignmentTitle != null)
                                     {
@@ -495,14 +559,13 @@ namespace opensis.data.Repository
                                         SchoolId = assignmentAddViewModel.assignment.SchoolId,
                                         AssignmentTypeId = (int)assignmentTypeId,
                                         AcademicYear = assignmentTypeData.AcademicYear,
-                                        MarkingPeriodId = assignmentTypeData.MarkingPeriodId,
                                         CourseSectionId = courseSectionId,
                                         Title = assignmentTypeData.Title,
                                         Weightage = assignmentTypeData.Weightage,
                                         CreatedBy = assignmentAddViewModel.assignment.CreatedBy,
                                         CreatedOn = DateTime.UtcNow
                                     };
-                                    this.context?.AssignmentType.Add(assignmentTypeAdd);                                    
+                                    this.context?.AssignmentType.Add(assignmentTypeAdd);
                                     //this.context?.SaveChanges();
 
                                     var AssignmentDataAdd = new Assignment()
@@ -527,7 +590,7 @@ namespace opensis.data.Repository
                                 }
                             }
                             this.context?.SaveChanges();
-                            transaction.Commit();
+                            transaction?.Commit();
                             assignmentAddViewModel._failure = false;
                             assignmentAddViewModel._message = "Assignment Copied Successfully";
                         }
@@ -535,7 +598,7 @@ namespace opensis.data.Repository
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     assignmentAddViewModel._failure = true;
                     assignmentAddViewModel._message = es.Message;
                 }

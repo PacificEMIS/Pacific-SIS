@@ -26,25 +26,40 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
    public partial class CustomFieldsValue
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CategoryId { get; set; }
         public int FieldId { get; set; }
+        /// <summary>
+        /// Target_is school/student/staff id for whom custom field value is entered. For School module it will be always school id.
+        /// </summary>
         public int TargetId { get; set; }
-        public string Module { get; set; }
-        public string CustomFieldTitle { get; set; }
-        public string CustomFieldType { get; set; }
-        public string CustomFieldValue { get; set; }
-        public string CreatedBy { get; set; }
+        /// <summary>
+        /// &apos;Student&apos; | &apos;School&apos; | &apos;Staff&apos;
+        /// </summary>
+        public string Module { get; set; } = null!;
+        public string? CustomFieldTitle { get; set; }
+        /// <summary>
+        /// &apos;Select&apos; or &apos;Text&apos;
+        /// </summary>
+        public string? CustomFieldType { get; set; }
+        /// <summary>
+        /// User input value...Textbox-&gt;textvalue, Select--&gt;Value separated by &apos;|&apos;, Date --&gt; Date in string
+        /// </summary>
+        public string? CustomFieldValue { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdateOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual CustomFields CustomFields { get; set; }
+        [ValidateNever]
+        public virtual CustomFields CustomFields { get; set; } = null!;
     }
 }

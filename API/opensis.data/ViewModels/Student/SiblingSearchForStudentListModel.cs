@@ -32,13 +32,17 @@ namespace opensis.data.ViewModels.Student
 {
     public class SiblingSearchForStudentListModel : CommonFields
     {
+        public SiblingSearchForStudentListModel()
+        {
+            getStudentForView = new List<GetStudentForView>();
+        }
         public List<GetStudentForView> getStudentForView { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string StudentInternalId { get; set; }
-        public string FirstGivenName { get; set; }
-        public string LastFamilyName { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? LastFamilyName { get; set; }
         public DateTime? Dob { get; set; }
-        public string GradeLevelTitle { get; set; }
+        public string? GradeLevelTitle { get; set; }
     }
 }

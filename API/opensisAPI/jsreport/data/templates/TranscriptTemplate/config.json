@@ -1,12 +1,17 @@
 {
-    "shortid": "rkJTnK2ce",
+    "shortid": "HkelQ8YnfK",
+    "name": "TranscriptTemplate",
     "recipe": "chrome-pdf",
     "engine": "handlebars",
-    "data": {
-        "shortid": "Sy5S19ncg"
+    "chrome": {
+        "printBackground": true
+    },
+    "creationDate": {
+        "$$date": 1631520366011
     },
     "modificationDate": {
-        "$$date": 1498738932509
+        "$$date": 1631520366011
     },
-    "_id": "ulCoekcPKjgTxGLV"
+    "_id": "y4bCIM9TFVUQrADi",
+    "$entitySet": "templates"
 }

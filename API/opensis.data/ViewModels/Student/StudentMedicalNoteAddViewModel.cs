@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentMedicalNoteAddViewModel : CommonFields
     {
-        public StudentMedicalNote studentMedicalNote { get; set; }
+        public StudentMedicalNote? studentMedicalNote { get; set; }
     }
 }

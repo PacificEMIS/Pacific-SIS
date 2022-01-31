@@ -103,9 +103,9 @@ namespace opensisAPI.Controllers
             {
                 parentInfoList = _parentInfoRegisterService.GetAllParentInfoList(pageResult);
             }
-            catch (Exception es)
+            catch (Exception)
             {
-                parentInfoList._message = es.Message;
+                parentInfoList._message = parentInfoList._message;
                 parentInfoList._failure = true;
             }
             return parentInfoList;
@@ -175,7 +175,7 @@ namespace opensisAPI.Controllers
         [HttpPost("addParentInfo")]
         public ActionResult<ParentInfoAddViewModel> AddParentInfo(ParentInfoAddViewModel parentInfoAddViewModel)
         {
-            ParentInfoAddViewModel parentInfoAdd = new ParentInfoAddViewModel();
+            ParentInfoAddViewModel parentInfoAdd = new();
             try
             {
                 parentInfoAdd = _parentInfoRegisterService.AddParentInfo(parentInfoAddViewModel);

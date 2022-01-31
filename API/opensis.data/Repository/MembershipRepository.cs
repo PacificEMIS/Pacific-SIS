@@ -35,7 +35,7 @@ namespace opensis.data.Repository
 {
     public class MembershipRepository : IMembershipRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
         public MembershipRepository(IDbContextFactory dbContextFactory)
         {
@@ -51,36 +51,25 @@ namespace opensis.data.Repository
             GetAllMembersList getAllMembersList = new GetAllMembersList();
             try
             {
-                var membershipRepository = this.context?.Membership.Where(x => x.TenantId == membersList.TenantId && x.SchoolId == membersList.SchoolId && x.IsActive == true).Select(e=> new Membership()
-                { 
-                    TenantId= e.TenantId,
-                    SchoolId=e.SchoolId,
-                    MembershipId=e.MembershipId,
-                    Profile=e.Profile,
-                    IsActive=e.IsActive,
-                    IsSuperadmin=e.IsSuperadmin,
-                    IsSystem=e.IsSystem,
-                    Description=e.Description,
-                    ProfileType=e.ProfileType,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedOn=e.UpdatedOn,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == membersList.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == membersList.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                }).ToList();
+                var membershipRepository = this.context?.Membership.Where(x => x.TenantId == membersList.TenantId && x.SchoolId == membersList.SchoolId && x.IsActive == true).ToList();
 
-                getAllMembersList.GetAllMemberList = membershipRepository;
-                getAllMembersList.TenantId = membersList.TenantId;
-                getAllMembersList.SchoolId = membersList.SchoolId;
-                getAllMembersList._tenantName = membersList._tenantName;
-                getAllMembersList._token = membersList._token;
+                if(membershipRepository != null && membershipRepository.Any())
+                {
+                    getAllMembersList.GetAllMemberList = membershipRepository;
+                    getAllMembersList.TenantId = membersList.TenantId;
+                    getAllMembersList.SchoolId = membersList.SchoolId;
+                    getAllMembersList._tenantName = membersList._tenantName;
+                    getAllMembersList._token = membersList._token;
+                }
+                
 
                 return getAllMembersList;
             }
             catch (Exception ex)
             {
-                getAllMembersList = null;
+                getAllMembersList = null!;
                 getAllMembersList._failure = true;
-                getAllMembersList._message = NORECORDFOUND;
+                getAllMembersList._message = ex.Message;
                 return getAllMembersList;
             }
         }
@@ -92,15 +81,22 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public MembershipAddViewModel AddMembership(MembershipAddViewModel membershipAddViewModel)
         {
+            if (membershipAddViewModel.membership?.ProfileType is null)
+            {
+                return membershipAddViewModel;
+            }
             List<RolePermission> rolePermissionList = new List<RolePermission>();
             try
             {
-                var memberShipData = this.context?.Membership.FirstOrDefault(c => c.SchoolId == membershipAddViewModel.membership.SchoolId && c.TenantId == membershipAddViewModel.membership.TenantId && c.ProfileType.ToLower() == membershipAddViewModel.membership.ProfileType.ToLower());
+                //var memberShipData = this.context?.Membership.FirstOrDefault(c => c.SchoolId == membershipAddViewModel.membership.SchoolId && c.TenantId == membershipAddViewModel.membership.TenantId && c.ProfileType == membershipAddViewModel.membership.ProfileType);
+
+                var memberShipData = this.context?.Membership.AsEnumerable().Where(c => c.SchoolId == membershipAddViewModel.membership.SchoolId && c.TenantId == membershipAddViewModel.membership.TenantId && String.Compare(c.ProfileType, membershipAddViewModel.membership.ProfileType, true) == 0).FirstOrDefault();
 
                 if (memberShipData != null)
                 {
 
-                    var checkProfile = this.context?.Membership.Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && x.Profile.ToLower() == membershipAddViewModel.membership.Profile.ToLower() && x.IsActive==true).FirstOrDefault();
+                    //var checkProfile = this.context?.Membership.Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && x.Profile.ToLower() == membershipAddViewModel.membership.Profile.ToLower() && x.IsActive==true).FirstOrDefault();
+                    var checkProfile = this.context?.Membership.AsEnumerable().Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && String.Compare(x.Profile, membershipAddViewModel.membership.Profile, true) == 0 && x.IsActive == true).FirstOrDefault();
 
                     if (checkProfile != null)
                     {
@@ -118,17 +114,21 @@ namespace opensis.data.Repository
                             MembershipId = MembershipData.MembershipId + 1;
                         }
 
-                        if (membershipAddViewModel.membership.ProfileType.ToLower().ToString() == "Super Administrator")
+                        //if (membershipAddViewModel.membership?.ProfileType?.ToLower().ToString() == "Super Administrator".ToLower())
+                        if (String.Compare(membershipAddViewModel.membership.ProfileType, "Super Administrator", true) == 0)
                         {
                             membershipAddViewModel.membership.IsSuperadmin = true;
                         }
                         else
                         {
-                            membershipAddViewModel.membership.IsSuperadmin = false;
+                            if(membershipAddViewModel.membership != null)
+                            {
+                                membershipAddViewModel.membership.IsSuperadmin = false;
+                            }
                         }
 
 
-                        var rollPermissionData = this.context.RolePermission.Where(e => e.TenantId == memberShipData.TenantId && e.SchoolId == memberShipData.SchoolId && e.MembershipId == memberShipData.MembershipId).ToList();
+                        var rollPermissionData = this.context?.RolePermission.Where(e => e.TenantId == memberShipData.TenantId && e.SchoolId == memberShipData.SchoolId && e.MembershipId == memberShipData.MembershipId).ToList();
 
                         if (rollPermissionData != null)
                         {
@@ -153,24 +153,27 @@ namespace opensis.data.Repository
                                     CanEdit = rolePermission.CanEdit,
                                     CanAdd = rolePermission.CanAdd,
                                     CanDelete = rolePermission.CanDelete,
-                                    CreatedBy = membershipAddViewModel.membership.CreatedBy,
+                                    CreatedBy = membershipAddViewModel.membership?.CreatedBy,
                                     CreatedOn = DateTime.UtcNow,
                                     MembershipId = MembershipId,
                                     PermissionSubcategoryId = rolePermission.PermissionSubcategoryId,
                                     PermissionGroupId = rolePermission.PermissionGroupId,
                                 };
-                                this.context.RolePermission.Add(rolePermissions);
+                                this.context?.RolePermission.Add(rolePermissions);
                                 rolePermissionId++;
                             }
                         }
-                        membershipAddViewModel.membership.IsActive = true;
-                        membershipAddViewModel.membership.IsSystem = false;
-                        membershipAddViewModel.membership.MembershipId = (int)MembershipId;
-                        membershipAddViewModel.membership.CreatedOn = DateTime.UtcNow;
-                        this.context?.Membership.Add(membershipAddViewModel.membership);
-                        this.context?.SaveChanges();
-                        membershipAddViewModel._failure = false;
-                        membershipAddViewModel._message = "Membership Added Successfully";
+                        if(membershipAddViewModel.membership != null)
+                        {
+                            membershipAddViewModel.membership.IsActive = true;
+                            membershipAddViewModel.membership.IsSystem = false;
+                            membershipAddViewModel.membership.MembershipId = (int)MembershipId;
+                            membershipAddViewModel.membership.CreatedOn = DateTime.UtcNow;
+                            this.context?.Membership.Add(membershipAddViewModel.membership);
+                            this.context?.SaveChanges();
+                            membershipAddViewModel._failure = false;
+                            membershipAddViewModel._message = "Membership Added Successfully";
+                        }
                     }
                 }
                 else
@@ -194,13 +197,18 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public MembershipAddViewModel UpdateMembership(MembershipAddViewModel membershipAddViewModel)
         {
+            if (membershipAddViewModel.membership is null)
+            {
+                return membershipAddViewModel;
+            }
             try
             {
                 var memeberShipData = this.context?.Membership.FirstOrDefault(x => x.TenantId == membershipAddViewModel.membership.TenantId && x.SchoolId == membershipAddViewModel.membership.SchoolId && x.MembershipId == membershipAddViewModel.membership.MembershipId);
                 
                 if (memeberShipData != null)
                 {
-                    var checkProfile = this.context?.Membership.Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && x.MembershipId != membershipAddViewModel.membership.MembershipId && x.Profile.ToLower() == membershipAddViewModel.membership.Profile.ToLower() && x.IsActive==true).FirstOrDefault();
+                    //var checkProfile = this.context?.Membership.Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && x.MembershipId != membershipAddViewModel.membership.MembershipId && x.Profile == membershipAddViewModel.membership.Profile && x.IsActive==true).FirstOrDefault();
+                    var checkProfile = this.context?.Membership.AsEnumerable().Where(x => x.SchoolId == membershipAddViewModel.membership.SchoolId && x.TenantId == membershipAddViewModel.membership.TenantId && x.MembershipId != membershipAddViewModel.membership.MembershipId && String.Compare(x.Profile, membershipAddViewModel.membership.Profile, true) == 0 && x.IsActive == true).FirstOrDefault();
 
                     if (checkProfile != null)
                     {
@@ -217,16 +225,19 @@ namespace opensis.data.Repository
                         //{
                         //    membershipAddViewModel.membership.IsSuperadmin = false;
                         //}
-                        membershipAddViewModel.membership.ProfileType = memeberShipData.ProfileType;
-                        membershipAddViewModel.membership.IsActive = true;
-                        membershipAddViewModel.membership.IsSystem = false;
-                        membershipAddViewModel.membership.CreatedBy = memeberShipData.CreatedBy;
-                        membershipAddViewModel.membership.CreatedOn = memeberShipData.CreatedOn;
-                        membershipAddViewModel.membership.UpdatedOn = DateTime.UtcNow;
-                        this.context.Entry(memeberShipData).CurrentValues.SetValues(membershipAddViewModel.membership);
-                        this.context?.SaveChanges();
-                        membershipAddViewModel._failure = false;
-                        membershipAddViewModel._message = "Membership Updated Successfully";
+                        if(membershipAddViewModel.membership != null)
+                        {
+                            membershipAddViewModel.membership.ProfileType = memeberShipData.ProfileType;
+                            membershipAddViewModel.membership.IsActive = true;
+                            membershipAddViewModel.membership.IsSystem = false;
+                            membershipAddViewModel.membership.CreatedBy = memeberShipData.CreatedBy;
+                            membershipAddViewModel.membership.CreatedOn = memeberShipData.CreatedOn;
+                            membershipAddViewModel.membership.UpdatedOn = DateTime.UtcNow;
+                            this.context?.Entry(memeberShipData).CurrentValues.SetValues(membershipAddViewModel.membership);
+                            this.context?.SaveChanges();
+                            membershipAddViewModel._failure = false;
+                            membershipAddViewModel._message = "Membership Updated Successfully";
+                        }
                     }
                 }
                 else
@@ -251,6 +262,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public MembershipAddViewModel DeleteMembership(MembershipAddViewModel membershipAddViewModel)
         {
+            if (membershipAddViewModel.membership is null)
+            {
+                return membershipAddViewModel;
+            }
             try
             {
                 var memeberShipData = this.context?.Membership.FirstOrDefault(x => x.TenantId == membershipAddViewModel.membership.TenantId && x.SchoolId == membershipAddViewModel.membership.SchoolId && x.MembershipId == membershipAddViewModel.membership.MembershipId);
@@ -259,7 +274,7 @@ namespace opensis.data.Repository
                 {
                     var userData = this.context?.UserMaster.Where(x => x.TenantId == membershipAddViewModel.membership.TenantId && x.SchoolId == membershipAddViewModel.membership.SchoolId && x.MembershipId == membershipAddViewModel.membership.MembershipId && x.IsActive == true).ToList();
 
-                    if (userData.Count > 0)
+                    if (userData != null && userData.Any())
                     {
                         membershipAddViewModel._failure = true;
                         membershipAddViewModel._message = "Membership Cannot Be Deleted, Because It Has Association";

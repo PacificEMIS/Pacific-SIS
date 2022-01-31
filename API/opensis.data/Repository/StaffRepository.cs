@@ -33,13 +33,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace opensis.data.Repository
 {
     public class StaffRepository : IStaffRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
+
         public StaffRepository(IDbContextFactory dbContextFactory)
         {
             this.context = dbContextFactory.Create();
@@ -52,7 +54,11 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffAddViewModel AddStaff(StaffAddViewModel staffAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if (staffAddViewModel.staffMaster is null)
+            {
+                return staffAddViewModel;
+            }
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
@@ -86,9 +92,10 @@ namespace opensis.data.Repository
                         if (checkInternalID == false)
                         {
                             staffAddViewModel.staffMaster = null;
-                            staffAddViewModel.fieldsCategoryList = null;
+                            //staffAddViewModel.fieldsCategoryList = null;
+                            staffAddViewModel.fieldsCategoryList = new();
                             staffAddViewModel._failure = true;
-                            staffAddViewModel._message = "Staff InternalID Already Exist";
+                            staffAddViewModel._message = "Staff id already exist";
                             return staffAddViewModel;
                         }
                     }
@@ -99,79 +106,81 @@ namespace opensis.data.Repository
                     //bool checkInternalID = CheckInternalID(staffAddViewModel.staffMaster.TenantId, staffAddViewModel.staffMaster.StaffInternalId);
                     //if (checkInternalID == true)
                     //{                       
-                        //Add Staff Portal Access
-                        if (!string.IsNullOrWhiteSpace(staffAddViewModel.PasswordHash) && !string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress))
+                    //Add Staff Portal Access
+                    if (!string.IsNullOrWhiteSpace(staffAddViewModel.PasswordHash) && !string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress))
+                    {
+                        UserMaster userMaster = new UserMaster();
+
+                        var decrypted = Utility.Decrypt(staffAddViewModel.PasswordHash);
+                        string passwordHash = Utility.GetHashedPassword(decrypted);
+
+                        var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
+
+                        if (loginInfo == null)
                         {
-                            UserMaster userMaster = new UserMaster();
+                            var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Profile == "Teacher");
 
-                            var decrypted = Utility.Decrypt(staffAddViewModel.PasswordHash);
-                            string passwordHash = Utility.GetHashedPassword(decrypted);
+                            userMaster.SchoolId = staffAddViewModel.staffMaster.SchoolId;
+                            userMaster.TenantId = staffAddViewModel.staffMaster.TenantId;
+                            userMaster.UserId = staffAddViewModel.staffMaster.StaffId;
+                            userMaster.LangId = 1;
+                            //userMaster.MembershipId = membership.MembershipId;
+                            userMaster.MembershipId = membership!.MembershipId;
+                            userMaster.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                            userMaster.PasswordHash = passwordHash;
+                            //userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
+                            userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName ?? "";
+                            userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
 
-                            var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
-
-                            if (loginInfo == null)
-                            {
-                                var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Profile == "Teacher");
-
-                                userMaster.SchoolId = staffAddViewModel.staffMaster.SchoolId;
-                                userMaster.TenantId = staffAddViewModel.staffMaster.TenantId;
-                                userMaster.UserId = staffAddViewModel.staffMaster.StaffId;
-                                userMaster.LangId = 1;
-                                userMaster.MembershipId = membership.MembershipId;
-                                userMaster.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
-                                userMaster.PasswordHash = passwordHash;
-                                userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
-                                userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
-
-                                this.context?.UserMaster.Add(userMaster);
-                                this.context?.SaveChanges();
-                            }
-                            else
-                            {
-                                staffAddViewModel.staffMaster = null;
-                                staffAddViewModel._failure = true;
-                                staffAddViewModel._message = "Staff Login Email Already Exist";
-                                return staffAddViewModel;
-                            }
+                            this.context?.UserMaster.Add(userMaster);
+                            this.context?.SaveChanges();
                         }
-
-                        this.context?.StaffMaster.Add(staffAddViewModel.staffMaster);
-                        this.context?.SaveChanges();
-
-                        //Insert data into StaffSchoolInfo table            
-                        int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
-                        var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
-                        var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId, Id = (int)Id, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy,Profile= "Teacher" };
-                        this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
-                        this.context?.SaveChanges();
-
-                        if (staffAddViewModel.fieldsCategoryList != null && staffAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                        else
                         {
-                            var fieldsCategory = staffAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffAddViewModel.SelectedCategoryId);
-                            if (fieldsCategory != null)
+                            staffAddViewModel.staffMaster = null;
+                            staffAddViewModel._failure = true;
+                            staffAddViewModel._message = "Staff login email already exist";
+                            return staffAddViewModel;
+                        }
+                    }
+
+                    this.context?.StaffMaster.Add(staffAddViewModel.staffMaster);
+                    this.context?.SaveChanges();
+
+                    //Insert data into StaffSchoolInfo table            
+                    int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                    var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
+                    var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId, Id = (int)Id!, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher" };
+                    this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
+                    this.context?.SaveChanges();
+
+                    if (staffAddViewModel.fieldsCategoryList != null && staffAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                    {
+                        var fieldsCategory = staffAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffAddViewModel.SelectedCategoryId);
+                        if (fieldsCategory != null)
+                        {
+                            foreach (var customFields in fieldsCategory.CustomFields.ToList())
                             {
-                                foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                                if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
                                 {
-                                    if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
-                                    {
-                                        customFields.CustomFieldsValue.FirstOrDefault().Module = "Staff";
-                                        customFields.CustomFieldsValue.FirstOrDefault().CategoryId = customFields.CategoryId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().FieldId = customFields.FieldId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().CustomFieldTitle = customFields.Title;
-                                        customFields.CustomFieldsValue.FirstOrDefault().CustomFieldType = customFields.Type;
-                                    customFields.CustomFieldsValue.FirstOrDefault().TenantId = staffAddViewModel.staffMaster.TenantId;
-                                    customFields.CustomFieldsValue.FirstOrDefault().SchoolId = staffAddViewModel.staffMaster.SchoolId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().TargetId = staffAddViewModel.staffMaster.StaffId;
-                                        this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
-                                        this.context?.SaveChanges();
-                                    }
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = staffAddViewModel.staffMaster.TenantId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = staffAddViewModel.staffMaster.SchoolId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = staffAddViewModel.staffMaster.StaffId;
+                                    this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                    this.context?.SaveChanges();
                                 }
-
                             }
-                        }
 
-                        staffAddViewModel._failure = false;
-                        staffAddViewModel._message = "Staff Added Successfully";
+                        }
+                    }
+
+                    staffAddViewModel._failure = false;
+                    staffAddViewModel._message = "Staff added successfully";
                     //}
                     //else
                     //{
@@ -180,11 +189,12 @@ namespace opensis.data.Repository
                     //    staffAddViewModel._failure = true;
                     //    staffAddViewModel._message = "Staff InternalID Already Exist";
                     //}
-                    transaction.Commit();
+                    transaction?.Commit();
+
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     staffAddViewModel._message = es.Message;
                     staffAddViewModel._failure = true;
                     staffAddViewModel._tenantName = staffAddViewModel._tenantName;
@@ -200,7 +210,7 @@ namespace opensis.data.Repository
             if (InternalID != null && InternalID != "")
             {
                 var checkInternalId = this.context?.StaffMaster.Where(x => x.TenantId == TenantId && x.StaffInternalId == InternalID).ToList();
-                if (checkInternalId.Count() > 0)
+                if (checkInternalId!=null&& checkInternalId.Any())
                 {
                     return false;
                 }
@@ -223,11 +233,57 @@ namespace opensis.data.Repository
         public StaffListModel GetAllStaffList(PageResult pageResult)
         {
             StaffListModel staffListModel = new StaffListModel();
-            IQueryable<StaffMaster> transactionIQ = null;
+            IQueryable<StaffMaster>? transactionIQ = null;
+            IQueryable<StaffMaster>? StaffMasterList = null;
+          
+            var membershipData = this.context?.UserMaster.Include(x => x.Membership).FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.EmailAddress == pageResult.EmailAddress);
 
-            var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : true) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+            var activeSchools = this.context?.SchoolDetail.Where(x => x.Status == true).Select(x => x.SchoolId).ToList();
 
-            var StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && x.Profile.ToLower() != "super administrator" && schoolAttachedStaffId.Contains(x.StaffId));
+            if (membershipData != null)
+            {
+                //if (membershipData.Membership.ProfileType?.ToLower() == "super administrator")
+                if  (String.Compare(membershipData.Membership.ProfileType, "super administrator", true) == 0)
+                {
+                    if (pageResult.IsHomeRoomTeacher == true)
+                    {
+                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.Profile!.ToLower() == "Homeroom Teacher".ToLower() && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : activeSchools!.Contains(x.SchoolAttachedId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+
+                        StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                    }
+                    else
+                    {
+                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : activeSchools!.Contains(x.SchoolAttachedId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+
+                        StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                    }
+
+                    //StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && x.Profile.ToLower() != "super administrator" && schoolAttachedStaffId.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+
+                    
+                    //StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && !(String.Compare(x.Profile, "super administrator", true) == 0) && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                }
+                else
+                {
+                    var schoolAttachedId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.StaffId == membershipData.UserId && x.EndDate == null && activeSchools!.Contains(x.SchoolAttachedId)).ToList().Select(s => s.SchoolAttachedId);
+
+                    //var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : schoolAttachedId.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+                    if (pageResult.IsHomeRoomTeacher == true)
+                    {
+                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.Profile!.ToLower() == "Homeroom Teacher".ToLower() && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : schoolAttachedId!.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+
+                        StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                    }
+                    else
+                    {
+                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : schoolAttachedId!.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date : true)).Select(s => s.StaffId).ToList();
+
+                        StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                    }
+                        
+                    //StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && !(String.Compare(x.Profile, "super administrator", true) == 0) && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                }
+            }
 
             //var StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && x.Profile.ToLower() != "super administrator" && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolId == pageResult.SchoolId : true) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.StaffSchoolInfo.FirstOrDefault().EndDate == null || x.StaffSchoolInfo.FirstOrDefault().EndDate >= DateTime.UtcNow : true));
 
@@ -243,31 +299,33 @@ namespace opensis.data.Repository
                     if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        transactionIQ = StaffMasterList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                    x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                    x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                    x.StaffInternalId != null && x.StaffInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
+                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        transactionIQ = StaffMasterList?.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
+                                                                    x.MiddleName != null && x.MiddleName.Contains(Columnvalue) ||
+                                                                    x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
+                                                                    (x.FirstGivenName + x.MiddleName + x.LastFamilyName).Contains(Columnvalue) || (x.FirstGivenName + x.MiddleName).Contains(Columnvalue) || (x.FirstGivenName + x.LastFamilyName).Contains(Columnvalue) || (x.MiddleName + x.LastFamilyName).Contains(Columnvalue) ||
+                                                                    x.StaffInternalId != null && x.StaffInternalId.Contains(Columnvalue) ||
                                                                     x.JobTitle != null && x.JobTitle.Contains(Columnvalue) ||
                                                                     x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
                                                                     x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue));
                         //var ProfileFilter = StaffMasterList.Where(x => x.StaffSchoolInfo.FirstOrDefault() != null ? x.StaffSchoolInfo.FirstOrDefault().Profile.ToLower().Contains(Columnvalue.ToLower()) : string.Empty.Contains(Columnvalue));
 
-                        var ProfileFilter = StaffMasterList.Where(x => x.StaffSchoolInfo.Count > 0 ? x.StaffSchoolInfo.Any(x => x.Profile.ToLower().Contains(Columnvalue.ToLower()) && x.SchoolAttachedId==pageResult.SchoolId) : string.Empty.Contains(Columnvalue));
+                        var ProfileFilter = StaffMasterList?.Where(x => x.StaffSchoolInfo.Count > 0 ? x.StaffSchoolInfo.Any(x => (x.Profile??"").ToLower().Contains(Columnvalue.ToLower()) && x.SchoolAttachedId==pageResult.SchoolId) : string.Empty.Contains(Columnvalue));
 
-                        if (ProfileFilter.ToList().Count() > 0)
+                        if (ProfileFilter!=null && ProfileFilter.Any())
                         {
-                            transactionIQ = transactionIQ.Concat(ProfileFilter);
+                            transactionIQ = transactionIQ?.Concat(ProfileFilter);
                         }
                     }
                     else
                     {
-                        if (pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "profile"))
+                        if (pageResult.FilterParams != null&& pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "profile"))
                         {
                             var filterValue = pageResult.FilterParams.Where(x => x.ColumnName.ToLower() == "profile").Select(x => x.FilterValue).FirstOrDefault();
                             //var profileFilterData = StaffMasterList.Where(x => x.StaffSchoolInfo.FirstOrDefault().Profile.ToLower() == filterValue.ToLower());
-                            var profileFilterData = StaffMasterList.Where(x => x.StaffSchoolInfo.Any(x => x.Profile.ToLower() == filterValue.ToLower() && x.SchoolAttachedId == pageResult.SchoolId));
+                            var profileFilterData = StaffMasterList?.Where(x => x.StaffSchoolInfo.Any(x =>( x.Profile??"").ToLower() == (filterValue??"").ToLower() && x.SchoolAttachedId == pageResult.SchoolId));
 
-                            if (profileFilterData.ToList().Count() > 0)
+                            if (profileFilterData?.Any()==true)
                             {
                                 //transactionIQ = transactionIQ.Concat(a);
                                 StaffMasterList = profileFilterData;
@@ -276,16 +334,16 @@ namespace opensis.data.Repository
                             }
                         }   
 
-                        transactionIQ = Utility.FilteredData(pageResult.FilterParams, StaffMasterList).AsQueryable();
+                        transactionIQ = Utility.FilteredData(pageResult.FilterParams!, StaffMasterList!).AsQueryable();
                     }
                     //transactionIQ = transactionIQ.Distinct();
                 }
 
                 if (pageResult.DobStartDate != null && pageResult.DobEndDate != null)
                 {
-                    var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate).AsQueryable();
+                    var filterInDateRange = transactionIQ?.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate).AsQueryable();
 
-                    if (filterInDateRange.ToList().Count() > 0)
+                    if (filterInDateRange?.Any() == true)
                     {
                         transactionIQ = filterInDateRange;
                     }
@@ -298,11 +356,11 @@ namespace opensis.data.Repository
                     {
                         var firstName = staffName.First();
                         var lastName = staffName.Last();
-                        pageResult.FullName = null;
+                        //pageResult.FullName = null;
 
                         if (pageResult.FullName == null)
                         {
-                            var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.FirstGivenName.StartsWith(firstName.ToString()) && x.LastFamilyName.StartsWith(lastName.ToString()));
+                            var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.FirstGivenName!.StartsWith(firstName.ToString()) && x.LastFamilyName!.StartsWith(lastName.ToString()));
 
                             //transactionIQ = transactionIQ.Concat(nameSearch);
                             transactionIQ = nameSearch;
@@ -310,7 +368,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName.StartsWith(pageResult.FullName) || x.LastFamilyName.StartsWith(pageResult.FullName)));
+                        var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName!.StartsWith(pageResult.FullName) || x.LastFamilyName!.StartsWith(pageResult.FullName)));
 
                         //transactionIQ = transactionIQ.Concat(nameSearch);
                         transactionIQ = nameSearch;
@@ -319,38 +377,43 @@ namespace opensis.data.Repository
 
                 if (pageResult.SortingModel != null)
                 {
-                    switch (pageResult.SortingModel.SortColumn.ToLower())
+                    switch (pageResult.SortingModel.SortColumn?.ToLower())
                     {
                         case "profile":
 
-                            if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                            if (pageResult.SortingModel.SortDirection?.ToLower() == "asc")
                             {
-                                transactionIQ = transactionIQ.OrderBy(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault().Profile : null);
+                                transactionIQ = transactionIQ?.OrderBy(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault()!.Profile : null);
                             }
                             else
                             {
-                                transactionIQ = transactionIQ.OrderByDescending(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault().Profile : null);
+                                transactionIQ = transactionIQ?.OrderByDescending(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault()!.Profile : null);
                             }
                             break;
                         default:
-                            transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection.ToLower());
+                            transactionIQ = Utility.Sort(transactionIQ!, pageResult.SortingModel.SortColumn!, pageResult.SortingModel.SortDirection!.ToLower());
                             break;
                     }
                 }
+                else
+                {
+                    transactionIQ = transactionIQ?.OrderBy(e => e.LastFamilyName).ThenBy(c => c.FirstGivenName);
+                }
 
-                int totalCount = transactionIQ.Count();
+                int totalCount = transactionIQ!=null? transactionIQ.Count():0;
                 if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                 {
-                    transactionIQ = transactionIQ.Select(e => new StaffMaster
+                    transactionIQ = transactionIQ?.Select(e => new StaffMaster
                     {
                         TenantId = e.TenantId,
                         StaffId = e.StaffId,
+                        SchoolId = e.SchoolId,
                         StaffInternalId = e.StaffInternalId,
                         FirstGivenName = e.FirstGivenName,
                         MiddleName = e.MiddleName,
                         LastFamilyName = e.LastFamilyName,
                         //Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date)).FirstOrDefault().Profile : null,
-                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x =>(pageResult.SearchAllSchool !=true)? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault().Profile : null,
+                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x =>(pageResult.SearchAllSchool !=true)? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault()!.Profile : null,
                         JobTitle = e.JobTitle,
                         SchoolEmail = e.SchoolEmail,
                         MobilePhone = e.MobilePhone,
@@ -363,25 +426,27 @@ namespace opensis.data.Repository
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
                         StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
-                        CreatedBy = (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
+                        CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
-                        UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
+                        UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : null
+                        IsActive = e.IsActive,
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
                     }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                 }
                 else
                 {
-                    transactionIQ = transactionIQ.Select(e => new StaffMaster
+                    transactionIQ = transactionIQ?.Select(e => new StaffMaster
                     {
                         TenantId = e.TenantId,
                         StaffId = e.StaffId,
+                        SchoolId = e.SchoolId,
                         StaffInternalId = e.StaffInternalId,
                         FirstGivenName = e.FirstGivenName,
                         MiddleName = e.MiddleName,
                         LastFamilyName = e.LastFamilyName,
                         //Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date)).FirstOrDefault().Profile : null,
-                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => (pageResult.SearchAllSchool != true) ? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault().Profile : null,
+                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => (pageResult.SearchAllSchool != true) ? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault()!.Profile : null,
                         JobTitle = e.JobTitle,
                         SchoolEmail = e.SchoolEmail,
                         MobilePhone = e.MobilePhone,
@@ -394,13 +459,25 @@ namespace opensis.data.Repository
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
                         StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
-                        CreatedBy = (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
+                        CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
-                        UpdatedBy = (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == pageResult.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
+                        UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : null
+                        IsActive = e.IsActive,
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
                     });
                 }
+                if(transactionIQ!=null && transactionIQ.Any())
+                {
+                    staffListModel.staffMaster = transactionIQ.ToList();
+                }
+                //staffListModel.staffMaster = transactionIQ.ToList();
+
+                staffListModel.staffMaster.ForEach(e =>
+                {
+                    e.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.CreatedBy);
+                    e.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.UpdatedBy);
+                });
                 
                 //var staffList = transactionIQ.Select(s => new GetStaffListForView
                 //{
@@ -418,7 +495,7 @@ namespace opensis.data.Repository
 
                 staffListModel.TenantId = pageResult.TenantId;
                 //staffListModel.getStaffListForView = staffList;
-                staffListModel.staffMaster = transactionIQ.ToList();
+                //staffListModel.staffMaster = transactionIQ.ToList();
                 staffListModel.TotalCount = totalCount;
                 staffListModel.PageNumber = pageResult.PageNumber;
                 staffListModel._pageSize = pageResult.PageSize;
@@ -443,7 +520,11 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffAddViewModel ViewStaff(StaffAddViewModel staffAddViewModel)
         {
-            StaffAddViewModel staffView = new StaffAddViewModel();
+            if (staffAddViewModel.staffMaster is null)
+            {
+                return staffAddViewModel;
+            }
+               StaffAddViewModel staffView = new StaffAddViewModel();
             try
             {
                 var staffData = this.context?.StaffMaster.Include(x=>x.StaffSchoolInfo).FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId /*&& x.SchoolId==staffAddViewModel.staffMaster.SchoolId*/ &&  x.StaffId == staffAddViewModel.staffMaster.StaffId);
@@ -451,94 +532,29 @@ namespace opensis.data.Repository
                 {
                     if (staffData.StaffSchoolInfo.Count() > 0)
                     {
-                        staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault().Profile;
+                       // staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault().Profile;
+                        staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault()?.Profile;
+                        List<int> ids = new List<int>();
+                        foreach (var StaffSchoolInfo in staffData.StaffSchoolInfo)
+                        {
+                            if (StaffSchoolInfo.SchoolId == StaffSchoolInfo.SchoolAttachedId)
+                            {
+                                staffView.DefaultSchoolName = StaffSchoolInfo.SchoolAttachedName;
+                            }
+                            else
+                            {
+                                ids.Add((int)StaffSchoolInfo.SchoolAttachedId!);
+                            }
+                        }
+                        staffView.ExternalSchoolIds = ids.ToArray();
                     }
-                    staffView.staffMaster = new StaffMaster()
-                    {
-                        TenantId= staffData.TenantId,
-                        SchoolId= staffData.SchoolId,
-                        AlternateId= staffData.AlternateId,
-                        BusDropoff= staffData.BusDropoff,
-                        BusNo= staffData.BusNo,
-                        BusPickup= staffData.BusPickup,
-                        CountryOfBirth= staffData.CountryOfBirth,
-                        DisabilityDescription= staffData.DisabilityDescription,
-                        DistrictId= staffData.DistrictId,
-                        Dob= staffData.Dob,
-                        EmergencyEmail= staffData.EmergencyEmail,
-                        EmergencyFirstName= staffData.EmergencyFirstName,
-                        EmergencyHomePhone= staffData.EmergencyHomePhone,
-                        EmergencyLastName= staffData.EmergencyLastName,
-                        EmergencyMobilePhone= staffData.EmergencyMobilePhone,
-                        EmergencyWorkPhone= staffData.EmergencyWorkPhone,
-                        EndDate= staffData.EndDate,
-                        Ethnicity= staffData.Ethnicity,
-                        Facebook= staffData.Facebook,
-                        FirstGivenName= staffData.FirstGivenName,
-                        FirstLanguage= staffData.FirstLanguage,
-                        FirstLanguageNavigation= staffData.FirstLanguageNavigation,
-                        Gender= staffData.Gender,
-                        HomeAddressCity= staffData.HomeAddressCity,
-                        HomeAddressCountry= staffData.HomeAddressCountry,
-                        HomeAddressLineOne= staffData.HomeAddressLineOne,
-                        HomeAddressLineTwo= staffData.HomeAddressLineTwo,
-                        HomeAddressState= staffData.HomeAddressState,
-                        HomeAddressZip= staffData.HomeAddressZip,
-                        HomePhone= staffData.HomePhone,
-                        HomeroomTeacher= staffData.HomeroomTeacher,
-                        Instagram= staffData.Instagram,
-                        JobTitle= staffData.JobTitle,
-                        JoiningDate= staffData.JoiningDate,
-                        LastFamilyName= staffData.LastFamilyName,
-                        Linkedin= staffData.Linkedin,
-                        LoginEmailAddress= staffData.LoginEmailAddress,
-                        MailingAddressCity= staffData.MailingAddressCity,
-                        MailingAddressCountry= staffData.MailingAddressCountry,
-                        MailingAddressLineOne= staffData.MailingAddressLineOne,
-                        MailingAddressLineTwo= staffData.MailingAddressLineTwo,
-                        MailingAddressSameToHome= staffData.MailingAddressSameToHome,
-                        MailingAddressState= staffData.MailingAddressState,
-                        MailingAddressZip= staffData.MailingAddressZip,
-                        MaritalStatus= staffData.MaritalStatus,
-                        MiddleName= staffData.MiddleName,
-                        MobilePhone= staffData.MobilePhone,
-                        OfficePhone= staffData.OfficePhone,
-                        Nationality= staffData.Nationality,
-                        OtherGovtIssuedNumber= staffData.OtherGovtIssuedNumber,
-                        OtherGradeLevelTaught= staffData.OtherGradeLevelTaught,
-                        OtherSubjectTaught= staffData.OtherSubjectTaught,
-                        PersonalEmail= staffData.PersonalEmail,
-                        PhysicalDisability= staffData.PhysicalDisability,
-                        PortalAccess= staffData.PortalAccess,
-                        PreferredName= staffData.PreferredName,
-                        PreviousName= staffData.PreviousName,
-                        PrimaryGradeLevelTaught= staffData.PrimaryGradeLevelTaught,
-                        PrimarySubjectTaught= staffData.PrimarySubjectTaught,
-                        Profile= staffData.Profile,
-                        Race= staffData.Race,
-                        RelationshipToStaff= staffData.RelationshipToStaff,
-                        Salutation= staffData.Salutation,
-                        SchoolEmail= staffData.SchoolEmail,
-                        SecondLanguage= staffData.SecondLanguage,
-                        SecondLanguageNavigation= staffData.SecondLanguageNavigation,
-                        SocialSecurityNumber= staffData.SocialSecurityNumber,
-                        StaffGuid= staffData.StaffGuid,
-                        StaffId= staffData.StaffId,
-                        StaffInternalId= staffData.StaffInternalId,
-                        StaffPhoto= staffData.StaffPhoto,
-                        StateId= staffData.StateId,
-                        Suffix= staffData.Suffix,
-                        ThirdLanguage= staffData.ThirdLanguage,
-                        Twitter= staffData.Twitter,
-                        Youtube=staffData.Youtube,
-                        CreatedOn= staffData.CreatedOn,
-                        UpdatedOn= staffData.UpdatedOn,
-                        UpdatedBy = (staffData.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == staffData.UpdatedBy).Name : null,
-                        CreatedBy = (staffData.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == staffData.CreatedBy).Name : null,
-                        StaffSchoolInfo= staffData.StaffSchoolInfo.ToList()
-                    };
+                    staffData.StaffSchoolInfo = new HashSet<StaffSchoolInfo>();
+                    staffView.staffMaster = staffData;
 
-                    var customFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                    
+                    if (staffAddViewModel.ExternalSchoolId != staffAddViewModel.staffMaster?.SchoolId)
+                    {
+                        var externalCustomFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffAddViewModel.staffMaster!.TenantId && x.SchoolId == staffAddViewModel.ExternalSchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
                         .Select(y => new FieldsCategory
                         {
                             TenantId = y.TenantId,
@@ -551,10 +567,6 @@ namespace opensis.data.Repository
                             SortOrder = y.SortOrder,
                             Required = y.Required,
                             Hide = y.Hide,
-                            CreatedBy= (y.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == y.CreatedBy).Name : null,
-                            CreatedOn =DateTime.UtcNow,
-                            UpdatedOn = y.UpdatedOn,
-                            UpdatedBy = (y.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u =>  u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == y.UpdatedBy).Name : null,
                             CustomFields = y.CustomFields.Select(z => new CustomFields
                             {
                                 TenantId = z.TenantId,
@@ -571,29 +583,57 @@ namespace opensis.data.Repository
                                 Required = z.Required,
                                 Hide = z.Hide,
                                 DefaultSelection = z.DefaultSelection,
-                                UpdatedOn = z.UpdatedOn,
-                                UpdatedBy = (z.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == z.UpdatedBy).Name : null,
-                                CreatedBy = (z.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == z.CreatedBy).Name : null,
-                                CreatedOn =z.CreatedOn,
-                                CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffAddViewModel.staffMaster.StaffId).Select(g=>new CustomFieldsValue()
-                                {
-                                    TenantId=g.TenantId,
-                                    SchoolId=g.SchoolId,
-                                    CategoryId=g.CategoryId,
-                                    FieldId=g.FieldId,
-                                    TargetId=g.TargetId,
-                                    Module=g.Module,
-                                    CustomFieldTitle=g.CustomFieldTitle,
-                                    CustomFieldType=g.CustomFieldType,
-                                    CustomFieldValue=g.CustomFieldValue,
-                                    UpdateOn = g.UpdateOn,
-                                    UpdatedBy = (g.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == g.UpdatedBy).Name : null,
-                                    CreatedBy = (g.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffAddViewModel.staffMaster.TenantId && u.EmailAddress == g.CreatedBy).Name : null,
-                                    CreatedOn = g.CreatedOn,
-                                }).ToList()
+                                CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffAddViewModel.staffMaster!.StaffId).ToList()
                             }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
                         }).ToList();
-                    staffView.fieldsCategoryList = customFields;
+
+                        if(externalCustomFields?.Any()==true)
+                        {
+                            staffView.fieldsCategoryList = externalCustomFields;
+                        }
+                        
+                    }
+                    else
+                    {
+                        var customFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffAddViewModel.staffMaster!.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                        .Select(y => new FieldsCategory
+                        {
+                            TenantId = y.TenantId,
+                            SchoolId = y.SchoolId,
+                            CategoryId = y.CategoryId,
+                            IsSystemCategory = y.IsSystemCategory,
+                            Search = y.Search,
+                            Title = y.Title,
+                            Module = y.Module,
+                            SortOrder = y.SortOrder,
+                            Required = y.Required,
+                            Hide = y.Hide,
+                            CustomFields = y.CustomFields.Select(z => new CustomFields
+                            {
+                                TenantId = z.TenantId,
+                                SchoolId = z.SchoolId,
+                                CategoryId = z.CategoryId,
+                                FieldId = z.FieldId,
+                                Module = z.Module,
+                                Type = z.Type,
+                                Search = z.Search,
+                                Title = z.Title,
+                                SortOrder = z.SortOrder,
+                                SelectOptions = z.SelectOptions,
+                                SystemField = z.SystemField,
+                                Required = z.Required,
+                                Hide = z.Hide,
+                                DefaultSelection = z.DefaultSelection,
+                                CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffAddViewModel.staffMaster!.StaffId).ToList()
+                            }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
+                        }).ToList();
+                        if(customFields?.Any()==true)
+                        {
+                            staffView.fieldsCategoryList = customFields;
+                        }
+                        
+                    }
+                    
                     staffView._tenantName = staffAddViewModel._tenantName;
                     staffView._token = staffAddViewModel._token;
                 }
@@ -622,156 +662,190 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffAddViewModel UpdateStaff(StaffAddViewModel staffAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if (staffAddViewModel.staffMaster != null)
             {
-                try
+                using (var transaction = this.context?.Database.BeginTransaction())
                 {
-                    var checkInternalId = this.context?.StaffMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffInternalId == staffAddViewModel.staffMaster.StaffInternalId && x.StaffInternalId != null && x.StaffId != staffAddViewModel.staffMaster.StaffId).ToList();
-                    if (checkInternalId.Count() > 0)
+                    try
                     {
-                        staffAddViewModel.staffMaster = null;
-                        staffAddViewModel.fieldsCategoryList = null;
-                        staffAddViewModel._failure = true;
-                        staffAddViewModel._message = "Staff InternalID Already Exist";
-                    }
-                    else
-                    {
-                        var staffUpdate = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffId == staffAddViewModel.staffMaster.StaffId);
-
-                        if (string.IsNullOrEmpty(staffAddViewModel.staffMaster.StaffInternalId))
+                        var checkInternalId = this.context?.StaffMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffInternalId == staffAddViewModel.staffMaster.StaffInternalId && x.StaffInternalId != null && x.StaffId != staffAddViewModel.staffMaster.StaffId).ToList();
+                        if (checkInternalId != null && checkInternalId.Any())
                         {
-                            staffAddViewModel.staffMaster.StaffInternalId = staffUpdate.StaffInternalId;
-                        }
-
-                        //Add or Update staff portal access
-                        if (staffUpdate.LoginEmailAddress != null)
-                        {
-                            if (!string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress))
-                            {
-                                if (staffUpdate.LoginEmailAddress != staffAddViewModel.staffMaster.LoginEmailAddress)
-                                {
-                                    var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
-
-                                    if (loginInfo != null)
-                                    {
-                                        staffAddViewModel.staffMaster = null;
-                                        staffAddViewModel._failure = true;
-                                        staffAddViewModel._message = "Staff Login Email Already Exist";
-                                        return staffAddViewModel;
-                                    }
-                                    else
-                                    {
-                                        var loginInfoData = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffUpdate.LoginEmailAddress);
-
-                                        loginInfoData.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
-                                        loginInfoData.IsActive = staffAddViewModel.staffMaster.PortalAccess;
-
-                                        this.context?.UserMaster.Add(loginInfoData);
-                                        this.context?.SaveChanges();
-
-                                        //Update Parent Login in ParentInfo table.
-                                        //staffUpdate.LoginEmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
-                                    }
-                                }
-                                else
-                                {
-                                    var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffUpdate.LoginEmailAddress);
-
-                                    loginInfo.IsActive = staffAddViewModel.staffMaster.PortalAccess;
-
-                                    this.context?.SaveChanges();
-                                }
-                            }
+                            staffAddViewModel.staffMaster = null;
+                            //staffAddViewModel.fieldsCategoryList = null;
+                            staffAddViewModel._failure = true;
+                            staffAddViewModel._message = "Staff id already exist";
                         }
                         else
                         {
-                            if (!string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress) && !string.IsNullOrWhiteSpace(staffAddViewModel.PasswordHash))
+                            var staffUpdate = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffId == staffAddViewModel.staffMaster.StaffId);
+                            if (staffUpdate != null)
                             {
-                                var decrypted = Utility.Decrypt(staffAddViewModel.PasswordHash);
-                                string passwordHash = Utility.GetHashedPassword(decrypted);
-
-                                UserMaster userMaster = new UserMaster();
-
-                                var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
-
-                                if (loginInfo == null)
+                                if (string.IsNullOrEmpty(staffAddViewModel.staffMaster.StaffInternalId))
                                 {
-                                    var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Profile == "Teacher");
+                                    staffAddViewModel.staffMaster.StaffInternalId = staffUpdate.StaffInternalId;
+                                }
 
-                                    userMaster.SchoolId = staffAddViewModel.staffMaster.SchoolId;
-                                    userMaster.TenantId = staffAddViewModel.staffMaster.TenantId;
-                                    userMaster.UserId = staffAddViewModel.staffMaster.StaffId;
-                                    userMaster.LangId = 1;
-                                    userMaster.MembershipId = membership.MembershipId;
-                                    userMaster.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
-                                    userMaster.PasswordHash = passwordHash;
-                                    userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
-                                    userMaster.UpdatedOn = DateTime.UtcNow;
-                                    userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                //Add or Update staff portal access
+                                if (staffUpdate.LoginEmailAddress != null)
+                                {
+                                    if (!string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress))
+                                    {
+                                        if (staffUpdate.LoginEmailAddress != staffAddViewModel.staffMaster.LoginEmailAddress)
+                                        {
+                                            var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
 
-                                    this.context?.UserMaster.Add(userMaster);
-                                    this.context?.SaveChanges();
+                                            if (loginInfo != null)
+                                            {
+                                                staffAddViewModel.staffMaster = null;
+                                                staffAddViewModel._failure = true;
+                                                staffAddViewModel._message = "Staff login email already exist";
+                                                return staffAddViewModel;
+                                            }
+                                            else
+                                            {
+                                                var loginInfoData = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffUpdate.LoginEmailAddress);
 
+                                                var loginInfoDataForRemove = loginInfoData;
 
-                                    //Update LoginEmailAddress in StaffMaster table.
-                                    //staffUpdate.LoginEmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                                                if (loginInfoDataForRemove != null)
+                                                {
+                                                    this.context?.UserMaster.Remove(loginInfoDataForRemove);
+                                                    this.context?.SaveChanges();
+                                                }
+
+                                                if (loginInfoData != null)
+                                                {
+                                                    loginInfoData.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                                                    loginInfoData.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                                    this.context?.UserMaster.Add(loginInfoData);
+                                                    this.context?.SaveChanges();
+                                                }
+                                                    
+                                                //loginInfoData.Name = staffAddViewModel.staffMaster.FirstGivenName;
+
+                                              
+
+                                                //Update Parent Login in ParentInfo table.
+                                                //staffUpdate.LoginEmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffUpdate.LoginEmailAddress);
+                                            if (loginInfo != null)
+                                            {
+                                                loginInfo.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                                this.context?.SaveChanges();
+                                            }
+                                                
+                                            //loginInfo.Name = staffAddViewModel.staffMaster.FirstGivenName;
+
+                                            
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    staffAddViewModel.staffMaster = null;
-                                    staffAddViewModel._failure = true;
-                                    staffAddViewModel._message = "Staff Login Email Already Exist";
-                                    return staffAddViewModel;
+                                    if (!string.IsNullOrWhiteSpace(staffAddViewModel.staffMaster.LoginEmailAddress) && !string.IsNullOrWhiteSpace(staffAddViewModel.PasswordHash))
+                                    {
+                                        var decrypted = Utility.Decrypt(staffAddViewModel.PasswordHash);
+                                        string passwordHash = Utility.GetHashedPassword(decrypted);
+
+                                        UserMaster userMaster = new UserMaster();
+
+                                        var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.EmailAddress == staffAddViewModel.staffMaster.LoginEmailAddress);
+
+                                        if (loginInfo == null)
+                                        {
+                                            var staffSchoolInfoData = this.context?.StaffSchoolInfo.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffId == staffAddViewModel.staffMaster.StaffId);
+
+                                            if (staffSchoolInfoData != null)
+                                            {
+                                                var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Profile == staffSchoolInfoData.Profile);
+
+                                                userMaster.SchoolId = staffAddViewModel.staffMaster.SchoolId;
+                                                userMaster.TenantId = staffAddViewModel.staffMaster.TenantId;
+                                                userMaster.UserId = staffAddViewModel.staffMaster.StaffId;
+                                                userMaster.LangId = 1;
+                                                //userMaster.MembershipId = membership.MembershipId;
+                                                userMaster.MembershipId = membership != null ? membership.MembershipId : 0;
+                                                userMaster.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                                                userMaster.PasswordHash = passwordHash;
+                                                //userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
+                                                userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName != null ? staffAddViewModel.staffMaster.FirstGivenName : "";
+                                                userMaster.UpdatedOn = DateTime.UtcNow;
+                                                userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+
+                                                this.context?.UserMaster.Add(userMaster);
+                                                this.context?.SaveChanges();
+                                            }
+                                            //Update LoginEmailAddress in StaffMaster table.
+                                            //staffUpdate.LoginEmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
+                                        }
+                                        else
+                                        {
+                                            staffAddViewModel.staffMaster = null;
+                                            staffAddViewModel._failure = true;
+                                            staffAddViewModel._message = "Staff login email already exist";
+                                            return staffAddViewModel;
+                                        }
+                                    }
                                 }
-                            }
-                        }
 
-                        staffAddViewModel.staffMaster.StaffGuid = staffUpdate.StaffGuid;
-                        staffAddViewModel.staffMaster.UpdatedOn = DateTime.UtcNow;
-                        staffAddViewModel.staffMaster.CreatedOn = staffUpdate.CreatedOn;
-                        staffAddViewModel.staffMaster.CreatedBy = staffUpdate.CreatedBy;
-                        this.context.Entry(staffUpdate).CurrentValues.SetValues(staffAddViewModel.staffMaster);
-                        this.context?.SaveChanges();
+                                staffAddViewModel.staffMaster.StaffGuid = staffUpdate.StaffGuid;
+                                staffAddViewModel.staffMaster.UpdatedOn = DateTime.UtcNow;
+                                staffAddViewModel.staffMaster.CreatedOn = staffUpdate.CreatedOn;
+                                staffAddViewModel.staffMaster.CreatedBy = staffUpdate.CreatedBy;
+                                staffAddViewModel.staffMaster.IsActive = staffUpdate.IsActive;
 
-                        if (staffAddViewModel.fieldsCategoryList != null && staffAddViewModel.fieldsCategoryList.ToList().Count > 0)
-                        {
-                            var fieldsCategory = staffAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffAddViewModel.SelectedCategoryId);
-                            if (fieldsCategory != null)
-                            {
-                                foreach (var customFields in fieldsCategory.CustomFields.ToList())
+
+                                this.context?.Entry(staffUpdate).CurrentValues.SetValues(staffAddViewModel.staffMaster);
+                                this.context?.SaveChanges();
+
+                                if (staffAddViewModel.fieldsCategoryList != null && staffAddViewModel.fieldsCategoryList.ToList().Count > 0)
                                 {
-                                    var customFieldValueData = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.CategoryId == customFields.CategoryId && x.FieldId == customFields.FieldId && x.Module == "Staff" && x.TargetId == staffAddViewModel.staffMaster.StaffId);
-                                    if (customFieldValueData != null)
+                                    var fieldsCategory = staffAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffAddViewModel.SelectedCategoryId);
+                                    if (fieldsCategory != null)
                                     {
-                                        this.context?.CustomFieldsValue.RemoveRange(customFieldValueData);
-                                    }
-                                    if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
-                                    {
-                                        customFields.CustomFieldsValue.FirstOrDefault().Module = "Staff";
-                                        customFields.CustomFieldsValue.FirstOrDefault().CategoryId = customFields.CategoryId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().FieldId = customFields.FieldId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().CustomFieldTitle = customFields.Title;
-                                        customFields.CustomFieldsValue.FirstOrDefault().CustomFieldType = customFields.Type;
-                                        customFields.CustomFieldsValue.FirstOrDefault().SchoolId = staffAddViewModel.staffMaster.SchoolId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().TenantId = staffAddViewModel.staffMaster.TenantId;
-                                        customFields.CustomFieldsValue.FirstOrDefault().TargetId = staffAddViewModel.staffMaster.StaffId;
-                                        this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
-                                        this.context?.SaveChanges();
+                                        foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                                        {
+                                            var customFieldValueData = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.CategoryId == customFields.CategoryId && x.FieldId == customFields.FieldId && x.Module == "Staff" && x.TargetId == staffAddViewModel.staffMaster.StaffId);
+                                            if (customFieldValueData != null)
+                                            {
+                                                this.context?.CustomFieldsValue.RemoveRange(customFieldValueData);
+                                            }
+                                            if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                            {
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = staffAddViewModel.staffMaster.SchoolId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = staffAddViewModel.staffMaster.TenantId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = staffAddViewModel.staffMaster.StaffId;
+                                                this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                                this.context?.SaveChanges();
+                                            }
+                                        }
                                     }
                                 }
+                                staffAddViewModel._failure = false;
+                                staffAddViewModel._message = "Staff updated successfully";
+                                transaction?.Commit();
                             }
+                            //transaction.Commit();
                         }
-                        staffAddViewModel._failure = false;
-                        staffAddViewModel._message = "Staff Updated Successfully";
                     }
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    staffAddViewModel.staffMaster = null;
-                    staffAddViewModel._failure = true;
-                    staffAddViewModel._message = ex.Message;
+
+                    catch (Exception ex)
+                    {
+                        transaction?.Rollback();
+                        staffAddViewModel.staffMaster = null;
+                        staffAddViewModel._failure = true;
+                        staffAddViewModel._message = ex.Message;
+                    }
                 }
             }
             return staffAddViewModel;
@@ -785,15 +859,15 @@ namespace opensis.data.Repository
         public CheckStaffInternalIdViewModel CheckStaffInternalId(CheckStaffInternalIdViewModel checkStaffInternalIdViewModel)
         {
             var checkInternalId = this.context?.StaffMaster.Where(x => x.TenantId == checkStaffInternalIdViewModel.TenantId && x.StaffInternalId == checkStaffInternalIdViewModel.StaffInternalId).ToList();
-            if (checkInternalId.Count() > 0)
+            if (checkInternalId!=null&& checkInternalId.Any())
             {
                 checkStaffInternalIdViewModel.IsValidInternalId = false;
-                checkStaffInternalIdViewModel._message = "Staff Internal Id Already Exist";
+                checkStaffInternalIdViewModel._message = "Staff id already exist";
             }
             else
             {
                 checkStaffInternalIdViewModel.IsValidInternalId = true;
-                checkStaffInternalIdViewModel._message = "Staff Internal Id Is Valid";
+                checkStaffInternalIdViewModel._message = "Staff id is valid";
             }
             return checkStaffInternalIdViewModel;
         }
@@ -805,7 +879,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffSchoolInfoAddViewModel AddStaffSchoolInfo(StaffSchoolInfoAddViewModel staffSchoolInfoAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
@@ -830,7 +904,7 @@ namespace opensis.data.Repository
                         Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
                         foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
                         {
-                            staffSchoolInfo.Id = (int)Id;
+                            staffSchoolInfo.Id = (int)Id!;
                             staffSchoolInfo.CreatedOn = DateTime.UtcNow;
                             this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
                             Id++;
@@ -838,13 +912,38 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
                     }
 
-                    transaction.Commit();
+                    if (staffSchoolInfoAddViewModel.fieldsCategoryList != null && staffSchoolInfoAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                    {
+                        var fieldsCategory = staffSchoolInfoAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffSchoolInfoAddViewModel.SelectedCategoryId);
+                        if (fieldsCategory != null)
+                        {
+                            foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                            {
+                                if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                {
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = (Guid)staffSchoolInfoAddViewModel.TenantId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = (int)staffSchoolInfoAddViewModel.SchoolId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = (int)staffSchoolInfoAddViewModel.StaffId!;
+                                    this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                    this.context?.SaveChanges();
+                                }
+                            }
+
+                        }
+                    }
+
+                    transaction?.Commit();
                     staffSchoolInfoAddViewModel._failure = false;
-                    staffSchoolInfoAddViewModel._message = "Staff School Info Added Successfully";
+                    staffSchoolInfoAddViewModel._message = "Staff school info added successfully";
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     staffSchoolInfoAddViewModel._failure = true;
                     staffSchoolInfoAddViewModel._message = es.Message;
                 }
@@ -859,10 +958,11 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffSchoolInfoAddViewModel ViewStaffSchoolInfo(StaffSchoolInfoAddViewModel staffSchoolInfoAddViewModel)
         {
+            
             StaffSchoolInfoAddViewModel staffSchoolInfoView = new StaffSchoolInfoAddViewModel();
             try
             {              
-                var staffMaster = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault().StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId);
+                var staffMaster = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId);
                 if (staffMaster != null)
                 {
                     staffSchoolInfoView.Profile = staffMaster.Profile;
@@ -885,10 +985,10 @@ namespace opensis.data.Repository
                     staffSchoolInfoView._failure = true;
                     staffSchoolInfoView._message = NORECORDFOUND;
                 }
-                var staffSchoolInfo = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault().StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
-                if(staffSchoolInfo.Count() > 0)
+                var staffSchoolInfo = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId).ToList();
+                if (staffSchoolInfo != null && staffSchoolInfo.Any())
                 {
-                    staffSchoolInfoView.staffSchoolInfoList= staffSchoolInfo;
+                    staffSchoolInfoView.staffSchoolInfoList = staffSchoolInfo;
                 }
             }
             catch (Exception es)
@@ -906,7 +1006,11 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffSchoolInfoAddViewModel UpdateStaffSchoolInfo(StaffSchoolInfoAddViewModel staffSchoolInfoAddViewModel)
         {
-            using (var transaction = this.context.Database.BeginTransaction())
+            if(staffSchoolInfoAddViewModel.staffSchoolInfoList is null)
+            {
+                return staffSchoolInfoAddViewModel;
+            }
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
                 try
                 {
@@ -927,7 +1031,7 @@ namespace opensis.data.Repository
 
                         if (userMaster != null)
                         {
-                            var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId && x.Profile.ToLower() == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault().Profile.ToLower());
+                            var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId && x.Profile == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.Profile);
 
                             if (membership != null)
                             {
@@ -947,16 +1051,31 @@ namespace opensis.data.Repository
                     if (staffSchoolInfoAddViewModel.staffSchoolInfoList != null && staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList().Count > 0)
                     {
                         var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
-                        if (staffSchoolInfoData.Count() > 0)
+                       
+                        if (staffSchoolInfoData!=null&& staffSchoolInfoData.Any())
                         {
                             this.context?.StaffSchoolInfo.RemoveRange(staffSchoolInfoData);
                             this.context?.SaveChanges();
                         }
+
+                        if (staffSchoolInfoData?.FirstOrDefault()!.SchoolId != staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId)
+                        {
+                            staffMaster!.SchoolId = (int)staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId!;
+
+                            var staffCertificateData = this.context?.StaffCertificateInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
+
+                            if (staffCertificateData!=null&& staffCertificateData.Any())
+                            {
+                                staffCertificateData.ForEach(x => x.SchoolId = (int)staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId!);
+                            }
+                        }
+
                         int? Id = 0;
                         Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
                         foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
                         {
-                            staffSchoolInfo.Id = (int)Id;
+                            staffSchoolInfo.Id = (int)Id!;
+                            //staffSchoolInfo.Id = Id != null ? (int)Id : 0;
                             staffSchoolInfo.UpdatedOn = DateTime.UtcNow;
                             staffSchoolInfo.StaffMaster = null;
                             this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
@@ -964,13 +1083,42 @@ namespace opensis.data.Repository
                         }
                         this.context?.SaveChanges();
                     }
-                    transaction.Commit();
+
+                    if (staffSchoolInfoAddViewModel.fieldsCategoryList != null && staffSchoolInfoAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                    {
+                        var fieldsCategory = staffSchoolInfoAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffSchoolInfoAddViewModel.SelectedCategoryId);
+                        if (fieldsCategory != null)
+                        {
+                            foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                            {
+                                var customFieldValueData = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId && x.CategoryId == customFields.CategoryId && x.FieldId == customFields.FieldId && x.Module == "Staff" && x.TargetId == staffSchoolInfoAddViewModel.StaffId);
+                                if (customFieldValueData != null)
+                                {
+                                    this.context?.CustomFieldsValue.RemoveRange(customFieldValueData);
+                                }
+                                if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                {
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = (int)staffSchoolInfoAddViewModel.SchoolId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = (Guid)staffSchoolInfoAddViewModel.TenantId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = (int)staffSchoolInfoAddViewModel.StaffId!;
+                                    this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                    this.context?.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    transaction?.Commit();
                     staffSchoolInfoAddViewModel._failure = false;
-                    staffSchoolInfoAddViewModel._message = "Staff School Info Updated Successfully";
+                    staffSchoolInfoAddViewModel._message = "Staff school info updated successfully";
                 }
                 catch (Exception es)
                 {
-                    transaction.Rollback();
+                    transaction?.Rollback();
                     staffSchoolInfoAddViewModel._failure = true;
                     staffSchoolInfoAddViewModel._message = es.Message;
                 }
@@ -985,22 +1133,55 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffCertificateInfoAddViewModel AddStaffCertificateInfo(StaffCertificateInfoAddViewModel staffCertificateInfoAddViewModel)
         {
-            try
+            if (staffCertificateInfoAddViewModel.staffCertificateInfo is null)
             {
-                int? Id = Utility.GetMaxPK(this.context, new Func<StaffCertificateInfo, int>(x => x.Id));
-                staffCertificateInfoAddViewModel.staffCertificateInfo.Id = (int)Id;
-                staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedOn = DateTime.UtcNow;
-                this.context?.StaffCertificateInfo.Add(staffCertificateInfoAddViewModel.staffCertificateInfo);
-                this.context?.SaveChanges();
-                staffCertificateInfoAddViewModel._failure = false;
-                staffCertificateInfoAddViewModel._message = "Staff Certificate Added Successfully";
+                return staffCertificateInfoAddViewModel;
             }
-            catch (Exception es)
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
-                staffCertificateInfoAddViewModel._message = es.Message;
-                staffCertificateInfoAddViewModel._failure = true;
-                staffCertificateInfoAddViewModel._tenantName = staffCertificateInfoAddViewModel._tenantName;
-                staffCertificateInfoAddViewModel._token = staffCertificateInfoAddViewModel._token;
+                try
+                {
+                    int? Id = Utility.GetMaxPK(this.context, new Func<StaffCertificateInfo, int>(x => x.Id));
+                    staffCertificateInfoAddViewModel.staffCertificateInfo.Id = (int)Id!;
+                    staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedOn = DateTime.UtcNow;
+                    this.context?.StaffCertificateInfo.Add(staffCertificateInfoAddViewModel.staffCertificateInfo);
+                    this.context?.SaveChanges();
+
+                    if (staffCertificateInfoAddViewModel.fieldsCategoryList != null && staffCertificateInfoAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                    {
+                        var fieldsCategory = staffCertificateInfoAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffCertificateInfoAddViewModel.SelectedCategoryId);
+                        if (fieldsCategory != null)
+                        {
+                            foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                            {
+                                if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                {
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = (Guid)staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = (int)staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId!;
+                                    customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = (int)staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId!;
+                                    this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                    this.context?.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    transaction?.Commit();
+                    staffCertificateInfoAddViewModel._failure = false;
+                    staffCertificateInfoAddViewModel._message = "Staff certificate added successfully";
+                }
+                catch (Exception es)
+                {
+                    transaction?.Rollback();
+                    staffCertificateInfoAddViewModel._message = es.Message;
+                    staffCertificateInfoAddViewModel._failure = true;
+                    staffCertificateInfoAddViewModel._tenantName = staffCertificateInfoAddViewModel._tenantName;
+                    staffCertificateInfoAddViewModel._token = staffCertificateInfoAddViewModel._token;
+                }
             }
 
             return staffCertificateInfoAddViewModel;
@@ -1018,34 +1199,18 @@ namespace opensis.data.Repository
 
             try
             {
-                var staffCertificateInfoList = this.context?.StaffCertificateInfo.Where(x => x.TenantId == staffCertificateInfoListModel.TenantId && x.SchoolId == staffCertificateInfoListModel.SchoolId && x.StaffId == staffCertificateInfoListModel.StaffId).Select(e=>new StaffCertificateInfo()
-                { 
-                    TenantId=e.TenantId,
-                    SchoolId=e.SchoolId,
-                    StaffId=e.StaffId,
-                    CertificationName=e.CertificationName,
-                    ShortName=e.ShortName,
-                    CertificationCode=e.CertificationCode,
-                    PrimaryCertification=e.PrimaryCertification,
-                    CertificationDate=e.CertificationDate,
-                    CertificationExpiryDate=e.CertificationExpiryDate,
-                    CertificationDescription=e.CertificationDescription,
-                    Id=e.Id,
-                    CreatedBy= (e.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffCertificateInfoListModel.TenantId && u.EmailAddress == e.CreatedBy).Name : null,
-                    CreatedOn=e.CreatedOn,
-                    UpdatedBy= (e.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == staffCertificateInfoListModel.TenantId && u.EmailAddress == e.UpdatedBy).Name : null,
-                    UpdatedOn=e.UpdatedOn
-                }).ToList();
+                var staffCertificateInfoList = this.context?.StaffCertificateInfo.Where(x => x.TenantId == staffCertificateInfoListModel.TenantId && x.SchoolId == staffCertificateInfoListModel.SchoolId && x.StaffId == staffCertificateInfoListModel.StaffId).ToList();
 
-                staffCertificateInfoListView.staffCertificateInfoList = staffCertificateInfoList;
+                //staffCertificateInfoListView.staffCertificateInfoList = staffCertificateInfoList;
                 staffCertificateInfoListView._tenantName = staffCertificateInfoListModel._tenantName;
                 staffCertificateInfoListView.TenantId = staffCertificateInfoListModel.TenantId;
                 staffCertificateInfoListView.SchoolId = staffCertificateInfoListModel.SchoolId;
                 staffCertificateInfoListView.StaffId = staffCertificateInfoListModel.StaffId;
                 staffCertificateInfoListView._token = staffCertificateInfoListModel._token;
 
-                if (staffCertificateInfoList.Count>0)
-                {   
+                if (staffCertificateInfoList!=null&& staffCertificateInfoList.Any())
+                {
+                    staffCertificateInfoListView.staffCertificateInfoList = staffCertificateInfoList;
                     staffCertificateInfoListView._failure = false;
                 }
                 else
@@ -1071,30 +1236,68 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffCertificateInfoAddViewModel UpdateStaffCertificateInfo(StaffCertificateInfoAddViewModel staffCertificateInfoAddViewModel)
         {
-            try
+            if(staffCertificateInfoAddViewModel.staffCertificateInfo is null)
             {
-                var staffCertificateInfoUpdate = this.context?.StaffCertificateInfo.FirstOrDefault(x => x.TenantId == staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId && x.SchoolId == staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId && x.StaffId == staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId && x.Id == staffCertificateInfoAddViewModel.staffCertificateInfo.Id);
-                if (staffCertificateInfoUpdate != null)
-                {
-                    staffCertificateInfoAddViewModel.staffCertificateInfo.UpdatedOn = DateTime.UtcNow;
-                    staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedBy = staffCertificateInfoUpdate.CreatedBy;
-                    staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedOn = staffCertificateInfoUpdate.CreatedOn;
-                    this.context.Entry(staffCertificateInfoUpdate).CurrentValues.SetValues(staffCertificateInfoAddViewModel.staffCertificateInfo);
-                    this.context?.SaveChanges();
-                    staffCertificateInfoAddViewModel._failure = false;
-                    staffCertificateInfoAddViewModel._message= "Staff Certificate Updated Successfully";
-                }
-                else
-                {
-                    staffCertificateInfoAddViewModel.staffCertificateInfo = null;
-                    staffCertificateInfoAddViewModel._failure = true;
-                    staffCertificateInfoAddViewModel._message = NORECORDFOUND;
-                }
+                return staffCertificateInfoAddViewModel;
             }
-            catch(Exception es)
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
-                staffCertificateInfoAddViewModel._failure = true;
-                staffCertificateInfoAddViewModel._message = es.Message;
+                try
+                {
+                    var staffCertificateInfoUpdate = this.context?.StaffCertificateInfo.FirstOrDefault(x => x.TenantId == staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId && x.SchoolId == staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId && x.StaffId == staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId && x.Id == staffCertificateInfoAddViewModel.staffCertificateInfo.Id);
+                    if (staffCertificateInfoUpdate != null)
+                    {
+                        staffCertificateInfoAddViewModel.staffCertificateInfo.UpdatedOn = DateTime.UtcNow;
+                        staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedBy = staffCertificateInfoUpdate.CreatedBy;
+                        staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedOn = staffCertificateInfoUpdate.CreatedOn;
+                        this.context?.Entry(staffCertificateInfoUpdate).CurrentValues.SetValues(staffCertificateInfoAddViewModel.staffCertificateInfo);
+                        this.context?.SaveChanges();
+
+                        if (staffCertificateInfoAddViewModel.fieldsCategoryList != null && staffCertificateInfoAddViewModel.fieldsCategoryList.ToList().Count > 0)
+                        {
+                            var fieldsCategory = staffCertificateInfoAddViewModel.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staffCertificateInfoAddViewModel.SelectedCategoryId);
+                            if (fieldsCategory != null)
+                            {
+                                foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                                {
+                                    var customFieldValueData = this.context?.CustomFieldsValue.FirstOrDefault(x => x.TenantId == staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId && x.SchoolId == staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId && x.CategoryId == customFields.CategoryId && x.FieldId == customFields.FieldId && x.Module == "Staff" && x.TargetId == staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId);
+                                    if (customFieldValueData != null)
+                                    {
+                                        this.context?.CustomFieldsValue.RemoveRange(customFieldValueData);
+                                    }
+                                    if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                    {
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = (int)staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId!;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = (Guid)staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId!;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = (int)staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId!;
+                                        this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                        this.context?.SaveChanges();
+                                    }
+                                }
+                            }
+                        }
+                        transaction?.Commit();
+                        staffCertificateInfoAddViewModel._failure = false;
+                        staffCertificateInfoAddViewModel._message = "Staff certificate updated successfully";
+                    }
+                    else
+                    {
+                        staffCertificateInfoAddViewModel.staffCertificateInfo = null;
+                        staffCertificateInfoAddViewModel._failure = true;
+                        staffCertificateInfoAddViewModel._message = NORECORDFOUND;
+                    }
+                }
+                catch (Exception es)
+                {
+                    transaction?.Rollback();
+                    staffCertificateInfoAddViewModel._failure = true;
+                    staffCertificateInfoAddViewModel._message = es.Message;
+                }
             }
             return staffCertificateInfoAddViewModel;
         }
@@ -1108,19 +1311,22 @@ namespace opensis.data.Repository
         {
             try
             {
-                var staffCertificateInfoDelete = this.context?.StaffCertificateInfo.FirstOrDefault(x => x.TenantId == staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId && x.SchoolId == staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId && x.StaffId == staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId && x.Id == staffCertificateInfoAddViewModel.staffCertificateInfo.Id);
-                if (staffCertificateInfoDelete!=null)
+                if (staffCertificateInfoAddViewModel.staffCertificateInfo != null)
                 {
-                    this.context?.StaffCertificateInfo.Remove(staffCertificateInfoDelete);
-                    this.context?.SaveChanges();
-                    staffCertificateInfoAddViewModel._failure = false;
-                    staffCertificateInfoAddViewModel._message = "Staff Certificate Deleted Successfully";
-                }
-                else
-                {
-                    staffCertificateInfoAddViewModel.staffCertificateInfo = null;
-                    staffCertificateInfoAddViewModel._failure = true;
-                    staffCertificateInfoAddViewModel._message = NORECORDFOUND;
+                    var staffCertificateInfoDelete = this.context?.StaffCertificateInfo.FirstOrDefault(x => x.TenantId == staffCertificateInfoAddViewModel.staffCertificateInfo.TenantId && x.SchoolId == staffCertificateInfoAddViewModel.staffCertificateInfo.SchoolId && x.StaffId == staffCertificateInfoAddViewModel.staffCertificateInfo.StaffId && x.Id == staffCertificateInfoAddViewModel.staffCertificateInfo.Id);
+                    if (staffCertificateInfoDelete != null)
+                    {
+                        this.context?.StaffCertificateInfo.Remove(staffCertificateInfoDelete);
+                        this.context?.SaveChanges();
+                        staffCertificateInfoAddViewModel._failure = false;
+                        staffCertificateInfoAddViewModel._message = "Staff certificate deleted successfully";
+                    }
+                    else
+                    {
+                        staffCertificateInfoAddViewModel.staffCertificateInfo = null;
+                        staffCertificateInfoAddViewModel._failure = true;
+                        staffCertificateInfoAddViewModel._message = NORECORDFOUND;
+                    }
                 }
             }
             catch (Exception es)
@@ -1140,22 +1346,25 @@ namespace opensis.data.Repository
         {
             try
             {
-                var staffUpdate = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffId == staffAddViewModel.staffMaster.StaffId);
-                if(staffUpdate != null)
+                if (staffAddViewModel.staffMaster != null)
                 {
-                    staffUpdate.UpdatedOn = DateTime.UtcNow;
-                    staffUpdate.StaffPhoto = staffAddViewModel.staffMaster.StaffPhoto;
-                    staffUpdate.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
-                    this.context?.SaveChanges();
-                    staffAddViewModel._message = "Staff Photo Updated Successfully";
-                }
-                else
-                {
-                    staffAddViewModel._failure = true;
-                    staffAddViewModel._message = NORECORDFOUND;
+                    var staffUpdate = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.StaffId == staffAddViewModel.staffMaster.StaffId);
+                    if (staffUpdate != null)
+                    {
+                        staffUpdate.UpdatedOn = DateTime.UtcNow;
+                        staffUpdate.StaffPhoto = staffAddViewModel.staffMaster.StaffPhoto;
+                        staffUpdate.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
+                        this.context?.SaveChanges();
+                        staffAddViewModel._message = "Staff photo updated successfully";
+                    }
+                    else
+                    {
+                        staffAddViewModel._failure = true;
+                        staffAddViewModel._message = NORECORDFOUND;
+                    }
                 }
             }
-            catch(Exception es)
+            catch (Exception es)
             {
                 staffAddViewModel._failure = true;
                 staffAddViewModel._message = es.Message;
@@ -1178,7 +1387,7 @@ namespace opensis.data.Repository
             if (staffListAddViewModel.StaffAddViewModelList.Count > 0)
             {
                 staffListAdd._failure = false;
-                staffListAdd._message = "Staff Added Successfully";
+                staffListAdd._message = "Staff added successfully";
 
                 //int? staffId = Utility.GetMaxPK(this.context, new Func<StaffMaster, int>(x => x.StaffId));
                 int? staffId = 1;
@@ -1204,267 +1413,276 @@ namespace opensis.data.Repository
                      //UserMaster userMaster = new UserMaster();
                     var StaffSchoolInfoData = new StaffSchoolInfo();
                     
-                    using (var transaction = this.context.Database.BeginTransaction())
+                    using (var transaction = this.context?.Database.BeginTransaction())
                     {
                         try
                         {
-                            staff.staffMaster.TenantId = staffListAddViewModel.TenantId;
-                            staff.staffMaster.SchoolId = staffListAddViewModel.SchoolId;
-                            staff.staffMaster.StaffId = (int)staffId;
-                            staff.staffMaster.CreatedOn = DateTime.UtcNow;
-                            staff.staffMaster.CreatedBy = staffListAddViewModel.CreatedBy;
-                            Guid GuidId = Guid.NewGuid();
-                            var GuidIdExist = this.context?.StaffMaster.FirstOrDefault(x => x.StaffGuid == GuidId);
-
-                            if (GuidIdExist != null)
+                            if (staff.staffMaster != null)
                             {
-                                staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
-                                staffListAdd.StaffAddViewModelList.Add(staff);
-                                staffListAdd._failure = true;
-                                staffListAdd._message = "Staff Rejected Due to Data Error";
-                                continue;
-                            }
+                                staff.staffMaster.TenantId = staffListAddViewModel.TenantId;
+                                staff.staffMaster.SchoolId = staffListAddViewModel.SchoolId;
+                                staff.staffMaster.StaffId = (int)staffId;
+                                staff.staffMaster.CreatedOn = DateTime.UtcNow;
+                                staff.staffMaster.CreatedBy = staffListAddViewModel.CreatedBy;
+                                Guid GuidId = Guid.NewGuid();
+                                var GuidIdExist = this.context?.StaffMaster.FirstOrDefault(x => x.StaffGuid == GuidId);
 
-                            staff.staffMaster.StaffGuid = GuidId;
-
-                            if (!string.IsNullOrEmpty(staff.staffMaster.StaffInternalId))
-                            {
-                                bool checkInternalID = CheckInternalID(staff.staffMaster.TenantId, staff.staffMaster.StaffInternalId);
-                                if (checkInternalID == false)
+                                if (GuidIdExist != null)
                                 {
                                     staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
+                                    staff._message = "GUID already exist";
                                     staffListAdd.StaffAddViewModelList.Add(staff);
                                     staffListAdd._failure = true;
-                                    staffListAdd._message = "Staff Rejected Due to Data Error";
+                                    staffListAdd._message = "Staff rejected due to data error";
                                     continue;
                                 }
-                            }
-                            else
-                            {
-                                staff.staffMaster.StaffInternalId = staff.staffMaster.StaffId.ToString();
-                            }
 
-                            if (staff.FirstLanguageName != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.FirstLanguageName, out number);
-                                if (checkItsId)
+                                staff.staffMaster.StaffGuid = GuidId;
+
+                                if (!string.IsNullOrEmpty(staff.staffMaster.StaffInternalId))
                                 {
-                                    var firstLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.FirstLanguageName));
-                                    staff.staffMaster.FirstLanguage = firstLanguageData != null ? Convert.ToInt32(staff.FirstLanguageName) : (int?)null;
-                                }
-                                else
-                                {
-                                    var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.FirstLanguageName.ToLower())?.LangId;
-                                    staff.staffMaster.FirstLanguage = firstLanguageId != null ? firstLanguageId : null;
-                                }
-                            }
-
-                            if (staff.SecondLanguageName != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.SecondLanguageName, out number);
-                                if (checkItsId)
-                                {
-                                    var SecondLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.SecondLanguageName));
-                                    staff.staffMaster.SecondLanguage = SecondLanguageData != null ? Convert.ToInt32(staff.SecondLanguageName) : (int?)null;
-                                }
-                                else
-                                {
-                                    var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.SecondLanguageName.ToLower())?.LangId;
-                                    staff.staffMaster.SecondLanguage = secondLanguageId != null ? secondLanguageId : null;
-                                }
-                            }
-
-                            if (staff.ThirdLanguageName != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.ThirdLanguageName, out number);
-                                if (checkItsId)
-                                {
-                                    var ThirdLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.ThirdLanguageName));
-                                    staff.staffMaster.ThirdLanguage = ThirdLanguageData != null ? Convert.ToInt32(staff.ThirdLanguageName) : (int?)null;
-                                }
-                                else
-                                {
-                                    var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.ThirdLanguageName.ToLower())?.LangId;
-                                    staff.staffMaster.ThirdLanguage = thirdLanguageId != null ? thirdLanguageId : null;
-                                }
-                            }
-
-                            if (staff.CountryOfBirthName != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.CountryOfBirthName, out number);
-                                if (checkItsId)
-                                {
-                                    var CountryOfBirthData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.CountryOfBirthName));
-                                    staff.staffMaster.CountryOfBirth = CountryOfBirthData != null ? Convert.ToInt32(staff.CountryOfBirthName) : (int?)null;
-                                }
-                                else
-                                {
-                                    var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.CountryOfBirthName.ToLower())?.Id;
-                                    staff.staffMaster.CountryOfBirth = countryOfBirthId != null ? countryOfBirthId : null;
-                                }
-                            }
-
-                            if (staff.NationalityName != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.NationalityName, out number);
-                                if (checkItsId)
-                                {
-                                    var NationalityData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.NationalityName));
-                                    staff.staffMaster.Nationality = NationalityData != null ? Convert.ToInt32(staff.NationalityName) : (int?)null;
-                                }
-                                else
-                                {
-                                    var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.NationalityName.ToLower())?.Id;
-                                    staff.staffMaster.Nationality = nationalityId != null ? nationalityId : null;
-                                }
-                            }
-
-
-                            if (staff.staffMaster.HomeAddressCountry != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.staffMaster.HomeAddressCountry, out number);
-                                if (checkItsId)
-                                {
-                                    var CountryData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.staffMaster.HomeAddressCountry));
-                                    staff.staffMaster.HomeAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
-                                }
-                                else
-                                {
-                                    var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.HomeAddressCountry.ToLower());
-                                    staff.staffMaster.HomeAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
-                                }
-                            }
-
-                            if (staff.staffMaster.MailingAddressCountry != null)
-                            {
-                                var checkItsId = Int32.TryParse(staff.staffMaster.MailingAddressCountry, out number);
-                                if (checkItsId)
-                                {
-                                    var CountryData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.staffMaster.MailingAddressCountry));
-                                    staff.staffMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
-                                }
-                                else
-                                {
-                                    var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.MailingAddressCountry.ToLower());
-                                    staff.staffMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
-                                }
-                            }
-
-
-                            //Add Staff Portal Access
-                            if (!string.IsNullOrWhiteSpace(staff.PasswordHash) && !string.IsNullOrWhiteSpace(staff.LoginEmail))
-                            {
-                                UserMaster userMaster = new UserMaster();
-
-                                //var decrypted = Utility.Decrypt(staff.PasswordHash);
-                                string passwordHash = Utility.GetHashedPassword(staff.PasswordHash);
-
-                                var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staff.staffMaster.TenantId && x.EmailAddress == staff.LoginEmail);
-
-                                if (loginInfo == null)
-                                {
-                                    var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staff.staffMaster.TenantId && x.SchoolId == staff.staffMaster.SchoolId && x.Profile == "Teacher");
-
-                                    userMaster.SchoolId = staff.staffMaster.SchoolId;
-                                    userMaster.TenantId = staff.staffMaster.TenantId;
-                                    userMaster.UserId = staff.staffMaster.StaffId;
-                                    userMaster.LangId = 1;
-                                    userMaster.MembershipId = membership.MembershipId;
-                                    userMaster.EmailAddress = staff.LoginEmail;
-                                    userMaster.PasswordHash = passwordHash;
-                                    userMaster.Name = staff.staffMaster.FirstGivenName;
-                                    userMaster.IsActive = true;
-
-                                    this.context?.UserMaster.Add(userMaster);
-                                    this.context?.SaveChanges();
-                                    staff.staffMaster.PortalAccess = true;
-                                    staff.staffMaster.LoginEmailAddress = staff.LoginEmail;
-                                }
-                                else
-                                {
-                                    staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
-                                    staffListAdd.StaffAddViewModelList.Add(staff);
-                                    staffListAdd._failure = true;
-                                    staffListAdd._message = "Staff Rejected Due to Data Error";
-                                    continue;
-                                }
-                            }
-
-                            if (staff.staffMaster.FirstGivenName == null || staff.staffMaster.LastFamilyName == null)
-                            {
-                                staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
-                                staffListAdd.StaffAddViewModelList.Add(staff);
-                                staffListAdd._failure = true;
-                                staffListAdd._message = "Staff Rejected Due to Data Error";
-                                continue;
-                            }
-
-                            if (staff.Dob != null)
-                            {
-                                staff.staffMaster.Dob = Convert.ToDateTime(staff.Dob);
-                            }
-                            if (staff.JoiningDate != null)
-                            {
-                                staff.staffMaster.JoiningDate = Convert.ToDateTime(staff.JoiningDate);
-                            }
-
-                            this.context?.StaffMaster.Add(staff.staffMaster);
-                            this.context?.SaveChanges();
-
-                            //Insert data into StaffSchoolInfo table            
-                            int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
-                            var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staff.staffMaster.TenantId && x.SchoolId == staff.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
-
-                            var startDate = DateTime.UtcNow;
-                            if (staff.StartDate != null)
-                            {
-                               startDate = Convert.ToDateTime(staff.StartDate);
-                            }
-
-                            StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staff.staffMaster.TenantId, SchoolId = staff.staffMaster.SchoolId, StaffId = staff.staffMaster.StaffId, SchoolAttachedId = staff.staffMaster.SchoolId, Id = (int)Id, SchoolAttachedName = schoolName, StartDate = startDate, CreatedOn = DateTime.UtcNow, CreatedBy = staff.staffMaster.CreatedBy, Profile = staff.Profile ?? "Teacher" };
-                            this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
-                            this.context?.SaveChanges();
-
-                            if (staff.fieldsCategoryList != null && staff.fieldsCategoryList.ToList().Count > 0)
-                            {
-                                //var fieldsCategory = staff.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staff.SelectedCategoryId);
-                                //if (fieldsCategory != null)
-                                //{
-                                foreach (var fieldsCategory in staff.fieldsCategoryList.ToList())
-                                {
-                                    foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                                    bool checkInternalID = CheckInternalID(staff.staffMaster.TenantId, staff.staffMaster.StaffInternalId);
+                                    if (checkInternalID == false)
                                     {
-                                        if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
-                                        {
-                                            customFields.CustomFieldsValue.FirstOrDefault().Module = "Staff";
-                                            customFields.CustomFieldsValue.FirstOrDefault().CategoryId = customFields.CategoryId;
-                                            customFields.CustomFieldsValue.FirstOrDefault().TenantId = staffListAddViewModel.TenantId;
-                                            customFields.CustomFieldsValue.FirstOrDefault().FieldId = customFields.FieldId;
-                                            customFields.CustomFieldsValue.FirstOrDefault().CustomFieldTitle = customFields.Title;
-                                            customFields.CustomFieldsValue.FirstOrDefault().CustomFieldType = customFields.Type;
-                                            customFields.CustomFieldsValue.FirstOrDefault().SchoolId = staff.staffMaster.SchoolId;
-                                            customFields.CustomFieldsValue.FirstOrDefault().TargetId = staff.staffMaster.StaffId;
-                                            this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
-                                            this.context?.SaveChanges();
-                                        }
+                                        staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
+                                        staff._message = "Staff id already exist";
+                                        staffListAdd.StaffAddViewModelList.Add(staff);
+                                        staffListAdd._failure = true;
+                                        staffListAdd._message = "Staff rejected due to data error";
+                                        continue;
                                     }
                                 }
-                                //}
+                                else
+                                {
+                                    staff.staffMaster.StaffInternalId = staff.staffMaster.StaffId.ToString();
+                                }
+
+                                if (staff.FirstLanguageName != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.FirstLanguageName, out number);
+                                    if (checkItsId)
+                                    {
+                                        var firstLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.FirstLanguageName));
+                                        staff.staffMaster.FirstLanguage = firstLanguageData != null ? Convert.ToInt32(staff.FirstLanguageName) : (int?)null;
+                                    }
+                                    else
+                                    {
+                                        var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.FirstLanguageName.ToLower())?.LangId;
+                                        staff.staffMaster.FirstLanguage = firstLanguageId != null ? firstLanguageId : null;
+                                    }
+                                }
+
+                                if (staff.SecondLanguageName != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.SecondLanguageName, out number);
+                                    if (checkItsId)
+                                    {
+                                        var SecondLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.SecondLanguageName));
+                                        staff.staffMaster.SecondLanguage = SecondLanguageData != null ? Convert.ToInt32(staff.SecondLanguageName) : (int?)null;
+                                    }
+                                    else
+                                    {
+                                        var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.SecondLanguageName.ToLower())?.LangId;
+                                        staff.staffMaster.SecondLanguage = secondLanguageId != null ? secondLanguageId : null;
+                                    }
+                                }
+
+                                if (staff.ThirdLanguageName != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.ThirdLanguageName, out number);
+                                    if (checkItsId)
+                                    {
+                                        var ThirdLanguageData = this.context?.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(staff.ThirdLanguageName));
+                                        staff.staffMaster.ThirdLanguage = ThirdLanguageData != null ? Convert.ToInt32(staff.ThirdLanguageName) : (int?)null;
+                                    }
+                                    else
+                                    {
+                                        var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.ThirdLanguageName.ToLower())?.LangId;
+                                        staff.staffMaster.ThirdLanguage = thirdLanguageId != null ? thirdLanguageId : null;
+                                    }
+                                }
+
+                                if (staff.CountryOfBirthName != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.CountryOfBirthName, out number);
+                                    if (checkItsId)
+                                    {
+                                        var CountryOfBirthData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.CountryOfBirthName));
+                                        staff.staffMaster.CountryOfBirth = CountryOfBirthData != null ? Convert.ToInt32(staff.CountryOfBirthName) : (int?)null;
+                                    }
+                                    else
+                                    {
+                                        var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.CountryOfBirthName.ToLower())?.Id;
+                                        staff.staffMaster.CountryOfBirth = countryOfBirthId != null ? countryOfBirthId : null;
+                                    }
+                                }
+
+                                if (staff.NationalityName != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.NationalityName, out number);
+                                    if (checkItsId)
+                                    {
+                                        var NationalityData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.NationalityName));
+                                        staff.staffMaster.Nationality = NationalityData != null ? Convert.ToInt32(staff.NationalityName) : (int?)null;
+                                    }
+                                    else
+                                    {
+                                        var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.NationalityName.ToLower())?.Id;
+                                        staff.staffMaster.Nationality = nationalityId != null ? nationalityId : null;
+                                    }
+                                }
+
+
+                                if (staff.staffMaster.HomeAddressCountry != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.staffMaster.HomeAddressCountry, out number);
+                                    if (checkItsId)
+                                    {
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.staffMaster.HomeAddressCountry));
+                                        staff.staffMaster.HomeAddressCountry = CountryData?.Id.ToString();
+                                    }
+                                    else
+                                    {
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.HomeAddressCountry.ToLower());
+                                        staff.staffMaster.HomeAddressCountry = CountryData?.Id.ToString();
+                                    }
+                                }
+
+                                if (staff.staffMaster.MailingAddressCountry != null)
+                                {
+                                    var checkItsId = Int32.TryParse(staff.staffMaster.MailingAddressCountry, out number);
+                                    if (checkItsId)
+                                    {
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(staff.staffMaster.MailingAddressCountry));
+                                        staff.staffMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
+                                    }
+                                    else
+                                    {
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.MailingAddressCountry.ToLower());
+                                        staff.staffMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
+                                    }
+                                }
+
+
+                                //Add Staff Portal Access
+                                if (!string.IsNullOrWhiteSpace(staff.PasswordHash) && !string.IsNullOrWhiteSpace(staff.LoginEmail))
+                                {
+                                    UserMaster userMaster = new UserMaster();
+
+                                    //var decrypted = Utility.Decrypt(staff.PasswordHash);
+                                    string passwordHash = Utility.GetHashedPassword(staff.PasswordHash);
+
+                                    var loginInfo = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == staff.staffMaster.TenantId && x.EmailAddress == staff.LoginEmail);
+
+                                    if (loginInfo == null)
+                                    {
+                                        var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staff.staffMaster.TenantId && x.SchoolId == staff.staffMaster.SchoolId && x.Profile == "Teacher");
+
+                                        userMaster.SchoolId = staff.staffMaster.SchoolId;
+                                        userMaster.TenantId = staff.staffMaster.TenantId;
+                                        userMaster.UserId = staff.staffMaster.StaffId;
+                                        userMaster.LangId = 1;
+                                        //userMaster.MembershipId = membership.MembershipId;
+                                        userMaster.MembershipId = membership != null ? membership.MembershipId : 0;
+                                        userMaster.EmailAddress = staff.LoginEmail;
+                                        userMaster.PasswordHash = passwordHash;
+                                        //userMaster.Name = staff.staffMaster.FirstGivenName;
+                                        userMaster.Name = staff.staffMaster.FirstGivenName!=null? staff.staffMaster.FirstGivenName:"" ;
+                                        userMaster.IsActive = true;
+
+                                        this.context?.UserMaster.Add(userMaster);
+                                        this.context?.SaveChanges();
+                                        staff.staffMaster.PortalAccess = true;
+                                        staff.staffMaster.LoginEmailAddress = staff.LoginEmail;
+                                    }
+                                    else
+                                    {
+                                        staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
+                                        staff._message = "Login email already exist";
+                                        staffListAdd.StaffAddViewModelList.Add(staff);
+                                        staffListAdd._failure = true;
+                                        staffListAdd._message = "Staff rejected due to data error";
+                                        continue;
+                                    }
+                                }
+
+                                if (staff.staffMaster.FirstGivenName == null || staff.staffMaster.LastFamilyName == null)
+                                {
+                                    staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
+                                    staff._message = "FirstName or LastName is not provided";
+                                    staffListAdd.StaffAddViewModelList.Add(staff);
+                                    staffListAdd._failure = true;
+                                    staffListAdd._message = "Staff rejected due to data error";
+                                    continue;
+                                }
+
+                                if (staff.Dob != null)
+                                {
+                                    staff.staffMaster.Dob = Convert.ToDateTime(staff.Dob);
+                                }
+                                if (staff.JoiningDate != null)
+                                {
+                                    staff.staffMaster.JoiningDate = Convert.ToDateTime(staff.JoiningDate);
+                                }
+
+                                this.context?.StaffMaster.Add(staff.staffMaster);
+                                this.context?.SaveChanges();
+
+                                //Insert data into StaffSchoolInfo table            
+                                int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                                var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staff.staffMaster.TenantId && x.SchoolId == staff.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
+
+                                var startDate = DateTime.UtcNow;
+                                if (staff.StartDate != null)
+                                {
+                                    startDate = Convert.ToDateTime(staff.StartDate);
+                                }
+
+                                StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staff.staffMaster.TenantId, SchoolId = staff.staffMaster.SchoolId, StaffId = staff.staffMaster.StaffId, SchoolAttachedId = staff.staffMaster.SchoolId, Id = (int)Id!, SchoolAttachedName = schoolName, StartDate = startDate, CreatedOn = DateTime.UtcNow, CreatedBy = staff.staffMaster.CreatedBy, Profile = staff.Profile ?? "Teacher" };
+                                this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
+                                this.context?.SaveChanges();
+
+                                if (staff.fieldsCategoryList != null && staff.fieldsCategoryList.ToList().Count > 0)
+                                {
+                                    //var fieldsCategory = staff.fieldsCategoryList.FirstOrDefault(x => x.CategoryId == staff.SelectedCategoryId);
+                                    //if (fieldsCategory != null)
+                                    //{
+                                    foreach (var fieldsCategory in staff.fieldsCategoryList.ToList())
+                                    {
+                                        foreach (var customFields in fieldsCategory.CustomFields.ToList())
+                                        {
+                                            if (customFields.CustomFieldsValue != null && customFields.CustomFieldsValue.ToList().Count > 0)
+                                            {
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.Module = "Staff";
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CategoryId = customFields.CategoryId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = staffListAddViewModel.TenantId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.FieldId = customFields.FieldId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldTitle = customFields.Title;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.CustomFieldType = customFields.Type;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = staff.staffMaster.SchoolId;
+                                                customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = staff.staffMaster.StaffId;
+                                                this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
+                                                this.context?.SaveChanges();
+                                            }
+                                        }
+                                    }
+                                    //}
+                                }
+                                transaction?.Commit();
+                                staffId++;
                             }
-                            transaction.Commit();
-                            staffId++;
                         }
                         catch (Exception es)
                         {
-                            transaction.Rollback();
+                            transaction?.Rollback();
                             staffListAdd.StaffAddViewModelList.Add(staff);
                             staffListAdd.ConflictIndexNo = staffListAdd.ConflictIndexNo != null ? staffListAdd.ConflictIndexNo + "," + indexNo.ToString() : indexNo.ToString();
-                            this.context?.StaffMaster.Remove(staff.staffMaster);
+                            this.context?.StaffMaster.Remove(staff.staffMaster!);
                             this.context?.StaffSchoolInfo.Remove(StaffSchoolInfoData);
                             //this.context?.UserMaster.Remove(userMaster);
                             staffListAdd._failure = true;
-                            staffListAdd._message = "Staff Rejected Due to Data Error";
-                            
+                            staffListAdd._message = es.Message;
+
                             //staffId--;
                             continue;
                         }
@@ -1496,125 +1714,161 @@ namespace opensis.data.Repository
                 scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
                 scheduledCourseSectionView._userName = scheduledCourseSectionViewModel._userName;
 
-                var scheduledCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).ThenInclude(y => y.SchoolYears).ThenInclude(s => s.Semesters).ThenInclude(e => e.Quarters).Include(n=>n.CourseSection.SchoolCalendars).Include(b=>b.CourseSection.Course).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
+                var scheduledCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).ThenInclude(y => y.SchoolYears).ThenInclude(s => s!.Semesters).ThenInclude(e => e.Quarters).ThenInclude(f => f.ProgressPeriods).Include(n=>n.CourseSection.SchoolCalendars).Include(b=>b.CourseSection.Course).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
 
-                if (scheduledCourseSectionDataList.Count>0)
+                if (scheduledCourseSectionDataList!=null && scheduledCourseSectionDataList.Any())
                 {
                     foreach (var scheduledCourseSectionData in scheduledCourseSectionDataList)
                     {
-                        CourseSectionViewList CourseSections = new CourseSectionViewList();
-
-                        if (scheduledCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)")
+                        if (scheduledCourseSectionData.CourseSection.AcademicYear == scheduledCourseSectionViewModel.AcademicYear)
                         {
-                            CourseSections.ScheduleType = "Fixed Schedule";
+                            CourseSectionViewList CourseSections = new CourseSectionViewList();
 
-                            var courseFixedScheduleData = this.context?.CourseFixedSchedule.Include(c => c.BlockPeriod).Include(b=>b.Rooms).FirstOrDefault(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId);
-                            if (courseFixedScheduleData != null)
+                            if (scheduledCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)")
                             {
-                                courseFixedScheduleData.BlockPeriod.CourseFixedSchedule = null;
-                                courseFixedScheduleData.BlockPeriod.CourseVariableSchedule = null;
-                                courseFixedScheduleData.BlockPeriod.CourseCalendarSchedule = null;
-                                courseFixedScheduleData.BlockPeriod.CourseBlockSchedule = null;
-                                courseFixedScheduleData.Rooms.CourseFixedSchedule = null;
-                                courseFixedScheduleData.Rooms.CourseVariableSchedule = null;
-                                courseFixedScheduleData.Rooms.CourseCalendarSchedule = null;
-                                courseFixedScheduleData.Rooms.CourseBlockSchedule = null;
-                                CourseSections.courseFixedSchedule = courseFixedScheduleData;
+                                CourseSections.ScheduleType = "Fixed Schedule";
 
+                                var courseFixedScheduleData = this.context?.CourseFixedSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).FirstOrDefault(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId);
+                                if (courseFixedScheduleData != null)
+                                {
+                                    if (courseFixedScheduleData.BlockPeriod != null)
+                                    {
+                                        courseFixedScheduleData.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        courseFixedScheduleData.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        courseFixedScheduleData.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        courseFixedScheduleData.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    }
+                                    if (courseFixedScheduleData.Rooms != null)
+                                    {
+                                        courseFixedScheduleData.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        courseFixedScheduleData.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        courseFixedScheduleData.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        courseFixedScheduleData.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    }
+                                    CourseSections.courseFixedSchedule = courseFixedScheduleData;
+
+                                }
                             }
+                            if (scheduledCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
+                            {
+                                CourseSections.ScheduleType = "Variable Schedule";
+
+                                var courseVariableScheduleData = this.context?.CourseVariableSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
+
+                                if (courseVariableScheduleData != null && courseVariableScheduleData.Any())
+                                {
+                                    courseVariableScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+
+                                    CourseSections.courseVariableSchedule = courseVariableScheduleData;
+                                }
+                            }
+                            if (scheduledCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
+                            {
+                                CourseSections.ScheduleType = "Calendar Schedule";
+
+                                var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
+
+                                if (courseCalenderScheduleData != null && courseCalenderScheduleData.Any())
+                                {
+                                    courseCalenderScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+
+                                    CourseSections.courseCalendarSchedule = courseCalenderScheduleData;
+                                }
+                            }
+                            if (scheduledCourseSectionData.CourseSection.ScheduleType == "Block Schedule (4)")
+                            {
+                                CourseSections.ScheduleType = "Block Schedule";
+
+                                var courseBlockScheduleData = this.context?.CourseBlockSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
+
+                                if (courseBlockScheduleData != null && courseBlockScheduleData.Any())
+                                {
+                                    courseBlockScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+
+                                    CourseSections.courseBlockSchedule = courseBlockScheduleData;
+
+                                    var bellScheduleList = new List<BellSchedule>();
+                                    foreach (var block in courseBlockScheduleData)
+                                    {
+                                        var bellScheduleData = this.context?.BellSchedule.Where(c => c.SchoolId == scheduledCourseSectionData.SchoolId && c.TenantId == scheduledCourseSectionData.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= scheduledCourseSectionData.CourseSection.DurationStartDate && c.BellScheduleDate <= scheduledCourseSectionData.CourseSection.DurationEndDate).ToList();
+                                        if (bellScheduleData?.Any() == true)
+                                        {
+                                            bellScheduleList.AddRange(bellScheduleData);
+                                        }
+
+                                    }
+
+                                    CourseSections.bellScheduleList = bellScheduleList;
+                                }
+                            }
+
+                            CourseSections.CourseId = scheduledCourseSectionData.CourseId;
+                            CourseSections.CourseSectionId = scheduledCourseSectionData.CourseSectionId;
+                            CourseSections.CalendarId = scheduledCourseSectionData.CourseSection.CalendarId;
+                            CourseSections.CourseSectionName = scheduledCourseSectionData.CourseSectionName;
+                            CourseSections.CourseTitle = scheduledCourseSectionData.CourseSection.Course.CourseTitle;
+                            CourseSections.CourseGradeLevel = scheduledCourseSectionData.CourseSection.Course.CourseGradeLevel;
+                            CourseSections.YrMarkingPeriodId = scheduledCourseSectionData.YrMarkingPeriodId;
+                            CourseSections.SmstrMarkingPeriodId = scheduledCourseSectionData.SmstrMarkingPeriodId;
+                            CourseSections.QtrMarkingPeriodId = scheduledCourseSectionData.QtrMarkingPeriodId;
+                            CourseSections.PrgrsprdMarkingPeriodId = scheduledCourseSectionData.PrgrsprdMarkingPeriodId;
+                            CourseSections.DurationStartDate = scheduledCourseSectionData.DurationStartDate;
+                            CourseSections.DurationEndDate = scheduledCourseSectionData.DurationEndDate;
+                            CourseSections.MeetingDays = scheduledCourseSectionData.MeetingDays;
+                            CourseSections.AttendanceCategoryId = scheduledCourseSectionData.CourseSection.AttendanceCategoryId;
+                            CourseSections.AttendanceTaken = scheduledCourseSectionData.CourseSection.AttendanceTaken;
+                            CourseSections.WeekDays = scheduledCourseSectionData.CourseSection.SchoolCalendars?.Days;
+                            CourseSections.SchoolYears = scheduledCourseSectionData.CourseSection.SchoolYears;
+                            CourseSections.Quarters = scheduledCourseSectionData.CourseSection.Quarters;
+                            CourseSections.Semesters = scheduledCourseSectionData.CourseSection.Semesters;
+                            CourseSections.DurationBasedOnPeriod = scheduledCourseSectionData.CourseSection.DurationBasedOnPeriod;
+
+                            if (CourseSections != null)
+                            {
+                                if (CourseSections.SchoolYears != null)
+                                {
+                                    CourseSections.SchoolYears.CourseSection = new HashSet<CourseSection>();
+                                    //CourseSections.SchoolYears.HonorRolls = new HashSet<HonorRolls>();
+                                    CourseSections.SchoolYears.Semesters = new HashSet<Semesters>();
+                                    CourseSections.SchoolYears.StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
+                                    CourseSections.SchoolYears.StudentEffortGradeMaster = new HashSet<StudentEffortGradeMaster>();
+                                    CourseSections.SchoolYears.StudentFinalGrade = new HashSet<StudentFinalGrade>();
+                                }
+                                if (CourseSections.Quarters != null)
+                                {
+                                    CourseSections.Quarters.CourseSection = new HashSet<CourseSection>();
+                                    CourseSections.Quarters.Semesters = null;
+                                    CourseSections.Quarters.ProgressPeriods = new HashSet<ProgressPeriods>();
+                                    CourseSections.Quarters.StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
+                                    CourseSections.Quarters.StudentEffortGradeMaster = new HashSet<StudentEffortGradeMaster>();
+                                    CourseSections.Quarters.StudentFinalGrade = new HashSet<StudentFinalGrade>();
+                                    CourseSections.Quarters.ProgressPeriods = new HashSet<ProgressPeriods>();
+                                }
+                                if (CourseSections.Semesters != null)
+                                {
+                                    CourseSections.Semesters.CourseSection = new HashSet<CourseSection>();
+                                    CourseSections.Semesters.Quarters = new HashSet<Quarters>();
+                                    CourseSections.Semesters.StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
+                                    CourseSections.Semesters.StudentEffortGradeMaster = new HashSet<StudentEffortGradeMaster>();
+                                    CourseSections.Semesters.StudentFinalGrade = new HashSet<StudentFinalGrade>();
+                                    CourseSections.Semesters.SchoolYears = null;
+                                }
+                                if (CourseSections.ProgressPeriods != null)
+                                {
+                                    CourseSections.ProgressPeriods.CourseSections = new HashSet<CourseSection>();
+                                    CourseSections.ProgressPeriods.Quarters = new Quarters();
+                                    CourseSections.ProgressPeriods.StaffCoursesectionSchedules = new HashSet<StaffCoursesectionSchedule>();
+                                    CourseSections.ProgressPeriods.StudentEffortGradeMasters = new HashSet<StudentEffortGradeMaster>();
+                                    CourseSections.ProgressPeriods.StudentFinalGrades = new HashSet<StudentFinalGrade>();
+                                }
+                            }
+                            if (CourseSections != null)
+                            {
+                                scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
+                                scheduledCourseSectionView._failure = false;
+                            }
+
                         }
-                        if (scheduledCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
-                        {
-                            CourseSections.ScheduleType = "Variable Schedule";
-
-                            var courseVariableScheduleData = this.context?.CourseVariableSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
-
-                            if (courseVariableScheduleData.Count > 0)
-                            {
-                                courseVariableScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = null; x.BlockPeriod.CourseVariableSchedule = null; x.BlockPeriod.CourseCalendarSchedule = null; x.BlockPeriod.CourseBlockSchedule = null; x.Rooms.CourseFixedSchedule = null; x.Rooms.CourseVariableSchedule = null; x.Rooms.CourseCalendarSchedule = null; x.Rooms.CourseBlockSchedule = null; });
-
-                                CourseSections.courseVariableSchedule = courseVariableScheduleData;
-                            }
-                        }
-                        if (scheduledCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
-                        {
-                            CourseSections.ScheduleType = "Calendar Schedule";
-
-                            var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
-
-                            if (courseCalenderScheduleData.Count > 0)
-                            {
-                                courseCalenderScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = null; x.BlockPeriod.CourseVariableSchedule = null; x.BlockPeriod.CourseCalendarSchedule = null; x.BlockPeriod.CourseBlockSchedule = null;x.Rooms.CourseFixedSchedule=null; x.Rooms.CourseVariableSchedule = null; x.Rooms.CourseCalendarSchedule = null; x.Rooms.CourseBlockSchedule = null; });
-
-                                CourseSections.courseCalendarSchedule = courseCalenderScheduleData;
-                            }
-                        }
-                        if (scheduledCourseSectionData.CourseSection.ScheduleType == "Block Schedule (4)")
-                        {
-                            CourseSections.ScheduleType = "Block Schedule";
-
-                            var courseBlockScheduleData = this.context?.CourseBlockSchedule.Include(c => c.BlockPeriod).Include(b => b.Rooms).Where(x => x.TenantId == scheduledCourseSectionData.TenantId && x.SchoolId == scheduledCourseSectionData.SchoolId && x.CourseSectionId == scheduledCourseSectionData.CourseSectionId).ToList();
-
-                            if (courseBlockScheduleData.Count > 0)
-                            {
-                                courseBlockScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = null; x.BlockPeriod.CourseVariableSchedule = null; x.BlockPeriod.CourseCalendarSchedule = null; x.BlockPeriod.CourseBlockSchedule = null; x.Rooms.CourseFixedSchedule = null; x.Rooms.CourseVariableSchedule = null; x.Rooms.CourseCalendarSchedule = null; x.Rooms.CourseBlockSchedule = null; });
-
-                                CourseSections.courseBlockSchedule = courseBlockScheduleData;
-                            }
-                        }
-
-                        CourseSections.CourseId = scheduledCourseSectionData.CourseId;
-                        CourseSections.CourseSectionId = scheduledCourseSectionData.CourseSectionId;
-                        CourseSections.CalendarId = scheduledCourseSectionData.CourseSection.CalendarId;
-                        CourseSections.CourseSectionName = scheduledCourseSectionData.CourseSectionName;
-                        CourseSections.CourseTitle = scheduledCourseSectionData.CourseSection.Course.CourseTitle;
-                        CourseSections.CourseGradeLevel = scheduledCourseSectionData.CourseSection.Course.CourseGradeLevel;
-                        CourseSections.YrMarkingPeriodId = scheduledCourseSectionData.YrMarkingPeriodId;
-                        CourseSections.SmstrMarkingPeriodId = scheduledCourseSectionData.SmstrMarkingPeriodId;
-                        CourseSections.QtrMarkingPeriodId = scheduledCourseSectionData.QtrMarkingPeriodId;
-                        CourseSections.DurationStartDate = scheduledCourseSectionData.DurationStartDate;
-                        CourseSections.DurationEndDate = scheduledCourseSectionData.DurationEndDate;
-                        CourseSections.MeetingDays = scheduledCourseSectionData.MeetingDays;
-                        CourseSections.AttendanceCategoryId = scheduledCourseSectionData.CourseSection.AttendanceCategoryId;
-                        CourseSections.AttendanceTaken = scheduledCourseSectionData.CourseSection.AttendanceTaken;
-                        CourseSections.WeekDays = scheduledCourseSectionData.CourseSection.SchoolCalendars.Days;
-                        CourseSections.SchoolYears = scheduledCourseSectionData.CourseSection.SchoolYears;
-                        CourseSections.Quarters = scheduledCourseSectionData.CourseSection.Quarters;
-                        CourseSections.Semesters = scheduledCourseSectionData.CourseSection.Semesters;
-                        CourseSections.DurationBasedOnPeriod = scheduledCourseSectionData.CourseSection.DurationBasedOnPeriod;
-
-                        if (CourseSections!=null)
-                        {
-                            if (CourseSections.SchoolYears != null)
-                            {
-                                CourseSections.SchoolYears.CourseSection = null;
-                                CourseSections.SchoolYears.HonorRolls = null;
-                                CourseSections.SchoolYears.Semesters = null;
-                                CourseSections.SchoolYears.StaffCoursesectionSchedule = null;
-                                CourseSections.SchoolYears.StudentEffortGradeMaster = null;
-                                CourseSections.SchoolYears.StudentFinalGrade = null;
-                            }
-                            if (CourseSections.Quarters != null)
-                            {
-                                CourseSections.Quarters.CourseSection = null;
-                                CourseSections.Quarters.Semesters = null;
-                                CourseSections.Quarters.StaffCoursesectionSchedule = null;
-                                CourseSections.Quarters.StudentEffortGradeMaster = null;
-                                CourseSections.Quarters.StudentFinalGrade = null;
-                                CourseSections.Quarters.ProgressPeriods = null;
-                            }
-                            if (CourseSections.Semesters != null)
-                            {
-                                CourseSections.Semesters.CourseSection = null;
-                                CourseSections.Semesters.Quarters = null;
-                                CourseSections.Semesters.StaffCoursesectionSchedule = null;
-                                CourseSections.Semesters.StudentEffortGradeMaster = null;
-                                CourseSections.Semesters.StudentFinalGrade = null;
-                                CourseSections.Semesters.SchoolYears = null;
-                            }
-                        }
-                        scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
-                        scheduledCourseSectionView._failure = false;
                     }
                 }
             }
@@ -1624,6 +1878,254 @@ namespace opensis.data.Repository
                 scheduledCourseSectionView._message = es.Message;
             }
             return scheduledCourseSectionView;
+        }
+
+        /// <summary>
+        /// GetAllStaffListByDateRange
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StaffListModel GetAllStaffListByDateRange(PageResult pageResult)
+        {
+            StaffListModel staffListModel = new StaffListModel();
+            IQueryable<StaffMaster>? transactionIQ = null;
+            IQueryable<StaffMaster>? StaffMasterList = null;
+
+            var membershipData = this.context?.UserMaster.Include(x => x.Membership).FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.EmailAddress == pageResult.EmailAddress);
+
+            var activeSchools = this.context?.SchoolDetail.Where(x => x.Status == true).Select(x => x.SchoolId).ToList();
+
+            if (membershipData != null)
+            {
+                if (String.Compare(membershipData.Membership.ProfileType, "super administrator", true) == 0)
+                {
+                    var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : activeSchools!.Contains(x.SchoolAttachedId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null && ((x.StartDate >= pageResult.MarkingPeriodStartDate && x.StartDate <= pageResult.MarkingPeriodEndDate) || x.StartDate <= pageResult.MarkingPeriodStartDate) : ((x.StartDate >= pageResult.MarkingPeriodStartDate && x.StartDate <= pageResult.MarkingPeriodEndDate) || x.StartDate <= pageResult.MarkingPeriodStartDate))).Select(s => s.StaffId).ToList();
+
+                    StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                   
+                }
+                else
+                {
+                    var schoolAttachedId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.StaffId == membershipData.UserId && x.EndDate == null && activeSchools!.Contains(x.SchoolAttachedId)).ToList().Select(s => s.SchoolAttachedId);
+                   
+                    var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolAttachedId == pageResult.SchoolId : schoolAttachedId!.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.EndDate == null && ((x.StartDate >= pageResult.MarkingPeriodStartDate && x.StartDate <= pageResult.MarkingPeriodEndDate) || x.StartDate <= pageResult.MarkingPeriodStartDate) : ((x.StartDate >= pageResult.MarkingPeriodStartDate && x.StartDate <= pageResult.MarkingPeriodEndDate) || x.StartDate <= pageResult.MarkingPeriodStartDate))).Select(s => s.StaffId).ToList();
+
+                    StaffMasterList = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == pageResult.TenantId && (x.Profile ?? "").ToLower() != "super administrator" && schoolAttachedStaffId!.Contains(x.StaffId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
+                }
+            }
+
+            try
+            {
+                if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                {
+
+                    transactionIQ = StaffMasterList;
+                }
+                else
+                {
+                    if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                    {
+                        string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        transactionIQ = StaffMasterList?.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
+                                                                    x.MiddleName != null && x.MiddleName.Contains(Columnvalue) ||
+                                                                    x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
+                                                                    (x.FirstGivenName + x.MiddleName + x.LastFamilyName).Contains(Columnvalue) || (x.FirstGivenName + x.MiddleName).Contains(Columnvalue) || (x.FirstGivenName + x.LastFamilyName).Contains(Columnvalue) || (x.MiddleName + x.LastFamilyName).Contains(Columnvalue) ||
+                                                                    x.StaffInternalId != null && x.StaffInternalId.Contains(Columnvalue) ||
+                                                                    x.JobTitle != null && x.JobTitle.Contains(Columnvalue) ||
+                                                                    x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
+                                                                    x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue));
+                        //var ProfileFilter = StaffMasterList.Where(x => x.StaffSchoolInfo.FirstOrDefault() != null ? x.StaffSchoolInfo.FirstOrDefault().Profile.ToLower().Contains(Columnvalue.ToLower()) : string.Empty.Contains(Columnvalue));
+
+                        var ProfileFilter = StaffMasterList?.Where(x => x.StaffSchoolInfo.Count > 0 ? x.StaffSchoolInfo.Any(x => (x.Profile ?? "").ToLower().Contains(Columnvalue.ToLower()) && x.SchoolAttachedId == pageResult.SchoolId) : string.Empty.Contains(Columnvalue));
+
+                        if (ProfileFilter != null && ProfileFilter.Any())
+                        {
+                            transactionIQ = transactionIQ?.Concat(ProfileFilter);
+                        }
+                    }
+                    else
+                    {
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "profile"))
+                        {
+                            var filterValue = pageResult.FilterParams.Where(x => x.ColumnName.ToLower() == "profile").Select(x => x.FilterValue).FirstOrDefault();
+                            //var profileFilterData = StaffMasterList.Where(x => x.StaffSchoolInfo.FirstOrDefault().Profile.ToLower() == filterValue.ToLower());
+                            var profileFilterData = StaffMasterList?.Where(x => x.StaffSchoolInfo.Any(x => (x.Profile ?? "").ToLower() == (filterValue ?? "").ToLower() && x.SchoolAttachedId == pageResult.SchoolId));
+
+                            if (profileFilterData?.Any() == true)
+                            {
+                                //transactionIQ = transactionIQ.Concat(a);
+                                StaffMasterList = profileFilterData;
+                                var indexValue = pageResult.FilterParams.FindIndex(x => x.ColumnName.ToLower() == "profile");
+                                pageResult.FilterParams.RemoveAt(indexValue);
+                            }
+                        }
+
+                        transactionIQ = Utility.FilteredData(pageResult.FilterParams!, StaffMasterList!).AsQueryable();
+                    }
+                    //transactionIQ = transactionIQ.Distinct();
+                }
+
+                if (pageResult.DobStartDate != null && pageResult.DobEndDate != null)
+                {
+                    var filterInDateRange = transactionIQ?.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate).AsQueryable();
+
+                    if (filterInDateRange?.Any() == true)
+                    {
+                        transactionIQ = filterInDateRange;
+                    }
+                }
+
+                if (pageResult.FullName != null)
+                {
+                    var staffName = pageResult.FullName.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    if (staffName.Length > 1)
+                    {
+                        var firstName = staffName.First();
+                        var lastName = staffName.Last();
+                        //pageResult.FullName = null;
+
+                        if (pageResult.FullName == null)
+                        {
+                            var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.FirstGivenName!.StartsWith(firstName.ToString()) && x.LastFamilyName!.StartsWith(lastName.ToString()));
+
+                            //transactionIQ = transactionIQ.Concat(nameSearch);
+                            transactionIQ = nameSearch;
+                        }
+                    }
+                    else
+                    {
+                        var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName!.StartsWith(pageResult.FullName) || x.LastFamilyName!.StartsWith(pageResult.FullName)));
+
+                        //transactionIQ = transactionIQ.Concat(nameSearch);
+                        transactionIQ = nameSearch;
+                    }
+                }
+
+                if (pageResult.SortingModel != null)
+                {
+                    switch (pageResult.SortingModel.SortColumn?.ToLower())
+                    {
+                        case "profile":
+
+                            if (pageResult.SortingModel.SortDirection?.ToLower() == "asc")
+                            {
+                                transactionIQ = transactionIQ?.OrderBy(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault()!.Profile : null);
+                            }
+                            else
+                            {
+                                transactionIQ = transactionIQ?.OrderByDescending(a => a.StaffSchoolInfo.Count > 0 ? a.StaffSchoolInfo.FirstOrDefault()!.Profile : null);
+                            }
+                            break;
+                        default:
+                            transactionIQ = Utility.Sort(transactionIQ!, pageResult.SortingModel.SortColumn!, pageResult.SortingModel.SortDirection!.ToLower());
+                            break;
+                    }
+                }
+                else
+                {
+                    transactionIQ = transactionIQ?.OrderBy(e => e.LastFamilyName).ThenBy(c => c.FirstGivenName);
+                }
+
+                int totalCount = transactionIQ != null ? transactionIQ.Count() : 0;
+                if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                {
+                    transactionIQ = transactionIQ?.Select(e => new StaffMaster
+                    {
+                        TenantId = e.TenantId,
+                        StaffId = e.StaffId,
+                        SchoolId = e.SchoolId,
+                        StaffInternalId = e.StaffInternalId,
+                        StaffGuid = e.StaffGuid,
+                        FirstGivenName = e.FirstGivenName,
+                        MiddleName = e.MiddleName,
+                        LastFamilyName = e.LastFamilyName,
+                        //Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date)).FirstOrDefault().Profile : null,
+                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => (pageResult.SearchAllSchool != true) ? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault()!.Profile : null,
+                        JobTitle = e.JobTitle,
+                        SchoolEmail = e.SchoolEmail,
+                        MobilePhone = e.MobilePhone,
+                        HomeroomTeacher = e.HomeroomTeacher,
+                        PrimaryGradeLevelTaught = e.PrimaryGradeLevelTaught,
+                        OtherGradeLevelTaught = e.OtherGradeLevelTaught,
+                        PrimarySubjectTaught = e.PrimarySubjectTaught,
+                        OtherSubjectTaught = e.OtherSubjectTaught,
+                        FirstLanguage = e.FirstLanguage,
+                        SecondLanguage = e.SecondLanguage,
+                        ThirdLanguage = e.ThirdLanguage,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        CreatedBy = e.CreatedBy,
+                        CreatedOn = e.CreatedOn,
+                        UpdatedBy = e.UpdatedBy,
+                        UpdatedOn = e.UpdatedOn,
+                        IsActive = e.IsActive,
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                    }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                }
+                else
+                {
+                    transactionIQ = transactionIQ?.Select(e => new StaffMaster
+                    {
+                        TenantId = e.TenantId,
+                        StaffId = e.StaffId,
+                        SchoolId = e.SchoolId,
+                        StaffInternalId = e.StaffInternalId,
+                        StaffGuid=e.StaffGuid,
+                        FirstGivenName = e.FirstGivenName,
+                        MiddleName = e.MiddleName,
+                        LastFamilyName = e.LastFamilyName,
+                        //Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date)).FirstOrDefault().Profile : null,
+                        Profile = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Where(x => (pageResult.SearchAllSchool != true) ? x.SchoolAttachedId == pageResult.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) : x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date).FirstOrDefault()!.Profile : null,
+                        JobTitle = e.JobTitle,
+                        SchoolEmail = e.SchoolEmail,
+                        MobilePhone = e.MobilePhone,
+                        HomeroomTeacher = e.HomeroomTeacher,
+                        PrimaryGradeLevelTaught = e.PrimaryGradeLevelTaught,
+                        OtherGradeLevelTaught = e.OtherGradeLevelTaught,
+                        PrimarySubjectTaught = e.PrimarySubjectTaught,
+                        OtherSubjectTaught = e.OtherSubjectTaught,
+                        FirstLanguage = e.FirstLanguage,
+                        SecondLanguage = e.SecondLanguage,
+                        ThirdLanguage = e.ThirdLanguage,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        CreatedBy = e.CreatedBy,
+                        CreatedOn = e.CreatedOn,
+                        UpdatedBy = e.UpdatedBy,
+                        UpdatedOn = e.UpdatedOn,
+                        IsActive = e.IsActive,
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                    });
+                }
+                if (transactionIQ != null && transactionIQ.Any())
+                {
+                    staffListModel.staffMaster = transactionIQ.ToList();
+                }
+                //staffListModel.staffMaster = transactionIQ.ToList();
+
+                staffListModel.staffMaster.ForEach(e =>
+                {
+                    e.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.CreatedBy);
+                    e.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.UpdatedBy);
+                });
+
+                staffListModel.TenantId = pageResult.TenantId;
+                //staffListModel.getStaffListForView = staffList;
+                //staffListModel.staffMaster = transactionIQ.ToList();
+                staffListModel.TotalCount = totalCount;
+                staffListModel.PageNumber = pageResult.PageNumber;
+                staffListModel._pageSize = pageResult.PageSize;
+                staffListModel._tenantName = pageResult._tenantName;
+                staffListModel._token = pageResult._token;
+                staffListModel._failure = false;
+            }
+            catch (Exception es)
+            {
+                staffListModel._message = es.Message;
+                staffListModel._failure = true;
+                staffListModel._tenantName = pageResult._tenantName;
+                staffListModel._token = pageResult._token;
+            }
+            return staffListModel;
         }
     }
 }

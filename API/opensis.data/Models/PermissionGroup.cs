@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class PermissionGroup
     {
+        
+
         public PermissionGroup()
         {
             PermissionCategory = new HashSet<PermissionCategory>();
@@ -39,24 +42,26 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int PermissionGroupId { get; set; }
-        public string PermissionGroupName { get; set; }
-        public string ShortName { get; set; }
+        public string? PermissionGroupName { get; set; }
+        public string? ShortName { get; set; }
         public bool? IsActive { get; set; }
         public bool IsSystem { get; set; }
-        public string Title { get; set; }
-        public string Icon { get; set; }
-        public string IconType { get; set; }
+        public string? Title { get; set; }
+        public string? Icon { get; set; }
+        public string? IconType { get; set; }
         public int? SortOrder { get; set; }
-        public string Type { get; set; }
-        public string Path { get; set; }
-        public string BadgeType { get; set; }
-        public string BadgeValue { get; set; }
+        public string? Type { get; set; }
+        public string? Path { get; set; }
+        public string? BadgeType { get; set; }
+        public string? BadgeValue { get; set; }
         public bool? Active { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public virtual SchoolMaster SchoolMaster { get; set; }
+
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<PermissionCategory> PermissionCategory { get; set; }
         public virtual ICollection<RolePermission> RolePermission { get; set; }
     }

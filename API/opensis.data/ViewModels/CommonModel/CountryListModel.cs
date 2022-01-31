@@ -32,9 +32,17 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class CountryListModel : CommonFields
     {
-        public List<Country> TableCountry { get; set; }
+        public CountryListModel()
+        {
+            TableCountry = new List<Country>();
+        }
+        public List<Country>? TableCountry { get; set; }
         public int? StateCount { get; set; }
-        public int SchoolId { get; set; }
-        public Guid TenantId { get; set; }
+        public int? SchoolId { get; set; }
+        public Guid? TenantId { get; set; }
+        public bool? IsListView { get; set; }
+        public int? TotalCount { get; set; }
+        public int? PageNumber { get; set; }
+        public int? _pageSize { get; set; }
     }
 }

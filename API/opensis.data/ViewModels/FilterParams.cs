@@ -26,14 +26,17 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.ViewModels
 {
     public class FilterParams
     {
+        [ValidateNever]
         public string ColumnName { get; set; } = string.Empty;
+        [ValidateNever]
         public string FilterValue { get; set; } = string.Empty;
-        public string JoinCondition { get; set; } 
+        public string? JoinCondition { get; set; } 
         public FilterOptions FilterOption { get; set; } = FilterOptions.Contains;
     }
 }

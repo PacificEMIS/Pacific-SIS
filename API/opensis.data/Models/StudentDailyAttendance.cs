@@ -25,11 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentDailyAttendance
     {
+        
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
@@ -37,16 +40,17 @@ namespace opensis.data.Models
         public int? GradeScaleId { get; set; }
         public int? SectionId { get; set; }
         public DateTime AttendanceDate { get; set; }
-        public string AttendanceCode { get; set; }
-        public string AttendanceComment { get; set; }
+        public string? AttendanceCode { get; set; }
+        public string? AttendanceComment { get; set; }
         public int? AttendanceMinutes { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual GradeScale GradeScale { get; set; }
-        public virtual Sections Sections { get; set; }
-        public virtual StudentMaster StudentMaster { get; set; }
+        public virtual GradeScale? GradeScale { get; set; }
+        public virtual Sections? Sections { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
     }
 }

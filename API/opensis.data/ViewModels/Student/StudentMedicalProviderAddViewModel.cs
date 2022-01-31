@@ -32,7 +32,12 @@ namespace opensis.data.ViewModels.Student
 {
     public class StudentMedicalProviderAddViewModel : CommonFields
     {
-        public StudentMedicalProvider studentMedicalProvider { get; set; }
+        public StudentMedicalProviderAddViewModel()
+        {
+            fieldsCategoryList = new List<FieldsCategory>();
+            studentIds = new List<int>();
+        }
+        public StudentMedicalProvider? studentMedicalProvider { get; set; }
         public List<FieldsCategory> fieldsCategoryList { get; set; }
         public List<int> studentIds { get; set; }
         public int? SelectedCategoryId { get; set; }

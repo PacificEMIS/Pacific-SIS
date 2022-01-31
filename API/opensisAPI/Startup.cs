@@ -32,8 +32,6 @@ using opensis.core.Section.Interfaces;
 using opensis.core.Section.Services;
 using opensis.core.MarkingPeriods.Interfaces;
 using opensis.core.MarkingPeriods.Services;
-using opensis.core.SchoolPeriod.Interfaces;
-using opensis.core.SchoolPeriod.Services;
 using opensis.core.Calender.Services;
 using opensis.core.Calender.Interfaces;
 using opensis.core.CalendarEvents.Interfaces;
@@ -80,6 +78,34 @@ using opensis.core.StaffPortalAssignment.Services;
 using opensis.core.StaffPortalAssignment.Interfaces;
 using opensis.core.StaffPortalGradebook.Interfaces;
 using opensis.core.StaffPortalGradebook.Services;
+using opensis.core.StudentHistoricalGrade.Services;
+using opensis.core.StudentHistoricalGrade.Interfaces;
+using opensis.catelogdb.Interface;
+using opensis.catelogdb.Repository;
+using opensis.catalogdb.Interface;
+using opensis.catalogdb.Factory;
+using Microsoft.AspNetCore.Authorization;
+using opensisAPI.Security;
+using opensis.core.Rollover.Interfaces;
+using opensis.core.Rollover.Services;
+using opensis.core.DBBackup.Services;
+using opensis.core.DBBackup.Interfaces;
+using opensis.core.ApiAccess.Interfaces;
+using opensis.core.ApiAccess.Services;
+using opensis.core.ApiKey.Services;
+using opensis.core.ApiKey.Interfaces;
+using opensis.report.report.data.Interface;
+using opensis.report.report.data.Repository;
+using opensis.report.report.core.Student.Services;
+using opensis.report.report.core.Student.Interfaces;
+using opensis.report.report.core.Schedule.Interfaces;
+using opensis.report.report.core.Schedule.Services;
+using opensis.report.report.core.Attendance.Interfaces;
+using opensis.report.report.core.Attendance.Services;
+using opensis.report.report.core.Staff.Interfaces;
+using opensis.report.report.core.Staff.Services;
+using opensis.report.report.core.School.Services;
+using opensis.report.report.core.School.Interfaces;
 
 namespace opensisAPI
 {
@@ -118,8 +144,6 @@ namespace opensisAPI
             services.AddScoped<ISectionService, SectionService>();
             services.AddScoped<IMarkingperiodRepository, MarkingPeriodRepository>();
             services.AddScoped<IMarkingPeriodService, MarkingPeriodService>();
-            services.AddScoped<ISchoolPeriodService, SchoolPeriodService>();
-            services.AddScoped<ISchoolPeriodRepository, SchoolPeriodRepository>();
             services.AddScoped<ICalendarRepository, CalendarRepository>();
             services.AddScoped<ICalendarService, CalendarService>();
             services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
@@ -173,15 +197,49 @@ namespace opensisAPI
             services.AddScoped<IStaffPortalAssignmentRepository, StaffPortalAssignmentRepository>();
             services.AddScoped<IStaffPortalAssignmentService, StaffPortalAssignmentService>();
 
+            services.AddScoped<IStudentHistoricalGradeRepository, StudentHistoricalGradeRepository>();
+            services.AddScoped<IStudentHistoricalGradeService, StudentHistoricalGradeService>();
 
+            services.AddScoped<ICatalogDBRepository, CatalogDBRepository>();
+
+            services.AddScoped<IRolloverRepository, RolloverRepository>();
+            services.AddScoped<IRolloverService, RolloverServices>();
+
+            services.AddScoped<IdbbackupRepository, DBbackupRepository>();
+            services.AddScoped<IDBbackupService, DBbackupService>();
+            
+            services.AddScoped<IApiAccessRepository, ApiAccessRepository>();
+            services.AddScoped<IApiAccessService, ApiAccessService>();
+
+
+            services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
+            services.AddScoped<IApiKeyServices, ApiKeyServices>();
+
+            services.AddScoped<IStudentReportRepository, StudentReportRepository>();
+            services.AddScoped<IStudentReportService, StudentReportService>();
+
+            services.AddScoped<IScheduleReportRepository, ScheduleReportRepository>();
+            services.AddScoped<IScheduleReportService, ScheduleReportService>();
+
+            services.AddScoped<IAttendanceReportRepository, AttendanceReportRepository>();
+            services.AddScoped<IAttendanceReportService, AttendanceReportService>();
+
+            services.AddScoped<IStaffReportRepository, StaffReportRepository>();
+            services.AddScoped<IStaffReportService, StaffReportService>();
+
+            services.AddScoped<ISchoolReportRepository, SchoolReportRepository>();
+            services.AddScoped<ISchoolReportService, SchoolReportService>();
 
             if (Configuration["dbtype"] == "sqlserver")
             {
-                services.AddScoped<IDbContextFactory, DbContextFactory>(serviceProvider => new DbContextFactory(Configuration["ConnectionStringTemplate"]));
+                services.AddScoped<IDbContextFactory, DbContextFactory>(serviceProvider => new DbContextFactory(Configuration["ConnectionStringTemplate"], serviceProvider.GetService<ICatalogDBRepository>()));
+                services.AddScoped<ICatalogDBContextFactory, CatalogDBContextFactory>(serviceProvider => new CatalogDBContextFactory(Configuration["ConnectionStringTemplateCatalogDB"]));
             }
             else if (Configuration["dbtype"] == "mysql")
             {
-                services.AddScoped<IDbContextFactory, MySQLContextFactory>(serviceProvider => new MySQLContextFactory(Configuration["ConnectionStringTemplateMySQL"]));
+                services.AddScoped<IDbContextFactory, MySQLContextFactory>(serviceProvider => new MySQLContextFactory(Configuration["ConnectionStringTemplateMySQL"], serviceProvider.GetService<ICatalogDBRepository>()));
+               
+                services.AddScoped<ICatalogDBContextFactory, CatalogDBMySQLContextFactory>(serviceProvider => new CatalogDBMySQLContextFactory(Configuration["ConnectionStringTemplateCatalogDBMySQL"]));
             }
 
             
@@ -195,7 +253,15 @@ namespace opensisAPI
                         .SetIsOriginAllowedToAllowWildcardSubdomains().AllowAnyHeader().AllowAnyMethod();
                 });
             });
-
+            services.AddHttpContextAccessor();
+            services.AddTransient<IAuthorizationHandler, ApiKeyRequirementHandler>();
+            services.AddAuthorization(authConfig =>
+            {
+                authConfig.AddPolicy("ApiKeyPolicy",
+                    policyBuilder => policyBuilder
+                        .AddRequirements(new ApiKeyRequirement(new[] { "my-secret-key" })));
+            });
+            
             ////services.AddDbContext<catalogDBContext>(ServiceLifetime.Scoped);
             ////services.AddDbContext<opensisContext>(ServiceLifetime.Scoped);
 

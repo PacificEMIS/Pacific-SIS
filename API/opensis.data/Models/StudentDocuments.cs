@@ -26,25 +26,28 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class StudentDocuments
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public int DocumentId { get; set; }
-        public string Filename { get; set; }
-        public string Filetype { get; set; }
-        public byte[] FileUploaded { get; set; }
+        public string? Filename { get; set; }
+        public string? Filetype { get; set; }
+        public byte[]? FileUploaded { get; set; }
         public DateTime? UploadedOn { get; set; }
-        public string UploadedBy { get; set; }
-        public string CreatedBy { get; set; }
+        public string? UploadedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StudentMaster StudentMaster { get; set; }
+        [ValidateNever]
+        public virtual StudentMaster StudentMaster { get; set; } = null!;
     }
 }

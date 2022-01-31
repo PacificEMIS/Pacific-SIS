@@ -32,8 +32,16 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class LanguageListModel : CommonFields
     {
+        public LanguageListModel()
+        {
+            TableLanguage = new List<Language>();
+        }
         public List<Language> TableLanguage { get; set; }
         public int? SchoolId { get; set; }
         public Guid? TenantId { get; set; }
+        public bool? IsListView { get; set; }
+        public int? TotalCount { get; set; }
+        public int? PageNumber { get; set; }
+        public int? _pageSize { get; set; }
     }
 }

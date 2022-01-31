@@ -25,37 +25,48 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class UserMaster
     {
+        
+
         public UserMaster()
         {
             SearchFilter = new HashSet<SearchFilter>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int UserId { get; set; }
-        public string Name { get; set; }
-        public string EmailAddress { get; set; }
-        public string PasswordHash { get; set; }
+        [ValidateNever]
+        public string Name { get; set; } = null!;
+        public string EmailAddress { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
         public int LangId { get; set; }
         public int MembershipId { get; set; }
+        /// <summary>
+        /// valid for only tenantwise superadmin
+        /// </summary>
         public bool? IsTenantadmin { get; set; }
-        public bool? IsActive { get; set; }
-        public string Description { get; set; }
-        public int? LastUsedSchoolId { get; set; }
         public DateTime? LoginAttemptDate { get; set; }
         public int? LoginFailureCount { get; set; }
-        public string CreatedBy { get; set; }
+        public bool? IsActive { get; set; }
+        public string? Description { get; set; }
+        public int? LastUsedSchoolId { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual Language Lang { get; set; }
-        public virtual Membership Membership { get; set; }
-        public virtual UserSecretQuestions UserSecretQuestions { get; set; }
+        [ValidateNever]
+        public virtual Language Lang { get; set; } = null!;
+        [ValidateNever]
+        public virtual Membership Membership { get; set; } = null!;
+        [ValidateNever]
+        public virtual UserSecretQuestions UserSecretQuestions { get; set; } = null!;
         public virtual ICollection<SearchFilter> SearchFilter { get; set; }
     }
 }

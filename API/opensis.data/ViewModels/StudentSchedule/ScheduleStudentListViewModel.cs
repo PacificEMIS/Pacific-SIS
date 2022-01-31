@@ -31,6 +31,10 @@ namespace opensis.data.ViewModels.StudentSchedule
 {
     public class ScheduleStudentListViewModel : CommonFields
     {
+        public ScheduleStudentListViewModel()
+        {
+            scheduleStudentForView = new List<ScheduleStudentForView>();
+        }
         public List<ScheduleStudentForView> scheduleStudentForView { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }

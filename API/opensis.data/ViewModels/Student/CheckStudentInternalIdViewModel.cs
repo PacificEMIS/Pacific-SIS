@@ -33,7 +33,7 @@ namespace opensis.data.ViewModels.Student
     {
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string StudentInternalId { get; set; }
+        public string? StudentInternalId { get; set; }
         public bool IsValidInternalId { get; set; }
     }
 }

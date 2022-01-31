@@ -25,35 +25,45 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class GradebookConfiguration
     {
+        
+
         public GradebookConfiguration()
         {
             GradebookConfigurationGradescale = new HashSet<GradebookConfigurationGradescale>();
             GradebookConfigurationQuarter = new HashSet<GradebookConfigurationQuarter>();
             GradebookConfigurationSemester = new HashSet<GradebookConfigurationSemester>();
             GradebookConfigurationYear = new HashSet<GradebookConfigurationYear>();
+            GradebookConfigurationProgressPeriods = new HashSet<GradebookConfigurationProgressPeriod>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int CourseId { get; set; }
         public int CourseSectionId { get; set; }
         public decimal AcademicYear { get; set; }
         public int GradebookConfigurationId { get; set; }
-        public string General { get; set; }
-        public string ScoreRounding { get; set; }
-        public string AssignmentSorting { get; set; }
+        /// <summary>
+        /// weight grades,assigned date defaults to today,due date defaults to today - separated by pipe(|)
+        /// </summary>
+        public string? General { get; set; }
+        public string? ScoreRounding { get; set; }
+        public string? AssignmentSorting { get; set; }
         public int? MaxAnomalousGrade { get; set; }
         public int? UpgradedAssignmentGradeDays { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public virtual CourseSection CourseSection { get; set; }
+        [ValidateNever]
+        public virtual CourseSection CourseSection { get; set; } = null!;
         public virtual ICollection<GradebookConfigurationGradescale> GradebookConfigurationGradescale { get; set; }
+        public virtual ICollection<GradebookConfigurationProgressPeriod> GradebookConfigurationProgressPeriods { get; set; }
         public virtual ICollection<GradebookConfigurationQuarter> GradebookConfigurationQuarter { get; set; }
         public virtual ICollection<GradebookConfigurationSemester> GradebookConfigurationSemester { get; set; }
         public virtual ICollection<GradebookConfigurationYear> GradebookConfigurationYear { get; set; }

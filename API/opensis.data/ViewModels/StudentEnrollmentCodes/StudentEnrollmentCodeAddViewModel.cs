@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.StudentEnrollmentCodes
 {
     public class StudentEnrollmentCodeAddViewModel: CommonFields
     {
-        public StudentEnrollmentCode studentEnrollmentCode { get; set; }
+        public StudentEnrollmentCode? studentEnrollmentCode { get; set; }
     }
 }

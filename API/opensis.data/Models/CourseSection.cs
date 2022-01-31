@@ -25,17 +25,19 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class CourseSection
     {
+        
+
         public CourseSection()
         {
             GradebookConfiguration = new HashSet<GradebookConfiguration>();
             StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
             StudentCoursesectionSchedule = new HashSet<StudentCoursesectionSchedule>();
-            
         }
 
         public Guid TenantId { get; set; }
@@ -44,8 +46,11 @@ namespace opensis.data.Models
         public int CourseSectionId { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? GradeScaleId { get; set; }
-        public string GradeScaleType { get; set; }
-        public string CourseSectionName { get; set; }
+        /// <summary>
+        /// &apos;Ungraded&apos;,&apos;Numeric&apos;,&apos;School_Scale&apos;,&apos;Teacher_Scale&apos;
+        /// </summary>
+        public string? GradeScaleType { get; set; }
+        public string? CourseSectionName { get; set; }
         public int? CalendarId { get; set; }
         public int? AttendanceCategoryId { get; set; }
         public decimal? CreditHours { get; set; }
@@ -56,35 +61,46 @@ namespace opensis.data.Models
         public bool? AffectsClassRank { get; set; }
         public bool? AffectsHonorRoll { get; set; }
         public bool? OnlineClassRoom { get; set; }
-        public string OnlineClassroomUrl { get; set; }
-        public string OnlineClassroomPassword { get; set; }
+        public string? OnlineClassroomUrl { get; set; }
+        public string? OnlineClassroomPassword { get; set; }
         public bool? UseStandards { get; set; }
         public int? StandardGradeScaleId { get; set; }
         public bool? DurationBasedOnPeriod { get; set; }
         public int? YrMarkingPeriodId { get; set; }
         public int? SmstrMarkingPeriodId { get; set; }
         public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public DateTime? DurationStartDate { get; set; }
         public DateTime? DurationEndDate { get; set; }
-        public string ScheduleType { get; set; }
-        public string MeetingDays { get; set; }
+        /// <summary>
+        /// Fixed Schedule (1) / Variable Schedule (2) / Calendar Days (3) / Bell schedule (4)
+        /// </summary>
+        public string? ScheduleType { get; set; }
+        /// <summary>
+        /// Starting Sunday as 0, 0|1|2|3|4|5|6
+        /// </summary>
+        public string? MeetingDays { get; set; }
         public bool? AttendanceTaken { get; set; }
         public bool? IsActive { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public virtual AttendanceCodeCategories AttendanceCodeCategories { get; set; }
-        public virtual Course Course { get; set; }
-        public virtual GradeScale GradeScale { get; set; }
-        public virtual Quarters Quarters { get; set; }
-        public virtual SchoolCalendars SchoolCalendars { get; set; }
-        public virtual SchoolMaster SchoolMaster { get; set; }
-        public virtual SchoolYears SchoolYears { get; set; }
-        public virtual Semesters Semesters { get; set; }
+        public bool? IsCustomMarkingPeriod { get; set; }
+        public virtual AttendanceCodeCategories? AttendanceCodeCategories { get; set; }
+        [ValidateNever]
+        public virtual Course Course { get; set; } = null!;
+        public virtual GradeScale? GradeScale { get; set; }
+        public virtual ProgressPeriods? ProgressPeriods { get; set; }
+        public virtual Quarters? Quarters { get; set; }
+        public virtual SchoolCalendars? SchoolCalendars { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
+        public virtual SchoolYears? SchoolYears { get; set; }
+        public virtual Semesters? Semesters { get; set; }
         public virtual ICollection<GradebookConfiguration> GradebookConfiguration { get; set; }
         public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; }
         public virtual ICollection<StudentCoursesectionSchedule> StudentCoursesectionSchedule { get; set; }
-        
+
     }
 }

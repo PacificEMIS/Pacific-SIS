@@ -30,6 +30,7 @@ namespace opensis.data.Models
 {
     public partial class AssignmentType
     {
+        
         public AssignmentType()
         {
             Assignment = new HashSet<Assignment>();
@@ -39,16 +40,22 @@ namespace opensis.data.Models
         public int SchoolId { get; set; }
         public int AssignmentTypeId { get; set; }
         public decimal? AcademicYear { get; set; }
-        public int MarkingPeriodId { get; set; }
+        public int? QtrMarkingPeriodId { get; set; }
+        public int? SmstrMarkingPeriodId { get; set; }
+        public int? YrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public int? CourseSectionId { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
         public int? Weightage { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual SchoolYears SchoolYears { get; set; }
+        public virtual ProgressPeriods? ProgressPeriod { get; set; }
+        public virtual Quarters? Quarter { get; set; }
+        public virtual SchoolYears? SchoolYear { get; set; }
+        public virtual Semesters? Semester { get; set; }
         public virtual ICollection<Assignment> Assignment { get; set; }
     }
 }

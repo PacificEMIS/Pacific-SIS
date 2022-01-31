@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <!--<TargetFramework>netcoreapp3.1</TargetFramework>-->
+	  <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="jsreport.Binary" Version="2.9.0" />
+    <PackageReference Include="jsreport.Binary.Linux" Version="2.11.0" />
     <PackageReference Include="jsreport.Local" Version="2.2.3" />
+    <PackageReference Include="NLog" Version="4.7.3" />
   </ItemGroup>
 
 </Project>

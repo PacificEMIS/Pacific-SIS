@@ -30,20 +30,22 @@ namespace opensis.data.Models
 {
     public partial class Sections
     {
+        
         public Sections()
         {
             StudentDailyAttendance = new HashSet<StudentDailyAttendance>();
             StudentMaster = new HashSet<StudentMaster>();
         }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int SectionId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
         public virtual ICollection<StudentDailyAttendance> StudentDailyAttendance { get; set; }
         public virtual ICollection<StudentMaster> StudentMaster { get; set; }

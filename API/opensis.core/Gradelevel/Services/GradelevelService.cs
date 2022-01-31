@@ -36,7 +36,7 @@ namespace opensis.core.GradeLevel.Services
 {
     public class GradelevelService : IGradelevelService
     {
-        private static string SUCCESS = "success";
+        //private static string SUCCESS = "success";
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         private static readonly string TOKENINVALID = "Token not Valid";
 
@@ -217,7 +217,7 @@ namespace opensis.core.GradeLevel.Services
             {
 
                 gradeEquivalencyListViewModel._failure = true;
-                gradeEquivalencyListViewModel._message = null;
+                gradeEquivalencyListViewModel._message = ex.Message;
                 
             }
             return gradeEquivalencyListViewModel;

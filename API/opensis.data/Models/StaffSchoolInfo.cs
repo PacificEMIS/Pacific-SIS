@@ -31,20 +31,21 @@ namespace opensis.data.Models
 {
     public partial class StaffSchoolInfo
     {
+        
         public int Id { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
         public int? SchoolAttachedId { get; set; }
-        public string SchoolAttachedName { get; set; }
-        public string Profile { get; set; }
+        public string? SchoolAttachedName { get; set; }
+        public string? Profile { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
-        public virtual StaffMaster StaffMaster { get; set; }
+        public virtual StaffMaster? StaffMaster { get; set; }
     }
 }

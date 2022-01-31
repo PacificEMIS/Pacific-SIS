@@ -199,5 +199,21 @@ namespace opensisAPI.Controllers
             }
             return reportCardView;
         }
+
+        [HttpPost("getReportCardForStudents")]
+        public ActionResult<ReportCardViewModel> GetReportCardForStudents(ReportCardViewModel reportCardViewModel)
+        {
+            ReportCardViewModel reportCardView = new ReportCardViewModel();
+            try
+            {
+                reportCardView = _reportCardService.GetReportCardForStudents(reportCardViewModel);
+            }
+            catch (Exception es)
+            {
+                reportCardView._message = es.Message;
+                reportCardView._failure = true;
+            }
+            return reportCardView;
+        }
     }
 }

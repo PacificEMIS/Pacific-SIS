@@ -34,7 +34,11 @@ namespace opensis.data.ViewModels.StudentAttendances
 
     public class StudentAttendanceAddViewModel : CommonFields
     {
-        public List<StudentAttendance> studentAttendance { get; set; }
+        public StudentAttendanceAddViewModel()
+        {
+            studentAttendance = new List<StudentAttendance>();
+        }
+        public List<StudentAttendance>? studentAttendance { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int? MembershipId { get; set; }
@@ -43,11 +47,12 @@ namespace opensis.data.ViewModels.StudentAttendances
         public DateTime AttendanceDate { get; set; }
         public int PeriodId { get; set; }
         public int StaffId { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public int CourseId { get; set; }
         public int? AttendanceCategoryId { get; set; }
         public int? AttendanceCode { get; set; }
-        public string AbsencesReason { get; set; }
+        public string? AbsencesReason { get; set; }
+        public int? UserId { get; set; }
     }
 }

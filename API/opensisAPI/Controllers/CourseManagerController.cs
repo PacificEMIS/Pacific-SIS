@@ -165,7 +165,7 @@ namespace opensisAPI.Controllers
             SubjectAddViewModel subjectDelete = new SubjectAddViewModel();
             try
             {
-                if (subjectAddViewModel.subject.SchoolId > 0)
+                if (subjectAddViewModel.Subject.SchoolId > 0)
                 {
                     subjectDelete = _courseManagerService.DeleteSubject(subjectAddViewModel);
                 }
@@ -435,6 +435,22 @@ namespace opensisAPI.Controllers
                 bellScheduleList._message = es.Message;
             }
             return bellScheduleList;
+        }
+
+        [HttpPost("getCourseCatelog")]
+        public ActionResult<CourseCatelogViewModel> GetCourseCatelog(CourseCatelogViewModel courseCatelogViewModel)
+        {
+            CourseCatelogViewModel courseCatelog = new CourseCatelogViewModel();
+            try
+            {
+                courseCatelog = _courseManagerService.GetCourseCatelog(courseCatelogViewModel);
+            }
+            catch (Exception es)
+            {
+                courseCatelog._failure = true;
+                courseCatelog._message = es.Message;
+            }
+            return courseCatelog;
         }
 
     }

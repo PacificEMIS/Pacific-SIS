@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using opensis.data.Helper;
 
 namespace opensisAPI.TenantDbMappingMiddleWare
 {
@@ -46,15 +47,15 @@ namespace opensisAPI.TenantDbMappingMiddleWare
         public async Task Invoke(HttpContext httpContext)
         {
             string[] urlParts = null;
-            
-            urlParts = httpContext.Request.Path.Value.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-          //  urlParts = httpContext.Request.Host.Host.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            if (!httpContext.Request.Headers.ContainsKey("X-API-KEY"))
+                {
+                urlParts = httpContext.Request.Path.Value.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-
-            if (urlParts != null && urlParts.Any())
-            {
-                httpContext.RequestServices.GetService<IDbContextFactory>().TenantName = urlParts[0];
+                if (urlParts != null && urlParts.Any())
+                {
+                    httpContext.RequestServices.GetService<IDbContextFactory>().TenantName = urlParts[0];
+                }
             }
 
             await this.next(httpContext);

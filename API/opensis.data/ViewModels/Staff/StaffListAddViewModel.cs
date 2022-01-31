@@ -39,9 +39,9 @@ namespace opensis.data.ViewModels.Staff
         public List<StaffAddViewModel> StaffAddViewModelList { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public string ConflictIndexNo { get; set; }
-        public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? ConflictIndexNo { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
     }
 }

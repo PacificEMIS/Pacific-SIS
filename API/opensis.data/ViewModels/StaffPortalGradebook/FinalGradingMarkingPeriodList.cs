@@ -36,10 +36,12 @@ namespace opensis.data.ViewModels.StaffPortalGradebook
         {
             quarters = new List<Quarters>();
             semesters = new List<Semesters>();
+            progressPeriods = new List<ProgressPeriods>();
         }
+        public List<ProgressPeriods> progressPeriods { set; get; }
         public List<Quarters> quarters { set; get; }
         public List<Semesters> semesters { set; get; }
-        public SchoolYears schoolYears { get; set; }
+        public SchoolYears? schoolYears { get; set; }
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }
         public decimal? AcademicYear { get; set; }

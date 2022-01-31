@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.Common.Interfaces;
+using opensis.data.Models;
 using opensis.data.ViewModels.CommonModel;
 using opensis.data.ViewModels.School;
 using opensis.data.ViewModels.StaffSchedule;
@@ -50,12 +51,12 @@ namespace opensisAPI.Controllers
         }
         [HttpPost("getAllCountries")]
 
-        public ActionResult<CountryListModel> GetAllCountries(CountryListModel country)
+        public ActionResult<CountryListModel> GetAllCountries(PageResult pageResult)
         {
             CountryListModel countryListModel = new CountryListModel();
             try
             {
-                countryListModel = _commonService.GetAllCountries(country);
+                countryListModel = _commonService.GetAllCountries(pageResult);
             }
             catch (Exception es)
             {
@@ -149,12 +150,12 @@ namespace opensisAPI.Controllers
 
         [HttpPost("getAllLanguage")]
 
-        public ActionResult<LanguageListModel> GetAllLanguage(LanguageListModel language)
+        public ActionResult<LanguageListModel> GetAllLanguage(PageResult pageResult)
         {
             LanguageListModel languageListModel = new LanguageListModel();
             try
             {
-                languageListModel = _commonService.GetAllLanguage(language);
+                languageListModel = _commonService.GetAllLanguage(pageResult);
             }
             catch (Exception es)
             {
@@ -582,6 +583,22 @@ namespace opensisAPI.Controllers
                 changePassword._message = es.Message;
             }
             return changePassword;
+        }
+
+        [HttpPost("activeDeactiveUser")]
+        public ActionResult<ActiveDeactiveUserViewModel> ActiveDeactiveUser(ActiveDeactiveUserViewModel activeDeactiveUserViewModel)
+        {
+            ActiveDeactiveUserViewModel activeDeactiveUser = new ActiveDeactiveUserViewModel();
+            try
+            {
+                activeDeactiveUser = _commonService.ActiveDeactiveUser(activeDeactiveUserViewModel);
+            }
+            catch (Exception es)
+            {
+                activeDeactiveUser._failure = true;
+                activeDeactiveUser._message = es.Message;
+            }
+            return activeDeactiveUser;
         }
     }
 }

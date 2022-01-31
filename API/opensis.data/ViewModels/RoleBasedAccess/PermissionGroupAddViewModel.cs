@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.RoleBasedAccess
 {
     public class PermissionGroupAddViewModel :CommonFields
     {
-        public PermissionGroup permissionGroup { get; set; }
+        public PermissionGroup? permissionGroup { get; set; }
     }
 }

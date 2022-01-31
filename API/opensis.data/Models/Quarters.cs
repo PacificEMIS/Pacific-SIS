@@ -25,16 +25,20 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class Quarters
     {
+        
+
         public Quarters()
         {
+            AssignmentTypes = new HashSet<AssignmentType>();
             CourseSection = new HashSet<CourseSection>();
-            GradebookConfigurationSemester = new HashSet<GradebookConfigurationSemester>();
             GradebookConfigurationQuarter = new HashSet<GradebookConfigurationQuarter>();
+            GradebookConfigurationSemester = new HashSet<GradebookConfigurationSemester>();
             ProgressPeriods = new HashSet<ProgressPeriods>();
             StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
             StudentEffortGradeMaster = new HashSet<StudentEffortGradeMaster>();
@@ -46,8 +50,8 @@ namespace opensis.data.Models
         public int MarkingPeriodId { get; set; }
         public decimal? AcademicYear { get; set; }
         public int? SemesterId { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
         public decimal? SortOrder { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -57,16 +61,18 @@ namespace opensis.data.Models
         public bool? DoesExam { get; set; }
         public bool? DoesComments { get; set; }
         public int? RolloverId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual SchoolMaster SchoolMaster { get; set; }
-        public virtual Semesters Semesters { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
+        public virtual Semesters? Semesters { get; set; }
+        public virtual ICollection<AssignmentType> AssignmentTypes { get; set; }
         public virtual ICollection<CourseSection> CourseSection { get; set; }
-        public virtual ICollection<GradebookConfigurationSemester> GradebookConfigurationSemester { get; set; }
         public virtual ICollection<GradebookConfigurationQuarter> GradebookConfigurationQuarter { get; set; }
+        public virtual ICollection<GradebookConfigurationSemester> GradebookConfigurationSemester { get; set; }
         public virtual ICollection<ProgressPeriods> ProgressPeriods { get; set; }
         public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; }
         public virtual ICollection<StudentEffortGradeMaster> StudentEffortGradeMaster { get; set; }

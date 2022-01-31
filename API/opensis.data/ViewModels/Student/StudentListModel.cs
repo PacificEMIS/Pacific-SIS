@@ -46,12 +46,13 @@ namespace opensis.data.ViewModels.Student
         public int? EnrollmentCode { get; set; }
         public DateTime? EnrollmentDate { get; set; }
         public int? GradeId { get; set; }
-        public string GradeLevelTitle { get; set; }
-        public string AcademicYear { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? GradeLevelTitle { get; set; }
+        public string? AcademicYear { get; set; }
+        public string? UpdatedBy { get; set; }
         public int? TotalCount { get; set; }
         public int? PageNumber { get; set; }
         public int? _pageSize { get; set; }
+        public bool IsShowPicture { get; set; } = true;
 
     }
 }

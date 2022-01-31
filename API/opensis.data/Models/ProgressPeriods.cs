@@ -25,18 +25,30 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class ProgressPeriods
     {
+        public ProgressPeriods()
+        {
+            AssignmentTypes = new HashSet<AssignmentType>();
+            CourseSections = new HashSet<CourseSection>();
+            GradebookConfigurationProgressPeriods = new HashSet<GradebookConfigurationProgressPeriod>();
+           
+            StaffCoursesectionSchedules = new HashSet<StaffCoursesectionSchedule>();
+            StudentEffortGradeMasters = new HashSet<StudentEffortGradeMaster>();
+            StudentFinalGrades = new HashSet<StudentFinalGrade>();
+        }
+
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int MarkingPeriodId { get; set; }
-        public decimal AcademicYear { get; set; }
-        public int QuarterId { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public int? QuarterId { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
         public int? SortOrder { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -46,11 +58,19 @@ namespace opensis.data.Models
         public bool? DoesExam { get; set; }
         public bool? DoesComments { get; set; }
         public int? RolloverId { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
 
-        public virtual Quarters Quarters { get; set; }
+        [ValidateNever]
+        public virtual Quarters? Quarters { get; set; }
+        public virtual ICollection<AssignmentType> AssignmentTypes { get; set; }
+        public virtual ICollection<CourseSection> CourseSections { get; set; }
+        public virtual ICollection<GradebookConfigurationProgressPeriod> GradebookConfigurationProgressPeriods { get; set; }
+        
+        public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedules { get; set; }
+        public virtual ICollection<StudentEffortGradeMaster> StudentEffortGradeMasters { get; set; }
+        public virtual ICollection<StudentFinalGrade> StudentFinalGrades { get; set; }
     }
 }

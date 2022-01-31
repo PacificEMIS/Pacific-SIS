@@ -32,7 +32,7 @@ namespace opensis.data.ViewModels.CourseManager
 {
     public class CourseViewModel
     {
-        public Course course { get; set; }
+        public Course? Course { get; set; }
         public int CourseSectionCount { get; set; }
     }
 }

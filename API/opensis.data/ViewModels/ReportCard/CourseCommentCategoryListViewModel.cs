@@ -40,5 +40,7 @@ namespace opensis.data.ViewModels.ReportCard
         public List<CourseCommentCategory> courseCommentCategories { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
+        public bool? IsListView { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

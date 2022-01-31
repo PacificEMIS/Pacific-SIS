@@ -14,8 +14,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -32,8 +33,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -50,8 +52,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -68,8 +71,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -86,8 +90,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -104,8 +109,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -122,8 +128,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -140,8 +147,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -158,8 +166,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "7",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -176,8 +185,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "8",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -194,8 +204,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "9",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -212,8 +223,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "10",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -230,8 +242,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -248,8 +261,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -266,8 +280,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -284,8 +299,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -302,8 +318,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -320,8 +337,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -338,8 +356,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -356,8 +375,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -374,8 +394,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -392,8 +413,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": false
+    "IsActive": false,
+    "SortOrder": "6",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -410,8 +432,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "7",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -428,8 +451,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -446,8 +470,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -464,8 +489,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -482,8 +508,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -500,8 +527,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -518,8 +546,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -536,8 +565,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -554,8 +584,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -572,8 +603,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -590,8 +622,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -608,8 +641,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -617,17 +651,18 @@
     "PermissionCategoryId": "28",
     "PermissionSubcategoryId": "35",
     "PermissionGroupId": "12",
-    "PermissionSubcategoryName": "Countries",
+    "PermissionSubcategoryName": "Country",
     "ShortCode": "cntry",
     "Path": "/school/settings/lov-settings/countries",
-    "Title": "Countries",
+    "Title": "Country",
     "Type": "",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -644,8 +679,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -662,8 +698,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -680,8 +717,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -698,8 +736,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "7",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -716,8 +755,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "8",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -734,8 +774,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "9",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -752,8 +793,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "10",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -770,8 +812,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "11",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -788,8 +831,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "12",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -806,8 +850,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": false,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -824,8 +869,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": false,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -842,8 +888,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -860,8 +907,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -878,8 +926,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -889,15 +938,16 @@
     "PermissionGroupId": "5",
     "PermissionSubcategoryName": "Gradebook Grades",
     "ShortCode": "gg",
-    "Path": "",
+    "Path": "/school/staff/teacher-functions/gradebook-grades",
     "Title": "Gradebook Grades",
     "Type": "",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -914,8 +964,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -932,8 +983,9 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -943,15 +995,16 @@
     "PermissionGroupId": "5",
     "PermissionSubcategoryName": "Missing Attendance",
     "ShortCode": "ma",
-    "Path": "",
+    "Path": "/school/staff/teacher-functions/missing-attendance",
     "Title": "Missing Attendance",
     "Type": "",
     "EnableView": true,
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "6",
+    "IsSystem": true
   },
   {
     "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
@@ -968,7 +1021,521 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-
-    "IsActive": true
+    "IsActive": true,
+    "SortOrder": "11",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "10",
+    "PermissionSubcategoryId": "57",
+    "PermissionGroupId": "5",
+    "PermissionSubcategoryName": "Course Schedule",
+    "ShortCode": "cs",
+    "Path": "/school/staff/staff-course-schedule",
+    "Title": "Course Schedule",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "22",
+    "PermissionSubcategoryId": "58",
+    "PermissionGroupId": "12",
+    "PermissionSubcategoryName": "Marking Periods",
+    "ShortCode": "mp",
+    "Path": "/school/marking-periods",
+    "Title": "Marking Periods",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "8",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "22",
+    "PermissionSubcategoryId": "59",
+    "PermissionGroupId": "12",
+    "PermissionSubcategoryName": "Calendars",
+    "ShortCode": "cal",
+    "Path": "/school/schoolcalendars",
+    "Title": "Calendars",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "9",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "26",
+    "PermissionSubcategoryId": "60",
+    "PermissionGroupId": "12",
+    "PermissionSubcategoryName": "Historical Marking Periods",
+    "ShortCode": "hmp",
+    "Path": "",
+    "Title": "Historical Marking Periods",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "6",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "55",
+    "PermissionSubcategoryId": "61",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Institute Report",
+    "ShortCode": "ir",
+    "Path": "",
+    "Title": "Institute Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "55",
+    "PermissionSubcategoryId": "62",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Access Log",
+    "ShortCode": "acs lg",
+    "Path": "/school/tools/access-log",
+    "Title": "Access Log",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "56",
+    "PermissionSubcategoryId": "63",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Advance Report",
+    "ShortCode": "ar",
+    "Path": "/school/reports/student-report/advance-report",
+    "Title": "Advance Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "56",
+    "PermissionSubcategoryId": "64",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Add / Drop Report",
+    "ShortCode": "a/d r",
+    "Path": "/school/reports/student-report/add-drop-report",
+    "Title": "Add / Drop Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "56",
+    "PermissionSubcategoryId": "65",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Student Info",
+    "ShortCode": "si",
+    "Path": "/school/reports/student-report/student-info",
+    "Title": "Student Info",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "56",
+    "PermissionSubcategoryId": "66",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Student Contact Info",
+    "ShortCode": "sci",
+    "Path": "/school/reports/student-report/contact-info",
+    "Title": "Student Contact Info",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "56",
+    "PermissionSubcategoryId": "67",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Student Enrollment Report",
+    "ShortCode": "ser",
+    "Path": "/school/reports/student-report/enrollment-report",
+    "Title": "Student Enrollment Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "57",
+    "PermissionSubcategoryId": "68",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Staff Report",
+    "ShortCode": "sr",
+    "Path": "/school/reports/staff/advance-report",
+    "Title": "Staff Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "58",
+    "PermissionSubcategoryId": "69",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Schoolwide Schedule Report",
+    "ShortCode": "ssr",
+    "Path": "",
+    "Title": "Schoolwide Schedule Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "58",
+    "PermissionSubcategoryId": "70",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Schedules",
+    "ShortCode": "scdl",
+    "Path": "",
+    "Title": "Schedules",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "58",
+    "PermissionSubcategoryId": "71",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Class Lists",
+    "ShortCode": "cl",
+    "Path": "",
+    "Title": "Class Lists",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "58",
+    "PermissionSubcategoryId": "72",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Schedule Report",
+    "ShortCode": "sr",
+    "Path": "",
+    "Title": "Schedule Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "58",
+    "PermissionSubcategoryId": "73",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Add / Drop Report",
+    "ShortCode": "a/d r",
+    "Path": "/school/reports/schedule-report/add-drop-report",
+    "Title": "Add / Drop Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "59",
+    "PermissionSubcategoryId": "74",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Grade BreakDown",
+    "ShortCode": "grl",
+    "Path": "/school/reports/grades/grade-breakdown",
+    "Title": "Grade BreakDown",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "59",
+    "PermissionSubcategoryId": "75",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Student Final Grades",
+    "ShortCode": "sfg",
+    "Path": "/school/reports/grades/student-final-grades",
+    "Title": "Student Final Grades",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "59",
+    "PermissionSubcategoryId": "76",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "GPA / Class Rank List",
+    "ShortCode": "grl",
+    "Path": "/school/reports/grades/class-rank-list",
+    "Title": "GPA / Class Rank List",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "59",
+    "PermissionSubcategoryId": "77",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Progress Reports",
+    "ShortCode": "pr",
+    "Path": "/school/reports/grades/progress-reports",
+    "Title": "Progress Reports",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "59",
+    "PermissionSubcategoryId": "78",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Honor Roll",
+    "ShortCode": "hr",
+    "Path": "",
+    "Title": "Honor Roll",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "60",
+    "PermissionSubcategoryId": "79",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Attendance Report",
+    "ShortCode": "ar",
+    "Path": "/school/reports/attendance/attendance-report",
+    "Title": "Attendance Report",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "1",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "60",
+    "PermissionSubcategoryId": "80",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Average Daily Attendance",
+    "ShortCode": "ada",
+    "Path": "/school/reports/attendance/average-daily-attendance",
+    "Title": "Average Daily Attendance",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "2",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "60",
+    "PermissionSubcategoryId": "81",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Average Attendance by Day",
+    "ShortCode": "aad",
+    "Path": "/school/reports/attendance/average-attendance-by-day",
+    "Title": "Average Attendance by Day",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "3",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "60",
+    "PermissionSubcategoryId": "82",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Attendance Chart",
+    "ShortCode": "ac",
+    "Path": "",
+    "Title": "Attendance Chart",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "4",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "60",
+    "PermissionSubcategoryId": "83",
+    "PermissionGroupId": "11",
+    "PermissionSubcategoryName": "Absence Summary",
+    "ShortCode": "as",
+    "Path": "",
+    "Title": "Absence Summary",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "5",
+    "IsSystem": true
   }
 ]

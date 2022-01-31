@@ -30,17 +30,18 @@ namespace opensis.data.Models
 {
     public partial class LoginSession
     {
+        
         public int Id { get; set; }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        public string EmailAddress { get; set; }
-        public string IpAddress { get; set; }
-        public string Token { get; set; }
+        public string EmailAddress { get; set; } = null!;
+        public string? Ipaddress { get; set; }
+        public string? Token { get; set; }
         public bool? IsExpired { get; set; }
         public DateTime? LoginTime { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }
 }

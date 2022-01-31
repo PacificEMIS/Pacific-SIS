@@ -32,18 +32,25 @@ namespace opensis.data.ViewModels.Staff
 {
     public class StaffSchoolInfoAddViewModel : CommonFields
     {
+        public StaffSchoolInfoAddViewModel()
+        {
+            staffSchoolInfoList = new List<StaffSchoolInfo>();
+            fieldsCategoryList = new List<FieldsCategory>();
+        }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
-        public string Profile { get; set; }
-        public string JobTitle { get; set; }
+        public string? Profile { get; set; }
+        public string? JobTitle { get; set; }
         public DateTime? JoiningDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool? HomeroomTeacher { get; set; }
-        public string PrimaryGradeLevelTaught { get; set; }
-        public string PrimarySubjectTaught { get; set; }
-        public string OtherGradeLevelTaught { get; set; }
-        public string OtherSubjectTaught { get; set; }
+        public string? PrimaryGradeLevelTaught { get; set; }
+        public string? PrimarySubjectTaught { get; set; }
+        public string? OtherGradeLevelTaught { get; set; }
+        public string? OtherSubjectTaught { get; set; }
         public List<StaffSchoolInfo> staffSchoolInfoList { get; set; }
+        public List<FieldsCategory> fieldsCategoryList { get; set; }
+        public int? SelectedCategoryId { get; set; }
     }
 }

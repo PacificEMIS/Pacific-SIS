@@ -36,6 +36,6 @@ namespace opensis.data.ViewModels.ReportCard
         public int? CourseId { get; set; }
         public int? PreviousSortOrder { get; set; }
         public int? CurrentSortOrder { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

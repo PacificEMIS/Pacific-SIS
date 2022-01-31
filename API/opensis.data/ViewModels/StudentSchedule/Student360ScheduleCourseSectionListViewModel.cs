@@ -45,6 +45,6 @@ namespace opensis.data.ViewModels.StudentSchedule
         public bool? IsDropped { get; set; }
         public DateTime? DurationStartDate { get; set; }
         public DateTime? DurationEndDate { get; set; }
-        public SchoolPreference schoolPreference { get; set; }
+        public SchoolPreference? schoolPreference { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class ResetPasswordModel : CommonFields
     {
-        public UserMaster userMaster { get; set; }
+        public UserMaster? UserMaster { get; set; }
 
     }
 }

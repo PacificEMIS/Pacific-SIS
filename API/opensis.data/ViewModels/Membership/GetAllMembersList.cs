@@ -31,6 +31,10 @@ namespace opensis.data.ViewModels.Membership
 {
    public class GetAllMembersList : CommonFields
     {
+        public GetAllMembersList()
+        {
+            GetAllMemberList = new List<opensis.data.Models.Membership>();
+        }
         public List<opensis.data.Models.Membership> GetAllMemberList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }

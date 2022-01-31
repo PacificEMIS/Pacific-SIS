@@ -32,9 +32,14 @@ namespace opensis.data.ViewModels.CommonModel
 {
     public class DropdownValueListModel : CommonFields
     {
-        public List<DpdownValuelist> dropdownList { get; set; }
+        public DropdownValueListModel()
+        {
+            DropdownList = new List<DpdownValuelist>();
+        }
+        public List<DpdownValuelist> DropdownList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public string LovName { get; set; }
+        public string? LovName { get; set; }
+        public bool? IsListView { get; set; }
     }
 }

@@ -26,23 +26,27 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
    public partial class StudentEnrollmentCode
     {
+       
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int EnrollmentCode { get; set; }
         public decimal? AcademicYear { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
         public int? SortOrder { get; set; }
-        public string Type { get; set; }
-        public string CreatedBy { get; set; }
+        public string? Type { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-        public virtual SchoolMaster SchoolMaster { get; set; }
+        public int? RolloverId { get; set; }
+        [ValidateNever]
+        public virtual SchoolMaster SchoolMaster { get; set; } = null!;
     }
 }

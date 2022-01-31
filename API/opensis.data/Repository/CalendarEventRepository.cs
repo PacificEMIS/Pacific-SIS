@@ -36,7 +36,7 @@ namespace opensis.data.Repository
 {
     public class CalendarEventRepository : ICalendarEventRepository
     {
-        private CRMContext context;
+        private readonly CRMContext? context;
         private static readonly string NORECORDFOUND = "No Record Found";
 
         public CalendarEventRepository(IDbContextFactory dbContextFactory)
@@ -55,16 +55,17 @@ namespace opensis.data.Repository
             //int? eventId = Utility.GetMaxPK(this.context, new Func<CalendarEvents, int>(x => x.EventId));
             int? eventId = 1;
 
-            var eventData = this.context?.CalendarEvents.Where(x => x.TenantId == calendarEvent.schoolCalendarEvent.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/).OrderByDescending(x => x.EventId).FirstOrDefault();
+            var eventData = this.context?.CalendarEvents.Where(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/).OrderByDescending(x => x.EventId).FirstOrDefault();
 
             if (eventData != null)
             {
                 eventId = eventData.EventId + 1;
             }
 
-            calendarEvent.schoolCalendarEvent.EventId = (int)eventId;
-            calendarEvent.schoolCalendarEvent.CreatedOn = DateTime.UtcNow;
-            this.context?.CalendarEvents.Add(calendarEvent.schoolCalendarEvent);
+            calendarEvent.SchoolCalendarEvent!.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, calendarEvent.SchoolCalendarEvent.TenantId, calendarEvent.SchoolCalendarEvent.SchoolId);
+            calendarEvent.SchoolCalendarEvent!.EventId = (int)eventId;
+            calendarEvent.SchoolCalendarEvent.CreatedOn = DateTime.UtcNow;
+            this.context?.CalendarEvents.Add(calendarEvent.SchoolCalendarEvent);
             this.context?.SaveChanges();
             calendarEvent._failure = false;
             calendarEvent._message = "Calendar Event Added Successfully";
@@ -78,13 +79,14 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public CalendarEventAddViewModel ViewCalendarEvent(CalendarEventAddViewModel calendarEvent)
         {
+            CalendarEventAddViewModel calendarEventAddViewModel = new CalendarEventAddViewModel();
             try
             {
-                CalendarEventAddViewModel calendarEventAddViewModel = new CalendarEventAddViewModel();
-                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.schoolCalendarEvent.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/ && x.EventId == calendarEvent.schoolCalendarEvent.EventId);
+               
+                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/ && x.EventId == calendarEvent.SchoolCalendarEvent.EventId);
                 if (calendarEventRepository != null)
                 {
-                    calendarEventAddViewModel.schoolCalendarEvent = calendarEventRepository;
+                    calendarEventAddViewModel.SchoolCalendarEvent = calendarEventRepository;
                     calendarEventAddViewModel._tenantName = calendarEvent._tenantName;
                     calendarEventAddViewModel._failure = false;
                     return calendarEventAddViewModel;
@@ -98,8 +100,9 @@ namespace opensis.data.Repository
             }
             catch (Exception es)
             {
-
-                throw;
+                calendarEventAddViewModel._failure = true;
+                calendarEventAddViewModel._message = es.Message;
+                return calendarEventAddViewModel;
             }
         }
 
@@ -112,23 +115,24 @@ namespace opensis.data.Repository
         {
             try
             {
-                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.schoolCalendarEvent.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/ && x.EventId == calendarEvent.schoolCalendarEvent.EventId);
+                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/ && x.EventId == calendarEvent.SchoolCalendarEvent.EventId);
 
                 if (calendarEventRepository!=null)
                 {
-                    calendarEvent.schoolCalendarEvent.UpdatedOn = DateTime.Now;
-                    calendarEvent.schoolCalendarEvent.CreatedBy = calendarEventRepository.CreatedBy;
-                    calendarEvent.schoolCalendarEvent.CreatedOn = calendarEventRepository.CreatedOn;
-                    calendarEvent.schoolCalendarEvent.CalendarId = calendarEventRepository.CalendarId;
-                    calendarEvent.schoolCalendarEvent.SchoolId = calendarEventRepository.SchoolId;
-                    this.context.Entry(calendarEventRepository).CurrentValues.SetValues(calendarEvent.schoolCalendarEvent);
+                    calendarEvent.SchoolCalendarEvent!.AcademicYear = calendarEventRepository.AcademicYear;
+                    calendarEvent.SchoolCalendarEvent!.UpdatedOn = DateTime.Now;
+                    calendarEvent.SchoolCalendarEvent.CreatedBy = calendarEventRepository.CreatedBy;
+                    calendarEvent.SchoolCalendarEvent.CreatedOn = calendarEventRepository.CreatedOn;
+                    calendarEvent.SchoolCalendarEvent.CalendarId = calendarEventRepository.CalendarId;
+                    calendarEvent.SchoolCalendarEvent.SchoolId = calendarEventRepository.SchoolId;
+                    context?.Entry(calendarEventRepository).CurrentValues.SetValues(calendarEvent.SchoolCalendarEvent);
                     this.context?.SaveChanges();
                     calendarEvent._failure = false;
                     calendarEvent._message = "Calendar Event Updated Successfully";
                 }
                 else
                 {
-                    calendarEvent.schoolCalendarEvent = null;
+                    calendarEvent.SchoolCalendarEvent = null;
                     calendarEvent._failure = false;
                     calendarEvent._message = NORECORDFOUND;
                 }    
@@ -156,33 +160,10 @@ namespace opensis.data.Repository
 
                 if (membershipData != null)
                 {
-                    var eventList = this.context?.CalendarEvents.Where(x => ((x.TenantId == calendarEventList.TenantId /*&& x.SchoolId == calendarEventList.SchoolId*/ && x.AcademicYear == calendarEventList.AcademicYear && ((x.CalendarId == calendarEventList.CalendarId /*&& x.SystemWideEvent == false */&& x.SchoolId == calendarEventList.SchoolId) || x.SystemWideEvent == true)) || x.TenantId == calendarEventList.TenantId && x.SystemWideEvent == true && x.AcademicYear == calendarEventList.AcademicYear) && (membershipData.ProfileType.ToLower() == "Super Administrator".ToLower() || membershipData.ProfileType.ToLower() == "School Administrator".ToLower() || membershipData.ProfileType.ToLower() == "Admin Assistant".ToLower() || x.VisibleToMembershipId.Contains(calendarEventList.MembershipId.ToString()))).OrderBy(x => x.Title).Select(w => new CalendarEvents()
+                    var eventList = this.context?.CalendarEvents.AsEnumerable().Where(x => (((x.TenantId == calendarEventList.TenantId /*&& x.SchoolId == calendarEventList.SchoolId*/ && x.AcademicYear == calendarEventList.AcademicYear && ((x.CalendarId == calendarEventList.CalendarId /*&& x.SystemWideEvent == false */&& x.SchoolId == calendarEventList.SchoolId) || x.SystemWideEvent == true)) || x.TenantId == calendarEventList.TenantId && x.SystemWideEvent == true && x.AcademicYear == calendarEventList.AcademicYear) && (String.Compare(membershipData!.ProfileType, "Super Administrator", true) == 0  || String.Compare(membershipData!.ProfileType, "School Administrator", true) == 0 || String.Compare(membershipData!.ProfileType, "Admin Assistant", true) == 0 || (x.VisibleToMembershipId ?? "").Contains((calendarEventList.MembershipId ?? 0).ToString()))) || (x.TenantId == calendarEventList.TenantId && x.IsHoliday==true && (x.SchoolId== calendarEventList.SchoolId||x.ApplicableToAllSchool==true))).OrderBy(x => x.Title).ToList();
+                    if(eventList!=null && eventList.Any())
                     {
-                        TenantId = w.TenantId,
-                        SchoolId = w.SchoolId,
-                        AcademicYear = w.AcademicYear,
-                        CalendarId = w.CalendarId,
-                        Description = w.Description,
-                        EndDate = w.EndDate,
-                        EventColor = w.EventColor,
-                        EventId = w.EventId,
-                        SchoolDate = w.SchoolDate,
-                        StartDate = w.StartDate,
-                        SystemWideEvent = w.SystemWideEvent,
-                        Title = w.Title,
-                        VisibleToMembershipId = w.VisibleToMembershipId,
-                        CreatedOn = w.CreatedOn,
-                        UpdatedOn = w.UpdatedOn,
-                        CreatedBy = (w.CreatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == calendarEventList.TenantId && u.EmailAddress == w.CreatedBy).Name : null,
-                        UpdatedBy = (w.UpdatedBy != null) ? this.context.UserMaster.FirstOrDefault(u => u.TenantId == calendarEventList.TenantId && u.EmailAddress == w.UpdatedBy).Name : null
-                    }).ToList();
-
-                    calendarEventListViewModel.calendarEventList = eventList;
-                    calendarEventListViewModel._tenantName = calendarEventList._tenantName;
-                    calendarEventListViewModel._token = calendarEventList._token;
-
-                    if (eventList.Count > 0)
-                    {
+                        calendarEventListViewModel.CalendarEventList = eventList;
                         calendarEventListViewModel._failure = false;
                     }
                     else
@@ -190,9 +171,12 @@ namespace opensis.data.Repository
                         calendarEventListViewModel._failure = true;
                         calendarEventListViewModel._message = NORECORDFOUND;
                     }
-                }
+                    calendarEventListViewModel._tenantName = calendarEventList._tenantName;
+                    calendarEventListViewModel._token = calendarEventList._token;
 
-                
+                   
+                   
+                }                
             }
             catch (Exception es)
             {
@@ -214,7 +198,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.EventId == calendarEvent.schoolCalendarEvent.EventId && x.TenantId== calendarEvent.schoolCalendarEvent.TenantId);
+                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.EventId == calendarEvent.SchoolCalendarEvent!.EventId && x.TenantId== calendarEvent.SchoolCalendarEvent.TenantId);
                 if (calendarEventRepository != null)
                 {
                     this.context?.CalendarEvents.Remove(calendarEventRepository);

@@ -1,0 +1,8 @@
+obj
+bin
+/opensis-api/opensis.core/bin
+/opensis-api/opensis.core/obj
+TestResults
+node_modules
+.vs
+/opensis-ui/~$enSIS Angular UI using Vex Admin Template.docx

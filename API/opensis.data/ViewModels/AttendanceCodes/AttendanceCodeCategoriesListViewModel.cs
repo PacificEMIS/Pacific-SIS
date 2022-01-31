@@ -32,8 +32,13 @@ namespace opensis.data.ViewModels.AttendanceCodes
 {
     public class AttendanceCodeCategoriesListViewModel : CommonFields
     {
-        public List<AttendanceCodeCategories> attendanceCodeCategoriesList { get; set; }
+        public AttendanceCodeCategoriesListViewModel()
+        {
+            AttendanceCodeCategoriesList = new List<AttendanceCodeCategories>();
+        }
+        public List<AttendanceCodeCategories> AttendanceCodeCategoriesList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

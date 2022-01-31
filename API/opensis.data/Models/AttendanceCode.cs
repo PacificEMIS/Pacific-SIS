@@ -26,11 +26,13 @@ All rights reserved.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
 {
     public partial class AttendanceCode
     {
+       
         public AttendanceCode()
         {
             StudentAttendance = new HashSet<StudentAttendance>();
@@ -41,19 +43,20 @@ namespace opensis.data.Models
         public int AttendanceCategoryId { get; set; }
         public int AttendanceCode1 { get; set; }
         public decimal? AcademicYear { get; set; }
-        public string Title { get; set; }
-        public string ShortName { get; set; }
-        public string Type { get; set; }
-        public string StateCode { get; set; }
+        public string? Title { get; set; }
+        public string? ShortName { get; set; }
+        public string? Type { get; set; }
+        public string? StateCode { get; set; }
         public bool? DefaultCode { get; set; }
-        public string AllowEntryBy { get; set; }
+        public string? AllowEntryBy { get; set; }
         public int? SortOrder { get; set; }
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public string UpdatedBy { get; set; }
-
-        public virtual AttendanceCodeCategories AttendanceCodeCategories { get; set; }
+        public int? RolloverId { get; set; }
+        [ValidateNever]
+        public virtual AttendanceCodeCategories AttendanceCodeCategories { get; set; } = null!;
         public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
     }
 }

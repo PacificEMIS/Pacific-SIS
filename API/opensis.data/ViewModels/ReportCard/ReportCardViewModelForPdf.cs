@@ -31,12 +31,16 @@ namespace opensis.data.ViewModels.ReportCard
 {
     public class ReportCardViewModelForPdf : CommonFields
     {
+        public ReportCardViewModelForPdf()
+        {
+            studentsReportCardViewModelList = new List<StudentsReportCardViewModel>();
+        }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
-        public string AcademicYear { get; set; }
-        public string MarkingPeriods { get; set; }
+        public string? AcademicYear { get; set; }
+        public string? MarkingPeriods { get; set; }
         public List<StudentsReportCardViewModel> studentsReportCardViewModelList { get; set; }
-        public string ReportCardPdf { get; set; }
+        public string? ReportCardPdf { get; set; }
     }
 }

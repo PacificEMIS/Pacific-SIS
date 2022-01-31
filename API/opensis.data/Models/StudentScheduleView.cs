@@ -30,19 +30,20 @@ namespace opensis.data.Models
 {
     public partial class StudentScheduleView
     {
+        
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public int CourseId { get; set; }
         public int CourseSectionId { get; set; }
-        public string CourseSectionName { get; set; }
-        public string StudentInternalId { get; set; }
-        public string StudentName { get; set; }
+        public string? CourseSectionName { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? StudentName { get; set; }
         public bool Scheduled { get; set; }
-        public string ConflictComment { get; set; }
-        public string CreatedBy { get; set; }
+        public string? ConflictComment { get; set; }
+        public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }
 }

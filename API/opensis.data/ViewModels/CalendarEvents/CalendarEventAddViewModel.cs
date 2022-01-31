@@ -31,6 +31,6 @@ namespace opensis.data.ViewModels.CalendarEvents
 {
     public class CalendarEventAddViewModel : CommonFields
     {
-        public opensis.data.Models.CalendarEvents schoolCalendarEvent { get; set; }
+        public opensis.data.Models.CalendarEvents? SchoolCalendarEvent { get; set; }
     }
 }

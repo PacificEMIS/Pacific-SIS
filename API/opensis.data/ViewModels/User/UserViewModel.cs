@@ -34,8 +34,8 @@ namespace opensis.data.ViewModels.User
     public class UserViewModel : CommonFields
     {
         public Guid TenantId { get; set; }
-        public string EmailAddress { get; set; }
+        public string? EmailAddress { get; set; }
         public int? LastUsedSchoolId { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }

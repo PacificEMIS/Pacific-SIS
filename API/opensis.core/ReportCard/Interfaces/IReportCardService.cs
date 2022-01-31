@@ -42,5 +42,6 @@ namespace opensis.core.ReportCard.Interfaces
         public CourseCommentCategoryListViewModel GetAllCourseCommentCategory(CourseCommentCategoryListViewModel courseCommentCategoryListViewModel);
         public ReportCardViewModel AddReportCard(ReportCardViewModel reportCardViewModel);
         public Task<ReportCardViewModel> GenerateReportCard(ReportCardViewModel reportCardViewModel);
+        public ReportCardViewModel GetReportCardForStudents(ReportCardViewModel reportCardViewModel);
     }
 }

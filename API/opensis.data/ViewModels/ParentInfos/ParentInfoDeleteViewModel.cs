@@ -32,7 +32,7 @@ namespace opensis.data.ViewModels.ParentInfos
 {
     public class ParentInfoDeleteViewModel : CommonFields
     {
-        public ParentInfo parentInfo { get; set; }
+        public ParentInfo? parentInfo { get; set; }
         public int StudentId { get; set; }
         public int StudentSchoolId { get; set; }
     }

@@ -32,6 +32,6 @@ namespace opensis.data.ViewModels.Grades
 {
     public class EffortGradeLibraryCategoryAddViewModel :CommonFields
     {
-        public EffortGradeLibraryCategory effortGradeLibraryCategory { get; set; }
+        public EffortGradeLibraryCategory? EffortGradeLibraryCategory { get; set; }
     }
 }
