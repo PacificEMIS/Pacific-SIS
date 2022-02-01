@@ -368,6 +368,11 @@ namespace opensis.data.Repository
                         //}
                         studentFinalGradeList.StudentFinalGradeList.ForEach(f => f.StudentFinalGradeComments.ToList().ForEach(r => r.CourseCommentCategory.StudentFinalGradeComments = null!));
                     }
+                    else
+                    {
+                        studentFinalGradeList._failure = true;
+                        studentFinalGradeList._message = NORECORDFOUND;
+                    }
                 }
                 else
                 {
