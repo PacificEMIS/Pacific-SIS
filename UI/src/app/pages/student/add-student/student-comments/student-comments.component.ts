@@ -73,6 +73,7 @@ export class StudentCommentsComponent implements OnInit {
   StudentCreate = SchoolCreate;
   studentCreateMode: SchoolCreate;
   studentDetailsForViewAndEdit;
+  membershipType;
   studentCommentsListViewModel: StudentCommentsListViewModel = new StudentCommentsListViewModel();
   studentCommentsAddView: StudentCommentsAddView = new StudentCommentsAddView();
   permissions: Permissions;
@@ -85,16 +86,17 @@ export class StudentCommentsComponent implements OnInit {
     private commonFunction: SharedFunction,
     private excelService: ExcelService,
     private datePipe: DatePipe,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private pageRolePermissions: PageRolesPermission,
     private cryptoService: CryptoService,
     private commonService: CommonService,
     ) {
     //translateService.use('en');
+    this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
   ngOnInit(): void {
-
+    this.membershipType = this.defaultValuesService.getUserMembershipType();
     this.studentService.studentCreatedMode.subscribe((res)=>{
       this.studentCreateMode = res;
     })
@@ -135,10 +137,12 @@ export class StudentCommentsComponent implements OnInit {
           this.listCount = res.studentCommentsList.length;
           this.studentCommentsListViewModel.studentCommentsList.map( n => {
             n.updatedOn = this.commonFunction.serverToLocalDateAndTime(n.updatedOn);
+            n.createdOn = this.commonFunction.serverToLocalDateAndTime(n.createdOn);
           });
         }
         }else{
-          this.snackbar.open(this.defaultValuesService.translateKey('studentCommentsNotFound') + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.translateKey('studentCommentsNotFound') +
+           this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -201,7 +205,8 @@ export class StudentCommentsComponent implements OnInit {
           }
         }
         else{
-          this.snackbar.open( this.defaultValuesService.translateKey('studentCommentsNotFound') + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.translateKey('studentCommentsNotFound') + 
+          this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

@@ -79,7 +79,7 @@ export class ManageProgramsComponent implements OnInit {
     private courseManager:CourseManagerService,
     private snackbar: MatSnackBar,
     private fb: FormBuilder,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     public translateService:TranslateService,
     private dialog: MatDialog,
     private pageRolePermissions: PageRolesPermission,
@@ -150,7 +150,7 @@ export class ManageProgramsComponent implements OnInit {
         this.dialogRef.close(true);
       }
     }else{
-      this.snackbar.open('Programs Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+      this.snackbar.open('Programs Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
         duration: 10000
       });
     }
@@ -180,8 +180,8 @@ updateProgram(element,index){
           obj["programName"] = val.programName;
           obj["tenantId"] = this.defaultValuesService.getTenantID();
           obj["schoolId"] = this.defaultValuesService.getSchoolID();
-          obj["createdBy"] = this.defaultValuesService.getEmailId();
-          obj["updatedBy"] =  this.defaultValuesService.getEmailId();
+          obj["createdBy"] = this.defaultValuesService.getUserGuidId();
+          obj["updatedBy"] =  this.defaultValuesService.getUserGuidId();
           this.massUpdateProgramModel.programList.push(obj);
         }
       }
@@ -194,8 +194,8 @@ updateProgram(element,index){
       obj1["programName"] = this.addProgramModel.programList[0].programName;
       obj1["tenantId"]= this.defaultValuesService.getTenantID();
       obj1["schoolId"] = this.defaultValuesService.getSchoolID();
-      obj1["createdBy"] = this.defaultValuesService.getEmailId();
-      obj1["updatedBy"]=  this.defaultValuesService.getEmailId();
+      obj1["createdBy"] = this.defaultValuesService.getUserGuidId();
+      obj1["updatedBy"]=  this.defaultValuesService.getUserGuidId();
       this.massUpdateProgramModel.programList.push(obj1);
     }
     if(this.massUpdateProgramModel.programList.length > 0){
@@ -219,7 +219,7 @@ updateProgram(element,index){
           }
         }
         else{
-          this.snackbar.open('Program Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Program Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

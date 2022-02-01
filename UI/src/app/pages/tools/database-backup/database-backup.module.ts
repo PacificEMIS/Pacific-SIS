@@ -12,6 +12,8 @@ import { ContainerModule } from '../../../../@vex/directives/container/container
 import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { SharedModuleModule } from '../../shared-module/shared-module.module';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ContainerModule,
     IconModule,
     MatCardModule,
-    TranslateModule
+    TranslateModule,
+    MatDividerModule,
+    SharedModuleModule
   ]
 })
 export class DatabaseBackupModule { }

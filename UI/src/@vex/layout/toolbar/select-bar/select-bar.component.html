@@ -27,7 +27,7 @@
     <mat-select [formControl]="periodCtrl" placeholder="Period Title" (selectionChange)="changePeriod($event)">
       <mat-option *ngIf="this.periods?.length==0" [value]=nullValueForDropdown>{{nullValueForDropdown}}</mat-option>
       <mat-option *ngFor="let period of periods" [value]="period">
-        {{period.periodTitle}}
+        {{period?.periodTitle}}
       </mat-option>
     </mat-select>
   </mat-form-field>

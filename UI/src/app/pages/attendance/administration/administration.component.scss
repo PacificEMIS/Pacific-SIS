@@ -32,6 +32,10 @@
     border-left: 5px solid transparent;
   }
 }
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
 .hide {
   display: none;
 }

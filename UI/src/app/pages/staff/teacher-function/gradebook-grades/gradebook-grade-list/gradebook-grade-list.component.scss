@@ -1,0 +1,55 @@
+.gradebook-left {
+    width: 400px;
+  }
+  
+  .gradebook-right {
+    width: calc(100% - 400px);
+  
+    .gradebook-right-col {
+      min-width: 200px;
+      width: 100%;
+    }
+  }
+  
+  .whitespace-nowrap {
+    white-space: nowrap;
+  }
+  
+  input:focus-visible {
+    outline: none;
+  }
+  
+  // multi line truncate 
+  $lines: 2;
+  $line-height: 1.4;
+  
+  p.multi-line-text {
+    line-height: $line-height;
+    max-height: #{$line-height * $lines}em;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    
+    // Can IE 11 Exclusions provide a better line-clamp?
+    &::before,
+    &::after {
+      content: '...';
+      line-height: 1;
+      position: absolute;
+      right: 0;
+      top: #{$lines}em;
+      -ms-wrap-flow: start;
+    }
+   
+    
+    @supports (-webkit-line-clamp: $lines) {
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+      -webkit-line-clamp: $lines;
+      
+      &::before,
+      &::after {
+        content: normal;
+      }
+    }
+  }

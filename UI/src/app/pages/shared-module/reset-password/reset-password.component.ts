@@ -38,6 +38,7 @@ import { SharedFunction } from '../../shared/shared-function';
 import { LoaderService } from 'src/app/services/loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-reset-password',
@@ -64,6 +65,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private commonFunction: SharedFunction,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private defaultValuesService: DefaultValuesService,
     private dialogRef: MatDialogRef<ResetPasswordComponent>) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -124,7 +126,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
               this.dialogRef.close(true);
             }
           } else {
-            this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

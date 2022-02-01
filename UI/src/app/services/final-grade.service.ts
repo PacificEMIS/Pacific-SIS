@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { CourseStandardForCourseViewModel, GetAllCourseListModel } from '../models/course-manager.model';
+import { ResponseStudentReportCardGradesModel, StudentReportCardGradesModel } from '../models/report-card.model';
 import { GetAllStaffModel } from '../models/staff.model';
-import { AddUpdateStudentFinalGradeModel } from '../models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetAllStudentListForFinalGradeModel } from '../models/student-final-grade.model';
 import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, SearchCourseSectionForStudentAttendance, StaffDetailsModel } from '../models/take-attendance-list.model';
 
 @Injectable({
@@ -12,7 +13,7 @@ import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, Sear
 })
 export class FinalGradeService {
     apiUrl: string = environment.apiURL;
-    userName = sessionStorage.getItem('user');
+    userName = this.defaultValuesService.getUserName();
     staffDetails: StaffDetailsModel = new StaffDetailsModel();
     httpOptions: { headers: any; };
 
@@ -36,14 +37,36 @@ export class FinalGradeService {
 
     addUpdateStudentFinalGrade(obj: AddUpdateStudentFinalGradeModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-        obj.createdOrUpdatedBy= this.defaultValuesService.getEmailId();
+        obj.createdOrUpdatedBy= this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/addUpdateStudentFinalGrade";
         return this.http.post<AddUpdateStudentFinalGradeModel>(apiurl, obj,this.httpOptions)
     }
 
     getAllStudentFinalGradeList(obj: AddUpdateStudentFinalGradeModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/getAllStudentFinalGradeList";
         return this.http.post<AddUpdateStudentFinalGradeModel>(apiurl, obj,this.httpOptions)         
+    }
+
+    getAllStudentListForFinalGrade(obj: GetAllStudentListForFinalGradeModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/getAllStudentListForFinalGrade";
+        return this.http.post<GetAllStudentListForFinalGradeModel>(apiurl, obj, this.httpOptions)
+    }
+
+    getStudentReportCardGrades(obj: StudentReportCardGradesModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/getStudentReportCardGrades";
+        return this.http.post<ResponseStudentReportCardGradesModel>(apiurl, obj, this.httpOptions)
+    }
+
+    updateStudentReportCardGrades(obj: ResponseStudentReportCardGradesModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.updatedBy = this.defaultValuesService.getUserGuidId();
+        let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/updateStudentReportCardGrades";
+        return this.http.put<ResponseStudentReportCardGradesModel>(apiurl, obj, this.httpOptions)
     }
 }

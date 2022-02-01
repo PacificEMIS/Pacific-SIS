@@ -43,7 +43,15 @@ import { weeks } from '../../../common/static-data';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-import { CommonService } from 'src/app/services/common.service';
+import { CommonService } from '../../../services/common.service';
+import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from '../../../models/course-manager.model';
+import { CourseManagerService } from '../../../services/course-manager.service';
+import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
+import { GetAllMembersList } from '../../../models/membership.model';
+import { LanguageModel } from '../../../models/language.model';
+import { LoginService } from '../../../services/login.service';
+import { GradeLevelService } from '../../../services/grade-level.service';
+import { MembershipService } from '../../../services/membership.service';
 @Component({
   selector: 'vex-schedule-teacher',
   templateUrl: './schedule-teacher.component.html',
@@ -59,6 +67,12 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
   staffScheduleView: StaffScheduleViewModel;
   staffScheduleListForView: StaffScheduleViewModel = new StaffScheduleViewModel();
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
+  getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
+  getAllGradeLevelsModel:GetAllGradeLevelsModel= new GetAllGradeLevelsModel();
+  getAllMembersList: GetAllMembersList = new GetAllMembersList();
+  languages: LanguageModel = new LanguageModel();
   isStartSchedulingPossible = false;
   weeks = weeks;
   cloneStaffScheduleList: StaffScheduleViewModel;
@@ -72,11 +86,16 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
   checkAvailabilityFinished = false;
   selectionProcessing = false;
   permissions: Permissions;
+  isHasStartScheduling;
   constructor(
     private dialog: MatDialog,
     private translateService: TranslateService,
     private staffScheduleService: TeacherScheduleService,
     private snackBar: MatSnackBar,
+    private loginService:LoginService,
+    private gradeLevelService: GradeLevelService,
+    private courseManagerService:CourseManagerService,
+    private membershipService: MembershipService,
     private markingPeriodService: MarkingPeriodService,
     private loaderService: LoaderService,
     private pageRolePermissions: PageRolesPermission,
@@ -92,25 +111,103 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllMarkingPeriodList();
+    this.getAllCourse();
+    this.getAllSubjectList();
+    this.getAllProgramList();
+    this.getAllLanguage();
+    this.getAllGradeLevelList();
+    this.getAllMembership();
   }
 
+  getAllLanguage() {
+    this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      if (typeof (res) == 'undefined') {
+        this.languages.tableLanguage = [];
+      }else if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.languages.tableLanguage = [];
+        if(!res.tableLanguage){
+          this.snackBar.open(res._message, '', {
+            duration: 10000
+          });
+        }
+      }
+      else {
+        this.languages.tableLanguage = res.tableLanguage?.sort((a, b) => { return a.locale < b.locale ? -1 : 1; })
+
+      }
+    })
+  }
+
+  getAllMembership() {
+    this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
+      if (typeof (res) == 'undefined') {
+        this.snackBar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+      else {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+          this.getAllMembersList.getAllMemberList = [];
+          if (!res.getAllMemberList) {
+            this.snackBar.open( res._message,'', {
+              duration: 4000
+            });
+          }
+        }
+        else {
+          this.getAllMembersList.getAllMemberList = res.getAllMemberList.filter((item) => {
+            return (item.profileType == 'School Administrator' || item.profileType == 'Admin Assistant'
+              || item.profileType == 'Teacher' || item.profileType == 'Homeroom Teacher')
+          });
+        }
+      }
+    })
+  }
+
+  getAllGradeLevelList(){   
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {   
+      if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+        }       
+      this.getAllGradeLevelsModel.tableGradelevelList=data.tableGradelevelList;      
+    });
+  }
+
+
   selectTeacher() {
+    if(this.defaultValuesService.checkAcademicYear()){
     this.dialog.open(AddTeacherComponent, {
-      width: '900px'
+      width: '900px',
+      data:{
+        subjectList: this.getAllSubjectModel.subjectList,
+        memberList: this.getAllMembersList.getAllMemberList,
+        languagelist: this.languages.tableLanguage,
+        gradelevelList: this.getAllGradeLevelsModel.tableGradelevelList
+      }
     }).afterClosed().subscribe((res) => {
       this.selectedTeachers = res ? res : [];
       this.getTeacherScheduleView();
     });
   }
+  }
 
   selectCourseSection() {
+    if(this.defaultValuesService.checkAcademicYear()){
     this.dialog.open(AddCourseSectionComponent, {
-      data: { markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView },
+      data: { 
+        markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
+        courseList: this.getAllCourseListModel.courseViewModelList,
+        subjectList: this.getAllSubjectModel.subjectList,
+        programList: this.getAllProgramModel.programList
+      },
       width: '900px'
     }).afterClosed().subscribe((res) => {
       this.selectedCourseSection = res ? res : [];
       this.getTeacherScheduleView();
     });
+    }
   }
 
 
@@ -161,6 +258,71 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
 
   }
 
+  getAllProgramList() {
+    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllProgramModel.programList=[];
+          if(!data.programList){
+            this.snackBar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.getAllProgramModel.programList=data.programList;
+        }
+      }else{
+        this.snackBar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      }  
+    });
+  }
+  getAllSubjectList() {
+    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllSubjectModel.subjectList=[];
+          if(!data.subjectList){
+            this.snackBar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.getAllSubjectModel.subjectList = data.subjectList;
+        }
+      }else{
+        this.snackBar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      } 
+    });
+  }
+
+  getAllCourse() {
+    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
+      if (data) {
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllCourseListModel.courseViewModelList = [];
+          if (!data.courseViewModelList) {
+            this.snackBar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.getAllCourseListModel.courseViewModelList = data.courseViewModelList;
+        }
+      } else {
+        this.snackBar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    })
+  }
+
 
   // selected teachers and course sections
   collectValuesFromTeacherAndCourseSection() {
@@ -190,9 +352,11 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
         item.smstrMarkingPeriodId = '1_' + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = '2_' + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = '3_' + item.prgrsprdMarkingPeriodId;
       }
 
-      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId) {
+      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId || item.prgrsprdMarkingPeriodId) {
         for (const markingPeriod of this.getMarkingPeriodTitleListModel.getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
@@ -201,6 +365,9 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
+            item.markingPeriodTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           }
@@ -227,7 +394,7 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
   }
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem('academicyear');
+    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
@@ -252,7 +419,9 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
     this.cloneStaffScheduleListForCheckAvailibility.staffScheduleViewList[index].courseSectionViewList.forEach((item) => {
       item.checked = event;
     });
-
+    if (this.isStartSchedulingPossible) {
+      this.isAnyCourseSelectedOrNot();
+    }
   }
 
   //  when User selecting single record
@@ -266,8 +435,20 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
     this.cloneStaffScheduleListForCheckAvailibility.staffScheduleViewList[indexOfStaffList].allCourseSectionChecked = this.cloneStaffScheduleListForCheckAvailibility.staffScheduleViewList[indexOfStaffList].courseSectionViewList.every((courseSection) => {
       return courseSection.checked;
     });
+    if (this.isStartSchedulingPossible) {
+      this.isAnyCourseSelectedOrNot(); 
+    }
   }
 
+  //Check is any course section selected or not
+  isAnyCourseSelectedOrNot() {
+    let checkStaffScheduleList = this.removeConflictAndUncheckedRowsIfAny(this.cloneStaffScheduleList)
+    if (checkStaffScheduleList.staffScheduleViewList.length) {
+      this.isHasStartScheduling = false
+    } else {
+      this.isHasStartScheduling = true
+    }
+  }
 
   // Check Availablity of staff
   checkAvailability() {
@@ -449,6 +630,8 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
         item.smstrMarkingPeriodId = item.smstrMarkingPeriodId.split('_')[1];
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = item.qtrMarkingPeriodId.split('_')[1];
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = item.prgrsprdMarkingPeriodId.split('_')[1];
       }
       return item;
     });

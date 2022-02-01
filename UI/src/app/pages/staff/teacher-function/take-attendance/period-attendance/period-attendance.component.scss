@@ -13,7 +13,7 @@
     td,
     th {
       @apply px-6;
-      @apply py-1;
+      @apply py-2;
     }
 
     th:first-child,
@@ -37,8 +37,7 @@
   display: inline-block;
 
   input[type="radio"] {
-    position: absolute;
-    opacity: 0;
+    display: none;
     cursor: pointer;
 
     &:checked + .checkmark-container.present {

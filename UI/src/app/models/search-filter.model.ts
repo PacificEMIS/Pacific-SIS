@@ -14,8 +14,8 @@ export class SearchFilter {
     public updatedBy: string;
     public updatedOn: string;
     constructor() {
-        this.tenantId = sessionStorage.getItem("tenantId");
-        this.schoolId = +sessionStorage.getItem("selectedSchoolId");
+        this.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
+        this.schoolId = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
         this.module = null;
         this.filterName = null;
     }
@@ -26,9 +26,9 @@ export class SearchFilterAddViewModel extends CommonField {
     public searchFilter: SearchFilter;
     constructor() {
         super();
-        this._tenantName = sessionStorage.getItem("tenant");
-        this._userName = sessionStorage.getItem("user");
-        this._token = sessionStorage.getItem("token");
+        this._tenantName = JSON.parse(sessionStorage.getItem("tenant"));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
+        this._token = JSON.parse(sessionStorage.getItem("token"));
         this.searchFilter= new SearchFilter();
     }
 }
@@ -40,10 +40,10 @@ export class SearchFilterListViewModel extends CommonField {
     public module: string;
     constructor() {
         super();
-        this.schoolId = + sessionStorage.getItem('selectedSchoolId');
-        this.tenantId = sessionStorage.getItem("tenantId");
-        this._tenantName = sessionStorage.getItem("tenant");
-        this._userName = sessionStorage.getItem("user");
-        this._token = sessionStorage.getItem("token");
+        this.schoolId = JSON.parse(sessionStorage.getItem('selectedSchoolId'));
+        this.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
+        this._tenantName = JSON.parse(sessionStorage.getItem("tenant"));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
+        this._token = JSON.parse(sessionStorage.getItem("token"));
     }
 }

@@ -27,7 +27,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 import icGeneralInfo from '@iconify/icons-ic/outline-account-circle';
@@ -44,6 +43,7 @@ import { Router } from '@angular/router';
 import { LoaderService } from '../../../services/loader.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-parent',
@@ -56,7 +56,7 @@ import { CommonService } from 'src/app/services/common.service';
   ]
 })
 export class EditParentComponent implements OnInit {
-  pageStatus:string="View Parent";
+  pageStatus:string="viewParent";
   showAddressInfo:boolean= false;
   showGeneralInfo: boolean= false;
   icGeneralInfo = icGeneralInfo;
@@ -64,7 +64,7 @@ export class EditParentComponent implements OnInit {
   icAccessInfo = icAccessInfo;
   secondarySidebar = 0;
   destroySubject$: Subject<void> = new Subject();
-  pageId:string;
+  categoryPath:string;
   parentCreate = SchoolCreate;
   parentId: number;
   parentCreateMode: SchoolCreate = SchoolCreate.VIEW;
@@ -73,24 +73,24 @@ export class EditParentComponent implements OnInit {
   responseImage: string;
   loading:boolean;
   enableCropTool = true;
-  constructor(private layoutService: LayoutService,
+  constructor(
     private parentInfoService:ParentInfoService,
     private imageCropperService:ImageCropperService,
     private cryptoService: CryptoService,
     private pageRolePermissions: PageRolesPermission,
     private router: Router,
     private loaderService:LoaderService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
-    this.layoutService.collapseSidenav();
     this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.parentInfoService.setParentImage(res[1]);
     });
     this.parentInfoService.modeToUpdate.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
       if(res==this.parentCreate.EDIT){
-        this.pageStatus="Edit Parent"
+        this.pageStatus="editParent"
       }else if(res==this.parentCreate.VIEW){
-        this.pageStatus="View Parent"
+        this.pageStatus="viewParent"
       }
     });
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -101,22 +101,37 @@ export class EditParentComponent implements OnInit {
   ngOnInit(): void {
     let permittedTabs = this.pageRolePermissions.getPermittedCategories('/school/parents');
     permittedTabs?.map((category)=>{
-      if (category.title.toLowerCase() === 'General info'.toLowerCase()){
+      if (category.path.toLowerCase() === '/school/parents/parent-generalinfo'){
         //  this.pageId = 'General Info';
         this.showGeneralInfo = true;
       }
-      if (category.title.toLowerCase()  === 'Address info'.toLowerCase() ){
+      if (category.path.toLowerCase()  === '/school/parents/parent-addressinfo' ){
         this.showAddressInfo = true;
         // this.pageId = 'Address Info';
       }
-      this.pageId = localStorage.getItem('pageId')
+      //this.pageId = this.defaultValuesService.getPageId();
       this.checkCurrentCategoryAndRoute();
     })
+
+    this.parentInfoService.parentDetailsForViewedAndEdited.subscribe((res) => {
+      if (res) {
+        this.afterSavingGeneralInfo(res);
+      }
+    });
 
     this.parentCreateMode = this.parentCreate.VIEW;
     this.parentInfoService.setParentCreateMode(this.parentCreateMode);
     this.parentId = this.parentInfoService.getParentId();   
     this.getParentDetailsUsingId();
+  }
+
+  afterSavingGeneralInfo(data) {
+    if (data) {
+      this.parentTitle = (data?.parentInfo.salutation ? data?.parentInfo.salutation + ' ' : '') + '' +
+        data?.parentInfo.firstname + ' ' +
+        (data?.parentInfo.middlename ? ' ' + data?.parentInfo.middlename + ' ' : '') + '' +
+        data?.parentInfo.lastname;
+    }
   }
   
 
@@ -149,23 +164,23 @@ export class EditParentComponent implements OnInit {
     }
   }
 
-  showPage(pageId) {    
-    localStorage.setItem("pageId",pageId.toLowerCase()); 
-    this.pageId=localStorage.getItem("pageId");
+  showPage(step) {
+    this.categoryPath= step;
     this.secondarySidebar = 0; // Close secondary sidenav in mobile view
     this.checkCurrentCategoryAndRoute();
   }
 
   checkCurrentCategoryAndRoute() {
-    if(this.pageId === 'General info'.toLowerCase() ) {
+    if(this.categoryPath === '/school/parents/parent-generalinfo') {
       this.router.navigate(['/school', 'parents', 'parent-generalinfo']);
-    } else if(this.pageId === 'Address info'.toLowerCase() ) {
+    } else if(this.categoryPath === '/school/parents/parent-addressinfo') {
       this.router.navigate(['/school', 'parents', 'parent-addressinfo']);
     }
   }
 
   ngOnDestroy() {
     this.parentInfoService.setParentImage(null);
+    this.parentInfoService.setParentDetailsForViewAndEdit(null);
     this.destroySubject$.next();
     this.destroySubject$.complete();
   }

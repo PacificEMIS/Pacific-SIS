@@ -1,0 +1,42 @@
+<div class="overflow-x-auto overflow-y-hidden border">
+    <table class="w-full schedule-table gradebook-table">
+        <thead>
+            <tr>
+                <th class="w-3/12">{{ "assignment" | translate }}</th>
+                <th class="w-1/12">{{ "points" | translate }}</th>
+                <th class="w-1/12">{{ "grade" | translate }}</th>
+                <th class="w-6/12">{{ "comment" | translate }}</th>
+                <th class="w-1/12" *ngIf="defaultValuesService.checkAcademicYear()">{{ "action" | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let grade of gradesByStudentId">
+            <tr class="bg-skyblue-light">
+                <td class="text-primary font-semibold">{{grade?.title}}<span class="ml-2">(Percentage of Grade : {{grade?.weightage}}%)</span></td>
+                <td class="text-primary font-bold">{{grade?.assignmentTypeMarks}}/{{grade?.assignmentTypePoint}}</td>
+                <td class="text-primary font-bold">{{grade?.percentage ? grade?.percentage + '%' : ''}} {{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr *ngFor="let assignment of grade?.assignmentViewModelList">
+                <td><p class="pl-4">{{assignment?.assignmentTitle}}</p></td>
+                <td>{{assignment?.allowedMarks ? assignment?.allowedMarks : 0}}/{{assignment?.points}}</td>
+                <td>{{assignment?.percentage ? assignment?.percentage + '%' : ''}} {{assignment?.letterGrade ? '[ ' + assignment?.letterGrade + ' ]' : ''}}</td>
+                <td>
+                    <ng-container *ngIf="assignment?.enableComment && defaultValuesService.checkAcademicYear()">
+                        <input [(ngModel)]="assignment.comment" matInput>
+                    </ng-container>
+
+                    <ng-container *ngIf="!assignment?.enableComment">
+                    {{assignment?.comment}}
+                    </ng-container>
+                </td>
+                <td class="cursor-pointer" *ngIf="!assignment?.enableComment && defaultValuesService.checkAcademicYear()" (click)="assignment.enableComment = true;"><mat-icon [icIcon]="icEdiit"></mat-icon></td>
+            </tr>
+        </ng-container>
+        </tbody>
+    </table>
+</div>
+<div class="text-right p-4">
+    <button color="primary" mat-flat-button type="submit" class="text-white ml-2" (click)="submitGradebookGradeByStudent()" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' |translate }}</button>
+</div>

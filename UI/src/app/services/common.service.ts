@@ -1,14 +1,14 @@
 import { LovList, LovAddView } from '../models/lov.model';
-import { CountryModel, CountryAddModel } from '../models/country.model';
+import { CountryModel, CountryAddModel, LOVCountryModel } from '../models/country.model';
 import { StateModel } from '../models/state.model';
 import { CityModel } from '../models/city.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { LanguageModel, LanguageAddModel } from '../models/language.model';
+import { LanguageModel, LanguageAddModel, LOVLanguageModel } from '../models/language.model';
 import { ReleaseNumberAddViewModel } from '../models/release-number-model';
 import { SearchFilterAddViewModel, SearchFilterListViewModel } from '../models/search-filter.model';
-import { AgeRangeList, EducationalStage, ResetPasswordModel, BulkDataImportExcelHeader, ChangePasswordViewModel } from '../models/common.model';
+import { AgeRangeList, EducationalStage, ResetPasswordModel, BulkDataImportExcelHeader, ChangePasswordViewModel, ActiveDeactiveUserModel, DatabaseBackupModel } from '../models/common.model';
 import { DefaultValuesService } from '../common/default-values.service';
 import { CryptoService } from './Crypto.service';
 import { BehaviorSubject, fromEvent, merge, Observable, Observer } from 'rxjs';
@@ -33,6 +33,7 @@ export class CommonService {
   private triggerUserActivity = new BehaviorSubject(false);
   triggeredUserActivity = this.triggerUserActivity.asObservable();
   httpOptions: { headers: any; };
+  httpOptionsForBackup: { headers: HttpHeaders; };
 
 
   constructor(
@@ -51,23 +52,39 @@ export class CommonService {
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
     })
-  }}
+  }
+  this.httpOptionsForBackup = {
+    headers: new HttpHeaders({
+      //"Content-type": "application/json",
+       observe: 'events',
+       responseType: 'blob'
+    }),
+
+    
+  }
+}
   GetAllCountry(obj: CountryModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllCountries";
     return this.http.post<CountryModel>(apiurl, obj,this.httpOptions)
   }
 
+  LOVGetAllCountry(obj: LOVCountryModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllCountries";
+    return this.http.post<LOVCountryModel>(apiurl, obj, this.httpOptions)
+  }
+
   AddCountry(obj: CountryAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.country.createdBy= this.defaultValuesService.getEmailId();
+    obj.country.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/addCountry";
     return this.http.post<CountryAddModel>(apiurl, obj,this.httpOptions)
   }
 
   UpdateCountry(obj: CountryAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.country.updatedBy= this.defaultValuesService.getEmailId();
+    obj.country.updatedBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/updateCountry";
     return this.http.put<CountryAddModel>(apiurl, obj,this.httpOptions)
   }
@@ -94,16 +111,22 @@ export class CommonService {
     return this.http.post<LanguageModel>(apiurl, obj,this.httpOptions)
   }
 
+  LOVGetAllLanguage(obj: LOVLanguageModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllLanguage";
+    return this.http.post<LOVLanguageModel>(apiurl, obj, this.httpOptions)
+  }
+
   AddLanguage(obj: LanguageAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.language.createdBy= this.defaultValuesService.getEmailId();
+    obj.language.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/addLanguage";
     return this.http.post<LanguageAddModel>(apiurl, obj,this.httpOptions)
   }
 
   UpdateLanguage(obj: LanguageAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.language.updatedBy= this.defaultValuesService.getEmailId();
+    obj.language.updatedBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/updateLanguage";
     return this.http.post<LanguageAddModel>(apiurl, obj,this.httpOptions)
   }
@@ -113,8 +136,9 @@ export class CommonService {
     let apiurl = this.apiUrl + obj._tenantName + "/Common/deleteLanguage";
     return this.http.post<LanguageAddModel>(apiurl, obj,this.httpOptions)
   }
-  getAllDropdownValues(obj: LovList) {
+  getAllDropdownValues(obj: LovList, setSchoolIdNull?) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.schoolId = setSchoolIdNull ? null : obj.schoolId;
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllDropdownValues";
     return this.http.post<LovList>(apiurl, obj,this.httpOptions);
   }
@@ -122,7 +146,7 @@ export class CommonService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.dropdownValue.schoolId = this.defaultValuesService.getSchoolID();
     obj.dropdownValue.tenantId = this.defaultValuesService.getTenantID();
-    obj.dropdownValue.createdBy= this.defaultValuesService.getEmailId();
+    obj.dropdownValue.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/addDropdownValue";
     return this.http.post<LovAddView>(apiurl, obj,this.httpOptions);
   }
@@ -130,7 +154,7 @@ export class CommonService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.dropdownValue.schoolId = this.defaultValuesService.getSchoolID();
     obj.dropdownValue.tenantId = this.defaultValuesService.getTenantID();
-    obj.dropdownValue.updatedBy= this.defaultValuesService.getEmailId();
+    obj.dropdownValue.updatedBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/updateDropdownValue";
     return this.http.put<LovAddView>(apiurl, obj,this.httpOptions);
   }
@@ -148,14 +172,14 @@ export class CommonService {
 
   addSearchFilter(obj: SearchFilterAddViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.searchFilter.createdBy= this.defaultValuesService.getEmailId();
+    obj.searchFilter.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/addSearchFilter";
     return this.http.post<SearchFilterAddViewModel>(apiurl, obj,this.httpOptions);
   }
 
   updateSearchFilter(obj: SearchFilterAddViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.searchFilter.updatedBy= this.defaultValuesService.getEmailId();
+    obj.searchFilter.updatedBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/updateSearchFilter";
     return this.http.put<SearchFilterAddViewModel>(apiurl, obj,this.httpOptions);
   }
@@ -188,11 +212,18 @@ export class CommonService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.userMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.userMaster.schoolId = this.defaultValuesService.getSchoolID();
-    obj.userMaster.updatedBy = this.defaultValuesService.getEmailId();
+    obj.userMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.userMaster.passwordHash = this.cryptoService.encrypt(obj.userMaster.passwordHash);
     let apiurl = this.apiUrl + obj._tenantName + "/Common/resetPassword";
     return this.http.post<ResetPasswordModel>(apiurl, obj,this.httpOptions)
   }
+
+  activeDeactiveUser(obj: ActiveDeactiveUserModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Common/activeDeactiveUser";
+    return this.http.post<ActiveDeactiveUserModel>(apiurl, obj, this.httpOptions);
+  }
+
   getAllFieldList(obj: BulkDataImportExcelHeader) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllFieldList";
@@ -201,12 +232,43 @@ export class CommonService {
 
   changePassword(obj: ChangePasswordViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.userId= +sessionStorage.getItem('userId');
+  
+    obj.userId=this.defaultValueService.getUserId();
     obj.emailAddress= this.defaultValuesService.getEmailId();
     obj.newPasswordHash = this.cryptoService.encrypt(obj.newPasswordHash);
     obj.currentPasswordHash = this.cryptoService.encrypt(obj.currentPasswordHash);
     let apiurl = this.apiUrl + obj._tenantName + "/Common/changePassword";
     return this.http.post<ChangePasswordViewModel>(apiurl, obj,this.httpOptions)
+  }
+
+  createDatabaseBackup(obj: DatabaseBackupModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/DBBackup/databaseBackup";
+    return this.http.post(apiurl, obj, {
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'blob',
+    })
+  }
+
+  public download(obj: DatabaseBackupModel) {
+    const params = new HttpParams()
+    .set('sort', "description")
+    .set('page',"2");
+    const headers = new HttpHeaders()
+    .set('Content-Type', 'application/json')
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/DBBackup/download1";
+    return this.http.get(apiurl, { 'params': params, 'headers': headers })
+    /*return this.http.get(`${this.url}/download?fileName=${fileName}`, {
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'blob',
+    });*/
+  }
+
+  getIpAddress() {
+    return this.http.get('https://api64.ipify.org/?format=json');
   }
 
   setSearchResult(result) {
@@ -281,17 +343,19 @@ export class CommonService {
   }
 
   clearStorage(){
-    this.dialog.closeAll();
+      
+      let schoolId =this.defaultValueService.getSchoolID();
+      const getPhotoAndFooter = this.defaultValuesService.getPhotoAndFooter();
 
-      let schoolId = sessionStorage.getItem('selectedSchoolId');
       sessionStorage.clear();
       localStorage.removeItem(this.defaultValueService.permissionListKeyName);
       if(schoolId){
-      sessionStorage.setItem('selectedSchoolId',schoolId);
+      this.defaultValueService.setSchoolID();
       }
       this.setUserActivity(true);
 
-      sessionStorage.setItem("tenant",  this.defaultValuesService.getDefaultTenant());
+      this.defaultValueService.setTenant(this.defaultValuesService.getDefaultTenant());
+      this.defaultValuesService.setPhotoAndFooter(getPhotoAndFooter);
       this.translate.addLangs(['en', 'fr']);
       this.translate.setDefaultLang('en');
     }

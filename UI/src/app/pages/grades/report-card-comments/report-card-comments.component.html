@@ -15,7 +15,7 @@
                         <ng-container *ngFor="let course of getAllCommentsWithUniqueCategory.courseCommentCategories; let index=index">
                             <div *ngIf="course.courseId" (click)="onCourseChange(index)" class="flex items-center justify-between px-4 py-3" [ngClass]="selectedCategoryIndex==index?'bg-skyblue-light text-blue':'cursor-pointer'" >
                                 <p class="">{{course.courseName}}</p>
-                                <div *ngIf="permissions?.edit">
+                                <div *ngIf="permissions?.edit && defaultValuesService.checkAcademicYear()">
                                     <a class="cursor-pointer" (click)="confirmDeleteGradeScale(course,0,index)">
                                         <mat-icon [icIcon]="icDelete"></mat-icon>
                                     </a>
@@ -24,7 +24,7 @@
                             <hr />
                         </ng-container>
                         
-                        <div class="px-4 py-3" *ngIf="permissions?.add">
+                        <div class="px-4 py-3" *ngIf="permissions?.add && defaultValuesService.checkAcademicYear()">
                             <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                                 <mat-label>{{ "addCourse" | translate }}</mat-label>
                                 <mat-select>
@@ -46,12 +46,12 @@
                                 <tr>
                                     <th width="1%"></th>
                                     <th>{{ "comment" | translate }}</th>
-                                    <th>{{ "actions" | translate }}</th>
+                                    <th *ngIf="defaultValuesService.checkAcademicYear()">{{ "actions" | translate }}</th>
                                 </tr>
                             </thead>
                             <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
                                 <tr *ngFor="let comment of commentListBasedOnSelectedCategory;let index=index" cdkDrag cdkDragLockAxis="y">
-                                    <td class="cursor-move" cdkDragHandle>
+                                    <td class="cursor-move" cdkDragHandle *ngIf="defaultValuesService.checkAcademicYear()">
                                         <!-- <ng-container [ngTemplateOutlet]="dragHandleTmpl"> </ng-container> -->
                                         <mat-icon>reorder</mat-icon>
                                     </td>
@@ -61,7 +61,7 @@
                                             <input type="text" [value]="comment.comment" [(ngModel)]="comment.comment"  placeholder="Update Comment" class="w-full">
                                         </div>
                                     </td>
-                                    <td class="col-md">
+                                    <td class="col-md" *ngIf="defaultValuesService.checkAcademicYear()">
                                         <ng-container *ngIf="!comment.takeInput">
                                             <a *ngIf="permissions?.edit" class="cursor-pointer mr-3" (click)="onCommentEdit(comment,index)">
                                                 <mat-icon [icIcon]="icEdit"></mat-icon>
@@ -73,7 +73,7 @@
                                     </td>
                                 </tr>
                         
-                                <tr>
+                                <tr *ngIf="defaultValuesService.checkAcademicYear()">
                                     <td class="text-center">
                                         <i class="icon icon-plus3 text-lg"></i>
                                     </td>
@@ -88,7 +88,7 @@
                             </tbody>
                         </table>
                         <div class="text-right p-3" *ngIf="permissions?.add">
-                            <button color="primary" mat-raised-button type="submit" (click)="addComments()">{{editMode?('update'|translate):('submit'|translate)}}</button>
+                            <button color="primary" mat-raised-button type="submit" (click)="addComments()" *ngIf="defaultValuesService.checkAcademicYear()">{{editMode?('update'|translate):('submit'|translate)}}</button>
                         </div>
                     </div>
                 </div>

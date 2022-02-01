@@ -51,6 +51,7 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { CryptoService } from '../../../services/Crypto.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-school-level',
@@ -104,7 +105,8 @@ export class SchoolLevelComponent implements OnInit {
     public translateService:TranslateService,
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -163,7 +165,7 @@ export class SchoolLevelComponent implements OnInit {
     this.commonService.deleteDropdownValue(this.lovAddView).subscribe(
       (res:LovAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('School Level Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('School Level Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -200,10 +202,11 @@ export class SchoolLevelComponent implements OnInit {
 
   getAllSchoolLevel(){
     this.lovList.lovName=this.lovName;
+    this.lovList.isListView = true;
     this.commonService.getAllDropdownValues(this.lovList).subscribe(
       (res:LovList)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('No Record Found For School Level.. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('No Record Found For School Level.. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

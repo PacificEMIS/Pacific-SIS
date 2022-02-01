@@ -28,6 +28,7 @@ export class GetAllAssignmentsModel extends CommonField{
     assignmentTypeList:AssignmentList[]
     courseSectionId: number;
     totalWeightage: number;
+    academicYear: number;
     constructor(){
         super();
     }

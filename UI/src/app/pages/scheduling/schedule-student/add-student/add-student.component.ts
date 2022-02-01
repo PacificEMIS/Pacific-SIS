@@ -23,8 +23,8 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentDetails } from '../../../../models/student-details.model';
@@ -50,6 +50,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../../services/loader.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-add-student',
   templateUrl: './add-student.component.html',
@@ -98,74 +99,20 @@ export class AddStudentComponent implements OnInit,OnDestroy {
     private commonService: CommonService,
     private loginService: LoginService,
     private loaderService: LoaderService,
-    private gradeLevelService: GradeLevelService) { 
+    private gradeLevelService: GradeLevelService, 
+    private defaultValuesService: DefaultValuesService,
+    @Inject(MAT_DIALOG_DATA) public data) { 
     //translateService.use('en');
-    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
+     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
   }
 
   ngOnInit(): void {
-    this.getAllLanguage();
-    this.getAllSection();
-    this.getAllGradeLevelList();
+    this.sectionList= this.data.sectionList;
+     this.languageList= this.data.languageList;
+     this.gradeLevelList= this.data.gradeLevelList;
   }
-
-  getAllLanguage() {
-    this.languages._tenantName = sessionStorage.getItem("tenant");
-    this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      if (typeof (res) == 'undefined') {
-        this.languageList = [];
-      }
-      else {
-       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          if(res.tableLanguage){
-            this.languageList=[]
-          }else{
-            this.languageList=[]
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
-        }else{
-          this.languageList = res.tableLanguage?.sort((a, b) => { return a.locale < b.locale ? -1 : 1; })
-        }
-      }
-    })
-  }
-
-  getAllSection() {
-    let section: GetAllSectionModel = new GetAllSectionModel();
-    this.sectionService.GetAllSection(section).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        if(!data.tableSectionsList){
-          this.snackbar.open(data._message, '', {
-            duration: 10000
-          });
-        }
-      }
-      else {
-        this.sectionList = data.tableSectionsList;
-      }
-
-    });
-  }
-
-
-  getAllGradeLevelList(){   
-    // this.getAllGradeLevelsModel.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    // this.getAllGradeLevelsModel._tenantName = sessionStorage.getItem("tenant");
-    // this.getAllGradeLevelsModel._token = sessionStorage.getItem("token");
-    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => { 
-      if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);         
-        }         
-      this.gradeLevelList=data.tableGradelevelList;      
-    });
-  }
-
 
   someComplete():boolean{
     let indetermine=false;

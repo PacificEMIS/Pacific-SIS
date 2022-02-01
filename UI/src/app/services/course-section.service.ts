@@ -40,7 +40,7 @@ export class CourseSectionService {
     courseSection.courseFixedSchedule.tenantId = this.defaultValuesService.getTenantID();
     courseSection.courseSection.schoolId = this.defaultValuesService.getSchoolID();
     courseSection.courseSection.tenantId = this.defaultValuesService.getTenantID();
-    courseSection.courseSection.createdBy = this.defaultValuesService.getEmailId();
+    courseSection.courseSection.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + courseSection._tenantName + "/CourseManager/addCourseSection";
     return this.http.post<GetAllCourseSectionModel>(apiurl, courseSection,this.httpOptions)
   }
@@ -49,7 +49,7 @@ export class CourseSectionService {
     courseSection.courseFixedSchedule.schoolId = this.defaultValuesService.getSchoolID();
     courseSection.courseFixedSchedule.tenantId = this.defaultValuesService.getTenantID();
     courseSection.courseSection.schoolId = this.defaultValuesService.getSchoolID();
-    courseSection.courseSection.updatedBy = this.defaultValuesService.getEmailId();
+    courseSection.courseSection.updatedBy = this.defaultValuesService.getUserGuidId();
     courseSection.courseSection.tenantId = this.defaultValuesService.getTenantID();
     let apiurl = this.apiUrl + courseSection._tenantName + "/CourseManager/updateCourseSection";
     return this.http.put<GetAllCourseSectionModel>(apiurl, courseSection,this.httpOptions)

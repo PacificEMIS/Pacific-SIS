@@ -53,7 +53,7 @@ export class RecalculateDailyAttendanceComponent implements OnInit {
     private datepipe: DatePipe,
     private studentAttendanceService: StudentAttendanceService
   ) {
-    translateService.use("en");
+    // translateService.use("en");
   }
 
   ngOnInit(): void {}

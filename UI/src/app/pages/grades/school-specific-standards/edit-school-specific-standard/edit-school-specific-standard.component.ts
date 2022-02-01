@@ -41,6 +41,7 @@ import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs/internal/Subject';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-school-specific-standard',
@@ -77,6 +78,7 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
     private gradesService:GradesService,
     private loaderService: LoaderService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) { 
       this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
         this.loading = val;
@@ -90,6 +92,9 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
        }else{
         this.editMode = this.data.editMode;
        }
+       this.gradeLevelList= this.data.parentData.gradeLevelList,
+       this.subjectList= this.data.parentData.subjectList,
+       this.courseList= this.data.parentData.courseList
     }
 
   ngOnInit(): void {
@@ -116,15 +121,10 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
       })
       this.form.controls['standardRefNo'].disable();
     }
-
-    this.getAllSubjectStandardList();
-    this.getAllCourseStandardList();
-    this.getAllGradeLevel();
-    
   }
   ngAfterViewInit(){
 
-    this.form.controls['standardRefNo'].setErrors({ 'nomatch': false });
+    // this.form.controls['standardRefNo'].setErrors({ 'nomatch': false });
     this.form.controls['standardRefNo'].valueChanges.pipe(debounceTime(500),distinctUntilChanged()).subscribe((term)=>{
       if(term!=''){
           this.standardRefNoModel.standardRefNo = term;
@@ -148,91 +148,19 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
     })
   }
 
-  activeSubjectTextBox(){
-    document.getElementById("subject").className='hidden';
-    document.getElementById("subject1").classList.remove('hidden');
-    document.getElementById("subjectFocus").focus();
-    this.form.controls.subject.markAsTouched();
-  }
+  // activeSubjectTextBox(){
+  //   document.getElementById("subject").className='hidden';
+  //   document.getElementById("subject1").classList.remove('hidden');
+  //   document.getElementById("subjectFocus").focus();
+  //   this.form.controls.subject.markAsTouched();
+  // }
 
-  activeCourseTextBox(){
-    document.getElementById("course").className='hidden';
-    document.getElementById("course1").classList.remove('hidden');
-    document.getElementById("courseFocus").focus();
+  // activeCourseTextBox(){
+  //   document.getElementById("course").className='hidden';
+  //   document.getElementById("course1").classList.remove('hidden');
+  //   document.getElementById("courseFocus").focus();
 
-  }
-
-  getAllGradeLevel() {
-    this.gradeLevelService.getAllGradeLevels(this.gradeLevelList).subscribe((res) => {
-      if (res){
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.gradeLevelList.tableGradelevelList = [];
-          if(!res.tableGradelevelList){
-            this.snackbar.open( res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else {
-          this.gradeLevelList = res;
-        }
-      }
-      else{
-        this.snackbar.open('Grade Level List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
-
-  getAllSubjectStandardList(){
-    this.gradesService.getAllSubjectStandardList(this.subjectList).subscribe((res) => {
-      if (res){
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.subjectList.gradeUsStandardList=null
-            if (!res.gradeUsStandardList) {
-              this.snackbar.open( res._message, '', {
-                duration: 10000
-              });
-            }
-        }
-        else {
-          this.subjectList = res;
-        }
-      }
-      else{
-        this.snackbar.open('Standard Subject List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
-
-  getAllCourseStandardList(){
-    this.gradesService.getAllCourseStandardList(this.courseList).subscribe((res) => {
-      if (res){
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.courseList.gradeUsStandardList = null;
-            if (!res.gradeUsStandardList) {
-              this.snackbar.open( res._message, '', {
-                duration: 10000
-              });
-            }
-        }
-        else {
-          this.courseList = res;
-        }
-      }
-      else {
-        this.snackbar.open('Standard Course List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
+  // }
 
   submit(){
     this.form.markAllAsTouched();
@@ -263,7 +191,7 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
 
     this.gradesService.updateGradeUsStandard(this.schoolSpecificStandard).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Update School Specific Standard ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Update School Specific Standard ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else
@@ -292,7 +220,7 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
 
     this.gradesService.addGradeUsStandard(this.schoolSpecificStandard).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Add School Specific Standard ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Add School Specific Standard ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else

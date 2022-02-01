@@ -10,7 +10,9 @@ import { GetAcademicYearListModel, GetMarkingPeriodTitleListModel } from '../../
 import { DasboardService } from '../../../../app/services/dasboard.service';
 import { DefaultValuesService } from '../../../../app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
-
+import { SchoolAddViewModel } from '../../../../app/models/school-master.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import * as moment from "moment";
 @Component({
   selector: 'vex-select-bar',
   templateUrl: './select-bar.component.html',
@@ -39,13 +41,14 @@ export class SelectBarComponent implements OnInit {
 
   /** Subject that emits when the component has been destroyed. */
   protected onDestroy = new Subject<void>();
-
+  schoolAddViewModel:SchoolAddViewModel=new SchoolAddViewModel();
   constructor(private schoolService: SchoolService,
     private router: Router,
     private markingPeriodService: MarkingPeriodService,
     private dasboardService:DasboardService,
     private defaultValuesService: DefaultValuesService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private snackbar: MatSnackBar
   ) {
     this.schoolService.currentMessage.pipe(takeUntil(this.onDestroy)).subscribe((res) => {
       if (res) {
@@ -65,6 +68,7 @@ export class SelectBarComponent implements OnInit {
     })
   }
   callAllSchool() {
+
     this.getSchoolList.emailAddress= this.defaultValuesService.getEmailId();
     this.schoolService.GetAllSchools(this.getSchoolList).subscribe((data) => {
       if(data){
@@ -72,12 +76,16 @@ export class SelectBarComponent implements OnInit {
           this.commonService.checkTokenValidOrNot(data._message);
         }
         this.schools = data.schoolMaster;
+        this.defaultValuesService.setSchoolCount((data?.schoolMaster?.length)?.toString());
         /** control for the selected School */
         this.schoolCtrl = new FormControl();
         this.schoolFilterCtrl = new FormControl();
         // set initial selection
-        this.schoolCtrl.setValue(this.schools[0]);
-        // load the initial School list
+        // this.schoolCtrl.setValue(+this.defaultValuesService.getSchoolID() ? +this.defaultValuesService.getSchoolID() : this.schools[0]);
+        const index = this.schools.findIndex((x) => {
+          return x.schoolId === +this.defaultValuesService.getSchoolID()
+        });
+        this.schoolCtrl.setValue(this.schools[index === -1 ? 0 : index]);
         this.filteredSchools.next(this.schools.slice());
         /** control for the MatSelect filter keyword */
         this.schoolFilterCtrl.valueChanges
@@ -98,11 +106,15 @@ export class SelectBarComponent implements OnInit {
       }
     });
   }
-
   selectSchoolOnLoad() {
     if (!this.defaultValuesService.getSchoolID()) {
-      sessionStorage.setItem("selectedSchoolId", this.schools[0].schoolId);
-      sessionStorage.setItem("schoolOpened", this.schools[0].schoolDetail[0].dateSchoolOpened);
+      const index = this.schools.findIndex((x) => {
+        return x.schoolId === +this.defaultValuesService.getSchoolID()
+      });
+      // this.schoolCtrl.setValue(this.schools[index === -1 ? 0 : index]);
+      this.defaultValuesService.setSchoolID(this.schools[index === -1 ? 0 : index].schoolId);
+      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolClosed);
       this.callAcademicYearsOnSchoolSelect();
     } else {
       this.setSchool();
@@ -120,11 +132,17 @@ export class SelectBarComponent implements OnInit {
     });
     if (index != -1) {
       this.schoolCtrl.setValue(this.schools[index]);
-      sessionStorage.setItem("schoolOpened", this.schools[index].schoolDetail[0].dateSchoolOpened);
+      this.defaultValuesService.setSchoolOpened(this.schools[index].schoolDetail[0].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index].schoolDetail[0].dateSchoolClosed);
     } else {
-      sessionStorage.setItem("selectedSchoolId", this.schools[0].schoolId);
-      this.schoolCtrl.setValue(this.schools[0]);
-      sessionStorage.setItem("schoolOpened", this.schools[0].schoolDetail[0].dateSchoolOpened);
+      const index = this.schools.findIndex((x) => {
+        return x.schoolId === +this.defaultValuesService.getSchoolID()
+      });
+      this.schoolCtrl.setValue(this.schools[index === -1 ? 0 : index]);
+      this.defaultValuesService.setSchoolID(this.schools[index === -1 ? 0 : index].schoolId);
+      // this.schoolCtrl.setValue(+this.defaultValuesService.getSchoolID() ? +this.defaultValuesService.getSchoolID() : this.schools[0]);
+      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolClosed);
     }
     if(!this.checkForAnyNewSchool){
       this.callAcademicYearsOnSchoolSelect();
@@ -133,10 +151,10 @@ export class SelectBarComponent implements OnInit {
 
   changeSchool(details) {
     this.defaultValuesService.setSchoolID(details.schoolId);
-    // sessionStorage.setItem("selectedSchoolId", details.schoolId);
-    sessionStorage.setItem("schoolOpened", details.schoolDetail[0].dateSchoolOpened);
+    this.defaultValuesService.setSchoolOpened(details.schoolDetail[0].dateSchoolOpened);
+    this.defaultValuesService.setSchoolClosed(details.schoolDetail[0].dateSchoolClosed);
     this.callAcademicYearsOnSchoolSelect();
-    if(sessionStorage.getItem('membershipName')=== 'Teacher'){
+    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
       this.router.navigateByUrl("/school/teacher/dashboards");
     }
     else{
@@ -144,7 +162,23 @@ export class SelectBarComponent implements OnInit {
     }
     this.dasboardService.sendPageLoadEvent(true);
     this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
+    this.updateLastUsedSchoolId(); 
+  }
 
+  updateLastUsedSchoolId(){
+    this.schoolAddViewModel.lastUsedSchoolId=this.defaultValuesService.getSchoolID();
+    this.schoolService.updateLastUsedSchoolId(this.schoolAddViewModel).subscribe((res) => {
+      if (res) {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        } 
+      }
+      else {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
   }
 
   callAcademicYearsOnSchoolSelect() {
@@ -156,24 +190,36 @@ export class SelectBarComponent implements OnInit {
       this.academicYears = res.academicYears;
       // set initial selection
       if (this.academicYears?.length > 0) {
+        const academicIndex =  this.defaultValuesService.getAcademicYear() ? this.academicYears.findIndex(item => item.academyYear === this.defaultValuesService.getAcademicYear()) : this.academicYears.findIndex(item => moment(new Date()).isBetween(item.startDate, item.endDate));        
+        if(academicIndex >= 0) {
+        this.academicYearsCtrl.setValue(this.academicYears[academicIndex]);
+        } else {
         this.academicYearsCtrl.setValue(this.academicYears[this.academicYears.length - 1]);
-        sessionStorage.setItem("academicyear", this.academicYearsCtrl.value.academyYear);
-        sessionStorage.setItem("fullYearStartDate",this.academicYearsCtrl.value.startDate);
-        
+        }
+        // this.academicYearsCtrl.setValue(this.academicYears[this.academicYears.length - 1]);
+        this.defaultValuesService.setAcademicYear(this.academicYearsCtrl.value.academyYear);
+        this.defaultValuesService.setFullAcademicYear(this.academicYearsCtrl.value.year);
+        this.defaultValuesService.setFullYearStartDate(this.academicYearsCtrl.value.startDate);
+        this.defaultValuesService.setFullYearEndDate(this.academicYearsCtrl.value.endDate);
       } else {
-       
         this.academicYearsCtrl.setValue(this.nullValueForDropdown);
-        sessionStorage.setItem("academicyear","null");
-        sessionStorage.setItem("fullYearStartDate","null");
+        this.defaultValuesService.setAcademicYear(null);
+        this.defaultValuesService.setFullAcademicYear(null);
+        this.defaultValuesService.setFullYearStartDate(null);
+        this.defaultValuesService.setFullYearEndDate(null);
       }
       if(this.academicYearsCtrl.value==this.nullValueForDropdown){
-        sessionStorage.setItem("academicyear","null");
-        sessionStorage.setItem("fullYearStartDate","null");
+        this.defaultValuesService.setAcademicYear(null);
+        this.defaultValuesService.setFullAcademicYear(null);
+        this.defaultValuesService.setFullYearStartDate(null);
+        this.defaultValuesService.setFullYearEndDate(null);
          this.periods=[]
         this.callMarkingPeriodTitleList();
-        }else{         
-          sessionStorage.setItem("academicyear", this.academicYearsCtrl.value.academyYear); 
-          sessionStorage.setItem("fullYearStartDate",this.academicYearsCtrl.value.startDate);
+        }else{    
+          this.defaultValuesService.setAcademicYear(this.academicYearsCtrl.value.academyYear); 
+          this.defaultValuesService.setFullAcademicYear(this.academicYearsCtrl.value.year);
+          this.defaultValuesService.setFullYearStartDate(this.academicYearsCtrl.value.startDate);
+          this.defaultValuesService.setFullYearEndDate(this.academicYearsCtrl.value.endDate);
           this.callMarkingPeriodTitleList();
         }
         this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:false,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:true});
@@ -183,15 +229,19 @@ export class SelectBarComponent implements OnInit {
 
   changeYear(event) {
     if(event.value==this.nullValueForDropdown){
-    sessionStorage.setItem("academicyear","null");
-    sessionStorage.setItem("fullYearStartDate", "null");
+    this.defaultValuesService.setAcademicYear(null);
+    this.defaultValuesService.setFullAcademicYear(null);
+    this.defaultValuesService.setFullYearStartDate(null);
+    this.defaultValuesService.setFullYearEndDate(null);
     this.callMarkingPeriodTitleList();
     }else{
-      sessionStorage.setItem("academicyear", event.value.academyYear);
-      sessionStorage.setItem("fullYearStartDate", event.value.startDate);
+      this.defaultValuesService.setAcademicYear(event.value.academyYear);
+      this.defaultValuesService.setFullAcademicYear(event.value.year);
+      this.defaultValuesService.setFullYearStartDate(event.value.startDate);
+      this.defaultValuesService.setFullYearEndDate(event.value.endDate);
       this.callMarkingPeriodTitleList();
     }
-    if(sessionStorage.getItem('membershipName')=== 'Teacher'){
+    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
       this.router.navigateByUrl("/school/teacher/dashboards");
     }
     else{
@@ -204,7 +254,7 @@ export class SelectBarComponent implements OnInit {
   callMarkingPeriodTitleList() {
        /*  If there is any marking period then particular marking period 
         will be selected which is based on current date neither select the first one. */
-    if (sessionStorage.getItem("academicyear") !== "null") {
+    if (this.defaultValuesService.getAcademicYear() !== null) {
       this.markingPeriodTitleLists.schoolId = this.defaultValuesService.getSchoolID();
       this.markingPeriodTitleLists.academicYear = this.defaultValuesService.getAcademicYear();
       this.markingPeriodService.getMarkingPeriodTitleList(this.markingPeriodTitleLists).subscribe((res) => {
@@ -221,23 +271,31 @@ export class SelectBarComponent implements OnInit {
               this.periodCtrl.setValue(this.periods[i]);
               this.defaultValuesService.setMarkingPeriodId(this.periods[i].markingPeriodId);
               this.defaultValuesService.setMarkingPeriodStartDate(this.periods[i].startDate);
+              this.defaultValuesService.setMarkingPeriodEndDate(this.periods[i].endDate);
+              this.defaultValuesService.setMarkingPeriodTitle(this.periods[i].periodTitle);
               break;
             } else {
               this.periodCtrl.setValue(this.periods[0]);
               this.defaultValuesService.setMarkingPeriodId(this.periods[0].markingPeriodId);
               this.defaultValuesService.setMarkingPeriodStartDate(this.periods[0].startDate);
+              this.defaultValuesService.setMarkingPeriodEndDate(this.periods[i].endDate);
+              this.defaultValuesService.setMarkingPeriodTitle(this.periods[0].periodTitle);
             }
           }
         } else {
           this.periodCtrl.setValue(this.nullValueForDropdown);
           this.defaultValuesService.setMarkingPeriodId(null);
           this.defaultValuesService.setMarkingPeriodStartDate(null);
+          this.defaultValuesService.setMarkingPeriodEndDate(null);
+          this.defaultValuesService.setMarkingPeriodTitle(null);
         }
       })
     } else {
       this.periodCtrl.setValue(this.nullValueForDropdown);
       this.defaultValuesService.setMarkingPeriodId(null);
       this.defaultValuesService.setMarkingPeriodStartDate(null);
+      this.defaultValuesService.setMarkingPeriodEndDate(null);
+      this.defaultValuesService.setMarkingPeriodTitle(null);
 
     }
   }
@@ -254,12 +312,16 @@ export class SelectBarComponent implements OnInit {
     if(event.value==this.nullValueForDropdown){
       this.defaultValuesService.setMarkingPeriodId(null);
       this.defaultValuesService.setMarkingPeriodStartDate(null);
+      this.defaultValuesService.setMarkingPeriodEndDate(null);
+      this.defaultValuesService.setMarkingPeriodTitle(null);
       }else{
       this.defaultValuesService.setMarkingPeriodId(event.value.markingPeriodId);
       this.defaultValuesService.setMarkingPeriodStartDate(event.value.startDate);
+      this.defaultValuesService.setMarkingPeriodEndDate(event.value.endDate);
+      this.defaultValuesService.setMarkingPeriodTitle(event.value.periodTitle);
       }
 
-    if(sessionStorage.getItem('membershipName')=== 'Teacher'){
+    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
       this.router.navigateByUrl("/school/teacher/dashboards");
     }
     else{

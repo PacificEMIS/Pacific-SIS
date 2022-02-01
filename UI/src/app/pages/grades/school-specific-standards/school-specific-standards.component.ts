@@ -57,6 +57,9 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import {CourseManagerService} from '../../../services/course-manager.service';
+import {GetAllCourseListModel,AddCourseModel,GetAllProgramModel,GetAllSubjectModel, CourseListFilterModel} from '../../../models/course-manager.model';
 
 @Component({
   selector: 'vex-school-specific-standards',
@@ -82,7 +85,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     { label: 'Standard Details', property: 'standardDetails', type: 'text', visible: false },
     { label: 'Actions', property: 'actions', type: 'text', visible: true }
   ];
-
+  subjectLists=[];
   schoolSpecificStandardsList: GetAllSchoolSpecificListModel = new GetAllSchoolSpecificListModel();
   icMoreVert = icMoreVert;
   icAdd = icAdd;
@@ -91,7 +94,6 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   icSearch = icSearch;
   icImport = icImport;
   icFilterList = icFilterList;
-
   gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   subjectList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
   courseList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
@@ -110,6 +112,9 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
   permissions: Permissions;
+  courseLists=[];
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel(); 
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -122,6 +127,8 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     private gradeLevelService: GradeLevelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService,
+    private courseManager: CourseManagerService,
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -140,6 +147,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     this.getAllGradeLevel();
     this.getAllSubjectStandardList();
     this.getAllCourseStandardList();
+    // this.getAllCourse()
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/grade-settings/standard-grades-setup') 
     
   }
@@ -244,6 +252,11 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     this.dialog.open(EditSchoolSpecificStandardComponent, {
       data: {
         editMode: false,
+        parentData:{
+          gradeLevelList:this.gradeLevelList,
+          subjectList: this.subjectLists,
+          courseList: this.courseLists
+        }
       },
       width: '500px'
     }).afterClosed().subscribe((res) => {
@@ -258,7 +271,12 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     this.dialog.open(EditSchoolSpecificStandardComponent, {
       data: {
         editMode: true,
-        schoolSpecificStandards: schoolSpecificDetails
+        schoolSpecificStandards: schoolSpecificDetails,
+        parentData:{
+          gradeLevelList:this.gradeLevelList,
+          subjectList: this.subjectLists,
+          courseList: this.courseLists
+        }
       },
       width: '500px'
     }).afterClosed().subscribe((res) => {
@@ -294,7 +312,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   schoolSpecificStandard.gradeUsStandard.gradeStandardId=deleteDetails.gradeStandardId;
   this.gradesService.deleteGradeUsStandard(schoolSpecificStandard).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Delete School Specific Standard ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Delete School Specific Standard ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else
@@ -317,6 +335,8 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     if (this.schoolSpecificStandardsList.sortingModel?.sortColumn == "") {
       this.schoolSpecificStandardsList.sortingModel=null;
     }
+    this.schoolSpecificStandardsList.IsSchoolSpecific=true
+    this.schoolSpecificStandardsList.isListView=true;
     this.gradesService.getAllGradeUsStandardList(this.schoolSpecificStandardsList).subscribe(res => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -413,7 +433,7 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   getAllGradeLevel() {
     this.gradeLevelService.getAllGradeLevels(this.gradeLevelList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Level List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Level List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -438,55 +458,100 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     });
   }
 
-  getAllSubjectStandardList(){
-    this.subjectList=new GradeStandardSubjectCourseListModel();
-    this.gradesService.getAllSubjectStandardList(this.subjectList).subscribe((res) => {
-      if (res){
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.subjectList.gradeUsStandardList = null;
-          if (!res.gradeUsStandardList) {
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
+  // getAllSubjectStandardList(){
+  //   this.subjectList=new GradeStandardSubjectCourseListModel();
+  //   this.gradesService.getAllSubjectStandardList(this.subjectList).subscribe((res) => {
+  //     if (res){
+  //     if(res._failure){
+  //       this.commonService.checkTokenValidOrNot(res._message);
+  //         this.subjectList.gradeUsStandardList = null;
+  //         if (!res.gradeUsStandardList) {
+  //           this.snackbar.open(res._message, '', {
+  //             duration: 10000
+  //           });
+  //         }
+  //     }
+  //     else {
+  //       this.subjectList=res;
+  //     }
+  //     }
+  //     else{
+  //       this.snackbar.open('Standard Subject List failed. ' + this.defaultValuesService.getHttpError(), '', {
+  //         duration: 10000
+  //       });
+  //     }
+  //   });
+  // }
+// ===========================================
+getAllSubjectStandardList(){
+  this.courseManager.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
+    if(data){
+     if(data._failure){
+      this.commonService.checkTokenValidOrNot(data._message);
+        this.subjectLists=[];
+        if(!data.subjectList){
+          this.snackbar.open(data._message, '', {
+            duration: 1000
+          }); 
+        }
+      }else{
+        this.subjectLists=data.subjectList;        
       }
-      else {
-        this.subjectList=res;
-      }
-      }
-      else{
-        this.snackbar.open('Standard Subject List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
+    }else{
+      this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+        duration: 1000
+      }); 
+    }
+  });
+}
 
-  getAllCourseStandardList(){
-    this.courseList = new GradeStandardSubjectCourseListModel();
-    this.gradesService.getAllCourseStandardList(this.courseList).subscribe((res) => {
-      if (res){
+getAllCourseStandardList(){
+  this.courseManager.GetAllCourseList(this.getAllCourseListModel).subscribe(res => {
+    if (res){
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
-          this.courseList.gradeUsStandardList = null;
-          if (!res.gradeUsStandardList) {
+          if (!res.courseViewModelList) {
             this.snackbar.open( res._message, '', {
               duration: 10000
             });
           }
         }
         else {
-          this.courseList = res;
+          this.courseLists = res.courseViewModelList;
         }
       }
       else{
-        this.snackbar.open('Standard Course List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Standard Course List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
-    });
-  }
+  });
+}
+// ==========================================
+  // getAllCourseStandardList(){
+  //   this.courseList = new GradeStandardSubjectCourseListModel();
+  //   this.gradesService.getAllCourseStandardList(this.courseList).subscribe((res) => {
+  //     if (res){
+  //     if(res._failure){
+  //       this.commonService.checkTokenValidOrNot(res._message);
+  //         this.courseList.gradeUsStandardList = null;
+  //         if (!res.gradeUsStandardList) {
+  //           this.snackbar.open( res._message, '', {
+  //             duration: 10000
+  //           });
+  //         }
+  //       }
+  //       else {
+  //         this.courseList = res;
+  //       }
+  //     }
+  //     else{
+  //       this.snackbar.open('Standard Course List failed. ' + this.defaultValuesService.getHttpError(), '', {
+  //         duration: 10000
+  //       });
+  //     }
+  //   });
+  // }
 
   toggleColumnVisibility(column, event) {
     event.stopPropagation();

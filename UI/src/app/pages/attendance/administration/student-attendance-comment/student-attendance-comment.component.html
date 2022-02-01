@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="mb-4">
-    <h2 class="headline m-0" fxFlex="auto">Arthur Boucher</h2>
-    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+    <h2 class="headline m-0" fxFlex="auto">{{data?.firstGivenName+' '+data?.lastFamilyName}}</h2>
+    <button class="text-secondary" (click)="close()" mat-icon-button type="button">
         <mat-icon [icIcon]="icClose"></mat-icon>
     </button>
 
@@ -15,209 +15,107 @@
             <li class="font-semibold text-center">{{ 'comments' | translate }}</li>
             <li class="font-semibold text-center">{{ 'history' | translate }}</li>
         </ul>
-        <div class="border border-gray-light rounded px-4 py-2 mb-4">
+        <div class="border border-gray-light rounded px-4 py-2 mb-4"
+            *ngFor="let record of studentAttendance; let index= index">
             <ul class="grid grid-cols-6 col-gap-6">
-                <li class="flex items-center">Daily Attendance</li>
-                <li class="flex items-center">Attendance All</li>
+                <li class="flex items-center">{{record?.blockPeriod?.periodTitle}}</li>
+                <li class="flex items-center">{{record?.studentCoursesectionSchedule?.courseSectionName}}</li>
                 <li class="col-span-2 flex items-center">
                     <div class="select-dropdown inline-block w-full">
-                        <select>
-                            <option value="excused_absence" selected>{{'excusedAbsence' | translate }}</option>
+                        <select (change)="attendanceCodeSelected(index)" [(ngModel)]="record.attendanceCode">
+                            <option *ngFor="let attendance of attendanceCodeList" [value]="attendance.attendanceCode1">
+                                {{attendance.title}}</option>
                         </select>
                     </div>
                 </li>
-                <li class="cursor-pointer flex items-center place-content-center text-lg" (click)="openExpandable(1)"><i
+                <li class="cursor-pointer flex items-center place-content-center text-lg" (click)="openExpandable(1,index)"><i
                         class="icon icon-bubble"></i></li>
-                <li class="cursor-pointer flex items-center place-content-center" (click)="openExpandable(2)">
+                <li class="cursor-pointer flex items-center place-content-center" (click)="openExpandable(2,index)">
                     <mat-icon>history</mat-icon>
                 </li>
             </ul>
-            <div class="expand-comments" *ngIf="category==1">
+            <div class="expand-comments" *ngIf="category==1 && rowIndex === index">
                 <mat-divider class="-mx-4 my-2 bg-gray-light"></mat-divider>
                 <h4 class="text-green font-medium my-4">{{ 'comments' | translate }}</h4>
-                <div class="timeline">
-                    <div class="timeline-content">
-                        <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">Arthur didnot come to class today.</p>
+
+                <div *ngIf="record?.studentAttendanceComments.length>0">
+                    <div class="timeline" *ngFor="let comment of record?.studentAttendanceComments; let i=index">
+                        <div *ngIf="comment?.membershipId=== 4" class="timeline-content">
+                            <div class="talk-bubble border border-gray-light">
+                                <p class="text-base">{{comment.comment}}</p>
+                            </div>
+                            <p class="talk-bubble-text text-gray"><span
+                                    class="font-semibold">{{comment?.membership?.profile ? comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
+                                'commentedOn' |
+                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> @ <span
+                                    class="font-semibold">{{comment.commentTimestamp | date:'shortTime'}}</span>
+                                <span mat-raised-button matTooltip="Teacher"
+                                    aria-label="Button that displays a tooltip when focused or hovered over"
+                                    [matTooltipPosition]="'above'" class="cursor-pointer">
+                                    <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
+                                </span>
+                            </p>
                         </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">George Smith</span> {{
-                            'commentedOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Teacher"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content" *ngIf="administratorComment">
-                        <div class="flex justify-between items-center talk-bubble border border-gray-light">
-                            <p class="text-base">Arthur called in sick.</p>
-                            <span class="cursor-pointer" (click)="openCommentBox()">
-                                <mat-icon class="text-black ml-2 align-middle">edit</mat-icon>
-                            </span>
+                        <div class="timeline-content" *ngIf="comment?.membershipId=== 1 && !commentBox">
+                            <div class="flex justify-between items-center talk-bubble border border-gray-light">
+                                <p class="text-base">{{comment.comment}}</p>
+                                <span class="cursor-pointer" (click)="openCommentBox()">
+                                    <mat-icon class="text-black ml-2 align-middle">edit</mat-icon>
+                                </span>
+                            </div>
+                            <p class="talk-bubble-text text-gray"><span class="font-semibold">{{comment?.membership?.profile ? comment?.membership?.profile : defaultValuesService.getuserMembershipName()}}</span> {{
+                                'commentedOn' |
+                                translate }} <span class="font-semibold">{{comment.commentTimestamp| date:'longDate'}}</span> @ <span
+                                    class="font-semibold">{{comment.commentTimestamp | date:'shortTime'}}</span>
+                                <span mat-raised-button matTooltip="Administrator"
+                                    aria-label="Button that displays a tooltip when focused or hovered over"
+                                    [matTooltipPosition]="'above'" class="cursor-pointer">
+                                    <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
+                                </span>
+                            </p>
                         </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">John Carter</span> {{
-                            'commentedOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Administrator"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content" *ngIf="commentBox">
-                        <div class="w-full border border-gray-light rounded p-2">
-                            <label class="text-gray block">{{ 'yourComment' | translate }}</label>
-                            <input type="text" value="Arthur's father emailed doctor's note" class="w-full">
+                        <div class="timeline-content" *ngIf="comment?.membershipId=== 1 && commentBox">
+                            <div class="w-full border border-gray-light rounded p-2">
+                                <label class="text-gray block">{{ 'yourComment' | translate }}</label>
+                                <input type="text" cdkFocusInitial [(ngModel)]="record?.studentAttendanceComments[i].comment" class="w-full">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="expand-history" *ngIf="category==2">
+            <div class="expand-history" *ngIf="category==2 && rowIndex === index">
                 <mat-divider class="-mx-4 my-2 bg-gray-light"></mat-divider>
                 <h4 class="text-green font-medium my-4">{{ 'attendanceHistory' | translate }}</h4>
                 <div class="timeline">
-                    <div class="timeline-content">
+                    <div class="timeline-content" *ngFor=" let history of attendanceHistoryList">
                         <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">{{ 'attendanceCode' | translate }} : <span class="text-green font-semibold">{{ 'present' | translate
-                            }}</span></p>
+                            <p class="text-base">{{ 'attendanceCode' | translate }} : <span
+                                    class="text-green font-semibold">{{ history?.attendanceCodeTitle}}</span></p>
                         </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">George Smith</span> {{ 'tookAttendanceOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Teacher"
+                        <p class="talk-bubble-text text-gray"><span class="font-semibold">{{history?.userName}}</span> {{
+                            'tookAttendanceOn' |
+                            translate }} <span class="font-semibold">{{history?.modificationTimestamp| date:'longDate'}}</span> @ <span
+                                class="font-semibold">{{history?.modificationTimestamp | date:'shortTime'}}</span>
+                            <span mat-raised-button matTooltip="Teacher" *ngIf="history?.profileType=='Teacher' || history?.profileType=='Homeroom Teacher'"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
                                 [matTooltipPosition]="'above'" class="cursor-pointer">
                                 <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
                             </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">{{ 'attendanceCode' | translate }} : <span class="text-warn font-medium">{{ 'excusedAbsence' | translate
-                            }}</span></p>
-                        </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">John Carter</span> {{
-                            'changedTheAttendanceCode' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">12.10 PM</span>
-                            <span mat-raised-button matTooltip="Administrator"
+                            <span mat-raised-button matTooltip="Administrator" *ngIf="history?.profileType=='Super Administrator' || history?.profileType=='School Administrator'"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
                                 [matTooltipPosition]="'above'" class="cursor-pointer">
                                 <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
                             </span>
                         </p>
                     </div>
+                    
                 </div>
             </div>
         </div>
-        <div class="border border-gray-light rounded px-4 py-2 mb-4">
-            <ul class="grid grid-cols-6 col-gap-6">
-                <li class="flex items-center">Period 6</li>
-                <li class="flex items-center">PE-ATTN</li>
-                <li class="col-span-2 flex items-center">
-                    <div class="select-dropdown inline-block w-full">
-                        <select>
-                            <option value="excused_absence" selected>{{'present' | translate }}</option>
-                        </select>
-                    </div>
-                </li>
-                <li class="cursor-pointer flex items-center place-content-center text-lg" (click)="openExpandable(3)"><i
-                        class="icon icon-bubble"></i></li>
-                <li class="cursor-pointer flex items-center place-content-center" (click)="openExpandable(4)">
-                    <mat-icon>history</mat-icon>
-                </li>
-            </ul>
-            <div class="expand-comments" *ngIf="category==3">
-                <mat-divider class="-mx-4 my-2 bg-gray-light"></mat-divider>
-                <h4 class="text-green font-medium my-4">{{ 'comments' | translate }}</h4>
-                <div class="timeline">
-                    <div class="timeline-content">
-                        <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">Arthur didnot come to class today.</p>
-                        </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">George Smith</span> {{
-                            'commentedOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Teacher"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content" *ngIf="administratorComment">
-                        <div class="flex justify-between items-center talk-bubble border border-gray-light">
-                            <p class="text-base">Arthur called in sick.</p>
-                            <span class="cursor-pointer" (click)="openCommentBox()">
-                                <mat-icon class="text-black ml-2 align-middle">edit</mat-icon>
-                            </span>
-                        </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">John Carter</span> {{
-                            'commentedOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Administrator"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content" *ngIf="commentBox">
-                        <div class="w-full border border-gray-light rounded p-2">
-                            <label class="text-gray block">{{ 'yourComment' | translate }}</label>
-                            <input type="text" value="Arthur's father emailed doctor's note" class="w-full">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="expand-history" *ngIf="category==4">
-                <mat-divider class="-mx-4 my-2 bg-gray-light"></mat-divider>
-                <h4 class="text-green font-medium my-4">{{ 'attendanceHistory' | translate }}</h4>
-                <div class="timeline">
-                    <div class="timeline-content">
-                        <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">{{ 'attendanceCode' | translate }} : <span class="text-green font-semibold">{{ 'present' | translate
-                            }}</span></p>
-                        </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">George Smith</span> {{ 'tookAttendanceOn' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">10.45 AM</span>
-                            <span mat-raised-button matTooltip="Teacher"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">person</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="talk-bubble border border-gray-light">
-                            <p class="text-base">{{ 'attendanceCode' | translate }} : <span class="text-warn font-medium">{{ 'excusedAbsence' | translate
-                            }}</span></p>
-                        </div>
-                        <p class="talk-bubble-text text-gray"><span class="font-semibold">John Carter</span> {{
-                            'changedTheAttendanceCode' |
-                            translate }} <span class="font-semibold">April 10, 2021</span> @ <span
-                                class="font-semibold">12.10 PM</span>
-                            <span mat-raised-button matTooltip="Administrator"
-                                aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'above'" class="cursor-pointer">
-                                <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
-                            </span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
     <div class="text-right pt-6">
-        <button color="primary" mat-flat-button type="submit">{{ 'submit' | translate }}
+        <button color="primary" mat-flat-button (click)="submitStudent360()" type="submit">{{ 'submit' | translate }}
         </button>
     </div>
 </mat-dialog-content>

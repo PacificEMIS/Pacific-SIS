@@ -28,14 +28,14 @@ export class SectionService {
   SaveSection(obj: SectionAddModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSections.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSections.createdBy = this.defaultValuesService.getEmailId();
+    obj.tableSections.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Section/addSection';
     return this.http.post<SectionAddModel>(apiurl, obj,this.httpOptions);
   }
   UpdateSection(obj: SectionAddModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSections.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSections.updatedBy = this.defaultValuesService.getEmailId();
+    obj.tableSections.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Section/updateSection';
     return this.http.put<SectionAddModel>(apiurl, obj,this.httpOptions);
   }

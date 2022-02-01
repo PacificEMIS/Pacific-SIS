@@ -56,15 +56,24 @@ export class AddTeacherCommentsComponent implements OnInit {
      private studentAttendanceService: StudentAttendanceService,
      private commonService: CommonService,
     private snackbar: MatSnackBar,) { 
-      if(data.commentData) {
-        data.commentData.map((item)=>{
-          if(item?.membership?.profileType === 'Homeroom Teacher' || item?.membership?.profileType === 'Teacher') {
+    if (data.type === 'update') {
+      if (data.commentData) {
+        data.commentData.map((item) => {
+          if (item?.membership?.profileType === 'Homeroom Teacher' || item?.membership?.profileType === 'Teacher') {
             this.comments = item.comment;
-            this.actionButtonTitle='update'
-            this.headerTitle='updateCommentTo'
+            this.actionButtonTitle = 'update'
+            this.headerTitle = 'updateCommentTo'
+            if (data?.type === 'update' && (item.comment?.trim() === '' || item.comment === null)) {
+              this.tapForEdit = true;
+            }
           }
         });
       }
+    } else {
+      if (data.commentData) {
+        this.comments = data.commentData[0].comment;
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -73,6 +82,7 @@ export class AddTeacherCommentsComponent implements OnInit {
   addOrUpdateComments() {
     if(this.data?.type === 'update') {
     this.studentAttendanceList.studentAttendanceComments.comment =  this.comments;
+    this.studentAttendanceList.staffId = +this.defaultValuesService.getUserId();
     this.studentAttendanceList.studentAttendanceComments.studentAttendanceId = this.data.commentData[0].studentAttendanceId;
     this.studentAttendanceList.studentAttendanceComments.CommentId = this.data.commentData[0].commentId;
     this.studentAttendanceList.studentAttendanceComments.studentId = this.data.commentData[0].studentId;
@@ -88,11 +98,11 @@ export class AddTeacherCommentsComponent implements OnInit {
     this.snackbar.open(response._message, '', {
       duration: 10000
     });   
-    this.dialogRef.close({ response: response.studentAttendanceComments ,submit:true});
+    this.dialogRef.close({ response: response.studentAttendanceComments ,submit:true, status: 'update'});
   }
 });
     } else {
-      this.dialogRef.close({response :{comment:this.comments, membershipId:+this.defaultValuesService.getuserMembershipID()},submit:true});
+      this.dialogRef.close({response :{comment:this.comments, membershipId:+this.defaultValuesService.getuserMembershipID()},submit:true, status: 'submit'});
     }
     
   }

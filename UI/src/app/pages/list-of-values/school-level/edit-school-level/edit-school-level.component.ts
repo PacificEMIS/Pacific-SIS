@@ -33,6 +33,7 @@ import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animati
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-school-level',
@@ -55,7 +56,8 @@ export class EditSchoolLevelComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
-    fb:FormBuilder
+    fb:FormBuilder,
+    private defaultValuesService: DefaultValuesService
     ) {
       this.form=fb.group({
         id:[0],
@@ -88,7 +90,7 @@ export class EditSchoolLevelComponent implements OnInit {
         this.commonService.addDropdownValue(this.lovAddView).subscribe(
           (res:LovAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('School Level insertion failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('School Level insertion failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -116,7 +118,7 @@ export class EditSchoolLevelComponent implements OnInit {
         this.commonService.updateDropdownValue(this.lovAddView).subscribe(
           (res:LovAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('School Level Update failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('School Level Update failed. ' +this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

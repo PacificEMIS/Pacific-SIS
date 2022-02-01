@@ -7,19 +7,19 @@
      class="ltr:ml-2 rtl:ml-2 small-mobile-logo">
     <!-- <img class="w-8 select-none" src="assets/img/demo/logo.svg">
     <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none">VEX</h1> -->
-    <img src="assets/img/logo-icon.png" class="w-8 select-none" alt="openSIS Logo">
+    <img [src]="'data:image/jpeg;base64,'+tenantLogoIcon" class="w-8 select-none" [alt]="tenantName+' Logo'">
     <!-- <h1 [fxHide]="mobileQuery" class="title ltr:pl-4 rtl:pr-4 m-0 select-none"><img src="assets/img/opensistext.png"></h1> -->
   </a>
 
   <div #megaMenuOriginRef class="rtl:mr-2">
     <div class="-mx-1 flex items-center">
+     <div *ngIf="profileType!=='Homeroom Teacher' && profileType!=='Teacher'">
       <button *ngIf="isHorizontalLayout$ | async"
-              [fxHide]="mobileQuery"
               (click)="openMegaMenu(megaMenuOriginRef)"
-              color="primary"
-              mat-raised-button
-              type="button"><ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline="true"></ic-icon>ADD NEW
+              class="global-add-button"
+              type="button"><ic-icon [icon]="icAdd" class="ic-inline" inline="true"></ic-icon><span class="hidden lg:inline-block ml-2">{{'addNew'|translate}}</span>
       </button>
+    </div>
       <div class="px-1 ml-3">
         <vex-toolbar-notifications></vex-toolbar-notifications>
       </div>

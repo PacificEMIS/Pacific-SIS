@@ -93,7 +93,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     private commonService: CommonService,
 
   ) {
-    translateService.use("en");
+    // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
       this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
@@ -236,7 +236,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
           }
         }
         else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -277,7 +277,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
           }
           }
         else {
-            this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

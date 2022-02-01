@@ -63,6 +63,9 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { ReplaySubject } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
+import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
 @Component({
   selector: 'vex-student-generalinfo',
   templateUrl: './student-generalinfo.component.html',
@@ -84,7 +87,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   studentCreate = SchoolCreate;
   studentCreateMode;
   studentDetailsForViewAndEdit;
-  categoryId;
+  categoryId = 0;
   @ViewChild('f') currentForm: NgForm;
   data;
   moduleIdentifier = ModuleIdentifier;
@@ -105,10 +108,17 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   @ViewChild('singleSelect') singleSelect: MatSelect;
   countryOfBirthCtrl: FormControl = new FormControl();
   countryOfBirthFilterCtrl: FormControl = new FormControl();
+  firstLanguageFilterCtrl:FormControl=new FormControl();
+  secondLanguageFilterCtrl:FormControl=new FormControl();
+  thirdLanguageFilterCtrl:FormControl=new FormControl();  
   public filteredcountryOfBirth: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public filteredFirstLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public filteredSecondLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public filteredThirdLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   studentAddModel: StudentAddModel = new StudentAddModel();
   checkStudentInternalIdViewModel: CheckStudentInternalIdViewModel = new CheckStudentInternalIdViewModel();
   checkUserEmailAddressViewModel: CheckUserEmailAddressViewModel = new CheckUserEmailAddressViewModel();
+  activeDeactiveUserModel: ActiveDeactiveUserModel = new ActiveDeactiveUserModel();
   sectionList: GetAllSectionModel = new GetAllSectionModel();
   languages: LanguageModel = new LanguageModel();
   lovListViewModel: LovList = new LovList();
@@ -135,6 +145,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   @Output() dataAfterSavingGeneralInfo = new EventEmitter<any>();
   constructor(
     private el: ElementRef,
+    private dialog: MatDialog,
     public translateService: TranslateService,
     private snackbar: MatSnackBar,
     private studentService: StudentService,
@@ -151,6 +162,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     private commonLOV: CommonLOV,
     ) {
     //translateService.use('en');
+    this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
   ngOnInit(): void {
@@ -164,18 +176,22 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.studentCreateMode = res;
     })
     this.studentService.studentDetailsForViewedAndEdited.subscribe((res)=>{
+      if(res){
       this.studentDetailsForViewAndEdit = res;
+      this.studentAddModel = this.studentDetailsForViewAndEdit;
       this.countryOfBirthCtrl.setValue(res?.studentMaster?.countryOfBirth);
       this.nationalityCtrl.setValue(res?.studentMaster?.nationality);
+      }
     })
-    this.studentService.categoryIdSelected.subscribe((res)=>{
-      this.categoryId = res;
-    })
+    // this.studentService.categoryIdSelected.subscribe((res)=>{
+    //   this.categoryId = res;
+    // })
     this.permissions = this.pageRolePermission.checkPageRolePermission();
 
     this.internalId = new FormControl('');
     this.loginEmail = new FormControl('', Validators.required);
     if (this.studentCreateMode === this.studentCreate.ADD) {
+
       this.initializeDropdownsInAddMode();
     } else if (this.studentCreateMode === this.studentCreate.VIEW) {
       this.studentService.changePageMode(this.studentCreateMode);
@@ -227,6 +243,54 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.countryListArr.filter(country => country.name.toLowerCase().indexOf(search) > -1)
     );
   }
+  filterFirstLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.firstLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredFirstLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredFirstLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
+    );
+  }
+   filterSecondLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.secondLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredSecondLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredSecondLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
+    );
+  }
+   filterThirdLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.thirdLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredThirdLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredThirdLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
+    );
+  }
   filterCountryOfBirth(){
     if (!this.countryListArr) {
       return;
@@ -245,7 +309,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   }
   getStudentDetails() {
     return new Promise((resolve, rej) => {
-      this.studentService.getStudentDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StudentAddModel) => {
+      this.studentService.getStudentDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StudentAddModel) => {        
         this.studentAddModel = res;
         this.studentAddModel.loginEmail = this.studentAddModel.studentMaster.studentPortalId;
         this.data = this.studentAddModel?.studentMaster;
@@ -301,9 +365,33 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
         this.filterCountryOfBirth();
       });
   }
+  firstLanguageValueChange(){
+    this.firstLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterFirstLanguage();
+      });
+  }
+   secondLanguageValueChange(){
+    this.secondLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterSecondLanguage();
+      });
+  }
+   thirdLanguageValueChange(){
+    this.thirdLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterThirdLanguage();
+      });
+  }
   ngAfterViewInit() {
     this.countryOfBirthValueChange();
     this.nationalityValueChange();
+    this.firstLanguageValueChange();
+    this.secondLanguageValueChange();
+    this.thirdLanguageValueChange();
     this.studentInternalId = this.data?.studentInternalId;
     if (this.studentAddModel.studentMaster.studentPortalId == null) {
       this.studentPortalId = this.studentAddModel.loginEmail;
@@ -386,6 +474,11 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.fieldDisabled = false;
       this.hidePasswordAccess = false;
     }
+  }
+
+  omitSpecialChar(event) {
+    let k = event.charCode;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || (k >= 48 && k <= 57));
   }
 
   isPortalAccess(event) {
@@ -479,7 +572,8 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   GetAllLanguage() {
     if (!this.languages.isLanguageAvailable) {
       this.languages.isLanguageAvailable = true;
-      this.languages._tenantName = sessionStorage.getItem('tenant');
+      
+      this.languages._tenantName=this.defaultValuesService.getTenantName();
       this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe(
         (res) => {
           if (res) {
@@ -492,6 +586,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
                 });
               }
             }else{
+              this.filteredFirstLanguage.next(res.tableLanguage?.slice());
+              this.filteredSecondLanguage.next(res.tableLanguage?.slice());
+              this.filteredThirdLanguage.next(res.tableLanguage?.slice());
             this.languageList = res.tableLanguage?.sort((a, b) => a.locale < b.locale ? -1 : 1);
             if (this.studentCreateMode === this.studentCreate.VIEW) {
               this.findLanguagesById();
@@ -539,6 +636,49 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     .subscribe(() => {
       this.singleSelect.compareWith = (a, b) => a && b && a.name === b.name;
     });
+    this.filteredFirstLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
+    this.filteredSecondLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
+    this.filteredThirdLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
+  }
+
+  activateUser(event) {
+    if (event === false) {
+      this.activeDeactiveUserModel.userId = this.studentAddModel.studentMaster.studentId;
+      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.module = 'student';
+      this.activeDeactiveUserModel.loginEmail = this.studentAddModel.loginEmail;
+      this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+            // this.studentAddModel.studentMaster.isActive = true;
+          }
+        } else {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+    }
   }
 
   submit() {
@@ -577,9 +717,14 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       if (data) {
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
+        if(data.checkDuplicate === 1){
+          this.confirmAddStudent();
+        }
+        else{
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+        }
         } else {
           this.snackbar.open(data._message, '', {
             duration: 10000
@@ -599,11 +744,32 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
           this.accessPortal();
         }
       } else {
-        this.snackbar.open(this.defaultValuesService.translateKey('studentUpdateFailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('studentUpdateFailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
     });
+  }
+
+  confirmAddStudent(){
+    let mode= 'add';
+    if(this.studentCreateMode===this.studentCreate.EDIT){
+     mode= 'update';
+    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: "400px",
+      disableClose: true,
+      data: {
+          title: "Are you sure?",
+          message: "You are about to "+ mode +" duplicate data"
+        }
+    });
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if(dialogResult){
+        this.studentAddModel.allowDuplicate = true;
+        this.submit();
+      }
+   });
   }
 
   addStudent() {
@@ -611,19 +777,26 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.invalidScroll();
       return;
     }
-    this.studentAddModel.academicYear = this.defaultValuesService.getAcademicYear().toString();
+    this.studentAddModel.academicYear = this.defaultValuesService.getAcademicYear()?.toString();
     this.studentAddModel.studentMaster.dob = this.commonFunction.formatDateSaveWithoutTime(this.studentAddModel.studentMaster.dob);
     this.studentService.AddStudent(this.studentAddModel).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
       if (data) {
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
+
+        if(data.checkDuplicate === 1){
+          this.confirmAddStudent();
+        }
+        else{
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+        }
         } else {
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+         
           this.studentService.setStudentId(data.studentMaster.studentId);
           this.studentService.setStudentCloneImage(data.studentMaster.studentPhoto);
           this.studentService.setStudentDetails(data);
@@ -638,7 +811,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
         }
       }
       else {
-        this.snackbar.open(this.defaultValuesService.translateKey('studentSaveFailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('studentSaveFailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

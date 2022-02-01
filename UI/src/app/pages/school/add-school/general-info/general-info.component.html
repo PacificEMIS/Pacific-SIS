@@ -25,9 +25,9 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'schoolId'|translate}}</mat-label>
-                            <input [(ngModel)]="schoolAddViewModel.schoolMaster.schoolInternalId"
+                            <input
                             [formControl]="internalId" name="schoolId" maxlength="50" required matInput>
-                            <span matSuffix><img *ngIf="isSchoolInternalId" src="assets/img/icons/loading-process.svg" class="animate-spin w-5"></span>
+                            <span matSuffix><img *ngIf="isSchoolInternalId" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon"></span>
                                 <mat-error *ngIf="internalId.errors?.required">
                                     {{'schoolIdIsRequired'|translate}}</mat-error>
                                     <mat-error *ngIf="internalId.errors?.nomatch">
@@ -147,7 +147,7 @@
                             <mat-label>{{'dateSchoolFirstStarted'|translate}}</mat-label>
                             <input #date_school_opened="ngModel" (dateInput)="dateCompare()"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened"
-                                name="date_school_opened" [matDatepicker]="datepickerRef" matInput [disabled]="isMarkingPeriod" required>
+                                name="date_school_opened" [matDatepicker]="datepickerRef" matInput [disabled]="schoolAddViewModel?.isMarkingPeriod" required>
                             <mat-datepicker-toggle [for]="datepickerRef" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #datepickerRef></mat-datepicker>
                                 <mat-error *ngIf="date_school_opened.errors?.required">
@@ -219,7 +219,7 @@
                         </mat-form-field>
                     </li>
                      </ul>
-                     <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "categoryId" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form>
+                     <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "0" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form>
             </div>
             <hr class="-mx-5 mt-4 mb-6">
             <div @stagger fxLayout="column">
@@ -258,7 +258,7 @@
                                     {{country.name}}
                                 </mat-option>
                             </mat-select> 
-                            <mat-error *ngIf="countryCtrl.errors?.array">
+                            <mat-error *ngIf="countryCtrl.errors?.required">
                                 {{'countryIsRequired'|translate}}</mat-error> 
                         </mat-form-field>
                     </li>
@@ -268,6 +268,7 @@
                             <div *ngIf="stateCount!==0;else textblock">
                                 <mat-select (selectionChange)="getAllCitiesByState($event)"
                                     [(ngModel)]="schoolAddViewModel.schoolMaster.state" name="state">
+                                    <mat-option></mat-option>
                                     <mat-option *ngFor="let state of stateListArr" [value]='state.id'>
                                         {{state.name}}
                                     </mat-option>
@@ -382,12 +383,13 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'telephone'|translate}}</mat-label>
-                            <input #telephone="ngModel" maxlength="30" 
+                            <input #telephone="ngModel" 
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].telephone" name="telephone"
-                                matInput required>
+                                maxlength="20" minlength="10" matInput required>
                             <mat-error *ngIf="telephone.errors?.required">
                                 {{'telephoneIsRequired'|translate}}</mat-error>
-                           
+                                <mat-error *ngIf="!telephone.errors?.required && telephone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
@@ -480,18 +482,19 @@
         <mat-card-actions class="mb-0">
             <div class="text-right">
                 <button mat-button type="button" *ngIf="schoolCreateMode == schoolCreate.EDIT" (click)="cancelEdit()">{{'cancel'|translate}}</button>
-                <button color="primary" mat-raised-button>{{formActionButtonTitle|translate}}</button>
+                <!-- <button mat-raised-button (click)="openCaptureDate()" class="text-primary">Capture Date Link</button> -->
+                <button color="primary" mat-raised-button>{{schoolCreateMode === this.schoolCreate.EDIT ? 'update' : 'submit'|translate}}</button>
             </div>
         </mat-card-actions>
     </form>
 </mat-card>
-<mat-card @fadeInUp class="w-full" fxFlex="auto" *ngIf="schoolCreateMode == schoolCreate.VIEW">
+<mat-card @fadeInUp class="w-full" fxFlex="auto" *ngIf="schoolCreateMode == schoolCreate.VIEW && schoolAddViewModel">
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto font-medium">{{'generalInformation' | translate}}</h3>
         <button *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editGeneralInfo()"><mat-icon [icIcon]="icEdit" class="md:mr-1"></mat-icon><span class="hidden md:inline-block">{{'editInformation' |translate}}</span></button>
     </div>
     <vex-view-general-info [schoolCreateMode]="schoolCreateMode"
-     [categoryId]="categoryId"
-     [schoolViewDetails]="schoolDetailsForViewAndEdit">
+     [categoryId]="0"
+     [schoolViewDetails]="schoolAddViewModel">
     </vex-view-general-info>
 </mat-card>

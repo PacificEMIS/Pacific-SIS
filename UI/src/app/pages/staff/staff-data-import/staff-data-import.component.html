@@ -1,75 +1,102 @@
-<div class="mb-6">
-    <div class="md:grid grid-cols-4 gap-6 data-import-steps">
-        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
-            (click)="changeView(bulkDataImport.UPLOAD)" [class.active]="currentTab === bulkDataImport.UPLOAD"
-            [ngClass]="currentTab === bulkDataImport.UPLOAD ? 'bg-primary text-white arrow-bottom' : ''">
-            <img src="assets/img/icons/cloud-computing.svg" width="65" class="inline-block">
-            <h4 class="text-lg font-medium">{{ 'uploadYourFile' | translate }}</h4>
-            <p class="text-base text-gray" [ngClass]="currentTab === bulkDataImport.UPLOAD ? 'text-skyblue-light' : ''">
-                {{ 'uploadXlsXlsxOrLinkYourCloudFile' | translate }}</p>
-            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
-        </div>
-        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
-            (click)="changeView(bulkDataImport.MAP)" [class.active]="currentTab === bulkDataImport.MAP"
-            [ngClass]="currentTab === bulkDataImport.MAP ? 'bg-primary text-white arrow-bottom' : ''">
-            <img src="assets/img/icons/map-excel.svg" width="55" class="inline-block">
-            <h4 class="text-lg font-medium">{{ 'mapYourFields' | translate  }}</h4>
-            <p class="text-base text-gray" [ngClass]="currentTab === bulkDataImport.MAP ? 'text-skyblue-light' : ''">
-                {{ 'mapYourSpreadsheetColumnsWithDatabaseFields' | translate }}
-            </p>
-            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
-        </div>
-        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
-            (click)="changeView(bulkDataImport.PREVIEW)" [class.active]="currentTab === bulkDataImport.PREVIEW"
-            [ngClass]="currentTab === bulkDataImport.PREVIEW ? 'bg-primary text-white arrow-bottom' : ''">
-            <img src="assets/img/icons/map-preview.svg" width="55" class="inline-block">
-            <h4 class="text-lg font-medium">{{ 'previewYourMapping' | translate }}</h4>
-            <p class="text-base text-gray" [ngClass]="currentTab === bulkDataImport.PREVIEW ? 'text-skyblue-light' : ''">
-                {{ 'reviewYourMappingBeforeYouProceedToImport' | translate }}
-            </p>
-            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
-        </div>
-        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
-            (click)="changeView(bulkDataImport.IMPORT)" [class.active]="currentTab === bulkDataImport.IMPORT"
-            [ngClass]="currentTab === bulkDataImport.IMPORT ? 'bg-primary text-white arrow-bottom' : ''">
-            <img src="assets/img/icons/import-data.svg" width="60" class="inline-block">
-            <h4 class="text-lg font-medium">{{ 'importData' | translate }}</h4>
-            <p class="text-base text-gray" [ngClass]="currentTab === bulkDataImport.IMPORT ? 'text-skyblue-light' : ''">
-                {{ 'finallyImportYourDataAndSeeTheResults' | translate }}
-            </p>
-        </div>
-    </div>
-</div>
-<div [ngSwitch]="currentTab">
-    <!-- Start Upload your file -->
-    <div class="upload_file" *ngSwitchCase="bulkDataImport.UPLOAD">
-        <div class="card px-6 py-4">
-            <p class="text-center text-base"><a class="text-primary cursor-pointer" (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{ 'toDownloadTheSampleExcelSheetTemplate' | translate }}</p>
-            <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
-            <ngx-dropzone (change)="onUpload($event)" class="mb-4 p-4 overflow-hidden" [accept]="acceptedFileTypes" [disableClick]="files.length==1" multiple="false">
-                <ngx-dropzone-label class="sm:flex">
-                    <img src="assets/img/icons/upload.svg" width="60px"
-                        class="m-auto flex-shrink-0 cursor-pointer">
-                    <p class="ml-4 align-middle sm:text-left mt-4 sm:mt-0">
-                        <span class="text-lg font-medium mb-2 inline-block text-black">{{ 'uploadFileFromYourLocalDrive' | translate }}</span>
-                        <br>
-                        <a class="text-gray text-base">{{ 'clickHereToSelectaFileOrDropTheFileHere' | translate }}</a>
-                    </p>
-                </ngx-dropzone-label>
-                <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
-                    <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
-                </ngx-dropzone-preview>
-            </ngx-dropzone>
-            <div class="text-right" *ngIf="permissions?.add">
-                <button color="primary" (click)="uploadFile()" [disabled]="!files.length" mat-flat-button type="submit">{{ 'uploadFile' | translate }}</button>
-            </div>
-            <!-- <mat-divider class="mt-12 mb-6 -mx-8"></mat-divider>
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{'staffBulkDataImport'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['tools']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+    <vex-page-layout-content class="-mt-6">
+        <div class="bg-transparent" class="-mt-16">
+            <div class="w-full p-0">
+                <div class="mb-6">
+                    <div class="md:grid grid-cols-4 gap-6 data-import-steps">
+                        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
+                            (click)="changeView(bulkDataImport.UPLOAD)"
+                            [class.active]="currentTab === bulkDataImport.UPLOAD"
+                            [ngClass]="currentTab === bulkDataImport.UPLOAD ? 'bg-primary text-white arrow-bottom' : ''">
+                            <img src="assets/img/icons/cloud-computing.svg" alt="Upload your file icon" width="65"
+                                class="inline-block">
+                            <h4 class="text-lg font-medium">{{ 'uploadYourFile' | translate }}</h4>
+                            <p class="text-base text-gray"
+                                [ngClass]="currentTab === bulkDataImport.UPLOAD ? 'text-skyblue-light' : ''">
+                                {{ 'uploadXlsXlsxOrLinkYourCloudFile' | translate }}</p>
+                            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
+                        </div>
+                        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
+                            (click)="changeView(bulkDataImport.MAP)" [class.active]="currentTab === bulkDataImport.MAP"
+                            [ngClass]="currentTab === bulkDataImport.MAP ? 'bg-primary text-white arrow-bottom' : ''">
+                            <img src="assets/img/icons/map-excel.svg" alt="Map your fields icon" width="55"
+                                class="inline-block">
+                            <h4 class="text-lg font-medium">{{ 'mapYourFields' | translate }}</h4>
+                            <p class="text-base text-gray"
+                                [ngClass]="currentTab === bulkDataImport.MAP ? 'text-skyblue-light' : ''">
+                                {{ 'mapYourSpreadsheetColumnsWithDatabaseFields' | translate }}
+                            </p>
+                            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
+                        </div>
+                        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
+                            (click)="changeView(bulkDataImport.PREVIEW)"
+                            [class.active]="currentTab === bulkDataImport.PREVIEW"
+                            [ngClass]="currentTab === bulkDataImport.PREVIEW ? 'bg-primary text-white arrow-bottom' : ''">
+                            <img src="assets/img/icons/map-preview.svg" alt="Preview your mapping icon" width="55"
+                                class="inline-block">
+                            <h4 class="text-lg font-medium">{{ 'previewYourMapping' | translate }}</h4>
+                            <p class="text-base text-gray"
+                                [ngClass]="currentTab === bulkDataImport.PREVIEW ? 'text-skyblue-light' : ''">
+                                {{ 'reviewYourMappingBeforeYouProceedToImport' | translate }}
+                            </p>
+                            <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
+                        </div>
+                        <div class="import-box bg-white rounded text-center py-4 px-6 relative cursor-pointer"
+                            (click)="changeView(bulkDataImport.IMPORT)"
+                            [class.active]="currentTab === bulkDataImport.IMPORT"
+                            [ngClass]="currentTab === bulkDataImport.IMPORT ? 'bg-primary text-white arrow-bottom' : ''">
+                            <img src="assets/img/icons/import-data.svg" alt="Import data icon" width="60"
+                                class="inline-block">
+                            <h4 class="text-lg font-medium">{{ 'importData' | translate }}</h4>
+                            <p class="text-base text-gray"
+                                [ngClass]="currentTab === bulkDataImport.IMPORT ? 'text-skyblue-light' : ''">
+                                {{ 'finallyImportYourDataAndSeeTheResults' | translate }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div [ngSwitch]="currentTab">
+                    <!-- Start Upload your file -->
+                    <div class="upload_file" *ngSwitchCase="bulkDataImport.UPLOAD">
+                        <div class="card px-6 py-4">
+                            <p class="text-center text-base"><a class="text-primary cursor-pointer"
+                                    (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{
+                                'toDownloadTheSampleExcelSheetTemplate' | translate }}</p>
+                            <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
+                            <ngx-dropzone (change)="onUpload($event)" class="mb-4 p-4 overflow-hidden"
+                                [accept]="acceptedFileTypes" [disableClick]="files.length==1" multiple="false">
+                                <ngx-dropzone-label class="sm:flex">
+                                    <img src="assets/img/icons/upload.svg" alt="Uplaod file icon" width="60px"
+                                        class="m-auto flex-shrink-0 cursor-pointer">
+                                    <p class="ml-4 align-middle sm:text-left mt-4 sm:mt-0">
+                                        <span class="text-lg font-medium mb-2 inline-block text-black">{{
+                                            'uploadFileFromYourLocalDrive' | translate }}</span>
+                                        <br>
+                                        <a class="text-gray text-base">{{ 'clickHereToSelectaFileOrDropTheFileHere' |
+                                            translate }}</a>
+                                    </p>
+                                </ngx-dropzone-label>
+                                <ngx-dropzone-preview *ngFor="let f of files" [removable]="true"
+                                    (removed)="onRemove(f)">
+                                    <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                                </ngx-dropzone-preview>
+                            </ngx-dropzone>
+                            <div class="text-right" *ngIf="permissions?.add">
+                                <button color="primary" (click)="uploadFile()" [disabled]="!files.length"
+                                    mat-flat-button type="submit">{{ 'uploadFile' | translate }}</button>
+                            </div>
+                            <!-- <mat-divider class="mt-12 mb-6 -mx-8"></mat-divider>
             <div class="text-center -mt-12">
                 <div class="w-12 h-12 bg-black rounded-full m-auto text-white font-medium align-middle pt-3 text-lg">
                     OR</div>
             </div>
             <div class="text-center mt-8 mb-6">
-                <img src="assets/img/icons/world-wide-web.svg" width="60px" class="inline-block mr-4 flex-shrink-0">
+                <img src="assets/img/icons/world-wide-web.svg" alt="Web icon" width="60px" class="inline-block mr-4 flex-shrink-0">
                 <div class="sm:w-9/12 lg:w-2/4 inline-block align-middle text-left">
                     <p class="text-lg font-medium mb-2 inline-block">Upload file via web link
                         <i class="icon icon-sphere ml-2"></i>
@@ -99,178 +126,207 @@
                     </div>
                 </div>
             </div> -->
-        </div>
-    </div>
-    <!-- End Upload your file -->
-
-    <!-- Start map fields -->
-    <div class="map_fields" *ngSwitchCase="bulkDataImport.MAP">
-        <div class="card px-6 py-4">
-            <p class="text-base">
-                {{ 'pleaseCreateaOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSISDatabaseBySelectingTheAppropriateFieldsFromTheRightColumnAfterYouAreDoneClickMapIt' | translate }}
-            </p>
-            <div class="border-t border-normal -mx-6 mt-4">
-                <div class="overflow-x-auto overflow-y-hidden">
-                    <table class="w-full schedule-table">
-                        <thead>
-                            <tr>
-                                <th width="35%">{{ 'theseFieldsAreInYourExcelSpreadsheet' | translate }}</th>
-                                <th width="35%"></th>
-                                <th width="30%">{{ 'theseAreAvailableFieldsInOpenSIS' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let name of headers;let i=index">
-                                <td>{{name}}</td>
-                                <td>
-                                    <span
-                                        class="w-24 min-w-full relative inline-block arrow-right border-t border-dashed border-gray-light"></span>
-                                </td>
-                                <td>
-                                    <mat-form-field class="w-full mb-0" appearance="outline" color="primary">
-                                        <mat-label>{{ "Select" | translate }}</mat-label>
-                                        <mat-select [(ngModel)]="newHeaders[i]" (selectionChange)="onHeaderChange()">
-                                            <mat-option *ngFor="let field of fieldList" [value]="field">{{field.title}}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="text-right pt-4">
-                <button color="primary" mat-raised-button type="submit" [disabled]="!isNewHeaderFilled" (click)="setNewHeadersAndMapIt()">
-                    {{ 'mapIt' | translate }}
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- End map fields -->
-
-    <!-- Start prieview map -->
-    <div class="preview_map" *ngSwitchCase="bulkDataImport.PREVIEW">
-        <div class="card px-6 py-4">
-            <h4 class="text-primary">{{ 'preview' | translate }}</h4>
-            <p class="text-base">
-               {{ 'pleaseCheckAndContinueToDataImport' | translate }}
-            </p>
-            <div class="border-t border-normal -mx-6 mt-4">
-                <div class="overflow-x-auto overflow-y-hidden">
-                    <table class="w-full schedule-table">
-                        <thead>
-                            <tr>
-                                <th width="35%">{{ 'theseFieldsAreInYourExcelSpreadsheet' | translate }}</th>
-                                <th width="35%"></th>
-                                <th width="30%">{{ 'theseAreAvailableFieldsInOpenSIS' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let header of headers;let i=index">
-                                <td>{{header}}</td>
-                                <td>
-                                    <span
-                                        class="w-24 min-w-full relative inline-block arrow-right border-t border-solid bg-green">
-                                    </span>
-                                </td>
-                                <td>
-                                    {{newHeaders[i].title}}
-                                </td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="text-right pt-4">
-                <button color="primary" mat-raised-button (click)="returnToMap()" type="submit">
-                    <i class="icon icon-rotate-cw3 mr-2"></i>{{ 'changeMapping' | translate }}
-                </button>
-                <button mat-raised-button type="submit" (click)="goToImport()" class="bg-green ml-2 text-white">
-                    {{ 'importStaff' | translate }}
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- End  prieview map -->
-
-    <!-- Start import data -->
-    <div class="import_data" *ngSwitchCase="bulkDataImport.IMPORT">
-        <div class="card px-6 py-4 mb-4" *ngIf="failedImport">
-            <div class="text-center py-10 px-4">
-                <h4 class="text-red font-semibold">
-                    {{ 'failedToImportStaffDataPleaseTryAgain' | translate }}
-                </h4>
-
-            </div>
-        </div>
-
-        <div class="card px-6 py-4 mb-4" *ngIf="!importDone && !failedImport">
-            <div class="text-center py-10 px-4">
-                <h4 class="text-primary font-semibold">
-                    {{ 'importingStaffsIntoDatabase' | translate }}
-                </h4>
-                <p class="text-warn mb-10">{{ 'pleaseDoNotRefreshThePageOrClickBackButton' | translate }}</p>
-                <img src="assets/img/import-data.png" width="30%" class="inline-block">
-            </div>
-        </div>
-
-        <div class="card px-6 py-4 mb-6" *ngIf="importDone && !failedImport">
-            <div class="flex">
-                <i class="icon icon-checkmark-circle text-green mt-1 text-lg"></i>
-                <span class="text-lg inline-block align-middle text-green font-bold ml-4">{{ 'dataImportCompleted' | translate }}</span>
-            </div>
-            <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
-            <div class="grid sm:grid-cols-1 md:grid-cols-2 items-center">
-                <div class="flex mb-4">
-                    <div class="flex-shrink-0">
-                        <div class="spinner-container">
-                            <div class="spinner-background font-semibold text-primary">{{spinner1.value}}%</div>
-                            <mat-progress-spinner #spinner1 color="primary" mode="determinate" [value]="afterImportStatus.totalStaffsImportedInPercentage"
-                                strokeWidth="5" diameter="70" class="spinner-blue">
-                            </mat-progress-spinner>
                         </div>
                     </div>
-                    <div class="ml-4 flex flex-col justify-center">
-                        <h5 class="mb-2 text-lg font-semibold">{{afterImportStatus.totalStaffsImported>1?afterImportStatus.totalStaffsImported+' Staffs':afterImportStatus.totalStaffsImported+' Staff'}} Imported</h5>
-                        <p *ngIf="rejectedStaffList?.length">{{rejectedStaffList?.length>1?rejectedStaffList?.length+' Staffs':rejectedStaffList?.length+' Staff'}} rejected due to data error.</p>
-                    </div>
-                </div>
-                <div class="text-right" *ngIf="rejectedStaffList.length>0">
-                    <button  (click)="toggleRejectedList=!toggleRejectedList" class="p-2 text-primary border-2 border-primary rounded font-medium mr-4 mb-2"
-                        type="submit">
-                        <i class="icon icon-eye mr-2" ></i>{{ 'viewReport' | translate }}
-                    </button>
-                    <button class="p-2 text-primary border-2 border-primary rounded font-medium" type="submit" (click)="exportRejectionList()">
-                        <i class="icon icon-file-excel mr-2"></i>{{ 'downloadThisReportAsExcel' | translate }}
-                    </button>
-                </div>
-            </div>
-        </div>
+                    <!-- End Upload your file -->
 
-        <div class="card px-6 py-4" *ngIf="toggleRejectedList">
-            <h6 class="text-base mb-3">{{ 'rejectionReport' | translate }}</h6>
-            <div class="border-t border-normal -mx-6 mt-4">
-                <div class="overflow-x-auto overflow-y-hidden rejection-table">
-                    <table class="w-full schedule-table">
-                        <thead>
-                            <tr>
-                                <th width="1%"></th>
-                                <th  *ngFor="let header of headers">{{header}}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fieldData of rejectedStaffList">
-                                <td><i class="icon icon-notification2 text-warn text-lg"></i></td>
-                                <td *ngFor="let field of fieldData">{{field}}</td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
+                    <!-- Start map fields -->
+                    <div class="map_fields" *ngSwitchCase="bulkDataImport.MAP">
+                        <div class="card px-6 py-4">
+                            <p class="text-base">
+                                {{
+                                'pleaseCreateaOneToOneRelationshipBetweenTheFieldsInYourSpreadsheetAndTheFieldsInTheOpenSISDatabaseBySelectingTheAppropriateFieldsFromTheRightColumnAfterYouAreDoneClickMapIt'
+                                | translate }}
+                            </p>
+                            <div class="border-t border-normal -mx-6 mt-4">
+                                <div class="overflow-x-auto overflow-y-hidden">
+                                    <table class="w-full schedule-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="35%">{{ 'theseFieldsAreInYourExcelSpreadsheet' | translate }}
+                                                </th>
+                                                <th width="35%"></th>
+                                                <th width="30%">{{ 'theseAreAvailableFieldsInOpenSIS' | translate }}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let name of headers;let i=index">
+                                                <td>{{name}}</td>
+                                                <td>
+                                                    <span
+                                                        class="w-24 min-w-full relative inline-block arrow-right border-t border-dashed border-gray-light"></span>
+                                                </td>
+                                                <td>
+                                                    <mat-form-field class="w-full mb-0" appearance="outline"
+                                                        color="primary">
+                                                        <mat-label>{{ "Select" | translate }}</mat-label>
+                                                        <mat-select [(ngModel)]="newHeaders[i]"
+                                                            (selectionChange)="onHeaderChange()">
+                                                            <mat-option *ngFor="let field of fieldList" [value]="field">
+                                                                {{field.title}}</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="text-right pt-4">
+                                <button color="primary" mat-raised-button type="submit" [disabled]="!isNewHeaderFilled"
+                                    (click)="setNewHeadersAndMapIt()">
+                                    {{ 'mapIt' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End map fields -->
+
+                    <!-- Start prieview map -->
+                    <div class="preview_map" *ngSwitchCase="bulkDataImport.PREVIEW">
+                        <div class="card px-6 py-4">
+                            <h4 class="text-primary">{{ 'preview' | translate }}</h4>
+                            <p class="text-base">
+                                {{ 'pleaseCheckAndContinueToDataImport' | translate }}
+                            </p>
+                            <div class="border-t border-normal -mx-6 mt-4">
+                                <div class="overflow-x-auto overflow-y-hidden">
+                                    <table class="w-full schedule-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="35%">{{ 'theseFieldsAreInYourExcelSpreadsheet' | translate }}
+                                                </th>
+                                                <th width="35%"></th>
+                                                <th width="30%">{{ 'theseAreAvailableFieldsInOpenSIS' | translate }}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let header of headers;let i=index">
+                                                <td>{{header}}</td>
+                                                <td>
+                                                    <span
+                                                        class="w-24 min-w-full relative inline-block arrow-right border-t border-solid bg-green">
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {{newHeaders[i].title}}
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="text-right pt-4">
+                                <button color="primary" mat-raised-button (click)="returnToMap()" type="submit">
+                                    <i class="icon icon-rotate-cw3 mr-2"></i>{{ 'changeMapping' | translate }}
+                                </button>
+                                <button mat-raised-button type="submit" (click)="goToImport()"
+                                    class="bg-green ml-2 text-white">
+                                    {{ 'importStaff' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End  prieview map -->
+
+                    <!-- Start import data -->
+                    <div class="import_data" *ngSwitchCase="bulkDataImport.IMPORT">
+                        <div class="card px-6 py-4 mb-4" *ngIf="failedImport">
+                            <div class="text-center py-10 px-4">
+                                <h4 class="text-red font-semibold">
+                                    {{ 'failedToImportStaffDataPleaseTryAgain' | translate }}
+                                </h4>
+
+                            </div>
+                        </div>
+
+                        <div class="card px-6 py-4 mb-4" *ngIf="!importDone && !failedImport">
+                            <div class="text-center py-10 px-4">
+                                <h4 class="text-primary font-semibold">
+                                    {{ 'importingStaffsIntoDatabase' | translate }}
+                                </h4>
+                                <p class="text-warn mb-10">{{ 'pleaseDoNotRefreshThePageOrClickBackButton' | translate
+                                    }}</p>
+                                <img src="assets/img/import-data.png" alt="Importing staffs into database icon"
+                                    width="30%" class="inline-block">
+                            </div>
+                        </div>
+
+                        <div class="card px-6 py-4 mb-6" *ngIf="importDone && !failedImport">
+                            <div class="flex">
+                                <i class="icon icon-checkmark-circle text-green mt-1 text-lg"></i>
+                                <span class="text-lg inline-block align-middle text-green font-bold ml-4">{{
+                                    'dataImportCompleted' | translate }}</span>
+                            </div>
+                            <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
+                            <div class="grid sm:grid-cols-1 md:grid-cols-2 items-center">
+                                <div class="flex mb-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="spinner-container">
+                                            <div class="spinner-background font-semibold text-primary">
+                                                {{spinner1.value}}%</div>
+                                            <mat-progress-spinner #spinner1 color="primary" mode="determinate"
+                                                [value]="afterImportStatus.totalStaffsImportedInPercentage"
+                                                strokeWidth="5" diameter="70" class="spinner-blue">
+                                            </mat-progress-spinner>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4 flex flex-col justify-center">
+                                        <h5 class="mb-2 text-lg font-semibold">
+                                            {{afterImportStatus.totalStaffsImported>1?afterImportStatus.totalStaffsImported+'
+                                            Staffs':afterImportStatus.totalStaffsImported+' Staff'}} Imported</h5>
+                                        <p *ngIf="rejectedStaffList?.length">
+                                            {{rejectedStaffList?.length>1?rejectedStaffList?.length+'
+                                            Staffs':rejectedStaffList?.length+' Staff'}} rejected due to data error.</p>
+                                    </div>
+                                </div>
+                                <div class="text-right" *ngIf="rejectedStaffList.length>0">
+                                    <button (click)="toggleRejectedList=!toggleRejectedList"
+                                        class="p-2 text-primary border-2 border-primary rounded font-medium mr-4 mb-2"
+                                        type="submit">
+                                        <i class="icon icon-eye mr-2"></i>{{ 'viewReport' | translate }}
+                                    </button>
+                                    <button class="p-2 text-primary border-2 border-primary rounded font-medium"
+                                        type="submit" (click)="exportRejectionList()">
+                                        <i class="icon icon-file-excel mr-2"></i>{{ 'downloadThisReportAsExcel' |
+                                        translate }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card px-6 py-4" *ngIf="toggleRejectedList">
+                            <h6 class="text-base mb-3">{{ 'rejectionReport' | translate }}</h6>
+                            <div class="border-t border-normal -mx-6 mt-4">
+                                <div class="overflow-x-auto overflow-y-hidden rejection-table">
+                                    <table class="w-full schedule-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="1%"></th>
+                                                <th *ngFor="let header of headers">{{header}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let fieldData of rejectedStaffList">
+                                                <td><i class="icon icon-notification2 text-warn text-lg"
+                                                        matTooltip="{{fieldData.message}}"></i></td>
+                                                <td *ngFor="let field of fieldData.fieldValue">{{field}}</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End import data -->
+                </div>
+                <div class="fixed w-full h-full z-50 top-0 left-0" *ngIf="importLoader">
                 </div>
             </div>
         </div>
-    </div>
-    <!-- End import data -->
-</div>
-<div class="fixed w-full h-full z-50 top-0 left-0" *ngIf="importLoader">
+    </vex-page-layout-content>
+</vex-page-layout>

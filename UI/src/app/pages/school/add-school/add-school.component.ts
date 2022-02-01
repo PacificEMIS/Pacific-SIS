@@ -23,36 +23,29 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
-import { ImageCropperService } from '../../../services/image-cropper.service';
-
-import { SchoolAddViewModel } from '../../../models/school-master.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SchoolService } from '../../../services/school.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SharedFunction } from '../../../pages/shared/shared-function';
-import { CommonService } from '../../../services/common.service';
-import { LayoutService } from '../../../../../src/@vex/services/layout.service';
-import { CustomFieldAddView, CustomFieldListViewModel, CustomFieldModel } from '../../../models/custom-field.model';
-import { CustomFieldService } from '../../../services/custom-field.service';
-import { FieldsCategoryAddView, FieldsCategoryListView, FieldsCategoryModel } from '../../../models/fields-category.model';
-import { LoaderService } from '../../../services/loader.service';
-import { SchoolCreate } from '../../../enums/school-create.enum';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
-import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
-import { CryptoService } from 'src/app/services/Crypto.service';
 import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
+import { LoaderService } from 'src/app/services/loader.service';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddCopySchoolComponent } from './add-copy-school/add-copy-school.component';
+import { SchoolAddViewModel } from 'src/app/models/school-master.model';
 import { SuccessCopySchoolComponent } from './success-copy-school/success-copy-school.component';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { SchoolService } from 'src/app/services/school.service';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { FieldsCategoryListView, FieldsCategoryModel } from 'src/app/models/fields-category.model';
+import { CustomFieldService } from 'src/app/services/custom-field.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CommonService } from 'src/app/services/common.service';
+import icAccountBalance from '@iconify/icons-ic/twotone-account-balance';
 import icCleanHands from '@iconify/icons-ic/outline-clean-hands';
-import icArticle from '@iconify/icons-ic/outline-article';
-import { DefaultValuesService } from '../../../common/default-values.service';
-import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { Module } from 'src/app/enums/module.enum';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,232 +60,138 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 })
 
 export class AddSchoolComponent implements OnInit, OnDestroy {
-  schoolCreate = SchoolCreate;
-  schoolCreateMode: SchoolCreate = SchoolCreate.ADD;
-  schoolTitle = 'Add School Information';
-  pageStatus = 'Add School';
   responseImage: string;
-  image = '';
-  module = 'School';
-  fieldsCategory: FieldsCategoryModel[];
-  fieldsCategoryListView = new FieldsCategoryListView();
-  schoolId: number = null;
-  enableCropTool = false;
-  indexOfCategory = 0;
-  schoolAddViewModel: SchoolAddViewModel = new SchoolAddViewModel();
-  customFieldModel: [CustomFieldModel];
-  currentCategory;
-  secondarySidebar = 0;
-
-  loading: boolean;
+  secondarySidebar: number;
   destroySubject$: Subject<void> = new Subject();
-  moduleIdentifier = ModuleIdentifier;
+  loading: boolean;
+  schoolTitle: string;
+  isCopySchoolPossible: boolean;
+  schoolId: string;
+  schoolAddViewModel: SchoolAddViewModel =  new SchoolAddViewModel();
+  schoolCount: any;
+  fieldsCategoryListView: FieldsCategoryListView = new FieldsCategoryListView();
+  fieldsCategory;
+  currentCategory: number;
+  icAccountBalance = icAccountBalance;
   icCleanHands = icCleanHands;
-  icArticle = icArticle;
-  categoryTitle: string;
-  isCopySchoolPossible = false;
-  constructor(private imageCropperService: ImageCropperService,
-              private snackbar: MatSnackBar,
-              private schoolService: SchoolService,
-              private router: Router,
-              private commonService:CommonService,
-              private layoutService: LayoutService,
-              private loaderService: LoaderService,
-              private customFieldservice: CustomFieldService,
-              private pageRolePermission: PageRolesPermission,
-              private dialog: MatDialog,
-              private defaultValueService: DefaultValuesService,
-              private cdr: ChangeDetectorRef) {
-    this.layoutService.collapseSidenav();
-    this.imageCropperService.getUncroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.schoolService.setSchoolImage(res);
-    });
-    this.schoolService.modeToUpdate.pipe(takeUntil(this.destroySubject$)).subscribe((res:any) => {
-      // this.schoolCreateMode = res;
-      if (this.schoolCreateMode === this.schoolCreate.VIEW){
-        this.pageStatus = 'View School';
-      }else{
-        this.pageStatus = 'Edit School';
-      }
-    });
-    this.schoolService.categoryToSend.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-        // this.currentCategory = this.currentCategory + 1;
-        if(this.fieldsCategory?.length>1){
-          this.currentCategory=this.fieldsCategory[1].categoryId;
-        }
-        if(this.schoolService.getSchoolDetails().schoolMaster?.schoolName){
-          this.schoolTitle = this.schoolService.getSchoolDetails().schoolMaster.schoolName;
-        }
-    this.checkCurrentCategoryAndRoute();
+  pageStatus = 'Add School';
+  schoolCreateMode: SchoolCreate = SchoolCreate.ADD;
+  schoolCreate = SchoolCreate;
+  permittedDetails;
 
-    });
+
+  constructor(
+    private loaderService: LoaderService,
+    private pageRolePermission: PageRolesPermission,
+    private dialog: MatDialog,
+    private defaultValueService: DefaultValuesService,
+    private schoolService: SchoolService,
+    private router: Router,
+    private customFieldservice: CustomFieldService,
+    private snackbar: MatSnackBar,
+    private commonService: CommonService
+  ) {
+    this.schoolCount = this.defaultValueService.getSchoolCount();
+    this.commonService.setModuleName(Module.SCHOOL);
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
-    this.schoolService.getSchoolDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: SchoolAddViewModel) => {
-      this.schoolAddViewModel = res;
-      this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
-    });
-    this.schoolService.updatedSchoolName.pipe(takeUntil(this.destroySubject$)).subscribe((name: string)=>{
-      if(name){
-        this.schoolTitle=name;
-      }
-    })
 
-    // this.getCurrentCategory();
+    this.schoolCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type: this.schoolCreateMode;
+
+    this.permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo/generalinfo');
+    if(this.permittedDetails.length){
+    this.checkInitialState(this.permittedDetails[0].path);
+    }
+   
+    this.schoolService.schoolCreatedMode.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      this.schoolCreateMode = res;
+    });
+
+    this.schoolService.schoolDetailsForViewedAndEdited.subscribe((res)=>{
+      if(res){
+        this.schoolAddViewModel = res;
+      }
+    });
   }
 
   ngOnInit() {
-    this.commonService.setModuleName(this.module);
-    this.schoolCreateMode = this.schoolCreate.ADD;
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
-    this.schoolService.sendDetails(this.schoolAddViewModel);
-    this.schoolId = this.schoolService.getSchoolId();
-    if (this.schoolId) {
-      this.schoolCreateMode = this.schoolCreate.VIEW;
-      this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
-      this.getSchoolGeneralandWashInfoDetails();
-      this.onViewMode();
-    }else if (this.schoolCreateMode === this.schoolCreate.ADD) {
-    let permission = this.pageRolePermission.checkPageRolePermission('/school/schoolinfo/generalinfo')
-    if(!permission.add){
-      this.router.navigate(['/school', 'schoolinfo'])
-    }
-      // if(this.checkCanAddSchool()) {
-        this.getAllFieldsCategory();
-        this.imageCropperService.enableUpload({module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.ADD});
-      // } else{
-      //   this.router.navigate(['/school','schoolinfo']);
-      // }
-     
-    }
+    this.router.onSameUrlNavigation = 'reload';
 
+    this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe((res) => {
+     this.checkInitialState(res.url);
+    });
+    
   }
-  checkIfCopySchoolPossible(){
-    let permissions=this.pageRolePermission.checkPageRolePermission("/school/schoolinfo/generalinfo");
+
+  checkInitialState(url) {
+    this.schoolCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type: this.schoolCreateMode;
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    if (url === '/school/schoolinfo/generalinfo') {
+      this.currentCategory = 1;
+      this.checkCreatemodeAndExecute();
+    }
+    else if(url === '/school/schoolinfo/washinfo') {
+      this.currentCategory = 2;
+      this.checkCreatemodeAndExecute();
+    } else {
+      this.checkCreatemodeAndExecute();
+    }    
+  }
+
+  toggleSecondarySidebar() {
+    if (this.secondarySidebar === 0) {
+      this.secondarySidebar = 1;
+    } else {
+      this.secondarySidebar = 0;
+    }
+  }
+
+  checkIfCopySchoolPossible() {
+    let permissions = this.pageRolePermission.checkPageRolePermission("/school/schoolinfo/generalinfo", null, true);
     this.isCopySchoolPossible = permissions?.add;
   }
 
-
-  ngAfterViewChecked() {
-    this.cdr.detectChanges();
-  }
-
-  onViewMode() {
-    this.pageStatus = 'View School';
-  }
-
-  changeCategory(categoryDetails, index) {
-    // if(this.schoolCreateMode === this.schoolCreate.ADD) return;
-    this.categoryTitle=categoryDetails.title;
-    this.schoolService.setCategoryTitle(this.categoryTitle);
-    this.commonService.setModuleName(this.module);
-    const schoolDetails = this.schoolService.getSchoolDetails();
-    if (schoolDetails) {
-      this.currentCategory = categoryDetails.categoryId;
-      this.indexOfCategory = index;
-      this.schoolCreateMode = this.schoolCreate.EDIT;
-      this.schoolAddViewModel = schoolDetails;
-      this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
+  checkCreatemodeAndExecute() {
+    if (this.schoolCreateMode === SchoolCreate.EDIT) {
+      if(!this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId) {
+          this.getSchoolGeneralandWashInfoDetails();
+      } else {
+        if(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId !== this.defaultValueService.getSchoolID()){
+          this.getSchoolGeneralandWashInfoDetails();
+        }
+      }
     }
-    if (this.schoolCreateMode === this.schoolCreate.VIEW) {
-      this.currentCategory = categoryDetails.categoryId;
-      this.indexOfCategory = index;
-      this.pageStatus = "View Student";
+    if(this.schoolCreateMode === SchoolCreate.VIEW) {
+      if(this.schoolService.getSchoolId()) this.defaultValueService.setSchoolID(this.schoolService.getSchoolId(), true);
+      if(!this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId) {
+        this.getSchoolGeneralandWashInfoDetails();
+    } else {
+      if(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId !== this.defaultValueService.getSchoolID()){
+        this.getSchoolGeneralandWashInfoDetails();
+      }
     }
-
-    this.schoolService.setCategoryId(this.indexOfCategory);
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
-    this.secondarySidebar = 0; // Close secondary sidenav in mobile view
-    this.checkCurrentCategoryAndRoute();
-  }
-
-  checkCurrentCategoryAndRoute() {
-    if(this.currentCategory === 1) {
-      this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
     }
-    else if(this.currentCategory === 2) {
-      this.router.navigate(['/school', 'schoolinfo', 'washinfo']);
-    }else if(this.currentCategory>2){
-      this.router.navigate(['/school', 'schoolinfo', 'custom', this.categoryTitle.trim().toLowerCase().split(' ').join('-') ]);
-    }
-  }
-
-
-  getAllFieldsCategory() {
-    this.fieldsCategoryListView.module = 'School';
-    this.fieldsCategoryListView.schoolId = +sessionStorage.getItem('selectedSchoolId');
-    this.customFieldservice.getAllFieldsCategory(this.fieldsCategoryListView).subscribe((res) => {
-      if (typeof (res) === 'undefined') {
-        this.snackbar.open('Custom Field list failed. ' + sessionStorage.getItem('httpError'), '', {
+    if (this.schoolCreateMode === SchoolCreate.ADD) {
+      let permission = this.pageRolePermission.checkPageRolePermission('/school/schoolinfo/generalinfo', null, true)
+      if (!permission.add) {
+        this.router.navigate(['/school', 'schoolinfo']);
+        this.snackbar.open('School didnot have permission to add details.', '', {
           duration: 10000
         });
       }
-      else {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          if(!res.fieldsCategoryList){
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else {
-          this.fieldsCategory = res.fieldsCategoryList.filter(x => x.isSystemCategory === true);
-         
-          this.fieldsCategory = this.checkViewPermission(res.fieldsCategoryList);
-           
-          this.currentCategory = this.fieldsCategory[0].categoryId;
-          
-        }
-      }
+      this.isCopySchoolPossible = false;
+      this.schoolAddViewModel = new SchoolAddViewModel();
+      this.responseImage = undefined;
+      this.schoolService.setSchoolImage(null);
+      this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
+      this.getAllFieldsCategory();
     }
-    );
   }
 
-  checkViewPermission(category){
-    let filteredCategory=[];
-    let permittedTabs =this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo')
-     for(let item of category){
-      for(let permission of permittedTabs){
-        if ( item.title.toLowerCase() === permission.title.toLowerCase()){
-          filteredCategory.push(item);
-          break;
-        }
-      }
-    };
-    this.currentCategory = filteredCategory[0]?.categoryId;
-    return filteredCategory;
-  }
-
-  getSchoolGeneralandWashInfoDetails() {
-    this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId = this.schoolService.getSchoolId();
-    this.schoolAddViewModel.schoolMaster.schoolId = this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolId;
-    this.schoolService.ViewSchool(this.schoolAddViewModel).subscribe(data => {
-      if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-      }
-      this.schoolAddViewModel = data;
-      this.responseImage = this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo;
-      this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo = null;
-      if(data.schoolMaster.schoolId===+this.defaultValueService.getSchoolID()){
-        this.fieldsCategory = this.checkViewPermission(data.schoolMaster.fieldsCategory);
-        this.checkIfCopySchoolPossible();
-        this.schoolAddViewModel.schoolMaster.fieldsCategory = this.fieldsCategory;
-      }else{
-        this.isCopySchoolPossible = true;
-        this.fieldsCategory=this.schoolAddViewModel.schoolMaster.fieldsCategory;
-        this.currentCategory = this.fieldsCategory[0].categoryId;
-      }
-      this.schoolService.sendDetails(this.schoolAddViewModel);
-      this.schoolTitle = this.schoolAddViewModel.schoolMaster.schoolName;
-      this.schoolService.setSchoolImage(this.responseImage);
-      this.schoolService.setSchoolCloneImage(this.responseImage);
-    });
-    this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
-  }
-
-  /* This addCopySchool method is used for open Copy School Modal and after close the modal it calls
+/* This addCopySchool method is used for open Copy School Modal and after close the modal it calls
   successCopySchool method and pass the new school name and new school id. */
   addCopySchool() {
     this.dialog.open(AddCopySchoolComponent, {
@@ -307,33 +206,118 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
 
   /* This successCopySchool method is used for Open Success Copy School Modal and after close the modal
    it render the new copied school details. */
-  successCopySchool(schoolData) {
+   successCopySchool(schoolData) {
     this.dialog.open(SuccessCopySchoolComponent, {
       width: '500px',
       data: { newSchoolData: schoolData }
     }).afterClosed().subscribe((data) => {
       if (data) {
+        if(this.schoolService.getSchoolId()) this.defaultValueService.setSchoolID(this.schoolService.getSchoolId(), true);
         this.getSchoolGeneralandWashInfoDetails();
       }
     });
   }
 
-  toggleSecondarySidebar() {
-    if(this.secondarySidebar === 0){
-      this.secondarySidebar = 1;
-    } else {
-      this.secondarySidebar = 0;
+  getSchoolGeneralandWashInfoDetails() {
+    this.schoolService.ViewSchool(this.schoolAddViewModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      } else {
+      this.schoolAddViewModel = data;
+      if (data.schoolMaster.schoolId === +this.defaultValueService.getSchoolID()) {
+        this.fieldsCategory = this.checkViewPermission(data.schoolMaster.fieldsCategory);
+        this.checkIfCopySchoolPossible();
+      } else {
+        this.isCopySchoolPossible = true;
+        this.fieldsCategory = this.schoolAddViewModel.schoolMaster.fieldsCategory;
+        this.currentCategory = this.fieldsCategory[0].categoryId;
+      }
+
+      const index = this.schoolAddViewModel.schoolMaster.fieldsCategory.findIndex(x=> x.categoryId === this.fieldsCategory[0].categoryId)
+      this.changeCategory({categoryId: this.currentCategory, title: this.fieldsCategory[0].title}, index);
+      this.schoolService.setSchoolImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
+      this.schoolService.setSchoolCloneImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
+      this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
+    }
+    });
+  }
+
+  showAllSchools() {
+    this.router.navigate(['/school', 'schoolinfo']).then(()=>{
+      this.schoolAddViewModel = new SchoolAddViewModel();
+    this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
+    });
+  }
+
+  getAllFieldsCategory() {
+    this.fieldsCategoryListView.module = Module.SCHOOL;
+    this.customFieldservice.getAllFieldsCategory(this.fieldsCategoryListView).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          if (!res.fieldsCategoryList) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.fieldsCategory = res.fieldsCategoryList.filter(x => x.isSystemCategory === true);
+          this.fieldsCategory = this.checkViewPermission(res.fieldsCategoryList);
+          this.currentCategory = this.fieldsCategory[0].categoryId;
+        }
+      } else {
+        this.snackbar.open('Custom Field list failed. ' + this.defaultValueService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    }
+    );
+  }
+
+  checkViewPermission(category) {
+    let filteredCategory = [];
+    let permittedTabs = this.permittedDetails;
+    for (let item of category) {
+      for (let permission of permittedTabs) {
+        if (item.title.toLowerCase() === permission.title.toLowerCase()) {
+          filteredCategory.push(item);
+          break;
+        }
+      }
+    };
+    this.currentCategory = filteredCategory[0]?.categoryId;
+    return filteredCategory;
+  }
+
+  changeCategory(categoryDetails, index) {
+    if(this.schoolCreateMode === this.schoolCreate.ADD) return;    
+    this.currentCategory = categoryDetails.categoryId;
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    const categoryIndex = this.schoolAddViewModel.schoolMaster.fieldsCategory.findIndex(x=> x.title === categoryDetails.title)
+    this.secondarySidebar = 0; // Close secondary sidenav in mobile view
+    this.checkCurrentCategoryAndRoute(categoryDetails.title, categoryIndex);
+  }
+
+  checkCurrentCategoryAndRoute(categoryTitle, index) {
+    if (this.currentCategory === 1 && this.router.url !== '/school/schoolinfo/generalinfo') {
+      this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
+    }
+    else if (this.currentCategory === 2 && this.router.url !== '/school/schoolinfo/washinfo') {
+      this.router.navigate(['/school', 'schoolinfo', 'washinfo']);
+    } else if (this.currentCategory > 2 && this.router.url !== '/school/schoolinfo/custom/'+categoryTitle.trim().toLowerCase().split(' ').join('-')) {
+      this.router.navigate(['/school', 'schoolinfo', 'custom', categoryTitle.trim().toLowerCase().split(' ').join('-')], {state: {type: this.schoolCreateMode, categoryId: index, categoryTitle}}).then(()=>{
+
+      });
     }
   }
 
   ngOnDestroy() {
-    this.schoolService.setSchoolDetails(undefined);
+    this.defaultValueService.setSchoolID(undefined);
+    this.schoolService.setSchoolId(undefined);
+    this.schoolService.setSchoolDetailsForViewAndEdit(new SchoolAddViewModel());
     this.schoolService.setSchoolImage(null);
-    this.schoolService.setSchoolId(null);
-    this.schoolService.setSchoolCloneImage(null);
-    this.schoolService.setCategoryTitle(null);
     this.destroySubject$.next();
-    this.destroySubject$.complete();
+    this.destroySubject$.unsubscribe();
   }
-
 }

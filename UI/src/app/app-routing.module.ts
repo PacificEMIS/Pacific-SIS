@@ -96,9 +96,9 @@ const routes: Routes = [
         path: '',
         children: [
           {
-            path: 'studentdataimport',
+            path: 'tools/student-bulk-data-import',
             loadChildren: () => import('./pages/student/student-data-import/student-data-import.module').then(m => m.StudentDataImportModule),
-            canActivate: [AuthGuard,RolePermissionGuard]
+            //canActivate: [AuthGuard,RolePermissionGuard]
             
           }
         ]
@@ -127,9 +127,9 @@ const routes: Routes = [
         path: '',
         children: [
           {
-            path: 'staffdataimport',
+            path: 'tools/staff-bulk-data-import',
             loadChildren: () => import('./pages/staff/staff-data-import/staff-data-import.module').then(m => m.StaffDataImportModule),
-            canActivate: [AuthGuard,RolePermissionGuard]
+            //canActivate: [AuthGuard,RolePermissionGuard]
             
           }
         ]
@@ -309,6 +309,16 @@ const routes: Routes = [
         path: '',
         children: [
           {
+            path: 'grades/input-effort-grades',
+            loadChildren: () => import('./pages/grades/input-effort-grades/input-effort-grades.module').then(m => m.InputEffortGradesModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+      {
+        path: '',
+        children: [
+          {
             path: 'teacher/schedule',
             loadChildren: () => import('./pages/scheduling/teacher-view-schedule/teacher-view-schedule.module').then(m => m.TeacherViewScheduleModule),
             canActivate: [AuthGuard]
@@ -340,12 +350,89 @@ const routes: Routes = [
         path: '',
         children: [
           {
+            path: 'tools/database-backup',
+            loadChildren: () => import('./pages/tools/database-backup/database-backup.module').then(m => m.DatabaseBackupModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+      
+      {
+        path: '',
+        children: [
+          {
             path: 'student/group-assign-student-info',
             loadChildren: () => import('./pages/student/group-assign-student-info/group-assign-student-info.module').then(m => m.GroupAssignStudentInfoModule),
             canActivate: [AuthGuard]
           }
         ]
-      },             
+      },  
+      
+      {
+        path: '',
+        children: [
+          {
+            path: 'grades/administration',
+            loadChildren: () => import('./pages/grades/administration/administration.module').then(m => m.AdministrationModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'attendance/teacher-missing-attendance',
+            loadChildren: () => import('./pages/attendance/teacher-missing-attendance/teacher-missing-attendance.module').then(m => m.TeacherMissingAttendanceModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'courses/course-catalog',
+            loadChildren: () => import('./pages/courses/course-catalog/course-catalog.module').then(m => m.CourseCatalogModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'courses/my-classes',
+            loadChildren: () => import('./pages/courses/my-classes/my-classes.module').then(m => m.MyClassesModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'tools/api',
+            loadChildren: () => import('./pages/tools/api-keys/api-keys.module').then(m => m.ApiKeysModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'tools/rollover',
+            loadChildren: () => import('./pages/tools/rollover/rollover.module').then(m => m.RolloverModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
     ]
   },
   { path: '**', redirectTo: '/error' }

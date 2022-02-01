@@ -33,6 +33,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ResetPasswordComponent } from '../../../../pages/shared-module/reset-password/reset-password.component';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import icCheckbox from '@iconify/icons-ic/baseline-check-box';
+import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
 
 @Component({
   selector: 'vex-view-student-generalinfo',
@@ -52,6 +54,8 @@ export class ViewStudentGeneralinfoComponent implements OnInit {
   module = 'Student';
   @Input() nameOfMiscValues;
   permissions: Permissions = new Permissions();
+  icCheckbox = icCheckbox;
+  icCheckboxOutline = icCheckboxOutline;
   constructor(private commonFunction: SharedFunction,
     private pageRolePermission: PageRolesPermission,
               public translateService: TranslateService,

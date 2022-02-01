@@ -51,6 +51,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 
+
 @Component({
   selector: 'vex-add-event',
   templateUrl: './add-event.component.html',
@@ -64,6 +65,7 @@ export class AddEventComponent implements OnInit {
   @ViewChild('selectAllCheckBox') selectAllCheckBox: MatCheckbox;
   @ViewChild('systemWideCheck') systemWideCheck: MatCheckbox;
   isEditMode: boolean = false;
+  isAddMode: boolean = false;
   checkAll: boolean;
   calendarEventTitle: string;
   calendarEventActionButtonTitle = "submit";
@@ -73,6 +75,7 @@ export class AddEventComponent implements OnInit {
   memberNames: string;
   membercount: number;
   memberArray: number[] = [];
+  currentTab: string;
 
   colors: colors[] = [
     { name: 'Red', value: '#f44336' },
@@ -105,7 +108,7 @@ export class AddEventComponent implements OnInit {
     private pageRolePermissions: PageRolesPermission,
     private calendarEventService: CalendarEventService,
     private fb: FormBuilder,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
   ) {
     this.translate.setDefaultLang('en');
@@ -115,12 +118,15 @@ export class AddEventComponent implements OnInit {
       endDate: ['', Validators.required],
       notes: [''],
       eventColor: [''],
-      systemWideEvent: [false]
+      systemWideEvent: [false],
+      isHoliday:[false],
+      applicableToAllSchool:[false]
     });
   }
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.currentTab = 'event';
 
     if (this.data == null) {
       this.snackbar.open('Null value occur. ', '', {
@@ -132,21 +138,27 @@ export class AddEventComponent implements OnInit {
       this.membercount = this.data.membercount;
       this.getAllMembersList = this.data.allMembers;
       if (this.data.calendarEvent == null) {
-        this.calendarEventTitle = 'addEvent';
-        this.isEditMode = true;
+        this.calendarEventTitle = 'addNew';
+        this.isAddMode = true;
         this.form.patchValue({ startDate: this.data.day.date });
       }
       else {
         //show event value in form 
-        this.calendarEventTitle = "editEvent";
         this.calendarEventActionButtonTitle = "update";
         this.calendarEventAddViewModel.schoolCalendarEvent = this.data.calendarEvent.meta.calendar;
+        if(this.calendarEventAddViewModel.schoolCalendarEvent.isHoliday){
+          this.calendarEventTitle = "editHoliday";
+        }
+        else{
+          this.calendarEventTitle = "editEvent";
+        }
         this.form.patchValue({ title: this.data.calendarEvent.meta.calendar.title });
         this.form.patchValue({ startDate: this.data.calendarEvent.meta.calendar.startDate });
         this.form.patchValue({ endDate: this.data.calendarEvent.meta.calendar.endDate });
         this.form.patchValue({ notes: this.data.calendarEvent.meta.calendar.description });
         this.form.patchValue({ eventColor: this.data.calendarEvent.meta.calendar.eventColor });
         this.form.patchValue({ systemWideEvent: this.data.calendarEvent.meta.calendar.systemWideEvent });
+        this.form.patchValue({ applicableToAllSchool: this.data.calendarEvent.meta.calendar.applicableToAllSchool });
         if (this.calendarEventAddViewModel.schoolCalendarEvent.visibleToMembershipId != null && this.calendarEventAddViewModel.schoolCalendarEvent.visibleToMembershipId != '') {
           let membershipIds: string[] = this.calendarEventAddViewModel.schoolCalendarEvent.visibleToMembershipId.split(',');
           this.memberArray = membershipIds.map(Number);
@@ -225,16 +237,66 @@ export class AddEventComponent implements OnInit {
   // save event
   submitCalendarEvent() {
     this.calendarEventAddViewModel.schoolCalendarEvent.title = this.form.value.title;
-    this.calendarEventAddViewModel.schoolCalendarEvent.academicYear = +sessionStorage.getItem("academicyear");
+    // this.calendarEventAddViewModel.schoolCalendarEvent.academicYear = this.defaultValuesService.getAcademicYear();
     this.calendarEventAddViewModel.schoolCalendarEvent.description = this.form.value.notes;
     this.calendarEventAddViewModel.schoolCalendarEvent.visibleToMembershipId = this.memberArray.toString();
     this.calendarEventAddViewModel.schoolCalendarEvent.startDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.startDate);
     this.calendarEventAddViewModel.schoolCalendarEvent.endDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.endDate);
     this.calendarEventAddViewModel.schoolCalendarEvent.calendarId = this.calendarService.getCalendarId();
     this.calendarEventAddViewModel.schoolCalendarEvent.eventColor = this.form.value.eventColor;
+    this.calendarEventAddViewModel.schoolCalendarEvent.isHoliday = false;
     this.calendarEventAddViewModel.schoolCalendarEvent.systemWideEvent = this.form.value.systemWideEvent;
     if (this.form.valid) {
       if (this.calendarEventAddViewModel.schoolCalendarEvent.eventId > 0) {
+        delete this.calendarEventAddViewModel.schoolCalendarEvent.academicYear;
+        this.calendarEventService.updateCalendarEvent(this.calendarEventAddViewModel).subscribe(data => {
+          if (data._failure) {
+            this.commonService.checkTokenValidOrNot(data._message);
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+            this.dialogRef.close('submitedEvent');
+          }
+
+        });
+      }
+      else {
+        this.calendarEventService.addCalendarEvent(this.calendarEventAddViewModel).subscribe(data => {
+          if (data._failure) {
+            this.commonService.checkTokenValidOrNot(data._message);
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+            this.dialogRef.close('submitedEvent');
+          }
+        });
+      }
+    }
+  }
+
+  // Save Holiday
+  submitHolidayEvent() {
+    this.calendarEventAddViewModel.schoolCalendarEvent.title = this.form.value.title;
+    // this.calendarEventAddViewModel.schoolCalendarEvent.academicYear = this.defaultValuesService.getAcademicYear();
+    this.calendarEventAddViewModel.schoolCalendarEvent.description = this.form.value.notes;
+    this.calendarEventAddViewModel.schoolCalendarEvent.visibleToMembershipId = this.memberArray.toString();
+    this.calendarEventAddViewModel.schoolCalendarEvent.startDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.startDate);
+    this.calendarEventAddViewModel.schoolCalendarEvent.endDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.endDate);
+    this.calendarEventAddViewModel.schoolCalendarEvent.calendarId = this.calendarService.getCalendarId();
+    this.calendarEventAddViewModel.schoolCalendarEvent.isHoliday = true;
+    this.calendarEventAddViewModel.schoolCalendarEvent.eventColor= '#d23240';
+    this.calendarEventAddViewModel.schoolCalendarEvent.applicableToAllSchool = this.form.value.applicableToAllSchool;
+    if (this.form.valid) {
+      if (this.calendarEventAddViewModel.schoolCalendarEvent.eventId > 0) {
+        delete this.calendarEventAddViewModel.schoolCalendarEvent.academicYear;
         this.calendarEventService.updateCalendarEvent(this.calendarEventAddViewModel).subscribe(data => {
           if (data._failure) {
             this.commonService.checkTokenValidOrNot(data._message);
@@ -332,6 +394,9 @@ export class AddEventComponent implements OnInit {
       this.selectAllCheckBox.checked = true;
       this.memberArray = this.getAllMembersList.getAllMemberList.map(a => a.membershipId);
     }
+  }
+  changeTab(status){
+    this.currentTab = status;
   }
 
 }

@@ -1,0 +1,59 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="flex justify-between">
+    <h2 class="headline m-0" fxFlex="auto">
+        {{ "selectCourseSection" | translate }}
+    </h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content class="mb-1">
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 mt-4">
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "subject" | translate }}</mat-label>
+                <mat-select (selectionChange)="selectedSubject($event.value)">
+                    <mat-option value="">{{'allSubject'|translate}}</mat-option>
+                    <mat-option *ngFor="let subject of subjectList" [value]="subject.subjectName">{{subject.subjectName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "program" | translate }}</mat-label>
+                <mat-select (selectionChange)="selectedProgram($event.value)">
+                    <mat-option value="">{{'allProgram'|translate}}</mat-option>
+                    <mat-option *ngFor="let program of programList" [value]="program.programName">{{program.programName}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <button color="primary" mat-raised-button type="submit" class="md:mt-2 mb-4 md:mb-0" (click)="search()">{{ "search" | translate }}</button>
+        </li>
+    </ul>
+    <mat-divider class="-mx-6 text-border"></mat-divider>
+    <div class="sm:flex mt-4">
+        <div class="sm:w-1/2 sm:pr-4">
+            <h4 class="font-semibold">{{ "courses" | translate }}</h4>
+            <p>{{selectedCourseList.length}} courses found.</p>
+            <div class="course-list border rounded mt-2 mb-4">
+                <ul *ngFor="let course of selectedCourseList; let i = index; let f = first">
+                    <li *ngIf="!isDefault" class="font-semibold text-primary cursor-pointer" [ngClass]="{'bg-skyblue-light':selectedCourse === i}"
+                        (click)="viewDetails(course,i)">{{course.course.courseTitle}}</li>
+                    <li *ngIf="isDefault" class="font-semibold text-primary cursor-pointer" [ngClass]="{'bg-skyblue-light':defaultSelected === f}"
+                        (click)="viewDetails(course,i)">{{course.course.courseTitle}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="sm:w-1/2 sm:pl-4">
+            <h4 class="font-semibold">{{ "coursesections" | translate }}</h4>
+            <p>{{courseSectionList.length}} {{'courseSectionsFound'|translate}}.</p>
+            <div class="course-list border rounded mt-2 mb-4">
+                <ul *ngFor="let courseSection of courseSectionList">
+                    <li class="cursor-pointer" (click)="selectedCourseSection(courseSection)">{{courseSection.courseSectionName}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>

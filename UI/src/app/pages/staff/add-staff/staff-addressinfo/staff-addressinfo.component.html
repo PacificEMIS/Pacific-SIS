@@ -13,33 +13,39 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'homePhone'|translate}}</mat-label>
-                            <input #homePhone="ngModel" maxlength="30"
-                                [(ngModel)]="staffAddModel.staffMaster.homePhone" name="homePhone" matInput matInput>
+                            <input #homePhone="ngModel" [disabled]="isReadOnly" maxlength="20" minlength="10"
+                                [(ngModel)]="staffAddModel.staffMaster.homePhone" name="homePhone" matInput>
                             <mat-error *ngIf="homePhone.errors?.invalidPhoneNumber">
                                 {{'invalidTelephoneNumber'|translate}}</mat-error>
+                                <mat-error *ngIf="!homePhone.errors?.required && homePhone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'mobilePhone'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.mobilePhone" maxlength="30"
+                            <input [(ngModel)]="staffAddModel.staffMaster.mobilePhone" [disabled]="isReadOnly" maxlength="20" minlength="10"
                                 #mobilePhone="ngModel" name="mobilePhone" matInput>
                             <mat-error *ngIf="mobilePhone.errors?.phonevalidator">
                                 {{'pleaseProvideAValidMobileNo'|translate}}
                             </mat-error>
+                            <mat-error *ngIf="!mobilePhone.errors?.required && mobilePhone.errors?.minlength">
+                                {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'officePhone'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.officePhone" maxlength="30"
+                            <input [(ngModel)]="staffAddModel.staffMaster.officePhone" [disabled]="isReadOnly" maxlength="20" minlength="10"
                                 #officePhone="ngModel" name="officePhone" matInput>
+                                <mat-error *ngIf="!officePhone.errors?.required && officePhone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'personalEmail'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.personalEmail" appEmailvalidator
+                            <input [(ngModel)]="staffAddModel.staffMaster.personalEmail" [disabled]="isReadOnly" appEmailvalidator
                                 #personalEmail="ngModel" name="personalEmail" matInput>
                             <mat-error *ngIf="personalEmail.errors?.emailvalidator">
                                 {{'pleaseProvideAValidEmailAddress'|translate}}
@@ -49,7 +55,7 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'schoolEmail'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.schoolEmail" appEmailvalidator
+                            <input [(ngModel)]="staffAddModel.staffMaster.schoolEmail" [disabled]="isReadOnly" appEmailvalidator
                                 #schoolEmail="ngModel" name="schoolEmail" matInput>
                             <mat-error *ngIf="schoolEmail.errors?.emailvalidator">
                                 {{'pleaseProvideAValidEmailAddress'|translate}}
@@ -59,31 +65,31 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'twitter'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.twitter" name="twitter" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.twitter" [disabled]="isReadOnly" name="twitter" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'facebook'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.facebook" name="facebook" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.facebook" [disabled]="isReadOnly" name="facebook" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'instagram'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.instagram" name="instagram" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.instagram" [disabled]="isReadOnly" name="instagram" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'youtube'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.youtube" name="youtube" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.youtube" [disabled]="isReadOnly" name="youtube" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'linkedIn'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.linkedin" name="linkedin" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.linkedin" [disabled]="isReadOnly" name="linkedin" matInput>
                         </mat-form-field>
                     </li>
                 </ul>
@@ -98,21 +104,21 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineOne" name="homeAddressLineOne"
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineOne" [disabled]="isReadOnly" name="homeAddressLineOne"
                                 #homeAddressLineOne="ngModel" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress2'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineTwo" name="homeAddressLineTwo"
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressLineTwo" [disabled]="isReadOnly" name="homeAddressLineTwo"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
-                            <mat-select [formControl]="homeAddressCountryCtrl" [(ngModel)]="staffAddModel.staffMaster.homeAddressCountry"
+                            <mat-select [formControl]="homeAddressCountryCtrl" [disabled]="isReadOnly" [(ngModel)]="staffAddModel.staffMaster.homeAddressCountry"
                                 name="homeAddressCountry">
                                 <!-- <mat-option value=""></mat-option> -->
                                 <mat-option>
@@ -127,21 +133,21 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressState" name="homeAddressState"
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressState" [disabled]="isReadOnly" name="homeAddressState"
                                 #homeAddressState="ngModel" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'city'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressCity" name="homeAddressCity"
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressCity" [disabled]="isReadOnly" name="homeAddressCity"
                                 #homeAddressCity="ngModel" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'zipPostalCode'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressZip" maxlength="20" #homeAddressZip="ngModel"
+                            <input [(ngModel)]="staffAddModel.staffMaster.homeAddressZip" [disabled]="isReadOnly" maxlength="20" #homeAddressZip="ngModel"
                                 name="homeAddressZip" matInput>
                         </mat-form-field>
                     </li>
@@ -150,13 +156,13 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'busNo'|translate}}</mat-label>
-                            <input  name="busNo" [(ngModel)]="staffAddModel.staffMaster.busNo" matInput>
+                            <input  name="busNo" [disabled]="isReadOnly" [(ngModel)]="staffAddModel.staffMaster.busNo" matInput>
                         </mat-form-field>
                     </li>
                     <li class="flex flex-1 md:w-1/2 md:pt-3">
-                        <mat-checkbox name="busPickup" [(ngModel)]="staffAddModel.staffMaster.busPickup" color="primary" class="mr-6">{{'busPickup' | translate}}
+                        <mat-checkbox name="busPickup" [disabled]="isReadOnly" [(ngModel)]="staffAddModel.staffMaster.busPickup" color="primary" class="mr-6">{{'busPickup' | translate}}
                         </mat-checkbox>
-                        <mat-checkbox name="busDropoff"  [(ngModel)]="staffAddModel.staffMaster.busDropoff" color="primary">{{'busDropoff' | translate}}
+                        <mat-checkbox name="busDropoff" [disabled]="isReadOnly" [(ngModel)]="staffAddModel.staffMaster.busDropoff" color="primary">{{'busDropoff' | translate}}
                         </mat-checkbox>
 
                     </li>
@@ -166,7 +172,7 @@
 
                 <h4 class="text-primary pb-2 pt-6">{{'mailingAddress'|translate}}</h4>
                 <div class="pb-3">
-                    <mat-checkbox [checked]="checkBoxChecked" #checkBox
+                    <mat-checkbox [checked]="checkBoxChecked" #checkBox [disabled]="isReadOnly"
                         [(ngModel)]="staffAddModel.staffMaster.mailingAddressSameToHome"
                         (click)="copyHomeAddress($event)" name="mailingAddressSameToHome" color="primary">
                         {{'sameAsHomeAddress' | translate}}</mat-checkbox>
@@ -175,21 +181,21 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress1'|translate}}</mat-label>
-                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineOne"
+                            <input [disabled]="checkBox.checked || isReadOnly" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineOne"
                                 name="mailingAddressLineOne" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'streetAddress2'|translate}}</mat-label>
-                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineTwo"
+                            <input [disabled]="checkBox.checked || isReadOnly" [(ngModel)]="staffAddModel.staffMaster.mailingAddressLineTwo"
                                 name="mailingAddressLineTwo" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
-                            <mat-select [formControl]="mailingAddressCountryCtrl" [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCountry"
+                            <mat-select [formControl]="mailingAddressCountryCtrl" [disabled]="checkBox.checked || isReadOnly" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCountry"
                                 name="mailingAddressCountry">
                                 <!-- <mat-option value=""></mat-option> -->
                                 <mat-option>
@@ -204,21 +210,21 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
-                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressState"
+                            <input [disabled]="checkBox.checked || isReadOnly" [(ngModel)]="staffAddModel.staffMaster.mailingAddressState"
                                 name="mailingAddressState" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'city'|translate}}</mat-label>
-                            <input [disabled]="checkBox.checked" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCity" name="mailingAddressCity"
+                            <input [disabled]="checkBox.checked || isReadOnly" [(ngModel)]="staffAddModel.staffMaster.mailingAddressCity" name="mailingAddressCity"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'zip/Postal Code'|translate}}</mat-label>
-                            <input [disabled]="checkBox.checked" maxlength="20" [(ngModel)]="staffAddModel.staffMaster.mailingAddressZip" name="mailingAddressZip"
+                            <input [disabled]="checkBox.checked || isReadOnly" maxlength="20" [(ngModel)]="staffAddModel.staffMaster.mailingAddressZip" name="mailingAddressZip"
                                 matInput>
                         </mat-form-field>
                     </li>
@@ -232,21 +238,21 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'firstName'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyFirstName" name="emergencyFirstName"
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyFirstName" [disabled]="isReadOnly" name="emergencyFirstName"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'lastName'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyLastName" name="emergencyLastName"
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyLastName" [disabled]="isReadOnly" name="emergencyLastName"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'relationshipToStaff'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.relationshipToStaff"
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.relationshipToStaff" [disabled]="isReadOnly"
                                 name="relationshipToStaff">
                                 <mat-option value=""></mat-option>
                                 <mat-option *ngFor="let staffRelation of relationshipList" [value]="staffRelation.lovColumnValue">
@@ -257,28 +263,34 @@
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'homePhone'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyHomePhone" name="emergencyHomePhone" maxlength="30"
-                                matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyHomePhone" [disabled]="isReadOnly" name="emergencyHomePhone"  maxlength="20" minlength="10"
+                            #emergencyHomePhone="ngModel" matInput>
+                            <mat-error *ngIf="!emergencyHomePhone.errors?.required && emergencyHomePhone.errors?.minlength">
+                                {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'workPhone'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyWorkPhone" name="emergencyWorkPhone" maxlength="30"
-                                matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyWorkPhone" [disabled]="isReadOnly" name="emergencyWorkPhone" maxlength="20" minlength="10"
+                            #emergencyWorkPhone="ngModel" matInput>
+                            <mat-error *ngIf="!emergencyWorkPhone.errors?.required && emergencyWorkPhone.errors?.minlength">
+                                {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'mobilePhone'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyMobilePhone" maxlength="30"
-                                name="emergencyMobilePhone" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyMobilePhone" [disabled]="isReadOnly" maxlength="20" minlength="10"
+                            #emergencyMobilePhone="ngModel"  name="emergencyMobilePhone" matInput>
+                            <mat-error *ngIf="!emergencyMobilePhone.errors?.required && emergencyMobilePhone.errors?.minlength">
+                                {{'minLengthTelephoneNumber'|translate}}</mat-error>   
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'email'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyEmail" #emergencyEmail="ngModel" appEmailvalidator name="emergencyEmail"
+                            <input [(ngModel)]="staffAddModel.staffMaster.emergencyEmail" [disabled]="isReadOnly" #emergencyEmail="ngModel" appEmailvalidator name="emergencyEmail"
                                 matInput>
                             <mat-error *ngIf="emergencyEmail.errors?.emailvalidator">
                                 {{'pleaseProvideAValidEmailAddress'|translate}}

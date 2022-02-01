@@ -29,7 +29,7 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'vex-grade-settings',
   templateUrl: './grade-settings.component.html',
@@ -44,23 +44,24 @@ export class GradeSettingsComponent implements OnInit {
   pageTitle = 'US Common Core Standards';
   pageId: string = '';
 
-  constructor(private pageRolePermissions: PageRolesPermission) { }
+    
+    constructor(private pageRolePermissions: PageRolesPermission, private defaultValuesService: DefaultValuesService,public translateService: TranslateService,) { }
 
   ngOnInit(): void {
     let permittedSubmenuList = this.pageRolePermissions.getPermittedSubCategories('/school/settings/grade-settings');
     permittedSubmenuList.map((option)=>{
         this.pages.push(option.title);
     })
-    let availablePageId=localStorage.getItem("pageId");
+    let availablePageId=this.defaultValuesService.getPageId();
     if(!availablePageId){
-          localStorage.setItem("pageId",this.pages[0]);
+          this.defaultValuesService.setPageId(this.pages[0]);
     }
-    this.pageId = localStorage.getItem("pageId");
+    this.pageId = this.defaultValuesService.getPageId();
   }
 
   getSelectedPage(pageId){
     this.pageId = pageId;
-    localStorage.setItem("pageId", pageId);
+   this.defaultValuesService.setPageId(pageId);
   }
 
 }

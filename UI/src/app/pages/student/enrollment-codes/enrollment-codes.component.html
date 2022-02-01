@@ -29,7 +29,7 @@
                 <mat-icon [icIcon]="icFilterList"></mat-icon>
             </button>
 
-            <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+            <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
                 (click)='goToAdd()'>
                 <ic-icon [icon]="icAdd" inline="true" size="24px">
                 </ic-icon>
@@ -70,12 +70,15 @@
         </ng-container>
 
         <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef class="uppercase">{{'action'|translate}}</th>
+            <th mat-header-cell *matHeaderCellDef class="uppercase">
+                <ng-container *ngIf="this.defaultValuesService.checkAcademicYear()">
+                    {{'action' | translate}}
+                  </ng-container>            </th>
             <td mat-cell *matCellDef="let element">
-                <a *ngIf="permissions?.edit" (click)="openEditdata(element)" class="mr-3 cursor-pointer">
+                <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="openEditdata(element)" class="mr-3 cursor-pointer">
                     <mat-icon [icIcon]="icEdit"></mat-icon>
                 </a>
-                <a *ngIf="permissions?.delete" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
+                <a *ngIf="permissions?.delete && this.defaultValuesService.checkAcademicYear()" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
                     <mat-icon [icIcon]="icDelete"></mat-icon>
                 </a>
             </td>
@@ -89,7 +92,7 @@
 
         <ng-container matColumnDef="noData">
             <td mat-footer-cell *matFooterCellDef colspan="6">
-                No Data
+                {{'noData' | translate}}
             </td>
         </ng-container>
 

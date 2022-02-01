@@ -1,0 +1,598 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="card p-4 mb-6">
+    <h4 class="text-primary font-medium mb-2">
+        <mat-icon [icIcon]="icListAlt" class="align-middle mr-2"></mat-icon>{{ 'includeInReport' | translate }}
+    </h4>
+    <mat-divider></mat-divider>
+    <div class="mt-4">
+        <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isGeneralInfo" class="mr-4 mb-2" color="primary">{{
+            'generalInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isEnrollmentInfo" class="mr-4 mb-2" color="primary">{{
+            'enrollmentInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isAddressInfo" class="mr-4 mb-2" color="primary">{{
+            'addressContacts' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isFamilyInfo" class="mr-4 mb-2" color="primary">{{
+            'familyInformation' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isMedicalInfo" class="mr-4 mb-2" color="primary">{{
+            'medicalInfo' | translate }}</mat-slide-toggle>
+        <!-- <mat-slide-toggle [(ngModel)]="studentInfoReportModel.isComments" class="mr-4 mb-2" color="primary">{{ 'comments' | translate }}</mat-slide-toggle> -->
+    </div>
+</div>
+<div class="card">
+    <h4 class="text-primary font-medium p-4">
+        <mat-icon [icIcon]="icSchool" class="align-middle mr-2"></mat-icon>{{ 'selectStudents' | translate }}
+    </h4>
+    <mat-divider></mat-divider>
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                <div class="flex w-full items-center">
+                    <input [formControl]="searchCtrl"
+                        class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" mat-icon-button type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <a (click)="showAdvanceSearchPanel = true;" [class.disabled]="totalCount == null"
+                        class="text-primary cursor-pointer ml-3 md:w-full">
+                        <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
+                        <span class="ml-2 hidden lg:inline-block">
+                            {{'advanceSearch' | translate}}
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden">
+        <table mat-table [dataSource]="studentModelList" class="mat-elevation-z8">
+            <ng-container matColumnDef="studentCheck">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox color="primary" [class.hidden]="totalCount == null || totalCount == 0" #masterCheckBox
+                        [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox color="primary" [checked]="element.checked"
+                        (change)="onChangeSelection($event.checked,element.studentId)"></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="studentName">
+                <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.firstGivenName}} {{element.middleName
+                    ? ''+element.middleName+' ':''}}{{element.lastFamilyName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="studentId">
+                <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.studentInternalId | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="alternateId">
+                <th mat-header-cell *matHeaderCellDef>{{'alternateId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.alternateId | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="gradeLevel">
+                <th mat-header-cell *matHeaderCellDef>{{'gradeLevel' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element?.gradeLevelTitle | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="section">
+                <th mat-header-cell *matHeaderCellDef>{{'section' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.sectionName | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.homePhone | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolName">
+                <th mat-header-cell *matHeaderCellDef>{{'schoolName' | translate}}</th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.schoolName | EmtyValueCheckPipe}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{'status' | translate}}</th>
+                <td mat-cell *matCellDef="let element" [ngClass]="element.isActive?'text-green':'text-red'">
+                    {{element.isActive | EmtyBooleanCheckPipe:'status'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="7">
+                    {{loading?('fetchingData' | translate):('noData' | translate) }}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null && totalCount != 0"></tr>
+        </table>
+    </div>
+    <mat-paginator [length]="totalCount" [class.hide]="totalCount == null || totalCount == 0" [pageSize]="pageSize"
+        [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'
+        aria-label="Select page">
+    </mat-paginator>
+
+    <mat-divider></mat-divider>
+    <div class="p-4 text-right">
+        <button mat-raised-button color="primary" (click)="generateStudentInfoReport()">{{'generateReport' | translate
+            }}</button>
+    </div>
+</div>
+
+<div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+    <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+        <vex-search-student (searchList)="getSearchResult($event)" [incomingSearchValue]="searchValue"
+            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
+            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
+        </vex-search-student>
+    </div>
+    <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
+</div>
+
+<div class="hidden" id="printReportCardId">
+    <div class="student-information-report" *ngFor="let schoolDetails of generatedReportCardData?.schoolMasterData; ">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <div class="float-left school-logo">
+                                    <img *ngIf="schoolDetails?.schoolLogo"
+                                        [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                </div>
+                                <div class="float-left information">
+                                    <h4>{{schoolDetails?.schoolName}}</h4>
+                                    <p>{{schoolDetails?.streetAddress1}}{{schoolDetails?.streetAddress2 ? ', ' +
+                                        schoolDetails?.streetAddress2 : ''}}{{schoolDetails?.city ? ', ' +
+                                        schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                        ''}}{{schoolDetails?.zip ? ', ' + schoolDetails?.zip :
+                                        ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                </div>
+                            </td>
+                            <td class="header-right text-right">
+                                <div class="text-center inline-block">Student Information Report</div>
+                                <p class="text-right">Powered by <b>openSIS</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="generate-date">
+                                <p class="text-center p-b-8">Report Generated on {{today | date : 'mediumDate'}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <ng-container *ngFor="let studentDetails of schoolDetails?.studentMasterData; let i=index;">
+
+
+                <tr *ngIf="studentInfoReportModel.isGeneralInfo">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="student-logo width-160">
+                                    <div>
+                                        <img [src]="studentDetails?.studentPhoto ? 'data:image/jpeg;base64,' + studentDetails?.studentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto"
+                                            alt="Student Photo">
+                                    </div>
+                                </td>
+                                <td class="student-details">
+                                    <h4 class="inline-block">{{studentDetails?.firstGivenName}}
+                                        {{studentDetails?.middleName
+                                        ? ''+studentDetails?.middleName+' ':''}}{{studentDetails?.lastFamilyName}}</h4>
+                                    <span class="inline-block"> | </span>
+                                    <!-- <p class="inline-block"> {{studentDetails?.homeAddressLineOne}}{{studentDetails?.homeAddressLineTwo
+                                        ? ', ' + studentDetails?.homeAddressLineTwo :
+                                        ''}}{{studentDetails?.homeAddressCity ? ', ' +
+                                        studentDetails?.homeAddressCity :
+                                        ''}}{{studentDetails?.homeAddressState ? ', ' +
+                                        studentDetails?.homeAddressState :
+                                        ''}}{{studentDetails?.homeAddressZip ? ', ' +
+                                        studentDetails?.homeAddressZip :
+                                        ''}}{{studentDetails?.homeAddressCountry ? ', ' +
+                                        studentDetails?.homeAddressCountry : ''}}</p> -->
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>Student ID</b> : <span>{{studentDetails?.studentId}}</span></td>
+                                                <td><b>Alternate ID</b> : <span>{{studentDetails?.alternateId}}</span>
+                                                </td>
+                                                <td><b>Date of Birth</b> : <span>{{studentDetails?.dob | date :
+                                                        'MMM/dd/y'}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Grade</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
+                                                <td><b>Gender</b> : <span>{{studentDetails?.gender}}</span></td>
+                                                <td><b>Ethnicity</b> : <span>{{studentDetails?.ethnicity}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>First Language</b> :
+                                                    <span>{{studentDetails?.firstLanguage}}</span></td>
+                                                <td><b>Nationality</b> : <span>{{studentDetails?.nationality}}</span>
+                                                </td>
+                                                <!-- <td><b>Ethnicity</b> : <span>{{studentDetails?.ethnicity}}</span></td> -->
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr *ngIf="studentInfoReportModel.isAddressInfo">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="p-20 width-160">
+                                    <h4 class="f-s-18"><strong>Address<br>Information</strong></h4>
+                                </td>
+                                <td class="p-20">
+                                    <table class="address-information">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-gray">
+                                                    <div class="card clearfix">
+                                                        <div class="float-left m-r-20">
+                                                            <img [src]="homeAddressLogo" alt="Home Icon" width="60"
+                                                                height="60">
+                                                        </div>
+                                                        <div class="float-left">
+                                                            <h4 class="font-bold m-b-15 f-s-20">Home Address</h4>
+                                                            <p class="f-s-16">
+                                                                {{studentDetails?.homeAddressLineOne}}{{studentDetails?.homeAddressLineTwo
+                                                                ? ', ' + studentDetails?.homeAddressLineTwo :
+                                                                ''}}{{studentDetails?.homeAddressCity ? ', ' +
+                                                                studentDetails?.homeAddressCity :
+                                                                ''}}{{studentDetails?.homeAddressState ? ', ' +
+                                                                studentDetails?.homeAddressState :
+                                                                ''}}{{studentDetails?.homeAddressZip ? ', ' +
+                                                                studentDetails?.homeAddressZip :
+                                                                ''}}{{studentDetails?.homeAddressCountry ? ', ' +
+                                                                studentDetails?.homeAddressCountry : ''}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td width="20"></td>
+                                                <td class="bg-gray">
+                                                    <div class="card clearfix">
+                                                        <div class="float-left m-r-20">
+                                                            <img [src]="mailAddressLogo" alt="Mailbox Icon" width="60"
+                                                                height="60">
+                                                        </div>
+                                                        <div class="float-left">
+                                                            <h4 class="font-bold m-b-15 f-s-20">Mailing Address</h4>
+                                                            <p class="f-s-16">
+                                                                {{studentDetails?.mailingAddressLineOne}}{{studentDetails?.mailingAddressLineTwo
+                                                                ? ', ' + studentDetails?.mailingAddressLineTwo :
+                                                                ''}}{{studentDetails?.mailingAddressCity ? ', ' +
+                                                                studentDetails?.mailingAddressCity :
+                                                                ''}}{{studentDetails?.mailingAddressState ? ', ' +
+                                                                studentDetails?.mailingAddressState :
+                                                                ''}}{{studentDetails?.mailingAddressZip ? ', ' +
+                                                                studentDetails?.mailingAddressZip :
+                                                                ''}}{{studentDetails?.mailingAddressCountry ? ', ' +
+                                                                studentDetails?.mailingAddressCountry : ''}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr
+                    *ngIf="studentInfoReportModel.isFamilyInfo && studentDetails?.contacts?.parentInfoListForView?.length > 0">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="p-20 width-160">
+                                    <h4 class="f-s-18"><strong>Family<br>Information</strong></h4>
+                                </td>
+                                <td class="p-20">
+                                    <table class="family-information">
+                                        <tbody>
+                                            <ng-container *ngFor="let parentDetails of studentDetails?.contacts?.parentInfoListForView; let e = even; let parentIndex = index;">
+
+                                            <tr *ngIf="e">
+                                                <ng-container
+                                                    *ngFor="let parentDetails of studentDetails?.contacts?.parentInfoListForView; let i = index;">
+                                                    <ng-container *ngIf="i <= parentIndex+1 && i >= parentIndex">
+                                                        <td class="bg-gray">
+                                                            <div class="card clearfix">
+                                                                <div class="float-left m-r-20">
+                                                                    <img [src]="parentDetails?.parentPhoto ? 'data:image/jpeg;base64,' + parentDetails?.parentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto"
+                                                                        alt="Parent Photo" width="75">
+                                                                </div>
+                                                                <div class="float-left">
+                                                                    <h4 class="font-bold m-b-10 f-s-20">
+                                                                        {{parentDetails?.firstname}}
+                                                                        {{parentDetails?.middlename
+                                                                        ? ''+parentDetails?.middlename+'
+                                                                        ':''}}{{parentDetails?.lastname}}</h4>
+                                                                    <div
+                                                                        class="bg-black rounded-3 text-white p-y-5 p-x-10 f-s-16 inline-block font-medium m-b-8 text-center">
+                                                                        {{parentDetails?.contactType}} Emergency Contact</div>
+                                                                    <p class="f-s-16 m-b-5"><strong>Contact
+                                                                            Relationship</strong> :
+                                                                        {{parentDetails?.relationship}}</p>
+                                                                    <p class="f-s-16 m-b-5"><strong>Custody of
+                                                                            student</strong> : {{parentDetails?.isCustodian
+                                                                        ? 'Yes' : 'No'}}</p>
+                                                                    <p class="f-s-16 m-b-5"><strong>Address</strong> :
+                                                                        {{parentDetails?.parentAddress?.addressLineOne}}{{parentDetails?.parentAddress?.addressLineTwo
+                                                                        ? ', ' +
+                                                                        parentDetails?.parentAddress?.addressLineTwo :
+                                                                        ''}}{{parentDetails?.parentAddress?.city ? ', ' +
+                                                                        parentDetails?.parentAddress?.city :
+                                                                        ''}}{{parentDetails?.parentAddress?.state ? ', ' +
+                                                                        parentDetails?.parentAddress?.state :
+                                                                        ''}}{{parentDetails?.parentAddress?.zip ? ', ' +
+                                                                        parentDetails?.parentAddress?.zip :
+                                                                        ''}}{{parentDetails?.parentAddress?.country ? ', ' +
+                                                                        parentDetails?.parentAddress?.country : ''}}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td *ngIf="i === parentIndex" width="20"></td>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="4" class="p-b-8"></td>
+                                            </tr>
+                                        </ng-container>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <ng-container *ngIf="studentInfoReportModel.isMedicalInfo">
+                    <tr
+                        *ngIf="studentDetails?.studentMedicalProvider?.length > 0 || studentDetails?.studentMedicalAlert?.length > 0 || studentDetails?.studentMedicalNote?.length > 0 || studentDetails?.studentMedicalNurseVisit?.length > 0 || studentDetails?.studentMedicalImmunization?.length > 0">
+
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="p-20 width-160">
+                                        <h4 class="f-s-18"><strong>Medical<br>Information</strong></h4>
+                                    </td>
+                                    <td class="student-details">
+                                        <ng-container *ngIf="studentDetails?.studentMedicalProvider?.length > 0">
+                                            <p class="f-s-16 m-b-8">Provider Info</p>
+                                            <table class="border-table"
+                                                *ngFor="let medcialDetails of studentDetails?.studentMedicalProvider">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Primary Care Physician :
+                                                            </p>
+                                                            <p class="f-s-16">{{medcialDetails?.primaryCarePhysician}}
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Primary Care Physician's
+                                                                Phone :</p>
+                                                            <p class="f-s-16">
+                                                                {{medcialDetails?.primaryCarePhysicianPhone}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Insurance Company :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.insuranceCompany}}</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Insurance Company's Phone
+                                                                :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.insuranceCompanyPhone}}
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Policy Number :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.policyNumber}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Policy Holder's Name :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.policyHolderName}}</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Preferred Medical Facility
+                                                                :</p>
+                                                            <p class="f-s-16">
+                                                                {{medcialDetails?.preferredMedicalFacility}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Preferred Medical
+                                                                Facility's Phone :</p>
+                                                            <p class="f-s-16">
+                                                                {{medcialDetails?.preferredMedicalFacilityPhone}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Dentist :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.dentistName}}</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Dentist's Phone :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.dentistPhone}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Vision :</p>
+                                                            <p class="f-s-16">{{medcialDetails?.visionName}}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="f-s-16 font-bold m-b-5">Vision Provider's Phone :
+                                                            </p>
+                                                            <p class="f-s-16">{{medcialDetails?.visionProviderPhone}}
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="studentDetails?.studentMedicalAlert?.length > 0">
+                                            <p class="f-s-16 m-b-8 m-t-20">Alert Information</p>
+
+                                            <table class="border-table information-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="bg-slate f-s-16"><strong>Critical Alert</strong></td>
+                                                        <td class="bg-slate f-s-16"><strong>Alert Description</strong>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr *ngFor="let alertInfo of studentDetails?.studentMedicalAlert">
+                                                        <td class="f-s-16">{{alertInfo?.alertType}}</td>
+                                                        <td class="f-s-16">{{alertInfo?.alertDescription}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="studentDetails?.studentMedicalNote?.length > 0">
+                                            <p class="f-s-16 m-b-8 m-t-20">Medical Notes</p>
+                                            <table class="border-table information-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="bg-slate f-s-16"><strong>Date</strong></td>
+                                                        <td class="bg-slate f-s-16"><strong>Doctor's Note</strong></td>
+                                                    </tr>
+                                                    <tr *ngFor="let medicalnote of studentDetails?.studentMedicalNote">
+                                                        <td class="f-s-16">{{medicalnote?.noteDate | date :
+                                                            'mediumDate'}}</td>
+                                                        <td class="f-s-16">{{medicalnote?.medicalNote}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="studentDetails?.studentMedicalImmunization?.length > 0">
+                                            <p class="f-s-16 m-b-8 m-t-20">Immunization/Physical Record</p>
+                                            <table class="border-table information-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="bg-slate f-s-16"><strong>Type</strong></td>
+                                                        <td class="bg-slate f-s-16"><strong>Date</strong></td>
+                                                        <td class="bg-slate f-s-16"><strong>Comments</strong></td>
+                                                    </tr>
+                                                    <tr
+                                                        *ngFor="let physicalRecord of studentDetails?.studentMedicalImmunization">
+                                                        <td class="f-s-16">{{physicalRecord?.immunizationType}}</td>
+                                                        <td class="f-s-16">{{physicalRecord?.immunizationDate | date :
+                                                            'mediumDate'}}</td>
+                                                        <td class="f-s-16">{{physicalRecord?.comment}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="studentDetails?.studentMedicalNurseVisit?.length > 0">
+                                            <p class="f-s-16 m-b-8 m-t-20">Nurse Visit Record</p>
+                                            <table class="border-table information-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="bg-slate"><strong>Date</strong></td>
+                                                        <td class="bg-slate"><strong>Time In</strong></td>
+                                                        <td class="bg-slate"><strong>Time Out</strong></td>
+                                                        <td class="bg-slate"><strong>Reason</strong></td>
+                                                        <td class="bg-slate"><strong>Result</strong></td>
+                                                    </tr>
+                                                    <tr
+                                                        *ngFor="let nurseRecord of studentDetails?.studentMedicalNurseVisit">
+                                                        <td>{{nurseRecord?.nurseVisitDate | date : 'mediumDate'}}</td>
+                                                        <td>{{nurseRecord?.timeIn | date : 'shortTime'}}</td>
+                                                        <td>{{nurseRecord?.timeOut | date : 'shortTime'}}</td>
+                                                        <td>{{nurseRecord?.reason}}</td>
+                                                        <td>{{nurseRecord?.result}}</td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <tr *ngIf="studentInfoReportModel.isEnrollmentInfo && studentDetails?.studentEnrollment?.length > 0">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="p-20 width-160">
+                                    <h4 class="f-s-18"><strong>Enrollment<br>Information</strong></h4>
+                                </td>
+                                <td class="student-details">
+
+                                    <table class="border-table information-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate"><strong>School Year</strong></td>
+                                                <td class="bg-slate"><strong>Enrollment Date &amp; Code</strong></td>
+                                                <td class="bg-slate"><strong>Grade Level</strong></td>
+                                                <td class="bg-slate"><strong>Exit Date &amp; Code</strong></td>
+                                                <td class="bg-slate"><strong>School Name</strong></td>
+                                            </tr>
+                                            <tr *ngFor="let enrollmentDetails of studentDetails?.studentEnrollment">
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    {{enrollmentDetails?.startYear && enrollmentDetails?.startYear ?
+                                                    enrollmentDetails?.startYear + ' - ' + enrollmentDetails?.endYear :
+                                                    ''}}
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.enrollmentDate">
+                                                        {{enrollmentDetails?.enrollmentDate | date : 'mediumDate'}} -
+                                                        Enrolled as {{enrollmentDetails?.enrollmentCode}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.enrollmentDate">
+                                                        {{enrollmentDetails?.gradeLevelTitle}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.exitDate">
+                                                        {{enrollmentDetails?.exitDate | date : 'mediumDate'}} -
+                                                        {{enrollmentDetails?.exitCode}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    {{enrollmentDetails?.schoolName}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </ng-container>
+
+        </table>
+        <div style="page-break-before:always">&nbsp;</div>
+
+    </div>
+</div>

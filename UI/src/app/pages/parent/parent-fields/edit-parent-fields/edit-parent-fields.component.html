@@ -24,7 +24,6 @@
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'fieldType' | translate}}</mat-label>
         <mat-select name="gender" formControlName="fieldType" required>
-            <mat-option value=""></mat-option>
             <mat-option *ngFor="let customFieldOption of customFieldOptionsEnum" [value]="customFieldOption">{{customFieldOption}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('fieldType').hasError('required')">{{'fieldTypeIsRequired'|translate}}</mat-error>

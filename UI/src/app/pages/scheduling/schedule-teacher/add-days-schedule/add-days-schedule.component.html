@@ -51,8 +51,8 @@
         <thead>
             <tr>
                 <th class="whitespace-nowrap">Day</th>
-                <th>Period</th>
-                <th>Room</th>
+                <th>{{'period' | translate}}</th>
+                <th>{{'room' | translate}}</th>
                 <th class="whitespace-nowrap">Take Attendance</th>
             </tr>
         </thead>
@@ -71,7 +71,7 @@
 <!-- Calendar Schedule -->
 <div *ngIf="scheduleDetails.scheduleType=='Calendar Schedule'" class="relative">
 
-<p class="font-medium py-4 text-lg"><span class="text-green">Schedule Type</span> : Calendar Schedule</p>
+<p class="font-medium py-4 text-lg"><span class="text-green">{{'scheduleType' |translate}}</span> : {{'calendarSchedule' |translate}}</p>
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
 <div class="flex justify-between items-center">
@@ -143,15 +143,15 @@
 <div *ngIf="scheduleDetails.scheduleType=='Block Schedule'">
 
 <mat-divider class="-mx-6 text-border"></mat-divider>
-<p class="font-medium py-4 text-lg"><span class="text-green">Schedule Type</span> : Block/Rotation Days</p>
+<p class="font-medium py-4 text-lg"><span class="text-green">{{'scheduleType' | translate}}</span> : {{'blockRotationDays' |translate}}</p>
 <div class="-mx-6 border-t overflow-auto">
     <table class="w-full calendar-schedule-table">
         <thead>
             <tr>
-                <th class="whitespace-nowrap">Block/Rotation Days</th>
-                <th>Period</th>
-                <th>Room</th>
-                <th class="whitespace-nowrap">Take Attendance</th>
+                <th class="whitespace-nowrap">{{'blockRotationDays' |translate}}</th>
+                <th>{{'period' | translate}}</th>
+                <th>{{'room' | translate}}</th>
+                <th class="whitespace-nowrap">{{'takeAttendance' | translate}}</th>
             </tr>
         </thead>
         <tbody>

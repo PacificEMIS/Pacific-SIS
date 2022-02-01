@@ -4,46 +4,46 @@
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.homePhone
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homePhone
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.mobilePhone
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mobilePhone
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'officePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.officePhone
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.officePhone
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.personalEmail)">{{staffViewDetails.staffMaster.personalEmail|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.personalEmail)">{{staffViewDetails.staffMaster.personalEmail|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'schoolEmail' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.schoolEmail)">{{staffViewDetails.staffMaster.schoolEmail|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.schoolEmail)">{{staffViewDetails.staffMaster.schoolEmail|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'twitter' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.twitter)">{{staffViewDetails.staffMaster.twitter|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.twitter)">{{staffViewDetails.staffMaster.twitter|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'facebook' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.facebook)">{{staffViewDetails.staffMaster.facebook|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.facebook)">{{staffViewDetails.staffMaster.facebook|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'instagram' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.instagram)">{{staffViewDetails.staffMaster.instagram|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.instagram)">{{staffViewDetails.staffMaster.instagram|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'youtube' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.youtube)">{{staffViewDetails.staffMaster.youtube|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.youtube)">{{staffViewDetails.staffMaster.youtube|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'linkedIn' | translate}}</label>
-                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate" (click)="openUrl(staffViewDetails.staffMaster.linkedin)">{{staffViewDetails.staffMaster.linkedin|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-blue cursor-pointer ading-5 sm:mt-0 sm:col-span-2 truncate whitespace-pre-wrap" (click)="openUrl(staffViewDetails.staffMaster.linkedin)">{{staffViewDetails.staffMaster.linkedin|EmtyValueCheckPipe}}</p>
             </li>
         </ul>
 
@@ -64,46 +64,43 @@
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.homeAddressLineOne |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homeAddressLineOne |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress2' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.homeAddressLineTwo |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homeAddressLineTwo |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'country' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{nameOfMiscValues.countryName|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.countryName|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'stateProvinceLocality' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.homeAddressState
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homeAddressState
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'city' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.homeAddressCity
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homeAddressCity
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'zipPostalCode' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.homeAddressZip
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.homeAddressZip
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'busNo' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.busNo|EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.busNo|EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'busPickup' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.busPickup ? "Yes"
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.busPickup ? "Yes"
                     :"No"}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'busDropoff' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.busDropoff ?
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.busDropoff ?
                     "Yes" :"No"}}</p>
             </li>
         </ul>
@@ -116,50 +113,39 @@
                 *ngIf="staffViewDetails.staffMaster.mailingAddressLineOne || staffViewDetails.staffMaster.mailingAddressLineTwo ||staffViewDetails.staffMaster.mailingAddressCity|| staffViewDetails.staffMaster.mailingAddressState||nameOfMiscValues.mailingAddressCountry || staffViewDetails.staffMaster.mailingAddressZip">
                 <span class="text-gray-light">|</span>
                 <a (click)="showMailingAddressOnGoogleMap()" class="cursor-pointer ml-3"><i
-                        class="icon icon-location4 mr-2"></i>Show on Map</a></span>
+                        class="icon icon-location4 mr-2"></i>{{'showOnMap'| translate}}</a></span>
         </div>
         <p class="mb-6" *ngIf="staffViewDetails.staffMaster.mailingAddressSameToHome; else mailingAddressNotSameToHome">
             <span class="same-as-home-address">{{'sameAsHomeAddress' | translate}}</span>
         </p>
         <ng-template #mailingAddressNotSameToHome>
-            <p class="mb-6"><span class="different-from-home-address">Different from Home Address</span></p>
+            <p class="mb-6"><span class="different-from-home-address">{{'differentFromHomeAddress' |translate}}</span></p>
         </ng-template>
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.mailingAddressLineOne
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mailingAddressLineOne | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress2' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.mailingAddressLineTwo
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mailingAddressLineTwo | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'country' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.mailingAddressCountry
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.mailingAddressCountry | EmtyValueCheckPipe}}</p>
             </li>
 
             <li>
                 <label class="text-sm leading-5 text-gray">{{'stateProvinceLocality' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.mailingAddressState
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mailingAddressState | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'city' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.mailingAddressCity
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mailingAddressCity | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'zipPostalCode' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.mailingAddressZip
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.mailingAddressZip | EmtyValueCheckPipe}}</p>
             </li>
         </ul>
 
@@ -171,42 +157,30 @@
                 <label class="text-sm leading-5 text-gray">{{'emergencyContactName' | translate}}</label>
 
                 <p *ngIf="(staffViewDetails.staffMaster.emergencyFirstName !== null || staffViewDetails.staffMaster.emergencyFirstName !== '') || (staffViewDetails.staffMaster.emergencyLastName !== null || staffViewDetails.staffMaster.emergencyLastName !== '')"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.emergencyFirstName
-                    }} {{staffViewDetails.staffMaster.emergencyLastName}}
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.emergencyFirstName}} {{staffViewDetails.staffMaster.emergencyLastName}}
                 </p>
                 <p *ngIf="(staffViewDetails.staffMaster.emergencyFirstName === null || staffViewDetails.staffMaster.emergencyFirstName === '') && (staffViewDetails.staffMaster.emergencyLastName === null || staffViewDetails.staffMaster.emergencyLastName === '')"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">-
-                </p>
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">-</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'relationshipToStaff' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.relationshipToStaff
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.relationshipToStaff | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.emergencyHomePhone
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.emergencyHomePhone | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.emergencyWorkPhone
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.emergencyWorkPhone | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails.staffMaster.emergencyMobilePhone
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.emergencyMobilePhone | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'email' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails.staffMaster.emergencyEmail
-                    |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails.staffMaster.emergencyEmail | EmtyValueCheckPipe}}</p>
             </li>
         </ul>
     </div>

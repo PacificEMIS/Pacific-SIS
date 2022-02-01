@@ -38,6 +38,7 @@ import {DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { PreferenceComponent } from '../../school/preference/preference.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatPaginatorModule,
     DragDropModule,
     MatSlideToggleModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule
   ]
 })
 export class SchoolSettingsModule { }

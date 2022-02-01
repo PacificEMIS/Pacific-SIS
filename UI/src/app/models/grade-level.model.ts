@@ -8,6 +8,7 @@ export class GetAllGradeLevelsModel extends CommonField{
     public _token: string;
     public _failure: true;
     public _message: string;  
+    public isListView:boolean;
 }
 
 class tblGradelevel {
@@ -42,11 +43,11 @@ export class AddGradeLevelModel extends CommonField{
 
 
 class gradeEquivalencyList{
-    equivalencyId: string;
+    equivalencyId: number;
     gradeLevelEquivalency: string;
     gradelevels:[]
 }
 
 export class GelAllGradeEquivalencyModel extends CommonField{
-    gradeEquivalencyList:gradeEquivalencyList;
+    gradeEquivalencyList:gradeEquivalencyList[];
 }

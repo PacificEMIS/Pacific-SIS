@@ -31,7 +31,7 @@ import { CourseSectionService } from '../../../services/course-section.service';
 import { ClassRoomURLInCourseSectionModel, CourseSectionAddViewModel, GetAllCourseSectionModel } from 'src/app/models/course-section.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
-
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-course-overview',
   templateUrl: './course-overview.component.html',
@@ -63,10 +63,11 @@ export class CourseOverviewComponent implements OnInit {
     private snackbar: MatSnackBar,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
     ) {
     //translateService.use('en');
-    this.courseSectionId = JSON.parse(localStorage.getItem('courseSectionId'));
-    this.selectedCourseSection = JSON.parse(localStorage.getItem('selectedCourseSection'));
+    this.courseSectionId = this.defaultValuesService.getCourseSectionId();
+    this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
     this.meatingDays = this.selectedCourseSection.meetingDays.replace(/[0-9]/g, '');
     this.meatingDays = this.selectedCourseSection.meetingDays.replace(this.meatingDays, '').split('').map(
       x => {
@@ -80,7 +81,7 @@ export class CourseOverviewComponent implements OnInit {
   }
   getAllCourseSection(){
     this.getAllCourseSectionModel.courseId = this.selectedCourseSection.courseId;
-    this.getAllCourseSectionModel.academicYear = +sessionStorage.getItem('academicyear');
+    this.getAllCourseSectionModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.courseSectionService.getAllCourseSection(this.getAllCourseSectionModel).subscribe(
       (res: GetAllCourseSectionModel) => {
         if (res){
@@ -99,7 +100,7 @@ export class CourseOverviewComponent implements OnInit {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -174,7 +175,7 @@ export class CourseOverviewComponent implements OnInit {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

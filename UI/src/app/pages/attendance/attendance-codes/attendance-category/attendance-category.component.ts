@@ -33,7 +33,7 @@ import { AttendanceCodeService } from '../../../../services/attendance-code.serv
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AttendanceCodeCategoryModel } from '../../../../models/attendance-code.model';
 import { CommonService } from 'src/app/services/common.service';
-
+import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
   selector: 'vex-attendance-category',
   templateUrl: './attendance-category.component.html',
@@ -58,6 +58,7 @@ export class AttendanceCategoryComponent implements OnInit {
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
       if(data!=null && data!=undefined){
         this.editMode=data.editMode;
@@ -93,10 +94,10 @@ export class AttendanceCategoryComponent implements OnInit {
   addAttendanceCategory() {
     if(this.form.valid && this.form.value.title!=''){
     this.attendanceCategoryModel.attendanceCodeCategories.title=this.form.value.title;
-    this.attendanceCategoryModel.attendanceCodeCategories.academicYear=+sessionStorage.getItem("academicyear");
+    // this.attendanceCategoryModel.attendanceCodeCategories.academicYear=this.defaultValuesService.getAcademicYear();
     this.attendanceCodeService.addAttendanceCodeCategories(this.attendanceCategoryModel).subscribe((res: any)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else if(res._failure){
@@ -118,11 +119,11 @@ export class AttendanceCategoryComponent implements OnInit {
     updateAttendanceCategory() {
     if(this.form.valid && this.form.value.title!=''){
       this.attendanceCategoryModel.attendanceCodeCategories.attendanceCategoryId=this.editDetails.attendanceCategoryId;
-      this.attendanceCategoryModel.attendanceCodeCategories.academicYear=this.editDetails.academicYear;
+      // this.attendanceCategoryModel.attendanceCodeCategories.academicYear=this.editDetails.academicYear;
       this.attendanceCategoryModel.attendanceCodeCategories.title=this.form.value.title;
       this.attendanceCodeService.updateAttendanceCodeCategories(this.attendanceCategoryModel).subscribe((res: any)=>{
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Attendance Category is Failed to Update!. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Attendance Category is Failed to Update!. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }else if(res._failure){

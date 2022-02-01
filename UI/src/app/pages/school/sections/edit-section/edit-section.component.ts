@@ -36,6 +36,7 @@ import { GetAllSectionModel } from '../../../../models/section.model';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-edit-section',
   templateUrl: './edit-section.component.html',
@@ -60,7 +61,9 @@ export class EditSectionComponent implements OnInit {
     private snackbar: MatSnackBar,
     private router: Router,
     private commonService: CommonService,
-    @Inject(MAT_DIALOG_DATA) public data) { }
+    @Inject(MAT_DIALOG_DATA) public data,
+    private defaultValuesService: DefaultValuesService,
+    ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -86,13 +89,13 @@ export class EditSectionComponent implements OnInit {
   }
   submit() {
     if (this.form.valid) {
-      this.sectionAddModel.tableSections.schoolId = +sessionStorage.getItem("selectedSchoolId");
-      if (this.data && (Object.keys(this.data).length !== 0 || Object.keys(this.data).length > 0)) {
+        this.sectionAddModel.tableSections.schoolId=this.defaultValuesService.getSchoolID();
+        if (this.data && (Object.keys(this.data).length !== 0 || Object.keys(this.data).length > 0) ){
 
         this.sectionAddModel.tableSections.sectionId = this.data.editDetails.sectionId;
         this.sectionService.UpdateSection(this.sectionAddModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Section Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Section Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -114,7 +117,7 @@ export class EditSectionComponent implements OnInit {
       } else {
         this.sectionService.SaveSection(this.sectionAddModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Section Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Section Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

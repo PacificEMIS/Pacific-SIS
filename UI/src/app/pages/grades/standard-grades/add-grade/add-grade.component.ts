@@ -35,6 +35,7 @@ import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { stagger60ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-grade',
@@ -56,6 +57,7 @@ export class AddGradeComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<AddGradeComponent>,
     public translateService: TranslateService,
+    private defaultValuesService: DefaultValuesService,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
@@ -102,7 +104,7 @@ export class AddGradeComponent implements OnInit {
         this.gradesService.addGrade(this.gradeAddViewModel).subscribe(
           (res: GradeAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -132,7 +134,7 @@ export class AddGradeComponent implements OnInit {
         this.gradesService.updateGrade(this.gradeAddViewModel).subscribe(
           (res: GradeAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

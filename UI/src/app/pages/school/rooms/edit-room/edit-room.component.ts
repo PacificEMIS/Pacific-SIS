@@ -35,6 +35,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ValidationService } from '../../../shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-room',
@@ -60,6 +61,7 @@ export class EditRoomComponent implements OnInit {
     private snackbar:MatSnackBar,
     private roomService:RoomService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
     ) {
       this.form=fb.group({
         roomId:[0],
@@ -76,6 +78,7 @@ export class EditRoomComponent implements OnInit {
       else{
         this.editMode=true;
         this.roomTitle="editRoom";
+        delete data?.academicYear;
         this.roomAddViewModel.tableRoom=data
         this.form.controls.roomId.patchValue(data.roomId)
         this.form.controls.title.patchValue(data.title)
@@ -102,7 +105,7 @@ export class EditRoomComponent implements OnInit {
       this.roomService.addRoom(this.roomAddViewModel).subscribe(
         (res) => {
           if(typeof(res) === 'undefined'){
-            this.snackbar.open('Room list failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Room list failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -134,7 +137,7 @@ export class EditRoomComponent implements OnInit {
       this.roomService.updateRoom(this.roomAddViewModel).subscribe(
         (res)=>{
           if(typeof(res)=='undefined'){
-            this.snackbar.open('Room list failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Room list failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

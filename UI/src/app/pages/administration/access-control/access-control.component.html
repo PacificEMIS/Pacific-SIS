@@ -9,11 +9,11 @@
     <div class="px-gutter py-3">
         <a (click)="accordion.openAll()"
             class="cursor-pointer inline-block px-2 py-1 border rounded text-blue mr-4 bg-light-grey hover:bg-primary hover:text-white">
-            <mat-icon [icIcon]="icExpandAll" class="mr-1 align-middle"></mat-icon> Expand All
+            <mat-icon [icIcon]="icExpandAll" class="mr-1 align-middle"></mat-icon> {{'expandAll'|translate}}
         </a>
         <a (click)="accordion.closeAll()"
             class="cursor-pointer inline-block px-2 py-1 border rounded text-blue bg-light-grey hover:bg-primary hover:text-white">
-            <mat-icon [icIcon]="icCollapseAll" class="mr-1 align-middle"></mat-icon> Collapse All
+            <mat-icon [icIcon]="icCollapseAll" class="mr-1 align-middle"></mat-icon> {{'collapseAll'|translate}}
         </a>
     </div>
     <hr />

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm, ControlContainer } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolAddViewModel } from '../../models/school-master.model';
@@ -41,15 +41,19 @@ import { StaffAddModel } from '../../models/staff.model';
 import { StaffService } from '../../services/staff.service';
 import icCheckboxChecked from '@iconify/icons-ic/check-box';
 import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'vex-custom-field-without-form',
   templateUrl: './custom-field-without-form.component.html',
   styleUrls: ['./custom-field-without-form.component.scss'],
   animations: [stagger60ms],
-  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
+  // viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
-export class CustomFieldWithoutFormComponent implements OnInit {
+export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
   schoolCreate = SchoolCreate;
   @Input() schoolDetailsForViewAndEdit;
   @Input() categoryId;
@@ -74,21 +78,25 @@ export class CustomFieldWithoutFormComponent implements OnInit {
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
   fieldsCategoryListView = new FieldsCategoryListView();
+  destroySubject$: Subject<void> = new Subject();
+
   constructor(
     private snackbar: MatSnackBar,
     private commonFunction: SharedFunction,
     private customFieldservice: CustomFieldService,
     private schoolService: SchoolService,
     private studentService: StudentService,
-    private staffService : StaffService
+    private staffService : StaffService,
+    public translateService: TranslateService,
   ) {
-    this.schoolService.getSchoolDetailsForGeneral.subscribe((res: SchoolAddViewModel) => {
+    // translateService.use("en");
+    this.schoolService.schoolDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res: SchoolAddViewModel) => {
       if(res){
-        this.schoolAddViewModel = res;
+        this.schoolDetailsForViewAndEdit = res;
         this.checkCustomValue();
       }
     });
-    this.studentService.getStudentDetailsForGeneral.subscribe((res: StudentAddModel) => {
+    this.studentService.getStudentDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StudentAddModel) => {
       if(res){
         this.studentAddModel = res;
         if(res?.fieldsCategoryList?.length>0){
@@ -96,7 +104,7 @@ export class CustomFieldWithoutFormComponent implements OnInit {
         }
       }
     })
-    this.staffService.getStaffDetailsForGeneral.subscribe((res: StaffAddModel) => {
+    this.staffService.getStaffDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StaffAddModel) => {
       if(res){
         this.staffAddModel = res;
         if(res?.fieldsCategoryList?.length>0){
@@ -137,85 +145,98 @@ export class CustomFieldWithoutFormComponent implements OnInit {
 }
 
   checkStudentCustomValue() {
-    if (this.studentAddModel?.fieldsCategoryList?.length>0) {
+    if (this.studentAddModel?.fieldsCategoryList?.length>0) {      
         this.studentCustomFields = this.studentAddModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x=> !x.systemField && !x.hide);
         if(this.studentCustomFields?.length>0){
 
         for (let studentCustomField of this.studentCustomFields) {
-          if (studentCustomField?.customFieldsValue.length == 0) {
-
+          if (studentCustomField?.customFieldsValue.length !== 0) {
+            if (studentCustomField?.type === 'Multiple SelectBox') {
+              this.studentMultiSelectValue = studentCustomField?.customFieldsValue[0].customFieldValue.split('|');
+            }
+            else if(studentCustomField?.type === 'Checkbox'){
+              if(studentCustomField.customFieldsValue[0].customFieldValue === "true"){
+                studentCustomField.customFieldsValue[0].customFieldValue = true;
+              }
+              else if (studentCustomField.customFieldsValue[0].customFieldValue === "false"){
+                studentCustomField.customFieldsValue[0].customFieldValue = false;
+              }
+            }
+          }
+          else {
             studentCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
-            if(studentCustomField.type==='Checkbox'){
-              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection==='Y'? 'true':'false';
+            if(studentCustomField.type === 'Checkbox'){
+              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection === "false" ? false : true;
             }
             else{
               studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection;
             }
           }
-          else {
-            if (studentCustomField?.type === 'Multiple SelectBox') {
-              this.studentMultiSelectValue = studentCustomField?.customFieldsValue[0].customFieldValue.split('|');
-
-            }
-          }
         }
-      } 
+      }
     }
   }
 
-  checkStaffCustomValue(){
-      if (this.staffAddModel?.fieldsCategoryList?.length>0) {
+  checkStaffCustomValue(){    
+      if (this.staffAddModel?.fieldsCategoryList?.length>0) {        
         this.staffCustomFields = this.staffAddModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x=> !x.systemField && !x.hide);
+        
         if(this.staffCustomFields?.length>0 ){
-
         for (let staffCustomField of this.staffCustomFields) {
-          if (staffCustomField?.customFieldsValue.length == 0) {
-
+          if (staffCustomField?.customFieldsValue.length !== 0) {
+            if (staffCustomField?.type === 'Multiple SelectBox') {
+              this.staffMultiSelectValue = staffCustomField?.customFieldsValue[0].customFieldValue.split('|');
+            }
+            else if(staffCustomField?.type==='Checkbox'){
+              if(staffCustomField.customFieldsValue[0].customFieldValue === "true"){
+                staffCustomField.customFieldsValue[0].customFieldValue = true;
+              }
+            else if (staffCustomField.customFieldsValue[0].customFieldValue === "false"){
+                staffCustomField.customFieldsValue[0].customFieldValue = false;
+              }
+            }
+          }
+          else {
             staffCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
-            if(staffCustomField.type==='Checkbox'){
-              staffCustomField.customFieldsValue[0].customFieldValue= staffCustomField.defaultSelection==='Y'? 'true':'false';
+            if(staffCustomField.type === 'Checkbox'){
+              staffCustomField.customFieldsValue[0].customFieldValue= staffCustomField.defaultSelection === "false" ? false : true;
             }
             else{
               staffCustomField.customFieldsValue[0].customFieldValue= staffCustomField.defaultSelection;
             }
           }
-          else {
-            if (staffCustomField?.type === 'Multiple SelectBox') {
-              this.staffMultiSelectValue = staffCustomField?.customFieldsValue[0].customFieldValue.split('|');
-              
-            }
-          }
         }
       }
-
-
       }
-    
   }
 
   checkNgOnInitCustomValue() {
 
-    if (this.schoolDetailsForViewAndEdit !== undefined) {
+    if (this.schoolDetailsForViewAndEdit !== undefined) {      
       if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory !== undefined) {
-        this.schoolAddViewModel = this.schoolDetailsForViewAndEdit;
-        if (this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId]?.customFields !== undefined) {
-
-          this.schoolCustomFields= this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
+        if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId]?.customFields !== undefined) {
+          this.schoolCustomFields= this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
           for (let schoolCustomField of this.schoolCustomFields) {
-            if (schoolCustomField.customFieldsValue.length == 0) {
-
+            if (schoolCustomField.customFieldsValue.length !== 0) {
+              if (schoolCustomField?.type === 'Multiple SelectBox') {
+                this.schoolMultiSelectValue = schoolCustomField?.customFieldsValue[0].customFieldValue.split('|');
+              }
+              else if(schoolCustomField?.type === 'Checkbox'){
+                if(schoolCustomField.customFieldsValue[0].customFieldValue === "true"){
+                  schoolCustomField.customFieldsValue[0].customFieldValue = true;
+                }
+                else if (schoolCustomField.customFieldsValue[0].customFieldValue === "false"){
+                  schoolCustomField.customFieldsValue[0].customFieldValue = false;
+                }
+              } 
+            }
+            else {
               schoolCustomField.customFieldsValue.push(new CustomFieldsValueModel());
-              if(schoolCustomField.type==='Checkbox'){
-                schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection==='Y'? 'true':'false';
+              if(schoolCustomField.type === 'Checkbox'){
+                schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection === "false" ? false : true;
               }
               else{
                 schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection;
-              }
-            }
-            else {
-              if (schoolCustomField?.type === 'Multiple SelectBox') {
-                this.schoolMultiSelectValue = schoolCustomField?.customFieldsValue[0].customFieldValue.split('|');
-  
               }
             }
           }
@@ -225,24 +246,27 @@ export class CustomFieldWithoutFormComponent implements OnInit {
   }
 
   checkCustomValue() {
-    if (this.schoolAddViewModel !== undefined) {
-      if (this.schoolAddViewModel.schoolMaster.fieldsCategory !== undefined && this.schoolAddViewModel.schoolMaster.fieldsCategory !== null) {
+    if (this.schoolDetailsForViewAndEdit !== undefined) {
+      if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory !== undefined && this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory !== null) {
 
-        if (this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId]?.customFields !== undefined) {
+        if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId]?.customFields !== undefined) {
 
-          this.schoolCustomFields= this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
+          this.schoolCustomFields= this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
+          
           for (let schoolCustomField of this.schoolCustomFields) {
-            if (schoolCustomField.customFieldsValue.length == 0) {
-
+            if (schoolCustomField.customFieldsValue.length === 0) {
               schoolCustomField.customFieldsValue.push(new CustomFieldsValueModel());
               if(schoolCustomField.type==='Checkbox'){
-                schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection==='Y'? 'true':'false';
+                schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection === "false" ? false : true;
               }
               else{
                 schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection;
               }
             }
             else {
+              if(schoolCustomField.type==='Checkbox'){
+                schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.customFieldsValue[0].customFieldValue === "false" ? false : true;
+              }
               if (schoolCustomField?.type === 'Multiple SelectBox') {
                 this.schoolMultiSelectValue = schoolCustomField?.customFieldsValue[0].customFieldValue.split('|');
   
@@ -252,6 +276,10 @@ export class CustomFieldWithoutFormComponent implements OnInit {
         }
       }
     }
+  }
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.unsubscribe();
   }
 
 }

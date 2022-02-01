@@ -23,9 +23,10 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'vex-add-comments',
@@ -35,12 +36,30 @@ import icClose from '@iconify/icons-ic/twotone-close';
 export class AddCommentsComponent implements OnInit {
 
   icClose = icClose;
+  comments: string;
+  actionButtonTitle='submit';
+  headerTitle='addCommentTo';
 
-  constructor( public translateService: TranslateService) {
-    translateService.use("en");
+  constructor(public translateService: TranslateService,
+    public dialogRef: MatDialogRef<AddCommentsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data) {
+    // translateService.use("en");
+    this.comments=data.comments
+      if(this.comments){
+        this.actionButtonTitle='update'
+        this.headerTitle='updateCommentTo'
+      }
   }
 
+  close() {
+    this.dialogRef.close(true);
+  }
   ngOnInit(): void {
+  }
+
+
+  addOrUpdateComments(){
+    this.dialogRef.close({comments:this.comments,submit:true});
   }
 
 }

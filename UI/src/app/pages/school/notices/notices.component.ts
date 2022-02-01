@@ -40,7 +40,6 @@ import moment from 'moment';
 import { LoaderService } from '../../../services/loader.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { CryptoService } from '../../../services/Crypto.service';
@@ -83,23 +82,12 @@ export class NoticesComponent implements OnInit, AfterViewChecked, OnDestroy {
     private membershipService: MembershipService,
     private snackbar: MatSnackBar,
     private loaderService: LoaderService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private cdr: ChangeDetectorRef,
     public rollBasedAccessService: RollBasedAccessService,
-    private layoutService: LayoutService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
   ) {
-    //translateService.use('en');
-    if (localStorage.getItem('collapseValue') !== null) {
-      if (localStorage.getItem('collapseValue') === 'false') {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
     this.loaderService.isLoading.subscribe((v) => {
       this.loading = v;
     });
@@ -140,8 +128,8 @@ export class NoticesComponent implements OnInit, AfterViewChecked, OnDestroy {
           }
 
         }
-        else {
-          this.snackbar.open('No Member Found. ' + sessionStorage.getItem('httpError'), '', {
+        else{
+          this.snackbar.open('No Member Found. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -167,7 +155,7 @@ export class NoticesComponent implements OnInit, AfterViewChecked, OnDestroy {
           this.showRecords(this.recordFor);
         }
       } else {
-        this.snackbar.open('No Notice Found. ' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('No Notice Found. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

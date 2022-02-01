@@ -27,7 +27,30 @@ a {
   border-radius: 50%;
   display: none;
 
-  @media (max-width: 1279.98px) {
+  @media (max-width: 1023.98px) {
     display: block;
+  }
+}
+
+.global-add-button {
+  @apply bg-primary;
+  color: #ffffff;
+
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  margin-left: 15px;
+  font-size: 20px;
+  line-height: 42px;
+  text-align: center;
+
+  @media (min-width: 1023.98px) {
+    margin-left: 0;
+    border-radius: 4px;
+    width: auto;
+    height: auto;
+    padding: 10px 12px;
+    font-size: 16px;
+    line-height: 18px;
   }
 }

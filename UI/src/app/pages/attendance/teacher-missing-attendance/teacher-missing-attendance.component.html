@@ -1,0 +1,60 @@
+<!-- <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay> -->
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'missingAttendance'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="card overflow-auto -mt-16">
+            <div class="px-6 py-4 pb-2">
+                <ul class="grid md:grid-cols-4 col-gap-6 row-gap-2">
+                    <li>
+                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                            <mat-label>{{ "from" | translate }}</mat-label>
+                            <input matInput [matDatepicker]="fromDate" #fromDataValue [value]="valueStartingDate" [max]="today"  (dateChange)="dateCompare(fromDataValue,toDataValue)">
+                            <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                            <mat-datepicker #fromDate></mat-datepicker>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                            <mat-label>{{ "to" | translate }}</mat-label>
+                            <input matInput [matDatepicker]="toDate" [min]="dateVal" [max]="today" [value]="today" #toDataValue (dateChange)="sortByDate(fromDataValue,toDataValue)">
+                            <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                            <mat-datepicker #toDate></mat-datepicker>
+                        </mat-form-field>
+                    </li>
+                </ul>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="border-t overflow-x-auto overflow-y-hidden" >
+                <table class="w-full schedule-table">
+                    <thead>
+                        <tr>
+                            <th>{{ "date" | translate }}</th>
+                            <th>{{ "course" | translate }}</th>
+                            <th>{{ "courseSection" | translate }}</th>
+                            <th>{{ "gradeLevel" | translate }}</th>
+                            <th>{{ "period" | translate }}</th>
+                            <th>{{ "action" | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let element of CourseSectionViewList">
+                            <td>{{element.attendanceDate | date:'mediumDate'}}</td>
+                            <td class="text-primary">{{element.courseSectionName}}</td>
+                            <td>{{element.courseSectionName}}</td>
+                            <td>{{element.courseGradeLevel}}</td>
+                            <td>{{element.periodTitle}}</td>
+                            <td class="cursor-pointer text-primary">
+                                <a [routerLink]="['/school', 'attendance', 'teacher-missing-attendance', 'take-attendance']" (click)="onSent(element)"><mat-icon class="mr-1 align-middle" [icIcon]="icHowToReg"></mat-icon><span>{{ 'takeAttendance' | translate }}</span></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout> 

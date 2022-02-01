@@ -53,7 +53,8 @@ import { EnrollmentCodesService } from "src/app/services/enrollment-codes.servic
 import { EnrollmentCodeListView } from "src/app/models/enrollment-code.model";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { MatSelect } from "@angular/material/select";
-
+import { DefaultValuesService } from '../../../../common/default-values.service';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 @Component({
   selector: "vex-search-student",
   templateUrl: "./search-student.component.html",
@@ -65,7 +66,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();
   @Input() filterJsonParams;
-  searchSchoolId:number = +sessionStorage.getItem('selectedSchoolId');
+  
+  searchSchoolId:number=this.defaultValuesService.getSchoolID();
   countryModel: CountryModel = new CountryModel();
   languages: LanguageModel = new LanguageModel();
   @ViewChild('f') currentForm: NgForm;
@@ -107,7 +109,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
     private commonService: CommonService,
     private loginService: LoginService,
     private commonFunction: SharedFunction,
-    private enrollmentCodeService: EnrollmentCodesService
+    private enrollmentCodeService: EnrollmentCodesService,
+    private defaultValuesService: DefaultValuesService
   ) { }
 
   protected setInitialValue() {
@@ -258,7 +261,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
   }
 
   GetAllLanguage() {
-    this.languages._tenantName = sessionStorage.getItem("tenant");
+   
+    this.languages._tenantName=this.defaultValuesService.getTenantName();
     this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
         this.languageList = [];
@@ -283,7 +287,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
       this.searchSchoolId = 0;
     }
     else {
-      this.searchSchoolId = +sessionStorage.getItem('selectedSchoolId');
+     
+      this.searchSchoolId=this.defaultValuesService.getSchoolID();
     }
 
   };
@@ -295,7 +300,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
 
   search() {
     this.getAllStudent= new StudentListModel();
-    this.params = [];
+    this.getAllStudent.filterParams = [];
     if (Array.isArray(this.studentMasterSearchModel.nationality)){
       this.studentMasterSearchModel.nationality = null;
     }
@@ -308,16 +313,19 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
         if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== '') {
+          this.getAllStudent.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.getAllStudent.filterParams.length - 1;
           if (key === 'exitDate' || key === 'enrollmentDate' || key === 'dob') {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]) })
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
           }
           else {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.studentMasterSearchModel[key] })
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
           }
         }
     }
     
-    this.getAllStudent.filterParams = this.params;
     this.getAllStudent.sortingModel = null;
     this.getAllStudent.schoolId = this.searchSchoolId;
     this.studentService.searchStudentListForReenroll(this.getAllStudent,this.searchSchoolId).subscribe(data => {
@@ -341,7 +349,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit {
     this.enrollmentCodeService.getAllStudentEnrollmentCode(this.enrollmentCodeListView).subscribe(
       (res:EnrollmentCodeListView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Enrollment code list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Enrollment code list failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

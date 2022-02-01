@@ -7,6 +7,17 @@
     display      : inline-block;
 }
 
+.holiday {
+    background-color: #fdcac6;
+    font-size: 12px;
+    line-height: 14px;
+    padding: 3px 5px;
+    vertical-align: middle;
+    @apply inline-block;
+    @apply text-red;
+    @apply rounded;
+}
+
 .event-color-list {
     label {
         margin-right: 10px;

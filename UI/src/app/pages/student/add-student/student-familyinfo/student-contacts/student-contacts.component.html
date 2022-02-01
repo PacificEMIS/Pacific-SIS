@@ -2,7 +2,7 @@
     <div class="border border-solid rounded p-4" *ngFor="let parent of parentListArray">
         <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
             <div class="relative cursor-pointer" fxFlex="none" (click)='openViewDetails(parent)'>
-                <img src="{{parent.parentPhoto?'data:image/png;base64,'+ parent.parentPhoto:'assets/img/default-person.jpg'}}" class="avatar">
+                <img src="{{parent.parentPhoto?'data:image/png;base64,'+ parent.parentPhoto:'assets/img/default-person.jpg'}}" alt="Parent photo" class="avatar">
             </div>
             <div class="overflow-hidden cursor-pointer" fxFlex="auto" (click)='openViewDetails(parent)'>
                 <div class="subheading-2 leading-snug text-primary">{{parent.firstname}} {{parent.lastname}}</div>
@@ -20,11 +20,11 @@
                 <div class="flex">
                         <span  class="custody mr-4"  *ngIf="parent.isCustodian;else noCustody"><img src="../../../../assets/img/icons/mother.svg"
                             matTooltip="Custody of Student"
-                            class="w-6 mt-2 inline-block align-middle" /></span>
+                            class="w-6 mt-2 inline-block align-middle" alt="Custody of student icon"/></span>
                    <ng-template #noCustody>
                         <span  class="no-custody mr-4"  ><img src="../../../../assets/img/icons/mother.svg"
                             matTooltip="No Custody of Student"
-                            class="inline-block align-middle" /></span>
+                            class="inline-block align-middle" alt="No custody of student icon"/></span>
                    </ng-template>
                     <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Edit" type="button" class="text-gray">
                     <mat-icon (click) = "editParentInfo(parent)" [icIcon]="icEdit" class="mr-2"></mat-icon>
@@ -38,13 +38,13 @@
     </div> 
 </div>
 <div class="text-center" *ngIf="!parentListArray?.length">
-    No Contacts Found!
+    {{'nocontactsfound' | translate}}
 </div>
 
 <div class="text-center mt-6" *ngIf="contactType ==='Primary'; else secondary">
     <button *ngIf="permissions?.add" color="primary" mat-raised-button type="button" (click)='openAddNew("Primary")'>
         <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px"></ic-icon>
-        <span>Add Primary Contact</span>
+        <span>{{'addPrimaryContact' | translate}}</span>
     </button>    
 </div>
 <ng-template #secondary>
@@ -53,12 +53,12 @@
             <button *ngIf="permissions?.add" color="primary" class="mr-3" mat-raised-button type="button" (click)='openAddNew("Secondary")'>
                 <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
                 </ic-icon>
-                <span>Add Secondary Contact</span>
+                <span>{{'Add Secondary Contact' | translate}}</span>
             </button>    
             <button *ngIf="permissions?.add" color="primary" mat-raised-button type="button" (click)='openAddNew("Other")'>
                 <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
                 </ic-icon>
-                <span>Add Other Contact</span>
+                <span>{{'addOtherContact' | translate}}</span>
             </button>    
         </div>
     </div>
@@ -67,7 +67,7 @@
             <button *ngIf="permissions?.add" color="primary" mat-raised-button type="button" (click)='openAddNew("Other")'>
                 <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
                 </ic-icon>
-                <span>Add Other Contact</span>
+                <span>{{'addOtherContact' | translate}}</span>
             </button>    
         </div>
     </ng-template>

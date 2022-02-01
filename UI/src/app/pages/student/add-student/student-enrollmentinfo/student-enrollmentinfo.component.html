@@ -53,6 +53,9 @@
                     </li>
                 </ul>
 
+                <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentDetailsForViewAndEdit" [module]="module"
+                [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+
                 <ul class="mt-2">
                     <li>
                         <mat-checkbox name="eligibility504" [(ngModel)]="studentEnrollmentModel.eligibility504"
@@ -97,7 +100,7 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'school'|translate}}</mat-label>
                                                 <mat-select #school_name="ngModel" name="{{'schoolName'+index}}"
-                                                    [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=null"
+                                                    [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId!=0"
                                                     (selectionChange)="onSchoolChange($event.value,index)"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].schoolId"
                                                     required>
@@ -117,6 +120,7 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'gradeLevel'|translate}}</mat-label>
                                                 <mat-select #gradeLevel="ngModel" name="{{'gradeLevel'+index}}"
+                                                [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].gradeId"
                                                     (selectionChange)="onGradeLevelChange(index)" required>
                                                     <mat-option
@@ -133,7 +137,7 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'enrollmentDate'|translate}}</mat-label>
                                                 <input #enrollment_date="ngModel" name="{{'enrollmentDate'+index}}"
-                                                    matInput [matDatepicker]="enrollmentDate"
+                                                    matInput [matDatepicker]="enrollmentDate" [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentDate"
                                                     required>
                                                 <mat-datepicker-toggle matSuffix [for]="enrollmentDate">
@@ -150,14 +154,23 @@
                                                 <mat-label>{{'enrollmentCode'|translate}}</mat-label>
                                                 <mat-select #transferred_code="ngModel"
                                                     name="{{'enrollmentCode'+index}}"
+                                                    [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentCode"
                                                     (onSelectionChange)="onEnrollmentCodeChange($event.value,index)"
                                                     required>
-                                                    <mat-option
+                                                    <ng-container
+                                                        *ngFor="let enrollmentCode of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.studentEnrollmentCode">
+                                                        <mat-option
+                                                            [disabled]="enrollmentCode.type!='Add'"
+                                                            *ngIf="enrollmentCode.type !=='Rolled Over'"
+                                                            value="{{enrollmentCode.enrollmentCode}}">{{enrollmentCode.title}}
+                                                        </mat-option>
+                                                    </ng-container>
+                                                    <!-- <mat-option
                                                         *ngFor="let enrollmentCode of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.studentEnrollmentCode"
                                                         [disabled]="enrollmentCode.type!='Add'"
                                                         value="{{enrollmentCode.enrollmentCode}}">
-                                                        {{enrollmentCode.title}}</mat-option>
+                                                        {{enrollmentCode.title}}</mat-option> -->
                                                 </mat-select>
                                                 <mat-error *ngIf="transferred_code.errors?.required">
                                                     {{'enrollmentCodeIsRequired'|translate}}
@@ -172,7 +185,7 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'exitDate'|translate}}</mat-label>
                                                 <input #exit_date="ngModel" name="{{'exitDate'+index}}" matInput
-                                                    [matDatepicker]="endDate"
+                                                    [matDatepicker]="endDate" [min]="minExitDate"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitDate"
                                                     [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode">
                                                 <mat-datepicker-toggle matSuffix [for]="endDate">
@@ -191,11 +204,12 @@
                                                 <mat-select #exit_code="ngModel" name="{{'exitCode'+index}}"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode"
                                                     [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitDate"
+                                                    [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
                                                     (selectionChange)="onExitCodeChange($event.value,index)">
                                                     <ng-container
                                                         *ngFor="let exitCode of schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.studentEnrollmentCode">
                                                         <mat-option
-                                                            *ngIf="exitCode.type=='Rolled Over' || exitCode.type=='Drop (Transfer)' || exitCode.type=='Drop'"
+                                                            *ngIf="exitCode.type=='Drop (Transfer)' || exitCode.type=='Drop'"
                                                             value="{{exitCode.enrollmentCode}}">{{exitCode.title}}
                                                         </mat-option>
                                                     </ng-container>
@@ -249,7 +263,7 @@
                             </div>
                             <div class="w-1/12 text-right pt-2">
                                 <div class=""
-                                    *ngIf="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentId==null;else dontDelete">
+                                    *ngIf="cloneStudentEnrollment.studentEnrollments[index].enrollmentId==null || cloneStudentEnrollment.studentEnrollments[index].enrollmentId===0;else dontDelete">
                                     <a class="cursor-pointer" (click)="deleteDynamicRow(index)">
                                         <mat-icon [icIcon]="icClear"></mat-icon>
                                     </a>
@@ -271,7 +285,7 @@
             <a mat-button *ngIf="studentCreateMode == studentCreate.EDIT"
                 (click)="cancelEdit()">{{'cancel'|translate}}</a>
             <button color="primary" class="ml-2" mat-raised-button
-                (click)="updateStudentEnrollment()">{{'update'|translate}}</button>
+                (click)="confirmDroppedOut()">{{'update'|translate}}</button>
         </mat-card-footer>
     </form>
 </mat-card>
@@ -290,21 +304,21 @@
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'enrollmentCalendar' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{calendarNameInViewMode}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{calendarNameInViewMode}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'rollingRetentionOption' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{studentEnrollmentModel?.rollingOption}}
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{studentEnrollmentModel?.rollingOption}}
                     </p>
                 </li>
 
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'section' | translate}}</label>
-                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{sectionNameInViewMode}}</p>
+                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{sectionNameInViewMode}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'estimatedGraduationDate' | translate}}</label>
-                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                    <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                         {{studentEnrollmentModel?.estimatedGradDate |date:'mediumDate' |EmtyValueCheckPipe}}</p>
                 </li>
                 <li *ngIf="!isTeacherLogin" class="col-span-2 md:col-span-3 xl:col-span-4">
@@ -381,6 +395,9 @@
                 </li>
             </ul>
 
+            <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentDetailsForViewAndEdit" [module]="module"
+            [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+
             <hr class="-mx-3 mt-6" />
 
 
@@ -399,12 +416,19 @@
                                         <mat-panel-title class="font-semibold">
                                             <div class="flex items-center w-full h-full">
                                                 <div class="flex h-full">
-                                                    <ng-container *ngIf="enrollment.type=='External' else internal">
+                                                    <ng-container *ngIf="enrollment.type=='External'; else internal">
                                                         <span
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Add'">
                                                             <mat-icon [icIcon]="icExternal" class="align-middle text-white"
                                                                 matTooltip="Enrolled as External">
+                                                            </mat-icon>
+                                                        </span>
+                                                        <span
+                                                            class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
+                                                            *ngIf="enrollment.enrollmentType=='Drop'">
+                                                            <mat-icon [icIcon]="icDrop" class="align-middle text-white"
+                                                                matTooltip="Drop">
                                                             </mat-icon>
                                                         </span>
                                                     </ng-container>
@@ -455,9 +479,8 @@
                                                     </h5>
                                                     <div
                                                         class="inline-block justify-self-stretch md:text-right font-normal">
-                                                        {{enrollment.type=='External'?'Enrolled as ':
-                                                        enrollment.enrollmentCode=='Rolled
-                                                        Over'?'Promoted':enrollment.enrollmentCode}}<span
+                                                        {{enrollment.type==='External'?'Enrolled as ':
+                                                        enrollment.enrollmentCode==='Rolled Over'?'Promoted':enrollment.enrollmentCode==='Dropped Out'?'Retained': enrollment.enrollmentCode}}<span
                                                             class="font-medium"
                                                             *ngIf="enrollment.type=='External'">External
                                                             Student</span> {{enrollment.type=='External'?'at':'to'}}
@@ -475,20 +498,17 @@
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'gradeLevel' |
                                                     translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                                                    {{enrollment.gradeLevelTitle}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{enrollment.gradeLevelTitle}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'enrollmentDate' |
                                                     translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                                                    {{enrollment.enrollmentDate | date}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{enrollment.enrollmentDate | date}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'enrollmentCode' |
                                                     translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                                                    {{enrollment.enrollmentCode}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{enrollment.enrollmentCode}}</p>
                                             </li>
                                         </ul>
                                     </div>
@@ -521,11 +541,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let enrollment of studentEnrollmentModel.studentEnrollmentListForView"
+                        <tr *ngFor="let enrollment of studentEnrollmentViewModel.studentEnrollmentListForView"
                             [ngClass]="(enrollment.exitType=='Drop (Transfer)' && enrollment.enrollmentType==null)  || (enrollment.exitType=='Drop' && enrollment.enrollmentType!=='Add' && enrollment.enrollmentType!=='Rolled Over' && enrollment.enrollmentType!='Enroll (Transfer)') || enrollment.enrollmentType=='Drop'?'bg-skyblue-light':''">
                             <td>{{(enrollment.startYear?enrollment.startYear:'')+'-'+(enrollment.endYear?(enrollment?.endYear.toString()?.substr(-2)):'')}}</td>
                             <td><span
-                                    *ngIf="((enrollment.exitType!='Drop (Transfer)' && enrollment.enrollmentType!=null) || enrollment.exitType!='Drop') && (enrollment.enrollmentType!='Drop')">{{enrollment.enrollmentDate
+                                    *ngIf="((enrollment.exitType!='Drop (Transfer)' && enrollment.enrollmentType!=null) || enrollment.exitType!='Drop') && (!enrollment.showDrop)">{{enrollment.enrollmentDate
                                     | date}}
                                     <mat-icon [icIcon]="icExternal" class="text-blue align-middle mx-2"
                                         *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='External'">
@@ -534,7 +554,10 @@
                                         *ngIf="enrollment.enrollmentType=='Add' && enrollment.type=='Internal'">
                                     </mat-icon>
                                     <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.type=='Internal'">
+                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.rollingOption !=='Retain' && enrollment.type=='Internal'">
+                                    </mat-icon>
+                                    <mat-icon [icIcon]="icRetained" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.enrollmentCode==='Dropped Out' && enrollment.rollingOption==='Retain' && enrollment.type=='Internal'">
                                     </mat-icon>
                                     <mat-icon [icIcon]="icPromoted" class="text-green align-middle mx-2"
                                         *ngIf="enrollment.enrollmentType=='Rolled Over' && enrollment.type=='Internal'">
@@ -545,9 +568,7 @@
                                     <mat-icon [icIcon]="icTrasnferIn" class="text-blue align-middle mx-2"
                                         *ngIf="enrollment.enrollmentType=='Enroll (Transfer)' && enrollment.type=='Internal'">
                                     </mat-icon>
-                                    {{enrollment.type=="External"?'Enrolled as External
-                                    Student':enrollment.enrollmentCode=='Rolled
-                                    Over'?'Promoted':enrollment.enrollmentCode}}
+                                    {{enrollment.type=="External"?'Enrolled as External Student':enrollment.enrollmentCode=='Rolled Over'?'Promoted':enrollment.enrollmentCode==='Dropped Out'?'Retained': enrollment.enrollmentCode}}
                                 </span></td>
                             <td><span>{{enrollment.gradeLevelTitle}}</span></td>
                             <td><span
@@ -559,15 +580,27 @@
                                         *ngIf="enrollment.exitType=='Rolled Over'"></mat-icon> -->
                                     <!-- <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
                                         *ngIf="enrollment.exitType=='Drop'"></mat-icon> -->
-                                    <span *ngIf="enrollment.enrollmentType=='Drop'">
+                                    <span *ngIf="enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false">
                                         {{enrollment.enrollmentDate|date}}</span>
                                     <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
-                                        *ngIf="enrollment.enrollmentType=='Drop'"></mat-icon>
+                                        *ngIf="enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false"></mat-icon>
 
-                                    {{enrollment.enrollmentType=='Drop'?enrollment.enrollmentCode:''}}
-                                    {{enrollment.exitType!="Rolled Over" &&
+                                    {{enrollment.enrollmentType=='Drop' && enrollment.showDrop=== false?enrollment.enrollmentCode:''}}
+                                    {{enrollment.exitType!="Rolled Over" && !enrollment.showDrop &&
                                     enrollment.enrollmentType!='Drop'?enrollment.exitCode:''}}
-                                </span></td>
+                                    
+                                </span>
+                                <span *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId === null && enrollment.showDrop">
+                                    {{enrollment.exitDate|date}}
+                                    <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
+                                        *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId === null && enrollment.showDrop"></mat-icon>
+                                    {{ enrollment.exitCode}}</span>
+                                    <span *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId !== null && enrollment.showDrop">
+                                        {{enrollment.exitDate|date}}
+                                        <mat-icon [icIcon]="icDrop" class="text-warn align-middle mx-2"
+                                            *ngIf="enrollment.exitType==='Drop' && enrollment.rolloverId !== null && enrollment.showDrop"></mat-icon>
+                                        Not enrolled</span>
+                            </td>
 
                             <td>{{enrollment.schoolName}}</td>
                         </tr>

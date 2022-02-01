@@ -5,9 +5,9 @@
     <h2 class="title ltr:pl-4 rtl:pr-4 select-none flex-auto">{{ title$ | async }}</h2> -->
     <!-- <img src="assets/img/logo-icon.png" class="w-10 select-none flex-none">
     <h2 class="title ltr:pl-4 rtl:pr-4 select-none flex-auto text-white font-normal text-2xl">openSIS</h2> -->
-    <img *ngIf="collapsed" src="assets/img/logo-icon.png" class="select-none logo-small flex-none">
-    <img *ngIf="collapsed" src="assets/img/opensis.png" class="select-none logo-full flex-none" style="width: 131.39px !important;" alt="openSIS Logo">
-    <img *ngIf="!collapsed" src="assets/img/opensis.png" class="select-none logo-full flex-none" alt="openSIS Logo">
+    <img *ngIf="collapsed" [src]="'data:image/jpeg;base64,'+tenantLogoIcon" class="select-none logo-small flex-none" [alt]="tenantName+' Logo'">
+    <img *ngIf="collapsed" [src]="'data:image/jpeg;base64,'+tenantSidenavLogo" class="select-none logo-full flex-none" style="width: 131.39px !important;" [alt]="tenantName+' Logo'">
+    <img *ngIf="!collapsed" [src]="'data:image/jpeg;base64,'+tenantSidenavLogo" class="select-none logo-full flex-none" [alt]="tenantName+' Logo'">
    
    
     <button (click)="toggleCollapse()" *ngIf="showCollapsePin$ | async"
@@ -20,7 +20,7 @@
   <hr class="mt-0 mb-4 bg-white opacity-25"/>
   <div class="flex items-center ml-4 mr-4 relative">
     <div class="flex-shrink-0 h-10 w-10">
-      <img class="h-10 w-10 rounded-full" [src]="userPhoto" alt="">
+      <img class="h-10 w-10 rounded-full" [src]="userPhoto" alt="Profile picture">
     </div>
     <div class="ml-4 whitespace-no-wrap">
       <div class="text-sm leading-5 font-medium text-gray-900">{{userName}}</div>
@@ -28,7 +28,7 @@
     </div>
     <div>
       <button 
-              [matMenuTriggerFor]="addNewMenu" class="absolute right-0 top-3"
+              [matMenuTriggerFor]="addNewMenu" (click)="expandSidebar()" class="absolute right-0 top-3"
               type="button"><mat-icon [icIcon]="icArrowDropDown" size="20px"></mat-icon>
       </button>
 

@@ -20,7 +20,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'period' | translate}}</mat-label>
-                        <mat-select #periodId="ngModel" (selectionChange)="onPeriodChange($event.value)"
+                        <mat-select #periodId="ngModel" [disabled]="!this.defaultValuesService.checkAcademicYear()" (selectionChange)="onPeriodChange($event.value)"
                             [(ngModel)]="courseCalendarSchedule.periodId" name="periodId" required>
                             <mat-option *ngFor="let period of periodList" [value]='period.periodId'>
                                 {{period.periodTitle}}
@@ -33,7 +33,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'room' | translate}}</mat-label>
-                        <mat-select #roomId="ngModel" (selectionChange)="onRoomChange($event.value)"
+                        <mat-select #roomId="ngModel" [disabled]="!this.defaultValuesService.checkAcademicYear()" (selectionChange)="onRoomChange($event.value)"
                             [(ngModel)]="courseCalendarSchedule.roomId" name="roomId" required>
                             <mat-option *ngFor="let room of roomModelList" [value]='room.roomId'>
                                 {{room.title}}
@@ -46,7 +46,7 @@
                     </mat-form-field>
                 </li>
                 <li class="pt-3">
-                    <mat-slide-toggle class="mb-3" color="primary" [(ngModel)]="courseCalendarSchedule.takeAttendance"
+                    <mat-slide-toggle class="mb-3" [disabled]="!this.defaultValuesService.checkAcademicYear()" color="primary" [(ngModel)]="courseCalendarSchedule.takeAttendance"
                         name="takeAttendance">{{'takeAttendance' | translate}}</mat-slide-toggle>
                 </li>
             </ul>
@@ -54,7 +54,7 @@
             <div class="pt-5 text-right">
                 <button mat-button type="button" class="mr-2" (click)="cancelAddClass()">{{'cancel' |
                     translate}}</button>
-                <button color="primary" mat-raised-button type="submit">{{submitTitle | translate}}</button>
+                <button color="primary" mat-raised-button *ngIf="this.defaultValuesService.checkAcademicYear()" type="submit">{{submitTitle | translate}}</button>
             </div>
         </div>
     </form>
@@ -64,10 +64,10 @@
                 <h3>{{'classDetails' | translate}}</h3>
             </div>
             <div>
-                <a class="mx-3" (click)="editEvent(this.classDetails)" href="javascript:void(0)">
+                <a class="mx-3" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="editEvent(this.classDetails)" href="javascript:void(0)">
                     <ic-icon [icon]="icEdit" inline="true" class="text-2xl"></ic-icon>
                 </a>
-                <a class="mx-3" (click)="deleteEvent(this.classDetails)" href="javascript:void(0)">
+                <a class="mx-3" *ngIf="this.defaultValuesService.checkAcademicYear()" (click)="deleteEvent(this.classDetails)" href="javascript:void(0)">
                     <ic-icon [icon]="icDelete" class="text-2xl" inline="true"></ic-icon>
                 </a>
                 <a class="mx-3" (click)="closeDetails()" href="javascript:void(0)">

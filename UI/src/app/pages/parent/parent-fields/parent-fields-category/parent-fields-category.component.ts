@@ -34,6 +34,7 @@ import { CustomFieldService } from '../../../../services/custom-field.service';
 import {FieldsCategoryAddView} from '../../../../models/fields-category.model';
 import {FieldCategoryModuleEnum} from '../../../../enums/field-category-module.enum'
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-parent-fields-category',
@@ -59,6 +60,7 @@ export class ParentFieldsCategoryComponent implements OnInit {
     private snackbar:MatSnackBar,
     private customFieldService:CustomFieldService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
 
     ) { 
       this.form= fb.group({
@@ -91,7 +93,7 @@ export class ParentFieldsCategoryComponent implements OnInit {
         this.customFieldService.addFieldsCategory(this.fieldsCategoryAddView).subscribe(
           (res:FieldsCategoryAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('field category failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('field category failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -120,7 +122,7 @@ export class ParentFieldsCategoryComponent implements OnInit {
         this.customFieldService.updateFieldsCategory(this.fieldsCategoryAddView).subscribe(
           (res: FieldsCategoryAddView) => {
             if(typeof(res)=='undefined'){
-              this.snackbar.open('field category failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('field category failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

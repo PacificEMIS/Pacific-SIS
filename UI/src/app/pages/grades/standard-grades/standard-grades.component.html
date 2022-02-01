@@ -10,10 +10,10 @@
                     [ngClass]="{'bg-skyblue-light text-blue':currentGradeScaleId==gradeScale.gradeScaleId}">
                     <a (click)="selectGradeScale(gradeScale)" class="cursor-pointer">{{gradeScale.gradeScaleName}}</a>
                     <div>
-                        <a *ngIf="permissions?.edit" class="cursor-pointer mr-3" (click)="editGradeScale(gradeScale)">
+                        <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="cursor-pointer mr-3" (click)="editGradeScale(gradeScale)">
                             <mat-icon [icIcon]="icEdit"></mat-icon>
                         </a>
-                        <a *ngIf="permissions?.edit" [ngClass]="(gradeScale?.hideDeleteButton)?'disabled':''" class="cursor-pointer"
+                        <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [ngClass]="(gradeScale?.hideDeleteButton)?'disabled':''" class="cursor-pointer"
                             (click)="confirmDeleteGradeScale(gradeScale)">
                             <mat-icon [icIcon]="icDelete"></mat-icon>
                         </a>
@@ -49,7 +49,7 @@
             </div>
             <ng-template #elseBlock>
                 <div class="text-center">
-                    <button *ngIf="permissions?.add" class="w-full text-primary" mat-button type="button"
+                    <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" class="w-full text-primary" mat-button type="button"
                         (click)='goToAddCategory()'>
                         <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
                         </ic-icon>
@@ -90,7 +90,7 @@
                             matTooltip="Filter Columns" type="button">
                             <mat-icon [icIcon]="icFilterList"></mat-icon>
                         </button>
-                        <button *ngIf="permissions?.add" color="primary" [disabled]="gradeScaleList==null" class="ml-4"
+                        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" [disabled]="gradeScaleList==null" class="ml-4"
                             fxFlex="none" mat-raised-button type="button" (click)="addGrade()">
                             <ic-icon [icon]="icAdd" class="" inline="true" size="24px">
                             </ic-icon>
@@ -127,13 +127,17 @@
                     </ng-container>
 
                     <ng-container matColumnDef="action" stickyEnd>
-                        <mat-header-cell *matHeaderCellDef>{{'actions'|translate}}</mat-header-cell>
+                        <mat-header-cell *matHeaderCellDef>
+                            <ng-container *ngIf="this.defaultValuesService.checkAcademicYear()">
+                                {{'action' | translate}}
+                            </ng-container>
+                        </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <a *ngIf="permissions?.edit" matTooltip="Edit Info" class="mr-3 cursor-pointer"
+                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" matTooltip="Edit Info" class="mr-3 cursor-pointer"
                                 (click)="editGrade(element)">
                                 <mat-icon [icIcon]="icEdit"></mat-icon>
                             </a>
-                            <a *ngIf="permissions?.edit" matTooltip="Delete Info" (click)="confirmDeleteGrade(element)"
+                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" matTooltip="Delete Info" (click)="confirmDeleteGrade(element)"
                                 class="mr-3 cursor-pointer">
                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                             </a>
@@ -142,7 +146,7 @@
 
                     <ng-container matColumnDef="noData">
                         <td mat-footer-cell *matFooterCellDef colspan="4">
-                            {{loading?'Fetching Data...':'No Data'}}
+                            {{loading?('fetchingData' | translate):('noData' | translate) }}
                         </td>
                     </ng-container>
 

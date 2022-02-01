@@ -1,5 +1,5 @@
 import { CommonField } from './common-field.model';
-
+import { DefaultValuesService } from "src/app/common/default-values.service";
 class EffortGradeScale {
     tenantId: string;
     schoolId: number;
@@ -34,6 +34,7 @@ export class GetAllEffortGradeScaleListModel extends CommonField {
     _token: string;
     _failure: boolean;
     _message: string;
+    public isListView:boolean;
     constructor() {
         super();
         this.pageNumber=1;
@@ -185,6 +186,8 @@ export class GradeScaleListView extends CommonField{
     public gradeScaleList: GradeScaleModel[];
     schoolId: number;
     tenantId: string;
+    academicYear: number;
+    public isListView:boolean;
     constructor(){
         super();
     }
@@ -213,6 +216,7 @@ export class GradeUsStandard{
     standardDetails: string;
     isSchoolSpecific: boolean;
     createdBy: string;
+    checked: boolean; // for frontend selection
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
@@ -264,13 +268,23 @@ export class GetAllSchoolSpecificListModel extends CommonField {
     _pageSize:number;
     sortingModel: sorting;
     filterParams: filterParams;
-   
+    IsSchoolSpecific : boolean;
+    public isListView:boolean;
     constructor() {
         super();
         this.pageNumber=1;
         this.pageSize=10;
         this.sortingModel=new sorting();
         this.filterParams=null;
+    }
+}
+
+export class AddUsStandardData extends CommonField {
+    createdBy : string;
+    _token: string;
+    constructor(){
+        super();
+        this._failure=true;
     }
 }
 
@@ -337,6 +351,7 @@ export class  EffortGradeLibraryCategoryModel {
     public effortGradeLibraryCategoryList:[EffortGradeLibraryCategoryModel]
       tenantId:string;
       schoolId:number;
+      public isListView:boolean;
       constructor(){
           super();
       }
@@ -364,7 +379,6 @@ export class EffortGradeLlibraryDragDropModel extends CommonField{
 export class HonorRollModel {
       tenantId: string
       schoolId: number
-      markingPeriodId: number
       honorRollId: number
       honorRoll: string
       breakoff: number
@@ -372,8 +386,8 @@ export class HonorRollModel {
       createdOn: string
       updatedBy: string
       updatedOn: string
+      academicYear: string
       constructor(){
-          this.markingPeriodId=+sessionStorage.getItem("markingPeriodId");
           this.honorRollId=0;
           this.createdOn=null;
           this.updatedOn=null;
@@ -395,7 +409,8 @@ export class HonorRollModel {
     pageSize: number;
     sortingModel: sorting;
     filterParams: filterParams;
-   
+    academicYear: number;
+    public isListView:boolean;
     constructor() {
         super();
         this.pageNumber=1;

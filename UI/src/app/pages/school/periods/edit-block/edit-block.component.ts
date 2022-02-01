@@ -34,6 +34,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolPeriodService } from '../../../../services/school-period.service';
 import { BlockAddViewModel } from 'src/app/models/school-period.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-block',
@@ -57,6 +58,7 @@ export class EditBlockComponent implements OnInit {
     private snackbar: MatSnackBar,
     private schoolPeriodService: SchoolPeriodService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.form = fb.group({
@@ -90,7 +92,7 @@ export class EditBlockComponent implements OnInit {
         this.schoolPeriodService.addBlock(this.blockAddViewModel).subscribe(
           (res: BlockAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Block/Rotation Days Creation failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Block/Rotation Days Creation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -119,7 +121,7 @@ export class EditBlockComponent implements OnInit {
         this.schoolPeriodService.updateBlock(this.blockAddViewModel).subscribe(
           (res: BlockAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Block/Rotation Days Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Block/Rotation Days Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

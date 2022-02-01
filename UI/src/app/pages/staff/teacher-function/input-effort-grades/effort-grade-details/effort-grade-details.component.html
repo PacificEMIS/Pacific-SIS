@@ -28,6 +28,7 @@
                         <mat-label>{{ "courseSection" | translate }}</mat-label>
                         <mat-select (selectionChange)="selectedCourseSection($event.value)" name="courseSection"
                             [(ngModel)]="studentEffortGradeListModel.courseSectionId">
+                            <mat-option></mat-option>
                             <mat-option
                                 *ngFor="let courseSectionDetail of allScheduledCourseSectionBasedOnTeacher?.courseSectionViewList"
                                 [value]="courseSectionDetail.courseSectionId">
@@ -41,6 +42,7 @@
                         <mat-label>{{ "markingPeriod" | translate }}</mat-label>
                         <mat-select name="markingPeriod" [(value)]="studentEffortGradeListModel.markingPeriodId"
                             [(ngModel)]="studentEffortGradeListModel.markingPeriodId">
+                            <mat-option></mat-option>
                             <mat-option *ngFor="let period of markingPeriodList" [value]="period.value">
                                 {{period.text}}
                             </mat-option>
@@ -52,7 +54,7 @@
             <div *ngIf="!showStudentList" class="lg:flex lg:flex-wrap">
                 <div class="lg:w-4/12 lg:pr-4">
                     <div class="content-left">
-                        <h4 class="font-medium text-sm py-2 px-6">Student Details</h4>
+                        <h4 class="font-medium text-sm py-2 px-6">{{'studentDetails' | translate}}</h4>
                         <mat-divider class=""></mat-divider>
                         <ul class="border-right">
                             <li *ngIf="totalCount===0">
@@ -63,7 +65,7 @@
 
                                 <div class="flex-shrink-0 h-12 w-12">
                                     <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
-                                        alt="" class="h-12 w-12 rounded-full" />
+                                        alt="student photo" class="h-12 w-12 rounded-full" />
                                 </div>
                                 <div class="ml-3 flex flex-col justify-center" (click)="addEffortItems(i)">
                                     <h6 class="text-sm font-semibold">{{student.firstGivenName+" "+
@@ -95,10 +97,10 @@
                                     <td>{{effortItem.categoryName}}</td>
                                     <td>{{effortItem.effortItemTitle}}</td>
                                     <td>
-                                        <mat-form-field>
+                                        <mat-form-field class="w-full mb-0" appearance="outline" color="primary">
                                             <mat-select
-                                                [(value)]="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent]?.studentEffortGradeDetail[j].effortGradeScaleId"
-                                                (selectionChange)="selectCategory(effortItem ,j, $event)">
+                                                [ngModel]="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent]?.studentEffortGradeDetail[j]?.effortGradeScaleId" (ngModelChange)="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent]?.studentEffortGradeDetail[j].effortGradeScaleId = $event"
+                                                (selectionChange)="selectCategory(effortItem ,j, $event)" [disabled]="!this.defaultValuesService.checkAcademicYear()" >
                                                 <mat-option *ngFor="let grade of effortGradeScaleModelList"
                                                     [value]="grade.effortGradeScaleId">
                                                     {{grade.gradeScaleValue}}</mat-option>
@@ -114,7 +116,7 @@
                     <div class="w-full border rounded mb-2">
                         <textarea placeholder="Comments" name="teacherComment"
                             [(ngModel)]="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent].teacherComment"
-                            class="w-full p-2" rows="8"></textarea>
+                            class="w-full p-2" rows="8" [readonly]="!this.defaultValuesService.checkAcademicYear()"></textarea>
                     </div>
                 </div>
             </div>
@@ -122,14 +124,14 @@
             <!-- Error msg for grade scale -->
             <div *ngIf="showStudentList" class="text-center py-32 px-6 text-warn">
                 <i class="icon icon-warning2 text-4xl"></i>
-                <p class="text-lg mt-4">Effort Grade Scale and Effort Grades are not set for this School.</p>
-                <p class="text-lg"><a href="javascript:void(0);" (click)="goToAddEffortGrade()" class="underline font-semibold">Click here</a> to set it up.</p>
+                <p class="text-lg mt-4">{{'effortGradeScaleAndEffortGradesAreNotSetForThisSchool' | translate}}.</p>
+                <p class="text-lg"><a href="javascript:void(0);" (click)="goToAddEffortGrade()" class="underline font-semibold">{{'clickHere' | translate}}</a> {{'toSetItUp' | translate}}.</p>
             </div>
         </div>
 
         <!-- End Input effort Grade -->
 
-        <div class="text-right mt-4 mb-10">
+        <div class="text-right mt-4 mb-10" *ngIf="this.defaultValuesService.checkAcademicYear()">
             <button (click)="submitEffortGrade()" mat-raised-button color="primary">{{ "submit" | translate }}</button>
         </div>
     <!-- </vex-page-layout-content>

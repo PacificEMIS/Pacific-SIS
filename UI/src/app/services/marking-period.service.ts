@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { MarkingPeriodListModel,MarkingPeriodAddModel,SemesterAddModel,QuarterAddModel,ProgressPeriodAddModel, GetAcademicYearListModel, GetMarkingPeriodTitleListModel,GetAllMarkingPeriodTitle} from '../models/marking-period.model';
+import { MarkingPeriodListModel,MarkingPeriodAddModel,SemesterAddModel,QuarterAddModel,ProgressPeriodAddModel, GetAcademicYearListModel, GetMarkingPeriodTitleListModel,GetAllMarkingPeriodTitle, GetMarkingPeriodByCourseSectionModel} from '../models/marking-period.model';
 import { BehaviorSubject } from 'rxjs';
 import { DefaultValuesService } from '../common/default-values.service';
 @Injectable({
@@ -33,7 +33,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSchoolYears.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableSchoolYears.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSchoolYears.createdBy = this.defaultValuesService.getEmailId();
+    obj.tableSchoolYears.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/addSchoolYear';
     return this.http.post<MarkingPeriodAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -41,7 +41,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSchoolYears.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableSchoolYears.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSchoolYears.updatedBy = this.defaultValuesService.getEmailId();
+    obj.tableSchoolYears.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/updateSchoolYear';
     return this.http.put<MarkingPeriodAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -56,7 +56,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSemesters.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableSemesters.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSemesters.createdBy = this.defaultValuesService.getEmailId();
+    obj.tableSemesters.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/addSemester';
     return this.http.post<SemesterAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -64,7 +64,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableSemesters.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableSemesters.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableSemesters.updatedBy = this.defaultValuesService.getEmailId();
+    obj.tableSemesters.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/updateSemester';
     return this.http.put<SemesterAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -80,7 +80,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableQuarter.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableQuarter.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableQuarter.createdBy = this.defaultValuesService.getEmailId();
+    obj.tableQuarter.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/addQuarter';
     return this.http.post<QuarterAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -88,7 +88,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableQuarter.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableQuarter.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableQuarter.updatedBy = this.defaultValuesService.getEmailId();
+    obj.tableQuarter.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/updateQuarter';
     return this.http.put<QuarterAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -103,7 +103,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableProgressPeriods.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableProgressPeriods.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableProgressPeriods.createdBy = this.defaultValuesService.getEmailId();
+    obj.tableProgressPeriods.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/addProgressPeriod';
     return this.http.post<ProgressPeriodAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -111,7 +111,7 @@ export class MarkingPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tableProgressPeriods.schoolId = this.defaultValuesService.getSchoolID();
     obj.tableProgressPeriods.tenantId = this.defaultValuesService.getTenantID();
-    obj.tableProgressPeriods.updatedBy = this.defaultValuesService.getEmailId();
+    obj.tableProgressPeriods.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/updateProgressPeriod';
     return this.http.put<ProgressPeriodAddModel>(apiurl, obj,this.httpOptions);
   }
@@ -145,6 +145,17 @@ export class MarkingPeriodService {
   getAllMarkingPeriodList(obj: GetMarkingPeriodTitleListModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/getAllMarkingPeriodList';
+    return this.http.post<GetAllMarkingPeriodTitle>(apiurl, obj,this.httpOptions);
+  }
+
+  getMarkingPeriodsByCourseSection(obj: GetMarkingPeriodByCourseSectionModel){
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.schoolId = this.defaultValuesService.getSchoolID();
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+    obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
+
+    let apiurl = this.apiUrl + obj._tenantName + '/MarkingPeriod/getMarkingPeriodsByCourseSection';
     return this.http.post<GetAllMarkingPeriodTitle>(apiurl, obj,this.httpOptions);
   }
 }

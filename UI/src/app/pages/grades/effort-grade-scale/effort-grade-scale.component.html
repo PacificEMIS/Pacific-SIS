@@ -23,7 +23,7 @@
                     matTooltip="Filter Columns" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
-                <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='openAdd()'>
+                <button *ngIf="permissions?.add && defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='openAdd()'>
                     <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
                     </ic-icon>
                     <span class="hidden md:inline-block">{{'addNewEffortGradeScale'|translate}}</span>
@@ -36,7 +36,7 @@
         <table @stagger mat-table [dataSource]="effortGradeScaleModelList" class="table-auto w-full" cdkDropList
             [cdkDropListData]="effortGradeScaleModelList" (cdkDropListDropped)="drop($event)" matSort>
 
-            <ng-container matColumnDef="order" sticky>
+            <ng-container matColumnDef="order" sticky *ngIf="defaultValuesService.checkAcademicYear()">
                 <th mat-header-cell *matHeaderCellDef style="width:50px ;"></th>
                 <td mat-cell *matCellDef="let element" style="width:50px ;">
                     <mat-icon class="cursor-move" cdkDragHandle>reorder</mat-icon>
@@ -57,7 +57,7 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="actions" stickyEnd>
+            <ng-container matColumnDef="actions" stickyEnd *ngIf="defaultValuesService.checkAcademicYear()">
                 <mat-header-cell *matHeaderCellDef width="150">{{'action'|translate}}</mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <a *ngIf="permissions?.edit" (click)="openEdit(element)" matTooltip="Edit Item" class="mr-3 cursor-pointer">
@@ -76,7 +76,7 @@
             </ng-container>
             <ng-container matColumnDef="noData">
                 <td mat-footer-cell *matFooterCellDef colspan="5">
-                    {{loading?'Fetching Data...':'No Data'}}
+                    {{loading?('fetchingData' | translate):('noData' | translate) }}
                 </td>
             </ng-container>
             <mat-header-row *matHeaderRowDef="visibleColumns"></mat-header-row>

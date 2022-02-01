@@ -33,6 +33,7 @@ import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animati
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-common-toilet-type',
@@ -55,6 +56,7 @@ export class EditCommonToiletTypeComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
+    private defaultValuesService: DefaultValuesService,
     fb:FormBuilder
     ) {
       this.form=fb.group({
@@ -85,10 +87,11 @@ export class EditCommonToiletTypeComponent implements OnInit {
       if(this.form.controls.id.value==0){
         this.lovAddView.dropdownValue.lovColumnValue=this.form.controls.lovColumnValue.value;
         this.lovAddView.dropdownValue.lovName=this.form.controls.lovName.value;
+        this.lovAddView.dropdownValue.createdBy = this.defaultValuesService.getUserGuidId();
         this.commonService.addDropdownValue(this.lovAddView).subscribe(
           (res:LovAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -113,10 +116,11 @@ export class EditCommonToiletTypeComponent implements OnInit {
         this.lovAddView.dropdownValue.id=this.form.controls.id.value;
         this.lovAddView.dropdownValue.lovName=this.form.controls.lovName.value;
         this.lovAddView.dropdownValue.lovColumnValue=this.form.controls.lovColumnValue.value;
+        this.lovAddView.dropdownValue.updatedBy = this.defaultValuesService.getUserGuidId();
         this.commonService.updateDropdownValue(this.lovAddView).subscribe(
           (res:LovAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

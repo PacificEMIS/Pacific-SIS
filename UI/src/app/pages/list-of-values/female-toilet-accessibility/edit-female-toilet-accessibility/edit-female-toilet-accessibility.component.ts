@@ -33,6 +33,7 @@ import { ValidationService } from '../../../shared/validation.service';
 import { CommonService } from '../../../../services/common.service';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-female-toilet-accessibility',
@@ -56,7 +57,8 @@ export class EditFemaleToiletAccessibilityComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
-    fb:FormBuilder
+    fb:FormBuilder,
+    private defaultValuesService: DefaultValuesService
     ) { 
       this.editmod=data.mod
       this.form=fb.group({
@@ -100,7 +102,7 @@ export class EditFemaleToiletAccessibilityComponent implements OnInit {
     this.commonService.updateDropdownValue(this.lovAddView).subscribe(
       (res:LovAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open( sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -127,7 +129,7 @@ export class EditFemaleToiletAccessibilityComponent implements OnInit {
     this.commonService.addDropdownValue(this.lovAddView).subscribe(
       (res:LovAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open( sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

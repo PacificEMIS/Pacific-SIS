@@ -111,7 +111,7 @@ export class AddCopySchoolComponent implements OnInit, OnDestroy {
     this.checkValidation();
     if (!this.allToggleValidationCheck) {
       if (this.copySchoolModel.schoolMaster.schoolName?.trim().length > 0) {
-        this.copySchoolModel.fromSchoolId = this.data.fromSchoolId;
+        // this.copySchoolModel.fromSchoolId = this.data.fromSchoolId;
         this.schoolService.copySchool(this.copySchoolModel).subscribe(
           (res: CopySchoolModel) => {
             if (res) {
@@ -132,7 +132,7 @@ export class AddCopySchoolComponent implements OnInit, OnDestroy {
               }
             }
             else {
-              this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

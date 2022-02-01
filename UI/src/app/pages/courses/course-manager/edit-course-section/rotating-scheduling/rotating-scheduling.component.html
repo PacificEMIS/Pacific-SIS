@@ -1,5 +1,5 @@
 <mat-error *ngIf="detailsFromParentModal.form.value.seats=='' || detailsFromParentModal.form.value.seats==null;else blockSchedule">
-   <span class="mx-4">Please Select Seats.</span>
+   <span class="mx-4">{{'pleaseSelectSeats'|translate}}.</span>
     </mat-error>
 <ng-template #blockSchedule>
 
@@ -14,7 +14,7 @@
 
 <div class="flex py-3 border-t border-normal" *ngFor="let row of divCount;let index=index">
     <div class="w-1/12 text-center pt-2" >
-        <a class="cursor-pointer" (click)="deleteRow(index)">
+        <a class="cursor-pointer" *ngIf="this.defaultValueService.checkAcademicYear()" (click)="deleteRow(index)">
             <mat-icon [icIcon]="icClose"></mat-icon>
         </a>
     </div>
@@ -28,9 +28,9 @@
     </ng-template> -->
    
     <div class="w-3/12 pr-6">
-        <select #block="ngModel" name="{{'rotationDay'+index}}" class="border border-normal rounded px-3 py-2 w-full"
+        <select #block="ngModel" name="{{'rotationDay'+index}}" [disabled]="!this.defaultValueService.checkAcademicYear()" class="border border-normal rounded px-3 py-2 w-full"
             (change)="onBlockDayChange($event.target.value,index)" [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].blockId" required>
-            <option selected [value]=selected>Select</option>
+            <option selected [value]=selected>{{'select'|translate}}</option>
             <option *ngFor="let block of blockListViewModel.getBlockListForView" [value]="block.blockId">
                 {{block.blockTitle}}</option>
         </select>
@@ -39,13 +39,13 @@
     </mat-error>
     </div>
     <div class="w-3/12 pr-6">
-        <select #period="ngModel" (change)="onPeriodChange($event.target.value,index)" name="{{'period'+index}}"
+        <select #period="ngModel" [disabled]="!this.defaultValueService.checkAcademicYear()" (change)="onPeriodChange($event.target.value,index)" name="{{'period'+index}}"
             class="border border-normal rounded px-3 py-2 w-full" [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].periodId" required>
             <option selected [value]=selected>Select</option>
             <option *ngFor="let period of blockListViewModel.getBlockListForView[selectedBlocks[index]]?.blockPeriod"
                 [value]="period.periodId">{{period.periodTitle}}</option>
         </select>
-        <p class="pt-1 text-xs" *ngIf="blockScheduleAddModel.courseBlockScheduleList[index].periodId">
+        <p class="pt-1 text-xs" *ngIf="blockScheduleAddModel.courseBlockScheduleList[index].periodId && blockScheduleAddModel.courseBlockScheduleList[index].periodId !== 'null'">
             {{blockListViewModel.getBlockListForView[selectedBlocks[index]]?.blockPeriod[selectedPeriod[index]]?.periodStartTime | transform24to12Pipe
             }} to
             {{blockListViewModel.getBlockListForView[selectedBlocks[index]]?.blockPeriod[selectedPeriod[index]]?.periodEndTime | transform24to12Pipe}}
@@ -55,7 +55,7 @@
     </mat-error>
     </div>
     <div class="w-3/12 pr-6" >
-        <select #room="ngModel" name="{{'room'+index}}" #roomId [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].roomId" class="border border-normal rounded px-3 py-2 w-full" required>
+        <select #room="ngModel" name="{{'room'+index}}" [disabled]="!this.defaultValueService.checkAcademicYear()" #roomId [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].roomId" class="border border-normal rounded px-3 py-2 w-full" required>
             <option selected [value]=selected>Select</option>
             <option *ngFor="let room of roomListViewModel.tableroomList" [value]="room.roomId">{{room.title}}</option>
         </select>
@@ -67,12 +67,12 @@
 </mat-error>
     </div>
     <div class="w-2/12 pt-2 text-center">
-        <mat-slide-toggle color="primary" name="{{'takeAttendance'+index}}" [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].takeAttendance"></mat-slide-toggle>
+        <mat-slide-toggle color="primary" [disabled]="!this.defaultValueService.checkAcademicYear()" name="{{'takeAttendance'+index}}" [(ngModel)]="blockScheduleAddModel.courseBlockScheduleList[index].takeAttendance"></mat-slide-toggle>
     </div>
 </div> 
 
 <div class="border-t border-normal px-6 py-3">
-    <a class="text-blue cursor-pointer" (click)="addMoreRotatingScheduleRow()">
+    <a class="text-blue cursor-pointer" *ngIf="this.defaultValueService.checkAcademicYear()" (click)="addMoreRotatingScheduleRow()">
         <mat-icon [icIcon]="icPlusCircle" class="mr-2 align-middle"></mat-icon>{{'addAnotherBlockRotationDay' |
         translate}}
     </a>

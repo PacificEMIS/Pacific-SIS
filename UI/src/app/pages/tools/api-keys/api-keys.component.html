@@ -1,0 +1,62 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'apiKeys'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['tools']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="card mb-6 -mt-16">
+            <div *ngIf="apiKeyList === null">
+                <div class="py-10 px-6 text-center">
+                    <img src="assets/img/api_icon.svg" width="150" class="inline-block mb-6">
+                    <p class="text-base">{{ 'apiKeysCanBeUsedToReadCreateAndUpdateYourSchoolSpecificDataFromOtherApplications' | translate }}</p>
+                    <p class="text-base">{{ 'generateAKeyBelowAndSeeOur' | translate }}<span class="text-blue cursor-pointer mx-1"><a href="assets/demo_docs/opensisv2_APIDocumentation.docx" target="_self" download="opensisv2_APIDocumentation.docx">{{ 'apiDocs' | translate }}</a></span>{{ 'toGetStarted' | translate }}</p>
+                    <button mat-raised-button color="primary" (click)="generateApi()" class="mt-6 mb-10">{{ 'generateNewApiKey' | translate }}</button>
+                </div>
+            </div>
+            
+            <div *ngIf="apiKeyList?.length > 0">
+                <div class="pb-2 p-6 md:grid grid-cols-5 text-center md:text-left col-gap-6">
+                    <img src="assets/img/api_icon.svg" width="150" class="inline-block mb-6 mx-auto">
+                    <div class="md:col-span-4 w-full">
+                        <p>{{ 'apiKeysCanBeUsedToReadCreateAndUpdateYourSchoolSpecificDataFromOtherApplications' | translate }}</p>
+                        <p>{{ 'generateAKeyBelowAndSeeOur' | translate }}<span class="text-blue cursor-pointer mx-1"><a href="assets/demo_docs/opensisv2_APIDocumentation.docx" target="_self" download="opensisv2_APIDocumentation.docx">{{ 'apiDocs' | translate }}</a></span>{{ 'toGetStarted' | translate }}</p>
+                        <button mat-raised-button color="primary" (click)="generateApi()" class="mt-6">{{ 'generateNewApiKey' | translate }}</button>
+                        <mat-divider class="border my-6 md:-mr-6"></mat-divider>
+
+                        <mat-accordion *ngFor="let apiKeyDetails of apiKeyList">
+                            <mat-expansion-panel class="bg-base border-gray-light border mb-4">
+                                <mat-expansion-panel-header class="px-4">
+                                    <mat-panel-title>
+                                        <div class="sm:flex justify-between w-full items-center">
+                                            <p class="font-semibold">{{apiKeyDetails?.apiTitle}}</p>
+                                            <div class="sm:flex items-center">
+                                                <p class="italic text-xs mb-2 md:mb-0">{{ 'generatedOn' | translate }} {{apiKeyDetails?.createdOn | date: 'longDate'}}</p>
+                                                <mat-icon class="cursor-pointer ml-2" (click)="upddateApi(apiKeyDetails); $event.stopPropagation();" [icIcon]="icEdit"></mat-icon>
+                                                <mat-icon class="cursor-pointer ml-2" (click)="deleteApiKey(apiKeyDetails); $event.stopPropagation();" [icIcon]="icDeleteForever"></mat-icon>
+                                                <mat-icon class="cursor-pointer ml-2" [icIcon]="icSettings" (click)="goToDetails(apiKeyDetails)"></mat-icon>
+                                            </div>
+                                        </div>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="bg-skyblue-light -mx-6 p-4 -mb-4">
+                                    <div class="sm:flex justify-between w-full items-center">
+                                        <div>
+                                            <p class="mb-2 md:mb-0"><span class="font-semibold">{{ 'apiKey' | translate }}</span> : <span class="break-words">{{apiKeyDetails?.apiKey}}</span></p>
+                                        </div>
+                                        <div>
+                                            <mat-icon class="cursor-pointer" (click)="copyToClipboard(apiKeyDetails?.apiKey)" [icIcon]="icContentCopy"></mat-icon>
+                                            <mat-icon class="cursor-pointer ml-2" (click)="regenerateApiKey(apiKeyDetails)">refresh</mat-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

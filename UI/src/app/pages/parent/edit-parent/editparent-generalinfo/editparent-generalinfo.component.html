@@ -12,15 +12,11 @@
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'Name' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                        {{parentInfo?.firstname+''+(parentInfo?.middlename?' '+parentInfo?.middlename+' ':'')+'
-                        '+parentInfo?.lastname}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo?.firstname+''+(parentInfo?.middlename?' '+parentInfo?.middlename+' ':'')+' '+parentInfo?.lastname}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                        {{parentInfo.userProfile | EmtyValueCheckPipe}}
-                    </p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.userProfile | EmtyValueCheckPipe}}</p>
                 </li>
             </ul>
 
@@ -31,23 +27,20 @@
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{parentInfo.homePhone |
-                        EmtyValueCheckPipe}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.homePhone | EmtyValueCheckPipe}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{parentInfo.mobile | EmtyValueCheckPipe}}
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.mobile | EmtyValueCheckPipe}}
                     </p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{parentInfo.workEmail |
-                        EmtyValueCheckPipe}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.workEmail | EmtyValueCheckPipe}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{parentInfo.personalEmail |
-                        EmtyValueCheckPipe}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.personalEmail | EmtyValueCheckPipe}}</p>
                 </li>
             </ul>
 
@@ -58,24 +51,33 @@
             <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'loginEmailAddress' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{parentInfo.loginEmail |
-                        EmtyValueCheckPipe}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{parentInfo.loginEmail | EmtyValueCheckPipe}}</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'password' | translate}}</label>
 
                     <p *ngIf="(parentInfo.loginEmail) && (parentInfo.isPortalUser) && (permissions?.edit)"
-                        class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a (click)="openResetPassword()"
-                            class="text-blue cursor-pointer hover:underline">Reset
-                            Password</a></p>
+                        class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><a (click)="openResetPassword()" class="text-blue cursor-pointer hover:underline">Reset Password</a></p>
 
                     <p *ngIf="(!parentInfo.loginEmail) || (!parentInfo.isPortalUser) || (!permissions?.edit)"
-                        class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">-</p>
+                        class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">-</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green">{{parentInfo.isPortalUser |
-                        EmtyBooleanCheckPipe}}</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green whitespace-pre-wrap">{{parentInfo.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                </li>
+                <li>
+                    <div class="mr-6" *ngIf="parentInfo?.isActive === true || parentInfo?.isActive === null; else NotActive">
+                        <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                        <span class="inline-block text-base align-middle">{{'disableParent' |translate}}</span>
+                    </div>
+                    <ng-template #NotActive>
+                        <div class="mr-6">
+                            <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2">
+                            </mat-icon>
+                            <span class="inline-block text-base align-middle">{{'disableParent' |translate}}</span>
+                        </div>
+                    </ng-template>
                 </li>
             </ul>
 
@@ -88,7 +90,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
                         <div class="relative cursor-pointer py-4 pl-4" fxFlex="none" (click)='openViewDetails(student)'>
                             <img src="{{student.studentPhoto !== null && student.studentPhoto !== '' ? 'data:image/png;base64,'+ student.studentPhoto : 'assets/img/default-person.jpg'}}"
-                                class="avatar">
+                                class="avatar" alt="Student photo">
                         </div>
                         <div class="overflow-hidden cursor-pointer py-2" fxFlex="auto"
                             (click)='openViewDetails(student)'>
@@ -102,11 +104,11 @@
                             <div class="flex items-center">
                                 <span class="custody mr-3" *ngIf="student.isCustodian;else noCustody"><img
                                         src="../../../../assets/img/icons/mother.svg" matTooltip="Custody of Student"
-                                        class="w-6 inline-block align-middle" /></span>
+                                        class="w-6 inline-block align-middle" alt="Custody of student icon"/></span>
                                 <ng-template #noCustody>
                                     <span class="no-custody mr-3"><img src="../../../../assets/img/icons/mother.svg"
                                             matTooltip="No Custody of Student"
-                                            class="inline-block align-middle" /></span>
+                                            class="inline-block align-middle" alt="No custody of student icon"/></span>
                                 </ng-template>
                                 <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Remove Association" type="button" class="text-gray">
                                     <mat-icon (click)="confirmDelete(student)" [icIcon]="icRemove"></mat-icon>
@@ -119,7 +121,7 @@
                 <div *ngIf="permissions?.edit" (click)="associateStudent()"
                     class="border flex items-center border-dashed border-blue rounded hover:bg-skyblue-light p-4 mb-4 text-center cursor-pointer">
                     <span class="text-center w-full text-primary">
-                        <mat-icon [icIcon]="icAdd" class="mr-3 inline-block align-middle"></mat-icon>Associate Student
+                        <mat-icon [icIcon]="icAdd" class="mr-3 inline-block align-middle"></mat-icon>{{'associateStudent' |translate}}
                     </span>
                 </div>
             </div>
@@ -194,7 +196,7 @@
                                 <mat-label>{{'userProfile'|translate}}</mat-label>
                                 <mat-select [(ngModel)]="addParentInfoModel.parentInfo.userProfile" name="userProfile"
                                     #userProfile="ngModel">
-                                    <mat-option value=""></mat-option>
+                                    <mat-option></mat-option>
                                     <mat-option *ngFor="let userProfile of userProfileEnum" [value]="userProfile">
                                         {{userProfile}}</mat-option>
                                 </mat-select>
@@ -229,29 +231,35 @@
                         <li>
                             <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                                 <mat-label>{{'homePhone'|translate}}</mat-label>
-                                <input [(ngModel)]="addParentInfoModel.parentInfo.homePhone" appPhoneMask
+                                <input [(ngModel)]="addParentInfoModel.parentInfo.homePhone" maxlength="20" minlength="10"
                                     #homePhone="ngModel" type="text" name="homePhone" matInput>
                                 <mat-error *ngIf="homePhone.errors?.invalidPhoneNumber">
                                     {{'invalidTelephoneNumber'|translate}}</mat-error>
+                                    <mat-error *ngIf="!homePhone.errors?.required && homePhone.errors?.minlength">
+                                        {{'minLengthTelephoneNumber'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
                         <li>
                             <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                                 <mat-label>{{'mobilePhone'|translate}}</mat-label>
-                                <input [(ngModel)]="addParentInfoModel.parentInfo.mobile" appPhonevalidator
+                                <input [(ngModel)]="addParentInfoModel.parentInfo.mobile" maxlength="20" minlength="10"
                                     #mobile="ngModel" type="text" name="mobile" matInput>
                                 <mat-error *ngIf="mobile.errors?.phonevalidator">
                                     {{'pleaseProvideAValidMobileNo'|translate}}
                                 </mat-error>
+                                <mat-error *ngIf="!mobile.errors?.required && mobile.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
                         <li>
                             <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                                 <mat-label>{{'workPhone'|translate}}</mat-label>
-                                <input [(ngModel)]="addParentInfoModel.parentInfo.workPhone" appPhoneMask
+                                <input [(ngModel)]="addParentInfoModel.parentInfo.workPhone" maxlength="20" minlength="10"
                                     #workPhone="ngModel" type="text" name="workPhone" matInput>
                                 <mat-error *ngIf="workPhone.errors?.invalidPhoneNumber">
                                     {{'invalidTelephoneNumber'|translate}}</mat-error>
+                                    <mat-error *ngIf="!workPhone.errors?.required && workPhone.errors?.minlength">
+                                        {{'minLengthTelephoneNumber'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
                     </ul>
@@ -272,6 +280,13 @@
                                     <mat-error class="text-red" *ngIf="loginEmail.errors?.required">
                                         {{'loginEmailAddressIsRequired'|translate}}</mat-error>
                                 </mat-form-field>
+                            </li>
+                            <li>
+                                <mat-checkbox name="activeDeactiveUser" [checked]="addParentInfoModel?.parentInfo.isActive===false"
+                                    (change)="activateUser($event.checked)" color="primary">
+                                    {{'disableParent'
+                                    | translate}}
+                                </mat-checkbox>
                             </li>
                         </ul>
                     </div>

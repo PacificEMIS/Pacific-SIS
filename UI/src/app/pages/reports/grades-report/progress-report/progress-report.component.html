@@ -1,0 +1,94 @@
+<div class="card">
+    <div class="px-6 py-4">
+        <ul class="flex flex-wrap mb-2">
+            <li><mat-slide-toggle [checked]="true" color="primary" class="mr-6 mb-2">{{'assignedDate' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [checked]="true" color="primary" class="mr-6 mb-2">{{'excludeUngradedEcAssignments' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [checked]="true" color="primary" class="mr-6 mb-2">{{'dueDate' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [checked]="true" color="primary" class="mr-6 mb-2">{{'excludeUngradedAssignmentsNotDue' | translate }}</mat-slide-toggle></li>
+        </ul>
+        <div>
+            <mat-radio-group aria-label="Select an option" color="primary">
+                <mat-radio-button value="withAssignmentDetails" class="mr-6" [checked]="true">{{'withAssignmentDetails' | translate }}</mat-radio-button>
+                <mat-radio-button value="totalsOnly" class="mr-6">{{'totalsOnly' | translate }}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                <div class="flex w-full items-center">
+                    <input class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" mat-icon-button type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <a class="text-primary cursor-pointer ml-3 md:w-full">
+                        <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
+                        <span class="ml-2 hidden lg:inline-block">
+                            {{'advanceSearch' | translate}}
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <hr class="block md:hidden" />
+            <div class="py-2 md:pt-2 flex items-center">
+                <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden border-t">
+        <table mat-table [dataSource]="studentLists" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="studentCheck">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox color="primary"></mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox color="primary" [checked]='element.studentCheck'></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="studentName">
+                <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.studentName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="studentId">
+                <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.studentId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="alternateId">
+                <th mat-header-cell *matHeaderCellDef>{{'alternateId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.alternateId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="grade">
+                <th mat-header-cell *matHeaderCellDef>{{'grade' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.grade}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="section">
+                <th mat-header-cell *matHeaderCellDef>{{'section' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.section}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
+    </mat-paginator>
+    <mat-divider></mat-divider>
+    <div class="p-4 text-right">
+        <button mat-raised-button color="primary">{{'createProgressReportForSelectedStudents' | translate }}</button>
+    </div>
+</div>

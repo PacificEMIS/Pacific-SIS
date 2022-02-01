@@ -18,6 +18,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatRadioModule} from '@angular/material/radio';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 
@@ -42,7 +44,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatSelectModule,
     FormsModule,
     MatSnackBarModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatRadioModule,
+    MatProgressSpinnerModule
   ]
 })
 export class EditSchoolFieldsModule { }

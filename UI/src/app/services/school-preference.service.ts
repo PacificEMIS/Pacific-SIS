@@ -31,8 +31,8 @@ export class SchoolPreferenceService {
         Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
         Obj.schoolPreference.schoolId = this.defaultValuesService.getSchoolID();
         Obj.schoolPreference.tenantId = this.defaultValuesService.getTenantID();
-        Obj.schoolPreference.createdBy= this.defaultValuesService.getEmailId();
-        Obj.schoolPreference.updatedBy= this.defaultValuesService.getEmailId();
+        Obj.schoolPreference.createdBy= this.defaultValuesService.getUserGuidId();
+        Obj.schoolPreference.updatedBy= this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + Obj._tenantName + '/Common/addUpdateSchoolPreference';
         return this.http.post<SchoolPreferenceAddViewModel>(apiurl, Obj,this.httpOptions);
     }

@@ -10,12 +10,13 @@ export class AttendanceCodeCategoryModel extends CommonField {
 }
 
 export class GetAllAttendanceCategoriesListModel extends CommonField {
-    public attendanceCodeCategoriesList: [];
+    public attendanceCodeCategoriesList: AttendanceCodeCategories[];
     public tenantId: string;
     public schoolId: number;
+    public academicYear: number;
     constructor() {
         super();
-        this.attendanceCodeCategoriesList = null;
+        this.attendanceCodeCategoriesList = [new AttendanceCodeCategories()];
     }
 }
 
@@ -32,9 +33,11 @@ export class GetAllAttendanceCodeModel extends CommonField {
     public tenantId: string;
     public schoolId: number;
     public attendanceCategoryId: number;
+    public isListView:boolean;
+    public academicYear: number;
     constructor() {
         super();
-        this.attendanceCodeList = null;
+        this.attendanceCodeList = [new AttendanceCode];
     }
 }
 

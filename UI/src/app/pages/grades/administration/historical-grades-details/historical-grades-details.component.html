@@ -1,0 +1,240 @@
+<div class="pb-4">
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+    <h4 class="px-6 py-4 text-lg font-semibold">{{ 'historicalGradesTransferOfCreditsEntry' | translate }}</h4>
+    <div class="mx-6 border border-gray-light rounded mb-6" *ngFor="let info of divCount;let i=index;">
+        <div class="p-4 md:flex justify-between bg-skyblue items-center">
+            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId === 0" class="">
+                <h5 class="text-primary text-base font-medium">{{
+                    'selectAmarkingPeriodGradeLevelEquivalencyAndEnterTheSchoolName' | translate }}</h5>
+                <p class="text-sm text-gray font-medium">{{ 'ifYouDontFindTheSpecificMarkingPeriodBelow' | translate}}
+                    <span class="px-1 underline cursor-pointer text-primary" (click)="redirectToMarkingPeriod()">{{
+                        'clickHere' | translate}}</span> {{
+                    'toAddIt' | translate}}
+                </p>
+            </div>
+            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId >0" class="">
+                <h5 class="text-primary text-base font-medium">
+                    <span>{{historicalGradeAddViewModel.historicalGradeList[i].schoolName}}</span>
+                    <span class="inline-block w-1 h-1 rounded bg-gray mx-4 align-middle"></span>
+                    <span>{{this.selectedMarkingPeriod(historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId)}}</span>
+                    <span class="inline-block w-1 h-1 rounded bg-gray mx-4 align-middle"></span>
+                    <span>{{this.selectedGrade(historicalGradeAddViewModel.historicalGradeList[i].equivalencyId)}}</span>
+                </h5>
+            </div>
+            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeAddMode"
+                class="flex justify-end mt-2 md:mt-0">
+                <mat-icon [icIcon]="icRemoveCircle" (click)="deleteHistoricalGrade(i)"
+                    class="text-primary cursor-pointer"></mat-icon>
+            </div>
+            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeViewMode"
+                class="flex justify-end mt-2 md:mt-0">
+                <mat-icon [icIcon]="icEdit" (click)="histGradeEdit(i)" class="text-primary cursor-pointer mr-2">
+                </mat-icon>
+                <mat-icon [icIcon]="icDeleteForever" (click)="deleteHistoricalGrade(i)"
+                    class="text-primary cursor-pointer"></mat-icon>
+            </div>
+        </div>
+
+        <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeAddMode" class="p-4">
+            <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-8 w-full">
+                <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'markingPeriod'|translate}}</mat-label>
+                        <mat-select name="{{'markingPeriod'+i}}"
+                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId">
+                            <mat-option></mat-option>
+                            <mat-option
+                                *ngFor="let histMarkingPeriod of historicalMarkingPeriodList.historicalMarkingPeriodList"
+                                [value]="histMarkingPeriod.histMarkingPeriodId">
+                                {{histMarkingPeriod.academicYear}} - {{histMarkingPeriod.title}}</mat-option>
+
+                        </mat-select>
+                    </mat-form-field>
+                </li>
+                <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'schoolName'|translate}}</mat-label>
+                        <input matInput name="{{'schoolName'+i}}"
+                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].schoolName">
+                    </mat-form-field>
+                </li>
+                <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'gradeLevelEquivalency'|translate}}</mat-label>
+                        <mat-select name="{{'gradeLevelEquivalency'+i}}"
+                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].equivalencyId">
+                            <mat-option></mat-option>
+                            <mat-option *ngFor="let list of getGradeEquivalencyList.gradeEquivalencyList"
+                                [value]="list.equivalencyId">
+                                {{list.gradeLevelEquivalency}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </li>
+            </ul>
+        </div>
+        <div class="overflow-x-auto overflow-y-hidden border">
+            <table class="w-full schedule-table -mx-1">
+                <thead>
+                    <tr>
+                        <th>{{ "courseCode" | translate }}</th>
+                        <th>{{ "courseName" | translate }}</th>
+                        <th>{{ "percentage" | translate }}</th>
+                        <th>{{ "letterGrade" | translate }}</th>
+                        <th>{{ "gpValue" | translate }}</th>
+                        <th>{{ "calculateGpa" | translate }}</th>
+                        <th>{{ "weightedGp" | translate }}</th>
+                        <th>{{ "gradeScale" | translate }}</th>
+                        <th>{{ "creditAttempted" | translate }}</th>
+                        <th>{{ "creditEarned" | translate }}</th>
+                        <th>{{ "action" | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let history of historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer; let j=index">
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode1">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'cc' + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode1>
+                                {{history.courseCode}} 
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode2">
+                                <div class="border border-gray-light rounded p-2 w-32">
+                                    <input type="text" name="{{'cn' + j}}" [(ngModel)]="history.courseName"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode2>
+                                {{history.courseName}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode3">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'cp' + j}}" [(ngModel)]="history.percentage"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode3>
+                                {{history.percentage| number:'0.2'}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode4">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'lg' + j}}" [(ngModel)]="history.letterGrade"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode4>
+                                {{history.letterGrade}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode5">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'gpv' + j}}" [(ngModel)]="history.gpValue"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode5>
+                                {{history.gpValue| number:'0.2'}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode6">
+                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}"
+                                    [(ngModel)]="history.calculateGpa"></mat-slide-toggle>
+                            </ng-container>
+                            <ng-template #viewMode6>
+                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}"
+                                    [(ngModel)]="history.calculateGpa" disabled></mat-slide-toggle>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode7">
+                                <mat-slide-toggle color="primary" name="{{'wgp' + j}}" [(ngModel)]="history.weightedGp">
+                                </mat-slide-toggle>
+                            </ng-container>
+                            <ng-template #viewMode7>
+                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}" [(ngModel)]="history.weightedGp"
+                                    disabled></mat-slide-toggle>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode8">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'gs' + j}}" [(ngModel)]="history.gradeScale"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode8>
+                                {{history.gradeScale| number:'0.2'}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode9">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'cra' + j}}" [(ngModel)]="history.creditAttempted"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode9>
+                                {{history.creditAttempted| number:'0.2'}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode10">
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <input type="text" name="{{'cre' + j}}" [(ngModel)]="history.creditEarned"
+                                        class="w-full" />
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode10>
+                                {{history.creditEarned| number:'0.2'}}
+                            </ng-template>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="history.creditAddMode;else viewMode11">
+                                <div class="w-16">
+                                    <mat-icon [icIcon]="icRemoveCircle" (click)="creditDelete(i,j)" class="text-primary cursor-pointer"></mat-icon>
+                                </div>
+                            </ng-container>
+                            <ng-template #viewMode11>
+                                <div class="w-16">
+                                    <mat-icon [icIcon]="icEdit" (click)="creditEdit(i,j)"
+                                        class="text-primary cursor-pointer"></mat-icon>
+                                    <mat-icon [icIcon]="icDeleteForever" (click)="creditDelete(i,j)"
+                                        class="text-primary cursor-pointer"></mat-icon>
+                                </div>
+                            </ng-template>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="sm:flex justify-between px-6">
+        <div>
+            <button type="button" (click)="addMoreHistoricalGrade()"
+                class="border-2 border-primary rounded px-4 text-primary align-middle">
+                <ic-icon [icon]="icAdd" class="mr-0 md:mr-2 align-middle" inline="true" size="24px"></ic-icon>
+                <span class="align-middle">{{ "addAnotherMarkingPeriod" | translate }}</span>
+            </button>
+        </div>
+        <div class="flex justify-end mt-4 sm:mt-0">
+            <button mat-flat-button type="submit" class="">{{ 'cancel' |translate }}</button>
+            <button color="primary" (click)="addEditHistGrade()" mat-flat-button type="submit"
+                class="text-white ml-2">{{ 'submit' |translate}}</button>
+        </div>
+    </div>
+</div>

@@ -34,6 +34,7 @@ import { SharedModuleModule } from '../../../pages/shared-module/shared-module.m
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {DragDropModule } from '@angular/cdk/drag-drop';
 import { StudentDataImportModule } from '../../student/student-data-import/student-data-import.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [StudentSettingsComponent, EnrollmentCodesComponent, StudentFieldsComponent],
@@ -68,7 +69,8 @@ import { StudentDataImportModule } from '../../student/student-data-import/stude
     MatCheckboxModule,
     MatButtonToggleModule,
     DragDropModule,
-    StudentDataImportModule
+    StudentDataImportModule,
+    MatTooltipModule
   ]
 })
 export class StudentSettingsModule { }

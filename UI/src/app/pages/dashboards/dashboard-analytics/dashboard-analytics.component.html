@@ -1,6 +1,6 @@
 <div class="bg-skyblue px-gutter py-4 border-b border-t text-primary">
-<vex-secondary-toolbar current="Dashboard">
-  <vex-breadcrumbs [crumbs]="['Dashboards']" class="flex-auto"></vex-breadcrumbs>
+<vex-secondary-toolbar current="{{'dashboard'}}">
+  <vex-breadcrumbs [crumbs]="['dashboards']" class="flex-auto"></vex-breadcrumbs>
 </vex-secondary-toolbar>
 </div>
 
@@ -18,29 +18,33 @@
 
   <!-- Column 1 -->
   <div gdColumn="1 / 4" gdColumn.lt-md="1 / -1" gdColumn.lt-sm="1">
+    <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="showRollOver">
+      {{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}
+		</div>
 		<div gdColumns="1fr 1fr 1fr" gdColumns.lt-md="1fr 1fr" gdColumns.lt-sm="1fr" gdGap="16px" vexContainer>
       <vex-widget-quick-value-center [icon]="icStudent" cardClass="bg-red" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"
-        label="Students" [value]='studentCount'></vex-widget-quick-value-center>
+        label="{{'students' |translate}}" [value]='studentCount' (click)="checkIsActive('students')" class="cursor-pointer"></vex-widget-quick-value-center>
       <vex-widget-quick-value-center [icon]="icStaff" cardClass="bg-green" iconClass="bg-white-light text-white"
-        gdColumn.lt-sm="1" label="Staff" [value]='staffCount'></vex-widget-quick-value-center>
+        gdColumn.lt-sm="1" label="{{'staff' |translate}}" [value]='staffCount' (click)="checkIsActive('staff')" class="cursor-pointer"></vex-widget-quick-value-center>
       <vex-widget-quick-value-center [icon]="icParent" cardClass="bg-blue" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"
-        label="Parents" [value]='parentCount'></vex-widget-quick-value-center>
+        label="{{'parents' |translate}}" [value]='parentCount' (click)="checkIsActive('parents')" class="cursor-pointer"></vex-widget-quick-value-center>
     </div>
 
     <div class="card my-4">
       <div *ngIf="!showCalendarView"class="px-6 py-4">
         <h3 class="text-primary font-bold">
-          No school calendar found. 
+          {{'noSchoolCalendarFound'|translate}}
           <a class="cursor-pointer" [routerLink]="['/school/schoolcalendars']">
-            Create a Calendar</a>
+            {{'createACalendar'|translate}}</a>
           </h3>
       </div>
       <div *ngIf="showCalendarView" class="px-6 py-4 flex justify-between">
-        <h3 class="text-primary font-bold">{{calendarTitle}}</h3>
+        <!-- <h3 class="text-primary font-bold cursor-pointer" (click)="goToCalendar()">{{calendarTitle}}</h3> -->
         <div  class="text-gray"> {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</div>
       </div>
       <hr />
       <ng-template #customCellTemplate let-day="day" let-locale="locale">
+        <div [ngClass]="{'cell-holiday flex-grow' : day.events.length > 0 && getHoliDay(day.events) }" [ngStyle]="{backgroundColor: day.events.length > 0 && getHoliDay(day.events) ? '#ffdee4' : 'transparent'}">
         <div class="cal-cell-top text-center">
           <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
         </div>
@@ -52,7 +56,7 @@
               
           </div>
         </div>
-        
+        </div>
     </ng-template>
     <vex-scrollbar *ngIf="events$ | async; let event" [ngSwitch]="view" class="px-0 shadow flex-auto relative"
     vexContainer>
@@ -72,10 +76,12 @@
 
 	<!-- Coolumn 2 -->
 	<div gdColumn="4 / -1" gdColumn.lt-md="1 / -1" gdColumn.lt-sm="1">
-    <div class="card px-6 py-4 bg-red mb-4 text-white hide" *ngIf="missingAttendanceCount>0">
+    <!-- <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="showRollOver">
+      {{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}
+		</div> -->
+    <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="missingAttendanceCount>0" (click)="goToMissingAttendence()">
 			<mat-icon [icIcon]="icMissingAttendance" class="align-middle mr-3"></mat-icon> {{missingAttendanceCount}}
-			Missing
-			Attendance Found
+			{{'missingAttendanceFound'|translate}}
 		</div>
 
 		<div class="card mb-4">
@@ -83,7 +89,7 @@
 				<h3 class="text-primary font-bold">{{noticeTitle}}</h3>
 			</div>
 			<hr *ngIf="noticeHide" />
-			<div *ngIf="noticeHide" class="px-3 ql-snow">
+			<div *ngIf="noticeHide && noticeBody" class="px-3 ql-snow">
 				<div class="ql-editor" [innerHTML]="noticeBody|safe:'html'"></div>
 			</div>
 		</div>		

@@ -29,7 +29,7 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'vex-school-settings',
   templateUrl: './school-settings.component.html',
@@ -43,24 +43,30 @@ export class SchoolSettingsComponent implements OnInit {
   schoolSettings=true;
   pageTitle:string;
   pageId: string;
-
-  constructor(private pageRolePermissions: PageRolesPermission) { }
+  permittedSubmenuList:any;
+  constructor(private pageRolePermissions: PageRolesPermission, private defaultValuesService: DefaultValuesService,private router: Router) { }
 
   ngOnInit(): void {
-    let permittedSubmenuList = this.pageRolePermissions.getPermittedSubCategories('/school/settings/school-settings');
-    permittedSubmenuList.map((option)=>{
+    this.permittedSubmenuList = this.pageRolePermissions.getPermittedSubCategories('/school/settings/school-settings');
+    this.permittedSubmenuList.map((option)=>{
         this.pages.push(option.title);
     }) 
-    let availablePageId=localStorage.getItem("pageId");
+    let availablePageId=this.defaultValuesService.getPageId();
     if(!availablePageId){
-          localStorage.setItem("pageId",this.pages[0]);
+          this.defaultValuesService.setPageId(this.pages[0]);
     }
-    this.pageId = localStorage.getItem("pageId");
+    this.pageId = this.defaultValuesService.getPageId();
   }
 
   getSelectedPage(pageId){
     this.pageId = pageId;
-    localStorage.setItem("pageId", pageId);
+    if(this.pageId==="Marking Periods"){
+      this.router.navigate(['school/marking-periods']);
+    }
+    if(this.pageId==="Calendars"){
+      this.router.navigate(['school/schoolcalendars']);
+    }
+    this.defaultValuesService.setPageId(pageId);
   }
 
 

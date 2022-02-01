@@ -47,7 +47,6 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { SchoolAddViewModel } from '../../../../models/school-master.model';
 import { ImageCropperService } from '../../../../services/image-cropper.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { ExcelService } from '../../../../services/excel.service';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -61,6 +60,8 @@ import { Permissions } from '../../../../models/roll-based-access.model';
 import icRestore from '@iconify/icons-ic/twotone-restore';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
+
 @Component({
   selector: 'vex-school-details',
   templateUrl: './school-details.component.html',
@@ -74,6 +75,7 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
   columns = [
     { label: 'Name', property: 'schoolName', type: 'text', visible: true },
     { label: 'Address', property: 'streetAddress1', type: 'text', visible: true, cssClasses: ['font-medium'] },
+    { label: 'State', property: 'state', type: 'text', visible: true },
     { label: 'Principal', property: 'nameOfPrincipal', type: 'text', visible: true },
     { label: 'Phone', property: 'telephone', type: 'text', visible: true, cssClasses: ['text-secondary', 'font-medium'] },
     { label: 'Status', property: 'status', type: 'text', visible: true },
@@ -101,11 +103,12 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator; 
   @ViewChild(MatSort) sort:MatSort
   permissions: Permissions;
+  schoolCreate: SchoolCreate;
+
   constructor(private schoolService: SchoolService,
     private snackbar: MatSnackBar,
     private router: Router,
     private loaderService:LoaderService,
-    private layoutService: LayoutService,
     private excelService:ExcelService,
     public translateService: TranslateService,
     public rollBasedAccessService: RollBasedAccessService,
@@ -117,16 +120,6 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
     ) 
     {
     this.getAllSchool.pageSize = this.defaultService.getPageSize() ? this.defaultService.getPageSize() : 10;
-      //translateService.use('en');
-      if(localStorage.getItem("collapseValue") !== null){
-        if( localStorage.getItem("collapseValue") === "false"){
-          this.layoutService.expandSidenav();
-        }else{
-          this.layoutService.collapseSidenav();
-        } 
-      }else{
-        this.layoutService.expandSidenav();
-      }
       
       this.getAllSchool.filterParams=null;
       this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -137,7 +130,7 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
 
   ngOnInit(): void {
     this.searchCtrl = new FormControl();
-    this.permissions=this.pageRolePermission.checkPageRolePermission("/school/schoolinfo/generalinfo");
+    this.permissions = this.pageRolePermission.checkPageRolePermission("/school/schoolinfo/generalinfo", null, true);
   }
   ngAfterViewInit() {
     //  Sorting
@@ -259,14 +252,14 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
   viewGeneralInfo(id:number){    
     this.schoolService.setSchoolId(id);
     if(id===this.defaultService.getSchoolID()){
-      let permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo');
+      let permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo/generalinfo');
       if(permittedDetails.length){
         this.schoolService.setCategoryTitle(permittedDetails[0].title);
-        this.schoolService.setCategoryId(0);
-        this.router.navigateByUrl(permittedDetails[0].path);
+        this.schoolService.setCategoryDetails({categoryId: 0, categoryTitle: permittedDetails[0].title});
+        this.router.navigateByUrl(permittedDetails[0].path, {state: {type: SchoolCreate.VIEW}});
       }
     }else{
-      this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
+      this.router.navigate(['/school', 'schoolinfo', 'generalinfo'], {state: {type: SchoolCreate.VIEW, isSchoolIDChange: true}});
     }
   }
 
@@ -286,8 +279,13 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
         }
       }else{
         this.totalCount=data.totalCount;
+       
         if(!this.searchCtrl.value){
-          this.checkForAutoRedirectToSchoolView(data.schoolMaster[0]?.schoolId);
+          if(!this.schoolService.getnavigationState()){
+            // this.schoolService.setSchoolId(this.defaultService.getSchoolID());
+            // this.checkForAutoRedirectToSchoolView(this.defaultService.getSchoolID());
+          }
+         
         }
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
@@ -298,10 +296,8 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
     });
   }
 
-  checkForAutoRedirectToSchoolView(id){
-    if(this.totalCount===1){
-      this.viewGeneralInfo(id)
-    }
+  checkForAutoRedirectToSchoolView(ids){
+      // this.viewGeneralInfo(id);
   }
 
   get visibleColumns() {
@@ -361,6 +357,7 @@ export class SchoolDetailsComponent implements OnInit,OnDestroy {
    }
 
   ngOnDestroy(){
+    this.schoolService.setnavigationState(false);
     this.destroySubject$.next();
     this.destroySubject$.complete();
   }

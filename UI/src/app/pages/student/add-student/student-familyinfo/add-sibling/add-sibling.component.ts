@@ -36,15 +36,15 @@ import { StudentSiblingAssociation, StudentSiblingSearch } from '../../../../../
 import { StudentService } from '../../../../../services/student.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AssociateStudent, AddParentInfoModel } from '../../../../../models/parent-info.model';
-import { relationShip} from '../../../../../enums/studentAdd.enum';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { relationShip } from '../../../../../enums/studentAdd.enum';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ParentInfoService } from '../../../../../services/parent-info.service';
 import { GetAllGradeLevelsModel } from '../../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../../services/grade-level.service';
 import { LovList } from '../../../../../models/lov.model';
 import { CommonService } from '../../../../../services/common.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
-import { SharedFunction } from 'src/app/pages/shared/shared-function';
+import { SharedFunction } from '../../../../../pages/shared/shared-function';
 @Component({
   selector: 'vex-add-sibling',
   templateUrl: './add-sibling.component.html',
@@ -74,19 +74,18 @@ export class AddSiblingComponent implements OnInit {
   gradeLevelArr;
   lovList: LovList = new LovList();
   constructor(private dialogRef: MatDialogRef<AddSiblingComponent>,
-              private fb: FormBuilder,
-              private studentService: StudentService,
-              private snackbar: MatSnackBar,
-              private parentInfoService: ParentInfoService,
-              private gradeLevelService: GradeLevelService,
-              private defaultValuesService: DefaultValuesService,
-              private commonFunction: SharedFunction,
-              private commonService: CommonService,
-              @Inject(MAT_DIALOG_DATA) public val) { }
+    private fb: FormBuilder,
+    private studentService: StudentService,
+    private snackbar: MatSnackBar,
+    private parentInfoService: ParentInfoService,
+    private defaultValuesService: DefaultValuesService,
+    private commonFunction: SharedFunction,
+    private commonService: CommonService,
+    @Inject(MAT_DIALOG_DATA) public val) { }
 
   ngOnInit(): void {
-    this.getRelationship();
-    this.getGradeLevel();
+    this.relationShipList = this.val?.parentData?.relationShipList;
+    this.gradeLevelArr = this.val?.parentData?.gradeLevelArr;
     this.form = this.fb.group(
       {
         firstGivenName: [null, Validators.required],
@@ -99,65 +98,32 @@ export class AddSiblingComponent implements OnInit {
 
 
   }
-  cancel(){
+  cancel() {
     this.dialogRef.close(false);
   }
-  getRelationship(){
 
-      this.lovList.lovName = 'Relationship';
-      this.commonService.getAllDropdownValues(this.lovList).subscribe(
-        (res: LovList) => {
-          if(res._failure){
-            this.commonService.checkTokenValidOrNot(res._message);
-            }
-          this.relationShipList = res.dropdownList;
-
-        }
-      );
-
-  }
-  getGradeLevel(){
-    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe((res) => {
-      if (res){
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.snackbar.open( res._message, '', {
-            duration: 10000
-          });
-        } else {
-          this.gradeLevelArr = res.tableGradelevelList;
-        }
-      }else{
-        this.snackbar.open(this.defaultValuesService.translateKey('gradeLevelInformationfailed')
-        + sessionStorage.getItem('httpError'), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
-
-  search(){
+  search() {
     this.form.markAllAsTouched();
-    if (this.form.valid){
-      if (this.form.value.searchAllSchool){
+    if (this.form.valid) {
+      if (this.form.value.searchAllSchool) {
         this.studentSiblingSearch.schoolId = null;
-      }else{
+      } else {
         this.studentSiblingSearch.schoolId = this.defaultValuesService.getSchoolID();
       }
-      if (this.studentSiblingSearch.studentInternalId === ''){
+      if (this.studentSiblingSearch.studentInternalId === '') {
         this.studentSiblingSearch.studentInternalId = null;
       }
       this.studentSiblingSearch.dob = this.commonFunction.formatDateSaveWithoutTime(this.studentSiblingSearch.dob);
-      this.studentService.siblingSearch(this.studentSiblingSearch).subscribe((res) => {
-        if (res){
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            this.snackbar.open( res._message, '', {
+      this.studentService.siblingSearch(this.studentSiblingSearch, this.studentSiblingSearch.schoolId).subscribe((res) => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
               duration: 10000
             });
           } else {
-            if (this.val !== null){
-              if (this.val.data){
+            if (this.val?.data?.parentInfo !== null) {
+              if (this.val.data?.parentInfo) {
                 this.mode = 'Parent';
               }
             }
@@ -165,76 +131,59 @@ export class AddSiblingComponent implements OnInit {
             this.studentSiblingSearch.getStudentForView = res.getStudentForView;
 
           }
-        }else{
-          this.snackbar.open(this.defaultValuesService.translateKey('studentSearchfailed') + sessionStorage.getItem('httpError'), '', {
+        } else {
+          this.snackbar.open(this.defaultValuesService.translateKey('studentSearchfailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
       });
     }
   }
-  associateMultipleStudentsToParent(){
+  associateMultipleStudentsToParent() {
     let isCustodian = this.associatStudent.isCustodian;
     let contactRelationship = this.associatStudent.contactRelationship;
-    if (contactRelationship === undefined){
-     contactRelationship = '';
+    if (contactRelationship === undefined) {
+      contactRelationship = '';
     }
-    if (isCustodian === undefined){
-     isCustodian = false;
+    if (isCustodian === undefined) {
+      isCustodian = false;
     }
     const obj = {
-     'isCustodian': isCustodian,
-     'relationship': contactRelationship,
-     'tenantId': this.defaultValuesService.getTenantID(),
-     'schoolId': this.defaultValuesService.getSchoolID(),
-     'parentId': this.val.data.parentId
-     };
+      'isCustodian': isCustodian,
+      'relationship': contactRelationship,
+      'tenantId': this.defaultValuesService.getTenantID(),
+      'schoolId': this.defaultValuesService.getSchoolID(),
+      'parentId': this.val.data.parentId
+    };
     return obj;
   }
-  associateStudent(studentDetails){
-   if (this.val !== null){
-    if (this.val.data !== null ){
-      if (this.studentSiblingSearch.getStudentForView?.length > 1){
-        const obj = this.associateMultipleStudentsToParent();
-        if (obj.relationship === ''){
-          this.snackbar.open(this.defaultValuesService.translateKey('pleaseProvideRelationship'), '', {
+  associateStudent(studentDetails) {
+    if(this.val.source === "siblingInfo"){
+      this.studentSiblingAssociation.studentMaster.studentId = studentDetails.studentId;
+      this.studentSiblingAssociation.studentMaster.schoolId = studentDetails.schoolId;
+      this.studentSiblingAssociation.studentId = this.studentService.getStudentId();
+      this.studentService.associationSibling(this.studentSiblingAssociation).subscribe((res) => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.dialogRef.close(true);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.snackbar.open(this.defaultValuesService.translateKey('associationFailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
-        }else
-        {
-          this.addParentInfoModel.parentAssociationship.studentId = studentDetails.studentId;
-          this.addParentInfoModel.parentInfo.parentAddress[0].studentId = studentDetails.studentId;
-          this.addParentInfoModel.parentAssociationship.parentId = this.val.data.parentInfo.parentId;
-          this.addParentInfoModel.parentAssociationship.schoolId = studentDetails.schoolId;
-          this.addParentInfoModel.parentInfo.parentAddress[0].parentId = this.val.data.parentInfo.parentId;
-          this.addParentInfoModel.parentInfo.parentId = this.val.data.parentInfo.parentId;
-          this.addParentInfoModel.parentAssociationship.relationship = obj.relationship;
-          this.addParentInfoModel.parentAssociationship.isCustodian = obj.isCustodian;
-          this.parentInfoService.addParentForStudent(this.addParentInfoModel).subscribe(data => {
-            if (data){
-             if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-                this.snackbar.open( data._message, '', {
-                  duration: 10000
-                });
-              }
-              else
-              {
-                this.snackbar.open( data._message, '', {
-                  duration: 10000
-                });
-                this.dialogRef.close(true);
-              }
-            }
-            else{
-              this.snackbar.open(this.defaultValuesService.translateKey('parentInformationSubmissionfailed') + sessionStorage.getItem('httpError'), '', {
-                duration: 10000
-              });
-            }
-          });
         }
-      }else{
-        let isCustodian = this.associatStudent.isCustodian;
+      });
+    } else if ( this.val.source === "editParentInfo" ){
+      let isCustodian = this.associatStudent.isCustodian;
         let contactRelationship = this.associatStudent.contactRelationship;
         if (contactRelationship === undefined){
           contactRelationship = '';
@@ -271,45 +220,19 @@ export class AddSiblingComponent implements OnInit {
             }
           }
           else{
-            this.snackbar.open(this.defaultValuesService.translateKey('parentInformationSubmissionfailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open(this.defaultValuesService.translateKey('parentInformationSubmissionfailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
         });
-      }
-    }
-  }else{
-      this.studentSiblingAssociation.studentMaster.studentId = studentDetails.studentId;
-      this.studentSiblingAssociation.studentMaster.schoolId = studentDetails.schoolId;
-      this.studentSiblingAssociation.studentId = this.studentService.getStudentId();
-      this.studentService.associationSibling(this.studentSiblingAssociation).subscribe((res) => {
-        if (res){
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            this.snackbar.open( res._message, '', {
-              duration: 10000
-            });
-          } else {
-            this.dialogRef.close(true);
-            this.snackbar.open( res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else{
-          this.snackbar.open(this.defaultValuesService.translateKey('associationFailed') + sessionStorage.getItem('httpError'), '', {
-            duration: 10000
-          });
-        }
-      });
-    }
+    } 
 
   }
 
-  backToSearch(){
-    if (this.hideSearchBoxAfterSearch){
+  backToSearch() {
+    if (this.hideSearchBoxAfterSearch) {
       this.dialogRef.close();
-    }else{
+    } else {
       this.hideSearchBoxAfterSearch = true;
       this.studentSiblingSearch.getStudentForView = null;
     }

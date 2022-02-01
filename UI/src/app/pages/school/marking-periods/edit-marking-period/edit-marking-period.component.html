@@ -40,7 +40,7 @@
         <div class="flex flex-1 mx-6 md:w-1/2">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'ends' | translate}}</mat-label>
-                <input formControlName="endDate" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.endDate"  name="endDate" [matDatepicker]="ends" matInput required>
+                <input formControlName="endDate" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.endDate" [max]="checkEndDate()" name="endDate" [matDatepicker]="ends" matInput required>
                 <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #ends></mat-datepicker>
                 <mat-error *ngIf="form.get('endDate').hasError('required')">{{'endDateIsRequired'|translate}}</mat-error>
@@ -52,22 +52,24 @@
             <div class="flex flex-1 mx-6 md:w-1/2">
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'gradePostingBegins' | translate}}</mat-label>
-                    <input formControlName="postStartDate" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.postStartDate" [min]="markingPeriodAddModel.tableSchoolYears.startDate" [max]="markingPeriodAddModel.tableSchoolYears.endDate"  name="postStartDate"  [matDatepicker]="gradePostingBegins" matInput >
+                    <input formControlName="postStartDate" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.postStartDate" [min]="markingPeriodAddModel.tableSchoolYears.startDate" [max]="markingPeriodAddModel.tableSchoolYears.endDate"  name="postStartDate"  [matDatepicker]="gradePostingBegins" matInput required >
                     <mat-datepicker-toggle [for]="gradePostingBegins" matSuffix></mat-datepicker-toggle>
                     <mat-datepicker #gradePostingBegins></mat-datepicker>
                     <mat-error *ngIf="form.get('postStartDate').hasError('invalidDateComparison')">{{"gradePostingEndDateCannotBeEarlierThanGradePostingBeginDate"|translate}}</mat-error>
                     <mat-error *ngIf="form.get('postStartDate').hasError('matDatepickerMin')">{{'gradePostingBeginsDateCannotBeEarlierThanMarkingPeriodBeginsDate'|translate}}</mat-error>
                     <mat-error *ngIf="form.get('postStartDate').hasError('matDatepickerMax')">{{'gradePostingBeginsDateCannotExceedMarkingPeriodEndsDate'|translate}}</mat-error>
+                    <mat-error *ngIf="form.get('postStartDate').hasError('required')">{{'gradePostingBeginsDateIsRequired'|translate}}</mat-error>
                 </mat-form-field>
             </div>
             <div class="flex flex-1 mx-6 md:w-1/2">
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'gradePostingEnds' | translate}}</mat-label>
-                    <input formControlName="postEndDate" (dateChange)="gradeDateCompare()" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.postEndDate"  [min]="markingPeriodAddModel.tableSchoolYears.startDate"  name="postEndDate" [matDatepicker]="gradePostingEnds" matInput>
+                    <input formControlName="postEndDate" (dateChange)="gradeDateCompare()" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.postEndDate"  [min]="markingPeriodAddModel.tableSchoolYears.postStartDate"  name="postEndDate" [matDatepicker]="gradePostingEnds" matInput required>
                     <mat-datepicker-toggle [for]="gradePostingEnds" matSuffix></mat-datepicker-toggle>
                     <mat-datepicker #gradePostingEnds></mat-datepicker>
                     <mat-error *ngIf="form.get('postEndDate').hasError('compareGradeError')">{{"gradePostingEndDateCannotBeEarlierThanGradePostingBeginDate"|translate}}</mat-error>
                     <mat-error *ngIf="form.get('postEndDate').hasError('matDatepickerMin')">{{'gradePostingEndsDateCannotBeEarlierThanMarkingPeriodBeginsDate'|translate}}</mat-error>
+                    <mat-error *ngIf="form.get('postEndDate').hasError('required')">{{'gradePostingEndDateIsRequired'|translate}}</mat-error>
                 </mat-form-field>
             </div>
         </div>
@@ -81,6 +83,6 @@
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-    <button color="primary" mat-raised-button type="submit" >{{isEdit? "UPDATE" : "SUBMIT"}}</button>    
+    <button color="primary" mat-raised-button type="submit" >{{isEdit? "Update" : "Submit"}}</button>    
 </mat-dialog-actions>
 </form>

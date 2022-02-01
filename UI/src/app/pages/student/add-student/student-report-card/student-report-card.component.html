@@ -5,8 +5,9 @@
                 <li>
                     <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                         <mat-label>{{ "selectReportCardTemplate" | translate }}</mat-label>
-                        <mat-select>
-                            <mat-option value="" selected>Default</mat-option>
+                        <mat-select [(ngModel)]="addReportCardPdf.templateType">
+                            <mat-option *ngFor="let reportType of reportCardType" [value]="reportType.reportCardType">
+                                {{reportType.reportCardTypeName}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </li>
@@ -40,14 +41,14 @@
             </mat-slide-toggle>
             <div class="select-dropdown inline-block">
                 <select>
-                    <option value="na" selected>EA(Excused Absence)</option>
+                    <option value="na" selected>{{'eaExcusedAbsence' | translate }}</option>
                 </select>
             </div>
         </div>
         <h4 class="text-green font-medium mb-2">{{ "markingPeriods" | translate }}</h4>
         <div class="mb-4">
             <mat-checkbox color="primary" (change)="markingPeriodChecked($event, markingPeriod)" *ngFor="let markingPeriod of markingPeriodList" class="mr-6">{{markingPeriod?.fullName}}</mat-checkbox>
-            <mat-error *ngIf="markingPeriodError">Please select any marking period.</mat-error>
+            <mat-error *ngIf="markingPeriodError">{{'pleaseSelectAnyMarkingPeriod' | translate }}</mat-error>
         </div>
         <div class="text-right" *ngIf="permissions?.edit">
             <button mat-flat-button color="primary" (click)="generateReportCard()">{{'generateReportCard' | translate }}</button>
@@ -61,6 +62,467 @@
         </ngx-doc-viewer>
     </div>
 </mat-card>
+
+<ng-container *ngIf="addReportCardPdf?.templateType !== 'default'">
+
+    <div class="pdf-class hidden" id="printSectionId">
+        <div class="report-card" *ngFor="let grade of generatedReportCardData?.studentsReportCardViewModelList">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table class="report-card-header" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <div class="float-left"> <img
+                                            [src]=" grade?.schoolLogo ? 'data:image/jpeg;base64,' + grade?.schoolLogo : 'assets/img/profilePic.jpg'"
+                                            alt="School Logo">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="header-middle float-left">
+                                        <h2 class="text-uppercase">{{grade?.gradeTitle}}</h2>
+                                        <p class="text-center">{{grade?.schoolName}}</p>
+                                    </div>
+                                </td>
+                                <td class="header-right">
+                                    <div>
+                                        <p>SY {{generatedReportCardData?.academicYear-1}} -
+                                            {{generatedReportCardData?.academicYear}}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="student-info-header">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="70%">
+                                    <div class="info-left float-left">
+                                        <h2><span class="title">{{'studentName' | translate}}</span> : <span>{{grade?.firstGivenName}}
+                                                {{grade?.lastFamilyName}}</span></h2>
+                                        <h2><span class="title">{{'studentId' | translate }}</span> :
+                                            <span>{{grade?.studentInternalId}}</span></h2>
+                                        <h2>
+                                            <span class="title">Gender</span> : <span>{{grade?.gender}}</span>
+                                        </h2>
+                                        <h2><span class="title">Address</span> : <span>
+                                                {{grade?.homeAddressLineOne ? grade?.homeAddressLineOne :
+                                                ''}}{{grade?.homeAddressLineTwo ? ', '+grade?.homeAddressLineTwo :
+                                                ''}}{{grade?.homeAddressCity ? ', '+grade?.homeAddressCity :
+                                                ''}}{{grade?.homeAddressState ? ', '+grade?.homeAddressState :
+                                                ''}}{{grade?.homeAddressZip ? ', '+grade?.homeAddressZip :
+                                                ''}}{{grade?.homeAddressCountry ? ', '+grade?.homeAddressCountry : ''}}
+                                            </span></h2>
+                                    </div>
+                                </td>
+                                <td width="30%">
+                                    <div class="info-left info-right">
+                                        <h2><span class="title">{{'markingPeriod' | translate }}</span> : <span>Multiple</span></h2>
+                                        <h2><span class="title">{{'gradeLevel' | translate }}</span> : <span>{{grade?.gradeTitle}}</span>
+                                        </h2>
+                                        <h2><span class="title">{{'section' | translate }}</span> : <span>{{grade?.section}}</span></h2>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="semester-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                        {{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let courseSection of grade?.courseSectionGradeDetailsForOtherTemplates">
+                                    <td>{{courseSection?.courseSectionName}}</td>
+                                    <td *ngFor="let percentageAndGrade of courseSection?.percentageAndGrade">
+                                        {{percentageAndGrade?.grade}} {{percentageAndGrade?.percentage ? '(' +
+                                        percentageAndGrade?.percentage + ')' : ''}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="semester-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Attendance</th>
+                                    <th
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                        {{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let attendanceDetails of grade?.attendanceDetailsForOtherTemplates">
+                                    <td>{{attendanceDetails?.attendanceTitle}}</td>
+                                    <td *ngFor="let attendance of attendanceDetails?.attendance">
+                                        {{attendance?.attendanceCount}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="semester-table">
+                        <table>
+                            <caption>
+                                <h2><b>{{'behavior' | translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                                </h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{'departmentBehavior' | translate}}</th>
+                                    <th
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                        {{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{'respecteForTeachers' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                    <!-- <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                    </td> -->
+                                </tr>
+                                <tr>
+                                    <td>{{'respecteForClassmates' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'completeOfWork' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'careOfProperty' | translate}}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'cooperation' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'followInstruction' | translate }}
+                                    </td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{'neetnessOfWork' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{'attendance' | translate }}</td>
+                                    <td
+                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+            <table>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td colspan="2">
+                                    <table>
+                                        <tr>
+                                            <td class="semester-table" style="padding-right: 15px;">
+                                                <table>
+                                                    <caption>
+                                                        <h2><b>{{'gradeScale' | translate}}</b></h2>
+                                                    </caption>
+                                                    <tbody>
+                                                        <tr *ngFor="let gradeDetails of grade?.gradeList">
+                                                            <td>{{gradeDetails?.breakoff}}</td>
+                                                            <td>{{gradeDetails?.title}}</td>
+                                                            <td>{{gradeDetails?.sortOrder}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td class="semester-table" style="padding-left: 15px;">
+                                                <table class="bevaior-table">
+                                                    <caption>
+                                                        <h2><b>{{'behaviorLegend' | translate }}</b></h2>
+                                                    </caption>
+                                                    <tbody>
+                                                        <tr *ngFor="let gradeDetails of grade?.gradeList">
+                                                            <td>{{gradeDetails?.title}}</td>
+                                                            <td>{{gradeDetails?.comment}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="semester-table">
+                        <table class="comments-table">
+                            <caption>
+                                <h2>
+                                    <b>{{'comments' | translate}}</b>
+                                </h2>
+                            </caption>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="signature-table">
+                        <table cell-padding="10">
+                            <tr>
+                                <td width="33.33%">
+                                    <p class="long-line"></p>
+                                    <p class="text-center sign">
+                                        <b>{{'teachersSignature' | translate}}</b>
+                                    </p>
+                                    <p class="text-center">
+                                        <b>{{'date'| translate}}:</b>&nbsp;<span class="small-line"></span>
+                                    </p>
+                                </td>
+                                <td width="33.33%">
+                                    <p class="long-line m-auto"></p>
+                                    <p class="text-center
+                                                sign"><b>{{'principalsSignature' | translate}}</b></p>
+                                    <p class="text-center">
+                                        <b>{{'date'| translate}}:</b>&nbsp;<span class="small-line"></span>
+                                    </p>
+                                </td>
+                                <td width="33.33%">
+                                    <p class="long-line ml-auto"></p>
+                                    <p class="text-center
+                                                sign"><b>{{'parentGuardiansSignature' | translate}}</b></p>
+                                    <p class="text-center">
+                                        <b>{{'date'| translate}}:</b>&nbsp;<span class="small-line"></span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+        </div>
+
+
+    </div>
+</ng-container>
+
+<ng-container *ngIf="addReportCardPdf?.templateType === 'default'">
+
+    <div class="pdf-class hidden" id="printReportCardId">
+        <div class="report-card" *ngFor="let grade of generatedReportCardData?.studentsReportCardViewModelList">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td colspan="2">
+                        <table class="report-card-header" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <div class="header-left">
+                                        <h2>{{grade?.schoolName}}</h2>
+                                        <p>{{grade?.homeAddressLineOne ? grade?.homeAddressLineOne :
+                                            ''}}{{grade?.homeAddressLineTwo ? ', '+grade?.homeAddressLineTwo :
+                                            ''}}{{grade?.homeAddressCity ? ', '+grade?.homeAddressCity :
+                                            ''}}{{grade?.homeAddressState ? ', '+grade?.homeAddressState :
+                                            ''}}{{grade?.homeAddressZip ? ', '+grade?.homeAddressZip :
+                                            ''}}{{grade?.homeAddressCountry ? ', '+grade?.homeAddressCountry : ''}}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="header-right">
+                                        <h3>{{'reportCard' | translate}}</h3>
+                                        <p>{{'schoolYear' | translate}}: {{grade?.schoolYear}}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="student-info-header">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="60%">
+                                    <div class="info-left">
+                                        <h1>{{grade?.firstGivenName}} {{grade?.lastFamilyName}}</h1>
+                                        <p><span>{{grade?.gradeTitle}}</span>Student ID : {{grade?.studentInternalId}}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td width="40%">
+                                    <div class="info-right">
+                                        <table class="striped-table text-center" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>{{'yearToDateAttendancePercent' | translate}}</td>
+                                                <td><b>{{grade?.yearToDateAttendencePercent}}</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{'yearToDateAbsencesInDays' | translate}}</td>
+                                                <td><b>{{grade?.yearToDateAbsencesInDays}}</b></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr *ngFor="let markingPeriod of grade?.markingPeriodDetailsForDefaultTemplates">
+                    <td class="semester-table">
+                        <table>
+                            <caption>
+                                <h2 class="float-left">{{markingPeriod?.markingPeriodTitle}}</h2>
+                                <p class="float-right">{{'absences' | translate}}: {{markingPeriod?.absences}} <span>|</span> Excused
+                                    {{'absences' | translate}}: {{markingPeriod?.excusedAbsences}}</p>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{'course' | translate}}</th>
+                                    <th>{{'teacher' | translate}}</th>
+                                    <th>{{'grade' | translate}}</th>
+                                    <th>{{'gpa' | translate}}</th>
+                                    <th>{{'comments' | translate}}</th>
+                                    <th>{{'teacherComments' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let courseSection of markingPeriod?.courseSectionGradeDetailsForDefaultTemplates">
+                                    <td>{{courseSection?.courseSectionName}}</td>
+                                    <td>{{courseSection?.staffName}}</td>
+                                    <td>{{courseSection?.gradeObtained}} {{courseSection?.percentMarks ? '(' +
+                                        courseSection?.percentMarks + '%)' : ''}} </td>
+                                    <td>{{courseSection?.gpa}}</td>
+                                    <td>{{courseSection?.comments}}</td>
+                                    <td>{{courseSection?.teacherComments}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="signature-table">
+                        <table cell-padding="10">
+                            <tr>
+                                <td width="33.33%">
+                                    <p class="long-line"></p>
+                                    <p class="text-center sign"><b>{{'teachersSignature' | translate }}</b></p>
+                                    <p class="text-center"><b>{{'date' | translate}}:</b>&nbsp;<span class="small-line"></span></p>
+                                </td>
+                                <td width="33.33%">
+                                    <p class="long-line m-auto"></p>
+                                    <p class="text-center sign"><b>{{'principalsSignature' | translate }}</b></p>
+                                    <p class="text-center"><b>{{'date' | translate}}:</b>&nbsp;<span class="small-line"></span></p>
+                                </td>
+                                <td width="33.33%">
+                                    <p class="long-line ml-auto"></p>
+                                    <p class="text-center sign"><b>{{'parentGuardiansSignature' | translate }}</b></p>
+                                    <p class="text-center"><b>{{'date' | translate}}:</b>&nbsp;<span class="small-line"></span></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+            <table>
+                <tr>
+                    <td class="comments">
+                        <table>
+                            <h4>{{'forCommentKeysPleaseFollowTheDescriptionBelow' | translate }}</h4>
+                            <tr>
+                                <td>
+                                    <p>1. {{'worksForAcademicExcellence' | translate}}</p>
+                                    <p>2. {{'showsAcademicImprovements' | translate}}</p>
+                                    <p>3. {{'participatesEffectively' | translate}}</p>
+                                    <p>4. {{'positiveAttitudeAndEffort' | translate}}</p>
+                                    <p>5. {{'makesConnectionAndAppliesKnowledge' | translate}}</p>
+                                    <p>6. {{'displaysGoodStudySkills' | translate}}</p>
+                                    <p>7. {{'worksWellInGroupactivities' | translate}}</p>
+                                    <p>8. {{'homeAssignmentsAreGenerallyInferiorToWorkDoneInSchool' | translate}}</p>
+                                    <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool' | translate}}</p>
+                                </td>
+                                <td>
+                                    <p>10. {{'appearsDisorganized' | translate}}</p>
+                                    <p>11. {{'qualityOfWorkDeclining' | translate}}</p>
+                                    <p>12. {{'doesNotBringMaterialsFollowDirections' | translate}}</p>
+                                    <p>13. {{'inconsistentEffort' | translate}}</p>
+                                    <p>14. {{'needsToParticipateMoreInDiscussion' | translate}}</p>
+                                    <p>15. {{'difficultyInMakingConnectionsAndApplyingKnowledge' | translate}}</p>
+                                    <p>16. {{'hasDifficultyOnExams' | translate}}</p>
+                                    <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod' | translate}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="comments">
+                        <h4>{{'teacherComments' | translate}}:</h4>
+                        <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
+                            convallis pulvinar nec et dui.</p>
+                        <p>3. Ut tempus tristique velit ut eleifend. In hac habitasse platea dictumst. Pellentesque ac
+                            mattis ipsum.</p>
+                        <p>4. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        <p>5. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
+                            convallis pulvinar nec et dui.</p>
+                    </td>
+                </tr>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+        </div>
+    </div>
+</ng-container>
+
 <!-- <mat-card class="w-full mb-6 p-0">
     <div class="flex items-center bg-green text-white p-4 rounded-t flex-wrap">
         <div>

@@ -34,7 +34,6 @@ import { Subject } from "rxjs";
 import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
 import { ImageCropperService } from "src/app/services/image-cropper.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { LayoutService } from "src/@vex/services/layout.service";
 import { stagger60ms } from "../../../../@vex/animations/stagger.animation";
 import { fadeInUp400ms } from "../../../../@vex/animations/fade-in-up.animation";
 import icSchool from "@iconify/icons-ic/outline-school";
@@ -60,6 +59,7 @@ import { DefaultValuesService } from "../../../common/default-values.service";
 import { ActivatedRoute, NavigationStart, Router } from "@angular/router";
 import { CommonService } from "../../../services/common.service";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
+import { Module } from "src/app/enums/module.enum";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -84,8 +84,8 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   icBilling = icBilling;
   icHospital = icHospital;
   studentId: number;
-  studentTitle: string;
-  pageStatus = "Add Student";
+  studentTitle ='addStudent';
+  pageStatus = "addStudent";
   module = "Student";
   responseImage: string;
   enableCropTool = true;
@@ -96,12 +96,12 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   loading: boolean;
   moduleIdentifier = ModuleIdentifier;
   categoryTitle: string;
+  categoryPath: string;
   studentCriticalInfo: string;
   otherTabs: OtherStudentTabs = new OtherStudentTabs();
   currentRolePermission;
 
   constructor(
-    private layoutService: LayoutService,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
     private customFieldservice: CustomFieldService,
@@ -116,21 +116,10 @@ export class AddStudentComponent implements OnInit, OnDestroy {
     private pageRolePermission: PageRolesPermission,
     private activatedRoute: ActivatedRoute,
   ) {
-    translateService.use("en");
+    // translateService.use("en");
+  
+  this.currentRolePermission = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.permissions : undefined;
 
-  //   this.router.events
-  //  .pipe(filter(e => e instanceof NavigationStart))
-  //  .subscribe((e: NavigationStart) => {
-  //   const navigation  = this.router.getCurrentNavigation();
-  //   this.orderId = navigation.extras.state ? navigation.extras.state.orderId : 0;
-  //  });
-
-  //   this.currentRolePermission = this.activatedRoute.paramMap
-  //       .pipe(map(() => console.log(window.history.state.data)));
-
-  this.currentRolePermission =this.router.getCurrentNavigation().extras.state;
-
-    this.layoutService.collapseSidenav();
     this.imageCropperService
       .getCroppedEvent()
       .pipe(takeUntil(this.destroySubject$))
@@ -147,6 +136,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
             this.fieldsCategory.map((item,i)=>{
               if(item.title===this.categoryTitle){
                 this.currentCategory=item.categoryId;
+                this.categoryPath=item.path;
                 index=i;
               }
             });
@@ -161,9 +151,9 @@ export class AddStudentComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         // this.studentCreateMode = res;
         if (res === this.studentCreate.VIEW) {
-          this.pageStatus = "View Student";
+          this.pageStatus = "viewStudent";
         } else {
-          this.pageStatus = "Edit Student";
+          this.pageStatus = "editStudent";
         }
       });
     this.loaderService.isLoading
@@ -227,7 +217,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
 
   onViewMode() {
     this.studentService.setStudentImage(this.responseImage);
-    this.pageStatus = "View Student";
+    this.pageStatus = "viewStudent";
   }
 
   checkCriticalAlertFromMedical(status) {
@@ -241,15 +231,15 @@ export class AddStudentComponent implements OnInit, OnDestroy {
 
   changeCategory(field, index) {
     // if(this.studentCreateMode === this.studentCreate.ADD) return;
-
     this.categoryTitle=field.title;
     this.commonService.setModuleName(this.module);
     const studentDetails = this.studentService.getStudentDetails();
     this.studentService.setStudentFirstView(false)
     if (studentDetails) {
+     
       this.studentService.setCategoryTitle(this.categoryTitle);
       this.studentCreateMode = this.studentCreate.EDIT;
-      
+      this.categoryPath= field.path;
       this.currentCategory = field.categoryId;
       this.indexOfCategory = index;
 
@@ -262,48 +252,50 @@ export class AddStudentComponent implements OnInit, OnDestroy {
       this.studentService.setCategoryTitle(this.categoryTitle);
       this.currentCategory = field.categoryId;
       this.indexOfCategory = index;
-
-      this.pageStatus = "View Student";
+      this.categoryPath= field.path;
+      this.pageStatus = "viewStudent";
     }
     this.studentService.setCategoryId(this.indexOfCategory);
     this.studentService.setStudentCreateMode(this.studentCreateMode);
     this.secondarySidebar = 0; // Close secondary sidenav in mobile view
+    if(this.pageStatus === "viewStudent" || this.pageStatus==="editStudent") {
     this.checkCurrentCategoryAndRoute();
+    }
   }
 
   checkCurrentCategoryAndRoute() {
-    if(this.currentCategory === 3) {
+    if(this.categoryPath === '/school/students/student-generalinfo') {
       this.router.navigate(['/school', 'students', 'student-generalinfo']);
-    } else if(this.currentCategory === 4 ) {
+    } else if(this.categoryPath === '/school/students/student-enrollmentinfo' ) {
       this.router.navigate(['/school', 'students', 'student-enrollmentinfo']);
-    } else if(this.currentCategory === 5 ) {
+    } else if(this.categoryPath === '/school/students/student-address-contact' ) {
         this.router.navigate(['/school', 'students', 'student-address-contact']);
-    } else if(this.currentCategory === 6 ) {
+    } else if(this.categoryPath === '/school/students/student-familyinfo' ) {
       this.router.navigate(['/school', 'students', 'student-familyinfo']);
-    } else if(this.currentCategory === 7 ) {
+    } else if(this.categoryPath === '/school/students/student-medicalinfo' ) {
       this.router.navigate(['/school', 'students', 'student-medicalinfo']);
     }
-     else if(this.currentCategory === 8 ) {
+     else if(this.categoryPath === '/school/students/student-comments') {
       this.router.navigate(['/school', 'students', 'student-comments']);
-    } else if(this.currentCategory === 9 ) {
+    } else if(this.categoryPath === '/school/students/student-documents' ) {
       this.router.navigate(['/school', 'students', 'student-documents']);
-    } else if(this.currentCategory === 100 ) {
+    } else if(this.categoryPath === '/school/students/student-course-schedule' ) {
       this.router.navigate(['/school', 'students', 'student-course-schedule']);
-    }  else if(this.currentCategory === 101 ) {
+    }  else if(this.categoryPath === '/school/students/student-attendance' ) {
       this.router.navigate(['/school', 'students', 'student-attendance']);
-    }  else if(this.currentCategory === 102 ) {
+    }  else if(this.categoryPath === '/school/students/student-transcript') {
       this.router.navigate(['/school', 'students', 'student-transcript']);
-    }  else if(this.currentCategory === 103 ) {
+    }  else if(this.categoryPath === '/school/students/student-report-card' ) {
       this.router.navigate(['/school', 'students', 'student-report-card']);
     }
-    else if(this.currentCategory > 9 ) {
+    else {
       this.router.navigate(['/school', 'students', 'custom', this.categoryTitle.trim().toLowerCase().split(' ').join('-')]);
     }
 
   }
 
   getAllFieldsCategory() {
-    this.fieldsCategoryListView.module = "Student";
+    this.fieldsCategoryListView.module = Module.STUDENT;
     this.customFieldservice
       .getAllFieldsCategory(this.fieldsCategoryListView)
       .subscribe((res) => {
@@ -319,9 +311,9 @@ export class AddStudentComponent implements OnInit, OnDestroy {
             this.fieldsCategory = this.checkViewPermission(
               res.fieldsCategoryList
             );
-            // this.studentAddModel.fieldsCategoryList = this.checkViewPermission(
-            //   res.fieldsCategoryList
-            // );
+            this.studentAddModel.fieldsCategoryList = this.checkViewPermission(
+              res.fieldsCategoryList
+            );
     // this.studentService.setStudentDetailsForViewAndEdit(this.studentAddModel);
 
             this.studentService.sendDetails(this.studentAddModel);
@@ -329,7 +321,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
         } else {
           this.snackbar.open(
             this.defaultValuesService.translateKey("categoryListFailed") +
-            sessionStorage.getItem("httpError"),
+            this.defaultValuesService.getHttpError(),
             "",
             {
               duration: 10000,
@@ -347,6 +339,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
           item.title.toLowerCase() ===
           permission.title.toLowerCase()
         ) {
+            item.path = permission.path;
             filteredCategory.push(item)
         }
       }
@@ -355,9 +348,10 @@ export class AddStudentComponent implements OnInit, OnDestroy {
     return filteredCategory;
   }
 
-  changeTempCategory(step: number = 3) {
-    if(this.pageStatus === "View Student" || this.pageStatus==="Edit Student") {
-      this.currentCategory = step;
+  changeTempCategory(step) {
+    if(this.pageStatus === "viewStudent" || this.pageStatus==="editStudent") {
+      this.currentCategory = null;
+      this.categoryPath= step;
       this.secondarySidebar = 0; // Close secondary sidenav in mobile view
       this.checkCurrentCategoryAndRoute();
     };

@@ -41,6 +41,8 @@ import { LoginService } from '../../../../../services/login.service';
 import { StaffService } from '../../../../../services/staff.service';
 import { SharedFunction } from '../../../../../pages/shared/shared-function';
 import { MembershipService } from '../../../../../services/membership.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-search-staff',
@@ -83,7 +85,8 @@ export class SearchStaffComponent implements OnInit {
     private loginService: LoginService,
     private staffService: StaffService,
     private commonFunction: SharedFunction,
-    private membershipService: MembershipService
+    private membershipService: MembershipService,
+    private defaultValuesService: DefaultValuesService
   ) { }
 
   ngOnInit(): void {
@@ -144,7 +147,7 @@ export class SearchStaffComponent implements OnInit {
   }
 
   GetAllLanguage() {
-    this.languages._tenantName = sessionStorage.getItem('tenant');
+    this.languages._tenantName = this.defaultValuesService.getTenantName();
     this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) === 'undefined') {
         this.languageList = [];
@@ -167,7 +170,7 @@ export class SearchStaffComponent implements OnInit {
   getAllMembership() {
     this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -196,15 +199,19 @@ export class SearchStaffComponent implements OnInit {
   }
 
   search() {
-    this.params = [];
+    this.getAllStaff.filterParams = [];
     for (let key in this.staffMasterSearchModel) {
       if (this.staffMasterSearchModel.hasOwnProperty(key))
         if (this.staffMasterSearchModel[key] !== null && this.staffMasterSearchModel[key] !== '') {
+          this.getAllStaff.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.getAllStaff.filterParams.length - 1;
           if (key === 'joiningDate' || key === 'endDate' || key === 'dob') {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.staffMasterSearchModel[key]) })
+            this.getAllStaff.filterParams[lastIndex].columnName = key;
+            this.getAllStaff.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.staffMasterSearchModel[key]);
           }
           else {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.staffMasterSearchModel[key] })
+            this.getAllStaff.filterParams[lastIndex].columnName = key;
+            this.getAllStaff.filterParams[lastIndex].filterValue = this.staffMasterSearchModel[key];
           }
         }
     }
@@ -213,11 +220,11 @@ export class SearchStaffComponent implements OnInit {
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Staff';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.params);
+      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.getAllStaff.filterParams);
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter updated failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -239,11 +246,10 @@ export class SearchStaffComponent implements OnInit {
       );
     }
 
-    this.getAllStaff.filterParams = this.params;
     this.getAllStaff.sortingModel = null;
     this.getAllStaff.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
     this.getAllStaff.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-    this.commonService.setSearchResult(this.params);
+    this.commonService.setSearchResult(this.getAllStaff.filterParams);
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);

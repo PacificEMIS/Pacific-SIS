@@ -53,6 +53,7 @@ import { GradeScaleModel } from '../../../../models/grades.model';
 import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'vex-course-section',
@@ -120,6 +121,7 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
     private cdr: ChangeDetectorRef,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -180,10 +182,10 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
   
   getAllCourseSection(){  
     this.getAllCourseSectionModel.courseId=this.courseDetailsFromParent.courseId;
-    this.getAllCourseSectionModel.academicYear =+sessionStorage.getItem("academicyear");
+    this.getAllCourseSectionModel.academicYear =this.defaultValuesService.getAcademicYear();
     this.courseSectionService.getAllCourseSection(this.getAllCourseSectionModel).subscribe(res => {
       if (typeof (res) == 'undefined') {       
-        this.snackbar.open('Course Section Failed ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Course Section Failed ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -291,7 +293,11 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
           item.courseSection.mpTitle=item.courseSection.schoolYears.title;
           item.courseSection.mpStartDate=item.courseSection.schoolYears.startDate;
           item.courseSection.mpEndDate=item.courseSection.schoolYears.endDate;
-        }else{
+        }else if(item.courseSection.progressPeriods!=null){
+          item.courseSection.mpTitle=item.courseSection.progressPeriods.title;
+          item.courseSection.mpStartDate=item.courseSection.progressPeriods.startDate;
+          item.courseSection.mpEndDate=item.courseSection.progressPeriods.endDate;
+        } else{
           item.courseSection.mpTitle=item.courseSection.semesters.title;
           item.courseSection.mpStartDate=item.courseSection.semesters.startDate;
           item.courseSection.mpEndDate=item.courseSection.semesters.endDate;
@@ -364,7 +370,7 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
     this.courseSectionAddViewModel.courseSection.courseSectionId=selectedCourseSection.courseSection.courseSectionId;
     this.courseSectionService.deleteCourseSection(this.courseSectionAddViewModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Course Section Delete failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Course Section Delete failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }

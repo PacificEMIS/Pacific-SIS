@@ -88,7 +88,7 @@ export class EnrollmentCodesComponent implements OnInit {
     private loaderService: LoaderService,
     private translateService: TranslateService,
     private excelService: ExcelService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
   ) {
@@ -106,6 +106,7 @@ export class EnrollmentCodesComponent implements OnInit {
     this.getAllStudentEnrollmentCode();
   }
   getAllStudentEnrollmentCode() {
+    this.enrollmentCodelistView.isListView=true;
     this.enrollmentCodeService.getAllStudentEnrollmentCode(this.enrollmentCodelistView).subscribe(
       (res: EnrollmentCodeListView) => {
         if (res) {
@@ -125,8 +126,8 @@ export class EnrollmentCodesComponent implements OnInit {
             this.enrollmentList.sort = this.sort;
           }
         }
-        else {
-          this.snackbar.open(this.defaultValuesService.translateKey('enrollmentCodeListFailed') + sessionStorage.getItem('httpError'), '', {
+        else{
+          this.snackbar.open(this.defaultValuesService.translateKey('enrollmentCodeListFailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -208,7 +209,7 @@ export class EnrollmentCodesComponent implements OnInit {
         }
         else {
           this.snackbar.open(this.defaultValuesService.translateKey('enrollmentCodeDeleteFailed')
-            + sessionStorage.getItem('httpError'), '', {
+          + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

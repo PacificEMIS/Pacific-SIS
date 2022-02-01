@@ -35,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private defaultValuesService: DefaultValuesService,
     private fb: FormBuilder) {
-    translateService.use("en");
+    // translateService.use("en");
     this.form = fb.group({
       currentPasswordHash: [''],
       newPasswordHash: [''],

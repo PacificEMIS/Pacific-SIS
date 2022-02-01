@@ -23,9 +23,9 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,6 +35,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { GetAllProgramModel, GetAllSubjectModel, SearchCourseForScheduleModel } from '../../../../models/course-manager.model';
 import { CourseManagerService } from '../../../../services/course-manager.service';
 import { LoaderService } from '../../../../services/loader.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-course',
@@ -57,7 +58,12 @@ export class AddCourseComponent implements OnInit,OnDestroy {
     private snackbar: MatSnackBar,
     private fb: FormBuilder,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
+    @Inject(MAT_DIALOG_DATA) public data
     ) { 
+
+      this.getAllSubjectModel.subjectList= this.data.subjectList;
+      this.getAllProgramModel.programList= this.data.programList;
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val:boolean) => {
       this.loading = val;
@@ -66,57 +72,12 @@ export class AddCourseComponent implements OnInit,OnDestroy {
   form:FormGroup;
 
   ngOnInit(): void {
-    this.getAllProgramList();
-    this.getAllSubjectList();
+   
     
     this.form=this.fb.group({
       subject:[''],
       program:['']
     })
-  }
-
-  
-  getAllProgramList(){   
-    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {          
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllProgramModel.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllProgramModel.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }       
-    });
-  }
-  getAllSubjectList(){   
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {          
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllSubjectModel.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllSubjectModel.subjectList = data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }    
-    });  
   }
 
   SearchCourseForSchedule(){

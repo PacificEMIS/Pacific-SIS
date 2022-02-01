@@ -49,6 +49,10 @@
         <mat-label>{{'certificationDescription' | translate}}</mat-label>
         <textarea matInput placeholder="certificationDescription" formControlName="certificationDescription"></textarea>
     </mat-form-field>
+
+    <vex-custom-field-without-form *ngIf="staffCreateMode !== undefined" [schoolDetailsForViewAndEdit]="staffDetailsForViewAndEdit" [module]="module"
+    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"></vex-custom-field-without-form>
+
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">

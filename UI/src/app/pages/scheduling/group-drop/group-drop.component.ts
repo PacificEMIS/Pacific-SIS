@@ -43,7 +43,12 @@ import { SharedFunction } from '../../shared/shared-function';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-import { CommonService } from 'src/app/services/common.service';
+import { CommonService } from '../../../services/common.service';
+import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from '../../../models/course-manager.model';
+import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.model';
+import { CourseManagerService } from '../../../services/course-manager.service';
+import { MarkingPeriodService } from '../../../services/marking-period.service';
+import { DefaultValuesService } from '../../../common/default-values.service';
 
 @Component({
   selector: 'vex-group-drop',
@@ -61,6 +66,10 @@ export class GroupDropComponent implements OnInit, OnDestroy {
   startDate = new Date();
   listOfStudent = [];
   selectedStudent = [];
+  programList = [];
+  subjectList = [];
+  courseList = [];
+  markingPeriodList = [];
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
@@ -73,6 +82,10 @@ export class GroupDropComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   scheduledStudentDropModel: ScheduledStudentDropModel = new ScheduledStudentDropModel();
+  getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
+  getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
   showcourseSectionCount: boolean;
   studentMasterList: ScheduleStudentForView[];
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -85,6 +98,9 @@ export class GroupDropComponent implements OnInit, OnDestroy {
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentScheduleService: StudentScheduleService,
     private snackbar: MatSnackBar,
+    private courseManagerService: CourseManagerService,
+    private markingPeriodService: MarkingPeriodService,
+    public defaultService: DefaultValuesService,
     private commonFunction: SharedFunction,
     private pageRolePermissions: PageRolesPermission,
     private loaderService: LoaderService,
@@ -100,15 +116,113 @@ export class GroupDropComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.getAllCourse();
+    this.getAllSubjectList();
+    this.getAllProgramList();
+    this.getAllMarkingPeriodList();
+  }
+
+
+  getAllProgramList() {
+    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.programList=[];
+          if(!data.programList){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.programList=data.programList;
+        }
+      }else{
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      }  
+    });
+  }
+  getAllSubjectList() {
+    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.subjectList=[];
+          if(!data.subjectList){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.subjectList=data.subjectList;
+        }
+      }else{
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      } 
+
+    });
+  }
+
+  getAllMarkingPeriodList() {
+    this.getMarkingPeriodTitleListModel.schoolId = this.defaultService.getSchoolID();
+    this.getMarkingPeriodTitleListModel.academicYear = this.defaultService.getAcademicYear();
+    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
+     if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
+        if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
+          this.snackbar.open(data._message, '', {
+            duration: 1000
+          }); 
+        }
+      } else {
+        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
+      }
+    });
+  }
+
+  getAllCourse() {
+    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
+      if (data) {
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.courseList = [];
+          if (!data.courseViewModelList) {
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.courseList = data.courseViewModelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    })
   }
 
 
   selectCourseSection() {
+    if(this.defaultService.checkAcademicYear()){
+    this.studentDetails = new MatTableDataSource([]);
+    this.totalCount = 0;
     this.dialog.open(AddCourseSectionComponent, {
-      width: '900px'
+      width: '900px',
+      data: { 
+        markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
+        courseList: this.courseList,
+        subjectList: this.subjectList,
+        programList: this.programList
+      },
     }).afterClosed().subscribe((data) => {
       this.courseSectionData = data;
-      if (this.courseSectionData !== '') {
+      if (this.courseSectionData !== '' && this.courseSectionData !== undefined && this.courseSectionData !== null) {
         this.startDate = new Date();
         this.endDate = this.courseSectionData.durationEndDate;
         this.showcourseSectionCount = true;
@@ -118,13 +232,14 @@ export class GroupDropComponent implements OnInit, OnDestroy {
         this.showcourseSectionCount = false;
       }
     });
+    }
   }
 
   someComplete(): boolean {
     let indetermine = false;
     for (let user of this.listOfStudent) {
       for (let selectedUser of this.selectedStudent) {
-        if (user.StudentId == selectedUser.StudentId) {
+        if (user.studentId === selectedUser.studentId) {
           indetermine = true;
         }
       }
@@ -201,6 +316,8 @@ export class GroupDropComponent implements OnInit, OnDestroy {
     this.selection = new SelectionModel<ScheduleStudentForView>(true, []);
     this.scheduleStudentListViewModel.sortingModel = null;
     this.scheduleStudentListViewModel.courseSectionId = courseSectionId
+    this.dropSuccess = false;
+    this.selectedStudent = [];
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);

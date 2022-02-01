@@ -36,6 +36,7 @@ import { CustomFieldOptionsEnum } from '../../../../enums/custom-field-options.e
 import { FieldCategoryModuleEnum } from '../../../../enums/field-category-module.enum'
 import { ValidationService } from '../../../shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-parent-fields',
@@ -64,6 +65,7 @@ export class EditParentFieldsComponent implements OnInit {
     private snackbar:MatSnackBar,
     private customFieldService:CustomFieldService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
       this.form=fb.group({
         fieldId:[0],
@@ -117,7 +119,7 @@ export class EditParentFieldsComponent implements OnInit {
          this.customFieldService.addCustomField(this.customFieldAddView).subscribe(
           (res:CustomFieldAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('School field failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('School field failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -156,7 +158,7 @@ export class EditParentFieldsComponent implements OnInit {
         this.customFieldService.updateCustomField(this.customFieldAddView).subscribe(
           (res: CustomFieldAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('School field failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('School field failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

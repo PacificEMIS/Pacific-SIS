@@ -1,4 +1,5 @@
 import { CommonField } from "./common-field.model";
+import { StudentMasterModel } from "./student.model";
 
 export class ParentInfoModel {
     public tenantId: string;
@@ -10,6 +11,7 @@ export class ParentInfoModel {
     public middlename: string;
     public lastname: string;
     public homePhone: string;
+    public isActive: boolean;
     public workPhone: string;
     public mobile: string;
     public personalEmail: string;
@@ -86,13 +88,13 @@ export class AddParentInfoModel extends CommonField {
     public parentInfo: ParentInfoModel;
     public parentAssociationship: ParentAssociationshipModel;
     public passwordHash: string;
-    public getStudentForView: [];
+    public getStudentForView: StudentMasterModel[];
 
     constructor() {
         super();
         this.parentInfo = new ParentInfoModel();
         this.parentAssociationship = new ParentAssociationshipModel();
-        this.getStudentForView = null;
+        this.getStudentForView = [new StudentMasterModel()];
 
     }
 }
@@ -152,7 +154,7 @@ export class GetAllParentModel extends CommonField {
             this.pageNumber = 1;
             this.pageSize = 10;
             this.sortingModel = new sorting();
-            this.filterParams = null;
+            this.filterParams = [];
             this.includeInactive = false;
             this._failure = false;
         }

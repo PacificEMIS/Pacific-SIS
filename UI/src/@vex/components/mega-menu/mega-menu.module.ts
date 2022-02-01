@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { IconModule } from '@visurel/iconify-angular';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -15,7 +16,8 @@ import { RouterModule } from '@angular/router';
     FlexLayoutModule,
     MatButtonModule,
     IconModule,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ],
   exports: [MegaMenuComponent],
   entryComponents: [MegaMenuComponent]

@@ -27,13 +27,14 @@ export class AttendanceCodeService {
     AttendanceCategory = this.defaultValuesService.getAllMandatoryVariable(AttendanceCategory);
     AttendanceCategory.attendanceCodeCategories.schoolId = this.defaultValuesService.getSchoolID();
     AttendanceCategory.attendanceCodeCategories.tenantId = this.defaultValuesService.getTenantID();
-    AttendanceCategory.attendanceCodeCategories.createdBy = this.defaultValuesService.getEmailId();
+    AttendanceCategory.attendanceCodeCategories.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + AttendanceCategory._tenantName + "/AttendanceCode/addAttendanceCodeCategories";
     return this.http.post<AttendanceCodeCategoryModel>(apiurl, AttendanceCategory, this.httpOptions);
   }
 
   getAllAttendanceCodeCategories(AttendanceCategoryList: GetAllAttendanceCategoriesListModel) {
     AttendanceCategoryList = this.defaultValuesService.getAllMandatoryVariable(AttendanceCategoryList);
+    AttendanceCategoryList.academicYear = this.defaultValuesService.getAcademicYear();
     let apiurl = this.apiUrl + AttendanceCategoryList._tenantName + "/AttendanceCode/getAllAttendanceCodeCategories";
     return this.http.post<GetAllAttendanceCategoriesListModel>(apiurl, AttendanceCategoryList, this.httpOptions);
   }
@@ -42,7 +43,7 @@ export class AttendanceCodeService {
     AttendanceCategory = this.defaultValuesService.getAllMandatoryVariable(AttendanceCategory);
     AttendanceCategory.attendanceCodeCategories.schoolId = this.defaultValuesService.getSchoolID();
     AttendanceCategory.attendanceCodeCategories.tenantId = this.defaultValuesService.getTenantID();
-    AttendanceCategory.attendanceCodeCategories.updatedBy = this.defaultValuesService.getEmailId();
+    AttendanceCategory.attendanceCodeCategories.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + AttendanceCategory._tenantName + "/AttendanceCode/updateAttendanceCodeCategories";
     return this.http.put<AttendanceCodeCategoryModel>(apiurl, AttendanceCategory, this.httpOptions);
   }
@@ -57,6 +58,7 @@ export class AttendanceCodeService {
 
   getAllAttendanceCode(AttendanceCode: GetAllAttendanceCodeModel) {
     AttendanceCode = this.defaultValuesService.getAllMandatoryVariable(AttendanceCode);
+    AttendanceCode.academicYear=this.defaultValuesService.getAcademicYear();
     let apiurl = this.apiUrl + AttendanceCode._tenantName + "/AttendanceCode/getAllAttendanceCode";
     return this.http.post<GetAllAttendanceCodeModel>(apiurl, AttendanceCode, this.httpOptions);
   }
@@ -65,7 +67,7 @@ export class AttendanceCodeService {
     AttendanceCode = this.defaultValuesService.getAllMandatoryVariable(AttendanceCode);
     AttendanceCode.attendanceCode.schoolId = this.defaultValuesService.getSchoolID();
     AttendanceCode.attendanceCode.tenantId = this.defaultValuesService.getTenantID();
-    AttendanceCode.attendanceCode.createdBy = this.defaultValuesService.getEmailId();
+    AttendanceCode.attendanceCode.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + AttendanceCode._tenantName + "/AttendanceCode/addAttendanceCode";
     return this.http.post<AttendanceCodeModel>(apiurl, AttendanceCode, this.httpOptions);
   }
@@ -74,7 +76,7 @@ export class AttendanceCodeService {
     AttendanceCode = this.defaultValuesService.getAllMandatoryVariable(AttendanceCode);
     AttendanceCode.attendanceCode.schoolId = this.defaultValuesService.getSchoolID();
     AttendanceCode.attendanceCode.tenantId = this.defaultValuesService.getTenantID();
-    AttendanceCode.attendanceCode.updatedBy = this.defaultValuesService.getEmailId();
+    AttendanceCode.attendanceCode.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + AttendanceCode._tenantName + "/AttendanceCode/updateAttendanceCode";
     return this.http.put<AttendanceCodeModel>(apiurl, AttendanceCode, this.httpOptions);
   }
@@ -89,7 +91,7 @@ export class AttendanceCodeService {
 
   updateAttendanceCodeSortOrder(AttendanceCode: AttendanceCodeDragDropModel) {
     AttendanceCode = this.defaultValuesService.getAllMandatoryVariable(AttendanceCode);
-    AttendanceCode.updatedBy = this.defaultValuesService.getEmailId();
+    AttendanceCode.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + AttendanceCode._tenantName + "/AttendanceCode/updateAttendanceCodeSortOrder";
     return this.http.post<AttendanceCodeDragDropModel>(apiurl, AttendanceCode, this.httpOptions);
   }

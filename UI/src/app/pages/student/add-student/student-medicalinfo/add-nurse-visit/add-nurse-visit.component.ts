@@ -35,6 +35,7 @@ import { AddEditStudentMedicalNurseVisitModel } from 'src/app/models/student.mod
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { SharedFunction } from '../../../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-nurse-visit',
@@ -60,6 +61,8 @@ export class AddNurseVisitComponent implements OnInit {
     public translateService: TranslateService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
+
     ) {
     //translateService.use('en');
   }
@@ -125,7 +128,7 @@ export class AddNurseVisitComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -163,7 +166,7 @@ export class AddNurseVisitComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

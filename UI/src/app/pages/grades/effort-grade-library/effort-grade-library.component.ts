@@ -59,6 +59,7 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-effort-grade-library',
   templateUrl: './effort-grade-library.component.html',
@@ -115,6 +116,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -124,6 +126,10 @@ export class EffortGradeLibraryComponent implements OnInit {
       effortCategoryId: [0],
       categoryName: ['', [ValidationService.noWhitespaceValidator]]
     });
+    if(!this.defaultValuesService.checkAcademicYear()){
+      this.columns.pop();
+      this.columns.shift();
+    }
   }
 
   ngOnInit(): void {
@@ -208,7 +214,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     this.gradesService.deleteEffortGradeLibraryCategory(this.effortGradeLibraryCategoryAddViewModel).subscribe(
       (res: EffortGradeLibraryCategoryAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -248,7 +254,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     this.gradesService.deleteEffortGradeLibraryCategoryItem(this.effortGradeLibraryCategoryItemAddViewModel).subscribe(
       (res: EffortGradeLibraryCategoryItemAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -282,10 +288,11 @@ export class EffortGradeLibraryComponent implements OnInit {
     });
   }
   getAllEffortGradeLlibraryCategoryList() {
+    this.effortGradeLibraryCategoryListView.isListView=true;
     this.gradesService.getAllEffortGradeLlibraryCategoryList(this.effortGradeLibraryCategoryListView).subscribe(
       (res: EffortGradeLibraryCategoryListView) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -330,7 +337,7 @@ export class EffortGradeLibraryComponent implements OnInit {
         this.gradesService.addEffortGradeLibraryCategory(this.effortGradeLibraryCategoryAddViewModel).subscribe(
           (res: EffortGradeLibraryCategoryAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -359,7 +366,7 @@ export class EffortGradeLibraryComponent implements OnInit {
         this.gradesService.updateEffortGradeLibraryCategory(this.effortGradeLibraryCategoryAddViewModel).subscribe(
           (res: EffortGradeLibraryCategoryAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -392,7 +399,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     this.gradesService.updateEffortGradeLlibraryCategorySortOrder(this.effortGradeLlibraryDragDropModel).subscribe(
       (res: EffortGradeLlibraryDragDropModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -418,7 +425,7 @@ export class EffortGradeLibraryComponent implements OnInit {
     this.gradesService.updateEffortGradeLlibraryCategorySortOrder(this.effortGradeLlibraryDragDropModel).subscribe(
       (res: EffortGradeLlibraryDragDropModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

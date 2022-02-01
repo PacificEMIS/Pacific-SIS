@@ -27,6 +27,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DasboardService } from '../../services/dasboard.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-class',
@@ -40,14 +41,15 @@ export class ClassComponent implements OnInit {
 
   constructor(public translateService: TranslateService,
     private dashboardService: DasboardService,
-    private router: Router) {
+    private router: Router,
+    private defaultValuesService: DefaultValuesService) {
       this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
         if (!res) {
           this.router.navigateByUrl('/school/teacher/dashboards');
         }
       });
     //translateService.use('en');
-    this.selectedCourseSection = JSON.parse(localStorage.getItem('selectedCourseSection'));
+    this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
   }
 
   ngOnInit(): void {

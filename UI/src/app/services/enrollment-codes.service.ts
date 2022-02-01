@@ -21,23 +21,28 @@ export class EnrollmentCodesService {
       }
      }
 
-  addStudentEnrollmentCode(obj:EnrollmentCodeAddView){
-    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.studentEnrollmentCode.createdBy = this.defaultValuesService.getEmailId();
-    let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/addStudentEnrollmentCode";  
-    return this.http.post<EnrollmentCodeAddView>(apiurl,obj,this.httpOptions)
-  }
-  getAllStudentEnrollmentCode(obj:EnrollmentCodeListView){
-    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/getAllStudentEnrollmentCode";
-    return this.http.post<EnrollmentCodeListView>(apiurl,obj,this.httpOptions)
-  }
-  updateStudentEnrollmentCode(obj:EnrollmentCodeAddView){
-    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.studentEnrollmentCode.updatedBy = this.defaultValuesService.getEmailId();
-    let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/updateStudentEnrollmentCode";
-    return this.http.put<EnrollmentCodeAddView>(apiurl,obj,this.httpOptions)
-  }
+     addStudentEnrollmentCode(obj:EnrollmentCodeAddView){
+      obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+      obj.studentEnrollmentCode = this.defaultValuesService.getAllMandatoryVariable(obj.studentEnrollmentCode);
+      // obj.studentEnrollmentCode.academicYear = this.defaultValuesService.getAcademicYear();
+      obj.studentEnrollmentCode.createdBy = this.defaultValuesService.getUserGuidId();
+      let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/addStudentEnrollmentCode";  
+      return this.http.post<EnrollmentCodeAddView>(apiurl,obj,this.httpOptions)
+    }
+    getAllStudentEnrollmentCode(obj:EnrollmentCodeListView){
+      obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+      obj.academicYear = this.defaultValuesService.getAcademicYear();
+      let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/getAllStudentEnrollmentCode";
+      return this.http.post<EnrollmentCodeListView>(apiurl,obj,this.httpOptions)
+    }
+    updateStudentEnrollmentCode(obj:EnrollmentCodeAddView){
+      obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+      obj.studentEnrollmentCode = this.defaultValuesService.getAllMandatoryVariable(obj.studentEnrollmentCode);
+      // obj.studentEnrollmentCode.academicYear = this.defaultValuesService.getAcademicYear();
+      obj.studentEnrollmentCode.updatedBy = this.defaultValuesService.getUserGuidId();
+      let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/updateStudentEnrollmentCode";
+      return this.http.put<EnrollmentCodeAddView>(apiurl,obj,this.httpOptions)
+    }
   deleteStudentEnrollmentCode(obj:EnrollmentCodeAddView){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl=this.apiUrl+obj._tenantName+"/StudentEnrollmentCode/deleteStudentEnrollmentCode";

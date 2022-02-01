@@ -43,7 +43,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { StudentService } from '../../../services/student.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { LayoutService } from '../../../../@vex/services/layout.service';
 import { ExcelService } from '../../../services/excel.service';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
 import { Permissions, RolePermissionListViewModel } from '../../../models/roll-based-access.model';
@@ -139,7 +138,6 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     public translateService: TranslateService,
     private studentService: StudentService,
-    private layoutService: LayoutService,
     private excelService: ExcelService,
     private imageCropperService: ImageCropperService,
     private dialog: MatDialog,
@@ -148,16 +146,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
     private defaultValuesService: DefaultValuesService
   ) {
     this.getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
-    //translateService.use('en');
+    
     this.getAllParentModel.filterParams=null;
     
     this.loaderService.isLoading.subscribe((val) => {
@@ -314,7 +303,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
     let permittedTabs = this.pageRolePermissions.getPermittedCategories('/school/parents');
     if(permittedTabs[0]?.path){
       this.router.navigateByUrl(permittedTabs[0]?.path);
-      localStorage.setItem("pageId",permittedTabs[0].title?.toLowerCase()); 
+     this.defaultValuesService.setPageId(permittedTabs[0].title?.toLowerCase()); 
     }
   }
 
@@ -334,7 +323,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
     this.parentInfoService.getAllParentInfo(this.getAllParentModel).subscribe(
       (res: GetAllParentResponseModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

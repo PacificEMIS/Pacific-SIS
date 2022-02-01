@@ -11,6 +11,7 @@ export class SchoolMasterModel {
   public schoolAltId: string;
   public schoolStateId: string
   public schoolDistrictId: string;
+  public checked: boolean;
   public schoolLevel: string;
   public schoolClassification: string;
   public schoolName: string;
@@ -40,7 +41,6 @@ export class SchoolMasterModel {
   public createdOn: string;
   public updatedBy: string;
   public updatedOn: string;
-
   constructor() {
     this.schoolDetail = [new schoolDetailsModel];
 
@@ -53,6 +53,10 @@ export class SchoolAddViewModel extends CommonField {
   public selectedCategoryId: number;
   public schoolId: number;
   public EmailAddress: string;
+  public lastUsedSchoolId:number;
+  public EndDate: string;
+  public StartDate: string;
+
   constructor() {
     super();
     this.schoolMaster = new SchoolMasterModel();

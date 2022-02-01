@@ -26,7 +26,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "openSISProfile" | translate }}</mat-label>
                 <mat-select [(ngModel)]="staffMasterSearchModel.profile">
-                    <mat-option value="">All Profile</mat-option>
+                    <mat-option>All Profile</mat-option>
                     <mat-option [value]="profile.profile" *ngFor="let profile of getAllMembersList.getAllMemberList">
                         {{profile.profile}}</mat-option>
                 </mat-select>
@@ -50,7 +50,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "primaryGradeLevelTaught" | translate }}</mat-label>
                 <mat-select [(ngModel)]="staffMasterSearchModel.primaryGradeLevelTaught" name="primaryGradeLevelId">
-                    <mat-option value="">All Grade Level</mat-option>
+                    <mat-option>All Grade Level</mat-option>
                     <mat-option *ngFor="let grade of getAllGradeLevelsModel.tableGradelevelList"
                         [value]="grade.title">
                         {{grade.title}}
@@ -62,7 +62,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "otherGradeLevelTaught" | translate }}</mat-label>
                 <mat-select [(ngModel)]="staffMasterSearchModel.otherGradeLevelTaught" name="otherGradeLevelId">
-                    <mat-option value="">All Grade Level</mat-option>
+                    <mat-option>All Grade Level</mat-option>
                     <mat-option *ngFor="let grade of getAllGradeLevelsModel.tableGradelevelList"
                         [value]="grade.title">
                         {{grade.title}}
@@ -74,7 +74,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "primarySubjectTaught" | translate }}</mat-label>
                 <mat-select [(ngModel)]="staffMasterSearchModel.primarySubjectTaught" name="primarySubjectTaught">
-                    <mat-option value="">All Subject</mat-option>
+                    <mat-option>All Subject</mat-option>
                     <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">
                         {{subject.subjectName}}
                     </mat-option>
@@ -85,7 +85,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "otherSubjectTaught" | translate }}</mat-label>
                 <mat-select [(ngModel)]="staffMasterSearchModel.otherSubjectTaught" name="otherSubjectTaught">
-                    <mat-option value="">All Subject</mat-option>
+                    <mat-option>All Subject</mat-option>
                     <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">
                         {{subject.subjectName}}
                     </mat-option>
@@ -120,7 +120,7 @@
                         <div class="flex mb-2">
                             <div class="flex-shrink-0 h-16 w-16">
                                 <img src="{{element.staffPhoto?'data:image/png;base64,'+ element.staffPhoto:'assets/img/default-person.jpg'}}"
-                                    alt="" class="h-16 w-16 rounded-full" />
+                                    alt="staff photo" class="h-16 w-16 rounded-full" />
                             </div>
                             <div class="ml-3 flex flex-col justify-center">
                                 <h6 class="text-sm font-semibold">{{ element.firstGivenName+' '+element.lastFamilyName

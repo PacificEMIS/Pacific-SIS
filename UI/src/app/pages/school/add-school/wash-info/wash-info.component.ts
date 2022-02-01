@@ -49,6 +49,8 @@ import { ModuleIdentifier } from '../../../../enums/module-identifier.enum';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { Module } from 'src/app/enums/module.enum';
 @Component({
   selector: 'vex-wash-info',
   templateUrl: './wash-info.component.html',
@@ -64,13 +66,13 @@ export class WashInfoComponent implements OnInit,OnDestroy {
   moduleIdentifier = ModuleIdentifier;
   schoolCreateMode: SchoolCreate;
   icEdit = icEdit;
-  schoolDetailsForViewAndEdit;
+  // schoolDetailsForViewAndEdit;
   categoryId;
   form: FormGroup;
   washinfo = WashInfoEnum;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
-  module = "School";
+  module = Module.SCHOOL;
   schoolAddViewModel: SchoolAddViewModel = new SchoolAddViewModel();
   loading: boolean;
   formActionButtonTitle = "submit";
@@ -93,14 +95,17 @@ export class WashInfoComponent implements OnInit,OnDestroy {
     public rollBasedAccessService: RollBasedAccessService,
     private commonLOV:CommonLOV,
     private pageRolePermission: PageRolesPermission,
-    private router: Router
+    private router: Router,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
+    // this.schoolCreateMode = this.router.getCurrentNavigation().extras?.state ? this.router.getCurrentNavigation().extras.state.type : SchoolCreate.ADD;
 
   }
   ngOnInit(): void {
     this.permissions=this.pageRolePermission.checkPageRolePermission();
 
+    
     this.schoolService.schoolCreatedMode.subscribe((res)=>{
       if(res>=0){
         this.schoolCreateMode = res;
@@ -109,33 +114,37 @@ export class WashInfoComponent implements OnInit,OnDestroy {
 
     this.schoolService.schoolDetailsForViewedAndEdited.subscribe((res)=>{
       if(res){
-        this.schoolDetailsForViewAndEdit = res;
-        this.schoolAddViewModel = this.schoolDetailsForViewAndEdit;
+        // this.schoolDetailsForViewAndEdit = res;
+        this.schoolAddViewModel = res;
       }
 
     });
 
-    this.schoolService.categoryIdSelected.subscribe((res)=>{
-      if(res>=0){
-        this.categoryId = res;
-      }
-    });
+    // this.schoolService.categoryIdSelected.subscribe((res)=>{
+    //   if(res>=0){
+    //     this.categoryId = res;
+    //   }
+    // });
 
-    if (this.schoolCreateMode === this.schoolCreate.VIEW) {
-      this.imageCropperService.enableUpload({module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.VIEW});
+    // if (this.schoolCreateMode === this.schoolCreate.VIEW) {
+      this.imageCropperService.enableUpload({module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreateMode});
       // this.schoolAddViewModel = this.schoolDetailsForViewAndEdit;
       this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
-    } else {
-      this.initializeDropdownValues();
-      this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.EDIT});
-      // this.schoolService.changePageMode(this.schoolCreateMode);
-      this.schoolAddViewModel = this.schoolService.getSchoolDetails();
-      this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
+    // } else {
+      this.schoolCreateMode === this.schoolCreate.EDIT ? this.initializeDropdownValues() : '';
+      // this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.EDIT});
+      // this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+      // this.schoolAddViewModel = this.schoolService.getSchoolDetails();
+      // this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
+    // }
+
+    if(this.schoolCreateMode === SchoolCreate.ADD) {
+      this.router.navigate(['/school', 'schoolinfo', 'generalinfo', ]);
     }
 
-    if(!this.schoolAddViewModel) {
-      this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
-    }
+    // if(this.schoolCreateMode === SchoolCreate.ADD) {
+    //   // this.router.navigate(['/school', 'schoolinfo', 'generalinfo'], {state: {type: this.schoolCreateMode}});
+    // }
 
   }
 
@@ -165,18 +174,18 @@ export class WashInfoComponent implements OnInit,OnDestroy {
     this.initializeDropdownValues();
     this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.EDIT});
     this.schoolCreateMode = this.schoolCreate.EDIT;
-    this.schoolService.changePageMode(this.schoolCreateMode);
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
   }
   cancelEdit() {
     this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.VIEW});
     this.imageCropperService.cancelImage("school");
-    if(JSON.stringify(this.schoolAddViewModel)!==this.cloneSchool){
-      this.schoolAddViewModel=JSON.parse(this.cloneSchool);
-      this.schoolDetailsForViewAndEdit=this.schoolAddViewModel;
-      this.schoolService.sendDetails(JSON.parse(this.cloneSchool));
+    if(JSON.stringify(this.schoolAddViewModel) !== this.cloneSchool){
+      this.schoolAddViewModel = JSON.parse(this.cloneSchool);
+      // this.schoolDetailsForViewAndEdit=this.schoolAddViewModel;
+      // this.schoolService.sendDetails(JSON.parse(this.cloneSchool));
     }
     this.schoolCreateMode = this.schoolCreate.VIEW;
-    this.schoolService.changePageMode(this.schoolCreateMode);
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
 
   }
 
@@ -201,13 +210,13 @@ export class WashInfoComponent implements OnInit,OnDestroy {
               this.schoolCreateMode = this.schoolCreate.VIEW;
               this.schoolService.setSchoolCloneImage(data.schoolMaster.schoolDetail[0].schoolLogo);
               data.schoolMaster.schoolDetail[0].schoolLogo = null;
-              this.schoolDetailsForViewAndEdit = data;
-              this.cloneSchool = JSON.stringify(this.schoolDetailsForViewAndEdit);
-              this.schoolService.changePageMode(this.schoolCreateMode);
+              this.schoolAddViewModel = data;
+              // this.cloneSchool = JSON.stringify(this.schoolDetailsForViewAndEdit);
+              // this.schoolService.setSchoolCreateMode(this.schoolCreateMode); 
               this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.VIEW});
             }
           }else{
-            this.snackbar.open(`Wash Info Updation failed` + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open(`Wash Info Updation failed` + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -217,8 +226,8 @@ export class WashInfoComponent implements OnInit,OnDestroy {
   }
 
   modifyCustomFields(){
-    this.schoolAddViewModel.selectedCategoryId = this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].categoryId;
-    for (const schoolCustomField of this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields) {
+    this.schoolAddViewModel.selectedCategoryId = this.schoolAddViewModel.schoolMaster.fieldsCategory[1].categoryId;
+    for (const schoolCustomField of this.schoolAddViewModel.schoolMaster.fieldsCategory[1].customFields) {
           if (schoolCustomField.type === 'Multiple SelectBox' && this.schoolService.getSchoolMultiselectValue() !== undefined) {
             schoolCustomField.customFieldsValue[0].customFieldValue = this.schoolService.getSchoolMultiselectValue().toString().replaceAll(',', '|');
           }

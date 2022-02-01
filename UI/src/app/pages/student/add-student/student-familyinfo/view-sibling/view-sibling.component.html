@@ -1,5 +1,8 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
     <h2 class="headline m-0" fxFlex="auto">{{data.siblingDetails.firstGivenName +' '+ data.siblingDetails.lastFamilyName}}</h2>
+    <button *ngIf="data.flag === 'Parent'" mat-raised-button color="primary" (click)="viewStudentDetails()">
+        {{'viewStudentDetails' | translate}}
+    </button>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon [icIcon]="icClose"></mat-icon>
     </button>
@@ -9,31 +12,31 @@
     <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-6">
         <li>
             <label class="text-sm leading-5 text-gray">{{'firstName' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{data.siblingDetails.firstGivenName}}</p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{data.siblingDetails.firstGivenName}}</p>
         </li>
         <li>
             <label class="text-sm leading-5 text-gray">{{'lastName' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{data.siblingDetails.lastFamilyName}}</p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{data.siblingDetails.lastFamilyName}}</p>
         </li>
         <li>
             <label class="text-sm leading-5 text-gray">{{'dateOfBirth' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{data.siblingDetails.dob | date|EmtyValueCheckPipe}}<span *ngIf="data.siblingDetails.dob!=null"> | Age : {{data.siblingDetails.dob|date|age|EmtyValueCheckPipe}}</span></p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{data.siblingDetails.dob | date|EmtyValueCheckPipe}}<span *ngIf="data.siblingDetails.dob!=null"> | Age : {{data.siblingDetails.dob|date|age|EmtyValueCheckPipe}}</span></p>
         </li>
         <li>
             <label class="text-sm leading-5 text-gray">{{'studentID' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{data.siblingDetails.studentId}}</p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{data.siblingDetails.studentId}}</p>
         </li>
         <li>
             <label class="text-sm leading-5 text-gray">{{'gradeLevel' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{gradeLevelTitle|EmtyValueCheckPipe}}</p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{gradeLevelTitle|EmtyValueCheckPipe}}</p>
         </li>
         <li>
             <label class="text-sm leading-5 text-gray">{{'school' | translate}}</label>
-            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{schoolName|EmtyValueCheckPipe}}</p>
+            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{schoolName|EmtyValueCheckPipe}}</p>
         </li>
         <li class="col-span-2">
             <label class="text-sm leading-5 text-gray">{{'Address' | translate}}</label>
-            <p *ngIf="address!= null" class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2" >
+            <p *ngIf="address!= null" class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                 <a (click)="showOnGoogleMap()" class="text-blue cursor-pointer">
                     {{address+" " + countryName}}
 

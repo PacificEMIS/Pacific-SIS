@@ -8,6 +8,7 @@ export class CalendarModel {
     public title: string;
     public academicYear: number;
     public defaultCalender: boolean;
+    public sessionCalendar: boolean;
     public days: string;
     public rolloverId: number;
     public createdBy: string;
@@ -17,7 +18,7 @@ export class CalendarModel {
     public visibleToMembershipId :string;
     public startDate :string;
     public endDate : string;
-   
+    public calendarEventList:string
     constructor() {
         
         

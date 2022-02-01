@@ -28,6 +28,8 @@ export class UpdateSortOrderForCourseCommentCategoryModel extends CommonField{
 
 export class GetAllCourseCommentCategoryModel extends CommonField{
     courseCommentCategories:ReportCardCommentModel[];
+    academicYear: number;
+    isListView:boolean;
     constructor(){
         super();
         this.courseCommentCategories=[]
@@ -45,7 +47,7 @@ export class ReportCardCommentModel extends CommonField{
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
-
+    
     constructor(){
         super();
     }
@@ -97,6 +99,7 @@ export class AddReportCardPdf extends CommonField{
     dailyAbsencesThisMarkingPeriod: boolean;
     otherAttendanceCodeYearToDate: boolean;
     studentsReportCardViewModelList: StudentDetails[];
+    templateType: string;
     createdBy: string;
     createdOn: string;
     updatedBy: string;
@@ -115,3 +118,54 @@ export class AddReportCardPdf extends CommonField{
     }
 }
 
+export class StudentReportCardGradesModel extends CommonField {
+    courseSectionWithGradesViewModelList: courseSectionWithGradesViewModelList[];
+    studentId: number;
+    markingPeriodId: string;
+    academicYear: number;
+    constructor() {
+        super();
+        this.courseSectionWithGradesViewModelList = [];
+    }
+}
+
+export class ResponseStudentReportCardGradesModel extends CommonField {
+    courseSectionWithGradesViewModelList: courseSectionWithGradesViewModelList[];
+    studentId: number;
+    markingPeriodId: string;
+    academicYear: number;
+    updatedBy: string;
+    studentInternalId: string;
+    firstGivenName: string;
+    middleName: string;
+    lastFamilyName: string;
+    studentPhoto: string;
+    weightedGPA: number;
+    unWeightedGPA: number;
+    gredeLavel: string;
+    constructor() {
+        super();
+        this.courseSectionWithGradesViewModelList = [];
+    }
+}
+
+export class courseSectionWithGradesViewModelList {
+    courseId: number;
+    courseSectionId: number;
+    studentFinalGradeSrlno: number;
+    courseSectionName: string;
+    percentMarks: number;
+    gradeObtained: string;
+    gpValue: number;
+    weightedGP: string;
+    gradeId: number;
+    gradeScaleId: number;
+    gradeScaleName: string;
+    gradeScaleValue: number;
+    creditEarned: number;
+    creditAttempted: number;
+    createdBy: string;
+    createdOn: string;
+    updatedBy: string;
+    updatedOn: string;
+}

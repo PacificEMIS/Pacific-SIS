@@ -127,10 +127,35 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.studentDetailsForViewAndEditDataDetails = this.data.studentDetailsForViewAndEditData;
-    this.getAllCountry();
-    this.callLOVs();
+    this.countryListArr= this.data.contactModalData?.countryListArr;
+    if(this.countryListArr?.length>0){
+      {
+        this.countryCtrl.setValue(this.countryListArr?.sort((a, b) => a.name < b.name ? -1 : 1));
+        this.filteredCountry.next(this.countryListArr?.slice());
+        this.countryListArr = this.countryListArr?.sort((a, b) => a.name < b.name ? -1 : 1 );
+        if (this.data.mode === 'edit'){
+          this.countryListArr.map((val) => {
+            if (this.data.parentInfo.parentAddress.country === val.name){
+              this.addParentInfoModel.parentInfo.parentAddress[0].country = val.id;
+            }
+          });
+        }
+        if (this.mode === 'view'){
+          this.countryListArr.map((val) => {
+            const countryInNumber = +this.viewData.parentAddress.country;
+            if (val.id === countryInNumber){
+                this.viewData.parentAddress.country = val.name;
+              }
+            });
+        }
+      }
+    }
+    this.relationshipList= this.data.contactModalData?.relationshipList;
+    this.salutationList= this.data.contactModalData?.salutationList;
+    this.suffixList= this.data.contactModalData?.suffixList;
 
+    this.studentDetailsForViewAndEditDataDetails = this.data.studentDetailsForViewAndEditData;
+    
     if (this.data.mode === 'view'){
        this.mode = 'view';
        this.viewData = this.data.parentInfo;
@@ -260,17 +285,6 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
     this.submit();
   }
 
-  callLOVs(){
-    this.commonLOV.getLovByName('Relationship').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.relationshipList = res;
-    });
-    this.commonLOV.getLovByName('Salutation').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.salutationList = res;
-    });
-    this.commonLOV.getLovByName('Suffix').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.suffixList = res;
-    });
-  }
 
   associateMultipleStudentsToParent(){
    let isCustodian = this.associateStudent.isCustodian;
@@ -293,7 +307,7 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
     'createdOn': '',
     'updatedOn': '',
     'contactType': this.data.contactType,
-    'updatedBy': this.defaultValuesService.getEmailId(),
+    'updatedBy': this.defaultValuesService.getUserGuidId(),
     };
    return obj;
   }
@@ -327,43 +341,6 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
     }
   }
 
-  getAllCountry(){
-    this.commonService.GetAllCountry(this.countryModel).subscribe(data => {
-      if (data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.countryListArr = [];
-          if(!data.tableCountry){
-            this.snackbar.open(data._message, '', {
-              duration: 10000
-            });
-          }
-        } else {
-          this.countryCtrl.setValue(data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1));
-          this.filteredCountry.next(data.tableCountry?.slice());
-          this.countryListArr = data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1 );
-          if (this.data.mode === 'edit'){
-            this.countryListArr.map((val) => {
-              if (this.data.parentInfo.parentAddress.country === val.name){
-                this.addParentInfoModel.parentInfo.parentAddress[0].country = val.id;
-              }
-            });
-          }
-          if (this.mode === 'view'){
-            this.countryListArr.map((val) => {
-              const countryInNumber = +this.viewData.parentAddress.country;
-              if (val.id === countryInNumber){
-                  this.viewData.parentAddress.country = val.name;
-                }
-              });
-          }
-        }
-      }
-      else{
-        this.countryListArr = [];
-      }
-    });
-  }
   closeDialog(){
     this.dialogRef.close(false);
   }
@@ -441,7 +418,7 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
           }
           else{
             this.snackbar.open(this.defaultValuesService.translateKey('parentInformationUpdationfailed')
-            + sessionStorage.getItem('httpError'), '', {
+            + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -465,7 +442,7 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
             }
           }
           else{
-            this.snackbar.open(this.defaultValuesService.translateKey('parentInformationSubmissionfailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open(this.defaultValuesService.translateKey('parentInformationSubmissionfailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -513,7 +490,7 @@ export class EditContactComponent implements OnInit,AfterViewInit, OnDestroy {
               }
             }
             else{
-              this.snackbar.open(this.defaultValuesService.translateKey('searchParentInformationfailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('searchParentInformationfailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

@@ -6,6 +6,9 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter } from 'rxjs/operators';
 import { NavigationService } from '../../../services/navigation.service';
 import icKeyboardArrowRight from '@iconify/icons-ic/twotone-keyboard-arrow-right';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
+import { SchoolService } from 'src/app/services/school.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 
 @UntilDestroy()
@@ -23,6 +26,7 @@ export class SidenavItemComponent implements OnInit, OnChanges {
   isOpen: boolean;
   isActive: boolean;
   icKeyboardArrowRight = icKeyboardArrowRight;
+  stateObj = {type: SchoolCreate.VIEW};
 
   isLink = this.navigationService.isLink;
   isDropdown = this.navigationService.isDropdown;
@@ -30,7 +34,9 @@ export class SidenavItemComponent implements OnInit, OnChanges {
 
   constructor(private router: Router,
               private cd: ChangeDetectorRef,
-              private navigationService: NavigationService) { }
+              private navigationService: NavigationService,
+              public schoolService: SchoolService,
+              public defaultValueService: DefaultValuesService) { }
 
   @HostBinding('class')
   get levelClass() {

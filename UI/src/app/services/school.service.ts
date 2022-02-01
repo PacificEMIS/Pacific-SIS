@@ -14,10 +14,10 @@ import { SchoolCreate } from '../enums/school-create.enum';
 export class SchoolService {
   schoolCreate = SchoolCreate;
   private schoolId;
+  private navigationState=false;
   private schoolDetails;
   private categoryTitle = new BehaviorSubject(null);
   selectedCategoryTitle = this.categoryTitle.asObservable();
-
   private messageSource = new BehaviorSubject(false);
   currentMessage = this.messageSource.asObservable();
   apiUrl: string = environment.apiURL;
@@ -28,8 +28,8 @@ export class SchoolService {
   private schoolDetailsForViewAndEdit = new BehaviorSubject(null);
   schoolDetailsForViewedAndEdited = this.schoolDetailsForViewAndEdit.asObservable();
   
-  private categoryId = new BehaviorSubject(0);
-  categoryIdSelected = this.categoryId.asObservable();
+  private categoryDetails = new BehaviorSubject(0);
+  categoryDetailsSelected = this.categoryDetails.asObservable();
 
   private currentSchoolName = new Subject();
   updatedSchoolName = this.currentSchoolName.asObservable();
@@ -59,6 +59,8 @@ export class SchoolService {
 
   ViewSchool(obj: SchoolAddViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.schoolMaster.schoolId = this.defaultValuesService.getSchoolID();
+    obj.schoolMaster.schoolDetail[0].schoolId = this.defaultValuesService.getSchoolID();
     obj.schoolMaster.tenantId = this.defaultValuesService.getTenantID();
     let apiurl = this.apiUrl + obj._tenantName + "/School/viewSchool";
     return this.http.post<SchoolAddViewModel>(apiurl, obj, { headers: this.httpOptions.headers});
@@ -68,21 +70,27 @@ export class SchoolService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.EmailAddress = this.defaultValuesService.getEmailId();
     obj.schoolMaster.tenantId = this.defaultValuesService.getTenantID();
-    obj.schoolMaster.createdBy = this.defaultValuesService.getEmailId();
+    obj.schoolMaster.createdBy = this.defaultValuesService.getUserGuidId();
     obj.schoolMaster.schoolDetail[0].schoolLogo = this.schoolImage;
+    obj.schoolMaster.schoolDetail[0].createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/School/addSchool";
     return this.http.post<SchoolAddViewModel>(apiurl, obj, { headers: this.httpOptions.headers})
   }
   UpdateSchool(obj: SchoolAddViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.EmailAddress = this.defaultValuesService.getEmailId();
     obj.schoolMaster.tenantId = this.defaultValuesService.getTenantID();
-    obj.schoolMaster.updatedBy = this.defaultValuesService.getEmailId();
+    obj.schoolMaster.updatedBy = this.defaultValuesService.getUserGuidId();
+    obj.schoolMaster.createdBy = null;
     obj.schoolMaster.schoolDetail[0].schoolLogo = this.schoolImage;
+    obj.schoolMaster.schoolDetail[0].createdBy = null;
+    obj.schoolMaster.schoolDetail[0].updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + "/School/updateSchool";
     return this.http.put<SchoolAddViewModel>(apiurl, obj, { headers: this.httpOptions.headers})
   }
   copySchool(obj: CopySchoolModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.fromSchoolId = this.defaultValuesService.getSchoolID();
     obj.schoolMaster.tenantId = this.defaultValuesService.getTenantID();
     let apiurl = this.apiUrl + obj._tenantName + "/School/copySchool";
     return this.http.post<CopySchoolModel>(apiurl, obj, { headers: this.httpOptions.headers})
@@ -104,6 +112,13 @@ export class SchoolService {
   }
   getSchoolCloneImage(){
     return this.cloneSchoolImage;
+  }
+
+  setnavigationState(state: boolean) {
+    this.navigationState = state
+  }
+  getnavigationState() {
+    return this.navigationState;
   }
 
   setSchoolId(id: number) {
@@ -158,11 +173,11 @@ export class SchoolService {
 
   addUpdateSchoolLogo(obj: SchoolAddViewModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.schoolMaster.schoolId = this.getSchoolId();
+    obj.schoolMaster.schoolId = this.defaultValuesService.getSchoolID();
     obj.schoolMaster.tenantId = this.defaultValuesService.getTenantID();
-    obj.schoolMaster.updatedBy = this.defaultValuesService.getEmailId();
-    obj.schoolMaster.schoolDetail[0].id = this.getSchoolId();
-    obj.schoolMaster.schoolDetail[0].schoolLogo = this.schoolImage;
+    obj.schoolMaster.updatedBy = this.defaultValuesService.getUserGuidId();
+    // obj.schoolMaster.schoolDetail[0].id = this.getSchoolId();
+    // obj.schoolMaster.schoolDetail[0].schoolLogo = this.schoolImage;
     let apiurl = this.apiUrl + obj._tenantName + "/School/addUpdateSchoolLogo";
     return this.http.put<SchoolAddViewModel>(apiurl, obj,  { headers: this.httpOptions.headers})
   }
@@ -182,8 +197,8 @@ export class SchoolService {
     this.schoolDetailsForViewAndEdit.next(data);
   }
 
-  setCategoryId(data) {
-    this.categoryId.next(data);
+  setCategoryDetails(data) {
+    this.categoryDetails.next(data);
   }
 
   setCategoryTitle(title:string){
@@ -193,4 +208,13 @@ export class SchoolService {
   updateSchoolName(schoolName: string){
     this.currentSchoolName.next(schoolName);
   }
+
+  updateLastUsedSchoolId(obj: SchoolAddViewModel){
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.EmailAddress = this.defaultValuesService.getEmailId();
+    obj.updatedBy = this.defaultValuesService.getEmailId();
+    let apiurl = this.apiUrl + obj._tenantName + "/School/updateLastUsedSchoolId";
+    return this.http.put<SchoolAddViewModel>(apiurl, obj,  { headers: this.httpOptions.headers})
+  }
+
 }

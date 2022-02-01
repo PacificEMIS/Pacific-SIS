@@ -35,6 +35,7 @@ import {EnrollmentCodeAddView} from '../../../../models/enrollment-code.model';
 import {EnrollmentCodeEnum } from '../../../../enums/enrollment_code.enum';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { id } from 'date-fns/locale';
 
 @Component({
   selector: 'vex-edit-enrollment-code',
@@ -51,6 +52,7 @@ export class EditEnrollmentCodeComponent implements OnInit {
   enrollmentCodeTitle;
   buttonType;
   enrollmentCodeAddView: EnrollmentCodeAddView = new EnrollmentCodeAddView();
+  filterdListOfValus:any=[];
   enrollmentCodeEnum = Object.keys(EnrollmentCodeEnum);
   constructor(
     private dialogRef: MatDialogRef<EditEnrollmentCodeComponent>,
@@ -72,6 +74,7 @@ export class EditEnrollmentCodeComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.getListValues()
     if (this.data == null){
       this.enrollmentCodeTitle = 'addEnrollmentCode';
       this.buttonType = 'SUBMIT';
@@ -110,7 +113,7 @@ export class EditEnrollmentCodeComponent implements OnInit {
               this.dialogRef.close('submited');
             }
           }else{
-            this.snackbar.open( this.defaultValuesService.translateKey('enrollmentCodeFailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open( this.defaultValuesService.translateKey('enrollmentCodeFailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -139,7 +142,7 @@ export class EditEnrollmentCodeComponent implements OnInit {
               this.dialogRef.close('submited');
             }
           }else{
-            this.snackbar.open(this.defaultValuesService.translateKey('enrollmentCodeFailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open(this.defaultValuesService.translateKey('enrollmentCodeFailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -147,5 +150,18 @@ export class EditEnrollmentCodeComponent implements OnInit {
       );
     }
   }
+  }
+  getListValues(){
+    if(this.data==null ){
+      for(let i=0; i<this.enrollmentCodeEnum.length-(this.enrollmentCodeEnum.length-2); i++){
+        this.filterdListOfValus.push(this.enrollmentCodeEnum[i])
+      }
+    }else if(this.data.title == 'New' || this.data.title == 'Dropped Out' || this.data.title == 'Rolled Over' || this.data.title == 'Transferred In' || this.data.title == 'Transferred Out'){
+      this.filterdListOfValus=this.enrollmentCodeEnum;
+    }else{
+      for(let i=0 ;i<this.enrollmentCodeEnum.length-(this.enrollmentCodeEnum.length-2); i++){
+        this.filterdListOfValus.push(this.enrollmentCodeEnum[i])
+      }
+    }
   }
 }

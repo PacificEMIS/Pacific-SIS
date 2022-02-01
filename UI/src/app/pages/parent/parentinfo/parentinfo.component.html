@@ -1,7 +1,7 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Parents List" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Parent']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'parentsList'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['parent']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -18,7 +18,7 @@
                             [formControl]="searchCtrl"
                             class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                             type="search">
-                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5">
+                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
                                 type="button">
                                 <mat-icon [icIcon]="icSearch"></mat-icon>
@@ -49,7 +49,9 @@
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'parentsName'|translate}}</th>
                         <td mat-cell *matCellDef="let element">
                             <a (click)="viewGeneralInfo(element)" class="text-primary cursor-pointer">
-                                {{element.firstname+' '+element.lastname}}</a>
+                                {{element.lastname+", "
+                            +element.firstname}}{{element.middlename!=null?" "+element.middlename:''}}</a>
+                                
                         </td>
                     </ng-container>
 
@@ -106,14 +108,13 @@
                     </ng-container>
                     <ng-container matColumnDef="invalidsearch">
                         <td mat-footer-cell *matFooterCellDef colspan="7">
-                            No record found as per your search criteria. Please <a
-                                class="cursor-pointer text-blue underline" (click)="resetParentList()">click here</a> to
-                            reset
+                            {{'noRecordFoundAsPerYourSearchCriteriaDotPlease' |translate}} <a
+                                class="cursor-pointer text-blue underline" (click)="resetParentList()">{{'clickHere' |translate}}</a> {{'toReset' |translate}}
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="noData">
                         <td mat-footer-cell *matFooterCellDef colspan="6">
-                            {{loading?'Fetching Data...':'No Data'}}
+                            {{loading?('fetchingData' | translate):('noData' | translate) }}
                         </td>
                     </ng-container>
 

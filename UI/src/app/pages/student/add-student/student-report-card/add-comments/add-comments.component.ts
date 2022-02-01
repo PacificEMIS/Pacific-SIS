@@ -37,7 +37,7 @@ export class AddCommentsComponent implements OnInit {
   icClose = icClose;
 
   constructor( public translateService: TranslateService) {
-    translateService.use("en");
+    // translateService.use("en");
   }
 
   ngOnInit(): void {

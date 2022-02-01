@@ -9,6 +9,8 @@ import { AllScheduledCourseSectionForStaffModel } from '../../../../models/teach
 import { TeacherScheduleService } from '../../../../services/teacher-schedule.service';
 import { AddAssignmentModel } from '../../../../models/staff-portal-assignment.model';
 import { CommonService } from '../../../../services/common.service';
+import { DefaultValuesService } from '../../../../common/default-values.service';
+import { DasboardService } from '../../../../services/dasboard.service';
 
 @Component({
   selector: 'vex-copy-assignment',
@@ -23,6 +25,7 @@ export class CopyAssignmentComponent implements OnInit {
   showCopyAssignment = true;
   showSuccessAssignment = false;
   coursecount: number=0;
+  courseId: number;
   courseSectionArray: number[] = [];
   addAssignmentModel: AddAssignmentModel = new AddAssignmentModel();
   allScheduledCourseSectionBasedOnTeacher: AllScheduledCourseSectionForStaffModel = new AllScheduledCourseSectionForStaffModel();
@@ -32,7 +35,17 @@ export class CopyAssignmentComponent implements OnInit {
     private teacherReassignmentService: TeacherScheduleService,
     private staffPortalAssignmentService: StaffPortalAssignmentService,
     private commonService: CommonService,
-    private snackbar: MatSnackBar) { }
+    private snackbar: MatSnackBar,
+    private dashboardService: DasboardService,
+    private defaultValuesService: DefaultValuesService
+    ) {
+      this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
+        if (res) {
+          this.courseId = +res.courseId;
+        }
+      });
+      
+     }
 
   ngOnInit(): void {
     this.getAllScheduledCourseSectionBasedOnTeacher();
@@ -40,11 +53,11 @@ export class CopyAssignmentComponent implements OnInit {
 
 
   getAllScheduledCourseSectionBasedOnTeacher() {
-    this.allScheduledCourseSectionBasedOnTeacher.staffId = + sessionStorage.getItem('userId');
-    this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
+    this.allScheduledCourseSectionBasedOnTeacher.staffId = this.defaultValuesService.getUserId();
+    //this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
     this.teacherReassignmentService.getAllScheduledCourseSectionForStaff(this.allScheduledCourseSectionBasedOnTeacher).pipe(
       map((res) => {
-        res._userName = sessionStorage.getItem('user');
+        res._userName = this.defaultValuesService.getHttpError();
         return res;
       })
     ).subscribe((res) => {
@@ -59,12 +72,12 @@ export class CopyAssignmentComponent implements OnInit {
           }
         } else {
           this.allScheduledCourseSectionBasedOnTeacher = res;
-          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.courseId === this.data?.assignmentDetails?.courseId && x.courseSectionId !== this.data?.assignmentDetails?.courseSectionId);
+          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.courseId === this.courseId && x.courseSectionId !== this.data?.assignmentDetails?.courseSectionId);
           this.coursecount= this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.length;
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
 
@@ -143,7 +156,7 @@ export class CopyAssignmentComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
 

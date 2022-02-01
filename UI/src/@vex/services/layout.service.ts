@@ -27,10 +27,10 @@ export class LayoutService {
   private _searchOpen = new BehaviorSubject<boolean>(false);
   searchOpen$ = this._searchOpen.asObservable();
 
-  isDesktop$ = this.breakpointObserver.observe(`(min-width: 1280px)`).pipe(
+  isDesktop$ = this.breakpointObserver.observe(`(min-width: 1024px)`).pipe(
     map(state => state.matches)
   );
-  ltLg$ = this.breakpointObserver.observe(`(max-width: 1279px)`).pipe(
+  ltLg$ = this.breakpointObserver.observe(`(max-width: 1023px)`).pipe(
     map(state => state.matches)
   );
   gtMd$ = this.breakpointObserver.observe(`(min-width: 960px)`).pipe(
@@ -46,7 +46,7 @@ export class LayoutService {
     map(state => state.matches)
   );
 
-  isLtLg = () => this.breakpointObserver.isMatched(`(max-width: 1279px)`);
+  isLtLg = () => this.breakpointObserver.isMatched(`(max-width: 1023px)`);
 
   isMobile = () => this.breakpointObserver.isMatched(`(max-width: 599px)`);
 

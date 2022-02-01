@@ -41,6 +41,7 @@ export class TeacherScheduleService {
 
   getAllScheduledCourseSectionForStaff(reassignmentDetails: AllScheduledCourseSectionForStaffModel){
     reassignmentDetails = this.defaultValuesService.getAllMandatoryVariable(reassignmentDetails);
+    reassignmentDetails.academicYear = this.defaultValuesService.getAcademicYear()
     let apiurl = this.apiUrl + reassignmentDetails._tenantName + "/StaffSchedule/getAllScheduledCourseSectionForStaff";
     return this.http.post<AllScheduledCourseSectionForStaffModel>(apiurl, reassignmentDetails,this.httpOptions);
   }

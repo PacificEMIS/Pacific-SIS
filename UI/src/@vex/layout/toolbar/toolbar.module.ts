@@ -16,6 +16,7 @@ import { NavigationItemModule } from '../../components/navigation-item/navigatio
 import { MegaMenuModule } from '../../components/mega-menu/mega-menu.module';
 import { ContainerModule } from '../../directives/container/container.module';
 import { SelectBarModule } from './select-bar/select-bar.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { SelectBarModule } from './select-bar/select-bar.module';
     MegaMenuModule,
     ContainerModule,
     SelectBarModule,
+    TranslateModule
       ],
   exports: [ToolbarComponent]
 })

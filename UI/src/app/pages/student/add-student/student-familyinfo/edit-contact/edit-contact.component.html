@@ -11,43 +11,43 @@
         <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-6">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{(viewData.salutation?viewData.salutation+' ':'')+viewData.firstname+' '+(viewData.middlename?viewData.middlename+' ':'')+viewData.lastname+(viewData.suffix?' '+viewData.suffix:'')}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'contactRelationship' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.relationship | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.relationship | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.mobile | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.mobile | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.workPhone | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.workPhone | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.homePhone | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.homePhone | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.personalEmail | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.personalEmail | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.workEmail | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.workEmail | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.userProfile | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.userProfile | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.isPortalUser | EmtyBooleanCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'loginUsername' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.loginEmail | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.loginEmail | EmtyValueCheckPipe}}</p>
             </li>
         </ul>
         
@@ -55,32 +55,32 @@
         <ul class="grid grid-cols-2 col-gap-8 row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress1' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.addressLineOne | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.addressLineOne | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'streetAddress2' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.addressLineTwo | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.addressLineTwo | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'country' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.country | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.country | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'stateProvinceLocality' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.state | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.state | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'city' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.city | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.city | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'zipPostalCode' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.parentAddress.zip | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.parentAddress.zip | EmtyValueCheckPipe}}</p>
             </li>
           
             <li>
                 <label class="text-sm leading-5 text-gray">{{'custodyOfStudent' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{viewData.isCustodian| EmtyBooleanCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{viewData.isCustodian| EmtyBooleanCheckPipe}}</p>
             </li>
         </ul>
     </mat-dialog-content>
@@ -104,14 +104,14 @@
             <mat-dialog-content fxLayout="column">    
                 <div  *ngIf="editMode === false">
                     <button mat-raised-button type="button" (click)="searchExistingContact()" color="primary" class="w-full mb-4">
-                        Lookup for Existing Contact
+                        {{'lookupForExistingContact' |translate}}
                     </button>            
                     <p class="text-center">- {{'orAddAsNewContactBelow' | translate}} -</p>
                 </div>     
                 <mat-form-field appearance="outline" class="mt-3" color="primary">
                     <mat-label>{{'salutation'|translate}}</mat-label>
                     <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.salutation" name="salutation" #salutation="ngModel">
-                        <mat-option value=""></mat-option>
+                        <mat-option></mat-option>
                         <mat-option *ngFor="let salutation of salutationList" [value]="salutation.lovColumnValue">{{salutation.lovColumnValue}}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -138,7 +138,7 @@
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'suffix'|translate}}</mat-label>
                     <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.suffix" name="suffix" #suffix="ngModel">
-                        <mat-option value=""></mat-option>
+                        <mat-option></mat-option>
                         <mat-option *ngFor="let suffix of suffixList" [value]="suffix.lovColumnValue">{{suffix.lovColumnValue}}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -146,7 +146,6 @@
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'contactRelationship' | translate}}</mat-label>
                     <mat-select   [(ngModel)]="addParentInfoModel.parentAssociationship.relationship" name="relationship" #relationship="ngModel" required>
-                        <mat-option value=""></mat-option>
                         <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
                     </mat-select>
                     <mat-error class="text-red" *ngIf="relationship.errors?.required">
@@ -155,9 +154,7 @@
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'custodyOfStudent' | translate}}</mat-label>
                     <mat-select   [(ngModel)]="addParentInfoModel.parentAssociationship.isCustodian" (selectionChange) = "disableAddress($event)" name="isCustodian" #isCustodian="ngModel" required>
-                        <mat-option></mat-option>
-
-                        <mat-option [value]="custodyEnum.Yes">{{custodyEnum['true']}}</mat-option>
+                    <mat-option [value]="custodyEnum.Yes">{{custodyEnum['true']}}</mat-option>
                         <mat-option [value]="custodyEnum.No">{{custodyEnum['false']}}</mat-option>
                     </mat-select>
                     <mat-error class="text-red" *ngIf="isCustodian.errors?.required">
@@ -165,27 +162,32 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'mobilePhone' | translate}}</mat-label>
-                    <input  [(ngModel)]="addParentInfoModel.parentInfo.mobile" maxlength="30" #mobile="ngModel"  type="text" name="mobile" matInput>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.mobile" maxlength="20" minlength="10" #mobile="ngModel"  type="text" name="mobile" matInput>
                     <mat-error  *ngIf="mobile.errors?.phonevalidator">
                         {{'pleaseProvideAValidMobileNo'|translate}} 
                       </mat-error>
-
+                        <mat-error *ngIf="!mobile.errors?.required && mobile.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                 </mat-form-field>
         
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'workPhone' | translate}}</mat-label>
-                    <input  [(ngModel)]="addParentInfoModel.parentInfo.workPhone"  maxlength="30"  #workPhone="ngModel" type="text" name="workPhone" matInput>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.workPhone"  maxlength="20" minlength="10"  #workPhone="ngModel" type="text" name="workPhone" matInput>
                     <mat-error
                         *ngIf="workPhone.errors?.invalidPhoneNumber">
                         {{'invalidTelephoneNumber'|translate}}</mat-error>
+                        <mat-error *ngIf="!workPhone.errors?.required && workPhone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                 </mat-form-field>
         
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'homePhone' | translate}}</mat-label>
-                    <input  [(ngModel)]="addParentInfoModel.parentInfo.homePhone"  maxlength="30" #homePhone="ngModel"  type="text" name="homePhone" matInput>
+                    <input  [(ngModel)]="addParentInfoModel.parentInfo.homePhone"   maxlength="20" minlength="10" #homePhone="ngModel"  type="text" name="homePhone" matInput>
                     <mat-error
                         *ngIf="homePhone.errors?.invalidPhoneNumber">
                         {{'invalidTelephoneNumber'|translate}}</mat-error>
+                        <mat-error *ngIf="!homePhone.errors?.required && homePhone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                 </mat-form-field>
         
                 <mat-form-field appearance="outline" color="primary">
@@ -213,7 +215,7 @@
                 <mat-form-field appearance="outline" color="primary">
                     <mat-label>{{'userProfile' | translate}}</mat-label>
                     <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.userProfile" name="userProfile" #userProfile="ngModel" >
-                        <mat-option value=""></mat-option>
+                        <mat-option></mat-option>
                         <mat-option *ngFor="let userProfile of userProfileEnum" [value]="userProfile">{{userProfile}}</mat-option>                        
                     </mat-select>
                 </mat-form-field>
@@ -236,7 +238,7 @@
                         {{'passwordIsRequired'|translate}}</mat-error>
                 </mat-form-field>
         
-                <h6 class="text-primary">{{'address' | translate}}</h6>
+                <h6 class="text-base my-2 text-primary">{{'address' | translate}}</h6>
                 <div>
                     <mat-radio-group [value]="val" aria-label="Select an option" color="primary">
                         <mat-radio-button  value = "Yes" (change)="radioChange($event)" class="mr-3" [disabled] = "disableAddressFlag">{{'sameAsStudentsHomeAddress' | translate}}</mat-radio-button>
@@ -259,7 +261,7 @@
                     <mat-form-field *ngIf="sameAsStudentAddress === false" fxFlex="auto" appearance="outline" color="primary">
                         <mat-label>{{'country'|translate}}</mat-label>
                         <mat-select   [(ngModel)]="addParentInfoModel.parentInfo.parentAddress[0].country" #countryCtrl="ngModel" name="country" required>
-                            <!-- <mat-option value=""></mat-option> -->
+                            <!-- <mat-option></mat-option> -->
                             <mat-option>
                                 <ngx-mat-select-search  [formControl]="countryFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching nationality found" placeholderLabel="Find nationality..."></ngx-mat-select-search>
                             </mat-option>
@@ -313,7 +315,7 @@
                 </div>
                 <mat-divider class="-mx-6 text-border"></mat-divider>
                 <mat-dialog-content fxLayout="column" class="pt-4">
-                    <h5 class="mb-4">Search for an existing portal user (parent/guardian) to associate with the student.</h5>
+                    <h5 class="mb-4">{{'searchForAnExistingPortalUserParentGuardianToAssociateWithTheStudent'| translate}}</h5>
             
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'firstName' | translate}}</mat-label>
@@ -373,7 +375,6 @@
                                 <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'contactRelationship' | translate}}</mat-label>
                                     <mat-select [(ngModel)]="associateStudent.contactRelationship" #contactRelationship="ngModel" name="contactRelationship" required>
-                                        <mat-option value=""></mat-option>
                                         <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
                                     </mat-select>
                                     <mat-error class="text-red" *ngIf="contactRelationship.errors?.required">
@@ -387,43 +388,43 @@
                         <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.firstname+' '+singleParentInfo.lastname}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.mobile}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.mobile}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.workPhone}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.workPhone}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.homePhone}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.homePhone}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.personalEmail}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.personalEmail}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.workEmail}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.workEmail}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">Parent</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">Parent</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.isPortalUser | EmtyBooleanCheckPipe}}</p>
                             </li>
                             <li>
                                 <label class="text-sm leading-5 text-gray">{{'loginEmail' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{singleParentInfo.loginEmail}}</p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{singleParentInfo.loginEmail}}</p>
                             </li>
                             <li class="col-start-1 col-end-3">
                                 <label class="text-sm leading-5 text-gray">{{'Address' | translate}}</label>
-                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a routerLink="" class="text-blue cursor-pointer">{{singleParentInfo.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
+                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><a routerLink="" class="text-blue cursor-pointer">{{singleParentInfo.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
                             </li>
                         </ul>
                     </mat-dialog-content>
@@ -440,7 +441,7 @@
                         <h2 class="headline m-0" fxFlex="auto"><a mat-dialog-close
                             class="text-primary cursor-pointer inline-block align-middle mr-3">
                             <mat-icon [icIcon]="icBack"  (click)="backToSearch()"></mat-icon>
-                        </a> Multiple Results Found.</h2>
+                        </a> {{'multipleResultsFound' | translate}}.</h2>
                         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
                             <mat-icon [icIcon]="icClose"></mat-icon>
                         </button>
@@ -453,7 +454,6 @@
                                 <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'contactRelationship' | translate}}</mat-label>
                                     <mat-select [(ngModel)]="associateStudent.contactRelationship" #contactRelationship="ngModel" name="contactRelationship" required>
-                                        <mat-option value=""></mat-option>
                                         <mat-option *ngFor="let relationShip of relationshipList" [value]="relationShip.lovColumnValue">{{relationShip.lovColumnValue}}</mat-option>
                                     </mat-select>
                                     <mat-error class="text-red" *ngIf="contactRelationship.errors?.required">
@@ -480,43 +480,43 @@
                                         <ul class="grid grid-cols-2 col-gap-8 row-gap-8 mt-6">
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'fullName' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.firstname+' '+multipleParent.lastname}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.firstname+' '+multipleParent.lastname}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'mobilePhone' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.mobile}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.mobile}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'workPhone' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.workPhone}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.workPhone}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'homePhone' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.homePhone}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.homePhone}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'personalEmail' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.personalEmail}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.personalEmail}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'workEmail' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.workEmail}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.workEmail}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'userProfile' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">Parent</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">Parent</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.isPortalUser | EmtyBooleanCheckPipe}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.isPortalUser | EmtyBooleanCheckPipe}}</p>
                                             </li>
                                             <li>
                                                 <label class="text-sm leading-5 text-gray">{{'loginEmail' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{multipleParent.loginEmail}}</p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{multipleParent.loginEmail}}</p>
                                             </li>
                                             <li class="col-start-1 col-end-3">
                                                 <label class="text-sm leading-5 text-gray">{{'address' | translate}}</label>
-                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a routerLink="" class="text-blue cursor-pointer">{{multipleParent.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
+                                                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><a routerLink="" class="text-blue cursor-pointer">{{multipleParent.addressLineOne}}<i class="icon icon-sphere ml-2"></i></a></p>
                                             </li>
                                         </ul>
                                         <div class="pt-6 w-full text-right">

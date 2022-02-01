@@ -25,7 +25,7 @@ export class StaffPortalAssignmentService {
   
   addAssignmentType(obj: AddAssignmentTypeModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.assignmentType.createdBy= this.defaultValuesService.getEmailId();
+    obj.assignmentType.createdBy= this.defaultValuesService.getUserGuidId();
     obj.assignmentType.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignmentType.tenantId= this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/addAssignmentType';
@@ -34,13 +34,14 @@ export class StaffPortalAssignmentService {
 
 getAllAssignmentType(obj: GetAllAssignmentsModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/getAllAssignmentType';
     return this.http.post<GetAllAssignmentsModel>(apiurl, obj,this.httpOptions);
 }
 
 updateAssignmentType(obj: AddAssignmentTypeModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.assignmentType.updatedBy= this.defaultValuesService.getEmailId();
+    obj.assignmentType.updatedBy= this.defaultValuesService.getUserGuidId();
     obj.assignmentType.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignmentType.tenantId= this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/updateAssignmentType';
@@ -57,7 +58,7 @@ deleteAssignmentType(obj: AddAssignmentTypeModel){
 
 addAssignment(obj: AddAssignmentModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.assignment.createdBy= this.defaultValuesService.getEmailId();
+    obj.assignment.createdBy= this.defaultValuesService.getUserGuidId();
     obj.assignment.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignment.tenantId= this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/addAssignment';
@@ -66,7 +67,7 @@ addAssignment(obj: AddAssignmentModel){
 
 updateAssignment(obj: AddAssignmentModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.assignment.updatedBy= this.defaultValuesService.getEmailId();
+    obj.assignment.updatedBy= this.defaultValuesService.getUserGuidId();
     obj.assignment.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignment.tenantId= this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/updateAssignment';
@@ -83,7 +84,7 @@ deleteAssignment(obj: AddAssignmentModel){
 
 copyAssignmentForCourseSection(obj: AddAssignmentModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.assignment.updatedBy= this.defaultValuesService.getEmailId();
+    obj.assignment.updatedBy= this.defaultValuesService.getUserGuidId();
     obj.assignment.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignment.tenantId= this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/copyAssignmentForCourseSection';

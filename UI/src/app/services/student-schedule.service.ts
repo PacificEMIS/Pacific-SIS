@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { ScheduleCoursesForStudent360Model, ScheduledCourseSectionListForStudent360Model, ScheduledStudentDropModel, ScheduleStudentListViewModel, StudentCourseSectionScheduleAddViewModel, StudentScheduleReportViewModel } from '../models/student-schedule.model';
 import { DefaultValuesService } from '../common/default-values.service';
 import { StudentListModel } from '../models/student.model';
+import { ScheduleReportFilterModel } from '../models/schedule-report-filter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class StudentScheduleService {
 
   addStudentCourseSectionSchedule(Obj: StudentCourseSectionScheduleAddViewModel){
     Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
-    Obj.createdBy= this.defaultValuesService.getEmailId();
+    Obj.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + Obj._tenantName + '/StudentSchedule/addStudentCourseSectionSchedule';
     return this.http.post<StudentCourseSectionScheduleAddViewModel>(apiurl, Obj,this.httpOptions);
   }
@@ -62,6 +63,12 @@ export class StudentScheduleService {
     Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
     let apiurl = this.apiUrl + Obj._tenantName + '/StudentSchedule/scheduleCourseSectionListForStudent360';
     return this.http.post<ScheduledCourseSectionListForStudent360Model>(apiurl, Obj,this.httpOptions);
+  }
+
+  scheduledCourseSectionListForReport(Obj: ScheduleReportFilterModel){
+    Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
+    let apiurl = this.apiUrl + Obj._tenantName + '/Report/scheduledCourseSectionList';
+    return this.http.post<ScheduleReportFilterModel>(apiurl, Obj,this.httpOptions);
   }
 
 }

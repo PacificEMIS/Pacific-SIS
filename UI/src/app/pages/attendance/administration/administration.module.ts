@@ -26,15 +26,22 @@ import { AddCommentsComponent } from './add-comments/add-comments.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { StudentAttendanceCommentComponent } from './student-attendance-comment/student-attendance-comment.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SharedModuleModule } from '../../shared-module/shared-module.module';
+import { SearchStudentComponent } from './search-student/search-student.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @NgModule({
-  declarations: [AdministrationComponent, AddCommentsComponent, StudentAttendanceCommentComponent],
+  declarations: [AdministrationComponent, AddCommentsComponent, StudentAttendanceCommentComponent,SearchStudentComponent],
   imports: [
     CommonModule,
     AdministrationRoutingModule,
     MatIconModule,
-    IconModule,  
+    IconModule,
     MatCardModule,
     MatSidenavModule,
     SecondaryToolbarModule,
@@ -53,7 +60,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModuleModule,
+    MatSlideToggleModule,
+    MatExpansionModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class AdministrationModule { }

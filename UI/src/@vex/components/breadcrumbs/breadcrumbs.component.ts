@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import icHome from '@iconify/icons-ic/twotone-home';
 import { trackByValue } from '../../utils/track-by';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-breadcrumbs',
@@ -14,8 +15,8 @@ import { trackByValue } from '../../utils/track-by';
       <ng-container *ngFor="let crumb of crumbs;let last=last; trackBy: trackByValue">
         <div class="w-1 h-1 bg-gray rounded-full ltr:mr-2 rtl:ml-2"></div>
         <vex-breadcrumb>
-        <div *ngIf="last"><a>{{ crumb }}</a></div>
-        <div *ngIf="!last"><a [routerLink]="['/school/' + crumb.replace(' ', '') |lowercase ]">{{ crumb }}</a></div>
+        <div *ngIf="last"><a>{{ crumb |translate }}</a></div>
+        <div *ngIf="!last"><a [routerLink]="['/school/' + crumb.replace(' ', '') |lowercase ]">{{ crumb |translate }}</a></div>
         </vex-breadcrumb>
       </ng-container>
  
@@ -28,7 +29,7 @@ export class BreadcrumbsComponent implements OnInit {
   trackByValue = trackByValue;
   icHome = icHome;
 
-  constructor() {
+  constructor(private translate:TranslateService) {
   }
 
   ngOnInit() {

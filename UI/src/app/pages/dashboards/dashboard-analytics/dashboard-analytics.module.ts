@@ -24,6 +24,8 @@ import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-ca
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @NgModule({
   declarations: [DashboardAnalyticsComponent],
@@ -54,7 +56,8 @@ import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
     SharedModuleModule,
     BackButtonDisableModule.forRoot({
       preserveScrollPosition: true
-    })
+    }),
+    TranslateModule
   ]
 })
 export class DashboardAnalyticsModule {

@@ -1,8 +1,8 @@
 <vex-page-layout>
     <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Student Re-enroll" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Student']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'studentReEnroll'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['student']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -65,12 +65,10 @@
                 </ul>
             </div>
         </form>
-        <div [ngClass]="{'hidden': !submitReenroll}" class="card mt-6">
+        <div [ngClass]="{'hidden': !submitReenroll}" class="card pb-4 mt-6">
             <div class="flex justify-between px-5 py-4 flex-wrap">
                 <h5 class="font-medium pr-6 pb-2 sm:pb-0">{{'showingListOfInactiveStudentsSelectStudentsToReenroll' | translate}}
                 </h5>
-                <mat-slide-toggle color="primary" [(ngModel)]="showAllSchools" (change)="searchAllSchools($event)">
-                    {{'searchAllSchools' | translate}}</mat-slide-toggle>
             </div>
             <mat-divider></mat-divider>
             <div class="bg-white px-5 lg:h-16 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
@@ -114,19 +112,19 @@
                 <table mat-table [dataSource]="studentReenrollList" class="mat-elevation-z8 shadow-none">
                     <ng-container matColumnDef="studentCheck">
                         <th [class.hide]="totalCount==0" mat-header-cell *matHeaderCellDef>
-                            <mat-checkbox color="primary" #masterCheckBox [indeterminate]="someComplete()"
+                            <mat-checkbox [disabled]="!this.defaultValuesService.checkAcademicYear()" color="primary" #masterCheckBox [indeterminate]="someComplete()"
                                 (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked"
-                                (change)="onChangeSelection($event.checked,element.studentId)">
+                            <mat-checkbox color="primary" [disabled]="!this.defaultValuesService.checkAcademicYear()" [checked]="element.checked"
+                                (change)="onChangeSelection($event.checked,element.studentGuid)">
                             </mat-checkbox>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="studentName">
                         <th mat-header-cell *matHeaderCellDef>{{ "studentName" | translate }}</th>
                         <td mat-cell *matCellDef="let element">
-                            <a class="text-blue cursor-pointer">{{ element.firstGivenName }} {{ element.lastFamilyName
+                            <a class="text-blue cursor-pointer" (click)="showStudentDetails(element)" >{{ element.firstGivenName }} {{ element.lastFamilyName
                                 }}</a>
                         </td>
                     </ng-container>
@@ -182,7 +180,7 @@
             <mat-paginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
                 [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator>
 
-            <div *ngIf="totalCount >0 && permissions?.add" class="text-right py-0 pr-5 mb-2">
+            <div *ngIf="totalCount >0 && permissions?.add && this.defaultValuesService.checkAcademicYear()" class="text-right py-0 pr-5 mb-2">
                 <button color="primary" (click)="reEnrollSelectedStudent()" mat-raised-button type="submit">
                     {{ 'ReenrollSelectedStudents' | translate }}
                 </button>
@@ -192,7 +190,7 @@
         <!-- After complete student re-enrollment below succes msg is shown start -->
         <div *ngIf="showSuccessMessage" class="card -mt-16 p-12 text-center">
             <div class="relative inline-block" width="80px">
-                <img src="assets/img/icons/re-enroll-success.svg" alt="" class="mx-auto mb-4" width="80" />
+                <img src="assets/img/icons/re-enroll-success.svg" alt="Re-enroll success icon" class="mx-auto mb-4" width="80" />
                 <span class="absolute bg-white check-wrapper">
                     <mat-icon class="text-green">check_circle</mat-icon>
                 </span>

@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
@@ -34,7 +34,6 @@ import icClear from '@iconify/icons-ic/baseline-clear';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StaffService } from '../../../../services/staff.service';
 import { StaffSchoolInfoListModel, StaffSchoolInfoModel } from '../../../../models/staff.model';
-import { Subject } from '../../../../enums/temp-subjects-list.enum';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { GradeLevelService } from '../../../../services/grade-level.service';
 import { OnlySchoolListModel } from '../../../../models/get-all-school.model';
@@ -54,6 +53,10 @@ import { GetAllSubjectModel } from '../../../../models/course-manager.model';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { Module } from 'src/app/enums/module.enum';
+
 
 @Component({
   selector: 'vex-staff-schoolinfo',
@@ -65,7 +68,7 @@ import { CommonService } from 'src/app/services/common.service';
     fadeInRight400ms
   ]
 })
-export class StaffSchoolinfoComponent implements OnInit {
+export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   getSchoolList: OnlySchoolListModel = new OnlySchoolListModel();
   staffCreate = SchoolCreate;
   staffDetailsForViewAndEdit;
@@ -79,8 +82,8 @@ export class StaffSchoolinfoComponent implements OnInit {
   icClear = icClear;
   icEdit = icEdit;
   selectedSchoolId = [];
-  otherGradeLevelTaught;
-  otherSubjectTaught;
+  otherGradeLevelTaught=[];
+  otherSubjectTaught =[];
   cloneStaffModel;
   staffCloneModel;
   moduleIdentifier = ModuleIdentifier;
@@ -88,6 +91,12 @@ export class StaffSchoolinfoComponent implements OnInit {
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   permissions: Permissions;
+  isReadOnly: boolean;
+  module = Module.STAFF;
+  categoryId = 1;
+  defaultSchoolId: number=0;
+  destroySubject$: Subject<void> = new Subject();
+  
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
     private staffService: StaffService,
@@ -106,10 +115,10 @@ export class StaffSchoolinfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.staffService.staffCreatedMode.subscribe((res)=>{
+    this.staffService.staffCreatedMode.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
       this.staffCreateMode = res;
     })
-    this.staffService.staffDetailsForViewedAndEdited.subscribe((res)=>{
+    this.staffService.staffDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
       this.staffDetailsForViewAndEdit = res;
     })
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
@@ -117,6 +126,12 @@ export class StaffSchoolinfoComponent implements OnInit {
     if (this.staffCreateMode == this.staffCreate.EDIT) {
       this.staffCreateMode = this.staffCreate.ADD
     }
+
+    this.staffService.categoryIdSelected.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      if(res){
+        this.categoryId = res;
+    }
+    })
 
     if (this.staffCreateMode == this.staffCreate.ADD) {
       this.getAllGradeLevel();
@@ -145,7 +160,7 @@ export class StaffSchoolinfoComponent implements OnInit {
           this.getAllSubjectModel.subjectList = data.subjectList;
         }
       }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 1000
         }); 
       }      
@@ -172,15 +187,37 @@ export class StaffSchoolinfoComponent implements OnInit {
   }
 
   onSchoolChange(schoolId, indexOfDynamicRow) {
-    let index = this.getSchoolList.schoolMaster.findIndex((x) => {
-      return x.schoolId === +schoolId;
-    });
-    this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
-    this.selectedSchoolId[indexOfDynamicRow] = +schoolId
+    if (this.staffSchoolInfoModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolId === +this.staffCloneModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolAttachedId) {
+      this.defaultSchoolId= +schoolId;
+      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+        return x.schoolId === +schoolId;
+      });
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
+
+      for (let i = 0; i < this.staffSchoolInfoModel.staffSchoolInfoList?.length; i++) {
+        this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolId= +schoolId;
+      }
+      
+    }
+    else {
+      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+        return x.schoolId === +schoolId;
+      });
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
+    }
+  }
+
+  setOtherSubjectList(item){
+  }
+
+  setOtherGradeLevelTaught(item){
+
   }
 
   addMoreSchoolInfo() {
-    this.staffSchoolInfoModel.staffSchoolInfoList.push(new StaffSchoolInfoListModel)
+    this.staffSchoolInfoModel.staffSchoolInfoList.push(new StaffSchoolInfoListModel);
     this.divCount.push(2);
   }
 
@@ -200,7 +237,7 @@ export class StaffSchoolinfoComponent implements OnInit {
   compareDate(index) {
     let endDate = this.staffSchoolInfoModel.staffSchoolInfoList[index].endDate
     if (this.staffSchoolInfoModel.staffSchoolInfoList[index].startDate != null) {
-      if (endDate == null || moment(endDate) > moment()) {
+      if (endDate == null || moment(endDate).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) {
         return true;
       } else {
         return false;
@@ -217,7 +254,7 @@ export class StaffSchoolinfoComponent implements OnInit {
     this.staffSchoolInfoModel.staffSchoolInfoList[0].tenantId= this.defaultValuesService.getTenantID();
     this.staffService.viewStaffSchoolInfo(this.staffSchoolInfoModel).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Staff School Info Failed to Fetch. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff School Info Failed to Fetch. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -231,9 +268,21 @@ export class StaffSchoolinfoComponent implements OnInit {
           this.staffSchoolInfoModel = res;
           this.cloneStaffModel = JSON.stringify(this.staffSchoolInfoModel);
           this.staffCloneModel= JSON.parse(this.cloneStaffModel);
-          if (this.staffSchoolInfoModel.otherGradeLevelTaught != null || this.staffSchoolInfoModel.otherGradeLevelTaught != null) {
+          if (this.staffCreateMode === this.staffCreate.ADD) {
+            this.divCount.length = this.staffCloneModel?.staffSchoolInfoList?.length;
+            if (this.staffCloneModel.staffSchoolInfoList !== null) {
+              for (let i = 0; i < this.staffCloneModel.staffSchoolInfoList?.length; i++) {
+                this.divCount[i] = 2;
+              }
+            }
+          }
+          if (this.staffSchoolInfoModel.otherGradeLevelTaught != null || this.staffSchoolInfoModel.otherSubjectTaught != null) {
+           if(this.staffSchoolInfoModel.otherGradeLevelTaught!=''){
             this.otherGradeLevelTaught = this.staffSchoolInfoModel.otherGradeLevelTaught?.split(',');
+           }
+           if(this.staffSchoolInfoModel.otherSubjectTaught!=''){
             this.otherSubjectTaught = this.staffSchoolInfoModel.otherSubjectTaught?.split(',');
+            }
           }
           this.manipulateArray();
         }
@@ -255,7 +304,7 @@ export class StaffSchoolinfoComponent implements OnInit {
       delete this.staffSchoolInfoModel.staffSchoolInfoList[i].staffMaster;
       this.selectedSchoolId[i] = +this.staffSchoolInfoModel.staffSchoolInfoList[i].schoolAttachedId;
       let endDate = this.staffSchoolInfoModel.staffSchoolInfoList[i].endDate
-      if (endDate != null && moment(endDate) < moment()) {
+      if (endDate != null && moment(endDate).format('YYYY-MM-DD') < moment().format('YYYY-MM-DD')) {
         Object.assign(this.staffSchoolInfoModel.staffSchoolInfoList[i], { hide: true })
         this.selectedSchoolId.splice(i, 1);
       } else {
@@ -267,7 +316,7 @@ export class StaffSchoolinfoComponent implements OnInit {
   getAllMembership() {
     this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -292,6 +341,20 @@ export class StaffSchoolinfoComponent implements OnInit {
   }
 
   updateSchoolInfo() {
+    this.staffSchoolInfoModel.staffSchoolInfoList.map((item)=>{
+      item.updatedBy = this.defaultValuesService.getUserGuidId();
+    })
+    this.staffSchoolInfoModel.fieldsCategoryList =  this.staffDetailsForViewAndEdit.fieldsCategoryList;
+
+    if (this.staffSchoolInfoModel.fieldsCategoryList !== null && this.categoryId) {
+      this.staffSchoolInfoModel.selectedCategoryId = this.staffSchoolInfoModel.fieldsCategoryList[this.categoryId]?.categoryId;
+      
+      for (let staffCustomField of this.staffSchoolInfoModel?.fieldsCategoryList[this.categoryId]?.customFields) {
+        if (staffCustomField.type === "Multiple SelectBox" && this.staffService.getStaffMultiselectValue() !== undefined) {
+          staffCustomField.customFieldsValue[0].customFieldValue = this.staffService.getStaffMultiselectValue().toString().replaceAll(",", "|");
+        }
+      }
+    }
     this.staffSchoolInfoModel.staffId = this.staffService.getStaffId();
     this.staffSchoolInfoModel.joiningDate = this.commonFunction.formatDateSaveWithoutTime(this.staffSchoolInfoModel.joiningDate)
     if (this.otherGradeLevelTaught != undefined) {
@@ -302,14 +365,14 @@ export class StaffSchoolinfoComponent implements OnInit {
     }
     this.staffSchoolInfoModel?.staffSchoolInfoList?.map((item) => {
       item.tenantId= this.defaultValuesService.getTenantID();
-      item.schoolId= this.defaultValuesService.getSchoolID();
+      item.schoolId= this.defaultSchoolId!==0?this.defaultSchoolId:this.defaultValuesService.getSchoolID();
       item.staffId = this.staffService.getStaffId();
       item.startDate = this.commonFunction.formatDateSaveWithoutTime(item.startDate);
       item.endDate = this.commonFunction.formatDateSaveWithoutTime(item.endDate)
     });
     this.staffService.updateStaffSchoolInfo(this.staffSchoolInfoModel).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Staff School Info Update failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff School Info Update failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -324,6 +387,8 @@ export class StaffSchoolinfoComponent implements OnInit {
             duration: 10000
           });
           this.staffSchoolInfoModel = res;
+          this.defaultValuesService.setSchoolID(this.defaultSchoolId!==0?this.defaultSchoolId.toString():this.defaultValuesService.getSchoolID().toString(),true);
+
           this.findProfileForCurrentSchool(res.staffSchoolInfoList);
           this.cloneStaffModel = JSON.stringify(this.staffSchoolInfoModel);
           this.staffCloneModel= JSON.parse(this.cloneStaffModel);
@@ -338,6 +403,8 @@ export class StaffSchoolinfoComponent implements OnInit {
   }
 
   editSchoolInfo() {
+    this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, 1).then((res: any)=>{
+      this.isReadOnly = res.isReadOnly;
     this.divCount.length= this.staffCloneModel?.staffSchoolInfoList?.length;
     if (this.staffCloneModel.staffSchoolInfoList != null) {
       for (let i = 0; i < this.staffCloneModel.staffSchoolInfoList?.length; i++) {
@@ -352,6 +419,7 @@ export class StaffSchoolinfoComponent implements OnInit {
     this.getAllSubjectList();
     this.staffCreateMode = this.staffCreate.EDIT;
     this.staffService.changePageMode(this.staffCreateMode);
+  })
   }
   cancelEdit() {
     if (this.staffSchoolInfoModel.staffSchoolInfoList != null) {
@@ -373,6 +441,12 @@ export class StaffSchoolinfoComponent implements OnInit {
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
+  }
+
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.next();
+    this.defaultValuesService.setSchoolID(null);
   }
 }
 

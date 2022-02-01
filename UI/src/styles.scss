@@ -189,9 +189,46 @@
   }
 }
 
-.mat-slide-toggle-thumb {
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
-  border: 1px solid rgba(0,0,0,0.2);
+// .mat-slide-toggle-thumb {
+//   box-shadow: 0 0 2px rgba(0,0,0,0.3);
+//   border: 1px solid rgba(0,0,0,0.2);
+// }
+
+.mat-slide-toggle {
+  .mat-slide-toggle-bar {
+    box-shadow: inset 1px 2px 3px rgb(0 0 0 / 20%);
+    background: #d9dde3;
+    width: 30px;
+    height: 20px;
+    border-radius: 20px;
+
+    .mat-slide-toggle-thumb-container {
+      width: 14px;
+      height: 14px;
+      top: 2px;
+      transform: translate3d(2px, 0, 0);
+
+      .mat-slide-toggle-thumb {
+        height: 16px;
+        width: 16px;
+        @apply bg-white;
+        box-shadow: 0 1px 4px rgb(0 0 0 / 40%);
+      }
+    }
+  }
+  &.mat-primary.mat-checked {
+    .mat-slide-toggle-bar {
+      @apply bg-green;
+
+      .mat-slide-toggle-thumb-container {
+        transform: translate3d(12px, 0, 0);
+
+        .mat-slide-toggle-thumb {
+          @apply bg-white;
+        }
+      }
+    }
+  }
 }
 
 .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-prefix .mat-icon-button,
@@ -204,6 +241,11 @@
   .mat-expansion-indicator::after {
       border-color: rgba(0, 0, 0, 0.5);
   }
+}
+
+/* Tooltip Custom Styles */
+.mat-tooltip {
+  background: rgba(0, 0, 0, 0.9);
 }
 
 // .mat-form-field-appearance-fill .mat-form-field-flex {
@@ -1064,6 +1106,11 @@ table {
     text-align: center;
     font-style: italic;
   }
+
+  .mat-cell,
+  .mat-header-cell {
+    white-space: normal;
+  }
 }
 .mat-progress-spinner {
   &.spinner-red circle {
@@ -1086,5 +1133,45 @@ table {
 .attendance-code-tab-group {
   .cdk-focused{
     background-color: transparent !important;
+  }
+}
+
+.select-dropdown,
+.select-dropdown * {
+  position: relative;
+}
+.select-dropdown {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid#ececec;
+  border-radius: 4px;
+  select {
+    font-size: 1rem;
+    font-weight: normal;
+    width: 100%;
+    padding: 6px 24px 6px 10px;
+    border: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &:active,
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 0;
+    height: 0;
+    margin-top: -2px;
+    border-top: 5px solid #aaa;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    pointer-events: none;
   }
 }

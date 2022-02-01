@@ -6,8 +6,7 @@ import { DefaultValuesService } from '../common/default-values.service';
 import { AllCourseSectionView } from '../models/course-manager.model';
 import { ScheduledCourseSectionViewModel } from '../models/dashboard.model';
 import { AddAssignmentModel, AddAssignmentTypeModel, GetAllAssignmentsModel } from '../models/staff-portal-assignment.model';
-import { GetAllStaffModel } from '../models/staff.model';
-
+import { GetAllStaffModel ,GetStaffModel} from '../models/staff.model';
 
 @Injectable({
     providedIn: 'root'
@@ -48,6 +47,13 @@ export class StaffPortalService {
     missingAttendanceListForCourseSection(obj: GetAllStaffModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
         const apiurl = this.apiUrl + obj._tenantName + '/StaffPortal/missingAttendanceListForCourseSection';
+        return this.http.post<ScheduledCourseSectionViewModel>(apiurl, obj,this.httpOptions);
+    }
+
+    getAllMissingAttendanceListForStaff(obj: GetStaffModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        const apiurl = this.apiUrl + obj._tenantName + '/StaffPortal/getAllMissingAttendanceListForStaff';
         return this.http.post<ScheduledCourseSectionViewModel>(apiurl, obj,this.httpOptions);
     }
 }

@@ -1,0 +1,42 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
+    <h2 class="headline m-0" fxFlex="auto">{{historyTitle|translate}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content [formGroup]="form" fxLayout="column">
+
+    <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+        <mat-label>{{'markingPeriodName' | translate}}</mat-label>
+        <input type="text" formControlName="title" name="title"  matInput required>
+        <mat-error *ngIf="form.get('title').hasError('required')">{{'markingPeriodNameIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'gradePostDate' | translate}}</mat-label>
+        <input matInput [matDatepicker]="dp" formControlName="gradePostDate" name="gradePostDate" required>
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp
+                        startView="multi-year"
+                        (yearSelected)="chosenYearHandler($event)"
+                        (monthSelected)="chosenMonthHandler($event, dp)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+        <mat-error *ngIf="form.get('gradePostDate').hasError('required')">{{'gradePostDateIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'schoolYear' | translate}}</mat-label>
+        <input formControlName="academicYear" name="academicYear" type="text" mask="0000" matInput required>
+        <mat-error *ngIf="form.get('academicYear').hasError('required')">{{'schoolYearIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-4">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" mat-raised-button (click)="submit()" type="submit">{{editMode? ('update' | translate):('submit' | translate)}}</button>
+</mat-dialog-actions>

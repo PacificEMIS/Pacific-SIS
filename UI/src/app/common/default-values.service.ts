@@ -4,21 +4,30 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from '../services/login.service';
 import { Router } from '@angular/router';
 import { CryptoService } from '../services/Crypto.service';
-
+import { BehaviorSubject, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import * as moment from "moment";
 @Injectable({
   providedIn: 'root',
 })
 export class DefaultValuesService {
   commonModel: CommonField = new CommonField();
+  public newSubject = new Subject<string>();
+  private photoChange = new Subject<string>();
+  photoChanged = this.photoChange.asObservable();
+
   TenantId: string = '';
-  schoolID: number ;
+  schoolID: number;
   academicYear: number;
   markingPeriodStartDate: string;
   permissionListKeyName: string;
+  public sendAllSchoolFlagSubject = new Subject<boolean>();
+  public sendIncludeFlagSubject = new Subject<boolean>();
+  public setReportCompoentTitle = new Subject<String>()
   constructor(
     public translateService: TranslateService,
-    private cryptoService: CryptoService
-    ) {
+    private cryptoService: CryptoService,
+  ) {
   }
 
   setDefaultTenant() {
@@ -26,18 +35,16 @@ export class DefaultValuesService {
 
     let tenant = '';
     if (url.includes('localhost')) {
-      sessionStorage.setItem('tenant', 'opensisv2');
-      tenant = 'opensisv2';
+      sessionStorage.setItem('tenant', JSON.stringify('opensisv2_ef6'));
+      tenant = 'opensisv2_ef6';
     } else {
       let startIndex = url.indexOf('//');
       let endIndex = url.indexOf('.');
       let tenantName = url.substr(startIndex + 2, endIndex - (startIndex + 2));
 
-        sessionStorage.setItem('tenant', tenantName);
-        tenant = tenantName;
-      
+      sessionStorage.setItem('tenant', JSON.stringify(tenantName));
+      tenant = tenantName;
     }
-
     this.commonModel._tenantName = tenant;
   }
 
@@ -49,57 +56,23 @@ export class DefaultValuesService {
     ) {
       this.setDefaultTenant();
     }
-
     return this.commonModel._tenantName;
   }
 
-  // setIP() {
-  //   this.http.get<{ ip: string }>('https://jsonip.com').subscribe((data) => {
-  //     this.commonModel.IpAddress = data.ip;
-  //     sessionStorage.setItem('IpAddress', this.commonModel.IpAddress);
-  //   });
-  // }
-
-  // getIP() {
-  //   if (
-  //     this.commonModel.IpAddress === '' ||
-  //     this.commonModel.IpAddress === null ||
-  //     typeof this.commonModel.IpAddress == 'undefined'
-  //   ) {
-  //     this.setIP();
-  //   }
-
-  //   return sessionStorage.getItem('IpAddress');
-  // }
-
-  // setHostName() {
-  //   this.commonModel.HostName = '';
-  //   sessionStorage.setItem('HostName', this.commonModel.HostName);
-  // }
-
-  // getHostName() {
-  //   if (
-  //     this.commonModel.HostName === '' ||
-  //     this.commonModel.HostName === null ||
-  //     typeof this.commonModel.HostName == 'undefined'
-  //   ) {
-  //     this.setHostName();
-  //   }
-
-  //   return this.commonModel.HostName;
-  // }
-
   getUserName() {
-    let user = sessionStorage.getItem('user');
+    let user = JSON.parse(sessionStorage.getItem('user'));
     this.commonModel._userName = user ? user : "";
     return this.commonModel._userName;
   }
-  getEmailId(){
-    let email =sessionStorage.getItem('email');
+  getEmailId() {
+    let email = JSON.parse(sessionStorage.getItem('email'));
     return email;
   }
+  getUserGuidId() {
+    return JSON.parse(sessionStorage.getItem('UserGuidId'));
+  }
   setToken(token: string) {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       sessionStorage.setItem('token', JSON.stringify(token));
       resolve('');
     })
@@ -112,60 +85,64 @@ export class DefaultValuesService {
 
   setTenantID() {
     if (this.TenantId?.trim().length > 0) {
-      this.TenantId = sessionStorage.getItem('tenantId');
+      this.TenantId = JSON.parse(sessionStorage.getItem('tenantId'));
     }
   }
   getTenantID() {
-    return sessionStorage.getItem('tenantId');
+    return JSON.parse(sessionStorage.getItem('tenantId'));
   }
 
   setSchoolID(schoolId?: string, setScholIdForStudent?: boolean) {
-    // this.schoolID =  null;
     if (schoolId && !setScholIdForStudent) {
-      sessionStorage.setItem("selectedSchoolId", schoolId);
-      this.schoolID = +sessionStorage.getItem("selectedSchoolId");
+      sessionStorage.setItem("selectedSchoolId", JSON.stringify(schoolId)); //JSON.Stringify
+      this.schoolID = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
       return;
     }
-    if(setScholIdForStudent) {
+    if (setScholIdForStudent) {
       this.schoolID = +schoolId;
       return;
     }
-
     if (this.schoolID === null || typeof (schoolId) === "undefined") {
-      this.schoolID = +sessionStorage.getItem("selectedSchoolId");
+      this.schoolID = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
     }
-
-   
   }
 
-  setAcademicYear(academicYear?: string) {
+  setFullAcademicYear(fulltAcademicYear: string) {
+    sessionStorage.setItem("fullAcademicYear", JSON.stringify(fulltAcademicYear));
+  }
 
-    if (academicYear) {
-      sessionStorage.setItem("academicyear", academicYear);
-      this.academicYear = +sessionStorage.getItem("academicyear");
-      return;
-    }
+  getFullAcademicYear() {
+    return JSON.parse(sessionStorage.getItem("fullAcademicYear"));
+  }
 
-    if (this.academicYear === null || typeof (academicYear) === "undefined") {
-      this.academicYear = +sessionStorage.getItem("academicyear");
+  setCourseSectionName(selectedCourseSectionName: string) {
+    sessionStorage.setItem("selectedCourseSectionName", JSON.stringify(selectedCourseSectionName));
+  }
+
+  getCourseSectionName() {
+    return JSON.parse(sessionStorage.getItem("selectedCourseSectionName"));
+  }
+
+  setAcademicYear(academicYear?, setScholIdForStudent?: boolean) {
+    if(setScholIdForStudent) {
+      this.academicYear =  academicYear;
+    } else {
+      sessionStorage.setItem("academicyear", JSON.stringify(academicYear))
     }
   }
 
   getAcademicYear() {
-    this.setAcademicYear();
-    return this.academicYear;
+    if(this.academicYear) {
+      return this.academicYear;
+    } else {
+      return JSON.parse(sessionStorage.getItem("academicyear"));
+    }
   }
 
   getSchoolID() {
-    // this.setSchoolID();
-    if(!this.schoolID) {
+    if (!this.schoolID) {
       this.setSchoolID();
     }
-    // if(this.schoolID === null || typeof (schoolId) === "undefined") {
-    //   return this.schoolID;
-    // } else {
-
-    // }
     return this.schoolID;
   }
 
@@ -188,15 +165,15 @@ export class DefaultValuesService {
   }
 
   getTenent() {
-    return sessionStorage.getItem('tenant');
+    return JSON.parse(sessionStorage.getItem('tenant'));
   }
 
   getuserMembershipID() {
-    return sessionStorage.getItem('userMembershipID');
+    return JSON.parse(sessionStorage.getItem('userMembershipID'));
   }
 
   getuserMembershipName() {
-    return sessionStorage.getItem('membershipName');
+    return JSON.parse(sessionStorage.getItem('membershipName'));
   }
 
 
@@ -207,24 +184,24 @@ export class DefaultValuesService {
   setUserMembershipType(membershipType?: string) {
 
     if (membershipType) {
-      sessionStorage.setItem("membershipType",JSON.stringify(membershipType));
+      sessionStorage.setItem("membershipType", JSON.stringify(membershipType));
     }
   }
 
   setAll(token: string) {
     this.setDefaultTenant();
-    
-   
+
+
     this.setToken(token);
     this.setTenantID();
-   
-   
+
+
   }
 
   translateKey(key) {
     let trnaslateKey;
-   this.translateService.get(key).subscribe((res: string) => {
-       trnaslateKey = res;
+    this.translateService.get(key).subscribe((res: string) => {
+      trnaslateKey = res;
     });
     return trnaslateKey;
   }
@@ -234,48 +211,204 @@ export class DefaultValuesService {
   }
 
   getPageSize(): number {
-   return JSON.parse(sessionStorage.getItem('pageSize'));
+    return JSON.parse(sessionStorage.getItem('pageSize'));
   }
 
   setMarkingPeriodStartDate(mpStartDate?: string) {
-      sessionStorage.setItem("markingPeriodStartDate", mpStartDate);
-      this.markingPeriodStartDate = mpStartDate;
+    sessionStorage.setItem("markingPeriodStartDate", JSON.stringify(mpStartDate));
   }
 
-  getMarkingPeriodStartDate(){
-    return this.markingPeriodStartDate;
+  getMarkingPeriodStartDate() {
+    return JSON.parse(sessionStorage.getItem("markingPeriodStartDate"));
   }
 
-  createPermissionKeyName(){
-    let membershipId=this.getuserMembershipID();
-    this.permissionListKeyName=`permissions${membershipId}`;
+  setMarkingPeriodEndDate(mpEndDate?: string) {
+    sessionStorage.setItem("markingPeriodEndDate", JSON.stringify(mpEndDate));
+  }
+
+  getMarkingPeriodEndDate() {
+    return JSON.parse(sessionStorage.getItem("markingPeriodEndDate"));
+  }
+
+  createPermissionKeyName() {
+    let membershipId = this.getuserMembershipID();
+    this.permissionListKeyName = `permissions${membershipId}`;
     return membershipId;
   }
 
-  setPermissionList(permissionList){
+  setPermissionList(permissionList) {
     let membershipId = this.createPermissionKeyName();
-    localStorage.setItem(`permissions${membershipId}`,this.cryptoService.dataEncrypt(JSON.stringify(permissionList)))
+    localStorage.setItem(`permissions${membershipId}`, this.cryptoService.dataEncrypt(JSON.stringify(permissionList)))
   }
 
-  getPermissionList(){
+  getPermissionList() {
     this.createPermissionKeyName();
-    if(localStorage.getItem(this.permissionListKeyName)){
+    if (localStorage.getItem(this.permissionListKeyName)) {
       let permissionList = JSON.parse(this.cryptoService.dataDecrypt(localStorage.getItem(this.permissionListKeyName)));
       return permissionList;
     }
     return null;
   }
 
-  setMarkingPeriodId(id: string){
-    sessionStorage.setItem("markingPeriodId",id);
+  setMarkingPeriodId(id: string) {
+    sessionStorage.setItem("markingPeriodId", JSON.stringify(id));
   }
 
-  getMarkingPeriodId(){
-    return sessionStorage.getItem("markingPeriodId");
+  setMarkingPeriodTitle(title: string) {
+    sessionStorage.setItem("markingPeriodTitle", JSON.stringify(title));
   }
 
-  
+  getMarkingPeriodTitle() {
+    return JSON.parse(sessionStorage.getItem("markingPeriodTitle"));
+  }
+
+  getMarkingPeriodId() {
+    return JSON.parse(sessionStorage.getItem("markingPeriodId"));
+  }
+
+  //new changes for get------------------------------------------------
+  getUserId() {
+    return JSON.parse(sessionStorage.getItem('userId'));
+  }
+  getHttpError() {
+    return JSON.parse(sessionStorage.getItem("httpError"));
+  }
+  getTenantName() {
+    return JSON.parse(sessionStorage.getItem('tenant'));
+  }
+  getuserPhoto() {
+    return JSON.parse(sessionStorage.getItem('userPhoto'));
+  }
+  getLanguage() {
+    return JSON.parse(sessionStorage.getItem("language"));
+  }
+  getBuildVersion() {
+    return JSON.parse(sessionStorage.getItem('buildVersion'));
+  }
+  getCourseSectionForAttendance() {
+    return JSON.parse(sessionStorage.getItem("courseSectionForAttendance"));
+  }
+  getFullYearStartDate() {
+    return JSON.parse(sessionStorage.getItem("fullYearStartDate"));
+  }
+  getFullYearEndDate() {
+    return JSON.parse(sessionStorage.getItem("fullYearEndDate"));
+  }
+  getSchoolOpened() {
+    return JSON.parse(sessionStorage.getItem('schoolOpened'));
+  }
+  getSchoolClosed() {
+    return JSON.parse(sessionStorage.getItem('schoolClosed'));
+  }
+  getFirstGivenName() {
+    return JSON.parse(sessionStorage.getItem('FirstGivenName'));
+  }
+  //new changes for set---------------------------------
+  setFirstGivenName(FirstGivenName: string) {
+    sessionStorage.setItem("FirstGivenName", JSON.stringify(FirstGivenName));
+  }
+  setErrorMessage(errorMessage: string) {
+    sessionStorage.setItem("httpError", JSON.stringify(errorMessage));
+  }
+  setTenant(tenant: string) {
+    sessionStorage.setItem("tenant", JSON.stringify(tenant));
+  }
+  setSchoolOpened(schoolOpened: string) {
+    sessionStorage.setItem("schoolOpened", JSON.stringify(schoolOpened));
+  }
+  setSchoolClosed(schoolClosed: string) {
+    sessionStorage.setItem("schoolClosed", JSON.stringify(schoolClosed));
+  }
+  setFullYearStartDate(fullYearStartDate: string) {
+    sessionStorage.setItem("fullYearStartDate", JSON.stringify(fullYearStartDate));
+  }
+  setFullYearEndDate(fullYearEndDate: string) {
+    sessionStorage.setItem("fullYearEndDate", JSON.stringify(fullYearEndDate));
+  }
+  setTenantIdVal(tenant: string) { //find out the uses
+    sessionStorage.setItem("tenantId", JSON.stringify(tenant));
+  }
+  setEmailId(email: string) {
+    sessionStorage.setItem("email", JSON.stringify(email));
+  }
+  setUserGuidId(email: string) {
+    sessionStorage.setItem("UserGuidId", JSON.stringify(email));
+  }
+  setUserName(user: string) {
+    sessionStorage.setItem("user", JSON.stringify(user));
+  }
+  setUserId(userId: string) {
+    sessionStorage.setItem("userId", JSON.stringify(userId));
+  }
+  setUserPhoto(userPhoto: string) {
+    sessionStorage.setItem("userPhoto", JSON.stringify(userPhoto));
+  }
+  setUserMembershipID(userMembershipID: string) {
+    sessionStorage.setItem("userMembershipID", JSON.stringify(userMembershipID));
+  }
+  setuserMembershipName(membershipName: string) {
+    sessionStorage.setItem("membershipName", JSON.stringify(membershipName));
+  }
+  setLanguage(language: string) {
+    sessionStorage.setItem("language", JSON.stringify(language));
+  }
+
+  //new changes foe localStorage get
+  getPageId() {
+    return JSON.parse(localStorage.getItem("pageId"));
+  }
+  getSelectedCourseSection() {
+    return JSON.parse(localStorage.getItem('selectedCourseSection'));
+  }
+  getCourseSectionId() {
+    return JSON.parse(localStorage.getItem('courseSectionId'));
+  }
+  getCollapseValue() {
+    return JSON.parse(localStorage.getItem("collapseValue"));
+  }
+  getSchoolCount() {
+    return JSON.parse(localStorage.getItem("schoolCount"));
+  }
+  //new changes foe localStorage set
+
+  setPageId(pageId: any) {
+    localStorage.setItem("pageId", JSON.stringify(pageId));
+  }
+  setCollapseValue(collapseValue: string) {
+    localStorage.setItem("collapseValue", JSON.stringify(collapseValue));
+  }
+  setCourseSectionId(courseSectionId: string) {
+    localStorage.setItem("courseSectionId", JSON.parse(courseSectionId));
+  }
+  setSelectedCourseSection(selectedCourseSection: any) {
+    localStorage.setItem("selectedCourseSection", JSON.stringify(selectedCourseSection));
+  }
+  setSchoolCount(schoolCount: any) {
+    localStorage.setItem("schoolCount", JSON.stringify(schoolCount));
+  }
+  setPhotoAndFooter(data) {
+     sessionStorage.setItem('photoAndFooter', JSON.stringify(data));
+  }
+  getPhotoAndFooter() {
+    return JSON.parse(sessionStorage.getItem('photoAndFooter'));
+  }
+
+  //useing of RxJs
+  sendName(data) {
+    this.newSubject.next(data);
+  }
+  sendAllSchoolFlag(data) {
+    this.sendAllSchoolFlagSubject.next(data);
+  }
+  sendIncludeInactiveFlag(data) {
+    this.sendIncludeFlagSubject.next(data);
+  }
+  sendPhoto(data: string) {
+    this.photoChange.next(data);
+  }
 
 
+  checkAcademicYear() {
+    return moment(new Date()).isBetween(this.getFullYearStartDate(), this.getFullYearEndDate());
+  }
 }
- 

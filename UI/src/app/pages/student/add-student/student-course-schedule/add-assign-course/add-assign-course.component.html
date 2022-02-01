@@ -14,7 +14,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "course" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseId" (selectionChange)="onSearchCriteriaChange()">
-                    <mat-option value="">All Course</mat-option>
+                    <mat-option>{{'allCourse' | translate}}</mat-option>
                     <mat-option *ngFor="let course of getAllCourseListModel.courseViewModelList"
                         [value]="course.course.courseId">{{course.course.courseTitle}}</mat-option>
                 </mat-select>
@@ -24,7 +24,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "subject" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseSubject" (selectionChange)="onSearchCriteriaChange()">
-                    <mat-option value="">All Subject</mat-option>
+                    <mat-option>{{'allSubject'| translate}}</mat-option>
                     <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">
                         {{subject.subjectName}}</mat-option>
                 </mat-select>
@@ -34,7 +34,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "program" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseProgram" (selectionChange)="onSearchCriteriaChange()">
-                    <mat-option value="">All Program</mat-option>
+                    <mat-option>All Program</mat-option>
                     <mat-option *ngFor="let program of getAllProgramModel.programList" [value]="program.programName">
                         {{program.programName}}</mat-option>
                 </mat-select>
@@ -44,7 +44,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "markingPeriod" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.markingPeriodId" (selectionChange)="onSearchCriteriaChange()">
-                    <mat-option value="">All Marking Period</mat-option>
+                    <mat-option>All Marking Period</mat-option>
                     <mat-option *ngFor="let markingPeriod of getMarkingPeriodTitleListModel.getMarkingPeriodView"
                         [value]='markingPeriod.value'>{{markingPeriod.text}}</mat-option>
                 </mat-select>

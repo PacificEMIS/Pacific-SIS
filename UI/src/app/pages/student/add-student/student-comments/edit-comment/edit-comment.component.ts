@@ -119,7 +119,7 @@ export class EditCommentComponent implements OnInit {
               }
             }
             else{
-              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -147,7 +147,7 @@ export class EditCommentComponent implements OnInit {
               }
             }
             else{
-              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

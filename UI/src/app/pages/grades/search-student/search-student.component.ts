@@ -41,6 +41,7 @@ import { DefaultValuesService } from '../../../../app/common/default-values.serv
 import { LoginService } from '../../../../app/services/login.service';
 import { SharedFunction } from '../../shared/shared-function';
 import { GetAllSectionModel } from '../../../../app/models/section.model';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-search-student',
@@ -227,15 +228,19 @@ submit(){
 }
 
   search() {
-    this.params = [];
+    this.getAllStudent.filterParams = [];
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
         if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== '' && this.studentMasterSearchModel[key] !== undefined) {
+          this.getAllStudent.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.getAllStudent.filterParams.length - 1;
           if (key === 'dob') {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]) })
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
           }
           else {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.studentMasterSearchModel[key] })
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
           }
         }
     }
@@ -246,11 +251,11 @@ submit(){
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Student';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.params);
+      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.getAllStudent.filterParams);
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter updated failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -273,11 +278,10 @@ submit(){
     }
     this.getAllStudent.schoolId = this.searchSchoolId;
     this.getAllStudent.includeInactive = this.inactiveStudents;
-    this.getAllStudent.filterParams = this.params;
     this.getAllStudent.sortingModel = null;
     this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
     this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-    this.commonService.setSearchResult(this.params);
+    this.commonService.setSearchResult(this.getAllStudent.filterParams);
     this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);

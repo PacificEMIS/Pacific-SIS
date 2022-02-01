@@ -28,6 +28,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import icClose from "@iconify/icons-ic/twotone-close";
+import { EditSchoolSpecificStandardComponent } from "src/app/pages/grades/school-specific-standards/edit-school-specific-standard/edit-school-specific-standard.component";
 import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from "../../../../common/default-values.service";
 import { AddAssignmentTypeModel } from "../../../../models/staff-portal-assignment.model";
@@ -41,9 +42,10 @@ import { StaffPortalAssignmentService } from "../../../../services/staff-portal-
 })
 export class AddAssignmentComponent implements OnInit {
   icClose = icClose;
-
+  markingPeriodId:number;
   form: FormGroup;
   courseSectionId: number;
+  isWeightedSection: boolean;
   editMode: boolean = false;
   editDetails;
   constructor(
@@ -56,8 +58,18 @@ export class AddAssignmentComponent implements OnInit {
     private fb: FormBuilder,
     private commonService: CommonService,
   ) {
+    this.isWeightedSection= this.data.isWeightedSection;
     this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
       if (res) {
+        if(res.yrMarkingPeriodId){
+          this.markingPeriodId= +res.yrMarkingPeriodId;
+        }
+        else if(res.smstrMarkingPeriodId){
+          this.markingPeriodId= +res.smstrMarkingPeriodId;
+        }
+        else{
+          this.markingPeriodId= +res.qtrMarkingPeriodId;
+        }
         this.courseSectionId = +res.courseSectionId;
       }
     });
@@ -98,11 +110,9 @@ export class AddAssignmentComponent implements OnInit {
     assignmentType.assignmentType.weightage = this.form.value.weightage;
     assignmentType.assignmentType.assignmentTypeId =
       this.editDetails.assignmentTypeId;
-    assignmentType.assignmentType.academicYear =
-      this.defaultValueService.getAcademicYear();
+    // assignmentType.assignmentType.academicYear = this.defaultValueService.getAcademicYear();
     assignmentType.assignmentType.courseSectionId = this.courseSectionId;
-    assignmentType.assignmentType.markingPeriodId =
-      +this.defaultValueService.getMarkingPeriodId();
+    assignmentType.assignmentType.markingPeriodId = this.markingPeriodId;
 
     this.assignmentService
       .updateAssignmentType(assignmentType)
@@ -132,11 +142,9 @@ export class AddAssignmentComponent implements OnInit {
     assignmentType.assignmentType.title = this.form.value.title;
     assignmentType.assignmentType.weightage = this.form.value.weightage;
 
-    assignmentType.assignmentType.academicYear =
-      this.defaultValueService.getAcademicYear();
+    // assignmentType.assignmentType.academicYear = this.defaultValueService.getAcademicYear();
     assignmentType.assignmentType.courseSectionId = this.courseSectionId;
-    assignmentType.assignmentType.markingPeriodId =
-      +this.defaultValueService.getMarkingPeriodId();
+    assignmentType.assignmentType.markingPeriodId = this.markingPeriodId;
     this.assignmentService
       .addAssignmentType(assignmentType)
       .subscribe((res) => {

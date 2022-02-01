@@ -13,20 +13,20 @@
             </div>
             <mat-divider class="text-border"></mat-divider>
             <div class="text-center py-4">
-                <h4 class="text-primary font-medium">Taking attendance for : {{staffDetails?.attendanceDate | date : 'longDate'}}</h4>
+                <h4 class="text-primary font-medium">{{'takingAttendanceFor' | translate}} : {{staffDetails?.attendanceDate | date : 'longDate'}}</h4>
                 <p class="text-warn" *ngIf="!isAttendanceDateToday"><i class="icon icon-info2 mr-2 align-baseline"></i>Selected date is not today</p>
             </div>
             <mat-divider class="text-border"></mat-divider>
             <div class="table-sticky mat-elevation-z8 shadow-none">
                 <table mat-table [dataSource]="scheduleStudentListViewModel.scheduleStudentForView">
                     <ng-container matColumnDef="students" sticky>
-                        <th mat-header-cell *matHeaderCellDef>{{ "students" | translate }}</th>
+                        <th mat-header-cell *matHeaderCellDef width="200">{{ "students" | translate }}</th>
                         <td mat-cell *matCellDef="let element" class="bg-white">
-                            <div class="flex mb-2">
+                            <div class="flex">
                                 <div class="flex-shrink-0 h-12 w-12">
-                                    <img src="{{element.studentPhoto?'data:image/png;base64,'+ element.studentPhoto:'assets/img/default-person.jpg'}}" alt="" class="h-12 w-12 rounded-full" />
+                                    <img src="{{element.studentPhoto?'data:image/png;base64,'+ element.studentPhoto:'assets/img/default-person.jpg'}}" alt="student photo" class="h-12 w-12 rounded-full" />
                                 </div>
-                                <div class="ml-3 flex flex-col justify-center">
+                                <div class="ml-3 flex flex-col justify-center" [ngClass]="element.isDropped ? 'text-gray': ''">
                                     <h6 class="text-sm font-semibold">{{ element.firstGivenName+' '+element.lastFamilyName }}</h6>
                                     <div>
                                         <span class="">#{{element.studentInternalId}}</span>
@@ -47,8 +47,8 @@
                         <td mat-cell *matCellDef="let element;let i = index">
                             <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList">
                                 <label for="{{attendance.title+''+i}}">
-                                    <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}">
-                                    <div class="inline-block checkmark-container" [ngClass]="attendance.stateCode=='Present'?'present':attendance.stateCode=='Absent'?'absent':attendance.stateCode=='Half Day'?'tardy':'present'">
+                                    <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}" [disabled]="element.isDropped" *ngIf="element.isDropped === null">
+                                    <div class="inline-block checkmark-container" [ngClass]="attendance?.stateCode=='Present'?'present':attendance?.stateCode=='Absent'?'absent':attendance?.stateCode=='Half Day'?'tardy':'present'">
                                         <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
                                     </div>
                                 </label>
@@ -61,14 +61,14 @@
                             <button
                                 matTooltip="{{addUpdateStudentAttendanceModel.studentAttendance[i]?.comments}}"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
-                                [matTooltipPosition]="'left'" (click)="addComments(i)">
+                                [matTooltipPosition]="'left'" (click)="addComments(i)" [disabled]="element.isDropped">
                                 <i class="icon icon-bubble text-lg" [ngClass]="{'text-green' : addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0]?.comment}"></i>
                             </button>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="noData">
                         <td mat-footer-cell *matFooterCellDef colspan="3">
-                          No Data
+                          {{'noData' | translate}}
                         </td>
                       </ng-container>
 

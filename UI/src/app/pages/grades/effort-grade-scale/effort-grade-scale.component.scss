@@ -30,3 +30,8 @@
   .mat-table td.mat-cell, .mat-table th.mat-header-cell {
     border-bottom-color: transparent !important; 
 }
+
+.mat-column-gradeScaleValue {
+  flex: 0 0 8%;
+}
+

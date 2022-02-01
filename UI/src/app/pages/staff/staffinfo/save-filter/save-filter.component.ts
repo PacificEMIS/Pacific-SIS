@@ -72,7 +72,7 @@ export class SaveFilterComponent implements OnInit {
       this.searchFilterAddViewModel.searchFilter.filterName = this.form.value.filterName;
       this.commonService.addSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter added failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter added failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

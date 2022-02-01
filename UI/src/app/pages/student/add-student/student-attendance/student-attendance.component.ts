@@ -50,6 +50,7 @@ import { PageRolesPermission } from "../../../../common/page-roles-permissions.s
 import { Permissions } from "../../../../models/roll-based-access.model";
 import { CommonService } from "src/app/services/common.service";
 
+
 @Component({
   selector: "vex-student-attendance",
   templateUrl: "./student-attendance.component.html",
@@ -90,7 +91,8 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
   ) {
-    translateService.use("en");
+    // translateService.use("en");
+    this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
     this.renderAttendanceWeekCalendar();
   }
 
@@ -164,7 +166,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
             }
           }
         } else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+          this.snackbar.open(this.defaultService.getHttpError(), "", {
             duration: 10000,
           });
         }
@@ -217,6 +219,8 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           this.createDatasetForVariableSchedule(item);
         } else if (item.courseCalendarScheduleList?.length > 0) {
           this.createDatasetForCalendarSchedule(item);
+        } else if (item.courseBlockScheduleList?.length > 0) {
+          this.createDatasetForBlockSchedule(item);
         }
       }
     );
@@ -225,6 +229,39 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     }else{
       this.calculateAverageAttendance();
     }
+  }
+
+  // For Block Schedule
+  createDatasetForBlockSchedule(item) {
+    if (this.view === "weekView") {
+      item.bellScheduleList.map((x) => {
+        this.weekEvents.push({
+          courseId: item.courseId,
+          courseSectionId: item.courseSectionId,
+          takeAttendance: item.attendanceTaken,
+          blockId: x.blockId,
+          periodId: item.courseBlockScheduleList[0].periodId,
+          periodTitle: item.courseBlockScheduleList[0].block.blockTitle,
+          day: this.getWeekDay(x.bellScheduleDate),
+          takenAttendanceList: item.studentAttendanceList,
+          attendanceList: item.attendanceCodeCategories,
+        });
+      })
+    } else {
+      if (item.studentAttendanceList?.length > 0) {
+        let periodRunningInMinutes = this.calculateDiffBetweenTimes(
+          item.courseBlockScheduleList[0].blockPeriod.periodStartTime,
+          item.courseBlockScheduleList[0].blockPeriod.periodEndTime
+        );
+        item.studentAttendanceList = this.findAttendanceList(item, periodRunningInMinutes);
+        this.monthEvents.push(...item.studentAttendanceList);
+      }
+    }
+  }
+
+  getWeekDay(date){
+    let tempDate=new Date(date)
+    return tempDate.getDay();
   }
 
   createDatasetForFixedSchedule(item) {
@@ -385,7 +422,6 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
   }
 
   calculateAverageAttendance(){
-
     this.monthEvents?.map((date)=>{
         let index = this.events.findIndex((event)=>event.start.getTime()===new Date(date.attendanceDate).getTime());
         if(index!==-1){
@@ -393,8 +429,9 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
             title: 's',
             start: new Date(date.attendanceDate),
             meta: {
-              presentCountInMinutes: this.countIfPresent(date.attendanceStatus,date.periodRunningInMinutes,this.events[index].meta.presentCountInMinutes),
-              totalPeriodInMinutes:this.events[index].meta.totalPeriodInMinutes+date.periodRunningInMinutes
+              attendanceStatus:date.attendanceStatus,
+              // presentCountInMinutes: this.countIfPresent(date.attendanceStatus,date.periodRunningInMinutes,this.events[index].meta.presentCountInMinutes),
+              // totalPeriodInMinutes:this.events[index].meta.totalPeriodInMinutes+date.periodRunningInMinutes
             }
           }
         }else{
@@ -402,8 +439,9 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
             title: 's',
             start: new Date(date.attendanceDate),
             meta: {
-              presentCountInMinutes: this.countIfPresent(date.attendanceStatus,date.periodRunningInMinutes),
-              totalPeriodInMinutes:date.periodRunningInMinutes
+              attendanceStatus:date.attendanceStatus,
+              // presentCountInMinutes: this.countIfPresent(date.attendanceStatus,date.periodRunningInMinutes),
+              // totalPeriodInMinutes:date.periodRunningInMinutes
             }
           })
         }
@@ -413,36 +451,46 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
 
   comparePresentCountWithSchoolPreference(){
     this.events=this.events.map((item)=>{
-      let presentCount = item.meta.presentCountInMinutes; // in minutes
+      // let presentCount = item.meta.presentCountInMinutes; // in minutes
       let calculatedColour: string;
+      // if(this.fullDayMinutes===0 && this.halfDayMinutes===0){
+      //   if(presentCount>0){
+      //     calculatedColour="bg-green"
+      //   }else{
+      //     calculatedColour="bg-red"
+      //   }
+      // }else if(this.fullDayMinutes>0 && this.halfDayMinutes===0){
+      //   if(presentCount>=this.fullDayMinutes){
+      //     calculatedColour="bg-green"
+      //   }else{
+      //     calculatedColour="bg-red"
+      //   }
+      // }else if(this.fullDayMinutes===0 && this.halfDayMinutes>0){
+      //   if(presentCount>=this.halfDayMinutes){
+      //     calculatedColour="bg-green"
+      //   }else{
+      //     calculatedColour="bg-red"
+      //   }
+      // }else if(this.fullDayMinutes && this.halfDayMinutes){
+      //   if(presentCount>=this.fullDayMinutes){
+      //     calculatedColour = 'bg-green'
+      //   }else if(presentCount>=this.halfDayMinutes && presentCount<this.fullDayMinutes){
+      //     calculatedColour = 'bg-amber'
+      //   }else{
+      //     calculatedColour = 'bg-red'
+      //   }
+      // }
 
-      if(this.fullDayMinutes===0 && this.halfDayMinutes===0){
-        if(presentCount>0){
-          calculatedColour="bg-green"
-        }else{
-          calculatedColour="bg-red"
-        }
-      }else if(this.fullDayMinutes>0 && this.halfDayMinutes===0){
-        if(presentCount>=this.fullDayMinutes){
-          calculatedColour="bg-green"
-        }else{
-          calculatedColour="bg-red"
-        }
-      }else if(this.fullDayMinutes===0 && this.halfDayMinutes>0){
-        if(presentCount>=this.halfDayMinutes){
-          calculatedColour="bg-green"
-        }else{
-          calculatedColour="bg-red"
-        }
-      }else if(this.fullDayMinutes && this.halfDayMinutes){
-        if(presentCount>=this.fullDayMinutes){
-          calculatedColour = 'bg-green'
-        }else if(presentCount>=this.halfDayMinutes && presentCount<this.fullDayMinutes){
-          calculatedColour = 'bg-amber'
-        }else{
-          calculatedColour = 'bg-red'
-        }
+      if(item.meta.attendanceStatus === 'Present'){
+        calculatedColour = 'bg-green'
+      }else if(item.meta.attendanceStatus === 'Half Day'){
+        calculatedColour = 'bg-amber'
+      }else if(item.meta.attendanceStatus === 'Absent'){
+        calculatedColour = 'bg-red'
+      }else{
+        calculatedColour = 'bg-gray'
       }
+
       item.meta.bgColor = calculatedColour;
       return item;
     });
@@ -705,7 +753,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
             this.events=[];
           }
         } else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+          this.snackbar.open(this.defaultService.getHttpError(), "", {
             duration: 10000,
           });
         }

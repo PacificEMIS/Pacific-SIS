@@ -41,6 +41,7 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 import { Permissions } from '../../../models/roll-based-access.model';
 import { CommonService } from 'src/app/services/common.service';
 
+
 @Component({
   selector: 'vex-report-card-comments',
   templateUrl: './report-card-comments.component.html',
@@ -66,7 +67,7 @@ export class ReportCardCommentsComponent implements OnInit {
     private courseManagerService: CourseManagerService,
     private snackbar: MatSnackBar,
     private reportCardService: ReportCardService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private dialog: MatDialog,
     private loaderService:LoaderService,
     private pageRolePermissions: PageRolesPermission,
@@ -120,7 +121,7 @@ export class ReportCardCommentsComponent implements OnInit {
           this.getAllCourseListModel.courseViewModelList = res.courseViewModelList;
         }
       } else {
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -131,6 +132,7 @@ export class ReportCardCommentsComponent implements OnInit {
     this.getAllCommentsWithUniqueCategory.courseCommentCategories=[];
     this.selectedCoursesForCategory=[];
     const getAllCommentsWithCategory: GetAllCourseCommentCategoryModel = new GetAllCourseCommentCategoryModel();
+    getAllCommentsWithCategory.isListView=true;
     this.reportCardService.getAllCourseCommentCategory(getAllCommentsWithCategory).subscribe((res)=>{
       if(res){
        if(res._failure){
@@ -150,7 +152,7 @@ export class ReportCardCommentsComponent implements OnInit {
           this.editMode=false;
         }
       }else{
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -238,8 +240,8 @@ export class ReportCardCommentsComponent implements OnInit {
     courseCategory.courseId=courseDetails.courseId;
     courseCategory.courseName=courseDetails.courseTitle;
     courseCategory.comments=[];
-    courseCategory.createdBy=this.defaultValuesService.getEmailId();
-    courseCategory.updatedBy=this.defaultValuesService.getEmailId();
+    courseCategory.createdBy=this.defaultValuesService.getUserGuidId();
+    courseCategory.updatedBy=this.defaultValuesService.getUserGuidId();
     this.getAllCommentsWithUniqueCategory.courseCommentCategories.push(courseCategory);
     this.selectedCategoryIndex=this.getAllCommentsWithUniqueCategory.courseCommentCategories.length-1;
     this.selectedCourseId=this.getAllCommentsWithUniqueCategory.courseCommentCategories[this.selectedCategoryIndex].courseId;
@@ -299,7 +301,7 @@ export class ReportCardCommentsComponent implements OnInit {
           this.getAllCourseCommentCategories();
         }
       }else{
-      this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+      this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -323,8 +325,8 @@ export class ReportCardCommentsComponent implements OnInit {
           courseCategory.courseName=currentCategoryDetails.courseName;
           courseCategory.courseCommentId=item.courseCommentId;
           courseCategory.comments=item.comment;
-          courseCategory.createdBy=this.defaultValuesService.getEmailId();
-          courseCategory.updatedBy=this.defaultValuesService.getEmailId();
+          courseCategory.createdBy=this.defaultValuesService.getUserGuidId();
+          courseCategory.updatedBy=this.defaultValuesService.getUserGuidId();
           courseCategory.applicableAllCourses=false;
           addCommentWithCategoryModel.courseCommentCategory.push(courseCategory)
 
@@ -335,8 +337,8 @@ export class ReportCardCommentsComponent implements OnInit {
           courseCategory.courseName=item.courseName;
           courseCategory.courseCommentId=item.courseCommentId;
           courseCategory.comments=item.comment;
-          courseCategory.createdBy=this.defaultValuesService.getEmailId();
-          courseCategory.updatedBy=this.defaultValuesService.getEmailId();
+          courseCategory.createdBy=this.defaultValuesService.getUserGuidId();
+          courseCategory.updatedBy=this.defaultValuesService.getUserGuidId();
           courseCategory.applicableAllCourses=true;
           addCommentWithCategoryModel.courseCommentCategory.push(courseCategory)
       }
@@ -359,8 +361,8 @@ export class ReportCardCommentsComponent implements OnInit {
         courseCategory.courseName=currentCategoryDetails.courseName;
         courseCategory.courseCommentId=0;
         courseCategory.comments=this.newComment;
-        courseCategory.createdBy=this.defaultValuesService.getEmailId();
-        courseCategory.updatedBy=this.defaultValuesService.getEmailId();
+        courseCategory.createdBy=this.defaultValuesService.getUserGuidId();
+        courseCategory.updatedBy=this.defaultValuesService.getUserGuidId();
         courseCategory.applicableAllCourses=false;
         addCommentWithCategoryModel.courseCommentCategory.push(courseCategory)
     }else{
@@ -370,8 +372,8 @@ export class ReportCardCommentsComponent implements OnInit {
       courseCategory.courseName='allCourses';
       courseCategory.courseCommentId=0;
       courseCategory.comments=this.newComment;
-      courseCategory.createdBy=this.defaultValuesService.getEmailId();
-      courseCategory.updatedBy=this.defaultValuesService.getEmailId();
+      courseCategory.createdBy=this.defaultValuesService.getUserGuidId();
+      courseCategory.updatedBy=this.defaultValuesService.getUserGuidId();
       courseCategory.applicableAllCourses=true;
       addCommentWithCategoryModel.courseCommentCategory.push(courseCategory)
     }
@@ -392,7 +394,7 @@ export class ReportCardCommentsComponent implements OnInit {
           this.getAllCourseCommentCategories();
         }
       }else{
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -417,7 +419,7 @@ export class ReportCardCommentsComponent implements OnInit {
             this.getAllCourseCommentCategories();
           }
        }else{
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
        }

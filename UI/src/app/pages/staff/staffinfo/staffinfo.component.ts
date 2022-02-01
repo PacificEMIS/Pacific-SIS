@@ -45,7 +45,6 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 import { GetAllStaffModel, StaffListModel, StaffMasterModel, StaffSchoolInfoModel } from '../../../models/staff.model';
 import { ImageCropperService } from '../../../services/image-cropper.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { ExcelService } from '../../../services/excel.service';
 import { Subject } from 'rxjs';
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
@@ -64,6 +63,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-edit-info.component';
 import icRestore from '@iconify/icons-ic/twotone-restore';
+
 
 @Component({
   selector: 'vex-staffinfo',
@@ -146,25 +146,17 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
               private staffService: StaffService,
               private imageCropperService:ImageCropperService,
               public rollBasedAccessService: RollBasedAccessService,
-              private layoutService: LayoutService,
               private excelService:ExcelService,
               private pageRolePermission: PageRolesPermission,
               private dialog: MatDialog,
               private commonService:CommonService,
               private cryptoService: CryptoService,
-              private defaultValuesService: DefaultValuesService
+              public defaultValuesService: DefaultValuesService
               ) {
+                this.defaultValuesService.sendAllSchoolFlag(false);
+                this.defaultValuesService.sendIncludeInactiveFlag(false);
     this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-    //translateService.use('en');
-    if(localStorage.getItem("collapseValue") !== null){
-      if( localStorage.getItem("collapseValue") === "false"){
-        this.layoutService.expandSidenav();
-      }else{
-        this.layoutService.collapseSidenav();
-      } 
-    }else{
-      this.layoutService.expandSidenav();
-    }
+    
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -268,15 +260,32 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
     this.callStaffList();
   }
 
-  viewStaffDetails(id) {
+  viewStaffDetails(data) {
     this.imageCropperService.enableUpload({module:this.moduleIdentifier.STAFF,upload:true,mode:this.createMode.VIEW});
-    this.staffService.setStaffId(id);
-    let permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/staff');
+    this.staffService.setStaffId(data.staffId);
+    // this.defaultValuesService.setSchoolID(data.schoolId, true);
+    this.getPermissionForStaff();
+  }
+
+  getPermissionForStaff() {
+    // let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    // this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
+    //   if(res._failure){
+    //     this.commonService.checkTokenValidOrNot(res._message);
+    //   } else{
+        let permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/staff');
     if(permittedDetails.length){
-      this.staffService.setCategoryTitle(permittedDetails[0].title);
-      this.router.navigateByUrl(permittedDetails[0].path);
       this.staffService.setCategoryId(0);
-    }
+      this.staffService.setCategoryTitle(permittedDetails[0].title);      
+      this.router.navigateByUrl(permittedDetails[0].path, {state: { type: SchoolCreate.VIEW}});
+    } else {
+          this.defaultValuesService.setSchoolID(undefined);
+          this.snackbar.open('Saff didnot have permission to view details.', '', {
+            duration: 10000
+          });
+        }
+    //   }
+    // });
   }
   
 
@@ -288,8 +297,8 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
   }
 
   navigateToSetting(){
-    localStorage.setItem('pageId','Staff Bulk Data Import')
-    this.router.navigate(["school/settings/staff-settings"]);
+    this.defaultValuesService.setPageId('Staff Bulk Data Import');
+    this.router.navigate(["school/tools/staff-bulk-data-import"]);
   }
 
   callStaffList() {
@@ -312,6 +321,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
         this.pageSize = res._pageSize;
         this.staffList = new MatTableDataSource(res.staffMaster);
         for (let staff of this.staffList.filteredData){
+          if (staff.isActive === true || staff.isActive === null) {
           if (staff.staffSchoolInfo[0].endDate){
             let today = moment().format('DD-MM-YYYY').toString();
             let todayarr = today.split('-');
@@ -349,6 +359,9 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
           else{
             staff.status = 'active';
           }
+          } else {
+            staff.status = 'inactive';
+          }
         }
         this.getAllStaff = new GetAllStaffModel();
       }
@@ -379,6 +392,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
                'Mobile Phone':x.mobilePhone
              }
             });
+
             this.excelService.exportAsExcelFile(staffList,'Staffs_List_')
           }else{
             this.snackbar.open('No Records Found. Failed to Export Staff List','', {
@@ -472,7 +486,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
     this.searchFilterListViewModel.module='Staff';
     this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
       if (typeof (res) === 'undefined') {
-        this.snackbar.open('Filter list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Filter list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -527,7 +541,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
     this.commonService.deleteSearchFilter(this.searchFilterAddViewModel).subscribe(
       (res: SearchFilterAddViewModel) => {
         if (typeof(res) === 'undefined'){
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

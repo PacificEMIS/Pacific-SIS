@@ -50,7 +50,7 @@ export class RotatingSchedulingComponent implements OnInit {
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   roomListViewModel: RoomListViewModel = new RoomListViewModel();
   blockScheduleAddModel: BlockedSchedulingCourseSectionAddModel = new BlockedSchedulingCourseSectionAddModel()
-  selected = null;
+  selected = "";
   selectedBlocks = [];
   selectedPeriod = []
   divCount = [0];
@@ -58,10 +58,12 @@ export class RotatingSchedulingComponent implements OnInit {
   @Input() detailsFromParentModal;
   @Output() blockScheduleData = new EventEmitter<OutputEmitDataFormat>()
   roomIdWithCapacity = [];
+  isThisComponent:boolean;
+  checkDuplicate;
   constructor(private snackbar: MatSnackBar,
     private schoolPeriodService: SchoolPeriodService,
     private roomService: RoomService,
-    private defaultValueService: DefaultValuesService,
+    public defaultValueService: DefaultValuesService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
     ) {
@@ -70,6 +72,7 @@ export class RotatingSchedulingComponent implements OnInit {
         this.sendBlockScheduleDataToParent();
       }
     })
+    this.isThisComponent=true;
   }
 
   ngOnInit(): void {
@@ -81,7 +84,7 @@ export class RotatingSchedulingComponent implements OnInit {
   }
 
   onBlockDayChange(blockId, indexOfDynamicRow) {
-    this.blockScheduleAddModel.courseBlockScheduleList[indexOfDynamicRow].periodId = null;
+    this.blockScheduleAddModel.courseBlockScheduleList[indexOfDynamicRow].periodId = "";
 
     let index = this.blockListViewModel.getBlockListForView.findIndex((x) => {
       return x.blockId === +blockId;
@@ -121,7 +124,7 @@ export class RotatingSchedulingComponent implements OnInit {
     ).subscribe(
       (res: BlockListViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Block/Rotation Days list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Block/Rotation Days list failed. ' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -146,7 +149,7 @@ export class RotatingSchedulingComponent implements OnInit {
   manipulateBlockAndPeriodInEditMode() {
     for (let [i, val] of this.detailsFromParentModal.courseSectionDetails.courseBlockSchedule.entries()) {
       this.blockScheduleAddModel.courseBlockScheduleList[i] = this.detailsFromParentModal.courseSectionDetails.courseBlockSchedule[i];
-      this.blockScheduleAddModel.courseBlockScheduleList[i].updatedBy = this.defaultValueService.getEmailId();
+      this.blockScheduleAddModel.courseBlockScheduleList[i].updatedBy = this.defaultValueService.getUserGuidId();
       this.divCount[i] = i;
       let index = this.blockListViewModel.getBlockListForView.findIndex((x) => {
         return x.blockId === +this.detailsFromParentModal.courseSectionDetails.courseBlockSchedule[i].blockId;
@@ -180,7 +183,7 @@ export class RotatingSchedulingComponent implements OnInit {
     this.roomService.getAllRoom(this.roomListViewModel).subscribe(
       (res: RoomListViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Room list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Room list failed. ' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -227,23 +230,27 @@ export class RotatingSchedulingComponent implements OnInit {
         + this.blockScheduleAddModel.courseBlockScheduleList[i].periodId
         + this.blockScheduleAddModel.courseBlockScheduleList[i].roomId
     }
-    let checkDuplicate = Ids.sort().some((item, i) => {
+    if(this.isThisComponent){
+    this.checkDuplicate = Ids.sort().some((item, i) => {
       if (item == Ids[i + 1]) {
-        this.snackbar.open('Cannot Save Duplicate Block Schedule ', '', {
-          duration: 10000
-        });
-        return true;
-      } else {
-        return false;
-      }
-    })
-    if (checkDuplicate) {
+          this.snackbar.open('Cannot Save Duplicate Block Schedule ', '', {
+            duration: 10000
+          });
+          return true;
+        } else {
+         return false;
+        }
+      })
+    }
+    if (this.checkDuplicate) {
       this.blockScheduleData.emit({ scheduleType: 'blockSchedule', roomList: null, scheduleDetails: null, error: true });
     } else {
       this.blockScheduleData.emit({ scheduleType: 'blockSchedule', roomList: null, scheduleDetails: this.blockScheduleAddModel.courseBlockScheduleList, error: false });
     }
   }
 
-
+  ngOnDestroy(){
+    this.isThisComponent=false;
+  }
 
 }

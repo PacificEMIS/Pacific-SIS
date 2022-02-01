@@ -34,7 +34,7 @@ export class CustomFieldService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.customFields.schoolId = this.defaultValuesService.getSchoolID();
     obj.customFields.tenantId = this.defaultValuesService.getTenantID();
-    obj.customFields.updatedBy = this.defaultValuesService.getEmailId();
+    obj.customFields.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/CustomField/updateCustomField';
     return this.http.put<CustomFieldAddView>(apiurl, obj,this.httpOptions);
   }
@@ -42,7 +42,7 @@ export class CustomFieldService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.customFields.schoolId = this.defaultValuesService.getSchoolID();
     obj.customFields.tenantId = this.defaultValuesService.getTenantID();
-    obj.customFields.createdBy = this.defaultValuesService.getEmailId();
+    obj.customFields.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/CustomField/addCustomField';
     return this.http.post<CustomFieldAddView>(apiurl, obj,this.httpOptions);
   }
@@ -51,7 +51,7 @@ export class CustomFieldService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.fieldsCategory.tenantId = this.defaultValuesService.getTenantID();
     obj.fieldsCategory.schoolId = this.defaultValuesService.getSchoolID();
-    obj.fieldsCategory.createdBy = this.defaultValuesService.getEmailId();
+    obj.fieldsCategory.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/CustomField/addFieldsCategory' ;
     return this.http.post<FieldsCategoryAddView>(apiurl, obj,this.httpOptions);
   }
@@ -59,7 +59,7 @@ export class CustomFieldService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.fieldsCategory.tenantId = this.defaultValuesService.getTenantID();
     obj.fieldsCategory.schoolId = this.defaultValuesService.getSchoolID();
-    obj.fieldsCategory.updatedBy = this.defaultValuesService.getEmailId();
+    obj.fieldsCategory.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/CustomField/updateFieldsCategory' ;
     return this.http.put<FieldsCategoryAddView>(apiurl, obj,this.httpOptions);
   }
@@ -78,7 +78,7 @@ export class CustomFieldService {
   updateCustomFieldSortOrder(obj: CustomFieldDragDropModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     const apiurl = this.apiUrl + obj._tenantName + '/CustomField/updateCustomFieldSortOrder';
-    obj.updatedBy = this.defaultValuesService.getEmailId();
+    obj.updatedBy = this.defaultValuesService.getUserGuidId();
     return this.http.put<CustomFieldDragDropModel>(apiurl, obj,this.httpOptions);
   }
 }

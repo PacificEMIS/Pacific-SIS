@@ -22,7 +22,7 @@
                     matTooltip="Filter Columns" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
-                <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+                <button *ngIf="permissions?.add && defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
                 (click)='goToAdd()'>
                     <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true"
                         size="24px">
@@ -50,7 +50,7 @@
             </td>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
+        <ng-container matColumnDef="actions" *ngIf="defaultValuesService.checkAcademicYear()">
             <th mat-header-cell *matHeaderCellDef width="150">{{'action'|translate}}</th>
             <td mat-cell *matCellDef="let element">
                 <a *ngIf="permissions?.edit" (click)="goToEdit(element)" matTooltip="Edit Item" class="mr-3 cursor-pointer">
@@ -70,7 +70,7 @@
        
           <ng-container matColumnDef="noData">
             <td mat-footer-cell *matFooterCellDef colspan="6">
-              {{loading?'Fetching Data...':'No Data'}}
+                {{loading?('fetchingData' | translate):('noData' | translate) }}
             </td>
           </ng-container>
          

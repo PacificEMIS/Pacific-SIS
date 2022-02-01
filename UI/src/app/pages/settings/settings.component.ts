@@ -29,10 +29,10 @@ import icStudents from '@iconify/icons-ic/twotone-school';
 import icUsers from '@iconify/icons-ic/twotone-people';
 import icSchedule from '@iconify/icons-ic/twotone-date-range';
 import icGrade from '@iconify/icons-ic/twotone-leaderboard';
+import icAdministration from '@iconify/icons-ic/twotone-admin-panel-settings';
 import icAttendance from '@iconify/icons-ic/twotone-access-alarm';
-import icListOfValues from '@iconify/icons-ic/baseline-format-list-bulleted';
+import icListOfValues from '@iconify/icons-ic/twotone-list-alt';
 import { TranslateService } from '@ngx-translate/core';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { NavigationService } from 'src/@vex/services/navigation.service';
 import { CryptoService } from 'src/app/services/Crypto.service';
 import { PermissionCategory, PermissionGroup, RolePermissionListViewModel } from '../../models/roll-based-access.model';
@@ -40,6 +40,7 @@ import { Router } from '@angular/router';
 import { RollBasedAccessService } from '../../services/roll-based-access.service';
 import { DefaultValuesService } from '../../common/default-values.service';
 import { PageRolesPermission } from '../../common/page-roles-permissions.service';
+
 @Component({
   selector: 'vex-settings',
   templateUrl: './settings.component.html',
@@ -52,26 +53,17 @@ export class SettingsComponent implements OnInit {
   icUsers = icUsers;
   icSchedule = icSchedule;
   icGrade = icGrade;
+  icAdministration=icAdministration;
   icAttendance = icAttendance;
   icListOfValues = icListOfValues;
 
   settingSubmenu: PermissionCategory[]=[];
   constructor(public translateService: TranslateService,
-    private layoutService: LayoutService,
     private navigationService: NavigationService,
     private pageRolePermission: PageRolesPermission,
-    private defaultValueService: DefaultValuesService,
-    private roleBaseAccessService:RollBasedAccessService) {
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
-    //translateService.use('en');
+    private defaultValuesService: DefaultValuesService,
+    private roleBaseAccessService:RollBasedAccessService,
+    private router: Router,) {
     this.navigationService.menuItems.subscribe((res)=>{
       if(res){
          this.renderSettingsMenu();
@@ -112,7 +104,7 @@ export class SettingsComponent implements OnInit {
         return icAttendance;
       }
       case 'Administration':{
-        return icGrade;
+        return icAdministration;
       }
       case 'Grades':{
         return icGrade;
@@ -123,14 +115,20 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  setPageId(pageId?) {
-    localStorage.setItem("pageId", pageId);
+  setPageId(pageId?,path?) {
+    this.defaultValuesService.setPageId(pageId);
+    if(pageId==="Marking Periods"){
+      this.router.navigate([path]);
+    }
+    if(pageId==="Calendars"){
+      this.router.navigate([path]);
+    }
   }
 
   setParentId(index){
     for(let item of this.settingSubmenu[index].permissionSubcategory){
       if(item.rolePermission[0].canView){
-        localStorage.setItem("pageId", item.title);
+        this.defaultValuesService.setPageId(item.title);
         break;
       }
     }

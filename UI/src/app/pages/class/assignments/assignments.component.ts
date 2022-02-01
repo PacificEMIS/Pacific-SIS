@@ -46,7 +46,9 @@ import { ConfirmDialogComponent } from "../../shared-module/confirm-dialog/confi
 import { ViewAssignmentDetailsComponent } from "./view-assignment-details/view-assignment-details.component";
 import { StaffPortalAssignmentService } from "../../../services/staff-portal-assignment.service";
 import { CopyAssignmentComponent } from "./copy-assignment/copy-assignment.component";
-import { CommonService } from "src/app/services/common.service";
+import { CommonService } from "../../../services/common.service";
+import { GradebookConfigurationAddViewModel } from "../../../models/gradebook-configuration.model";
+import { GradeBookConfigurationService } from "../../../services/gradebook-configuration.service";
 
 @Component({
   selector: "vex-assignments",
@@ -58,28 +60,33 @@ export class AssignmentsComponent implements OnInit {
   icDeleteForever = icDeleteForever;
   icDelete = icDelete;
   icFileCopy = icFileCopy;
-
+  gradebookConfigurationAddViewModel: GradebookConfigurationAddViewModel = new GradebookConfigurationAddViewModel();
   assignmentModel: GetAllAssignmentsModel = new GetAllAssignmentsModel();
   courseSectionId: number;
+  courseId: number;
+  isWeightedSection: boolean;
   selectedAssignmentType: AssignmentList;
 
   constructor(
     private dialog: MatDialog,
     private dashboardService: DasboardService,
-    private defaultValueService: DefaultValuesService,
+    public defaultValueService: DefaultValuesService,
     private snackbar: MatSnackBar,
     private assignmentService: StaffPortalAssignmentService,
     private commonService: CommonService,
+    private gradeBookConfigurationService: GradeBookConfigurationService
   ) {
     this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
       if (res) {
         this.courseSectionId = +res.courseSectionId;
+        this.courseId = +res.courseId;
       }
     });
   }
 
   ngOnInit(): void {
     this.getAllAssignments();
+    this.viewGradebookConfiguration();
   }
 
   changeAssignmentType(assignmentType) {
@@ -92,6 +99,7 @@ export class AssignmentsComponent implements OnInit {
         data: {
           editMode: assignmentTypeDetails ? true : false,
           editDetails: assignmentTypeDetails,
+          isWeightedSection: this.isWeightedSection
         },
         width: "500px",
       })
@@ -146,6 +154,25 @@ export class AssignmentsComponent implements OnInit {
         }
       });
   }
+
+  viewGradebookConfiguration() {
+    this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseId = this.courseId;
+    this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseSectionId = +this.courseSectionId;
+    this.gradeBookConfigurationService.viewGradebookConfiguration(this.gradebookConfigurationAddViewModel).subscribe(
+      (res: GradebookConfigurationAddViewModel) => {
+        if (res) {
+        if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+          }
+          else {
+            this.gradebookConfigurationAddViewModel = res;
+            this.isWeightedSection= this.gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('weightGrades') ? true:false;
+           }
+        }
+      }
+    );
+  }
+
 
   getAllAssignments(assignmentTypeId?) {
     this.assignmentModel.courseSectionId = this.courseSectionId;
@@ -203,6 +230,7 @@ export class AssignmentsComponent implements OnInit {
           editDetails: assignmentDetails,
           assignmentTypes: this.assignmentModel.assignmentTypeList,
           currentAssignmentType: this.selectedAssignmentType.assignmentTypeId,
+          generalConfiguration: this.gradebookConfigurationAddViewModel?.gradebookConfiguration?.general,
         },
         width: "800px",
       })

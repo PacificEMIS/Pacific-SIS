@@ -52,7 +52,7 @@ export class PreferenceComponent implements OnInit {
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
   ) {
-    translateService.use("en");
+    // translateService.use("en");
 
   }
 
@@ -66,9 +66,11 @@ export class PreferenceComponent implements OnInit {
       if(data){
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
-          this.snackbar.open(data._message, '', {
-            duration: 10000
+        if (data._message !== "No Record Found") {
+          this.snackbar.open(data._message, "", {
+            duration: 10000,
           });
+        } 
         } else {
           this.schoolPreferenceAddViewModel= data;
           this.submitTitle='update';

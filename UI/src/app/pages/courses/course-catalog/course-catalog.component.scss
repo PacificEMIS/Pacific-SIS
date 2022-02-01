@@ -1,0 +1,210 @@
+.mat-expansion-panel {
+  .mat-expansion-panel-header {
+    @media (max-width: 790px) {
+      height: auto;
+      padding: 16px 10px;
+    }
+  }
+  .mat-expansion-panel-header.mat-expanded {
+    background-color: rgb(var(--color-primary));
+    height: 48px;
+    border-radius: 2px 2px 0 0;
+
+    @media (max-width: 790px) {
+      height: auto;
+      padding: 16px 10px;
+    }
+
+    .mat-expansion-panel-header-title {
+      color: var(--text-color-light);
+    }
+  }
+}
+
+.mat-expansion-panel.mat-expanded {
+  border: 1px solid rgb(var(--color-primary));
+}
+
+.table {
+  margin-bottom: 0;
+  tr {
+    td,
+    th {
+      border-color: rgba(0, 0, 0, 0.1);
+      @apply px-4;
+      @apply py-3;
+      white-space: nowrap;
+      text-align: left;
+    }
+  }
+}
+
+::ng-deep .mat-expansion-panel-header.mat-expanded {
+  .mat-expansion-indicator::after {
+    border-color: var(--text-color-light);
+    margin-top: -7px;
+  }
+}
+::ng-deep .mat-expansion-panel-header .mat-expansion-indicator::after {
+  padding: 4px;
+}
+.mat-accordion > .mat-expansion-panel-spacing:last-child,
+.mat-accordion > *:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
+  margin-bottom: 12px;
+}
+
+
+// Course Catalog Print css Start
+.course-catalog-print {
+  width: 1024px;
+  margin: auto;
+  font-family: Arial;
+  background: #fff;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: 0;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    font-family: Arial;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .course-catalog-header {
+    border-bottom: 2px solid #000;
+  }
+
+  .course-catalog-header td, .course-catalog-heading {
+    padding: 10px;
+  }
+
+  .header-left h2 {
+    font-weight: 400;
+    font-size: 30px;
+    margin: 0;
+  }
+
+  .header-left p {
+    margin: 5px 0;
+    font-size: 15px;
+  }
+
+  .header-right {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 3px;
+  }
+
+  .header-right h3 {
+    margin: 0;
+  }
+
+  .header-right p {
+    margin: 5px 0 0;
+  } 
+
+  .course-catalog-heading p {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .catalog-table {
+    padding: 0 10px 20px;
+  }
+
+  .catalog-table h4, .course-catalog-heading h4 {
+    font-weight: normal;
+    margin: 0;
+  }
+
+  .catalog-table table {
+    border: 2px solid #000;
+  } 
+
+  .catalog-table th {
+    text-align: left;
+    font-weight: normal;
+    background-color: #e5e5e5;
+  }
+
+  .catalog-table th {
+    border-bottom: 1px solid #000;
+    padding: 5px 10px;
+  }
+
+  .catalog-table td {
+    padding: 8px 0;
+  }
+
+  .catalog-table td:not(.inner-table td, .inner-table.bordered-table td){
+    border-bottom: 1px solid #000;
+  }
+
+  .catalog-table th p, .catalog-table .inner-table p {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 5px 0;
+  }
+
+  .catalog-table .inner-table {
+    border: none;
+  }
+
+  .catalog-table .inner-table td {
+    padding: 0px 15px 8px;
+  }
+
+  .catalog-table .inner-table caption {
+    text-align: left;
+    padding: 0 15px;
+  }
+
+  .catalog-table .inner-table caption h1 {
+    font-size: 20px;
+  }
+
+  .catalog-table .inner-table caption p {
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 8px;
+  }
+
+  .catalog-table .inner-table.bordered-table th {
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .catalog-table .inner-table.bordered-table caption, .catalog-table .inner-table caption p {
+    margin-bottom: 15px;
+  }
+
+  .catalog-table .inner-table.bordered-table td {
+    border-bottom: 1px solid #000;
+    padding: 8px 15px;
+    font-size: 16px;
+  }
+
+  .catalog-table .inner-table.bordered-table {
+    margin-bottom: 5px;
+  }
+  .catalog-table td.schedule-table {
+    border-bottom: none !important;
+  }
+  
+}

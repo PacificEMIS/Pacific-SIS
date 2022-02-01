@@ -1,7 +1,7 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Group Drop" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Scheduling']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'groupDrop'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['scheduling']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -25,15 +25,15 @@
                         </div>
                     </div>
                     <div class="schedule-icon bg-white">
-                        <img src="assets/img/icons/teacher-course-schedule.svg" width="80%" class="inline-block" />
+                        <img src="assets/img/icons/teacher-course-schedule.svg" width="80%" class="inline-block" alt="Schedule icon"/>
                     </div>
                 </div>
-                <div class="md:w-1/2 cursor-pointer bg-primary rounded-b md:bg-white pt-12 pb-6 md:py-0" (click)="picker.open()">
+                <div class="md:w-1/2 cursor-pointer bg-primary rounded-b md:bg-white pt-12 pb-6 md:py-0" (click)="this.defaultService.checkAcademicYear() ? picker.open() : ''">
                     <div class="flex items-center">
                         <div class="w-full md:w-10/12 text-center md:text-right text-white md:text-black md:pr-6 order-2 md:order-1">
-                            <h2 *ngIf="selectDropDate == null">Drop Date</h2>
+                            <h2 *ngIf="selectDropDate == null">{{'dropDate' |translate}}</h2>
                             <h2 *ngIf="selectDropDate !== null">{{selectDropDate| date }}</h2>
-                            <p class="md:text-blue">Select Drop Date</p>
+                            <p class="md:text-blue">{{'selectDropDate' |translate}}</p>
                         </div>
                         <div class="hidden md:inline-block w-2/12 bg-primary text-white text-center py-6 rounded-br arrow-left relative order-1 md:order-2">
                             <i class="icon icon-calendar4 sm:text-xl lg:text-4xl"></i>
@@ -50,11 +50,10 @@
 
         </div>
         <div *ngIf="loading && !dropSuccess && startDropping" class="card mt-6 p-4 flex">
-            <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5">
+            <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
             <div class="ml-4">
-                <span class="text-lg inline-block align-middle text-primary font-bold">Dropping students from course
-                    section</span>
-                <p class="">Please do not refresh the page or click back button.</p>
+                <span class="text-lg inline-block align-middle text-primary font-bold">{{'droppingStudentsFromCourseSection' |translate}}</span>
+                <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
             </div>
         </div>
         <div *ngIf="studentNotFound" class="card mt-6 p-4">
@@ -76,8 +75,8 @@
         </div>
         <div [ngClass]="studentDetails?.data?.length>0?'card':''" class="mt-6 p-4">
             <div *ngIf="studentDetails?.data?.length>0">
-                <h6 class="text-lg text-green font-bold mb-1">Scheduled Students</h6>
-                <p class="">Select Studentsto drop from Course Section.</p>
+                <h6 class="text-lg text-green font-bold mb-1">{{'scheduledStudents' |translate}}</h6>
+                <p class="">{{'selectStudentsToDropFromCourseSection' |translate}}.</p>
                 <div class="-mx-4 border-t overflow-auto mt-4">
                     <table mat-table [dataSource]="studentDetails" class="mat-elevation-z8 shadow-none">
                         <ng-container matColumnDef="studentSelected">
@@ -148,7 +147,7 @@
             <mat-paginator [length]="totalCount" [ngClass]="totalCount>10?'':'hidden'" [pageSize]="pageSize"
             [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator>
             <div [ngClass]="(studentDetails?.data?.length>0 && permissions?.edit)?'':'hidden'" class="text-right pb-0">
-                <button color="primary" mat-raised-button (click)="dropGroupStudents()" type="submit">
+                <button color="primary" mat-raised-button (click)="dropGroupStudents()" type="submit" class="mt-4">
                     {{ 'dropSelectedStudents' | translate }}
                 </button>
             </div>

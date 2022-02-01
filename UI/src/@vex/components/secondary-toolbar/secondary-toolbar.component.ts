@@ -4,6 +4,8 @@ import { map } from 'rxjs/operators';
 import icHelp from '@iconify/icons-ic/help';
 import icSearch from '@iconify/icons-ic/search';
 import icDropdown from '@iconify/icons-ic/arrow-drop-down';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-secondary-toolbar',
@@ -26,16 +28,18 @@ export class SecondaryToolbarComponent implements OnInit {
     map(config => config.toolbar.fixed)
   );
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService, private defaultValuesService: DefaultValuesService,
+    public translateService:TranslateService,
+    ) {
    }
   
   ngOnInit() {
-    this.selectedValue=localStorage.getItem("pageId");
+    this.selectedValue=this.defaultValuesService.getPageId();
   }
-
+  
   changePage(pageName){
     this.selectedValue = pageName; 
-    localStorage.setItem("pageId",pageName);
+    this.defaultValuesService.setPageId(pageName);
     this.selectedPage.emit(pageName)
   }
 }

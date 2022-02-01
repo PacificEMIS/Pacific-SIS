@@ -11,7 +11,7 @@
 
             </div>
             <div class="text-center px-4">
-                <h5 class="text-primary font-semibold mb-0">{{staffTitle}}</h5>
+                <h5 class="text-primary font-semibold mb-0">{{staffTitle | translate}}</h5>
                 <div class="rounded-full py-1 px-3 bg-gray text-white inline-block mt-3" *ngIf="profile">{{profile}}
                 </div>
             </div>
@@ -38,14 +38,14 @@
                         <ul class="nav-sub-item">
                             <li *ngFor="let field of fieldsCategory; let index =index"
                             (click)="changeCategory(field,index)">
-                                <a [ngClass]="currentCategory==field.categoryId?'text-primary active' : ''"
+                                <a [ngClass]="currentCategory === field.categoryId ? 'text-primary active' : ''"
                                     @fadeInRight *ngIf="field.customFields!=''||index<4">{{field.title}}</a>
                             </li>
                         </ul>
                     </div>
                 </mat-expansion-panel>
                 <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple
-                    (click)="changeTempCategory(16)" [ngClass]="currentCategory==16 ?'text-primary active' : ''">
+                    (click)="changeTempCategory('/school/staff/staff-course-schedule')" [ngClass]="categoryPath ==='/school/staff/staff-course-schedule' ?'text-primary active' : ''">
                     <mat-icon [icIcon]="icCalendar" class="mr-3"></mat-icon> {{ 'courseSchedule' | translate }}
                 </a>
             </div>
@@ -57,8 +57,8 @@
 
         <vex-page-layout>
             <vex-page-layout-header class="pb-10 pt-6" fxLayoutAlign="center start">
-                <vex-secondary-toolbar current="Staff Information" class="w-full">
-                    <vex-breadcrumbs [crumbs]="['Staff', pageStatus]" class="flex-auto"></vex-breadcrumbs>
+                <vex-secondary-toolbar current="{{'staffInformation'}}" class="w-full">
+                    <vex-breadcrumbs [crumbs]="['staff', pageStatus]" class="flex-auto"></vex-breadcrumbs>
                 </vex-secondary-toolbar>
             </vex-page-layout-header>
             <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">

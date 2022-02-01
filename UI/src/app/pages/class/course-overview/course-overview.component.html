@@ -149,11 +149,19 @@
                                 </p>
                         </ng-template>
                         <ng-template #third>
-                            <p *ngIf="singleCourseSection?.courseSection?.schoolYears != null" 
+                            <p *ngIf="singleCourseSection?.courseSection?.schoolYears != null; else fourth" 
                             class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
                                 <span class="font-semibold">{{singleCourseSection?.courseSection?.schoolYears?.title}}</span> 
                                 - {{singleCourseSection?.courseSection?.schoolYears?.startDate|date}} to {{singleCourseSection?.courseSection?.schoolYears?.endDate|date}} 
                                 </p>
+                        </ng-template>
+                        <ng-template #fourth>
+                            <p *ngIf="singleCourseSection?.courseSection?.progressPeriods != null"
+                                class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
+                                <span class="font-semibold">{{singleCourseSection?.courseSection?.progressPeriods?.title}}</span>
+                                - {{singleCourseSection?.courseSection?.progressPeriods?.startDate|date}} to
+                                {{singleCourseSection?.courseSection?.progressPeriods?.endDate|date}}
+                            </p>
                         </ng-template>
                         <!-- <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
                             <span class="font-semibold">Quarter 3</span> 
@@ -235,8 +243,8 @@
                         <span
                         class="w-5 h-5 text-center text-xs rounded
                         inline-block text-white mr-1 font-medium"
-                        [class.bg-primary]="meatingDays.includes(i+1)"
-                        [class.bg-gray-light]="meatingDays.includes(i+1)==false" 
+                        [class.bg-primary]="meatingDays.includes(i)"
+                        [class.bg-gray-light]="meatingDays.includes(i)==false" 
                         *ngFor="let day of weekArray, index as i">
                             {{day}}
                         </span>

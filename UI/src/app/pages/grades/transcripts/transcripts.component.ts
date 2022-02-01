@@ -42,12 +42,13 @@ import { forkJoin, Subject } from "rxjs";
 import { fadeInUp400ms } from "../../../../@vex/animations/fade-in-up.animation";
 import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { StudentTranscript } from "../../../models/student-transcript.model";
+import { GetStudentTranscriptModel, StudentTranscript } from "../../../models/student-transcript.model";
 import { StudentTranscriptService } from "../../../services/student-transcript.service";
 import { map } from 'rxjs/operators';
 import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { CommonService } from "src/app/services/common.service";
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: "vex-transcripts",
@@ -74,23 +75,6 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
 
   loading: boolean;
   destroySubject$: Subject<void> = new Subject();
-  constructor(
-    public translateService: TranslateService,
-    private gradeLevelService: GradeLevelService,
-    private snackbar: MatSnackBar,
-    private studentService: StudentService,
-    private loaderService: LoaderService,
-    private transcriptService: StudentTranscriptService,
-    private pageRolePermissions: PageRolesPermission,
-    private el: ElementRef,
-    private commonService: CommonService,
-  ) {
-    translateService.use("en");
-    this.getAllStudent.filterParams = null;
-    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
-      this.loading = val;
-    });
-  }
   totalCount = 0;
   pageNumber: number;
   pageSize: number;
@@ -109,11 +93,34 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   selectedStudents = []
   selectedGradeLevels = [];
   studentTranscipt = new StudentTranscript();
+  getStudentTranscriptModel: GetStudentTranscriptModel = new GetStudentTranscriptModel();
   gradeLevelError: boolean;
   pdfByteArrayForTranscript: string;
   pdfGenerateLoader: boolean = false;
   permissions: Permissions;
+  generatedTranscriptData;
+
+  constructor(
+    public translateService: TranslateService,
+    private gradeLevelService: GradeLevelService,
+    private snackbar: MatSnackBar,
+    private studentService: StudentService,
+    private loaderService: LoaderService,
+    private transcriptService: StudentTranscriptService,
+    private pageRolePermissions: PageRolesPermission,
+    private el: ElementRef,
+    private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
+  ) {
+    // translateService.use("en");
+    this.getAllStudent.filterParams = null;
+    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
+      this.loading = val;
+    });
+  }
+
   ngOnInit(): void {
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCtrl = new FormControl();
     this.callAllStudent();
     this.getAllGradeLevel();
@@ -341,7 +348,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
           this.getAllGradeLevels.tableGradelevelList = res.tableGradelevelList;
         }
       } else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -440,51 +447,197 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   }
 
   fillUpNecessaryValues() {
-    this.studentTranscipt.gradeLavels = this.selectedGradeLevels.toString();
-    this.studentTranscipt.studentListForTranscript = [];
+    this.getStudentTranscriptModel.gradeLavels = this.selectedGradeLevels.toString();
+    this.getStudentTranscriptModel.studentsDetailsForTranscripts = [];
     this.selectedStudents?.map((item) => {
-      this.studentTranscipt.studentListForTranscript.push({
-        studentId: item.studentId,
-        studentGuid: item.studentGuid,
-        firstGivenName: item.firstGivenName,
-        middleName: item.middleName,
-        lastFamilyName: item.lastFamilyName,
+      this.getStudentTranscriptModel.studentsDetailsForTranscripts.push({
+        studentId: item.studentId
+        // studentGuid: item.studentGuid,
+        // firstGivenName: item.firstGivenName,
+        // middleName: item.middleName,
+        // lastFamilyName: item.lastFamilyName,
       })
     });
   }
 
+  getTranscriptForStudents() {
+    return new Promise((resolve, reject) => {
+      this.transcriptService.getTranscriptForStudents(this.getStudentTranscriptModel).subscribe(res => {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          this.snackbar.open(res._message, '', {
+            duration: 1000
+          });
+          this.pdfGenerateLoader = false;
+        } else {
+          resolve(res);
+          this.pdfGenerateLoader = false;
+        }
+      })
+    });
+  }
+  
+  
   fetchTranscript() {
     this.pdfGenerateLoader = true;
-    this.transcriptService.addTranscriptForStudent(this.studentTranscipt).pipe(
-      takeUntil(this.destroySubject$),
-      switchMap((dataAfterAddingStudentRecords) => {
-        let generateTranscriptObservable$
-        if (!dataAfterAddingStudentRecords._failure) {
-          generateTranscriptObservable$ = this.transcriptService.generateTranscriptForStudent(this.studentTranscipt)
-        } else {
-          this.snackbar.open(dataAfterAddingStudentRecords._message, '', {
-            duration: 3000
-          });
-        }
-        return forkJoin(generateTranscriptObservable$);
-      })
-    ).subscribe((res: any) => {
-      this.pdfGenerateLoader = false;
-      let response = res[0]
-      if (response._failure) { this.commonService.checkTokenValidOrNot(response._message);
-
-
-        this.snackbar.open(response._message, '', {
-          duration: 3000
-        });
-      } else {
-        this.pdfByteArrayForTranscript = response.transcriptPdf;
-      }
+    this.getTranscriptForStudents().then((res: any) => {
+      this.generatedTranscriptData = res;
+      setTimeout(() => {
+        this.generatePDF();
+      }, 100 * this.generatedTranscriptData?.studentsDetailsForTranscripts.length);
     });
   }
+
+  // fetchTranscript() {
+  //   this.pdfGenerateLoader = true;
+  //   this.transcriptService.addTranscriptForStudent(this.studentTranscipt).pipe(
+  //     takeUntil(this.destroySubject$),
+  //     switchMap((dataAfterAddingStudentRecords) => {
+  //       let generateTranscriptObservable$
+  //       if (!dataAfterAddingStudentRecords._failure) {
+  //         generateTranscriptObservable$ = this.transcriptService.generateTranscriptForStudent(this.studentTranscipt)
+  //       } else {
+  //         this.snackbar.open(dataAfterAddingStudentRecords._message, '', {
+  //           duration: 3000
+  //         });
+  //       }
+  //       return forkJoin(generateTranscriptObservable$);
+  //     })
+  //   ).subscribe((res: any) => {
+  //     this.pdfGenerateLoader = false;
+  //     let response = res[0]
+  //     if (response._failure) { this.commonService.checkTokenValidOrNot(response._message);
+
+
+  //       this.snackbar.open(response._message, '', {
+  //         duration: 3000
+  //       });
+  //     } else {
+  //       this.pdfByteArrayForTranscript = response.transcriptPdf;
+  //     }
+  //   });
+  // }
 
   backToList() {
     this.pdfByteArrayForTranscript = null
+  }
+
+  generatePDF() {
+    let printContents, popupWin;
+    printContents = document.getElementById('printSectionId').innerHTML;
+    document.getElementById('printSectionId').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+          body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+          body { -webkit-print-color-adjust: exact; }
+          
+          table { border-collapse: collapse; width: 100%; }
+          
+          .float-left { float: left; }
+          
+          .float-right { float: right; }
+          
+          .text-center { text-align: center; }
+          
+          .text-right { text-align: right; }
+          
+          .ml-auto { margin-left: auto; }
+          
+          .m-auto { margin: auto; }
+          
+          .report-card { width: 900px; margin: auto; font-family: \"Roboto\", \"Helvetica Neue\"; }
+          
+          .report-card-header td { padding: 20px 10px; }
+          
+          .header-left h2 { font-weight: 400; font-size: 30px; }
+          
+          .header-left p { margin: 5px 0; font-size: 15px; }
+          
+          .header-right { color: #040404; text-align: center; }
+          
+          .student-info-header { padding: 0px 30px 20px; }
+          
+          .student-info-header td { padding-bottom: 20px; vertical-align: top; }
+          
+          .student-info-header .info-left { padding-top: 20px; width: 100%; }
+          
+          .student-info-header .info-left h2 { font-size: 16px; margin-bottom: 8px; font-weight: 600; }
+          
+          .student-info-header .info-left .title { width: 150px; display: inline-block; }
+          
+          .student-info-header .info-left span:not(.title) { font-weight: 400; }
+          
+          .student-info-header .info-left p { margin-bottom: 10px; color: #333; }
+          
+          .student-info-header .info-right { padding-left: 10px; }
+          
+          .semester-table { padding: 0 30px 30px; vertical-align: top; }
+          
+          .semester-table table { border: 1px solid #000; }
+          
+          .semester-table th, .semester-table td { border-bottom: 1px solid #000; padding: 8px 15px; }
+          
+          .semester-table th { text-align: left; background-color: #e5e5e5; }
+          
+          .semester-table caption { margin-bottom: 10px; text-align: left; }
+          
+          .semester-table caption h2 { font-size: 18px; }
+          
+          .gpa-table { padding: 0 30px 30px; }
+          
+          .gpa-table table { border: 1px solid #000; }
+          
+          .gpa-table caption h4 { text-align: left; margin-bottom: 10px; font-weight: 500; }
+          
+          .gpa-table th { padding: 8px 15px; background-color: #e5e5e5; text-align: left; border-bottom: 1px solid #000; }
+          
+          .gpa-table td { padding: 8px 15px; text-align: left; }
+          
+          .signature-table { padding: 40px 30px; }
+          
+          .sign { padding-bottom: 20px; }
+          
+          .short-sign { padding-top: 60px; }
+          
+          .long-line { width: 90%; margin-bottom: 10px; border-top: 2px solid #000; }
+          
+          .small-line { display: inline-block; width: 150px; border-top: 2px solid #000; }
+          
+          .name { margin: 8px 0; }
+          
+          .text-uppercase { text-transform: uppercase; }
+          
+          .header-middle p { font-size: 22px; }
+          
+          .report-card-header td.header-right { vertical-align: top; padding-top: 58px; font-weight: 500; }
+          
+          .bevaior-table tr td:first-child { width: 20px; font-weight: 500; }
+          
+          .bevaior-table td { border-right: 1px solid #333; }
+          
+          .comments-table h2 { text-align: left; }
+          
+          .semester-table .comments-table caption { margin-bottom: 0; }
+          
+          .semester-table .comments-table { border: none; }
+          
+          .comments-table td { border-bottom: 1px dashed #b7b4b4; padding: 35px 0 0 } 
+          
+          </style>
+        </head>
+    <body onload="window.print()">${printContents}</body>
+      </html>`
+    );
+    popupWin.document.close();
+    document.getElementById('printSectionId').className = 'hidden';
+
+    return;
   }
 
   ngOnDestroy() {

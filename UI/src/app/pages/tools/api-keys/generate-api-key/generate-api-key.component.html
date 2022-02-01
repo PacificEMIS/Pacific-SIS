@@ -1,0 +1,27 @@
+<div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title class="flex justify-between mb-2">
+    <h2 class="headline m-0 text-xl" fxFlex="auto">{{data ? 'Update API Key'  : 'Generate New API Key'}}</h2>
+
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content fxLayout="column">
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+    <form (ngSubmit)="generate()" #f="ngForm">
+    <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+        <mat-label>{{'title' | translate}}</mat-label>
+        <input #apiTitle="ngModel" name="apiTitle" [(ngModel)]="apiKeyModel.apiKeysMaster.apiTitle" type="text" matInput required>
+        
+    <mat-error *ngIf="apiTitle.errors?.required">
+        {{'apiTitleIsRequired'|translate}}</mat-error>
+    </mat-form-field>
+</form>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 justify-end">
+    <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
+    <button color="primary" mat-raised-button type="button" (click)="generate()">{{data ? 'Update' :'Generate'}}</button>
+</mat-dialog-actions>

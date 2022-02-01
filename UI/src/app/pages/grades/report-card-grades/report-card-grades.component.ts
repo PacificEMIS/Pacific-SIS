@@ -52,6 +52,7 @@ import { takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-report-card-grades',
   templateUrl: './report-card-grades.component.html',
@@ -111,11 +112,16 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
+    if(!this.defaultValuesService.checkAcademicYear()){
+      this.columns.pop();
+      this.columns.shift();
+    }
   }
 
   ngOnInit(): void {
@@ -196,7 +202,7 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.deleteGradeScale(this.gradeScaleAddViewModel).subscribe(
       (res: GradeScaleAddViewModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -240,7 +246,7 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.deleteGrade(this.gradeAddViewModel).subscribe(
       (res: GradeAddViewModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -277,11 +283,12 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
   }
 
   getAllGradeScale(selectedGradeScaleId: number) {
+    this.gradeScaleListView.isListView=true;
     this.gradesService.getAllGradeScaleList(this.gradeScaleListView).subscribe(
       (res: GradeScaleListView) => {
 
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -337,7 +344,7 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.updateGradeSortOrder(this.gradeDragDropModel).subscribe(
       (res: GradeDragDropModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         } else {

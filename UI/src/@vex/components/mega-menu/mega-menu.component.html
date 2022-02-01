@@ -1,15 +1,19 @@
-<div [ngClass.gt-sm]="['mr-6']" class="card overflow-auto" fxLayout="row" fxLayout.lt-md="column">
+<div *ngIf="items>0" [ngClass.gt-sm]="['mr-6']" class="card overflow-auto" fxLayout="row" fxLayout.lt-md="column">
   <div class="p-gutter" fxFlex="400px" fxFlex.lt-md="auto">
     <!-- <h3 class="body-2 m-0">FEATURES</h3> -->
 
     <div class="mt-4" gdColumns="1fr 1fr 1fr" gdGap="16px">
-      <a (click)="close()"
-         *ngFor="let feature of features"
-         [routerLink]="feature.route"
-         class="text-dark p-3 text-center hover:bg-hover hover:text-primary trans-ease-out rounded block no-underline">
-        <ic-icon [icon]="feature.icon" class="text-primary" size="32px"></ic-icon>
-        <div class="body-1 mt-2">{{ feature.label }}</div>
-      </a>
+      <ng-container *ngFor="let feature of features">
+        <a (click)="close(); schoolService.setSchoolId(undefined); defaultValueService.setSchoolID(undefined)"
+        *ngIf="feature?.isActive"
+        [routerLink]="feature.route"
+        [state]="stateObj"
+        class="text-dark p-3 text-center hover:bg-hover hover:text-primary trans-ease-out rounded block no-underline">
+       <ic-icon [icon]="feature.icon" class="text-primary" size="32px"></ic-icon>
+       <div class="body-1 mt-2">{{ feature.label | translate}}</div>
+     </a>
+      </ng-container>
+
     </div>
   </div>
 

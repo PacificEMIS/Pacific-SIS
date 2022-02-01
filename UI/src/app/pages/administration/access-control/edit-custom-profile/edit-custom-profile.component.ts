@@ -34,6 +34,7 @@ import {CommonService} from '../../../../services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddMembershipModel, GetAllMembersList} from '../../../../models/membership.model';
 import { MembershipService } from '../../../../services/membership.service';
+import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
   selector: 'vex-edit-custom-profile',
   templateUrl: './edit-custom-profile.component.html',
@@ -56,6 +57,8 @@ export class EditCustomProfileComponent implements OnInit {
   private membershipService:MembershipService,
   private snackbar:MatSnackBar,
   private commonService: CommonService,
+  private defaultValuesService: DefaultValuesService,
+
   ) { }
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
 
@@ -89,7 +92,7 @@ export class EditCustomProfileComponent implements OnInit {
           
         this.membershipService.updateMembership(this.addMembershipModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Member Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Member Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -115,7 +118,7 @@ export class EditCustomProfileComponent implements OnInit {
        
         this.membershipService.addMembership(this.addMembershipModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Member Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Member Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -142,7 +145,7 @@ export class EditCustomProfileComponent implements OnInit {
     getAllMembership(){
       this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

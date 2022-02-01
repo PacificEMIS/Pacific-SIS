@@ -42,10 +42,13 @@ import { LanguageModel } from '../../../models/language.model';
 import { CookieService } from 'ngx-cookie-service';
 import { CryptoService } from '../../../services/Crypto.service';
 import { SchoolService } from '../../../services/school.service';
-import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from '../../../common/default-values.service';
+import { CommonService } from '../../../services/common.service';
 import { RolePermissionListViewModel } from '../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
+import { ProfilesTypes } from '../../../enums/profiles.enum';
+import { AvailableTenantViewModel } from '../../../models/available-tenant';
+import { CatalogDbService } from 'src/app/services/catalog-db.service';
 @Component({
   selector: 'vex-login',
   templateUrl: './login.component.html',
@@ -76,6 +79,12 @@ export class LoginComponent implements OnInit {
   setValue = false;
   forceLoaderToStop:boolean;
   buildVersion:string;
+  profiles= ProfilesTypes;
+  ipAdd:any;
+  tenantPhoto: string;
+  tenantName: any;
+  tenantFooter: string;
+  favIcon: HTMLLinkElement = document.querySelector('#appFavicon');
 
   constructor(
     private router: Router,
@@ -92,17 +101,24 @@ export class LoginComponent implements OnInit {
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
     private rollBasedAccessService: RollBasedAccessService,
+    private catalogDB: CatalogDbService,
   ) {
+    translate.use("en");
+
     this.commonService.checkAndRoute();
     // this.Activeroute.params.subscribe(params => { this.tenant = params.id || 'opensisv2'; });
     this.tenant = this.defaultValuesService.getDefaultTenant();
     this.translate.addLangs(['en', 'fr']);
     this.translate.setDefaultLang('en');
-    sessionStorage.setItem("tenant", this.tenant);
+    this.defaultValuesService.setTenant(this.tenant);
 
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
+     /***10_8 */
+     sessionStorage.clear();
+     this.checkValidTenant();
+     /**10_8 */
     this.GetAllLanguage();
     this.form = this.fb.group({
       email: ['', [Validators.required, ValidationService.emailValidator]],
@@ -113,13 +129,42 @@ export class LoginComponent implements OnInit {
   get f() { return this.form.controls; }
 
   ngOnInit() {
+    
     if (this.cookieService.get('userDetails') !== null && this.cookieService.get('userDetails') !== "") {
       this.setValue = true;
       this.form.patchValue({ email: JSON.parse(this.cookieService.get('userDetails')).email});
       this.form.patchValue({ password: JSON.parse(this.cookieService.get('userDetails')).password });
       this.form.markAsDirty();
     }
-    this.buildVersion= sessionStorage.getItem('buildVersion');
+    this.buildVersion= this.defaultValuesService.getBuildVersion();
+    this.getIpAdressFromExternal();
+  }
+
+  checkValidTenant() {
+    let tenant = this.defaultValuesService.getDefaultTenant();
+    let model: AvailableTenantViewModel = new AvailableTenantViewModel();
+    model.tenant.tenantName = tenant;
+    this.catalogDB.validTenant(model).subscribe(
+      (data) => {
+        
+        if (data.failure) {
+          //this.router.navigateByUrl('/invalidtenant');
+        } else {          
+          sessionStorage.setItem('tenant', JSON.stringify(data.tenant.tenantName));
+          this.defaultValuesService.setTenantID();
+          this.tenantPhoto = data.tenant.tenantLogo;
+          this.tenantName = data.tenant.tenantName;
+          this.tenantFooter = data.tenant.tenantFooter;
+          
+          this.defaultValuesService.setPhotoAndFooter(data.tenant);
+          this.favIcon.href = 'data:image/jpeg;base64,'+ data.tenant.tenantFavIcon;
+          //this.router.navigateByUrl("/invalidtenant");
+        }
+      },
+      (error) => {
+        //this.router.navigateByUrl('/invalidtenant');
+      }
+    );
   }
 
   rememberMe(event) {
@@ -137,37 +182,52 @@ export class LoginComponent implements OnInit {
     }
 
   }
-
+  getIpAdressFromExternal() {
+    this.commonService.getIpAddress().subscribe((res)=>{
+     this.ipAdd=res;
+    })
+  }
   send() {
+    this.getIpAdressFromExternal();
     this.form.markAsTouched();
     if (this.form.dirty && this.form.valid) {
       this.UserModel._tenantName = this.tenant;
       this.UserModel.password = this.form.value.password;
       this.UserModel.email = this.form.value.email;
+      this.UserModel.userAccessLog.ipaddress=this.ipAdd.ip;
+      this.UserModel.schoolId=this.defaultValuesService.getSchoolID();
       this.loginService.ValidateLogin(this.UserModel).subscribe(data => {
         if (typeof (data) == 'undefined') {
-          this.snackbar.open('Login failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
         else {
          if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
-            this.snackbar.open('Login failed. ' + data._message, '', {
+            this.snackbar.open(data._message, '', {
               duration: 10000
             });
           } else {
-             sessionStorage.setItem("selectedSchoolId", data.schoolId.toString());
+            if(data.lastUsedSchoolId){
+              this.defaultValuesService.setSchoolID(data.lastUsedSchoolId.toString());
+              }
+            else{
+            this.defaultValuesService.setSchoolID(data.schoolId.toString());
+             }
              this.defaultValuesService.setToken(data._token)
-            //  sessionStorage.setItem("token", data._token);
-            sessionStorage.setItem("tenantId", data.tenantId);
-            sessionStorage.setItem("email", data.email);
-            sessionStorage.setItem("user", data.name);
-            sessionStorage.setItem("userId", data.userId.toString());
-            sessionStorage.setItem("userPhoto", data.userPhoto);
-            sessionStorage.setItem("userMembershipID",data.membershipId.toString())
-            sessionStorage.setItem("membershipName", data.membershipName);
+            this.defaultValuesService.setFirstGivenName(data.firstGivenName);
             this.defaultValuesService.setUserMembershipType(data.membershipType);
+
+            this.defaultValuesService.setTenantIdVal(data.tenantId);
+            this.defaultValuesService.setEmailId(data.email);
+            this.defaultValuesService.setUserGuidId(data.userGuid);
+
+            this.defaultValuesService.setUserName(data.name);
+            this.defaultValuesService.setUserId(data.userId.toString());
+            this.defaultValuesService.setUserPhoto(data.userPhoto);
+            this.defaultValuesService.setUserMembershipID(data.membershipId.toString());
+            this.defaultValuesService.setuserMembershipName(data.membershipName);
             this.callRolePermissions();
             
           }
@@ -178,12 +238,13 @@ export class LoginComponent implements OnInit {
 
   callRolePermissions(){
     let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    rolePermissionListView.permissionList = [];
         this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
           if(res){
             if(!res._failure){
               this.defaultValuesService.setPermissionList(res);
             this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:false,dataFromUserLogin:true,academicYearChanged:false,academicYearLoaded:false});
-            if(this.defaultValuesService.getuserMembershipName() === 'Teacher'){
+            if(this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher){
               this.router.navigateByUrl("/school/teacher/dashboards").then(()=>{
                 this.commonService.setUserActivity(true);
               });
@@ -216,12 +277,12 @@ export class LoginComponent implements OnInit {
         //  this.listOfLanguageCode = this.languageList.map(a=>a.languageCode);
         //   this.translate.addLangs(this.listOfLanguageCode);
         //   this.translate.setDefaultLang('en');
-        let checkPreviousPreference = sessionStorage.getItem("language");
+        let checkPreviousPreference = this.defaultValuesService.getLanguage();
         if (checkPreviousPreference == null) {
-          sessionStorage.setItem("language", 'en');
-          this.selectedLanguage = sessionStorage.getItem("language");
+          this.defaultValuesService.setLanguage('en');
+          this.selectedLanguage = this.defaultValuesService.getLanguage();
         } else {
-          this.selectedLanguage = sessionStorage.getItem("language");
+          this.selectedLanguage = this.defaultValuesService.getLanguage();
         }
       }
     })
@@ -240,7 +301,7 @@ export class LoginComponent implements OnInit {
   }
 
   switchLang(lang: string) {
-    sessionStorage.setItem("language", lang);
+    this.defaultValuesService.setLanguage(lang);
     this.selectedLanguage = lang;
     this.commonService.triggerLanguageChange(lang);
     // this.translate.use(lang)

@@ -35,6 +35,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { SuccessCopySchoolComponent } from './success-copy-school/success-copy-school.component';
 import { AddSchoolRoutingModule } from './add-school-routing-module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { CaptureDateComponent } from './capture-date/capture-date.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ViewGeneralInfoComponent,
     ViewWashInfoComponent,
     AddCopySchoolComponent,
-    SuccessCopySchoolComponent],
+    SuccessCopySchoolComponent,
+    CaptureDateComponent],
   imports: [
     CommonModule,
     AddSchoolRoutingModule,

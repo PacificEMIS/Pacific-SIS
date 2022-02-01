@@ -54,6 +54,7 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-effort-grade-scale',
@@ -105,6 +106,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -112,7 +114,10 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
     });
     this.getEffortGradeScaleList.filterParams = null;
     this.getAllEffortGradeScale();
-
+    if(!this.defaultValuesService.checkAcademicYear()){
+      this.columns.pop();
+      this.columns.shift();
+    }
   }
 
   ngOnInit(): void {
@@ -259,7 +264,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
     effortGradeScale.effortGradeScale.effortGradeScaleId = deleteDetails.effortGradeScaleId;
     this.gradesService.deleteEffortGradeScale(effortGradeScale).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Effort Grade Scale Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Effort Grade Scale Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       } else if(res._failure){
@@ -281,7 +286,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
       this.getEffortGradeScaleList.sortingModel.sortColumn = "sortOrder"
       this.getEffortGradeScaleList.sortingModel.sortDirection = "asc"
     }
-
+    this.getEffortGradeScaleList.isListView=true;
     this.gradesService.getAllEffortGradeScaleList(this.getEffortGradeScaleList).subscribe(data => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -360,7 +365,7 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
     this.gradesService.updateEffortGradeScaleSortOrder(this.effortGradeScaleDragAndDrop).subscribe(
       (res: UpdateEffortGradeScaleSortOrderModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Effort Grade Scale Drag Sort Failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Effort Grade Scale Drag Sort Failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         } else {

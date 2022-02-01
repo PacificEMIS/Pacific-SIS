@@ -1,14 +1,14 @@
 import { CommonField } from "./common-field.model";
-
+import { DefaultValuesService } from "src/app/common/default-values.service";
 export class MarkingPeriodListModel  extends CommonField{
-    public schoolYearsView: [];
+    public schoolYearsView: TableSchoolYear[];
     public tenantId: string;
     public schoolId: number;
     public academicYear: number;
     constructor() {
         super();
-        this.schoolYearsView = null;
-        this.academicYear = +sessionStorage.getItem("academicyear");
+        this.schoolYearsView = [new TableSchoolYear];
+        this.academicYear = JSON.parse(sessionStorage.getItem("academicyear"));
     }
 }
 
@@ -102,6 +102,7 @@ export class TableQuarter {
     public gradeValue:number;  //for configuration view
     public examValue:number;  //for configuration view
     public postStartDate: string;
+    public progressPeriods: TableProgressPeriod[];
     public postEndDate: string;
     public doesGrades: boolean;
     public doesExam: boolean;
@@ -176,6 +177,20 @@ export class GetMarkingPeriodTitleListModel extends CommonField{
         constructor() {
             super();
         }
+}
+
+export class GetMarkingPeriodByCourseSectionModel extends CommonField{
+    schoolId: number;
+    tenantId: string;
+    academicYear: number;
+    period: []
+    getMarkingPeriodView: MarkingPeriodTitleList[];
+    courseSectionId: number;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    constructor() {
+        super();
+    }
 }
 
 export class MarkingPeriodTitleList{

@@ -1,8 +1,8 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Notices" class="w-full">
-            <vex-breadcrumbs [crumbs]="['School Info','Notices']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'notices'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['schoolInfo','notices']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -17,7 +17,7 @@
                             <mat-button-toggle value="past">{{'past' | translate}}</mat-button-toggle>
                         </mat-button-toggle-group>
                     </div>
-                    <button *ngIf="permissions?.add" (click)="openAddNew()" type="button" color="primary" mat-raised-button>
+                    <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click)="openAddNew()" type="button" color="primary" mat-raised-button>
                         <mat-icon class="md:mr-2">add</mat-icon><span class="hidden md:inline-block">{{'addNotice' | translate}}</span>
                     </button>
                 </div>

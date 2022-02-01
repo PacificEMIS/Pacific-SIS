@@ -1,0 +1,25 @@
+.grades-breakdown {
+    .grades-breakdown-left {
+        width: 200px;
+    }
+    .grades-breakdown-right {
+        width: calc(100% - 200px);
+    }
+}
+
+.table {
+    thead {
+        th {
+            border-bottom: none;
+            border-top: 1px solid #f1f1f1;
+            padding: 0.5rem 0.75rem;
+            height: 39px;
+        }
+    }
+    td {
+        border-top: 1px solid #f1f1f1;
+        text-align: center;
+        height: 61px;
+        vertical-align: middle;
+    }
+}

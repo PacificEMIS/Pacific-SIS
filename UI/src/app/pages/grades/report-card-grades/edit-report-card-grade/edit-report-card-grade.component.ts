@@ -34,6 +34,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GradesService } from 'src/app/services/grades.service';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-report-card-grade',
@@ -59,6 +60,7 @@ export class EditReportCardGradeComponent implements OnInit {
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
   ) {
     this.form = fb.group({
       gradeScaleId: [],
@@ -104,7 +106,7 @@ export class EditReportCardGradeComponent implements OnInit {
         this.gradesService.addGrade(this.gradeAddViewModel).subscribe(
           (res: GradeAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -136,7 +138,7 @@ export class EditReportCardGradeComponent implements OnInit {
         this.gradesService.updateGrade(this.gradeAddViewModel).subscribe(
           (res: GradeAddViewModel) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

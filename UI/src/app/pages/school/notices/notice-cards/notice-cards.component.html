@@ -4,7 +4,7 @@
             <h3>{{ title }}</h3>
         </div>
 
-        <button *ngIf="permissions?.edit" [matMenuTriggerFor]="addNewMenu" class="w-10 pt-3" type="button">
+        <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [matMenuTriggerFor]="addNewMenu" class="w-10 pt-3" type="button">
             <mat-icon [icIcon]="icMoreVert" size="20px"></mat-icon>
         </button>
 

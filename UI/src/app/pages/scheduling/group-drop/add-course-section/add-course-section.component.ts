@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
@@ -32,7 +32,7 @@ import { GetAllMarkingPeriodTitle, GetMarkingPeriodTitleListModel } from '../../
 import { Subject } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CourseManagerService } from '../../../../services/course-manager.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MarkingPeriodService } from '../../../../services/marking-period.service';
@@ -77,7 +77,12 @@ export class AddCourseSectionComponent implements OnInit {
     private loaderService: LoaderService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    @Inject(MAT_DIALOG_DATA) public data
     ) {
+     this.courseList= this.data.courseList;
+     this.subjectList=this.data.subjectList;
+     this.programList=this.data.programList;
+     this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriods;
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -85,97 +90,9 @@ export class AddCourseSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllCourse();
-    this.getAllSubjectList();
-    this.getAllProgramList();
-    this.getAllMarkingPeriodList();
+    
   }
-
-
-  getAllProgramList() {
-    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }  
-    });
-  }
-  getAllSubjectList() {
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.subjectList=data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      } 
-
-    });
-  }
-
-  getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem("academicyear");
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
-        if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
-          this.snackbar.open(data._message, '', {
-            duration: 1000
-          }); 
-        }
-      } else {
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
-      }
-    });
-  }
-
-  getAllCourse() {
-    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
-      if (data) {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.courseList = [];
-          if (!data.courseViewModelList) {
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            });
-          }
-        } else {
-          this.courseList = data.courseViewModelList;
-        }
-      } else {
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 10000
-        });
-      }
-    })
-  }
-
+ 
   searchCourseSection() {
     this.searchRecord = true;
     if(this.courseSectionSearch.markingPeriodId){
@@ -213,9 +130,11 @@ export class AddCourseSectionComponent implements OnInit {
         item.smstrMarkingPeriodId = '1_' + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = '2_' + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = '3_' + item.prgrsprdMarkingPeriodId;
       }
 
-      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId) {
+      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId || item.prgrsprdMarkingPeriodId) {
         for (let markingPeriod of this.getMarkingPeriodTitleListModel.getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
@@ -224,6 +143,9 @@ export class AddCourseSectionComponent implements OnInit {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId){
+            item.markingPeriodTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId){
             item.markingPeriodTitle = markingPeriod.text;
             break;
           }

@@ -11,13 +11,14 @@
         <div fxLayout="column">
             <mat-form-field class="mt-6" appearance="outline" color="primary">
                 <mat-label>{{'title' | translate}}</mat-label>
-                <input formControlName="title" name="title" [(ngModel)]="calendarAddViewModel.schoolCalendar.title"
+                <input formControlName="title" name="title" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.title"
                     cdkFocusInitial maxlength="50" matInput required>
                 <mat-error *ngIf="form.get('title').hasError('required')">{{'titleIsRequired'| translate}}</mat-error>
             </mat-form-field>
 
             <div class="mb-4">
-                <mat-checkbox formControlName="isDefaultCalendar" (change)="showOptions($event)"  name="isDefaultCalendar" color="primary">
+                <mat-checkbox formControlName="isDefaultCalendar" [disableRipple]="!this.defaultValuesService.checkAcademicYear()"
+                (click)="!this.defaultValuesService.checkAcademicYear() ? $event.preventDefault() : ''" (change)="showOptions($event)"  name="isDefaultCalendar" color="primary">
                     {{'defaultCalendarForThisSchool' | translate}}</mat-checkbox>
             </div>
 
@@ -25,7 +26,7 @@
                 <div class="flex flex-1 mx-6 md:w-1/2">
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'startDate' | translate}}</mat-label>
-                        <input formControlName="startDate" readonly (dateInput)="checkDate()" [(ngModel)]="calendarAddViewModel.schoolCalendar.startDate"
+                        <input formControlName="startDate" readonly (dateInput)="checkDate()" [min]="minStartDate"  [(ngModel)]="calendarAddViewModel.schoolCalendar.startDate"
                             name="startDate" [matDatepicker]="begins" matInput required>
                         <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                         <mat-datepicker #begins></mat-datepicker>
@@ -35,15 +36,15 @@
                             *ngIf="!form.get('startDate').hasError('required') && form.get('startDate').hasError('invalidDateComparison')">
                         </mat-error>
                         <mat-error
-                            *ngIf="form.controls.startDate.errors?.nomatch">Start Date should be same as Marking Period Start Date
+                            *ngIf="form.controls.startDate.errors?.nomatch">Start Date should be same as School start Date
                         </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="flex flex-1 mx-6 md:w-1/2">
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'endDate' | translate}}</mat-label>
-                        <input formControlName="endDate" [(ngModel)]="calendarAddViewModel.schoolCalendar.endDate"
-                            name="endDate" [min]="form.value.startDate" [matDatepicker]="ends" matInput required>
+                        <input formControlName="endDate" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.endDate"
+                            name="endDate" [min]="form.value.startDate" [matDatepicker]="ends" [max]="maxEndDate" matInput required>
                         <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                         <mat-datepicker #ends></mat-datepicker>
                         <mat-error *ngIf="form.get('endDate').hasError('required')">
@@ -56,7 +57,8 @@
             <h6>{{'weekdays' | translate}}</h6>
             <ul class="md:grid md:grid-cols-3 md:col-gap-8 md:row-gap-2 mt-2 mb-6">
                 <li *ngFor="let day of weeks">
-                    <mat-checkbox [checked]="weekArray.indexOf(day.id) != -1" (click)="selectDays($event,day.id)"
+                    <mat-checkbox [checked]="weekArray.indexOf(day.id) != -1"  [disableRipple]="!this.defaultValuesService.checkAcademicYear()"
+                    (click)="!this.defaultValuesService.checkAcademicYear() ? $event.preventDefault() : selectDays($event,day.id)"
                         color="primary">
                         {{day.name | translate}}</mat-checkbox>
                 </li>
@@ -64,14 +66,14 @@
 
             <h6 [hidden]="membercount==0">{{'visibleTo' | translate}}</h6>
             <div class="mt-2">
-                <mat-checkbox #checkBox [checked]="checkAll" (click)="updateCheck($event)" [hidden]="membercount==0" color="primary">{{'selectAll' | translate}}
+                <mat-checkbox #checkBox [checked]="checkAll"  [disableRipple]="!this.defaultValuesService.checkAcademicYear()" (click)="!this.defaultValuesService.checkAcademicYear() ? $event.preventDefault() : updateCheck($event)" [hidden]="membercount==0" color="primary">{{'selectAll' | translate}}
                 </mat-checkbox>
             </div>
             <ul class="mt-3 md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3">
                 <li *ngFor="let member of getAllMembersList.getAllMemberList">
 
-                    <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1"
-                        (click)="selectChildren($event,member.membershipId)" color="primary">
+                    <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1" [disableRipple]="!this.defaultValuesService.checkAcademicYear()" (click)="!this.defaultValuesService.checkAcademicYear() ? $event.preventDefault() : selectChildren($event,member.membershipId)"
+                         color="primary">
                         {{member.profile}}</mat-checkbox>
                 </li>
 
@@ -81,6 +83,6 @@
 
     <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
         <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-        <button color="primary" mat-raised-button type="submit">{{calendarActionButtonTitle | translate}}</button>
+        <button *ngIf="this.defaultValuesService.checkAcademicYear()" color="primary" mat-raised-button type="submit">{{calendarActionButtonTitle | translate}}</button>
     </mat-dialog-actions>
 </form>

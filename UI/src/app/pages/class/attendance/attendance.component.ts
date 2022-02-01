@@ -54,7 +54,8 @@ import { Subject } from "rxjs";
 import { MatDatepickerInputEvent } from "@angular/material/datepicker";
 import { GetAllStaffModel } from "../../../models/staff.model";
 import { ScheduledCourseSectionViewModel } from "../../../models/dashboard.model";
-import { CommonService } from "src/app/services/common.service";
+import { CommonService } from "../../../services/common.service";
+import { LoaderService } from "../../../services/loader.service";
 const moment = _rollupMoment || _moment;
 
 const MY_FORMATS = {
@@ -99,24 +100,124 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   maxDate: string | Date = new Date();
   attendanceDate: string;
   isAnyMissingAttendance = false;
+  myHolidayDates = [];
+  myHolidayFilter;
+  calendarDays = [];
+  blockDays = [];
+  disabledDates;
+  isDisabledForAttendance: boolean;
+  isSubmitButtonDisabled: boolean;
+  getTheIndexNumbersForDroppedStudentForCourseSection=[];
+ 
   constructor(public translateService: TranslateService, private dialog: MatDialog,
     private studentAttendanceService: StudentAttendanceService,
     private router: Router,
     private snackbar: MatSnackBar,
+    private loaderService: LoaderService,
     private studentScheduleService: StudentScheduleService,
     private attendanceCodeService: AttendanceCodeService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private staffPortalService: StaffPortalService,
     private commonFunction: SharedFunction,
     private commonService: CommonService,
     ) {
-    translateService.use("en");
+    //translateService.use("en");
+    this.loaderService.isLoading.subscribe((val) => {
+      this.loading = val;
+    });
     this.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
   }
 
 
   ngOnInit(): void {
-    this.courseSection = JSON.parse(localStorage.getItem('selectedCourseSection'));
+    this.courseSection = this.defaultValuesService.getSelectedCourseSection();
+    this.myHolidayDates = this.courseSection.holidayList.map(x => {
+      return new Date(x);
+    });
+    this.disabledDates = this.courseSection.attendanceDays;
+    if (this.courseSection.scheduleType === scheduleType.calendarSchedule) {
+      this.calendarDays = this.courseSection.attendanceDays.map(x => {
+        return new Date(x);
+      });
+    }
+    if (this.courseSection.scheduleType === scheduleType.blockSchedule) {
+      this.blockDays = this.courseSection.attendanceDays.map(x => {
+        return new Date(x);
+      });
+    }
+    if (this.courseSection.scheduleType === scheduleType.FixedSchedule || this.courseSection.scheduleType === scheduleType.variableSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        const day = (d || new Date()).getDay();
+        return (!this.myHolidayDates.find(x => x.getTime() == time) && this.disabledDates.includes(day));
+      }
+    } else if (this.courseSection.scheduleType === scheduleType.calendarSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        return (this.calendarDays.find(x => x.getTime() == time) && !this.myHolidayDates.find(x => x.getTime() == time));
+      }
+    }
+    else if (this.courseSection.scheduleType === scheduleType.blockSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        return (this.blockDays.find(x => x.getTime() == time) && !this.myHolidayDates.find(x => x.getTime() == time));
+      }
+    }
+
+    //Generate attendance based on scheduling
+    if (this.courseSection.scheduleType === scheduleType.FixedSchedule || this.courseSection.scheduleType === scheduleType.variableSchedule) {
+      const today = new Date().getDay();
+      const formatDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
+      let holidayDate;
+      if (this.myHolidayDates) {
+        holidayDate = this.myHolidayDates.map(element => {
+          return this.commonFunction.formatDateSaveWithoutTime(element);
+        });
+      }
+      if (this.disabledDates.includes(today) && !holidayDate.includes(formatDate)) {
+        this.isDisabledForAttendance = false;
+      } else {
+        this.isDisabledForAttendance = true;
+      }
+    } else if (this.courseSection.scheduleType === scheduleType.calendarSchedule) {
+      const formatDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
+      let calendarDate;
+      let holidayDate;
+      if (this.calendarDays) {
+        calendarDate = this.calendarDays.map(element => {
+          return this.commonFunction.formatDateSaveWithoutTime(element);
+        });
+      }
+      if (this.myHolidayDates) {
+        holidayDate = this.myHolidayDates.map(element => {
+          return this.commonFunction.formatDateSaveWithoutTime(element);
+        });
+      }
+      if (calendarDate.includes(formatDate) && !holidayDate.includes(formatDate)) {
+        this.isDisabledForAttendance = false;
+      } else {
+        this.isDisabledForAttendance = true;
+      }
+    } else if (this.courseSection.scheduleType === scheduleType.blockSchedule) {
+      const formatDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
+      let blockDate;
+      let holidayDate;
+      if (this.blockDays) {
+        blockDate = this.blockDays.map(element => {
+          return this.commonFunction.formatDateSaveWithoutTime(element);
+        });
+      }
+      if (this.myHolidayDates) {
+        holidayDate = this.myHolidayDates.map(element => {
+          return this.commonFunction.formatDateSaveWithoutTime(element);
+        });
+      }
+      if (blockDate.includes(formatDate) && !holidayDate.includes(formatDate)) {
+        this.isDisabledForAttendance = false;
+      } else {
+        this.isDisabledForAttendance = true;
+      }
+    }
     this.generateClassForCourseSection(this.courseSection);
     this.missingAttendanceListForCourseSection();
     this.currentComponent = 'takeAttendance';
@@ -126,8 +227,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   missingAttendanceListForCourseSection() {
     let getAllStaffModel: GetAllStaffModel = new GetAllStaffModel();
     getAllStaffModel.sortingModel = null;
-    getAllStaffModel.staffId = +sessionStorage.getItem('userId');
-    getAllStaffModel.courseSectionId = +this.courseSectionClass.courseSectionId;
+    getAllStaffModel.staffId = this.defaultValuesService.getUserId();
+    getAllStaffModel.courseSectionId = this.courseSection.courseSectionId;
     this.staffPortalService.missingAttendanceListForCourseSection(getAllStaffModel).subscribe((res: ScheduledCourseSectionViewModel) => {
       if (res) {
       if(res._failure){
@@ -143,7 +244,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -152,7 +253,41 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   dateChange(date: MatDatepickerInputEvent<Date>) {
     this.isToday();
+    const formatedDate = new Date(date.value);
+    const dayName = days[formatedDate.getDay()];
     this.courseSectionClass.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(date.value);
+    this.isDisabledForAttendance = false;
+    if (this.courseSection.scheduleType === scheduleType.variableSchedule) {
+      this.courseSection.courseVariableSchedule.forEach(element => {
+        if (dayName === element.day && element.takeAttendance) {
+          this.courseSectionClass.blockId = element.blockId;
+          this.courseSectionClass.periodId = element.periodId;
+          this.courseSectionClass.courseId = element.courseId;
+          this.courseSectionClass.courseSectionId = element.courseSectionId;
+          this.courseSectionClass.takeAttendance = element.takeAttendance ? true : false;
+          this.courseSectionClass.attendanceDate = this.courseSectionClass.attendanceDate;
+        }
+      });
+    } else if (this.courseSection.scheduleType === scheduleType.blockSchedule) {
+      this.courseSection.bellScheduleList.map(bellSchedule => {
+        this.courseSection.courseBlockSchedule.map((subItem) => {
+          if (subItem.blockId === bellSchedule.blockId) {
+            let dateFormat = this.commonFunction.formatDateSaveWithoutTime(bellSchedule.bellScheduleDate);
+            if ((this.courseSectionClass.attendanceDate === dateFormat) && subItem.takeAttendance) {
+              this.courseSectionClass.blockId = subItem.blockId;
+              this.courseSectionClass.periodId = subItem.periodId;
+              this.courseSectionClass.courseId = subItem.courseId;
+              this.courseSectionClass.courseSectionId = subItem.courseSectionId;
+              this.courseSectionClass.takeAttendance = subItem.takeAttendance ? true : false;
+              this.courseSectionClass.attendanceDate = this.courseSectionClass.attendanceDate;
+            }
+          }
+        });
+      });
+    }
+    this.scheduleStudentListViewModel.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(date.value);
+    this.addUpdateStudentAttendanceModel = new AddUpdateStudentAttendanceModel();
+    this.studentAttendanceList.studentAttendance = [];
     this.getScheduledStudentList();
   }
 
@@ -166,29 +301,53 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
   }
   changeComponent(step, status) {
+    
     this.currentComponent = step;
     if (status) {
       this.selectedCourseSection = this.staffPortalService.getCourseSectionDetails();
       this.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.selectedCourseSection.attendanceDate);
       this.isToday();
+      this.isDisabledForAttendance = false;
       this.scheduleStudentListViewModel.scheduleStudentForView = [];
       this.getAllAttendanceCodeModel.attendanceCodeList = [];
       this.studentAttendanceList.studentAttendance = [];
       this.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.selectedCourseSection.attendanceDate);
-      if (this.selectedCourseSection && this.selectedCourseSection.attendanceTaken) {
-        this.courseSectionClass.blockId = this.selectedCourseSection.blockId;
-        this.courseSectionClass.periodId = this.selectedCourseSection.periodId;
-        this.courseSectionClass.courseId = this.selectedCourseSection.courseId;
-        this.courseSectionClass.courseSectionId = this.selectedCourseSection.courseSectionId;
-        this.courseSectionClass.takeAttendance = this.selectedCourseSection.attendanceTaken ? true : false;
-        this.courseSectionClass.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.selectedCourseSection.attendanceDate);
-        this.getScheduledStudentList();
+      this.addUpdateStudentAttendanceModel = new AddUpdateStudentAttendanceModel();
+      if (this.courseSection.scheduleType === scheduleType.FixedSchedule || this.courseSection.scheduleType === scheduleType.variableSchedule || this.courseSection.scheduleType === scheduleType.calendarSchedule) {
+        if (this.selectedCourseSection && this.selectedCourseSection.attendanceTaken) {
+          this.courseSectionClass.blockId = this.selectedCourseSection.blockId;
+          this.courseSectionClass.periodId = this.selectedCourseSection.periodId;
+          this.courseSectionClass.courseId = this.selectedCourseSection.courseId;
+          this.courseSectionClass.courseSectionId = this.selectedCourseSection.courseSectionId;
+          this.courseSectionClass.takeAttendance = this.selectedCourseSection.attendanceTaken ? true : false;
+          this.courseSectionClass.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.selectedCourseSection.attendanceDate);
+          this.scheduleStudentListViewModel.attendanceDate = this.attendanceDate;
+          this.getScheduledStudentList();
+        }
+      } else if (this.courseSection.scheduleType === scheduleType.blockSchedule) {
+        this.courseSection.bellScheduleList.map(bellSchedule => {
+          this.courseSection.courseBlockSchedule.map((subItem) => {
+            if (subItem.blockId === bellSchedule.blockId) {
+              let dateFormat = this.commonFunction.formatDateSaveWithoutTime(bellSchedule.bellScheduleDate);
+              if ((this.attendanceDate === dateFormat) && subItem.takeAttendance) {
+                this.courseSectionClass.blockId = subItem.blockId;
+                this.courseSectionClass.periodId = subItem.periodId;
+                this.courseSectionClass.courseId = subItem.courseId;
+                this.courseSectionClass.courseSectionId = subItem.courseSectionId;
+                this.courseSectionClass.takeAttendance = subItem.takeAttendance ? true : false;
+                this.courseSectionClass.attendanceDate = this.attendanceDate;
+                this.scheduleStudentListViewModel.attendanceDate = this.attendanceDate;
+                this.getScheduledStudentList();
+              }
+            }
+          });
+        });
       }
     }
   }
 
 
-  generateClassForCourseSection(courseSection) {
+  generateClassForCourseSection(courseSection) {    
     const formatedDate = new Date(this.attendanceDate);
     const dayName = days[formatedDate.getDay()];
 
@@ -208,8 +367,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
     else if (courseSection.scheduleType === scheduleType.variableSchedule) {
       courseSection.courseVariableSchedule.forEach(element => {
-        if (dayName === element.day && element.takeAttendance) {
-
+        if (dayName === element.day && element.takeAttendance) {          
           this.courseSectionClass.blockId = element.blockId;
           this.courseSectionClass.periodId = element.periodId;
           this.courseSectionClass.courseId = element.courseId;
@@ -224,8 +382,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
     else if (courseSection.scheduleType === scheduleType.calendarSchedule) {
       courseSection.courseCalendarSchedule.forEach(element => {
-        if (dayName === days[ new Date(element?.date).getDay()] && element.takeAttendance) {
-
+        if (dayName === days[ new Date(element?.date).getDay()] && element.takeAttendance) {          
           this.courseSectionClass.blockId = element.blockId;
           this.courseSectionClass.periodId = element.periodId;
           this.courseSectionClass.courseId = element.courseId;
@@ -238,17 +395,37 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
       });
     }
+    else if (courseSection.scheduleType === scheduleType.blockSchedule) {
+      courseSection.bellScheduleList.map(bellSchedule => {
+        courseSection.courseBlockSchedule.map((subItem) => {
+          if (subItem.blockId === bellSchedule.blockId) {
+            let dateFormat = this.commonFunction.formatDateSaveWithoutTime(bellSchedule.bellScheduleDate);
+            if ((this.attendanceDate === dateFormat) && subItem.takeAttendance) {
+              this.courseSectionClass.blockId = subItem.blockId;
+              this.courseSectionClass.periodId = subItem.periodId;
+              this.courseSectionClass.courseId = subItem.courseId;
+              this.courseSectionClass.courseSectionId = subItem.courseSectionId;
+              this.courseSectionClass.takeAttendance = subItem.takeAttendance ? true : false;
+              this.courseSectionClass.attendanceDate = this.attendanceDate;
+
+              this.getScheduledStudentList();
+            }
+          }
+        });
+      });
+    }
   }
 
 
   getScheduledStudentList() {
-    this.scheduleStudentListViewModel.courseSectionId = +localStorage.getItem('courseSectionId');
+    this.scheduleStudentListViewModel.courseSectionId = this.defaultValuesService.getCourseSectionId();
     this.scheduleStudentListViewModel.pageNumber = 0;
     this.scheduleStudentListViewModel.pageSize = 0;
     this.scheduleStudentListViewModel.sortingModel = null;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
+        this.isSubmitButtonDisabled = true;
         if (res.scheduleStudentForView == null) {
           this.snackbar.open(res._message, '', {
             duration: 10000
@@ -259,9 +436,14 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         }
 
       } else {
+        this.isSubmitButtonDisabled = false;
         this.scheduleStudentListViewModel.scheduleStudentForView = res.scheduleStudentForView;
         this.getAllAttendanceCode();
-
+        this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
+          if(x.isDropped === true){
+            this.getTheIndexNumbersForDroppedStudentForCourseSection.push(index)
+          }
+         })
       }
     })
   }
@@ -302,6 +484,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       else {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
+          this.commentsArray = [];
+          this.actionButtonTitle = 'submit';
           if (res.studentAttendance == null) {
             // this.snackbar.open(res._message, '', {
             //   duration: 5000
@@ -314,6 +498,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
             this.updateStudentAttendanceList();
           }
         } else {
+          this.commentsArray = [];
+          this.actionButtonTitle = 'submit';
           this.studentAttendanceList.studentAttendance = res.studentAttendance;
           this.updateStudentAttendanceList();
         }
@@ -323,12 +509,12 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
 
-  initializeDefaultValues(item, i) {
+  initializeDefaultValues(item, i) {    
     this.addUpdateStudentAttendanceModel.studentAttendance[i].studentId = item.studentId;
     this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCategoryId = this.courseSection.attendanceCategoryId;
     this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.attendanceDate);
     this.addUpdateStudentAttendanceModel.studentAttendance[i].blockId = this.courseSectionClass.blockId;
-    this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getEmailId();
+    this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getUserGuidId();
     this.getAllAttendanceCodeModel.attendanceCodeList.map((element) => {
       if (element.defaultCode) {
         this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode = element.attendanceCode1.toString();
@@ -343,6 +529,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       this.addUpdateStudentAttendanceModel.studentAttendance.forEach((addUpdateStudentAttendance, index) => {
         if (addUpdateStudentAttendance.studentId == studentAttendance.studentId) {
           addUpdateStudentAttendance.attendanceCode = studentAttendance.attendanceCode.toString();
+          addUpdateStudentAttendance.studentAttendanceComments[0].comment = studentAttendance.studentAttendanceComments[0]?.comment;
+          addUpdateStudentAttendance.studentAttendanceComments[0].membershipId = studentAttendance.studentAttendanceComments[0]?.membershipId;
           this.commentsArray[index] = studentAttendance.studentAttendanceComments
           this.actionButtonTitle = 'update';
         }
@@ -358,7 +546,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       data: { studentName, commentData: this.commentsArray[index], type: this.actionButtonTitle }
     }).afterClosed().subscribe((res) => {
       if (res?.submit) {
-        if (res.response.comment?.trim().length > 0) {
           if (this.commentsArray[index]?.studentAttendanceComments) {
             this.commentsArray[index].studentAttendanceComments[0].comment = res.response.comment.trim();
             this.commentsArray[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();
@@ -366,14 +553,21 @@ export class AttendanceComponent implements OnInit, OnDestroy {
             this.commentsArray[index] = [res.response];
           }
 
-          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].comment = res.response.comment.trim();
+          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].comment = res.response.comment?.trim();
           this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();
-        }
       }
     });
   }
 
   addUpdateStudentAttendance() {
+    this.addUpdateStudentAttendanceModel.studentAttendance.map((data,index)=>{
+      this.getTheIndexNumbersForDroppedStudentForCourseSection.map(val=>{
+        if(val === index){
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCode = 0;
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCategoryId = 0;
+        }
+      })
+     })
     this.addUpdateStudentAttendanceModel = { ...this.setDefaultDataInStudentAttendance(this.addUpdateStudentAttendanceModel) };
     this.studentAttendanceService.addUpdateStudentAttendance(this.addUpdateStudentAttendanceModel).subscribe((res) => {
     if(res._failure){
@@ -386,6 +580,12 @@ export class AttendanceComponent implements OnInit, OnDestroy {
           duration: 10000
         });
       }
+      this.missingAttendanceListForCourseSection();
+      this.scheduleStudentListViewModel.scheduleStudentForView = [];
+      this.getAllAttendanceCodeModel.attendanceCodeList = [];
+      this.studentAttendanceList.studentAttendance = [];
+      this.addUpdateStudentAttendanceModel = new AddUpdateStudentAttendanceModel();
+      this.getScheduledStudentList();
     })
 
   }
@@ -393,10 +593,10 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   setDefaultDataInStudentAttendance(attendanceModel) {
     attendanceModel.courseId = this.courseSectionClass.courseId;
     attendanceModel.courseSectionId = this.courseSectionClass.courseSectionId;
-    attendanceModel.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.attendanceDate);;
+    attendanceModel.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.attendanceDate);
     attendanceModel.periodId = this.courseSectionClass.periodId;
-    attendanceModel.updatedBy = this.defaultValuesService.getEmailId();
-    attendanceModel.staffId = +sessionStorage.getItem('userId');
+    attendanceModel.updatedBy = this.defaultValuesService.getUserGuidId();
+    attendanceModel.staffId = this.defaultValuesService.getUserId();
     return attendanceModel;
   }
 

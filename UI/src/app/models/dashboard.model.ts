@@ -16,6 +16,7 @@ export class DashboardViewModel extends CommonField{
     public totalParent: number;
     public noticeTitle: string;
     public noticeBody :string;
+    public lastUsedSchoolId:number;
     public schoolCalendar : CalendarModel;
     public calendarEventList : CalendarEventModel[];
     public membershipId : number;
@@ -31,5 +32,8 @@ export class ScheduledCourseSectionViewModel extends CommonField{
     _pageSize:number;
     staffId: number;
     allCourse: boolean;
+    public membershipId : number;
     noticeList:NoticeModel[];
+    notificationList:any;
+    academicYear:any;
 }

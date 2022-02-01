@@ -1,3 +1,4 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div *ngIf="currentTab === 'gradebook'">
     <div class="card">
 
@@ -9,7 +10,7 @@
                         <div class="lg:flex items-center">
                             <div class="py-2 mr-4" fxLayout="row" fxLayoutAlign="start center">
                                 <div class="flex items-center w-full">
-                                    <input matInput class="py-3 border-0 outline-none w-full bg-transparent"
+                                    <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrl"
                                         appearance="outline" color="primary" placeholder="Search..." type="search">
                                     <button class="ml-4" mat-icon-button type="button">
                                         <mat-icon [icIcon]="icSearch"></mat-icon>
@@ -18,9 +19,9 @@
                             </div>
                             <hr class="block lg:hidden -mx-4 mb-4"/>
                             <div class="mb-4 lg:mb-0">
-                                <mat-slide-toggle color="primary" class="mr-6"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
+                                <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                                 </mat-slide-toggle>
-                                <mat-slide-toggle color="primary" class=""><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
+                                <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                                 </mat-slide-toggle>
                             </div>
                         </div>
@@ -32,14 +33,14 @@
                                     </mat-icon>
                                 </button>
                                 <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                    <button mat-menu-item>{{ 'exportToExcel' | translate }}</button>
+                                    <button mat-menu-item (click)="generateGradebookExcel()">{{ 'exportToExcel' | translate }}</button>
                                     <button mat-menu-item>{{ 'print' | translate }}</button>
                                 </mat-menu>
                             </div>
                         </div>
                     </div>
                 </div>
-                 <div class="flex">
+                 <div class="flex" *ngIf="addGradebookGradeModel?.assignmentsListViewModels?.length > 0">
                     <div class="gradebook-left">
                         <div class="flex h-32">
                             <div class="w-2/3 px-4 py-2 flex items-end bg-skyblue-light border-b">
@@ -49,441 +50,89 @@
                                 <p class="font-semibold w-full">{{ "runningAvgLetterGrade" | translate }}</p>
                             </div>
                         </div>
-                        <div class="flex border-b h-16">
+                        <div class="flex border-b h-16" *ngFor="let grade of addGradebookGradeModel?.assignmentsListViewModels[0]?.studentsListViewModels">
                             <div class="w-2/3 px-4 py-2">
                                 <div class="flex text-gray">
                                     <div class="flex-shrink-0 h-12 w-12">
-                                        <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
+                                        <img [src]="grade?.studentPhoto ? 'data:image/png;base64,' + grade?.studentPhoto : 'assets/img/default.jpg'" alt="Student photo" class="h-12 w-12 rounded-full" />
                                     </div>
                                     <div class="ml-3 flex flex-col justify-center">
                                         <h6 class="text-sm font-semibold w-40 truncate text-blue cursor-pointer"
-                                            (click)="changeComponent('gradeDetails')">Justin Aponte</h6>
+                                            (click)="changeComponent('gradeDetails', grade)">{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}</h6>
                                         <div>
-                                            <span>{{ 'id' | translate }} : OPS54</span>
+                                            <span>{{ 'id' | translate }} : {{grade?.studentInternalId}}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-1/3 p-4 bg-green-light text-gray flex items-center border border-t-0">72% <span class="ml-1 font-medium text-black">[ B+
-                                    ]</span>
+                            <div class="w-1/3 p-4 bg-green-light text-gray flex items-center border border-t-0">{{grade?.runningAvg ? grade?.runningAvg + '%' : ''}} <span class="ml-1 font-medium text-black">{{grade?.runningAvgGrade ? '[ ' + grade?.runningAvgGrade + ' ]' : ''}}</span>
                             </div>
                         </div>
-                        <div class="flex border-b h-16">
-                            <div class="w-2/3 px-4 py-2">
-                                <div class="flex text-gray">
-                                    <div class="flex-shrink-0 h-12 w-12">
-                                        <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                    </div>
-                                    <div class="ml-3 flex flex-col justify-center">
-                                        <h6 class="text-sm font-semibold w-40 truncate text-blue cursor-pointer"
-                                            (click)="changeComponent('gradeDetails')">Javier Holmes</h6>
-                                        <div>
-                                            <span>{{ 'id' | translate }} : OPS62</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-1/3 p-4 bg-green-light text-gray flex items-center border border-t-0">68% <span class="ml-1 font-medium text-black">[ B
-                                    ]</span>
-                            </div>
-                        </div>
-                        <div class="flex border-b h-16">
-                            <div class="w-2/3 px-4 py-2">
-                                <div class="flex text-gray">
-                                    <div class="flex-shrink-0 h-12 w-12">
-                                        <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                    </div>
-                                    <div class="ml-3 flex flex-col justify-center">
-                                        <h6 class="text-sm font-semibold w-40 truncate text-blue cursor-pointer"
-                                            (click)="changeComponent('gradeDetails')">James Parker</h6>
-                                        <div>
-                                            <span>{{ 'id' | translate }} : OPS54</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-1/3 p-4 bg-green-light text-gray flex items-center border border-t-0">60% <span class="ml-1 font-medium text-black">[ B
-                                    ]</span>
-                            </div>
-                        </div>
-                        <div class="flex border-b h-16">
-                            <div class="w-2/3 px-4 py-2">
-                                <div class="flex text-gray">
-                                    <div class="flex-shrink-0 h-12 w-12">
-                                        <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                    </div>
-                                    <div class="ml-3 flex flex-col justify-center">
-                                        <h6 class="text-sm font-semibold w-40 truncate text-blue cursor-pointer"
-                                            (click)="changeComponent('gradeDetails')">Colin Parker</h6>
-                                        <div>
-                                            <span>{{ 'id' | translate }} : OPS45</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="w-1/3 p-4 bg-green-light text-gray flex items-center border border-t-0">68% <span class="ml-1 font-medium text-black">[ B
-                                    ]</span>
-                            </div>
-                        </div>
+                    
                     </div>
                     <div class="overflow-x-auto gradebook-right">
                         <div class="flex">
-                            <div class="gradebook-right-col">
+                            <div class="gradebook-right-col" *ngFor="let assignment of addGradebookGradeModel?.assignmentsListViewModels">
                                 <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : April 16, 2021</p>
+                                    <p>Due : {{ assignment?.assignmentDate | date }}</p>
                                     <div class="flex justify-between h-12">
-                                        <p class="multi-line-text font-semibold mt-1">Quiz 1</p>
-                                        <div>
+                                        <p class="multi-line-text font-semibold mt-1">{{assignment?.assignmentTitle}}</p>
+                                        <div *ngIf="defaultValuesService.checkAcademicYear()">
                                             <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
                                                 <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
                                                 </mat-icon>
                                             </button>
                                             <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                                <button mat-menu-item>{{ 'editGrades' | translate }}</button>
+                                                <button mat-menu-item *ngIf="!assignment?.isEditMode" (click)="assignment.isEditMode = true;">{{ 'editGrades' | translate }}</button>
+                                                <button mat-menu-item *ngIf="assignment?.isEditMode" (click)="assignment.isEditMode = false;">{{ 'viewGrades' | translate }}</button>
                                             </mat-menu>
                                         </div>
                                     </div>
                                     <div class="">
-                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Quiz</a></p>
-                                        <p>{{ 'weightage' | translate }} : 40%</p>
+                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList(assignment)"><a>{{assignment?.title}}</a></p>
+                                        <p>{{ 'weightage' | translate }} : {{assignment?.weightage}}%</p>
                                     </div>
                                 </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
+                                <ng-container *ngFor="let grade of assignment?.studentsListViewModels">
+
+                                <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && assignment?.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                                     <div class="flex justify-between items-center">
-                                        <div class="flex">
-                                            <input type="text" class="p-1 border border-gray-light rounded w-12 mr-2" />
-                                            <span class="mt-1">/20</span>
+                                        <div class="flex" >
+                                            <input type="text" [(ngModel)]="grade.allowedMarks" class="p-1 border border-gray-light rounded w-12 mr-2" />
+                                            <span class="mt-1">/{{grade.points}}</span>
                                         </div>
-                                        <button class="ml-4" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
+                                        <button class="ml-4" (click)="addGradeComment(grade)">
+                                            <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="flex">
-                                            <input type="text" class="p-1 border border-gray-light rounded w-12 mr-2" />
-                                            <span class="mt-1">/20</span>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
+                                <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && !assignment?.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
+                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
+                                <div class="flex justify-between items-center">
+                                    <div class="">
+                                        <p>{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
+                                        <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                     </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="flex">
-                                            <input type="text" class="p-1 border border-gray-light rounded w-12 mr-2" />
-                                            <span class="mt-1">/20</span>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker, ID : OPS45"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="flex">
-                                            <input type="text" class="p-1 border border-gray-light rounded w-12 mr-2" />
-                                            <span class="mt-1">/20</span>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
+                                    <button class="" (click)="addGradeComment(grade)">
+                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="gradebook-right-col">
-                                <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : April 16, 2021</p>
-                                    <div class="flex justify-between h-12">
-                                        <p class="multi-line-text font-semibold mt-1">African Music Design Project</p>
-                                        <div>
-                                            <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
-                                                <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
-                                                </mat-icon>
-                                            </button>
-                                            <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                                <button mat-menu-item>{{ 'editGrades' | translate }}</button>
-                                            </mat-menu>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Homework</a></p>
-                                        <p>{{ 'weightage' | translate }} : 40%</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>18/20</p>
-                                            <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>15/20</p>
-                                            <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-green"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Co lin Parker, ID : OPS45"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="gradebook-right-col">
-                                <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : April 16, 2021</p>
-                                    <div class="flex justify-between h-12">
-                                        <p class="multi-line-text font-semibold mt-1">Practice Vocals</p>
-                                        <div>
-                                            <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
-                                                <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
-                                                </mat-icon>
-                                            </button>
-                                            <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                                <button mat-menu-item>{{ 'editGrades' | translate }}</button>
-                                            </mat-menu>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Homework</a></p>
-                                        <p>{{ 'weightage' | translate }} : 10%</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>18/20</p>
-                                            <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>15/20</p>
-                                            <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker, ID : OPS45"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-green"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="gradebook-right-col">
-                                <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : Mar 29, 2021</p>
-                                    <div class="flex justify-between h-12">
-                                        <p class="multi-line-text font-semibold mt-1">Rock Music Design Project</p>
-                                        <div>
-                                            <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
-                                                <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
-                                                </mat-icon>
-                                            </button>
-                                            <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                                <button mat-menu-item>{{ 'editGrades' | translate }}</button>
-                                            </mat-menu>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Homework</a></p>
-                                        <p>{{ 'weightage' | translate }} : 10%</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>18/20</p>
-                                            <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>15/20</p>
-                                            <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-green"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker, ID : OPS45"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="gradebook-right-col">
-                                <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : Mar 13, 2021</p>
-                                    <div class="flex justify-between h-12">
-                                        <p class="multi-line-text font-semibold mt-1">Project 01</p>
-                                        <div>
-                                            <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
-                                                <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
-                                                </mat-icon>
-                                            </button>
-                                            <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                                <button mat-menu-item>{{ 'editGrades' | translate }}</button>
-                                            </mat-menu>
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Special Projects</a></p>
-                                        <p>{{ 'weightage' | translate }} : 10%</p>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>18/20</p>
-                                            <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>15/20</p>
-                                            <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-green"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker ID : OPS45"
-                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                    <div class="flex justify-between items-center">
-                                        <div class="">
-                                            <p>17/20</p>
-                                            <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                        </div>
-                                        <button class="" (click)="addGradeComment()">
-                                            <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                            </ng-container>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-right p-4">
-                    <button mat-raised-button color="primary">{{ 'submit' | translate }}</button>
+                <div *ngIf="addGradebookGradeModel?.assignmentsListViewModels?.length === 0 || !addGradebookGradeModel?.assignmentsListViewModels" class="text-center p-4">
+                    {{loading?('fetchingData' | translate):('noData' | translate) }}
+                </div>
+                <div class="text-right p-4" *ngIf="addGradebookGradeModel?.assignmentsListViewModels?.length > 0">
+                    <button mat-raised-button color="primary"(click)="submitGradesBook()" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate }}</button>
                 </div>
             </div>
+
+           
             
         </div>
 
@@ -494,8 +143,8 @@
                     <span class="cursor-pointer text-blue" (click)="backTogradeList()">
                         <mat-icon class="mr-4 align-middle">west</mat-icon>
                     </span>
-                    <span class="font-semibold text-lg text-primary">Homework</span>
-                    <p class="pl-10">{{ 'weightage' | translate }} : 10%</p>
+                    <span class="font-semibold text-lg text-primary">{{assignmentTypeDetails?.assignmentTitle}}</span>
+                    <p class="pl-10">{{ 'weightage' | translate }} : {{assignmentTypeDetails?.weightage}}%</p>
                 </h4>
                 <div class="my-2 md:my-0">
                     <p class="text-primary">{{ 'putAsterixAsPointsValueToExemptAstudentFromAnAssignment' | translate }}</p>
@@ -507,8 +156,8 @@
                     <div class="lg:flex items-center">
                         <div class="py-2 mr-4" fxLayout="row" fxLayoutAlign="start center">
                             <div class="flex items-center w-full">
-                                <input matInput class="py-3 border-0 outline-none w-full bg-transparent"
-                                    appearance="outline" color="primary" placeholder="Search..." type="search">
+                                <input matInput class="py-3 border-0 outline-none w-full bg-transparent" [formControl]="searchCtrlForAssignmentType"
+                                appearance="outline" color="primary" placeholder="Search..." type="search">
                                 <button class="ml-4" mat-icon-button type="button">
                                     <mat-icon [icIcon]="icSearch"></mat-icon>
                                 </button>
@@ -516,14 +165,15 @@
                         </div>
                         <hr class="block lg:hidden -mx-4 mb-4"/>
                         <div class="mb-4 lg:mb-0">
-                            <mat-slide-toggle color="primary" class="mr-6"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
+                            <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)"><span class="hidden xl:inline-block" >{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                             </mat-slide-toggle>
-                            <mat-slide-toggle color="primary" class=""><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
+                            <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeByAssignmentTypeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                             </mat-slide-toggle>
                         </div>
                     </div>
                 </div>
-            </div><div class="flex">
+            </div>
+            <div class="flex" *ngIf="addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels?.length > 0">
                 <div class="gradebook-left">
                     <div class="flex items-end justify-around py-2 h-32 bg-skyblue-light border-b border-r">
                         <div class="w-2/4 px-4">
@@ -536,240 +186,91 @@
                             <p class="font-semibold">{{ "grade" | translate }}</p>
                         </div>
                     </div>
-                    <div class="flex py-2 border-b h-16 border-r">
+                    <div class="flex py-2 border-b h-16 border-r" *ngFor="let grade of addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels[0]?.studentsListViewModels">
                         <div class="w-2/4 px-4">
                             <div class="flex text-gray">
                                 <div class="flex-shrink-0 h-12 w-12">
-                                    <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
+                                    <img [src]="grade?.studentPhoto ? 'data:image/png;base64,' + grade?.studentPhoto : 'assets/img/default.jpg'" alt="Student photo" class="h-12 w-12 rounded-full" />
                                 </div>
                                 <div class="ml-3 flex flex-col justify-center">
                                     <h6 class="text-sm font-semibold w-24 truncate text-blue cursor-pointer"
-                                        (click)="changeComponent('gradeDetails')">Justin Aponte</h6>
+                                        (click)="changeComponent('gradeDetails')">{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}</h6>
                                     <div>
-                                        <span>{{ 'id' | translate }} : OPS54</span>
+                                        <span>{{ 'id' | translate }} : {{grade?.studentInternalId}}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="w-1/4 p-4 text-gray">72/80</div>
-                        <div class="w-1/4 p-4 text-gray whitespace-nowrap">90% <span class="font-medium text-black ml-1">[ A
-                                ]</span>
-                        </div>
-                    </div>
-                    <div class="flex py-2 border-b h-16 border-r">
-                        <div class="w-2/4 px-4">
-                            <div class="flex text-gray">
-                                <div class="flex-shrink-0 h-12 w-12">
-                                    <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                </div>
-                                <div class="ml-3 flex flex-col justify-center">
-                                    <h6 class="text-sm font-semibold w-24 truncate text-blue cursor-pointer"
-                                        (click)="changeComponent('gradeDetails')">Javier Holmes</h6>
-                                    <div>
-                                        <span>{{ 'id' | translate }} : OPS62</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/4 p-4 text-gray">68/80</div>
-                        <div class="w-1/4 p-4 text-gray whitespace-nowrap">85% <span class="font-medium text-black ml-1">[ B
-                                ]</span>
-                        </div>
-                    </div>
-                    <div class="flex py-2 border-b h-16 border-r">
-                        <div class="w-2/4 px-4">
-                            <div class="flex text-gray">
-                                <div class="flex-shrink-0 h-12 w-12">
-                                    <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                </div>
-                                <div class="ml-3 flex flex-col justify-center">
-                                    <h6 class="text-sm font-semibold w-24 truncate text-blue cursor-pointer"
-                                        (click)="changeComponent('gradeDetails')">James Parker</h6>
-                                    <div>
-                                        <span>{{ 'id' | translate }} : OPS54</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/4 p-4 text-gray">60/80</div>
-                        <div class="w-1/4 p-4 text-gray whitespace-nowrap">60% <span class="font-medium text-black ml-1">[ B
-                                ]</span>
-                        </div>
-                    </div>
-                    <div class="flex py-2 border-b h-16 border-r">
-                        <div class="w-2/4 px-4">
-                            <div class="flex text-gray">
-                                <div class="flex-shrink-0 h-12 w-12">
-                                    <img src="assets/img/default.jpg" alt="" class="h-12 w-12 rounded-full" />
-                                </div>
-                                <div class="ml-3 flex flex-col justify-center">
-                                    <h6 class="text-sm font-semibold w-24 truncate text-blue cursor-pointer"
-                                        (click)="changeComponent('gradeDetails')">Colin Parker</h6>
-                                    <div>
-                                        <span>{{ 'id' | translate }} : OPS45</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/4 p-4 text-gray">68/80</div>
-                        <div class="w-1/4 p-4 text-gray whitespace-nowrap">68% <span class="font-medium text-black ml-1">[ B
-                                ]</span>
+                        <div class="w-1/4 p-4 text-gray">{{grade?.totalObtainOfAssignmentType ? grade?.totalObtainOfAssignmentType : 0}}/{{grade?.totalPointOfAssignmentType}}</div>
+                        <div class="w-1/4 p-4 text-gray whitespace-nowrap">{{grade?.percentageOfAssignmentType ? grade?.percentageOfAssignmentType + '%' : ''}} <span class="font-medium text-black ml-1">{{grade?.letterGradeOfAssignmentType ? '[ ' + grade?.letterGradeOfAssignmentType + ' ]' : ''}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="overflow-x-auto gradebook-right">
                     <div class="flex">
 
-                        <div class="gradebook-right-col">
+                        <div class="gradebook-right-col" *ngFor="let assignment of addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels">
                             <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                <p>Due : Mar 29, 2021</p>
+                                <p>Due : {{ assignment?.assignmentDate | date }}</p>
                                 <div class="flex justify-between h-12">
-                                    <p class="multi-line-text font-semibold mt-1">Rock Music Design Project</p>
+                                    <p class="multi-line-text font-semibold mt-1">{{ assignment?.assignmentTitle}}</p>
                                     <div>
                                         <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
                                             <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
                                             </mat-icon>
                                         </button>
                                         <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                            <button mat-menu-item>{{ 'editGrades' | translate }}</button>
+                                            <button mat-menu-item *ngIf="!assignment?.isEditMode" (click)="assignment.isEditMode = true;">{{ 'editGrades' | translate }}</button>
+                                            <button mat-menu-item *ngIf="assignment?.isEditMode" (click)="assignment.isEditMode = false;">{{ 'viewGrades' | translate }}</button>
+
                                         </mat-menu>
                                     </div>
                                 </div>
                                 <div class="">
-                                    <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Homework</a></p>
-                                    <p>{{ 'weightage' | translate }} : 10%</p>
+                                    <p class="text-blue truncate"><a>{{ assignment?.title}}</a></p>
+                                    <p>{{ 'weightage' | translate }} : {{ assignment?.weightage}}%</p>
                                 </div>
                             </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>18/20</p>
-                                        <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>17/20</p>
-                                        <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>15/20</p>
-                                        <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-green"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker, ID : OPS45"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>17/20</p>
-                                        <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="gradebook-right-col">
-                            <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                <p>Due : April 16, 2021</p>
-                                <div class="flex justify-between h-12">
-                                    <p class="multi-line-text font-semibold mt-1">Practice Vocals</p>
-                                    <div>
-                                        <button mat-button [matMenuTriggerFor]="beforeMenu" class="min-w-0 p-0 ml-2">
-                                            <mat-icon class="font-semibold align-middle cursor-pointer">more_vert
-                                            </mat-icon>
+                            <ng-container *ngFor="let grade of assignment?.studentsListViewModels">
+                                <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && assignment?.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
+                                    aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex" >
+                                            <input type="text" [(ngModel)]="grade.allowedMarks" class="p-1 border border-gray-light rounded w-12 mr-2" />
+                                            <span class="mt-1">/{{grade.points}}</span>
+                                        </div>
+                                        <button class="ml-4" (click)="addGradeComment(grade)">
+                                            <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
                                         </button>
-                                        <mat-menu #beforeMenu="matMenu" xPosition="before">
-                                            <button mat-menu-item>{{ 'editGrades' | translate }}</button>
-                                        </mat-menu>
                                     </div>
                                 </div>
-                                <div class="">
-                                    <p class="text-blue cursor-pointer truncate" (click)="showCategoryList()"><a>Homework</a></p>
-                                    <p>{{ 'weightage' | translate }} : 10%</p>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Justin Aponte, ID : OPS54"
+                            <div class="p-4 text-gray h-16 border-b border-r" *ngIf="!grade?.isShowUngraded && !assignment.isEditMode" matTooltip="{{grade?.firstGivenName}} {{grade?.middleName!=null ? grade?.middleName + ' ':''}}{{grade?.lastFamilyName}}, ID : {{grade?.studentInternalId}}"
                                 aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                                 <div class="flex justify-between items-center">
                                     <div class="">
-                                        <p>18/20</p>
-                                        <p>90% <span class="font-semibold text-black">[ A+ ]</span></p>
+                                        <p>{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
+                                        <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                     </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
+                                    <button class="" (click)="addGradeComment(grade)">
+                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Javier Holmes, ID : OPS62"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>17/20</p>
-                                        <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="James Parker, ID : OPS54"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>15/20</p>
-                                        <p>75% <span class="font-semibold text-black">[ B ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-gray-light"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-4 text-gray h-16 border-b border-r" matTooltip="Colin Parker, ID : OPS45"
-                                aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
-                                <div class="flex justify-between items-center">
-                                    <div class="">
-                                        <p>17/20</p>
-                                        <p>85% <span class="font-semibold text-black">[ A ]</span></p>
-                                    </div>
-                                    <button class="" (click)="addGradeComment()">
-                                        <i class="icon icon-bubble text-lg text-green"></i>
-                                    </button>
-                                </div>
-                            </div>
+                        </ng-container>
                         </div>
-
                     </div>
                 </div>
             </div>
-            <div class="text-right p-4">
-                <button mat-raised-button color="primary">{{ 'submit' | translate }}</button>
+            <div *ngIf="addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels?.length === 0 || !addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels" class="text-center p-4">
+                {{loading?('fetchingData' | translate):('noData' | translate) }}
+            </div>
+            <div class="text-right p-4" *ngIf="addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels?.length > 0">
+                <button mat-raised-button color="primary" (click)="submitGradesBookByAssignmentType()" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate }}</button>
             </div>
         </div>
     </div>
 
-    <div class="card" *ngIf="currentComponent === 'gradeDetails'">
+    <div class="card" *ngIf="currentComponent === 'gradeDetails' && gradeData">
         <div class="md:flex items-center p-4 justify-between">
             <div class="flex">
                 <span class="cursor-pointer text-blue flex items-center" (click)="changeComponent('gradebookGrade')">
@@ -777,18 +278,18 @@
                 </span>
                 <div class="flex">
                     <div class="flex-shrink-0 h-10 w-10">
-                        <img src="assets/img/default.jpg" alt="" class="h-10 w-10 rounded-full" />
+                        <img [src]="gradeData?.studentPhoto ? 'data:image/png;base64,' + gradeData?.studentPhoto : 'assets/img/default.jpg'" alt="Student photo" class="h-10 w-10 rounded-full" />
                     </div>
                     <div class="ml-3">
                         <p class="text-lg font-semibold text-blue cursor-pointer" (click)="changeComponent('gradeDetails')">
-                            Justin Aponte</p>
-                        <p class="text-gray text-xs">{{ 'id' | translate }} : OPS54</p>
+                            {{gradeData?.firstGivenName}} {{gradeData?.middleName!=null ? gradeData?.middleName + ' ':''}}{{gradeData?.lastFamilyName}}</p>
+                        <p class="text-gray text-xs">{{ 'id' | translate }} : {{gradeData?.studentInternalId}}</p>
                     </div>
                 </div>
             </div>
         </div>
         <mat-divider></mat-divider>
-        <vex-gradebook-grade-details></vex-gradebook-grade-details>
+        <vex-gradebook-grade-details [studentId]="gradeData?.studentId"></vex-gradebook-grade-details>
     </div>
 </div>
 

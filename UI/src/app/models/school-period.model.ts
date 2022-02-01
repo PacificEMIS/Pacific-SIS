@@ -57,6 +57,8 @@ export class BlockListViewModel extends CommonField {
     public getBlockListForView: GetBlockListForView[];
     public tenantId: string;
     public schoolId: number;
+    public isListView:boolean;
+    public academicYear: number;
     constructor() {
         super();
     }

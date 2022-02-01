@@ -1,7 +1,7 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="bg-skyblue px-gutter py-4 border-b border-t">
-    <vex-secondary-toolbar current="Course Manager" class="text-primary">
-        <vex-breadcrumbs [crumbs]="['Courses']" class="flex-auto"></vex-breadcrumbs>
+    <vex-secondary-toolbar current="{{'courseManager'}}" class="text-primary">
+        <vex-breadcrumbs [crumbs]="['courses']" class="flex-auto"></vex-breadcrumbs>
     </vex-secondary-toolbar>
 </div>
 <vex-page-layout>
@@ -15,7 +15,7 @@
                     <mat-form-field class="mb-0 mr-1 bg-white" appearance="outline" color="primary">
                             <mat-label>{{'Subject'|translate}}</mat-label>
                             <mat-select name="subject" formControlName="subject" (selectionChange)="onSubjectChange($event.value)">
-                                <mat-option value="all">All</mat-option>
+                                <mat-option value="all">{{'all'|translate}}</mat-option>
                                 <mat-option *ngFor="let subject of subjectList" [value]='subject.subjectName'>{{subject.subjectName}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -29,7 +29,7 @@
                     <mat-form-field class="mb-0 mr-1 bg-white" appearance="outline" color="primary">
                             <mat-label>{{'Program'|translate}}</mat-label>
                             <mat-select  name="program" formControlName="program" (selectionChange)="onProgramChange($event.value)">
-                                <mat-option value="all">All</mat-option>
+                                <mat-option value="all">{{'all'|translate}}</mat-option>
                                 <mat-option *ngFor="let program of programList" [value]='program.programName'>{{program.programName}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -63,7 +63,7 @@
                         </ng-template> -->
                         <h3>{{courseList?.length}} Course Found</h3>
 
-                            <button *ngIf="permissions?.add" mat-raised-button color="primary"
+                            <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary"
                                 (click)="openModalEditCourse()">
                                 <mat-icon [icIcon]="icAdd" class="md:mr-2"></mat-icon><span
                                     class="hidden md:inline-block">{{'addNewCourse'|translate}}</span>
@@ -134,7 +134,7 @@
                                     <button *ngIf="permissions?.edit" mat-menu-item (click) = "editCourse(course.course)">
                                         <span>{{'editItem' | translate}}</span>
                                     </button>
-                                    <button *ngIf="permissions?.edit" mat-menu-item (click) = "confirmDelete(course.course,index)">
+                                    <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" mat-menu-item (click) = "confirmDelete(course.course,index)">
                                         <span>{{'deleteItem' | translate}}</span>
                                     </button>
                                 </mat-menu>
@@ -164,7 +164,7 @@
                         <button *ngIf="permissions?.edit" mat-menu-item (click) = "editCourse(selectedCourseObj)">
                             <span>{{'editItem' | translate}}</span>
                         </button>
-                        <button *ngIf="permissions?.edit" mat-menu-item (click) = "confirmDelete(selectedCourseObj,0)">
+                        <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" mat-menu-item (click) = "confirmDelete(selectedCourseObj,0)">
                             <span>{{'deleteItem' | translate}}</span>
                         </button>
                     </mat-menu>
@@ -196,7 +196,7 @@
                         </li>
                         <li>
                             <label class="text-sm leading-5 text-gray">{{'creditHours' | translate}}</label>
-                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.creditHours?(selectedCourseObj.creditHours | number:'0.2'):selectedCourseObj.creditHours==0?'0.00':'-'}}</p>
+                            <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">{{selectedCourseObj.creditHours?(selectedCourseObj.creditHours | number:'0.3'):selectedCourseObj.creditHours==0?'0.000':'-'}}</p>
                         </li>
                         <li class="col-span-2">
                             <label class="text-sm leading-5 text-gray">{{'standards' | translate}}</label>
@@ -204,11 +204,11 @@
                             <div class="standards-list mt-1" *ngFor="let std of standard">
                                 <hr/>
                                 <div class="flex justify-between items-center">
-                                    <div>{{std.gradeUsStandard.standardDetails}}
+                                    <div>{{std?.gradeUsStandard?.standardDetails}}
                                     </div>
                                     <div>
                                         <span class="inline-block opacity-75 p-2 text-gray">
-                                            <mat-icon [icIcon]="icInfo" [matTooltip]="std.gradeUsStandard.standardDetails"></mat-icon>
+                                            <mat-icon [icIcon]="icInfo" [matTooltip]="std?.gradeUsStandard?.standardDetails"></mat-icon>
                                         </span>
                                     </div>
                                 </div>

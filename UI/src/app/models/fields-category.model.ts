@@ -1,4 +1,5 @@
 
+import { Module } from "../enums/module.enum";
 import { CommonField } from "./common-field.model";
 import { CustomFieldModel } from "./custom-field.model";
 export class FieldsCategoryModel {
@@ -43,9 +44,9 @@ export class FieldsCategoryListView extends CommonField {
     public fieldsCategoryList: [FieldsCategoryModel];
     public tenantId: string;
     public schoolId: number;
-    public module: string;
+    public module: Module;
     constructor() {
         super();
-        this.module = "";
+        // this.module = ModuleIdentifier;
     }
 }

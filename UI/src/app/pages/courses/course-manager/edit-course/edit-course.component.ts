@@ -37,8 +37,8 @@ import icBack from '@iconify/icons-ic/baseline-arrow-back';
 import icExpand from '@iconify/icons-ic/outline-add-box';
 import icCollapse from '@iconify/icons-ic/outline-indeterminate-check-box';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
-import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
-import {AddCourseModel,GetAllProgramModel,GetAllSubjectModel,GetAllCourseListModel,CourseStandardModel} from '../../../../models/course-manager.model';
+import { stagger60ms,stagger40ms } from '../../../../../@vex/animations/stagger.animation';
+import {AddCourseModel,GetAllProgramModel,GetAllSubjectModel,GetAllCourseListModel,CourseStandardModel, SubjectModel, ProgramsModel} from '../../../../models/course-manager.model';
 import {CourseManagerService} from '../../../../services/course-manager.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {GradeLevelService} from '../../../../services/grade-level.service';
@@ -47,19 +47,35 @@ import {MassUpdateProgramModel,MassUpdateSubjectModel} from '../../../../models/
 import { MatDialog } from '@angular/material/dialog';
 import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel, StandardView } from '../../../../models/grades.model';
 import { GradesService } from '../../../../services/grades.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { LoaderService } from 'src/app/services/loader.service';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { MatCheckbox } from '@angular/material/checkbox';
 @Component({
   selector: 'vex-edit-course',
   templateUrl: './edit-course.component.html',
   styleUrls: ['./edit-course.component.scss'],
   animations: [
     stagger60ms,
-    fadeInUp400ms
+    fadeInUp400ms,
+    stagger40ms,
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
   ]
 })
 export class EditCourseComponent implements OnInit {
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  displayedColumns: string[] = ['studentCheck', 'standard_ref_no', 'topic', 'standard_details'];
+
+  expandedElement;
   @ViewChild('f') currentForm: NgForm;
   icClose = icClose;
   icEdit = icEdit;
@@ -85,6 +101,9 @@ export class EditCourseComponent implements OnInit {
   programList=[];
   subjectList=[];
   courseList=[];
+  totalCount: number=0;
+  pageNumber: number;
+  pageSize: number;
   gradeLevelList=[];
   addProgramMode=false;
   addSubjectMode=false;
@@ -96,6 +115,7 @@ export class EditCourseComponent implements OnInit {
   checkedStandardList=[];
   updatedCheckedStandardList=[];
   courseId;
+  commonCoreStandardsModelList;
   courseModalTitle="addCourse";
   courseModalActionTitle="submit";
   checkAllNonTrades: boolean = false
@@ -106,29 +126,44 @@ export class EditCourseComponent implements OnInit {
   addNewProgramFlag:boolean=false;
   addNewSubjectFlag:boolean=false;
   gradeSubjectCourse=[];
+  showUsCommonCoreStandards: boolean = true;
+  gradeStandardId: any;
+  loading:boolean;
+  destroySubject$: Subject<void> = new Subject();
+  @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
+
   constructor(
     private courseManager: CourseManagerService,
     private snackbar: MatSnackBar,
     private dialog: MatDialog,
     private fb: FormBuilder,
     private gradeLevelService: GradeLevelService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private gradesService: GradesService,
     private dialogRef: MatDialogRef<EditCourseComponent>,
-    private layoutService: LayoutService,
+    private loaderService: LoaderService,
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data) {
-      this.layoutService.collapseSidenav();
+      this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((currentState) => {
+      this.loading = currentState;
+    });
+      this.gStdSubjectList= this.data.gStdSubjectList;
+        this.gStdCourseList= this.data.gStdCourseList;
+        this.programList= this.data.programList;
+        this.subjectList= this.data.subjectList;
+        this.courseList= this.data.courseList;
+        this.gradeLevelList= this.data.gradeLevelList;
   }
   ngOnInit(): void {
     this.form = this.fb.group({
-      subject:['',[Validators.required]],
-      course:['',[Validators.required]],
-      gradeLevel:['',[Validators.required]],
+      subject:[''],
+      course:[''],
+      gradeLevel:[''],
     })
     if(this.data.mode === "EDIT"){
       this.courseModalTitle="editCourse";
-        this.courseModalActionTitle="update"     
+        this.courseModalActionTitle="update"  
+        delete this.data.editDetails?.academicYear;
       this.addCourseModel.course = this.data.editDetails;
       this.courseId = this.data.editDetails.courseId;
       if(this.data.editDetails.courseStandard !== undefined){
@@ -151,6 +186,7 @@ export class EditCourseComponent implements OnInit {
             obj1["updatedBy"] = value.gradeUsStandard.updatedBy;
             obj1["updatedOn"] =value.gradeUsStandard.updatedOn;
             obj1["courseId"] =value.courseId;
+            obj1["checked"] = true;
             this.updatedCheckedStandardList.push(obj1);
             this.checkedStandardList.push(obj1);
             this.nonDuplicateCheckedStandardList.push(obj1);
@@ -160,167 +196,9 @@ export class EditCourseComponent implements OnInit {
       
       
     }
-    this.getAllProgramList();
-    this.getAllSubjectList();
-    this.getAllGradeLevelList();
-    this.getAllCourse();
-    this.getAllSubjectStandardList();
-    this.getAllCourseStandardList();
-  }
-  getAllProgramList(){   
-    this.courseManager.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {          
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }     
-    });
-  }
-  getAllSubjectList(){   
-    this.courseManager.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {          
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.subjectList=data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }     
-    });
-  }
-  getAllGradeLevelList(){ 
-    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {  
-      if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        }        
-      this.gradeLevelList=data.tableGradelevelList;      
-    });
-  }
-  checkAllStandard(ev){
-  
-    if(ev.checked){
-      this.schoolSpecificList.forEach(val=>{
-        let obj2={};
-        obj2["tenantId"] = val.tenantId;
-        obj2["schoolId"] = val.schoolId;
-        obj2["standardRefNo"] = val.standardRefNo;
-        obj2["gradeStandardId"] = val.gradeStandardId;
-        obj2["gradeLevel"] = val.gradeLevel;
-        obj2["domain"] = val.domain;
-        obj2["subject"] = val.subject;
-        obj2["course"] = val.course;
-        obj2["topic"] = val.topic;
-        obj2["standardDetails"] = val.standardDetails;       
-        this.checkedStandardList.push(obj2)
-      })     
-      this.schoolSpecificList.forEach(item => item.selected = true);
-     
-    }else{
-      this.checkedStandardList = [];
-      this.schoolSpecificList.forEach(item => item.selected = false);
-    }
-  }
-  singleCheckbox(event,data) {
-    if(event.checked){
-      this.checkedStandardList.push(data);
-    }else{
-      let findIndexArray = this.checkedStandardList.findIndex(x => x.gradeStandardId === data.gradeStandardId);
-      this.checkedStandardList.splice(findIndexArray, 1);
-    }
-
   }
 
- 
-  getAllSubjectStandardList(){    
-    this.gradesService.getAllSubjectStandardList(this.gradeStandardSubjectList).subscribe((res) => {
-      if (typeof (res) == 'undefined') {
-        this.snackbar.open('Standard Subject List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-      else {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.gStdSubjectList=[];
-            if (!res.gradeUsStandardList) {
-              this.snackbar.open(res._message, '', {
-                duration: 10000
-              });
-            }
-        }
-        else {
-          this.gStdSubjectList=res.gradeUsStandardList;         
-        }
-      }
-    })
-  }
-  getAllCourseStandardList(){   
-    this.gradesService.getAllCourseStandardList(this.gradeStandardCourseList).subscribe((res) => {
-      if (typeof (res) == 'undefined') {
-        this.snackbar.open('Standard Course List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-      else {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.gStdCourseList=[];
-            if (!res.gradeUsStandardList) {
-              this.snackbar.open(res._message, '', {
-                duration: 10000
-              });
-            }
-        }
-        else {
-          this.gStdCourseList=res.gradeUsStandardList;
-        }
-      }
-    })
-  }
-  getAllCourse(){
-    this.courseManager.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.courseList=[];
-          if(!data.courseViewModelList){
-            this.snackbar.open(data._message, '', {
-              duration: 10000
-            });
-          }
-        }else{      
-          this.courseList=data.courseViewModelList;              
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
   filterSchoolSpecificStandardsList(){
-    
     this.form.markAllAsTouched();
       let filterParams= [
         {
@@ -335,7 +213,7 @@ export class EditCourseComponent implements OnInit {
         },
         {
           columnName: "gradeLevel",
-          filterValue: this.form.value.gradeLevel,
+          filterValue: this.form.value.gradeLevel=="all"?null:this.form.value.gradeLevel,
           filterOption: 11
         }
       ]
@@ -366,8 +244,9 @@ export class EditCourseComponent implements OnInit {
     this.nonDuplicateCheckedStandardList.splice(findIndexArray, 1);
   }
   getAllSchoolSpecificList(){   
-    if(this.form.value.subject !== null && this.form.value.course !== null && this.form.value.gradeLevel !== null){
+    if(this.form.valid){
       this.schoolSpecificStandardsList.sortingModel = null; 
+      this.schoolSpecificStandardsList.IsSchoolSpecific = !this.showUsCommonCoreStandards;
       this.gradesService.getAllGradeUsStandardList(this.schoolSpecificStandardsList).subscribe(res => {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -376,28 +255,8 @@ export class EditCourseComponent implements OnInit {
               duration: 10000
             });
           }
-        } else {    
-          let obj={
-            subject: this.form.value.subject,
-            course: this.form.value.course,
-            grade: this.form.value.gradeLevel
-          }
-          this.gradeSubjectCourse.push(obj);
-          let Ids = [];
-          for (let [i, val] of this.gradeSubjectCourse.entries()) {
-            Ids[i] =  this.gradeSubjectCourse[i].subject
-              + this.gradeSubjectCourse[i].course
-              + this.gradeSubjectCourse[i].grade
-          }    
-        
-          let checkDuplicate = Ids.sort().some((item, i) => {
-            if (item == Ids[i + 1]) {                
-              return true;
-            } else {
-              return false;
-            }
-          })
-          if(checkDuplicate === false){
+        } else {  
+          this.schoolSpecificList=[];
             res.gradeUsStandardList.forEach(val=>{
               let obj2={};
               obj2["tenantId"] = val.tenantId;
@@ -410,26 +269,127 @@ export class EditCourseComponent implements OnInit {
               obj2["course"] = val.course;
               obj2["topic"] = val.topic;
               obj2["standardDetails"] = val.standardDetails;
-              obj2["selected"] = false;
+              obj2["checked"] = false;
               this.schoolSpecificList.push(obj2)
             });
             this.schoolSpecificList.map((item)=>{
               this.nonDuplicateCheckedStandardList.map((standard)=>{
                 if(standard.gradeStandardId==item.gradeStandardId){
-                  item.selected=true;
+                  item.checked=true;
                 }
               });
             });
-          }                
+          this.totalCount = res.totalCount;
+          this.pageNumber = res.pageNumber;
+          this.pageSize = res._pageSize;
+          this.commonCoreStandardsModelList = new MatTableDataSource(this.schoolSpecificList);              
           this.schoolSpecificListCount = res.gradeUsStandardList.length;     
           if(this.schoolSpecificListCount === 0){
             this.schoolSpecificList = [];
             this.gradeSubjectCourse=[];
           } 
         }
-      });    
+      });  
+      
     }
     
+  }
+
+// page event
+  getPageEvent(event) {
+    this.schoolSpecificStandardsList.pageNumber = event.pageIndex + 1;
+    this.schoolSpecificStandardsList.pageSize = event.pageSize;
+    this.getAllSchoolSpecificList();
+  }
+
+  someComplete(){
+    let indetermine = false;
+    for (let standard of this.schoolSpecificList) {
+      for (let selectedStandard of this.checkedStandardList) {
+        if (standard.gradeStandardId === selectedStandard.gradeStandardId) {
+          indetermine = true;
+        }
+      }
+    }
+    if (indetermine) {
+      // this.masterCheckBox.checked = this.schoolSpecificList.every((item) => {
+      //   return item.checked;
+      // })
+      // if (this.masterCheckBox.checked) {
+      //   return false;
+      // } else {
+      //   return true;
+      // }
+    }
+  }
+
+  setAll(event){
+    this.schoolSpecificList.forEach(item => {
+      item.checked = event;
+    });
+    this.commonCoreStandardsModelList = new MatTableDataSource(this.schoolSpecificList);
+    this.decideCheckUncheck();
+  }
+
+  onChangeSelection(eventStatus: boolean, id){
+    for (let item of this.schoolSpecificList) {
+      if (item.gradeStandardId === id) {
+        item.checked = eventStatus;
+        break;
+      }
+    }
+    this.commonCoreStandardsModelList = new MatTableDataSource(this.schoolSpecificList);
+    this.masterCheckBox.checked = this.schoolSpecificList.every((item) => {
+      return item.checked;
+    });
+
+    this.decideCheckUncheck();
+  }
+
+
+  decideCheckUncheck() {
+    this.schoolSpecificList.map((item) => {
+      let isIdIncludesInSelectedList = false;
+      if (item.checked) {
+        for (let selectedUser of this.checkedStandardList) {
+          if (item.gradeStandardId == selectedUser.gradeStandardId) {
+            isIdIncludesInSelectedList = true;
+            break;
+          }
+        }
+        if (!isIdIncludesInSelectedList) {
+          this.checkedStandardList.push(item);
+        }
+      } else {
+        for (let selectedUser of this.checkedStandardList) {
+          if (item.gradeStandardId == selectedUser.gradeStandardId) {
+            this.checkedStandardList = this.checkedStandardList.filter((user) => user.gradeStandardId != item.gradeStandardId);
+            break;
+          }
+        }
+      }
+      isIdIncludesInSelectedList = false;
+
+    });
+    this.checkedStandardList = this.checkedStandardList.filter((item) => item.checked);
+  }
+
+  changeCategory(status) {
+    this.totalCount=0;
+    this.commonCoreStandardsModelList=new MatTableDataSource([]);
+    this.showUsCommonCoreStandards = status;
+    if(status) {
+      this.form.controls.gradeLevel.setValidators(Validators.required);
+      this.form.controls.subject.clearValidators();
+      this.form.controls.course.clearValidators();
+    } else {
+      this.form.controls.gradeLevel.setValidators(Validators.required);
+      this.form.controls.subject.setValidators(Validators.required);
+      this.form.controls.course.setValidators(Validators.required);
+    }
+    this.form.controls.gradeLevel.updateValueAndValidity();
+    this.form.controls.subject.updateValueAndValidity();
+    this.form.controls.course.updateValueAndValidity();
   }
 
   saveProgram(){
@@ -450,17 +410,17 @@ export class EditCourseComponent implements OnInit {
   submit(){
     if (this.currentForm.form.valid) {
       if(this.addProgramMode){
-        let obj ={};
-        obj["programId"] = 0
-        obj["programName"] = this.addCourseModel.course.courseProgram;
-        obj["tenantId"]= sessionStorage.getItem("tenantId");
-        obj["schoolId"] = +sessionStorage.getItem("selectedSchoolId");  
-        obj["createdBy"] = sessionStorage.getItem("email");       
-        obj["updatedBy"]=  sessionStorage.getItem("email");       
+        let obj =new ProgramsModel();
+        obj.programId = 0
+        obj.programName = this.addCourseModel.course.courseProgram;
+        obj.tenantId = this.defaultValuesService.getTenantID();
+        obj.schoolId = this.defaultValuesService.getSchoolID();  
+        obj.createdBy = this.defaultValuesService.getUserGuidId();       
+        obj.updatedBy = this.defaultValuesService.getUserGuidId();       
         this.massUpdateProgramModel.programList.push(obj); 
         this.courseManager.AddEditPrograms(this.massUpdateProgramModel).subscribe(data => {     
           if(typeof(data)=='undefined'){
-            this.snackbar.open('Program Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Program Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -481,13 +441,13 @@ export class EditCourseComponent implements OnInit {
         });
       }
       if (this.addSubjectMode){
-        let courseObj = {};
-        courseObj["subjectId"] = 0;
-        courseObj["subjectName"] = this.addCourseModel.course.courseSubject;
-        courseObj["tenantId"] = this.defaultValuesService.getTenantID();
-        courseObj["schoolId"] = this.defaultValuesService.getSchoolID();
-        courseObj["createdBy"] = this.defaultValuesService.getEmailId();
-        courseObj["updatedBy"] =  this.defaultValuesService.getEmailId();
+        let courseObj = new SubjectModel();
+        courseObj.subjectId = 0;
+        courseObj.subjectName = this.addCourseModel.course.courseSubject;
+        courseObj.tenantId = this.defaultValuesService.getTenantID();
+        courseObj.schoolId = this.defaultValuesService.getSchoolID();
+        courseObj.createdBy = this.defaultValuesService.getUserGuidId();
+        courseObj.updatedBy =  this.defaultValuesService.getUserGuidId();
         this.massUpdateSubjectModel.subjectList.push(courseObj);
         this.courseManager.AddEditSubject(this.massUpdateSubjectModel).subscribe(
           data => {
@@ -504,7 +464,7 @@ export class EditCourseComponent implements OnInit {
                 });
               }
             }else{
-              this.snackbar.open('Subject Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Subject Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -531,7 +491,8 @@ export class EditCourseComponent implements OnInit {
               obj.courseId = this.courseId;
             }
             obj.standardRefNo = val.standardRefNo;
-            obj.createdBy = this.defaultValuesService.getEmailId();
+            obj.gradeStandardId = val.gradeStandardId;
+            obj.createdBy = this.defaultValuesService.getUserGuidId();
             this.addCourseModel.course.courseStandard.push(obj);
           });
         }
@@ -550,7 +511,7 @@ export class EditCourseComponent implements OnInit {
               this.dialogRef.close(true);
             }
           }else{
-            this.snackbar.open('Course Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Course Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -564,12 +525,13 @@ export class EditCourseComponent implements OnInit {
             obj.schoolId = this.defaultValuesService.getSchoolID();
             obj.courseId = 0;
             obj.standardRefNo = val.standardRefNo;
-            obj.createdBy = this.defaultValuesService.getEmailId();
+            obj.gradeStandardId = val.gradeStandardId;
+            obj.createdBy = this.defaultValuesService.getUserGuidId();
             this.addCourseModel.course.courseStandard.push(obj);
           });
         }
         this.addCourseModel.course.courseStandard.splice(0, 1);
-
+        this.addCourseModel.grade_standard_id = this.gradeStandardId;
         this.courseManager.AddCourse(this.addCourseModel).subscribe(data => {
           if (data){
            if(data._failure){
@@ -584,7 +546,7 @@ export class EditCourseComponent implements OnInit {
               this.dialogRef.close(true);
             }
           }else{
-            this.snackbar.open('Course Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Course Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -594,24 +556,41 @@ export class EditCourseComponent implements OnInit {
   }
   selectStandards() {
     this.currentForm.form.controls.courseTitle.markAllAsTouched();
-    if (this.currentForm.form.controls.courseTitle.value === undefined){
+    if (this.currentForm.form.controls.courseTitle.value === undefined) {
       this.currentForm.controls.courseTitle.setErrors({ required: true });
-    }else{
-      this.addStandard = true;
-      this.schoolSpecificList = [];
-      this.gradeSubjectCourse = [];
-      this.schoolSpecificListCount = 0;
-      this.form.reset();
     }
+    this.addStandard = true;
+    this.schoolSpecificList = [];
+    this.gradeSubjectCourse = [];
+    this.schoolSpecificListCount = 0;
+    this.totalCount= 0;
+    this.form.reset();
   }
+
+  changeCouse(event) {
+    const data = this.gStdCourseList.find(x => x.course === event.value);
+    this.gradeStandardId = data.gradeStandardId;
+  }
+
   closeStandardsSelection(){
     this.addStandard = false;
   }
 
   checkValidCreditHour(val){
     if(val<0){
-      this.addCourseModel.course.creditHours=Math.abs(val);
+      this.addCourseModel.course.creditHours = Math.abs(val) + '';
     }
   }
+
+  //credit hours 3 decimal places
+  onCrediHoursBlur(event){
+    if(event.target.value !== ''){
+      this.addCourseModel.course.creditHours = parseFloat(this.addCourseModel.course.creditHours).toFixed(3)
+    }
+    }
+
+    checkInputAndPrevent(event) {
+      ["e", "E", "+", "-"].includes(event.key) && event.preventDefault();
+    }
 
 }

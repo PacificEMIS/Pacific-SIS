@@ -1,15 +1,14 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Schedule Students" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Scheduling']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'scheduleStudents'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['scheduling']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16">
             <div class="p-6 text-center">
-                To schedule students into course sections, search and select students(s)
-                and course section(s) first.
+                {{'toScheduleStudentsIntoCourseSectionsSearchAndSelectStudentssAndCourseSectionsFirst' | translate}}.
             </div>
             <hr class="border-normal" />
             <div class="md:flex w-full">
@@ -21,11 +20,11 @@
                         <div class="w-full md:w-10/12 text-center md:text-left text-white md:text-black md:pl-6">
                             <h2 *ngIf="!showStudentCount">Student</h2>
                             <h2 *ngIf="showStudentCount"> {{studentList.length}} Student{{studentText}} Selected</h2>
-                            <p class="md:text-blue">Select Student to Schedule</p>
+                            <p class="md:text-blue">{{'selectStudentToSchedule' | translate}}</p>
                         </div>
                     </div>
                     <div [ngClass]="(studentList?.length==0 || courseSectionList?.length==0) ? '':'hide-schedule-icon'" class="schedule-icon bg-white">
-                        <img src="assets/img/icons/teacher-course-schedule.svg" width="80%" class="inline-block" />
+                        <img src="assets/img/icons/teacher-course-schedule.svg" width="80%" class="inline-block" alt="Schedule icon"/>
                     </div>
 
                     <!-- start Schedule button design -->
@@ -46,10 +45,10 @@
                 <div class="md:w-1/2 cursor-pointer bg-primary rounded-b md:bg-white pt-12 pb-6 md:py-0" (click)="selectCourseSection()">
                     <div class="flex items-center">
                         <div class="w-full md:w-10/12 text-center md:text-right text-white md:text-black md:pr-6 order-2 md:order-1">
-                            <h2 *ngIf="!showCourseSectionCount">Course Section</h2>
-                            <h2 *ngIf="showCourseSectionCount">{{courseSectionList?.length}} Course Section{{sectionText}} Selected
+                            <h2 *ngIf="!showCourseSectionCount">{{'courseSection' |translate}}</h2>
+                            <h2 *ngIf="showCourseSectionCount">{{courseSectionList?.length}} {{'courseSection' |translate}}{{sectionText}} {{'selected' |translate}} 
                             </h2>
-                            <p class="md:text-blue">Select Course Section to Schedule</p>
+                            <p class="md:text-blue">{{'selectCourseSectionToSchedule' |translate}}</p>
                         </div>
                         <div class="hidden md:inline-block w-2/12 bg-primary text-white text-center py-6 rounded-br relative arrow-left order-1 md:order-2">
                             <i class="icon icon-plus3 sm:text-xl lg:text-4xl"></i>
@@ -64,10 +63,10 @@
         <div *ngIf="showCard" class="card mt-6 p-4">
             <!-- when schedule student selected -->
             <div *ngIf="loading && !viewReport" class="flex">
-                <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5">
+                <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
                 <div class="ml-4">
-                    <span class="text-lg inline-block align-middle text-primary font-bold">Scheduling Student{{studentText}}</span>
-                    <p class="">Please do not refresh the page or click back button.</p>
+                    <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentText}}</span>
+                    <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
                 </div>
             </div>
 

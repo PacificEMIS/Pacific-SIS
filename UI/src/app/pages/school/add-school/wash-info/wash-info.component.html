@@ -11,6 +11,7 @@
                             <mat-label>{{'runningWater'|translate}}</mat-label>
                             <mat-select name="runningWater"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].runningWater">
+                                <mat-option></mat-option>
                                 <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
                                 <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
                             </mat-select>
@@ -28,6 +29,7 @@
                             <mat-label>{{'currentlyAvailable'|translate}}</mat-label>
                             <mat-select name="currentlyAvailable"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].currentlyAvailable">
+                                <mat-option></mat-option>
                                 <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
                                 <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
                             </mat-select>
@@ -38,6 +40,7 @@
                             <mat-label>{{'handwashingAvailable'|translate}}</mat-label>
                             <mat-select name="handwashingAvailable"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].handwashingAvailable">
+                                <mat-option></mat-option>
                                 <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
                                 <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
                             </mat-select>
@@ -48,6 +51,7 @@
                             <mat-label>{{'soapWaterAvailable'|translate}}</mat-label>
                             <mat-select name="soapWaterAvailable"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].soapAndWaterAvailable">
+                                <mat-option></mat-option>
                                 <mat-option [value]="washinfo.Yes">{{washinfo['true']}}</mat-option>
                                 <mat-option [value]="washinfo.No">{{washinfo['false']}}</mat-option>
                             </mat-select>
@@ -61,6 +65,8 @@
                         </mat-form-field>
                     </li>
                 </ul>
+                <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "1" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form>
+           
            </div>
            <hr class="-mx-5 mt-4 mb-6">
             <div @stagger fxLayout="column">
@@ -74,6 +80,7 @@
                             <mat-label>{{'femaleToiletType'|translate}}</mat-label>
                             <mat-select name="femaleToiletType"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].femaleToiletType">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let femaleToiletType of femaleToiletTypeList" [value]="femaleToiletType.lovColumnValue">
                                     {{femaleToiletType.lovColumnValue}}
                                 </mat-option>
@@ -99,6 +106,7 @@
                             <mat-label>{{'femaleToiletAccessibility'|translate}}</mat-label>
                             <mat-select name="femaleToiletAccessibility"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].femaleToiletAccessibility">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let femaleToiletAccessibility of femaleToiletAccessibilityList" [value]="femaleToiletAccessibility.lovColumnValue">
                                     {{femaleToiletAccessibility.lovColumnValue}}
                                 </mat-option>
@@ -119,6 +127,7 @@
                             <mat-label>{{'maleToiletType'|translate}}</mat-label>
                             <mat-select name="maleToiletType"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].maleToiletType">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let maleToiletType of maleToiletTypeList" [value]="maleToiletType.lovColumnValue">
                                     {{maleToiletType.lovColumnValue}}
                                 </mat-option>
@@ -144,6 +153,7 @@
                             <mat-label>{{'maleToiletAccessibility'|translate}}</mat-label>
                             <mat-select name="maleToiletAccessibility"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].maleToiletAccessibility">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let maleToiletAccessibility of maleToiletAccessibilityList" [value]="maleToiletAccessibility.lovColumnValue">
                                     {{maleToiletAccessibility.lovColumnValue}}
                                 </mat-option>
@@ -163,6 +173,7 @@
                             <mat-label>{{'commonToiletType'|translate}}</mat-label>
                             <mat-select name="commonToiletType"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].comonToiletType">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let commonToiletType of commonToiletTypeList" [value]="commonToiletType.lovColumnValue">
                                     {{commonToiletType.lovColumnValue}}
                                 </mat-option>
@@ -188,6 +199,7 @@
                             <mat-label>{{'commonToiletAccessibility'|translate}}</mat-label>
                             <mat-select name="commonToiletAccessibility"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].commonToiletAccessibility">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let commonToiletAccessibility of commonToiletAccessibilityList" [value]="commonToiletAccessibility.lovColumnValue">
                                     {{commonToiletAccessibility.lovColumnValue}}
                                 </mat-option>
@@ -195,7 +207,6 @@
                         </mat-form-field>
                     </li>
                 </ul>
-                <!-- <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "categoryId" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form> -->
             </div>
         </mat-card-content>
         <mat-card-actions>
@@ -215,10 +226,10 @@
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'washInformation'|translate}}</h3>
         <button  *ngIf="permissions?.edit" mat-raised-button color="primary" (click)="editWashInfo()">
-            <mat-icon [icIcon]="icEdit" style="font-size: 20px;" class="mr-0 md:mr-1"></mat-icon> <span class="hidden md:inline-block">{{'editInformation'|translate}}</span>
+            <mat-icon [icIcon]="icEdit" class="mr-0 md:mr-1"></mat-icon> <span class="hidden md:inline-block">{{'editInformation'|translate}}</span>
         </button>
     </div>
     <vex-view-wash-info [schoolCreateMode]="schoolCreateMode"
-    [categoryId]="categoryId"
-    [schoolViewDetails]="schoolDetailsForViewAndEdit"></vex-view-wash-info>
+    [categoryId]="1"
+    [schoolViewDetails]="schoolAddViewModel"></vex-view-wash-info>
 </mat-card>

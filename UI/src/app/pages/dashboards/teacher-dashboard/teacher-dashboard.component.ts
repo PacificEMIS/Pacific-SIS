@@ -40,6 +40,10 @@ import { map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { SchoolService } from 'src/app/services/school.service';
 import { classColor } from "../../../common/static-data";
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'vex-teacher-dashboard',
   templateUrl: './teacher-dashboard.component.html',
@@ -63,7 +67,6 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   activeDayIsOpen = true;
   weekendDays: number[];
   filterDays = [];
-
   icMissingAttendance = icMissingAttendance;
   icAssessment = icAssessment;
   icWarning = icWarning;
@@ -84,10 +87,11 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   takeAttendance: boolean;
   classCount:number=0;
   noticeCount:number=0;
+  notificationsList;
   weeks = [
     { name: 'Sunday', id: 0 },
     { name: 'Monday', id: 1 },
-    { name: 'Tueday', id: 2 },
+    { name: 'Tuesday', id: 2 },
     { name: 'Wednesday', id: 3 },
     { name: 'Thursday', id: 4 },
     { name: 'Friday', id: 5 },
@@ -100,8 +104,11 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
     private schoolService: SchoolService,
     private dasboardService: DasboardService,
     private commonService: CommonService,
+    private router: Router,
+    private pageRolePermission: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
-    translateService.use("en");
+    // translateService.use("en");
   }
 
   ngOnInit(): void {
@@ -116,7 +123,8 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   }
 
   getDashboardViewForStaff() {
-    this.scheduledCourseSectionViewModel.staffId = +sessionStorage.getItem('userId');
+    this.scheduledCourseSectionViewModel.staffId = this.defaultValuesService.getUserId();
+    this.scheduledCourseSectionViewModel.membershipId=this.defaultValuesService.getuserMembershipID();
     this.dasboardService.getDashboardViewForStaff(this.scheduledCourseSectionViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -129,10 +137,11 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
           this.scheduledCourseSectionViewModel.courseSectionViewList = this.findMeetingDays(this.scheduledCourseSectionViewModel.courseSectionViewList);
           this.classCount= this.scheduledCourseSectionViewModel.courseSectionViewList.length;
           this.noticeCount=this.scheduledCourseSectionViewModel.noticeList?.length;
+          this.notificationsList=res.notificationList;
         }
       }
       else {
-        this.snackbar.open('Dashboard View failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
         this.classCount=0;
@@ -150,12 +159,27 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
           for (let [i, weekDay] of this.weeks.entries()) {
             if (weekDay.name == day.trim()) {
               item.meetingDays = item.meetingDays + weekDay.id;
+              item.attendanceDays = item.attendanceDays? item.attendanceDays +  weekDay.id.toString() : weekDay.id.toString();
               break;
             }
           }
         })
         item.text=classColor[random].text;
         item.borderColor=classColor[random].borderColor;
+      } else if (item.scheduleType === 'Calendar Schedule') {
+        item.attendanceDays = [];
+        item.courseCalendarSchedule.map((calendarSchedule) => {
+          item.attendanceDays.push(calendarSchedule.date);
+        });
+        item.text = classColor[random].text;
+        item.borderColor = classColor[random].borderColor;
+      } else if (item.scheduleType === 'Block Schedule') {
+        item.attendanceDays = [];
+        item.bellScheduleList.map((blockSchedule) => {
+          item.attendanceDays.push(blockSchedule.bellScheduleDate);
+        });
+        item.text = classColor[random].text;
+        item.borderColor = classColor[random].borderColor;
       }
       return item;
 
@@ -178,6 +202,22 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
         day.cssClass = this.cssClass;
       }
     });
+  }
+
+  getHoliDay(event) {
+    let events = [];
+    events = event;
+    if (events.filter(x => x?.meta?.calendar?.isHoliday).length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getEventColor(event){
+    let events = [];
+    events = event;
+    return events.filter(x => x?.meta?.calendar?.isHoliday)[0].meta.calendar.eventColor;
   }
 
   getPeriodTitle(courseSection) {
@@ -216,6 +256,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   }
 
   getDashboardViewForCalendarView() {
+    this.dashboardViewModel.membershipId=this.defaultValuesService.getuserMembershipID();
     this.events$ = this.dasboardService.getDashboardViewForCalendarView(this.dashboardViewModel).pipe(shareReplay(), tap((res) => {
       if (res) {
       if(res._failure){
@@ -232,7 +273,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
         }
       }
       else {
-        this.snackbar.open('Dashboard View failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -273,9 +314,9 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   selectCourseSection(courseSection) {
     this.dasboardService.selectedCourseSection(courseSection);
     let courseSectionId = courseSection.courseSectionId;
-    localStorage.setItem("courseSectionId", courseSectionId);
-    localStorage.setItem("selectedCourseSection",JSON.stringify(courseSection));
-    if(sessionStorage.getItem("courseSectionForAttendance")){
+    this.defaultValuesService.setCourseSectionId(courseSectionId);
+    this.defaultValuesService.setSelectedCourseSection(courseSection);
+    if(this.defaultValuesService.getCourseSectionForAttendance()){
       sessionStorage.removeItem("courseSectionForAttendance");
     }
     
@@ -289,6 +330,20 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
     this.weekendDays = this.filterDays;
     this.cssClass = 'bg-aqua';
     this.refresh.next();
+  }
+
+  goToCalendar() {
+    if (this.pageRolePermission.checkPageRolePermission('/school/schoolcalendars').view) {
+      this.router.navigate(['school/schoolcalendars']);
+    } else {
+      this.snackbar.open(`You don't have permission to view Calendar`, '', {
+        duration: 10000
+      });
+    }
+  }
+
+  goTeacherMissingAttendance(){
+    this.router.navigate(['school/attendance/teacher-missing-attendance']);
   }
 
   ngOnDestroy(): void {

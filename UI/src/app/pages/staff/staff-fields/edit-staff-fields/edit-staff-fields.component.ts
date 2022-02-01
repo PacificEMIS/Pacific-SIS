@@ -36,6 +36,7 @@ import { CustomFieldOptionsEnum } from '../../../../enums/custom-field-options.e
 import { FieldCategoryModuleEnum } from '../../../../enums/field-category-module.enum'
 import { ValidationService } from '../../../shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-staff-fields',
@@ -51,6 +52,7 @@ export class EditStaffFieldsComponent implements OnInit {
   form: FormGroup;
   customFieldTitle;
   buttonType;
+  checkSearchRecord: number = 0;
   fieldCategoryModule=FieldCategoryModuleEnum
   customFieldOptionsEnum=Object.keys(CustomFieldOptionsEnum)
   customFieldAddView:CustomFieldAddView= new CustomFieldAddView()
@@ -64,6 +66,7 @@ export class EditStaffFieldsComponent implements OnInit {
     private snackbar:MatSnackBar,
     private customFieldService:CustomFieldService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
       this.form=fb.group({
         fieldId:[0],
@@ -94,6 +97,14 @@ export class EditStaffFieldsComponent implements OnInit {
         this.form.controls.hide.patchValue(data.information.hide);
         this.form.controls.systemField.patchValue(data.information.systemField);
         this.form.controls.isSystemWideField.patchValue(data.information.isSystemWideField);
+        if(data.information.type === "Checkbox") {
+          this.form.controls.defaultSelection.setValidators([Validators.required]);
+          this.form.controls.defaultSelection.updateValueAndValidity();
+        }
+        if(data.information.type !== "Checkbox") {
+          this.form.controls.defaultSelection.clearValidators();
+          this.form.controls.defaultSelection.updateValueAndValidity();
+        }
         if(data.information.isSystemWideField){
           this.form.get('isSystemWideField').disable();
         }
@@ -104,6 +115,7 @@ export class EditStaffFieldsComponent implements OnInit {
   }
   submit(){
     if(this.form.valid){
+      this.checkSearchRecord = 1;
       if(this.form.controls.fieldId.value==0){
         this.customFieldAddView.customFields.categoryId=this.currentCategoryid;
         this.customFieldAddView.customFields.fieldId=this.form.controls.fieldId.value;
@@ -119,9 +131,10 @@ export class EditStaffFieldsComponent implements OnInit {
          this.customFieldService.addCustomField(this.customFieldAddView).subscribe(
           (res:CustomFieldAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('Staff field failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Staff field failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
+              this.checkSearchRecord = 0;
             }
             else{
             if(res._failure){
@@ -129,11 +142,13 @@ export class EditStaffFieldsComponent implements OnInit {
                 this.snackbar.open( res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
               } 
               else { 
                 this.snackbar.open(res._message, '', {
                   duration: 10000
                 }); 
+                this.checkSearchRecord = 0;
                 this.dialogRef.close('submited');
               }
             }
@@ -158,9 +173,10 @@ export class EditStaffFieldsComponent implements OnInit {
         this.customFieldService.updateCustomField(this.customFieldAddView).subscribe(
           (res:CustomFieldAddView)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('Staff field failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Staff field failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
+              this.checkSearchRecord = 0;
             }
             else{
             if(res._failure){
@@ -168,19 +184,32 @@ export class EditStaffFieldsComponent implements OnInit {
                 this.snackbar.open( res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
               } 
               else {
                 this.snackbar.open( res._message, '', {
                   duration: 10000
                 }); 
+                this.checkSearchRecord = 0;
                 this.dialogRef.close('submited');
               }
             }
           }
         );
       }
+    } else {
+      this.form.markAllAsTouched();
     }
   }
-
+  
+  checkFieldType(event) {
+    if(event.value === "Checkbox") {
+      this.form.controls.defaultSelection.setValidators([Validators.required]);
+      this.form.controls.defaultSelection.updateValueAndValidity();
+    } else {
+      this.form.controls.defaultSelection.clearValidators();
+      this.form.controls.defaultSelection.updateValueAndValidity();
+    }
+  }
   
 }

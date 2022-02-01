@@ -16,7 +16,7 @@
                              placeholder="Search..."
                             type="search"><mat-icon [icIcon]="icSearch"></mat-icon>
                        
-                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5">
+                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
                                 type="button">
                                 <mat-icon [icIcon]="icSearch"></mat-icon>
@@ -48,13 +48,13 @@
                 <td mat-cell *matCellDef="let element">
                     <div class="flex cursor-pointer">
                         <div *ngIf="element.studentPhoto == null" class="flex-shrink-0 h-8 w-8">
-                            <img src="assets/img/default.jpg" alt="" class="h-8 w-8 rounded-full" />
+                            <img src="assets/img/default.jpg" alt="Student default picture" class="h-8 w-8 rounded-full" />
                         </div>
                         <div *ngIf="element.studentPhoto != null" class="flex-shrink-0 h-8 w-8">
-                            <img src="{{'data:image/png;base64,'+ element.studentPhoto}}" alt="" class="h-8 w-8 rounded-full" />
+                            <img src="{{'data:image/png;base64,'+ element.studentPhoto}}" alt="Student photo" class="h-8 w-8 rounded-full" />
                         </div>
                         <div class="ml-3 flex flex-col justify-center">
-                            <h6 class="text-sm font-medium text-primary">{{element.firstGivenName+'
+                            <h6 class="text-sm font-medium">{{element.firstGivenName+'
                                 '+element.lastFamilyName}} </h6>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
             </ng-container>
             <ng-container matColumnDef="noData">
                 <td mat-footer-cell *matFooterCellDef colspan="6">
-                    No Data
+                    {{'noData'|translate}}
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>

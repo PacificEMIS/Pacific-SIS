@@ -6,11 +6,17 @@ import icStaff from '@iconify/icons-ic/twotone-people';
 import icEvent from '@iconify/icons-ic/twotone-event';
 import icNotice from '@iconify/icons-ic/twotone-assignment';
 import { PopoverRef } from '../popover/popover-ref';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
+import { SchoolService } from 'src/app/services/school.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface MegaMenuFeature {
   icon?: Icon;
   label: string;
   route: string;
+  isActive: boolean;
 }
 
 export interface MegaMenuPage {
@@ -23,32 +29,39 @@ export interface MegaMenuPage {
   templateUrl: './mega-menu.component.html'
 })
 export class MegaMenuComponent implements OnInit {
+  stateObj = {type: SchoolCreate.ADD};
 
+  items:number;
   features: MegaMenuFeature[] = [
     {
       icon: icSchool,
-      label: 'School',
-      route: './school/schoolinfo/generalinfo'
+      label: 'school',
+      route: '/school/schoolinfo/generalinfo',
+      isActive: true,
     },
     {
       icon: icStudents,
-      label: 'Student',
-      route: './school/students/student-generalinfo'
+      label: 'student',
+      route: '/school/students/student-generalinfo',
+      isActive: true,
     },
     {
       icon: icStaff,
-      label: 'Staff',
-      route: './school/staff/staff-generalinfo'
+      label: 'staff',
+      route: '/school/staff/staff-generalinfo',
+      isActive: true,
     },
     {
       icon: icEvent,
-      label: 'Event',
-      route: './school/schoolcalendars'
+      label: 'event',
+      route: '/school/schoolcalendars',
+      isActive: true,
     },
     {
       icon: icNotice,
-      label: 'Notice',
-      route: './school/notices'
+      label: 'notice',
+      route: '/school/notices',
+      isActive: true,
     }
   ];
 
@@ -95,7 +108,33 @@ export class MegaMenuComponent implements OnInit {
     }
   ];
 
-  constructor(private popoverRef: PopoverRef<MegaMenuComponent>) {
+  constructor(
+    private popoverRef: PopoverRef<MegaMenuComponent>,
+    private pageRolePermission: PageRolesPermission,
+    public schoolService: SchoolService,
+    public defaultValueService: DefaultValuesService,
+    public translateService: TranslateService,
+    ) {
+
+      this.features.map((item: any)=>{
+        if(item.route === '/school/schoolinfo/generalinfo') {
+          item.isActive = this.pageRolePermission.checkPageRolePermission(item.route, null, true).edit;
+        }
+        else if(item.route === '/school/students/student-generalinfo') {
+            item.isActive = this.defaultValueService.checkAcademicYear() && this.pageRolePermission.checkPageRolePermission(item.route).edit ? true : false;
+        }
+        else if (item.route === '/school/staff/staff-generalinfo') {
+          item.isActive = this.defaultValueService.checkAcademicYear() && this.pageRolePermission.checkPageRolePermission(item.route).edit ? true : false;
+        }
+        else if (item.route === '/school/schoolcalendars') {
+          item.isActive = this.defaultValueService.checkAcademicYear() && this.pageRolePermission.checkPageRolePermission(item.route).edit ? true : false;
+        }
+        else if (item.route === '/school/notices') {
+          item.isActive = this.defaultValueService.checkAcademicYear() && this.pageRolePermission.checkPageRolePermission(item.route).edit ? true : false;
+        }
+      })
+
+      this.items= this.features.filter(x=> x.isActive)?.length;
     // popoverRef.data[0]?.permissionGroup?.permissionCategory?.map((item) => {
     //   if(item.rolePermission[0].canView){
     //     this.features.push({

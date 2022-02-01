@@ -17,8 +17,7 @@
 
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'fieldType' | translate}}</mat-label>
-        <mat-select name="gender" formControlName="fieldType" required>
-            <mat-option value=""></mat-option>
+        <mat-select name="gender" formControlName="fieldType" (selectionChange)="checkFieldType($event)" required>
             <mat-option *ngFor="let customFieldOption of customFieldOptionsEnum" [value]="customFieldOption">{{customFieldOption}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('fieldType').hasError('required')">{{'fieldTypeIsRequired'|translate}}</mat-error>
@@ -30,12 +29,32 @@
         <p class="text-xs text-gray">{{'oneItemPerLine' | translate}}</p>
     </mat-form-field>
 
-    <mat-form-field class="w-full" appearance="outline" color="primary">
+    <mat-form-field *ngIf="form?.value?.fieldType !== 'Checkbox' && form?.value?.fieldType !== 'Date'" class="w-full" appearance="outline" color="primary">
         <mat-label>{{'default' | translate}}</mat-label>
         <input type="text" formControlName="defaultSelection" matInput >
         <p class="text-xs text-gray">{{'defaultFieldHint' | translate}}</p>
         <mat-error *ngIf="form.get('defaultSelection').hasError('invalidDefaultSelection')">{{'defaultErrorHint'|translate}}</mat-error>
     </mat-form-field>
+
+    <ng-container *ngIf="form?.value?.fieldType === 'Checkbox'">
+        <div class="mb-4">
+            <mat-label class="block text-sm text-gray">{{'default' | translate}} *</mat-label>
+            <mat-radio-group formControlName="defaultSelection">
+                <mat-radio-button value="true" color="primary" class="mr-6">Checked</mat-radio-button>
+                <mat-radio-button value="false" color="primary">Unchecked</mat-radio-button>
+            </mat-radio-group>
+            <!-- <p class="text-xs text-gray">{{'checkboxFieldHint' | translate}}</p> -->
+            <mat-error *ngIf="form.get('defaultSelection').hasError('required')">{{'checkedUncheckedError'|translate}}</mat-error>
+        </div>
+    </ng-container>
+
+    <mat-form-field *ngIf="form?.value?.fieldType === 'Date'" class="w-full" appearance="outline" color="primary">
+        <mat-label>{{'defaultDate' | translate}}</mat-label>
+        <input matInput [matDatepicker]="dp" formControlName="defaultSelection">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
+
+      </mat-form-field>
 
     <div class="flex">
         <mat-slide-toggle class="example-margin mr-6" formControlName="required" color="primary">{{'required' | translate}}</mat-slide-toggle>
@@ -47,5 +66,10 @@
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{buttonType | translate}}</button>
+    <button [disabled]="checkSearchRecord === 1" color="primary" (click)="submit()" mat-raised-button type="submit">
+        <mat-icon class="mr-2" *ngIf="checkSearchRecord === 1">
+            <mat-spinner color="primary" diameter="20">
+            </mat-spinner>
+        </mat-icon>{{buttonType | translate}}
+    </button>
 </mat-dialog-actions>

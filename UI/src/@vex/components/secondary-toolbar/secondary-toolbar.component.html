@@ -2,14 +2,14 @@
   <div fxFlex="auto" fxLayout="row" fxLayoutAlign="start center" vexContainer>
     <h1 *ngIf="current && !schoolSettings"
       class="subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3"
-      fxFlex.xs="auto">{{ current }}</h1>
-      <h1 *ngIf="schoolSettings" class="flex items-center subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3 cursor-pointer" [matMenuTriggerFor]="menu">{{selectedValue}}<mat-icon class="ml-2" [icIcon]="icDropdown"></mat-icon></h1>
+      fxFlex.xs="auto">{{ current|translate }}</h1>
+      <h1 *ngIf="schoolSettings" class="flex items-center subheading-2 font-medium m-0 ltr:pr-3 rtl:pl-3 ltr:border-r rtl:border-l ltr:mr-3 rtl:ml-3 cursor-pointer" [matMenuTriggerFor]="menu">{{selectedValue | translate }}<mat-icon class="ml-2" [icIcon]="icDropdown"></mat-icon></h1>
     <ng-content></ng-content>
     <!-- <button class="flex" color="primary" type="button"><mat-icon [icIcon]="icSearch"></mat-icon> <span class="hidden md:inline-block ml-1">Search</span></button> -->
-    <a class="ml-6 flex" href="https://support.os4ed.com/" target="_blank"><mat-icon [icIcon]="icHelp"></mat-icon> <span class="hidden md:inline-block ml-1">Help</span></a>
+    <a class="ml-6 flex" href="https://github.com/PacificEMIS/Pacific-SIS/wiki" target="_blank"><mat-icon [icIcon]="icHelp"></mat-icon> <span class="hidden md:inline-block ml-1">{{'help' | translate}}</span></a>
   </div>
 </div>
 
 <mat-menu #menu="matMenu">
-  <a mat-menu-item *ngFor="let page of pages" [ngClass]="{'selected-item':selectedValue==page}" (click)="changePage(page)">{{page}}</a>
+  <a mat-menu-item *ngFor="let page of pages" [ngClass]="{'selected-item':selectedValue==page}" (click)="changePage(page)">{{page |translate}}</a>
 </mat-menu>

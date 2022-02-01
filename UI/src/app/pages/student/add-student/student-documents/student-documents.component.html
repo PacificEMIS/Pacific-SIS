@@ -1,7 +1,11 @@
 <mat-card class="w-full" fxFlex="auto">
     <div class="flex items-center pb-4" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'documents' | translate}}</h3>
-        <button *ngIf="permissions?.add" mat-raised-button color="primary" (click)="toggleDisplayDiv()">
+        <button *ngIf="(membershipType === 'Teacher' || membershipType === 'Homeroom Teacher') && this.defaultValuesService.checkAcademicYear() && permissions?.add" mat-raised-button color="primary" (click)="toggleDisplayDiv()">
+            <mat-icon [icIcon]="icUpload" class="mr-1"></mat-icon><span
+                class="ml-2 hidden md:inline-block">{{'uploadDocument' |translate}}</span>
+        </button>
+        <button *ngIf="(membershipType === 'Super Administrator' || membershipType === 'School Administrator' || membershipType === 'Admin Assistant') && permissions?.add" mat-raised-button color="primary" (click)="toggleDisplayDiv()">
             <mat-icon [icIcon]="icUpload" class="mr-1"></mat-icon><span
                 class="ml-2 hidden md:inline-block">{{'uploadDocument' |translate}}</span>
         </button>
@@ -71,7 +75,7 @@
             </ng-container>
             <ng-container matColumnDef="noData">
                 <td mat-footer-cell *matFooterCellDef colspan="3">
-                    No Data
+                    {{'noData' | translate}}
                 </td>
             </ng-container>
 

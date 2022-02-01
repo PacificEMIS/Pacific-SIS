@@ -9,6 +9,10 @@ export class ReleaseNumber {
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+
+    constructor() {
+        this.releaseNumber1 = '';
+    }
 }
 
 export class ReleaseNumberAddViewModel extends CommonField {

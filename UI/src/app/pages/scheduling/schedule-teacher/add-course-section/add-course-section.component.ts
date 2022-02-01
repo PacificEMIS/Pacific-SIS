@@ -84,79 +84,14 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
-    this.getMarkingPeriodTitleListModel.getMarkingPeriodView = this.data.markingPeriods;
+    this.getAllCourseListModel.courseViewModelList= this.data.courseList;
+    this.getAllSubjectModel.subjectList=this.data.subjectList;
+    this.getAllProgramModel.programList=this.data.programList;
+    this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriods;
   }
 
   ngOnInit(): void {
-    this.getAllCourse();
-    this.getAllSubjectList();
-    this.getAllProgramList();
-  }
-
-
-  getAllProgramList() {
-    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllProgramModel.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllProgramModel.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }  
-    });
-  }
-  getAllSubjectList() {
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllSubjectModel.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllSubjectModel.subjectList = data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      } 
-    });
-  }
-
-  getAllCourse() {
-    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
-      if (data) {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllCourseListModel.courseViewModelList = [];
-          if (!data.courseViewModelList) {
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            });
-          }
-        } else {
-          this.getAllCourseListModel.courseViewModelList = data.courseViewModelList;
-        }
-      } else {
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 10000
-        });
-      }
-    })
+    
   }
 
   searchCourseSection() {
@@ -177,21 +112,17 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     }
 
     this.courseSectionService.searchCourseSectionForSchedule(dataSet).subscribe((res) => {
-    if(res._failure){
+    if (res.allCourseSectionViewList === null) {
         this.commonService.checkTokenValidOrNot(res._message);
-        if (res.allCourseSectionViewList === null) {
-          this.courseSectionList = new MatTableDataSource([]);
-          this.snackbar.open(res._message, '', {
-            duration: 5000
-          });
-        } else {
-          this.courseSectionList = new MatTableDataSource([]);
-        }
-      } else {
-        res.allCourseSectionViewList = this.findMarkingPeriodTitleById(res.allCourseSectionViewList)
-        this.courseSectionList = new MatTableDataSource(res.allCourseSectionViewList);
-        this.courseSectionList.paginator = this.paginator;
-      }
+        this.courseSectionList = new MatTableDataSource([]);
+        this.snackbar.open(res._message, '', {
+          duration: 5000
+        });
+    }else{
+      res.allCourseSectionViewList = this.findMarkingPeriodTitleById(res.allCourseSectionViewList)
+      this.courseSectionList = new MatTableDataSource(res.allCourseSectionViewList);
+      this.courseSectionList.paginator = this.paginator;
+    }
     })
   }
 
@@ -204,9 +135,11 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
         item.smstrMarkingPeriodId = '1_' + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = '2_' + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = '3_' + item.prgrsprdMarkingPeriodId;
       }
 
-      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId) {
+      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId || item.prgrsprdMarkingPeriodId) {
         for (let markingPeriod of this.getMarkingPeriodTitleListModel.getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
@@ -215,6 +148,9 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
+            item.markingPeriodTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           }

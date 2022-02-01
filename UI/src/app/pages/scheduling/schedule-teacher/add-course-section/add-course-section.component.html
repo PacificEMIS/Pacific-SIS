@@ -14,7 +14,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "course" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseId">
-                    <mat-option value="">All Course</mat-option>
+                    <mat-option>All Course</mat-option>
                     <mat-option *ngFor="let course of getAllCourseListModel.courseViewModelList"
                         [value]="course.course.courseId">{{course.course.courseTitle}}</mat-option>
                 </mat-select>
@@ -24,7 +24,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "subject" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseSubject">
-                    <mat-option value="">All Subject</mat-option>
+                    <mat-option>All Subject</mat-option>
                     <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">
                         {{subject.subjectName}}</mat-option>
                 </mat-select>
@@ -34,7 +34,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "program" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseProgram">
-                    <mat-option value="">All Program</mat-option>
+                    <mat-option>All Program</mat-option>
                     <mat-option *ngFor="let program of getAllProgramModel.programList" [value]="program.programName">
                         {{program.programName}}</mat-option>
                 </mat-select>
@@ -44,7 +44,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "markingPeriod" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.markingPeriodId">
-                    <mat-option value="">All Marking Period</mat-option>
+                    <mat-option>All Marking Period</mat-option>
                     <mat-option *ngFor="let markingPeriod of getMarkingPeriodTitleListModel.getMarkingPeriodView"
                         [value]='markingPeriod.value'>{{markingPeriod.text}}</mat-option>
                 </mat-select>
@@ -99,7 +99,7 @@
                 <td mat-cell *matCellDef="let element">
                     <button *ngIf="element.scheduledTeacher" matTooltip="Jolly Holmes"
                         aria-label="Button that displays a tooltip when focused or hovered over">
-                        <img src="assets/img/icons/teacher_blue.svg" alt="" width="20">
+                        <img src="assets/img/icons/teacher_blue.svg" alt="Scheduled teacher icon" width="20">
                     </button>
                     <span *ngIf="!element.scheduledTeacher">-</span>
                 </td>

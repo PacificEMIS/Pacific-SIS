@@ -38,13 +38,13 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { StaffService } from 'src/app/services/staff.service';
 import { FinalGradeService } from 'src/app/services/final-grade.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 import { stagger60ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { Permissions } from '../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-input-final-grade',
@@ -83,29 +83,20 @@ export class InputFinalGradeComponent implements OnInit {
     private loaderService: LoaderService,
     private staffService: StaffService,
     private finalGradeService: FinalGradeService,
-    private layoutService: LayoutService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
-
-    if(localStorage.getItem("collapseValue") !== null){
-      if( localStorage.getItem("collapseValue") === "false"){
-        this.layoutService.expandSidenav();
-      }else{
-      } 
-    }else{
-      this.layoutService.expandSidenav();
-    }
   }
   viewEffortGradeDetails(element) {
     if(!this.permissions?.edit) return;
     const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
     this.finalGradeService.setStaffDetails({ staffId: element.staffId, staffFullName });
-    this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade', 'grade-details']);
+    this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade', 'final-grade-details']);
     this.pageInit = 2;
   }
 

@@ -18,7 +18,7 @@ export class Transform24to12Pipe implements PipeTransform {
         time[0] = +time[0] % 12 || 12; // Adjust hours
       }
 
-      return time.join('');;
+      return time.join('');
 
     }
     else {

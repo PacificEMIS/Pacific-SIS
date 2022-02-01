@@ -27,14 +27,19 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'country'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="studentAddModel.studentMaster.homeAddressCountry"
-                                name="homeAddressCountry">
-                                <mat-option *ngFor="let country of countryListArr" [value]='country.id'>
+                            <mat-select 
+                                [(ngModel)]="studentAddModel.studentMaster.homeAddressCountry" name="country" #countryCtrl="ngModel" required>
+                                <mat-option>
+                                    <ngx-mat-select-search  [formControl]="homeAddressCountryFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching nationality found" placeholderLabel="Find country..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let country of filteredHomeAddressCountry| async" [value]="country.id">
                                     {{country.name}}
                                 </mat-option>
-                            </mat-select>
+                            </mat-select> 
+                            <mat-error *ngIf="countryCtrl.errors?.required">
+                                {{'countryIsRequired'|translate}}</mat-error> 
                         </mat-form-field>
-                    </li>
+                    </li> 
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateProvinceLocality'|translate}}</mat-label>
@@ -108,7 +113,7 @@
                             <mat-select [disabled]="checkBox.checked"
                                 [(ngModel)]="studentAddModel.studentMaster.mailingAddressCountry"
                                 name="mailingAddressCountry">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let country of countryListArr" [value]='country.id'>
                                     {{country.name}}
                                 </mat-option>
@@ -148,20 +153,24 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'homePhone'|translate}}</mat-label>
-                            <input #homePhone="ngModel" maxlength="30"
+                            <input #homePhone="ngModel" maxlength="20" minlength="10"
                                 [(ngModel)]="studentAddModel.studentMaster.homePhone" name="homePhone" matInput>
                             <mat-error *ngIf="!homePhone.errors?.required && homePhone.errors?.invalidPhoneNumber">
                                 {{'invalidTelephoneNumber'|translate}}</mat-error>
+                                <mat-error *ngIf="!homePhone.errors?.required && homePhone.errors?.minlength">
+                                    {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'mobilePhone'|translate}}</mat-label>
-                            <input maxlength="30" [(ngModel)]="studentAddModel.studentMaster.mobilePhone"
+                            <input maxlength="20" minlength="10" [(ngModel)]="studentAddModel.studentMaster.mobilePhone"
                                 #mobilePhone="ngModel" name="mobilePhone" matInput>
                             <mat-error *ngIf="mobilePhone.errors?.phonevalidator">
                                 {{'pleaseProvideAValidMobileNo'|translate}}
                             </mat-error>
+                            <mat-error *ngIf="!mobilePhone.errors?.required && mobilePhone.errors?.minlength">
+                                {{'minLengthTelephoneNumber'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>

@@ -34,6 +34,7 @@ import { AttendanceCodeModel } from '../../../../models/attendance-code.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {AttendanceCodeEnum} from '../../../../enums/attendance-code.enum';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from "src/app/common/default-values.service";
 
 @Component({
   selector: 'vex-edit-attendance-code',
@@ -61,6 +62,7 @@ export class EditAttendanceCodeComponent implements OnInit {
      private fb: FormBuilder,
      private snackbar: MatSnackBar,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
        if(data.editMode){
          this.editMode=JSON.parse(JSON.stringify(data.editMode));
@@ -114,7 +116,7 @@ export class EditAttendanceCodeComponent implements OnInit {
   addAttendanceCode(){
     if(this.form.valid){
     this.attendanceCodeModel.attendanceCode.attendanceCategoryId=this.selectedAttendanceCategory;
-    this.attendanceCodeModel.attendanceCode.academicYear=+sessionStorage.getItem("academicyear");
+    // this.attendanceCodeModel.attendanceCode.academicYear=this.defaultValuesService.getAcademicYear();
     this.attendanceCodeModel.attendanceCode.title=this.form.value.title;
     this.attendanceCodeModel.attendanceCode.shortName=this.form.value.shortName;
     // this.attendanceCodeModel.attendanceCode.type=this.form.value.type;
@@ -131,7 +133,7 @@ export class EditAttendanceCodeComponent implements OnInit {
     this.attendanceCodeModel.attendanceCode.defaultCode=this.form.value.defaultCode;
     this.attendanceCodeService.addAttendanceCode(this.attendanceCodeModel).subscribe((res: any)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Attendance Code is Failed to Submit!. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Attendance Code is Failed to Submit!. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else if(res._failure){
@@ -168,11 +170,11 @@ export class EditAttendanceCodeComponent implements OnInit {
 
       this.attendanceCodeModel.attendanceCode.schoolId=this.editDetails.schoolId;
       this.attendanceCodeModel.attendanceCode.attendanceCode1=this.editDetails.attendanceCode1;
-      this.attendanceCodeModel.attendanceCode.academicYear=this.editDetails.academicYear;
+      // this.attendanceCodeModel.attendanceCode.academicYear=this.editDetails.academicYear;
       this.attendanceCodeModel.attendanceCode.attendanceCategoryId=this.editDetails.attendanceCategoryId;
       this.attendanceCodeService.updateAttendanceCode(this.attendanceCodeModel).subscribe((res: any)=>{
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Attendance Code is Failed to Update!. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Attendance Code is Failed to Update!. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }else if(res._failure){

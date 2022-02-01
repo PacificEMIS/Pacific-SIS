@@ -17,6 +17,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/services/common.service';
 import { StaffService } from 'src/app/services/staff.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
   selector: 'vex-sidenav',
@@ -39,10 +41,14 @@ export class SidenavComponent implements OnInit {
   icCollapseSidebar = icCollapseSidebar;
   icExpandSidebar = icExpandSidebar;
   icArrowDropDown = icArrowDropDown;
-  userName: string;
+  userName: any;
   membershipName: string;
   userPhoto;
   destroySubject$ = new Subject<void>();
+  tenantLogoIcon: any;
+  tenantName: any;
+  tenantSidenavLogo: any;
+
   constructor(private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,
@@ -52,30 +58,48 @@ export class SidenavComponent implements OnInit {
     public translateService: TranslateService,
     private dialog: MatDialog,
     private commonService: CommonService,
-   
-    ) {
-    this.navigationService.menuItems.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      if (res) {
-        this.items = this.navigationService.items;
-      }
-    });
-    translateService.use("en");
+    private defaultValuesService:DefaultValuesService) {
+      this.tenantSidenavLogo = this.defaultValuesService.getPhotoAndFooter().tenantSidenavLogo;
+      this.tenantLogoIcon = this.defaultValuesService.getPhotoAndFooter().tenantLogoIcon;
+      this.tenantName = this.defaultValuesService.getTenantName();
+
+      this.navigationService.menuItems.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+        if (res) {
+          this.items = this.navigationService.items;
+        }
+      });
+      // translateService.use("en");
   }
 
   ngOnInit() {
-    this.userName = sessionStorage.getItem('user');
-    this.membershipName = sessionStorage.getItem('membershipName');
+    if( this.defaultValuesService.getFirstGivenName()==null){
+      this.userName = this.defaultValuesService.getUserName();
+    }else{
+      this.userName = this.defaultValuesService.getFirstGivenName();
+    }
+    this.defaultValuesService.newSubject.subscribe(data=>{
+      this.userName=data;
+    })
+
+    this.membershipName = this.defaultValuesService.getuserMembershipName();
     this.getUserPhoto();
   }
 
-  getUserPhoto() {
-    let photo = sessionStorage.getItem('userPhoto');
+  expandSidebar(){
+    this.layoutService.expandSidenav();
+  }
 
-    if (photo !== "null") {
+  getUserPhoto() {
+    let photo = this.defaultValuesService.getuserPhoto();
+
+    if (photo) {
       this.userPhoto = 'data:image/png;base64,' + photo;
     } else {
       this.userPhoto = '../../../assets/img/profilePic.jpg';
     }
+    this.defaultValuesService.photoChanged.subscribe(data => {
+      this.userPhoto = 'data:image/png;base64,' + data;
+    });
   }
 
   onMouseEnter() {
@@ -88,11 +112,11 @@ export class SidenavComponent implements OnInit {
 
   toggleCollapse() {
     if (this.collapsed) {
-      localStorage.setItem("collapseValue", "false");
+      this.defaultValuesService.setCollapseValue("false");
       this.layoutService.expandSidenav()
     } else {
       this.layoutService.collapseSidenav();
-      localStorage.setItem("collapseValue", "true");
+      this.defaultValuesService.setCollapseValue("true");
     }
 
   }
@@ -101,12 +125,13 @@ export class SidenavComponent implements OnInit {
   }
 
   showMyAccount() {
-    let userId = sessionStorage.getItem('userId');
+    let userId = this.defaultValuesService.getUserId();
     this.staffService.setStaffId(+userId);
     let permittedDetails = this.pageRolePermission.getPermittedSubCategories('/school/staff');
     if (permittedDetails.length) {
       this.staffService.setCategoryTitle(permittedDetails[0].title);
-      this.router.navigateByUrl(permittedDetails[0].path);
+      this.router.navigateByUrl(permittedDetails[0].path, {state: {type: SchoolCreate.VIEW}});
+
       this.staffService.setCategoryId(0);
     }
   }

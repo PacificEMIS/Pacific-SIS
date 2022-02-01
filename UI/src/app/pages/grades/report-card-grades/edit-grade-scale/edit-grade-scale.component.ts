@@ -35,6 +35,7 @@ import { GradeScaleAddViewModel } from '../../../../models/grades.model';
 import { GradesService } from 'src/app/services/grades.service';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-grade-scale',
@@ -60,6 +61,7 @@ export class EditGradeScaleComponent implements OnInit {
     private gradesService:GradesService,
     public translateService: TranslateService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
      ) {
        this.form=fb.group(
          {
@@ -105,7 +107,7 @@ export class EditGradeScaleComponent implements OnInit {
         this.gradesService.addGradeScale(this.gradeScaleAddViewModel).subscribe(
           (res:GradeScaleAddViewModel)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -138,7 +140,7 @@ export class EditGradeScaleComponent implements OnInit {
         this.gradesService.updateGradeScale(this.gradeScaleAddViewModel).subscribe(
           (res:GradeScaleAddViewModel)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }  

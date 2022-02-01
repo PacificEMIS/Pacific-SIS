@@ -2,7 +2,7 @@ import { AttendanceCodeCategories } from './attendance-code.model';
 import { CalendarModel } from './calendar.model';
 import { CertificateModel } from './certificate.model';
 import { CommonField } from './common-field.model';
-import { CourseBlockSchedule, CourseCalendarSchedule, CourseFixedSchedule, CourseVariableSchedule, markingPeriodTitle } from './course-section.model';
+import { CourseBlockSchedule, CourseCalendarSchedule, CourseFixedSchedule, CourseSection, CourseVariableSchedule, markingPeriodTitle } from './course-section.model';
 import { FieldsCategoryModel } from './fields-category.model';
 
 
@@ -43,6 +43,7 @@ export class StaffMasterModel {
     public jobTitle: string;
     public joiningDate: string;
     public endDate: string;
+    public isActive: boolean;
     public homeroomTeacher: boolean;
     public primaryGradeLevelTaught: string;
     public primarySubjectTaught: string;
@@ -96,6 +97,9 @@ export class StaffAddModel extends CommonField {
     public fieldsCategoryList: FieldsCategoryModel[];
     public selectedCategoryId: number;
     public passwordHash: string;
+    public ExternalSchoolId: number;
+    public externalSchoolIds: any[];
+
     constructor() {
         super();
         this.staffMaster = new StaffMasterModel();
@@ -149,6 +153,11 @@ export class GetAllStaffModel {
     _failure: boolean;
     _message: string;
     _userName: string;
+    academicYear: number;
+    isHomeRoomTeacher: boolean;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    public emailAddress: string;
     public dobStartDate : Date|string;
     public dobEndDate : Date|string;
     public fullName:string;
@@ -157,7 +166,47 @@ export class GetAllStaffModel {
         this.pageNumber = 1;
         this.pageSize = 10;
         this.sortingModel = new sorting();
-        this.filterParams = null;
+        this.filterParams = [];
+        this._failure = false;
+        this._message = "";
+    }
+}
+
+export class GetAllStaffReportModel {
+    getStaffListForView: [StaffListModel];
+    staffMaster: [staffMasterCloneModel];
+    missingAttendanceDateList=[]; // for getting first mising attendance data
+    staffId: number;
+    courseSectionId:number; // Use for teacher missing attendance
+    tenantId: string;
+    schoolId: number;
+    includeInactive: boolean;
+    pageNumber: number;
+    pageSize: number;
+    _pageSize: number;
+    totalCount: number;
+    sortingModel: sorting;
+    filterParams: filterParams[];
+    searchAllSchool:boolean;
+    _tenantName: string;
+    _token: string;
+    _failure: boolean;
+    _message: string;
+    _userName: string;
+    academicYear: number;
+    isHomeRoomTeacher: boolean;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    public emailAddress: string;
+    public dobStartDate : Date|string;
+    public dobEndDate : Date|string;
+    public fullName:string;
+    public profilePhoto:boolean;
+    constructor() {
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.sortingModel = new sorting();
+        this.filterParams = [];
         this._failure = false;
         this._message = "";
     }
@@ -186,6 +235,8 @@ export class filterParams {
 //Staff Certificate Models 
 export class StaffCertificateModel extends CommonField {
     staffCertificateInfo: CertificateModel;
+    fieldsCategoryList;
+    selectedCategoryId;
     constructor() {
         super();
         this.staffCertificateInfo = new CertificateModel();
@@ -196,7 +247,6 @@ export class StaffCertificateListModel extends CommonField {
     tenantId: string;
     schoolId: number;
     staffId: number;
-
     pageNumber: number;
     pageSize: number;
     filterParams: filterParams;
@@ -243,6 +293,8 @@ export class StaffSchoolInfoModel extends CommonField {
     primarySubjectTaught: string;
     otherGradeLevelTaught: string;
     otherSubjectTaught: string;
+    fieldsCategoryList;
+    selectedCategoryId;
     staffSchoolInfoList: [StaffSchoolInfoListModel]
     constructor() {
         super();
@@ -342,7 +394,7 @@ export class StaffImportModel extends CommonField{
     }
 }
 
-export class StaffMasterImportModel{
+export class StaffMasterImportModel {
     staffMaster:any;
     countryOfBirthName: string;
     nationalityName: string;
@@ -353,6 +405,7 @@ export class StaffMasterImportModel{
     dob: string;
     joiningDate: string;
     startDate: string;
+    _message:string;
     fieldsCategoryList:FieldsCategoryModel[];
     loginEmail?: string;
     passwordHash?: string;
@@ -378,6 +431,7 @@ export class ScheduledCourseSectionsForStaffModel extends CommonField{
     missingAttendanceCount: number;
     pageNumber: number;
     _pageSize: number;
+    academicYear: number;
     constructor(){
         super();
     }
@@ -428,14 +482,17 @@ export class CourseSectionViewModel{
     public quarters:markingPeriodTitle;
     public schoolYears:markingPeriodTitle;
     public semesters:markingPeriodTitle;
+    public markingPeriod: string;
     public mpTitle:string; //[marking period title]This key is only used for front end view to extract mp title, this is not related to backend.
     public mpStartDate:string;
     public mpEndDate:string;
     public cloneMeetingDays: string;
+    public courseSection: CourseSection;
     public courseFixedSchedule: CourseFixedSchedule;
     public courseVariableSchedule: CourseVariableSchedule[];
     public courseCalendarSchedule: CourseCalendarSchedule[];
     public courseBlockSchedule: CourseBlockSchedule[];
+    public bellScheduleList;
 }
 
 export class ScheduledCourseSectionTableModel{
@@ -458,5 +515,24 @@ export class ScheduleDetailsModel{
     room: string;
 }
 
-
+export class GetStaffModel {
+    staffId: number;
+    tenantId: string;
+    schoolId: number;
+    _tenantName: string;
+    _token: string;
+    _failure: boolean;
+    _message: string;
+    _userName: string;
+    academicYear: number;
+    public emailAddress: string;
+    public DobStartDate : Date|string;
+    public DobEndDate : Date|string;
+    public fullName:string;
+    public profilePhoto:boolean;
+    constructor() { 
+        this._failure = false;
+        this._message = "";
+    }
+}
 

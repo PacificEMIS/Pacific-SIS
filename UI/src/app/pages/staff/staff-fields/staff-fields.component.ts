@@ -52,6 +52,8 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { SchoolService } from '../../../services/school.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { Module } from 'src/app/enums/module.enum';
 
 @Component({
   selector: 'vex-staff-fields',
@@ -100,6 +102,7 @@ export class StaffFieldsComponent implements OnInit {
     private pageRolePermissions: PageRolesPermission,
     private schoolService:SchoolService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -128,7 +131,7 @@ export class StaffFieldsComponent implements OnInit {
    goToAdd(){   
     this.dialog.open(EditStaffFieldsComponent, {
       data: {categoryID:this.currentCategoryId},
-      width: '600px'
+      width: '500px'
     }).afterClosed().subscribe((data)=>{
       if(data==='submited'){
         this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -168,7 +171,7 @@ export class StaffFieldsComponent implements OnInit {
     this.customFieldservice.deleteCustomField(this.customFieldAddView).subscribe(
       (res:CustomFieldAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Custom Field failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Custom Field failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -203,7 +206,7 @@ export class StaffFieldsComponent implements OnInit {
   openEditdata(element){
     this.dialog.open(EditStaffFieldsComponent, {
       data: {information:element},
-        width: '800px'
+        width: '500px'
     }).afterClosed().subscribe((data)=>{
       if(data==='submited'){
         this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -212,11 +215,11 @@ export class StaffFieldsComponent implements OnInit {
     })
   }
   getAllCustomFieldCategory(){
-    this.fieldsCategoryListView.module=this.fieldCategoryModuleEnum.Staff;
+    this.fieldsCategoryListView.module= Module.STAFF;
     this.customFieldservice.getAllFieldsCategory(this.fieldsCategoryListView).subscribe(
       (res:FieldsCategoryListView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Field Category list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Field Category list failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -252,7 +255,7 @@ export class StaffFieldsComponent implements OnInit {
   editFieldCategory(element){
     this.dialog.open(StaffFieldsCategoryComponent, {
       data: element,
-      width: '800px'
+      width: '500px'
     }).afterClosed().subscribe((data)=>{
       if(data==='submited'){
       this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -265,7 +268,7 @@ export class StaffFieldsComponent implements OnInit {
     this.customFieldservice.deleteFieldsCategory(this.fieldsCategoryAddView).subscribe(
       (res: FieldsCategoryAddView) => {
         if (typeof(res) === 'undefined'){
-          this.snackbar.open('Field Category delete failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Field Category delete failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -316,7 +319,7 @@ export class StaffFieldsComponent implements OnInit {
     this.customFieldservice.updateCustomFieldSortOrder(this.customFieldDragDropModel).subscribe(
       (res: CustomFieldDragDropModel)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Custom Field Drag short failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Custom Field Drag short failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }else{

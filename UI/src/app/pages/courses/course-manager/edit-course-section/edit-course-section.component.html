@@ -5,7 +5,7 @@
             <span class="text-green">{{data.courseDetails.courseTitle}}</span> -
             {{courseSectionModalTitle|translate}}
         </h2>
-        <mat-slide-toggle class="mt-1 text-sm md:text-lg" color="primary" formControlName="isActive" name="isActive">{{'active' | translate}}</mat-slide-toggle>
+        <mat-slide-toggle class="mt-1 text-sm md:text-lg" color="primary" [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isActive" name="isActive">{{'active' | translate}}</mat-slide-toggle>
     </div>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon [icIcon]="icClose"></mat-icon>
@@ -18,15 +18,14 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'courseSectionName' | translate}}</mat-label>
-                <input formControlName="courseSectionName"    name="courseSectionName" cdkFocusInitial matInput required>
+                <input formControlName="courseSectionName"  [readonly]="!this.defaultValuesService.checkAcademicYear()"  name="courseSectionName" cdkFocusInitial matInput required>
                 <mat-error *ngIf="form.get('courseSectionName').hasError('required')">{{'courseSectionNameIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'calendar' | translate}}</mat-label>
-                <mat-select [disabled]="data?.editMode"  formControlName="calendarId"  name="calendarId" (selectionChange) = "changeCalendar($event.value)" name="calendarId" required>
-                    <mat-option></mat-option>
+                <mat-select [disabled]="disabledCalendar || !this.defaultValuesService.checkAcademicYear()"  formControlName="calendarId"  name="calendarId" (selectionChange) = "changeCalendar($event.value)" name="calendarId" required>
                     <mat-option *ngFor="let calendars of calendarList" [value]="calendars.calenderId">
                         {{calendars.title}}
                     </mat-option>
@@ -37,8 +36,7 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'gradeScale' | translate}}</mat-label>
-                <mat-select formControlName="gradeScaleId"  name="gradeScaleId"  name="gradeScaleId" required>
-                    <mat-option></mat-option>
+                <mat-select formControlName="gradeScaleId"  name="gradeScaleId" [disabled]="!this.defaultValuesService.checkAcademicYear()"  name="gradeScaleId" required>
                     <mat-option [value]='staticGradeScaleValue[0].gradeScaleId'>
                     {{staticGradeScaleValue[0].gradescaleName}}
                     </mat-option>
@@ -58,22 +56,21 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'creditHours' | translate}}</mat-label>
-                <input type="text" formControlName="creditHours"  name="creditHours" matInput>
-                <!-- Inherit value from Course and let them edit if needed -->
+                <input type="number" [readonly]="!this.defaultValuesService.checkAcademicYear()" placeholder="0.000" (keydown)="checkInputAndPrevent($event)"  formControlName="creditHours" (blur)="onCrediHoursBlur($event)" name="creditHours" matInput>
+                <mat-error *ngIf="form.get('creditHours').touched && form.get('creditHours').hasError('pattern')">{{'invalidPatternCreditHours' | translate}}</mat-error>
             </mat-form-field>
         </li>
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'seats' | translate}}</mat-label>
-                <input type="number" min="1" oninput="validity.valid||(value='');" formControlName="seats"   name="seats" matInput required>
+                <input type="number" [readonly]="!this.defaultValuesService.checkAcademicYear()" min="1" oninput="validity.valid||(value='');" formControlName="seats"   name="seats" matInput required>
                 <mat-error *ngIf="form.get('seats').hasError('required')">{{'seatsIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'attendanceCategory' | translate}}</mat-label>
-                <mat-select formControlName="attendanceCategoryId" class="attendanceCategory" name="attendanceCategoryId"    name="attendanceCategoryId" [required]="isAttendanceCategoryRequired">
-                    <mat-option></mat-option>
+                <mat-select formControlName="attendanceCategoryId" [disabled]="!this.defaultValuesService.checkAcademicYear()" class="attendanceCategory" name="attendanceCategoryId"    name="attendanceCategoryId" [required]="isAttendanceCategoryRequired">
                     <mat-option *ngFor="let attendanceCategory of attendanceCategoryList" [value]='attendanceCategory.attendanceCategoryId'>
                         {{attendanceCategory.title}}
                     </mat-option>
@@ -84,31 +81,30 @@
         <li class="col-span-2">
             <div class="flex flex-wrap">
                 <span class="mr-6">
-                    <mat-slide-toggle formControlName="allowStudentConflict" name="allowStudentConflict" class="mb-3" color="primary">{{'allowStudentConflict' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="allowStudentConflict" name="allowStudentConflict" class="mb-3" color="primary">{{'allowStudentConflict' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">
-                    <mat-slide-toggle formControlName="allowTeacherConflict" name="allowTeacherConflict" class="mb-3" color="primary">{{'allowTeacherConflict' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="allowTeacherConflict" name="allowTeacherConflict" class="mb-3" color="primary">{{'allowTeacherConflict' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">
-                    <mat-slide-toggle formControlName="isWeightedCourse" name="isWeightedCourse" class="mb-3" color="primary">{{'courseIsWeighted' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isWeightedCourse" name="isWeightedCourse" class="mb-3" color="primary">{{'courseIsWeighted' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">
-                    <mat-slide-toggle class="mb-3" formControlName="affectsClassRank" name="affectsClassRank"   color="primary">{{'affectsClassRank' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" class="mb-3" formControlName="affectsClassRank" name="affectsClassRank"   color="primary">{{'affectsClassRank' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">
-                    <mat-slide-toggle class="mb-3" formControlName="affectsHonorRoll" name="affectsHonorRoll"   color="primary">{{'affectsHonorRoll' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" class="mb-3" formControlName="affectsHonorRoll" name="affectsHonorRoll"   color="primary">{{'affectsHonorRoll' | translate}}</mat-slide-toggle>
                 </span>
-                <span class="mr-6"><mat-slide-toggle (change)="toggleUsStandards($event)" formControlName="useStandards" color="primary">{{'useStandards' | translate}}</mat-slide-toggle></span>
+                <span class="mr-6"><mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" (change)="toggleUsStandards($event)" formControlName="useStandards" color="primary">{{'useStandards' | translate}}</mat-slide-toggle></span>
                 <span class="mr-6 mb-3">
-                    <mat-slide-toggle (change)="showOnlineClassRoom($event)" formControlName="onlineClassRoom" name="onlineClassRoom"   color="primary">{{'onlineClassRoom' | translate}}</mat-slide-toggle>
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" (change)="showOnlineClassRoom($event)" formControlName="onlineClassRoom" name="onlineClassRoom"   color="primary">{{'onlineClassRoom' | translate}}</mat-slide-toggle>
                 </span>
             </div>
         </li>
         <li *ngIf="form.value.useStandards">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'standardGradeScale' | translate}}</mat-label>
-                <mat-select formControlName="standardGradeScaleId" name="standardGradeScaleId" required>
-                    <mat-option></mat-option>
+                <mat-select formControlName="standardGradeScaleId" [disabled]="!this.defaultValuesService.checkAcademicYear()" name="standardGradeScaleId" required>
                     <mat-option *ngFor="let standardList of gradeScaleStandardList" [value]='standardList.gradeScaleId'>
                         {{standardList.gradeScaleName}}
                     </mat-option>
@@ -120,14 +116,14 @@
         <li *ngIf="form?.value.onlineClassRoom">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'onlineClassRoomUrl' | translate}}</mat-label>
-                <input type="text" formControlName="onlineClassroomUrl" name ="onlineClassroomUrl" matInput [required]="form?.value.onlineClassRoom?true:null">
+                <input type="text" [readonly]="!this.defaultValuesService.checkAcademicYear()" formControlName="onlineClassroomUrl" name ="onlineClassroomUrl" matInput [required]="form?.value.onlineClassRoom?true:null">
                 <mat-error *ngIf="form.get('onlineClassroomUrl').hasError('required')">{{'onlineClassroomUrlIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
         <li *ngIf="form?.value.onlineClassRoom">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'onlineClassRoomPasswordIfAny' | translate}}</mat-label>
-                <input type="text" formControlName="onlineClassroomPassword" name ="onlineClassroomPassword" matInput>
+                <input type="text" [readonly]="!this.defaultValuesService.checkAcademicYear()" formControlName="onlineClassroomPassword" name ="onlineClassroomPassword" matInput>
             </mat-form-field>
         </li>
     </ul>
@@ -137,8 +133,8 @@
 
     <h4 class="text-green mb-4">{{'duration' | translate}}</h4>
     <mat-radio-group aria-label="Select an option" formControlName="durationType" (change)="setDuration($event)" name="duration">
-        <mat-radio-button name="markingPeriod" value="1" color="primary" name="markingPeriod">{{'markingPeriod' | translate}}</mat-radio-button>
-        <mat-radio-button name="customDate" value="2" color="primary" name="customDate">{{'customDateRange' | translate}}</mat-radio-button>
+        <mat-radio-button [disabled]="!this.defaultValuesService.checkAcademicYear()" name="markingPeriod" value="1" color="primary" name="markingPeriod">{{'markingPeriod' | translate}}</mat-radio-button>
+        <mat-radio-button [disabled]="!this.defaultValuesService.checkAcademicYear()" name="customDate" value="2" color="primary" name="customDate">{{'customDateRange' | translate}}</mat-radio-button>
     </mat-radio-group>
     <mat-error *ngIf="durationType== null">
         Please Select Duration.
@@ -148,8 +144,7 @@
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'markingPeriod' | translate}}</mat-label>
-                    <mat-select formControlName="markingPeriodId" (selectionChange) = "changeMarkingPeriod($event.value)" name="markingPeriodId" required>
-                        <mat-option></mat-option>
+                    <mat-select formControlName="markingPeriodId" [disabled]="!this.defaultValuesService.checkAcademicYear()" (selectionChange) = "changeMarkingPeriod($event.value)" name="markingPeriodId" required>
                         <mat-option *ngFor="let markingPeriod of markingPeriodList" [value]='markingPeriod.value'>
                             {{markingPeriod.text}}
                         </mat-option>
@@ -164,7 +159,7 @@
             <li >
                 <mat-form-field class="w-full" appearance="outline" color="primary" >
                     <mat-label>{{'startDate' | translate}}</mat-label>
-                    <input formControlName="durationStartDate" name="durationStartDate" (dateChange)="durationChange($event.value,'durationStartDate')"  matInput [matDatepicker]="pickerStartDate"  [min]="startDate" [max]="endDate" [required]="form.value.durationType=='2'?true:null"  [disabled]="showCalendarDates"> 
+                    <input formControlName="durationStartDate" name="durationStartDate" (dateChange)="durationChange($event.value,'durationStartDate')"  matInput [matDatepicker]="pickerStartDate"  [min]="startDate" [max]="endDate" [required]="form.value.durationType=='2'?true:null"  [disabled]="showCalendarDates || !this.defaultValuesService.checkAcademicYear()"> 
                     
                     <mat-datepicker-toggle matSuffix [for]="pickerStartDate"></mat-datepicker-toggle>
                     <mat-datepicker #pickerStartDate></mat-datepicker>
@@ -176,7 +171,7 @@
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'endDate' | translate}}</mat-label>
-                    <input formControlName="durationEndDate" name="durationEndDate" (dateChange)="durationChange($event.value,'durationEndDate')" [matDatepicker]="pickerEndDate" [min]="form.value.durationStartDate" [max]="endDate" matInput [required]="form.value.durationType=='2'?true:null"  [disabled]="showCalendarDates">
+                    <input formControlName="durationEndDate" [disabled]="!this.defaultValuesService.checkAcademicYear()" name="durationEndDate" (dateChange)="durationChange($event.value,'durationEndDate')" [matDatepicker]="pickerEndDate" [min]="form.value.durationStartDate" [max]="endDate" matInput [required]="form.value.durationType=='2'?true:null"  [disabled]="showCalendarDates || !this.defaultValuesService.checkAcademicYear()">
                     <mat-datepicker-toggle [for]="pickerEndDate" matSuffix></mat-datepicker-toggle>
                     <mat-datepicker #pickerEndDate></mat-datepicker>
                     <mat-error *ngIf="form.get('durationEndDate')?.hasError('required')">{{'endDateIsRequired'|translate}}</mat-error>
@@ -218,6 +213,6 @@
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
   <strong><mat-error *ngIf="calendarError">{{'invalidSeatCapacity' | translate}}</mat-error></strong>
   <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-  <button color="primary" mat-raised-button type="submit">{{courseSectionActionButtonTitle | translate}}</button>
+  <button color="primary" mat-raised-button *ngIf="this.defaultValuesService.checkAcademicYear()" type="submit">{{courseSectionActionButtonTitle | translate}}</button>
 </mat-dialog-actions>
 </form>

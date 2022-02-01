@@ -39,6 +39,7 @@ import { SharedFunction } from '../../../shared/shared-function';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { formatDate } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-calendar',
@@ -53,6 +54,8 @@ export class AddCalendarComponent implements OnInit {
   @ViewChild('checkBox') checkBox: MatCheckbox;
   checkAll: boolean;
   calendarTitle: string;
+  maxEndDate:string;
+  minStartDate:string;
   calendarActionButtonTitle = "submit";
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
   calendarAddViewModel = new CalendarAddViewModel();
@@ -80,8 +83,10 @@ export class AddCalendarComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
   ) {
-
+      this.maxEndDate= this.defaultValuesService.getSchoolClosed();
+      this.minStartDate= this.defaultValuesService.getSchoolOpened();
   }
 
   ngOnInit(): void {
@@ -91,8 +96,8 @@ export class AddCalendarComponent implements OnInit {
       endDate: [''],
       isDefaultCalendar: [false]
     });
-    if (this.data.calendarListCount == 0) {
-      this.calendarAddViewModel.schoolCalendar.startDate = sessionStorage.getItem("fullYearStartDate");
+    if(this.data.calendarListCount==0){
+      this.calendarAddViewModel.schoolCalendar.startDate=this.defaultValuesService.getFullYearStartDate();
     }
 
     if (this.data == null) {
@@ -127,23 +132,23 @@ export class AddCalendarComponent implements OnInit {
 
   }
 
-  checkDate() {
-    let markingPeriodDate = new Date(sessionStorage.getItem("fullYearStartDate")).getTime();
-    let startDate = new Date(this.calendarAddViewModel.schoolCalendar.startDate).getTime();
-    if ((startDate != markingPeriodDate && this.form.value.isDefaultCalendar) || (this.data.calendarListCount == 0 && startDate != markingPeriodDate)) {
-      this.form.controls.startDate.setErrors({ 'nomatch': true });
-    } else {
-      if (this.form.controls.startDate.errors?.nomatch) {
+  checkDate(){
+    let markingPeriodDate=new Date(this.defaultValuesService.getSchoolOpened()).getTime();
+    let startDate=new Date(this.calendarAddViewModel.schoolCalendar.startDate).getTime(); 
+    if((startDate!=markingPeriodDate) || (this.data.calendarListCount==0 && startDate!=markingPeriodDate)){
+      this.form.controls.startDate.setErrors({'nomatch': true});
+    }else{
+      if(this.form.controls.startDate.errors?.nomatch){
         this.form.controls.startDate.setErrors(null);
       }
     }
   }
 
-  showOptions(event: MatCheckboxChange) {
-    if (event.checked) {
-      this.calendarAddViewModel.schoolCalendar.startDate = sessionStorage.getItem("fullYearStartDate");
-      this.checkDate();
-    }
+  showOptions(event:MatCheckboxChange){
+  if(event.checked){
+    this.calendarAddViewModel.schoolCalendar.startDate=this.defaultValuesService.getFullYearStartDate();
+    this.checkDate();
+  }
   }
 
   submitCalendar() {
@@ -152,13 +157,14 @@ export class AddCalendarComponent implements OnInit {
     }
     this.calendarAddViewModel.schoolCalendar.title = this.form.value.title;
     this.calendarAddViewModel.schoolCalendar.defaultCalender = this.form.value.isDefaultCalendar;
-    this.calendarAddViewModel.schoolCalendar.academicYear = +sessionStorage.getItem("academicyear");
+    // this.calendarAddViewModel.schoolCalendar.academicYear = new Date(this.minStartDate).getFullYear();
     this.calendarAddViewModel.schoolCalendar.days = this.weekArray.toString().replace(/,/g, "");
     this.calendarAddViewModel.schoolCalendar.visibleToMembershipId = this.memberArray.toString();
     this.calendarAddViewModel.schoolCalendar.startDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.startDate);
     this.calendarAddViewModel.schoolCalendar.endDate = this.commonFunction.formatDateSaveWithoutTime(this.form.value.endDate);
     if (this.form.valid && this.weekArray.length > 0) {
       if (this.calendarAddViewModel.schoolCalendar.calenderId > 0) {
+        delete this.calendarAddViewModel.schoolCalendar.academicYear;
         this.calendarService.updateCalendar(this.calendarAddViewModel).subscribe(data => {
           if (data._failure) {
             this.commonService.checkTokenValidOrNot(data._message);

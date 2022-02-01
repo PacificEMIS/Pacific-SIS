@@ -50,6 +50,9 @@ import { RollBasedAccessService } from 'src/app/services/roll-based-access.servi
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../../models/roll-based-access.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'vex-staff-certificationinfo',
@@ -87,6 +90,11 @@ export class StaffCertificationinfoComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   searchKey: string;
   permissions: Permissions;
+  destroySubject$: Subject<void> = new Subject();
+  staffDetailsForViewAndEdit: any;
+  categoryId: number;
+  isReadOnly: boolean;
+
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -96,8 +104,18 @@ export class StaffCertificationinfoComponent implements OnInit {
     private staffService: StaffService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
+    this.staffService.staffDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      this.staffDetailsForViewAndEdit = res;
+    })
+
+    this.staffService.categoryIdSelected.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      if(res){
+        this.categoryId = res;
+    }
+    })
   }
 
   ngOnInit(): void {
@@ -119,6 +137,8 @@ export class StaffCertificationinfoComponent implements OnInit {
     this.staffCertificateList.filter = this.searchKey.trim().toLowerCase()
   }
   openAddNew() {
+    this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
+      this.isReadOnly = res.isReadOnly;
     this.dialog.open(AddCertificateComponent, {
       data: null,
       width: '600px'
@@ -127,9 +147,11 @@ export class StaffCertificationinfoComponent implements OnInit {
         this.getAllStaffCertificateInfo();
       }
     });
+  });
   }
   openEditdata(element) {
-
+    this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
+      this.isReadOnly = res.isReadOnly;
     this.dialog.open(AddCertificateComponent, {
       data: element,
       width: '600px'
@@ -137,7 +159,8 @@ export class StaffCertificationinfoComponent implements OnInit {
       if (data === 'submited') {
         this.getAllStaffCertificateInfo();
       }
-    })
+    });
+  });
   }
   openViewDetails(element) {
     this.dialog.open(CertificateDetailsComponent, {
@@ -154,9 +177,9 @@ export class StaffCertificationinfoComponent implements OnInit {
   getAllStaffCertificateInfo() {
     this.staffCertificateListModel.staffId = this.staffService.getStaffId();
     this.staffService.getAllStaffCertificateInfo(this.staffCertificateListModel).subscribe(
-      (res: StaffCertificateListModel) => {
-        if (typeof (res) == 'undefined') {
-          this.snackbar.open('Staff Certificate List failed. ' + sessionStorage.getItem("httpError"), '', {
+      (res:StaffCertificateListModel)=>{
+        if(typeof(res)=='undefined'){
+          this.snackbar.open('Staff Certificate List failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -186,9 +209,9 @@ export class StaffCertificationinfoComponent implements OnInit {
   deleteStaffCertificatedata(element) {
     this.staffCertificateModel.staffCertificateInfo = element
     this.staffService.deleteStaffCertificateInfo(this.staffCertificateModel).subscribe(
-      (res: StaffCertificateModel) => {
-        if (typeof (res) == 'undefined') {
-          this.snackbar.open('Staff Certificate Delete failed. ' + sessionStorage.getItem("httpError"), '', {
+      (res:StaffCertificateModel)=>{
+        if(typeof(res)=='undefined'){
+          this.snackbar.open('Staff Certificate Delete failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

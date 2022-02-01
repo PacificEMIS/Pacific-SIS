@@ -11,10 +11,10 @@
 <mat-dialog-content class="mb-1">
     <mat-form-field appearance="outline" color="primary" class="w-full mt-4">
         <mat-label>{{ 'enterComment' | translate }}</mat-label>
-        <textarea matInput required></textarea>
+        <textarea matInput [(ngModel)]="data.comment" required [readonly]='!isThisCurrentYeare'></textarea>
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-2">
     <button mat-dialog-close mat-flat-button>{{ 'cancel' | translate }}</button>
-    <button color="primary" mat-flat-button type="submit" class="text-white ml-2">{{ 'submit' |translate }}</button>
+    <button color="primary" mat-flat-button (click)="submitComment()" type="submit" class="text-white ml-2" *ngIf="isThisCurrentYeare">{{ data?.comment ? 'update' : 'submit' |translate }}</button>
 </mat-dialog-actions>

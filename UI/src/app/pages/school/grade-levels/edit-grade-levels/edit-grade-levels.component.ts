@@ -34,6 +34,7 @@ import { GradeLevelService } from '../../../../services/grade-level.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AgeRangeList, EducationalStage } from '../../../../models/common.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-grade-levels',
@@ -63,7 +64,8 @@ export class EditGradeLevelsComponent implements OnInit {
      private fb: FormBuilder,
      private gradeLevelService:GradeLevelService,
     private commonService: CommonService,
-     private snackbar: MatSnackBar) {
+     private snackbar: MatSnackBar,
+     private defaultValuesService: DefaultValuesService) {
     }
 
   ngOnInit(): void {
@@ -142,7 +144,7 @@ export class EditGradeLevelsComponent implements OnInit {
   getGradeEquivalency(){
     this.gradeLevelService.getAllGradeEquivalency(this.getGradeEquivalencyList).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -164,7 +166,7 @@ export class EditGradeLevelsComponent implements OnInit {
   }
 
   addGradeLevel(){
-    this.addGradeLevelData.tblGradelevel.schoolId=+sessionStorage.getItem("selectedSchoolId");;
+    this.addGradeLevelData.tblGradelevel.schoolId=this.defaultValuesService.getSchoolID();
     this.addGradeLevelData.tblGradelevel.title = this.form.value.title;
     this.addGradeLevelData.tblGradelevel.shortName =this.form.value.shortName;
     this.addGradeLevelData.tblGradelevel.sortOrder=this.form.value.sortOrder;
@@ -182,11 +184,11 @@ export class EditGradeLevelsComponent implements OnInit {
     this.addGradeLevelData.tblGradelevel.nextGradeId = null:this.addGradeLevelData.tblGradelevel.nextGradeId = this.form.value.nextGradeId
    
   
-    this.addGradeLevelData._token=sessionStorage.getItem("token");
-    this.addGradeLevelData._tenantName=sessionStorage.getItem("tenant");
+    this.addGradeLevelData._token=this.defaultValuesService.getToken();
+    this.addGradeLevelData._tenantName=this.defaultValuesService.getTenantName();
     this.gradeLevelService.addGradelevel(this.addGradeLevelData).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Add Grade Level ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Add Grade Level ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else
@@ -207,8 +209,8 @@ export class EditGradeLevelsComponent implements OnInit {
   updateGradeLevel(){
     this.updateGradeLevelData.tblGradelevel.schoolId = this.editDetails.schoolId;
     this.updateGradeLevelData.tblGradelevel.gradeId = this.editDetails.gradeId;
-    this.updateGradeLevelData._tenantName=sessionStorage.getItem("tenant");
-    this.updateGradeLevelData._token=sessionStorage.getItem("token");
+    this.updateGradeLevelData._tenantName=this.defaultValuesService.getTenantName();
+    this.updateGradeLevelData._token=this.defaultValuesService.getToken();
     this.updateGradeLevelData.tblGradelevel.title=this.form.value.title;
     this.updateGradeLevelData.tblGradelevel.shortName=this.form.value.shortName;
     this.updateGradeLevelData.tblGradelevel.sortOrder=this.form.value.sortOrder;
@@ -226,7 +228,7 @@ export class EditGradeLevelsComponent implements OnInit {
 
     this.gradeLevelService.updateGradelevel(this.updateGradeLevelData).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Update Grade Level ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Update Grade Level ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else if(res._failure){

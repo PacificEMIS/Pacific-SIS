@@ -27,7 +27,7 @@
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
 
-                <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+                <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
                     (click)='openAddNew()'>
                     <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
                     </ic-icon>
@@ -66,12 +66,16 @@
                 <td mat-cell *matCellDef="let element"> {{element.isActive|EmtyBooleanCheckPipe}}</td>
             </ng-container>
             <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef>{{'action' | translate}}</th>
+                <th mat-header-cell *matHeaderCellDef>
+                    <ng-container *ngIf="this.defaultValuesService.checkAcademicYear()">
+                        {{'action' | translate}}
+                    </ng-container>
+                   </th>
                 <td mat-cell *matCellDef="let element">
-                    <a *ngIf="permissions?.edit" class="mr-3 cursor-pointer" (click)="openEditdata(element)">
+                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="mr-3 cursor-pointer" (click)="openEditdata(element)">
                         <mat-icon [icIcon]="icEdit"></mat-icon>
                     </a>
-                    <a *ngIf="permissions?.edit" class="cursor-pointer" (click)="confirmDelete(element)">
+                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="cursor-pointer" (click)="confirmDelete(element)">
                         <mat-icon [icIcon]="icDelete"></mat-icon>
                     </a>
                 </td>
@@ -83,7 +87,7 @@
             </ng-container>
             <ng-container matColumnDef="noData">
                 <td mat-footer-cell *matFooterCellDef colspan="6">
-                    No Data
+                    {{'noData'|translate}}
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>

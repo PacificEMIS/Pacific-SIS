@@ -25,5 +25,10 @@
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
     <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{buttonType | translate}}</button>
+    <button [disabled]="checkSearchRecord === 1" color="primary" (click)="submit()" mat-raised-button type="submit">
+        <mat-icon class="mr-2" *ngIf="checkSearchRecord === 1">
+            <mat-spinner color="primary" diameter="20">
+            </mat-spinner>
+        </mat-icon>{{buttonType | translate}}
+    </button>
 </mat-dialog-actions>

@@ -43,6 +43,7 @@ import { GetAllParentModel, GetAllParentResponseModel, ParentAdvanceSearchModel 
 import { ParentInfoService } from '../../../../services/parent-info.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { MatSelect } from '@angular/material/select';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-search-parent',
@@ -60,6 +61,7 @@ export class SearchParentComponent implements OnInit,AfterViewInit,OnDestroy {
   @ViewChild('f') currentForm: NgForm;
   destroySubject$: Subject<void> = new Subject();
   parentSearchModel: ParentAdvanceSearchModel = new ParentAdvanceSearchModel();
+  getAllParentModel: GetAllParentModel = new GetAllParentModel();
   countryListArr = [];
   advanceSearchParams:filterParams[] = []
   @Output() searchValue = new EventEmitter<any>();
@@ -151,25 +153,29 @@ export class SearchParentComponent implements OnInit,AfterViewInit,OnDestroy {
 
 
   submit() {
-    this.advanceSearchParams=[];
+    this.getAllParentModel.filterParams = [];
+    if (Array.isArray(this.parentSearchModel.country)) {
+      this.parentSearchModel.country = null;
+    }
     for (let key in this.parentSearchModel) {
       if (this.parentSearchModel.hasOwnProperty(key))
       if (this.parentSearchModel[key]) {
-          this.advanceSearchParams.push({ "columnName": key, "filterOption": 11, "filterValue": this.parentSearchModel[key] })
+        this.getAllParentModel.filterParams.push(new FilterParamsForAdvancedSearch());
+        const lastIndex = this.getAllParentModel.filterParams.length - 1;
+        this.getAllParentModel.filterParams[lastIndex].columnName = key;
+        this.getAllParentModel.filterParams[lastIndex].filterValue = this.parentSearchModel[key];
       }
     }
     this.getAllParentList();
   }
 
   getAllParentList(){
-  let getAllParentModel: GetAllParentModel = new GetAllParentModel();
-  getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
-  getAllParentModel.filterParams = this.advanceSearchParams;
-  getAllParentModel.sortingModel = null;
-    this.parentInfoService.getAllParentInfo(getAllParentModel).pipe(takeUntil(this.destroySubject$)).subscribe(
+  this.getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+  this.getAllParentModel.sortingModel = null;
+    this.parentInfoService.getAllParentInfo(this.getAllParentModel).pipe(takeUntil(this.destroySubject$)).subscribe(
       (res: GetAllParentResponseModel) => {
         if(res) {
-        this.searchValue.emit(this.advanceSearchParams);
+        this.searchValue.emit(this.getAllParentModel.filterParams);
         if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
               if (res.parentInfoForView){
@@ -184,11 +190,11 @@ export class SearchParentComponent implements OnInit,AfterViewInit,OnDestroy {
           }
           else {
             this.searchList.emit(res);
-            this.existingFilterParams.emit(getAllParentModel.filterParams)
+            this.existingFilterParams.emit(this.getAllParentModel.filterParams)
             this.showHideAdvanceSearch.emit(true);
           }
         }else{
-          this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

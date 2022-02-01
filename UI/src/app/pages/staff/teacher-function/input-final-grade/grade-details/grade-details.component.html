@@ -26,6 +26,7 @@
                 <mat-label>{{ "courseSection" | translate }}</mat-label>
                 <mat-select (selectionChange)="selectedCourseSection($event.value)" name="courseSection"
                     [(ngModel)]="addUpdateStudentFinalGradeModel.courseSectionId">
+                    <mat-option></mat-option>
                     <mat-option
                         *ngFor="let courseSectionDetail of allScheduledCourseSectionBasedOnTeacher?.courseSectionViewList"
                         [value]="courseSectionDetail.courseSectionId">
@@ -37,10 +38,9 @@
         <li>
             <mat-form-field class="w-full align-top" appearance="outline" color="primary">
                 <mat-label>{{ "markingPeriod" | translate }}</mat-label>
-                <mat-select name="markingPeriod" [(value)]="addUpdateStudentFinalGradeModel.markingPeriodId"
-                    (selectionChange)="selectedMarkingPeriod($event.value)"
-                    [(ngModel)]="addUpdateStudentFinalGradeModel.markingPeriodId">
-                    <mat-option *ngFor="let period of markingPeriodList" [value]="period.value">
+                <mat-select name="markingPeriod" (selectionChange)="selectedMarkingPeriod($event.value)">
+                    <mat-option></mat-option>
+                    <mat-option *ngFor="let period of markingPeriodList" [value]="period.text">
                         {{period.text}}
                     </mat-option>
                 </mat-select>
@@ -59,9 +59,9 @@
                             <th width="25%"
                                 *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric' && courseSectionDetails[0]?.gradeScaleType !== 'Teacher_Scale'"
                                 class="relative whitespace-nowrap">
-                                <span class="switch-wrap -ml-8 pr-2">
+                                <span class="switch-wrap absolute pr-2">
                                     <label class="switch">
-                                        <input checked (change)="onCheckboxChange($event)" type="checkbox" disabled>
+                                        <input checked (change)="onCheckboxChange($event)" type="checkbox">
                                         <span class="slider"></span>
                                     </label>
                                 </span>
@@ -81,7 +81,7 @@
                                 <div class="flex cursor-pointer" (click)="addComments(i)">
                                     <div class="flex-shrink-0 h-10 w-10">
                                         <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
-                                            alt="" class="h-10 w-10 rounded-full" />
+                                            alt="Student photo" class="h-10 w-10 rounded-full" />
                                     </div>
                                     <div class="ml-3 flex flex-col justify-center">
                                         <h6 class="text-sm font-semibold">{{student.firstGivenName+" "+
@@ -99,9 +99,8 @@
                                         class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         min="0" max="100" (keyup)="percentToGrade(i)" name="percentMarks"
                                         [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks"
-                                        type="number">
+                                        type="number" [readonly]="!defaultValuesService.checkAcademicYear()">
                                 </td>
-                                <td>
                             </ng-container>
                             <ng-container
                                 *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale'">
@@ -110,9 +109,10 @@
                                     ""}}</td>
                                 <td>
                                     <!-- <label>{{'selectGrade'|translate}}</label>    -->
-                                    <div class="select-dropdown">
+                                    <div class="select-dropdown" >
                                         <select (change)="selectedGrade($event.target.value ,i)" name="gradeObtained"
-                                            [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained">
+                                            [ngModel]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i]?.gradeObtained" (ngModelChange)="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained = $event" 
+                                            [disabled]="!this.defaultValuesService.checkAcademicYear()">
                                             <option value=null disabled selected>{{'select'|translate}}</option>
                                             <option *ngFor="let report of gradeScaleList" value={{report.title}}>
                                                 {{report.title}}</option>
@@ -136,7 +136,7 @@
                 <div class="w-full">
                     <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
                         <mat-label class="mb-2">{{ "searchAndSelectPredefinedComments" | translate }}</mat-label>
-                        <mat-chip-list #chipList aria-label="Fruit selection">
+                        <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!defaultValuesService.checkAcademicYear()">
                             <mat-chip
                                 *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeComments"
                                 [selectable]="selectable" [removable]="removable"
@@ -182,11 +182,11 @@
                 <div class="w-full border rounded mb-2 p-2">
                     <textarea placeholder="Comments" name="teacherComment"
                         [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment"
-                        class="w-full" rows="3"></textarea>
+                        class="w-full" rows="3" [readonly]="!defaultValuesService.checkAcademicYear()"></textarea>
                 </div>
                 <ng-container *ngIf="courseSectionDetails[0]?.standardGradeScaleId">
 
-                    <h4 class="text-base font-medium text-green py-4">Standard Grades</h4>
+                    <h4 class="text-base font-medium text-green py-4">{{'standardGrades' | translate }}</h4>
                     <div class="lg:flex lg:flex-wrap mb-4" *ngFor="let standard of courseStandardList; let i = index">
                         <div class="lg:w-3/4 lg:pr-4">
                             <h4 class="text-base font-medium">{{standard.gradeUsStandard.standardRefNo}}</h4>
@@ -199,6 +199,7 @@
                                     [(value)]="addUpdateStudentFinalGradeModel?.studentFinalGradeList[selectedStudent]?.studentFinalGradeStandard[i].gradeObtained"
                                     (selectionChange)="setValue(standard.gradeUsStandard.gradeStandardId, $event.value,i)"
                                     name="gradeObtained">
+                                    <mat-option></mat-option>
                                     <mat-option *ngFor="let report of gradeScaleStandardList" [value]="report.gradeId">
                                         {{report.title}}</mat-option>
                                 </mat-select>
@@ -213,6 +214,6 @@
     </div>
 </div>
 <!-- End Input Final Grade -->
-<div class="text-right mt-4">
+<div class="text-right mt-4" *ngIf="defaultValuesService.checkAcademicYear()">
     <button (click)="submitFinalGrade()" mat-raised-button color="primary">{{ "submit" | translate }}</button>
 </div>

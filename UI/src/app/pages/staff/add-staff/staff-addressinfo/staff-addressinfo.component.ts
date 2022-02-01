@@ -51,6 +51,7 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { RollBasedAccessService } from '../../../../services/roll-based-access.service';
 import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-staff-addressinfo',
   templateUrl: './staff-addressinfo.component.html',
@@ -93,6 +94,8 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   mailingAddressCountryFilterCtrl: FormControl = new FormControl();
   public filteredMailingAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   permissions: Permissions;
+  isReadOnly: boolean;
+  
   constructor(public translateService: TranslateService,
               private snackbar: MatSnackBar,
               private staffService: StaffService,
@@ -100,7 +103,8 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
               private imageCropperService: ImageCropperService,
               private pageRolePermissions: PageRolesPermission,
               public rollBasedAccessService: RollBasedAccessService,
-              private commonLOV: CommonLOV) {
+              private commonLOV: CommonLOV,
+              private defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
   }
 
@@ -191,12 +195,14 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   editAddressContactInfo() {
+    this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
+    this.isReadOnly = res.isReadOnly;
     this.staffCreateMode = this.staffCreate.EDIT;
     this.staffService.changePageMode(this.staffCreateMode);
     this.actionButton = 'update';
     this.staffAddModel.staffMaster.mailingAddressCountry =+this.staffAddModel.staffMaster.mailingAddressCountry ;
     this.staffAddModel.staffMaster.homeAddressCountry = +this.staffAddModel.staffMaster.homeAddressCountry;
-
+    })
   }
 
   cancelEdit() {
@@ -301,7 +307,7 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.staffService.updateStaff(this.staffAddModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Staff Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

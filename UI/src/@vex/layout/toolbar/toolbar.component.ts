@@ -24,6 +24,9 @@ import { stagger40ms } from '../../../@vex/animations/stagger.animation';
 import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
 import { CryptoService } from 'src/app/services/Crypto.service';
 import { Subject } from 'rxjs';
+import { DefaultValuesService } from '../../../app/common/default-values.service';
+import { TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'vex-toolbar',
   templateUrl: './toolbar.component.html',
@@ -40,7 +43,9 @@ export class ToolbarComponent implements OnInit,OnDestroy {
   @Input()
   @HostBinding('class.shadow-b')
   hasShadow: boolean;
-
+  tenantLogoIcon: any;
+  tenantName: any;
+  profileType;
   navigationItems = this.navigationService.items;
 
   isHorizontalLayout$ = this.configService.config$.pipe(map(config => config.layout === 'horizontal'));
@@ -69,13 +74,18 @@ export class ToolbarComponent implements OnInit,OnDestroy {
     private configService: ConfigService,
     private navigationService: NavigationService,
     private popoverService: PopoverService,
-    private cryptoService:CryptoService) {
+    private defaultValueService: DefaultValuesService,
+    private cryptoService:CryptoService,
+    public translateService: TranslateService,
+    ) {
+    this.tenantLogoIcon = this.defaultValueService.getPhotoAndFooter().tenantLogoIcon;
+    this.tenantName = this.defaultValueService.getTenantName();
     //  this.navigationService.menuItems.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
     //    if(res){
     //     this.renderAddNew();
     //    }
     //  })
-      
+    this.profileType= this.defaultValueService.getUserMembershipType();
   }
 
   ngOnInit() {

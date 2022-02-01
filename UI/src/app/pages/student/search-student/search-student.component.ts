@@ -44,6 +44,13 @@ import { GetAllSectionModel } from '../../../models/section.model';
 import { MatSelect } from '@angular/material/select';
 import { ScheduleStudentListViewModel } from '../../../models/student-schedule.model';
 import { StudentScheduleService } from '../../../services/student-schedule.service';
+import { ProfilesTypes } from '../../../enums/profiles.enum';
+import { FilterParamsForAdvancedSearch } from '../../../models/common.model';
+import { RollingOptionsEnum } from '../../../enums/rolling-retention-option.enum';
+import { GradeLevelService } from '../../../services/grade-level.service';
+import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
+import { EnrollmentCodesService } from '../../../services/enrollment-codes.service';
+import { EnrollmentCodeListView } from '../../../models/enrollment-code.model';
 
 @Component({
   selector: 'vex-search-student',
@@ -60,6 +67,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() filterJsonParams;
   @Input() incomingSearchValue;
   @Input() incomingToggleValues;
+  rollingOptions = Object.keys(RollingOptionsEnum);
   countryModel: CountryModel = new CountryModel();
   languages: LanguageModel = new LanguageModel();
   @ViewChild('f') currentForm: NgForm;
@@ -83,10 +91,12 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   maritalStatusList = [];
   salutationList = [];
   sectionList = [];
+  enrollmentList=[];
   languageList;
   searchAllSchool: boolean;
   inactiveStudents = false;
-
+  getAllGradeLevelsModel: GetAllGradeLevelsModel= new GetAllGradeLevelsModel();
+  enrollmentCodelistView: EnrollmentCodeListView = new EnrollmentCodeListView();
   countryCtrl: FormControl = new FormControl();
   countryFilterCtrl: FormControl = new FormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -99,6 +109,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
   public userType:string;
+  profiles= ProfilesTypes;
 
   constructor(
     private studentService: StudentService,
@@ -108,6 +119,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
     private loginService: LoginService,
+    public enrollmentCodeService: EnrollmentCodesService,
+    private gradeLevelService: GradeLevelService,
     private studentScheduleService: StudentScheduleService,
     private commonFunction: SharedFunction,
   ) { }
@@ -147,7 +160,6 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.initializeDropdownsInAddMode();
     this.userType=this.defaultValuesService.getUserMembershipType();
-    console.log(this.userType);
   }
   ngAfterViewInit() {
     this.countryValueChange();
@@ -229,6 +241,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     this.getAllCountry();
     this.GetAllLanguage();
     this.getAllSection();
+    this.getAllGradeLevelList()
+    this.getAllStudentEnrollmentCode();
   }
 
   callLOVs() {
@@ -316,6 +330,32 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  getAllStudentEnrollmentCode() {
+    this.enrollmentCodelistView.isListView=true;
+    this.enrollmentCodeService.getAllStudentEnrollmentCode(this.enrollmentCodelistView).subscribe(
+      (res: EnrollmentCodeListView) => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.enrollmentList = [];
+          }
+          else {
+            this.enrollmentList = res.studentEnrollmentCodeList;
+          }
+        }
+      }
+    );
+  }
+
+  getAllGradeLevelList(){   
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {   
+      if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+        }       
+      this.getAllGradeLevelsModel.tableGradelevelList=data.tableGradelevelList;      
+    });
+  }
+
   getAllSection() {
     let section: GetAllSectionModel = new GetAllSectionModel();
     this.sectionService.GetAllSection(section).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
@@ -339,7 +379,8 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     this.search();
   }
   search() {
-    this.params = [];
+    this.scheduleStudentListViewModel.filterParams = [];
+    this.getAllStudent.filterParams = [];
     if (Array.isArray(this.studentMasterSearchModel.nationality)) {
       this.studentMasterSearchModel.nationality = null;
     }
@@ -352,11 +393,34 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
         if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== '' && this.studentMasterSearchModel[key] !== undefined) {
-          if (key === 'dob') {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]) })
-          }
-          else {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.studentMasterSearchModel[key] })
+          if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+            this.scheduleStudentListViewModel.filterParams.push(new FilterParamsForAdvancedSearch());
+            const lastIndex = this.scheduleStudentListViewModel.filterParams.length - 1;
+            if (key === 'dob' || key === 'estimatedGradDate' || key === 'enrollmentDate' ) {
+              this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
+              this.scheduleStudentListViewModel.filterParams[lastIndex].filterOption = 11;
+              this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
+            } else if(this.studentMasterSearchModel[key] === false){
+              this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = '';  
+              this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = '';  
+            }else {
+              this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
+              this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
+            }
+          } else {
+            this.getAllStudent.filterParams.push(new FilterParamsForAdvancedSearch());
+            const lastIndex = this.getAllStudent.filterParams.length - 1;
+            if (key === 'dob' || key === 'estimatedGradDate' || key === 'enrollmentDate') {
+              this.getAllStudent.filterParams[lastIndex].columnName = key;
+              this.getAllStudent.filterParams[lastIndex].filterOption = 11;
+              this.getAllStudent.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
+            } else if(this.studentMasterSearchModel[key] === false){
+              this.getAllStudent.filterParams[lastIndex].columnName = '';  
+              this.getAllStudent.filterParams[lastIndex].filterValue = '';  
+            }else {
+              this.getAllStudent.filterParams[lastIndex].columnName = key;  
+              this.getAllStudent.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];  
+            }
           }
         }
     }
@@ -367,13 +431,18 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Student';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.params);
+      if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+        this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.scheduleStudentListViewModel.filterParams);
+      } else {
+        this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.getAllStudent.filterParams);
+      }
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter updated failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
+          this.checkSearchRecord = 0;
         }
         else {
         if(res._failure){
@@ -381,6 +450,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
+            this.checkSearchRecord = 0;
           }
           else {
             this.snackbar.open(res._message, '', {
@@ -395,16 +465,16 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.userType=this.defaultValuesService.getUserMembershipType();
     
     
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
-      this.scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) 
+    {
+      this.scheduleStudentListViewModel.staffId=this.defaultValuesService.getUserId();
       this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.scheduleStudentListViewModel.searchAllSchool = this.searchAllSchool;
       this.scheduleStudentListViewModel.includeInactive = this.inactiveStudents;
-      this.scheduleStudentListViewModel.filterParams = this.params;
       this.scheduleStudentListViewModel.sortingModel = null;
       this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-      this.commonService.setSearchResult(this.params);
+      this.commonService.setSearchResult(this.scheduleStudentListViewModel.filterParams);
       // this.searchAllSchoolsCondition=false;
       this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
        if(data._failure){
@@ -415,7 +485,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
           this.snackbar.open('' + data._message, '', {
             duration: 10000
           });
-
+          this.checkSearchRecord = 0;
         } else {
           this.searchList.emit(data);
           this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
@@ -428,12 +498,12 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     else {
       this.getAllStudent.searchAllSchool = this.searchAllSchool;
       this.getAllStudent.includeInactive = this.inactiveStudents;
-      this.getAllStudent.filterParams = this.params;
       this.getAllStudent.sortingModel = null;
       this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-      this.commonService.setSearchResult(this.params);
-      
+      this.commonService.setSearchResult(this.getAllStudent.filterParams);
+      this.defaultValuesService.sendAllSchoolFlag(this.searchAllSchool);
+      this.defaultValuesService.sendIncludeInactiveFlag(this.inactiveStudents);
       this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -443,7 +513,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
           this.snackbar.open('' + data._message, '', {
             duration: 10000
           });
-
+          this.checkSearchRecord = 0;
         } else {
           this.searchList.emit(data);
           this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });

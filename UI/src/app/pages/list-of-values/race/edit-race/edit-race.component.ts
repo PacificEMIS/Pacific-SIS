@@ -33,6 +33,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from '../../../../services/common.service';
 import { LovAddView } from '../../../../models/lov.model';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-race',
@@ -56,7 +57,8 @@ export class EditRaceComponent implements OnInit {
     public translateService: TranslateService,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
     this.form = this.fb.group({
       id: [0],
@@ -87,7 +89,7 @@ export class EditRaceComponent implements OnInit {
         this.commonService.addDropdownValue(this.raceAddViewModel).subscribe(
           (res) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Race Addition failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Race Addition failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -116,7 +118,7 @@ export class EditRaceComponent implements OnInit {
         this.commonService.updateDropdownValue(this.raceAddViewModel).subscribe(
           (res) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Race Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Race Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

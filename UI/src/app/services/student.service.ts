@@ -1,4 +1,4 @@
-import { AddEditStudentMedicalProviderForGroupAssignModel, AddEditStudentMedicalProviderModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel } from './../models/student.model';
+import { AddEditStudentMedicalProviderForGroupAssignModel, AddEditStudentMedicalProviderModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel, StudentListByDateRangeModel } from './../models/student.model';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -24,11 +24,17 @@ import { CryptoService } from './Crypto.service';
 import { DefaultValuesService } from '../common/default-values.service';
 import { SchoolCreate } from '../enums/school-create.enum';
 import { AddEditStudentMedicalAlertModel, AddEditStudentMedicalImmunizationModel, AddEditStudentMedicalNoteModel, AddEditStudentMedicalNurseVisitModel } from '../models/student.model';
+import { PageRolesPermission } from '../common/page-roles-permissions.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class StudentService {
+  searchAllSchool:boolean;
+  includeInactive:boolean;
   studentCreate = SchoolCreate;
+  selectedSchoolId: number;
   apiUrl: string = environment.apiURL;
   private currentYear = new BehaviorSubject(false);
   currentY = this.currentYear.asObservable();
@@ -57,7 +63,10 @@ export class StudentService {
   constructor(
     private http: HttpClient,
     private cryptoService: CryptoService,
-    private defaultValuesService: DefaultValuesService) {
+    private defaultValuesService: DefaultValuesService,
+    private pageRolePermission: PageRolesPermission,
+    private router: Router,
+    private snackbar: MatSnackBar) {
       this.httpOptions = {
         headers: new HttpHeaders({
           'Cache-Control': 'no-cache',
@@ -66,11 +75,30 @@ export class StudentService {
       }
      }
 
+  redirectToGeneralInfo() {
+    let permission = this.pageRolePermission.checkPageRolePermission('/school/students/student-generalinfo', null, true);
+    if (!permission.add) {
+      this.router.navigate(['/school', 'students']);
+      this.snackbar.open('You did not have permission to add student details.', '', {
+        duration: 10000
+      });
+    } else {
+      this.router.navigate(['/school', 'students', 'student-generalinfo']);
+    }
+  }
+
+  redirectToStudentList() {
+    this.router.navigate(['/school', 'students']);
+    this.snackbar.open(`Didn't have any permisssion to add student in selected academic year.`, '', {
+      duration: 30000
+    });
+  }
+
   AddStudent(obj: StudentAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMaster.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMaster.createdBy = this.defaultValuesService.getUserGuidId();
     obj.passwordHash = this.cryptoService.encrypt(obj.passwordHash);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudent';
     obj.studentMaster.studentPhoto = this.studentImage;
@@ -81,7 +109,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMaster.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMaster.createdBy = this.defaultValuesService.getUserGuidId();
     obj.passwordHash = this.cryptoService.encrypt(obj.passwordHash);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/assignGeneralInfoForStudents';
     obj.studentMaster.studentPhoto = this.studentImage;
@@ -100,7 +128,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMaster.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.passwordHash = this.cryptoService.encrypt(obj.passwordHash);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudent';
     obj.studentMaster.studentPhoto = this.studentImage;
@@ -109,7 +137,25 @@ export class StudentService {
 
   GetAllStudentList(obj: StudentListModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.emailAddress=this.defaultValuesService.getEmailId();
+    this.getAllSchoolAndInactive();
+    obj.searchAllSchool=this.searchAllSchool;
+    obj.includeInactive=this.includeInactive;
     const apiurl = this.apiUrl + obj._tenantName + '/Student/getAllStudentList';
+    return this.http.post<StudentResponseListModel>(apiurl, obj,this.httpOptions);
+  }
+
+  getAllStudentListByDateRange(obj: StudentListByDateRangeModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+    obj.EmailAddress = this.defaultValuesService.getEmailId();
+    obj.markingPeriodStartDate =  this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate =  this.defaultValuesService.getMarkingPeriodEndDate();
+
+    this.getAllSchoolAndInactive();
+    obj.searchAllSchool = this.searchAllSchool;
+    obj.includeInactive = this.includeInactive;
+    const apiurl = this.apiUrl + obj._tenantName + '/Student/getAllStudentListByDateRange';
     return this.http.post<StudentResponseListModel>(apiurl, obj,this.httpOptions);
   }
 
@@ -119,7 +165,14 @@ export class StudentService {
     return this.http.post<CheckStudentInternalIdViewModel>(apiurl, obj,this.httpOptions);
   }
 
-
+  getAllSchoolAndInactive(){
+    this.defaultValuesService.sendAllSchoolFlagSubject.subscribe(data=>{
+      this.searchAllSchool=data;
+    })
+    this.defaultValuesService.sendIncludeFlagSubject.subscribe(data=>{
+      this.includeInactive=data;
+    })
+  }
 
   private category = new Subject;
   categoryToSend = this.category.asObservable();
@@ -178,7 +231,7 @@ export class StudentService {
   addStudentComment(obj: StudentCommentsAddView) {
     obj.studentComments.tenantId = this.defaultValuesService.getTenantID();
     obj.studentComments.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentComments.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentComments.createdBy = this.defaultValuesService.getUserGuidId();
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentComment';
     return this.http.post<StudentCommentsAddView>(apiurl, obj,this.httpOptions);
@@ -187,7 +240,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentComments.tenantId = this.defaultValuesService.getTenantID();
     obj.studentComments.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentComments.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentComments.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentComment';
     return this.http.put<StudentCommentsAddView>(apiurl, obj,this.httpOptions);
   }
@@ -195,7 +248,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentComments.tenantId = this.defaultValuesService.getTenantID();
     obj.studentComments.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentComments.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentComments.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/deleteStudentComment';
     return this.http.post<StudentCommentsAddView>(apiurl, obj,this.httpOptions);
   }
@@ -245,18 +298,15 @@ export class StudentService {
   }
 
   // Student Sibling
-  siblingSearch(searchDetails: StudentSiblingSearch) {
-    searchDetails.tenantId= this.defaultValuesService.getTenantID();
-    searchDetails._tenantName= this.defaultValuesService.getTenent();
-    searchDetails._userName= this.defaultValuesService.getEmailId();
-    searchDetails._token= this.defaultValuesService.getToken();
+  siblingSearch(searchDetails: StudentSiblingSearch,schoolId) {
+    searchDetails= this.defaultValuesService.getAllMandatoryVariable(searchDetails);
+    searchDetails.schoolId= schoolId;
     const apiurl = this.apiUrl + searchDetails._tenantName + '/Student/siblingSearch';
     return this.http.post<StudentSiblingSearch>(apiurl, searchDetails,this.httpOptions);
   }
   associationSibling(studentDetails: StudentSiblingAssociation) {
     studentDetails = this.defaultValuesService.getAllMandatoryVariable(studentDetails);
     studentDetails.studentMaster.tenantId = this.defaultValuesService.getTenantID();
-    studentDetails.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
     const apiurl = this.apiUrl + studentDetails._tenantName + '/Student/associationSibling';
     return this.http.post<StudentSiblingAssociation>(apiurl, studentDetails,this.httpOptions);
   }
@@ -268,7 +318,6 @@ export class StudentService {
   removeSibling(studentDetails: StudentSiblingAssociation) {
     studentDetails = this.defaultValuesService.getAllMandatoryVariable(studentDetails);
     studentDetails.studentMaster.tenantId = this.defaultValuesService.getTenantID();
-    studentDetails.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
     const apiurl = this.apiUrl + studentDetails._tenantName + '/Student/removeSibling';
     return this.http.post<StudentSiblingAssociation>(apiurl, studentDetails,this.httpOptions);
   }
@@ -303,7 +352,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMaster.studentId = this.getStudentId();
     obj.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMaster.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.studentMaster.studentPhoto = this.studentImage;
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addUpdateStudentPhoto';
     return this.http.put<StudentAddModel>(apiurl, obj,this.httpOptions);
@@ -317,14 +366,16 @@ export class StudentService {
   }
 
   reenrollmentForStudent(obj: StudentListModel) {
+    const schoolId = this.selectedSchoolId;
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.updatedBy = this.defaultValuesService.getEmailId();
+    obj.schoolId = schoolId;
+    obj.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/reenrollmentForStudent';
     return this.http.post<StudentListModel>(apiurl, obj,this.httpOptions);
   }
   addStudentList(obj: StudentImportModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.createdBy = this.defaultValuesService.getEmailId();
+    obj.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentList';
     return this.http.post<StudentImportModel>(apiurl, obj,this.httpOptions);
   }
@@ -332,7 +383,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalAlert.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalAlert.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalAlert.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalAlert.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentMedicalAlert';
     return this.http.post<AddEditStudentMedicalAlertModel>(apiurl, obj,this.httpOptions);
   }
@@ -340,7 +391,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalAlert.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalAlert.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalAlert.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalAlert.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentMedicalAlert';
     return this.http.put<AddEditStudentMedicalAlertModel>(apiurl, obj,this.httpOptions);
   }
@@ -355,7 +406,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalNote.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalNote.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalNote.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalNote.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentMedicalNote';
     return this.http.post<AddEditStudentMedicalNoteModel>(apiurl, obj,this.httpOptions);
   }
@@ -363,7 +414,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalNote.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalNote.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalNote.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalNote.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentMedicalNote';
     return this.http.put<AddEditStudentMedicalNoteModel>(apiurl, obj,this.httpOptions);
   }
@@ -378,7 +429,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalImmunization.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalImmunization.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalImmunization.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalImmunization.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentMedicalImmunization';
     return this.http.post<AddEditStudentMedicalImmunizationModel>(apiurl, obj,this.httpOptions);
   }
@@ -386,7 +437,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalImmunization.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalImmunization.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalImmunization.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalImmunization.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentMedicalImmunization';
     return this.http.put<AddEditStudentMedicalImmunizationModel>(apiurl, obj,this.httpOptions);
   }
@@ -401,7 +452,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalNurseVisit.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalNurseVisit.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalNurseVisit.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalNurseVisit.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentMedicalNurseVisit';
     return this.http.post<AddEditStudentMedicalNurseVisitModel>(apiurl, obj,this.httpOptions);
   }
@@ -409,7 +460,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalNurseVisit.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalNurseVisit.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalNurseVisit.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalNurseVisit.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentMedicalNurseVisit';
     return this.http.put<AddEditStudentMedicalNurseVisitModel>(apiurl, obj,this.httpOptions);
   }
@@ -424,7 +475,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalProvider.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalProvider.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalProvider.createdBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalProvider.createdBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentMedicalProvider';
     return this.http.post<AddEditStudentMedicalProviderModel>(apiurl, obj,this.httpOptions);
   }
@@ -439,7 +490,7 @@ export class StudentService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.studentMedicalProvider.tenantId = this.defaultValuesService.getTenantID();
     obj.studentMedicalProvider.schoolId = this.defaultValuesService.getSchoolID();
-    obj.studentMedicalProvider.updatedBy = this.defaultValuesService.getEmailId();
+    obj.studentMedicalProvider.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentMedicalProvider';
     return this.http.put<AddEditStudentMedicalProviderModel>(apiurl, obj,this.httpOptions);
   }
@@ -472,6 +523,10 @@ export class StudentService {
   }
   getStudentFirstView(){
     return this.isFirstView;
+  }
+
+  setSelectedSchoolId(data: number) {
+    this.selectedSchoolId = data;
   }
 
   setStudentCreateMode(data) {

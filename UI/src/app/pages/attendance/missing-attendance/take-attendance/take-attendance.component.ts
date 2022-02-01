@@ -37,11 +37,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { AttendanceCodeService } from 'src/app/services/attendance-code.service';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { Permissions } from '../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { LoaderService } from 'src/app/services/loader.service';
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'vex-take-attendance',
@@ -65,6 +66,10 @@ export class TakeAttendanceComponent implements OnInit {
   actionButtonTitle:string = 'submit';
   loading:boolean;
   permissions: Permissions;
+  getTheIndexNumbersForDroppedStudentForCourseSection=[];
+  commentsArray=[];
+  destroySubject$: Subject<void> = new Subject();
+
   constructor( private dialog: MatDialog,
     public translateService:TranslateService,
     private studentAttendanceService: StudentAttendanceService,
@@ -73,16 +78,18 @@ export class TakeAttendanceComponent implements OnInit {
     private studentScheduleService:StudentScheduleService,
     private attendanceCodeService:AttendanceCodeService,
     private commonFunction: SharedFunction,
-    private layoutService: LayoutService,
     private pageRolePermissions: PageRolesPermission,
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
+    private loaderService:LoaderService,
     ) { 
     //translateService.use('en');
+    this.loaderService.isLoading.subscribe((val) => {
+      this.loading = val;
+    });
     this.staffDetails = this.studentAttendanceService.getStaffDetails();
     Object.keys(this.staffDetails).length > 0 ? '' : this.router.navigate(['/school', 'attendance', 'missing-attendance']);
     this.staffDetails.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.staffDetails.attendanceDate) 
-   
    }
 
   ngOnInit(): void {
@@ -103,6 +110,7 @@ export class TakeAttendanceComponent implements OnInit {
      this.scheduleStudentListViewModel.courseSectionId=this.staffDetails.courseSectionId;
      this.scheduleStudentListViewModel.pageNumber=0;
      this.scheduleStudentListViewModel.pageSize = 0;
+     this.scheduleStudentListViewModel.attendanceDate = this.staffDetails.attendanceDate;
      this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res)=>{
      if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -118,7 +126,11 @@ export class TakeAttendanceComponent implements OnInit {
        } else {
          this.scheduleStudentListViewModel.scheduleStudentForView=res.scheduleStudentForView;
          this.getAllAttendanceCode();
- 
+         this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
+          if(x.isDropped === true){
+            this.getTheIndexNumbersForDroppedStudentForCourseSection.push(index)
+          }
+         })
        }
      })
    }
@@ -151,28 +163,36 @@ export class TakeAttendanceComponent implements OnInit {
      }
  
      getStudentAttendanceList(){
-       this.studentAttendanceList = {...this.setDefaultDataInStudentAttendance(this.studentAttendanceList)}
-       this.studentAttendanceService.getAllStudentAttendanceList(this.studentAttendanceList).subscribe((res)=>{
-         if (typeof (res) == 'undefined') {
-           this.studentAttendanceList.studentAttendance = [];
-         }
-         else {
-         if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            this.studentAttendanceList.studentAttendance = [];
-             if (!res.studentAttendance) {
-               this.snackbar.open(res._message, '', {
-                 duration: 5000
-               });
-             this.updateStudentAttendanceList();
-             }
-           } else {
-             this.studentAttendanceList.studentAttendance = res.studentAttendance;
-             this.updateStudentAttendanceList();
-           }
-     
-         }
-       })
+      this.studentAttendanceList = { ...this.setDefaultDataInStudentAttendance(this.studentAttendanceList) }
+      this.studentAttendanceService.getAllStudentAttendanceList(this.studentAttendanceList).subscribe((res) => {
+        if (typeof (res) == 'undefined') {
+          this.studentAttendanceList.studentAttendance = [];
+        }
+        else {
+        if(res._failure){
+          this.commonService.checkTokenValidOrNot(res._message);
+            this.commentsArray = [];
+            this.actionButtonTitle = 'submit';
+            if (res.studentAttendance == null) {
+              // this.snackbar.open(res._message, '', {
+              //   duration: 5000
+              // });
+              this.studentAttendanceList.studentAttendance = [];
+              this.updateStudentAttendanceList();
+  
+            } else {
+              this.studentAttendanceList.studentAttendance = res.studentAttendance;
+              this.updateStudentAttendanceList();
+            }
+          } else {
+            this.commentsArray = [];
+            this.actionButtonTitle = 'submit';
+            this.studentAttendanceList.studentAttendance = res.studentAttendance;
+            this.updateStudentAttendanceList();
+          }
+  
+        }
+      })
      }
  
       
@@ -181,7 +201,7 @@ export class TakeAttendanceComponent implements OnInit {
        this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCategoryId=this.staffDetails.attendanceCategoryId;
        this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceDate=this.staffDetails.attendanceDate;
        this.addUpdateStudentAttendanceModel.studentAttendance[i].blockId=this.staffDetails.blockId;
-       this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getEmailId();
+       this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getUserGuidId();
        this.getAllAttendanceCodeModel.attendanceCodeList.map((element) => {
          if (element.defaultCode) {
            this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode = element.attendanceCode1.toString();
@@ -190,37 +210,65 @@ export class TakeAttendanceComponent implements OnInit {
        this.addUpdateStudentAttendanceModel.studentAttendance[i].comments='';
  
      }
+     
    
-     updateStudentAttendanceList(){
-       for(let studentAttendance of this.studentAttendanceList.studentAttendance){
-         this.addUpdateStudentAttendanceModel.studentAttendance.forEach((addUpdateStudentAttendance)=>{
-           if(addUpdateStudentAttendance.studentId==studentAttendance.studentId){
-             addUpdateStudentAttendance.attendanceCode=studentAttendance.attendanceCode.toString();
-             addUpdateStudentAttendance.comments=studentAttendance.comments;
-             this.actionButtonTitle='update';
-           }
-         })
-       }      
-     }
  
+     updateStudentAttendanceList() {
+      for (let studentAttendance of this.studentAttendanceList.studentAttendance) {
+        this.addUpdateStudentAttendanceModel.studentAttendance.forEach((addUpdateStudentAttendance, index) => {
+          if (addUpdateStudentAttendance.studentId == studentAttendance.studentId) {
+            addUpdateStudentAttendance.attendanceCode = studentAttendance.attendanceCode.toString();
+            addUpdateStudentAttendance.studentAttendanceComments[0].comment = studentAttendance.studentAttendanceComments[0]?.comment;
+            addUpdateStudentAttendance.studentAttendanceComments[0].membershipId = studentAttendance.studentAttendanceComments[0]?.membershipId;
+            this.commentsArray[index] = studentAttendance.studentAttendanceComments
+            this.actionButtonTitle = 'update';
+          }
+        })
+      }
+    }
  
-   addComments(index){
-     let studentName=this.scheduleStudentListViewModel.scheduleStudentForView[index].firstGivenName+' '+this.scheduleStudentListViewModel.scheduleStudentForView[index].lastFamilyName
-     this.dialog.open(AddTeacherCommentsComponent, {
-       width: '700px',
-       data: {studentName,comments: this.addUpdateStudentAttendanceModel.studentAttendance[index].comments}
-     }).afterClosed().subscribe((res)=>{
-       if(res?.submit){
-        if(res.comments.trim().length > 0) {
-          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].comment = res.comments.trim();
+
+   addComments(index) {
+    let studentName = this.scheduleStudentListViewModel.scheduleStudentForView[index].firstGivenName + ' ' + this.scheduleStudentListViewModel.scheduleStudentForView[index].lastFamilyName
+    this.dialog.open(AddTeacherCommentsComponent, {
+      width: '500px',
+      data: { studentName, commentData: this.commentsArray[index], type: this.actionButtonTitle }
+    }).afterClosed().subscribe((res) => {
+      if (res?.submit) {
+        if (res?.status === 'update'){
+          if (this.commentsArray[index]?.studentAttendanceComments) {
+            this.commentsArray[index].studentAttendanceComments[0].comment = res.response.comment.trim();
+            this.commentsArray[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();            
+          } else {
+            this.commentsArray[index] = [res.response];
+          }
+
+          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].comment = res.response.comment.trim();
+          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();
+        } else {
+          if (this.commentsArray[index]?.studentAttendanceComments) {
+            this.commentsArray[index].studentAttendanceComments[0].comment = res.response.comment.trim();
+            this.commentsArray[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();
+          } else {
+            this.commentsArray[index] = [res.response];
+          }
+
+          this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].comment = res.response.comment.trim();
           this.addUpdateStudentAttendanceModel.studentAttendance[index].studentAttendanceComments[0].membershipId = +this.defaultValuesService.getuserMembershipID();
         }
-       }
-       
-     });
-   }
- 
+      }
+    });
+  }
+
    addUpdateStudentAttendance() {
+     this.addUpdateStudentAttendanceModel.studentAttendance.map((data,index)=>{
+      this.getTheIndexNumbersForDroppedStudentForCourseSection.map(val=>{
+        if(val === index){
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCode = 0;
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCategoryId = 0;
+        }
+      })
+     })
      this.addUpdateStudentAttendanceModel={...this.setDefaultDataInStudentAttendance(this.addUpdateStudentAttendanceModel)};
        this.studentAttendanceService.addUpdateStudentAttendance(this.addUpdateStudentAttendanceModel).subscribe((res)=>{
        if(res._failure){
@@ -231,7 +279,8 @@ export class TakeAttendanceComponent implements OnInit {
          } else {
            this.snackbar.open(res._message, '', {
              duration: 10000
-           });          
+           });   
+           this.getAllAttendanceCode()       
          }
        })
      
@@ -242,8 +291,13 @@ export class TakeAttendanceComponent implements OnInit {
      attendanceModel.courseSectionId=this.staffDetails.courseSectionId;
      attendanceModel.attendanceDate=this.staffDetails.attendanceDate;
      attendanceModel.periodId=this.staffDetails.periodId;
-     attendanceModel.updatedBy = this.defaultValuesService.getEmailId(); 
+     attendanceModel.updatedBy = this.defaultValuesService.getUserGuidId(); 
      attendanceModel.staffId=this.staffDetails.staffId;
      return attendanceModel;
    }
+
+   ngOnDestroy(): void {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
 }

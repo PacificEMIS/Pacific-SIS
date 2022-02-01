@@ -32,7 +32,8 @@ import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { StaffAddModel } from '../../../../models/staff.model';
 import { SharedFunction } from '../../../shared/shared-function';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
-
+import icCheckbox from '@iconify/icons-ic/baseline-check-box';
+import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
 @Component({
   selector: 'vex-view-staff-generalinfo',
   templateUrl: './view-staff-generalinfo.component.html',
@@ -44,11 +45,13 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 export class ViewStaffGeneralinfoComponent implements OnInit {
   @Input() staffCreateMode;
   @Input() categoryId;
-  @Input() staffViewDetails: StaffAddModel;
+  @Input() staffViewDetails: StaffAddModel =  new StaffAddModel();
   @Input() nameOfMiscValues;
   module = 'Staff';
   staffPortalAccess: string;
   permissions: Permissions;
+  icCheckbox = icCheckbox;
+  icCheckboxOutline = icCheckboxOutline;
   constructor(public translateService: TranslateService,
               private commonFunction: SharedFunction,
               private dialog: MatDialog,

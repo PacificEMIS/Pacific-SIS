@@ -2,11 +2,11 @@ import { ConstantPool, isNgContent } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
-import { FinalGradingMarkingPeriodList, GradebookConfigurationAddViewModel, GradebookConfigurationQuarter, GradebookConfigurationSemester, GradebookConfigurationYear } from '../../../models/gradebook-configuration.model';
+import { FinalGradingMarkingPeriodList, GradebookConfigurationAddViewModel, GradebookConfigurationProgressPeriods, GradebookConfigurationQuarter, GradebookConfigurationSemester, GradebookConfigurationYear } from '../../../models/gradebook-configuration.model';
 import { GradeScaleListView } from '../../../models/grades.model';
 import { GradeBookConfigurationService } from '../../../services/gradebook-configuration.service';
 import { GradesService } from '../../../services/grades.service';
-
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-gradebook-configuration',
   templateUrl: './gradebook-configuration.component.html',
@@ -21,6 +21,7 @@ export class GradebookConfigurationComponent implements OnInit {
   gradeScaleList = [];
   gradeList = [];
   generalChecbox: string;
+  ptotalNot100: boolean = false;
   qtotalNot100: boolean = false;
   stotalNot100: boolean = false;
   ytotalNot100: boolean = false;
@@ -28,18 +29,15 @@ export class GradebookConfigurationComponent implements OnInit {
   constructor(private gradeBookConfigurationService: GradeBookConfigurationService,
     private gradesService: GradesService,
     private snackbar: MatSnackBar,
-    private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService,
+    private commonService: CommonService
   ) {
     this.gradebookConfigurationAddViewModel.gradebookConfiguration.general = '';
-    this.selectedCourseSection = JSON.parse(localStorage.getItem('selectedCourseSection'));
+    this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
   }
 
   ngOnInit(): void {
-    //if(this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale.length===0){
-    this.getAllGradeScale(0);
-    //}
-
-    this.viewGradebookConfiguration();
+   this.getAllGradeScale(0);
   }
 
 
@@ -55,22 +53,59 @@ export class GradebookConfigurationComponent implements OnInit {
           }
           else {
             this.finalGradingMarkingPeriodList = res;
+            
+            // For progressPeriods
+          if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.length > 1) {
+
+            this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.map((item) => {
+              this.finalGradingMarkingPeriodList.progressPeriods.map((subItem, index) => {
+                if (item.prgrsprdMarkingPeriodId === subItem.markingPeriodId) {
+                  item.title = subItem.title;
+                  item.doesExam = subItem.doesExam;
+                  item.doesGrades = subItem.doesGrades;
+                }
+              })
+            });
+          }
+          else {
+            this.finalGradingMarkingPeriodList.progressPeriods = this.finalGradingMarkingPeriodList.progressPeriods.map((item, index) => {
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.push(new GradebookConfigurationProgressPeriods());
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].prgrsprdMarkingPeriodId = item.markingPeriodId;
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].title = item.title;
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].doesExam = item.doesExam;
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].doesGrades = item.doesGrades;
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].gradingPercentage = 0;
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index].examPercentage = 0;
+              return item;
+            })
+            this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.pop();
+          }
+          
+          //For quarters
             if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.length > 1) {
               
               this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.map((item)=>{
                 this.finalGradingMarkingPeriodList.quarters.map((subItem, index) => {
-                  if(item.qtrMarkingPeriodId === subItem.markingPeriodId) {
+                  if(!item.prgrsprdMarkingPeriodId && item.qtrMarkingPeriodId === subItem.markingPeriodId) {
                     item.title = subItem.title;
                     item.doesExam = subItem.doesExam;
                     item.doesGrades = subItem.doesGrades;
                   }
+
+                  subItem.progressPeriods.map((progressPeriod) => {
+                    if (item.prgrsprdMarkingPeriodId && item.prgrsprdMarkingPeriodId === progressPeriod.markingPeriodId) {
+                      item.title = progressPeriod.title;
+                      item.doesExam = progressPeriod.doesExam;
+                      item.doesGrades = progressPeriod.doesGrades;
+                    }
+                  });
                 })
               });
              
 
             }
             else {
-              this.finalGradingMarkingPeriodList.quarters = this.finalGradingMarkingPeriodList.quarters.map((item, index) => {
+                this.finalGradingMarkingPeriodList.quarters.map((item, index) => {
                 this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.push(new GradebookConfigurationQuarter());
                 this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[index].qtrMarkingPeriodId = item.markingPeriodId;
                 this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[index].title = item.title;
@@ -80,11 +115,22 @@ export class GradebookConfigurationComponent implements OnInit {
                 this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[index].examPercentage = 0;
 
 
-                return item;
+                item.progressPeriods.map((progressPeriod, index) => {
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.push(new GradebookConfigurationQuarter());
+                  const lastIndex = this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.length - 1;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].qtrMarkingPeriodId = item.markingPeriodId;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].prgrsprdMarkingPeriodId = progressPeriod.markingPeriodId;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].title = progressPeriod.title;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].doesExam = progressPeriod.doesExam;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].doesGrades = progressPeriod.doesGrades;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].gradingPercentage = 0;
+                  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[lastIndex].examPercentage = 0;
+                })
               })
-              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.pop();
+              // this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.pop();
             }
 
+            // For semesters
             if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester.length > 1) {
 
               this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester.map((item: any, i) => {
@@ -129,6 +175,8 @@ export class GradebookConfigurationComponent implements OnInit {
 
               })
             }
+
+            // For schoolYears
             if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationYear.length > 1) {
               if (this.finalGradingMarkingPeriodList.schoolYears) {
                 this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationYear.map((item: any, i) => {
@@ -182,7 +230,7 @@ export class GradebookConfigurationComponent implements OnInit {
           }
         }
         else {
-          this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -203,6 +251,7 @@ export class GradebookConfigurationComponent implements OnInit {
     }
     if (this.generalEvent.length > 0) {
       this.generalChecbox = this.generalEvent.toString().replace(',', '|');
+      this.generalChecbox = this.generalChecbox.toString().replace(',', '|');
     }
     else {
       this.generalChecbox = this.generalEvent.toString();
@@ -215,7 +264,7 @@ export class GradebookConfigurationComponent implements OnInit {
       (res: GradeScaleListView) => {
 
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -228,7 +277,7 @@ export class GradebookConfigurationComponent implements OnInit {
                 duration: 10000
               });
             }
-
+            this.viewGradebookConfiguration();
           }
           else {
             this.gradeScaleList = res.gradeScaleList.filter(x => !x.useAsStandardGradeScale);
@@ -242,6 +291,7 @@ export class GradebookConfigurationComponent implements OnInit {
                 })
               })
             }
+            this.viewGradebookConfiguration();
           }
         }
       }
@@ -262,11 +312,14 @@ export class GradebookConfigurationComponent implements OnInit {
           else {
             this.gradebookConfigurationAddViewModel = res;
             this.generalChecbox = this.gradebookConfigurationAddViewModel.gradebookConfiguration.general;
+            if(this.generalChecbox !==""){
+              this.generalEvent= this.gradebookConfigurationAddViewModel.gradebookConfiguration.general.split('|');
+            }
             this.populateFinalGrading();
           }
         }
         else {
-          this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
           this.populateFinalGrading();
@@ -277,11 +330,32 @@ export class GradebookConfigurationComponent implements OnInit {
 
 
   addUpdateGradebookConfiguration() {
+    if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.length > 0) {
+
+      for (let progressPeriod of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods) {
+
+        if (progressPeriod.examPercentage + progressPeriod.gradingPercentage > 100) {
+          this.snackbar.open(progressPeriod.title + " total marks schould be less than or equal to 100", '', {
+            duration: 10000
+          });
+          return
+        }
+        else {
+          if (progressPeriod.examPercentage + progressPeriod.gradingPercentage === 100) {
+            this.ptotalNot100 = false;
+          }
+          else {
+            this.ptotalNot100 = true;
+          }
+        }
+      }
+    }
 
     if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.length > 0) {
 
       for (let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter) {
-
+        for (let progressPeriodForQuater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter) {
+          if (progressPeriodForQuater?.prgrsprdMarkingPeriodId && progressPeriodForQuater?.doesGrades && progressPeriodForQuater?.qtrMarkingPeriodId === quater?.qtrMarkingPeriodId) {
         if (quater.examPercentage + quater.gradingPercentage > 100) {
           this.snackbar.open(quater.title + " total marks schould be less than or equal to 100", '', {
             duration: 10000
@@ -298,6 +372,8 @@ export class GradebookConfigurationComponent implements OnInit {
 
         }
       }
+      }
+     }
     }
     if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester.length > 0) {
       for (let semester of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester) {
@@ -343,6 +419,7 @@ export class GradebookConfigurationComponent implements OnInit {
     this.gradebookConfigurationAddViewModel.gradebookConfiguration.general = this.generalChecbox;
     this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseId = this.selectedCourseSection.courseId;
     this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseSectionId = +this.selectedCourseSection.courseSectionId;
+    delete this.gradebookConfigurationAddViewModel.gradebookConfiguration.academicYear;
     this.gradeBookConfigurationService.addUpdateGradebookConfiguration(this.gradebookConfigurationAddViewModel).subscribe(
       (res: GradebookConfigurationAddViewModel) => {
         if (res) {
@@ -361,7 +438,7 @@ export class GradebookConfigurationComponent implements OnInit {
           }
         }
         else {
-          this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -371,8 +448,24 @@ export class GradebookConfigurationComponent implements OnInit {
 
   checkConfiguration(type, index) {
 
+    if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods.length > 0 && type === 'progressPeriods') {
+      const progressPeriods = this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods[index];
+      if (progressPeriods.examPercentage + progressPeriods.gradingPercentage === 100) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
     if (this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter.length > 0 && type === 'quater') {
           const quater =  this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter[index];
+          let totalQuaterGrade = 0;
+          for (let progressPeriodForQuater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter) {
+            if (progressPeriodForQuater?.prgrsprdMarkingPeriodId && progressPeriodForQuater?.doesGrades && progressPeriodForQuater?.qtrMarkingPeriodId === quater?.qtrMarkingPeriodId) {
+              totalQuaterGrade += progressPeriodForQuater.gradingPercentage;
+            }
+          }
         if (quater.examPercentage + quater.gradingPercentage === 100) {
            return false;
           }

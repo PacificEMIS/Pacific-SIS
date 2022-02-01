@@ -1,0 +1,279 @@
+<div class="card">
+    <div class="p-4">
+        <ul class="grid grid-cols-1 grid-cols-5 col-gap-6 row-gap-2 items-center">
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "showAttendanceBy" | translate }}</mat-label>
+                    <mat-select>
+                        <mat-option>This School Year</mat-option>
+                        <mat-option>This Month</mat-option>
+                        <mat-option>All Marking Periods</mat-option>
+                        <mat-option>Custom Date Range</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "fromDate" | translate }}</mat-label>
+                    <input matInput [matDatepicker]="fromDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                    <mat-datepicker #fromDate></mat-datepicker>
+                </mat-form-field>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "toDate" | translate }}</mat-label>
+                    <input matInput [matDatepicker]="toDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                    <mat-datepicker #toDate></mat-datepicker>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "showAttendanceOf" | translate }}</mat-label>
+                    <mat-select>
+                        <mat-option>Daily</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+            <li>
+                <button mat-raised-button color="primary">{{'search' | translate }}</button>
+            </li>
+        </ul>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="md:flex w-full justify-between items-center px-4 py-2 border-b">
+        <div class="md:flex w-full">
+            <div class="flex-shrink mr-4">
+                <img src="assets/img/default.jpg" alt="Student Photo" class="h-12 w-12 rounded-full">
+            </div>
+            <div>
+                <h4 class="flex flex-row items-center">
+                    <span class="font-semibold text-base text-blue mr-4">Andrew Brown</span>
+                    <a [routerLink]="['/school', 'reports', 'attendance', 'attendance-chart']" class="cursor-pointer text-xs cursor-pointer text-orange h-5 flex items-center bg-orange-light px-2 border border-orange rounded">
+                        <mat-icon class="text-base font-medium w-auto h-auto mr-1 align-middle">west</mat-icon><span>{{ 'backToList' | translate }}</span>
+                    </a>
+                </h4>
+                <p class="flex items-center"><span>{{'studentID' | translate }}: 15 </span><span class="dot-separator h-2 w-2"></span><span>{{'grade' | translate }}: 9th Grade </span></p>
+            </div>
+        </div>
+        <hr class="-mx-4 block md:hidden" />
+        <div class="py-2 md:pt-2 items-center">
+            <a class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel">
+                <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+            </a>
+        </div>
+    </div>
+    <div class="attendance-chart-table flex">
+        <div class="attentdance-chart-left border-r-2">
+            <div class="border-b p-4 h-10"></div>
+            <div class="border-b font-semibold px-4 py-2 h-10">
+                {{'courseSection' | translate }}
+            </div>
+            <div class="border-b h-14 px-4 py-2 flex items-center">
+                <p>ATTNPD</p>
+            </div>
+            <div class="border-b h-14 px-4 py-2 flex items-center">
+                <p>LUNCH</p>
+            </div>
+        </div>
+        <div class="attentdance-chart-right overflow-x-auto">
+            <div class="flex">
+                <div class="attendance-chart-right-col">
+                    <table class="table mb-0">
+                        <caption class="bg-skyblue-light"><p class="font-semibold text-center py-2 h-10 border-b">January 2021</p></caption>
+                        <thead>
+                            <tr>
+                                <th class="bg-white">1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th class="bg-white">4</th>
+                                <th class="bg-white">5</th>
+                                <th class="bg-white">6</th>
+                                <th class="bg-white">7</th>
+                                <th class="bg-white">8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th class="bg-white">11</th>
+                                <th class="bg-white">12</th>
+                                <th class="bg-white">13</th>
+                                <th class="bg-white">14</th>
+                                <th class="bg-white">15</th>
+                                <th>16</th>
+                                <th>17</th>
+                                <th class="bg-white">18</th>
+                                <th class="bg-white">19</th>
+                                <th class="bg-white">20</th>
+                                <th class="bg-white">21</th>
+                                <th class="bg-white">22</th>
+                                <th>23</th>
+                                <th>24</th>
+                                <th class="bg-white">25</th>
+                                <th class="bg-white">26</th>
+                                <th class="bg-white">27</th>
+                                <th class="bg-white">28</th>
+                                <th class="bg-white">29</th>
+                                <th>30</th>
+                                <th>31</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-gray w-5 h-5 text-center rounded-full inline-block">-</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-red w-5 h-5 text-center rounded-full inline-block">A</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-red w-5 h-5 text-center rounded-full inline-block">A</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-gray w-5 h-5 text-center rounded-full inline-block">-</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td>
+                                    <span class="text-white bg-green w-5 h-5 text-center rounded-full inline-block">P</span>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

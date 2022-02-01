@@ -23,8 +23,8 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
@@ -47,6 +47,7 @@ import { LoginService } from '../../../../services/login.service';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-teacher',
@@ -88,7 +89,13 @@ export class AddTeacherComponent implements OnInit {
     private loaderService:LoaderService,
     private loginService:LoginService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
+    @Inject(MAT_DIALOG_DATA) public data
     ) { 
+      this.getAllSubjectModel.subjectList= this.data.subjectList,
+      this.getAllMembersList.getAllMemberList= this.data.memberList;
+      this.languages.tableLanguage= this.data.languagelist;
+      this.getAllGradeLevelsModel.tableGradelevelList= this.data.gradelevelList;
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -96,10 +103,7 @@ export class AddTeacherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllLanguage();
-    this.getAllGradeLevelList();
-    this.getAllSubjectList();
-    this.getAllMembership();
+    
   }
 
   someComplete():boolean{
@@ -184,26 +188,7 @@ export class AddTeacherComponent implements OnInit {
     this.callStaffListBasedOnFilterParams();
   }
 
-  getAllLanguage() {
-    this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      if (typeof (res) == 'undefined') {
-        this.languages.tableLanguage = [];
-      }else if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-        this.languages.tableLanguage = [];
-        if(!res.tableLanguage){
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-        }
-      }
-      else {
-        this.languages.tableLanguage = res.tableLanguage?.sort((a, b) => { return a.locale < b.locale ? -1 : 1; })
-
-      }
-    })
-  }
-
+ 
   findFilterOption(keyName):number{
     if(keyName=='otherSubjectTaught' || keyName=='otherGradeLevelTaught'){
       return 3;
@@ -297,64 +282,6 @@ export class AddTeacherComponent implements OnInit {
         duration: 2000
       });
     }
-  }
-
-  getAllGradeLevelList(){   
-    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {   
-      if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        }       
-      this.getAllGradeLevelsModel.tableGradelevelList=data.tableGradelevelList;      
-    });
-  }
-
-  getAllSubjectList(){   
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {          
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllSubjectModel.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllSubjectModel.subjectList = data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }   
-    });
-  }
-
-  getAllMembership() {
-    this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
-      if (typeof (res) == 'undefined') {
-        this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
-          duration: 10000
-        });
-      }
-      else {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.getAllMembersList.getAllMemberList = [];
-          if (!res.getAllMemberList) {
-            this.snackbar.open( res._message,'', {
-              duration: 4000
-            });
-          }
-        }
-        else {
-          this.getAllMembersList.getAllMemberList = res.getAllMemberList.filter((item) => {
-            return (item.profileType == 'School Administrator' || item.profileType == 'Admin Assistant'
-              || item.profileType == 'Teacher' || item.profileType == 'Homeroom Teacher')
-          });
-        }
-      }
-    })
   }
 
   ngOnDestroy() {

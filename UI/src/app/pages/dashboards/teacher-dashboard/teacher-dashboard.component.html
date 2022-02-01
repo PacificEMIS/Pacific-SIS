@@ -1,12 +1,12 @@
 <vex-page-layout>
     <vex-page-layout-header class="" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{ 'dashboard' | translate }}" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Dashboards']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'dashboard'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['dashboards']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
     <vex-page-layout-content class="">
 
-        <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4" *ngIf="scheduledCourseSectionViewModel.missingAttendanceCount>0">
+        <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4 cursor-pointer" *ngIf="scheduledCourseSectionViewModel.missingAttendanceCount>0" (click)="goTeacherMissingAttendance()" >
             <mat-icon [icIcon]="icMissingAttendance" class="align-middle mr-3"></mat-icon>
             {{scheduledCourseSectionViewModel.missingAttendanceCount}} {{
             'missingAttendanceFound' | translate }}
@@ -18,13 +18,8 @@
                 <mat-icon [icIcon]="icWarning" class="absolute text-warn ic-warning text-base"></mat-icon>
                 <span class="text-lg font-medium">{{ 'notification' | translate }}</span>
             </div>
-            <ul class="pl-6 md:pl-16 -mx-1">
-                <li class="list-disc mb-1">Pre Calculus Assignment Grades due on May 15, 2021</li>
-                <li class="list-disc mb-1">Algebra Assignment Grades due on May 15, 2021</li>
-                <li class="list-disc mb-1">Algebra Assignment Grades due on May 15, 2021</li>
-                <li class="list-disc mb-1">Algebra Assignment Grades due on May 15, 2021</li>
-                <li class="list-disc mb-1">Algebra Assignment Grades due on May 15, 2021</li>
-                <li class="list-disc mb-1">All Final Grades due on May 25, 2021</li>
+            <ul class="pl-6 md:pl-16 -mx-1" *ngFor="let notification of notificationsList">
+                <li class="list-disc mb-1">{{notification}}</li>
             </ul>
         </div>
 
@@ -101,18 +96,18 @@
             <div class="card overflow-auto w-full">
 
                 <div class="border-b py-4 px-6">
-                    <h4 class="text-lg font-semibold">{{ 'calendarEvents' | translate }}</h4>
+                    <h4 class="text-lg font-semibold cursor-pointer" (click)="goToCalendar()">{{ 'calendarEventsAndHolidays' | translate }}</h4>
                 </div>
                 <div class="flex w-full items-center font-bold border-b">
-                    <div class="w-9/12 py-3 pl-6 pr-4">{{ 'eventTitle' | translate }}</div>
-                    <div class="w-3/12 py-3 pl-6 pr-4">{{ 'date' | translate }}</div>
-                    <!-- <div class="w-3/12 py-3 pl-6 pr-4">{{ 'time' | translate }}</div> -->
+                    <div class="w-6/12 py-3 pl-6 pr-4">{{ 'eventTitle' | translate }}</div>
+                    <div class="w-3/12 py-3 pl-6 pr-4">{{ 'startDate' | translate }}</div>
+                    <div class="w-3/12 py-3 pl-6 pr-4">{{ 'endDate' | translate }}</div>
                 </div>
                 <div *ngFor="let calendarEvent of events$ | async" class="flex w-full items-center border-b">
-                    <div class="w-9/12 py-3 pl-6 pr-4"><span
-                            class="inline-block h-2 w-2 bg-green rounded-full mr-3"></span>{{calendarEvent.title}}</div>
+                    <div class="w-6/12 py-3 pl-6 pr-4" [matTooltip]="calendarEvent.meta.calendar.calenderName"><span
+                            class="inline-block h-2 w-2 rounded-full mr-3" [style.backgroundColor]="calendarEvent.meta.calendar.eventColor"></span>{{calendarEvent.title}}</div>
                     <div class="w-3/12 py-3 pl-6 pr-4">{{calendarEvent.start | date:'mediumDate'}}</div>
-                    <!-- <div class="w-3/12 py-3 pl-6 pr-4">10:00 AM</div> -->
+                    <div class="w-3/12 py-3 pl-6 pr-4">{{calendarEvent.end | date:'mediumDate'}}</div>
                 </div>
             </div>
             <div class="card overflow-auto w-full px-6 py-4">
@@ -136,6 +131,7 @@
                 </div>
                 <mat-divider *ngIf="showCalendarView" class="-mx-6 text-border mt-2"></mat-divider>
                 <ng-template #customCellTemplate let-day="day" let-locale="locale">
+                    <div [ngClass]="{'cell-holiday flex-grow' : day.events.length > 0 && getHoliDay(day.events) }" [ngStyle]="{backgroundColor: day.events.length > 0 && getHoliDay(day.events) ? '#ffdee4' : 'transparent'}">
                     <div class="cal-cell-top text-center">
                         <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
                     </div>
@@ -148,7 +144,7 @@
 
                         </div>
                     </div>
-
+                    </div>
                 </ng-template>
                 <vex-scrollbar *ngIf="events$ | async; let event" [ngSwitch]="view"
                     class="px-0 shadow flex-auto relative" vexContainer>

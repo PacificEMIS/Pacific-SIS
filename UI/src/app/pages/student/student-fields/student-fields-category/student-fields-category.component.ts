@@ -51,6 +51,7 @@ export class StudentFieldsCategoryComponent implements OnInit {
   form: FormGroup;
   FieldCategoryTitle: string;
   buttonType: string;
+  checkSearchRecord: number = 0;
   fieldsCategoryAddView: FieldsCategoryAddView = new FieldsCategoryAddView();
   fieldCategoryModuleEnum = FieldCategoryModuleEnum;
 
@@ -86,6 +87,7 @@ export class StudentFieldsCategoryComponent implements OnInit {
   }
   submit(){
     if (this.form.valid){
+      this.checkSearchRecord = 1;
       if (this.form.controls.categoryId.value === 0){
         this.fieldsCategoryAddView.fieldsCategory.title = this.form.controls.title.value;
         this.fieldsCategoryAddView.fieldsCategory.sortOrder = this.form.controls.sortOrder.value;
@@ -98,17 +100,20 @@ export class StudentFieldsCategoryComponent implements OnInit {
                 this.snackbar.open(res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
               }
               else {
                 this.snackbar.open(res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryFailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryFailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
+              this.checkSearchRecord = 0;
             }
           }
         );
@@ -126,17 +131,20 @@ export class StudentFieldsCategoryComponent implements OnInit {
                 this.snackbar.open( res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
               }
               else {
                 this.snackbar.open(res._message, '', {
                   duration: 10000
                 });
+                this.checkSearchRecord = 0;
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryFailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryFailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
+              this.checkSearchRecord = 0;
             }
           }
         );

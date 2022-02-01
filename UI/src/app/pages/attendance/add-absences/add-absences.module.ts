@@ -20,14 +20,19 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-
-
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { SearchStudentComponent } from './search-student/search-student.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 @NgModule({
-  declarations: [AddAbsencesComponent],
+  declarations: [AddAbsencesComponent,SearchStudentComponent],
   imports: [
     CommonModule,
     AddAbsencesRoutingModule,
@@ -48,10 +53,17 @@ import { MatChipsModule } from '@angular/material/chips';
     MatFormFieldModule,
     MatSelectModule,
     MatDatepickerModule,
+    MatNativeDateModule,
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatChipsModule
+    MatChipsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    NgxMatSelectSearchModule
   ]
 })
 export class AddAbsencesModule { }

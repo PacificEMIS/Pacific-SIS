@@ -25,7 +25,7 @@ export class PageRolesPermission {
     return this.defaultValueService.getPermissionList();
   }
 
-  checkPageRolePermission(path?: string, customPermission?: RolePermissionListViewModel): Permissions {
+  checkPageRolePermission(path?: string, customPermission?: RolePermissionListViewModel, skipCategoryPath?: boolean): Permissions {
     let membershipId = +this.defaultValueService.getuserMembershipID();
     if (!membershipId) {
       return this.invalidPermission;
@@ -38,7 +38,7 @@ export class PageRolesPermission {
       } else {
         if (item.permissionGroup.permissionCategory.length > 0) {
           for (let cat of item.permissionGroup.permissionCategory) {
-            if (cat.path === pathToFind) {
+            if (cat.path === pathToFind && !skipCategoryPath) {
               return this.generateRolePermission(cat);
             } else {
               if (cat.permissionSubcategory.length > 0) {
@@ -91,7 +91,15 @@ export class PageRolesPermission {
         }
         else if (item.permissionGroup.permissionCategory.length > 0) {
           for (let cat of item.permissionGroup.permissionCategory) {
-            if (cat.path === pathToFind) {
+            if(cat.path.includes(pathToFind) && ( this.defaultValueService.getUserMembershipType() === "Teacher" ||this.defaultValueService.getUserMembershipType() === "Homeroom Teacher" )){
+              if(cat.rolePermission[0].canView){
+                permittedTabDetails.push({
+                  title: cat.permissionCategoryName,
+                  path:cat.path
+                })
+              }
+            }
+           else if (cat.path === pathToFind) {
                 if(cat.permissionSubcategory.length>0){
                   for(let subCat of cat.permissionSubcategory){
                     if(subCat.rolePermission[0].canView){
@@ -115,10 +123,10 @@ export class PageRolesPermission {
 
   generateRolePermission(item) {
     let rolePermission: Permissions = {
-      add: item.rolePermission[0].canAdd,
-      view: item.rolePermission[0].canView,
-      edit: item.rolePermission[0].canEdit,
-      delete: item.rolePermission[0].canDelete,
+      add: item.rolePermission[0].canAdd ? item.rolePermission[0].canAdd : false,
+      view: item.rolePermission[0].canView ? item.rolePermission[0].canView : false,
+      edit: item.rolePermission[0].canEdit ? item.rolePermission[0].canEdit : false,
+      delete: item.rolePermission[0].canDelete ? item.rolePermission[0].canDelete : false,
     };
     return rolePermission;
   }

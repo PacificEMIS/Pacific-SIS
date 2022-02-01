@@ -47,6 +47,7 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { MatExpansionModule } from '@angular/material/expansion';
 // import { SearchStudentComponent } from '../../grades/search-student/search-student.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { HistoricalMarkingPeriodsComponent } from '../../grades/historical-marking-periods/historical-marking-periods.component';
 
 
 
@@ -67,6 +68,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     // ReportCardsComponent,
     // TranscriptsComponent,
     // SearchStudentComponent
+    HistoricalMarkingPeriodsComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-<vex-mat-spinner-overlay *ngIf="loading && forceLoaderToStop"></vex-mat-spinner-overlay>
+<vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
 
 <div class="login-bg w-full h-screen overflow-auto pb-6 md:pb-0 md:overflow-hidden md:h-full md:flex md:flex-col justify-center items-center">
   <div @fadeInUp class="w-full md:max-w-md">
@@ -6,7 +6,7 @@
     <div class="card overflow-hidden w-full">
       <div class="p-4 pb-0 px-4" fxLayout="column" fxLayoutAlign="center center">
         <div class="fill-current text-center login-logo flex items-center align-middle justify-center">
-          <img src="assets/img/opensis_logo.png" alt="openSIS">
+          <img *ngIf="tenantPhoto" [src]="'data:image/jpeg;base64,'+tenantPhoto" [alt]="tenantName+' Logo'">
       </div>
     </div>
 
@@ -63,8 +63,8 @@
   
         <div fxLayout="row" fxLayoutAlign="space-between center" class="mb-3">
           <mat-checkbox class="caption" #inputRememberMe [checked]= "setValue" color="primary" (click)="rememberMe(inputRememberMe.checked)" class="text-sm">{{'rememberMe'|translate}}</mat-checkbox>
-          <a [routerLink]="['/forgot-password']" class="caption" class="text-sm"><span
-              class="text-blue-600">{{'forgotPassword'|translate}}</span></a>
+          <!-- <a [routerLink]="['/forgot-password']" class="caption" class="text-sm"><span
+              class="text-blue-600">{{'forgotPassword'|translate}}</span></a> -->
         </div>
       
        
@@ -74,7 +74,8 @@
        
     </form>    
     </div>
-    <div class="pt-5 text-center text-xs text-white px-6 md:px-0">openSIS is a product of Open Solutions
+    <div class="pt-5 text-center text-xs text-white px-6 md:px-0 achor-color" [innerHTML]="tenantFooter"></div>
+    <!-- openSIS is a product of Open Solutions
       for Education, Inc. (<a href="http://www.os4ed.com" target="_blank">OS4ED</a>) and is licensed under the GNU
-      AGPLv3.</div>
+      AGPLv3. -->
   </div>

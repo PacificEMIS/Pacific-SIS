@@ -50,7 +50,6 @@ import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { LoaderService } from '../../../services/loader.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
@@ -95,7 +94,7 @@ export class CalendarComponent implements OnInit {
   getAllCalendarEventList: CalendarEventListViewModel = new CalendarEventListViewModel();
   calendarAddViewModel = new CalendarAddViewModel();
   calendarEventAddViewModel = new CalendarEventAddViewModel();
-  showCalendarView: boolean = false;
+  showCalendarView: boolean;
   view: CalendarView = CalendarView.Month;
   calendars: CalendarModel[];
   activeDayIsOpen = true;
@@ -118,13 +117,13 @@ export class CalendarComponent implements OnInit {
   permissions: Permissions;
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   calendarBellScheduleModel: CalendarBellScheduleModel = new CalendarBellScheduleModel();
-  CalendarBellScheduleViewModel: CalendarBellScheduleViewModel =  new CalendarBellScheduleViewModel();
-  bellScheduleList: any;
+  CalendarBellScheduleViewModel: CalendarBellScheduleViewModel = new CalendarBellScheduleViewModel();
+  bellScheduleList = [];
   periodList = [];
-  valueList = [1,'46',3,4,5]
+  valueList = [1, '46', 3, 4, 5]
   weekHeader;
-
   valueSetCount: number;
+  userType : string
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -133,30 +132,21 @@ export class CalendarComponent implements OnInit {
     private membershipService: MembershipService,
     private calendarEventService: CalendarEventService,
     private calendarService: CalendarService,
-    private layoutService: LayoutService,
     public rollBasedAccessService: RollBasedAccessService,
     private loaderService: LoaderService,
     private cdr: ChangeDetectorRef,
     private pageRolePermissions: PageRolesPermission,
     private cryptoService: CryptoService,
     private commonFunction: SharedFunction,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private schoolPeriodService: SchoolPeriodService,
     private courseManagerService: CourseManagerService,
     private commonService: CommonService,
-    ) {
+  ) {
     this.valueSetCount = 0;
     this.weekHeader = [];
-    this.translate.setDefaultLang('en');
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
+    this.translate.setDefaultLang('en');    
+    
     this.loaderService.isLoading.subscribe((res) => {
       this.loading = res;
     });
@@ -167,20 +157,21 @@ export class CalendarComponent implements OnInit {
         }
       }
     )
+    // getting membershipType from session storage
+    const userType = sessionStorage.getItem('membershipType');
   }
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
-
-    this.isMarkingPeriod = sessionStorage.getItem('markingPeriodId');
-    if (JSON.parse(this.isMarkingPeriod)) {
-      this.getAllBellSchedule().then(()=>{
+    this.isMarkingPeriod = this.defaultValuesService.getMarkingPeriodId();
+    // if (JSON.parse(this.isMarkingPeriod)) {
+      this.getAllBellSchedule().then(() => {
         this.getAllCalendar();
         this.getAllMemberList();
         this.getAllPeriodList();
       });
-     
-    }
+
+    // }
   }
 
   changeCalendar(event) {
@@ -195,7 +186,7 @@ export class CalendarComponent implements OnInit {
 
   getAllPeriodList() {
     this.schoolPeriodService.getAllBlockList(this.blockListViewModel).subscribe(data => {
-     if(data._failure){
+      if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         this.periodList = [];
         if (!data.getBlockListForView) {
@@ -217,35 +208,35 @@ export class CalendarComponent implements OnInit {
     this.calendarBellScheduleModel.bellSchedule.blockId = event.value !== '' ? event.value : null;
     this.calendarBellScheduleModel.bellSchedule.bellScheduleDate = this.commonFunction.formatDateSaveWithoutTime(day.date);
     this.courseManagerService.addEditBellSchedule(this.calendarBellScheduleModel).subscribe((res) => {
-    if(res._failure){
+      if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);
-      this.snackbar.open(res._message, '', {
-        duration: 1000
-      }); 
-     } else {
-       day.blockId = event.value;
-       this.snackbar.open(res._message, '', {
-        duration: 1000
-      }); 
-      this.getAllBellSchedule();
-     }
+        this.snackbar.open(res._message, '', {
+          duration: 1000
+        });
+      } else {
+        day.blockId = event.value;
+        this.snackbar.open(res._message, '', {
+          duration: 1000
+        });
+        this.getAllBellSchedule();
+      }
 
     });
 
   }
 
   getAllBellSchedule() {
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
       this.courseManagerService.getAllBellSchedule(this.CalendarBellScheduleViewModel).subscribe((res: any) => {
-       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           resolve('');
-   
+
         } else {
           this.bellScheduleList = res.bellScheduleList;
           resolve('');
-           }
-       });
+        }
+      });
     })
   }
 
@@ -254,14 +245,14 @@ export class CalendarComponent implements OnInit {
     this.membershipService.getAllMembers(this.getAllMembersList).subscribe(
       (res) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('No Member Found. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('No Member Found. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
         else {
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            if(!res.getAllMemberList){
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            if (!res.getAllMemberList) {
               this.snackbar.open('No Member Found. ' + res._message, '', {
                 duration: 10000
               });
@@ -273,11 +264,27 @@ export class CalendarComponent implements OnInit {
         }
       });
   }
-  
+
+  getHoliDay(event) {
+    let events = [];
+    events = event;
+    if (events.filter(x => x?.meta?.calendar?.isHoliday).length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getEventColor(event){
+    let events = [];
+    events = event;
+    return events.filter(x => x?.meta?.calendar?.isHoliday)[0].meta.calendar.eventColor;
+  }
+
   //Show all calendar
   getAllCalendar() {
     this.calendarService.getAllCalendar(this.getCalendarList).subscribe((data) => {
-      if(data._failure){
+      if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.calendars = data.calendarList;
@@ -305,7 +312,6 @@ export class CalendarComponent implements OnInit {
     this.events$ = this.calendarEventService.getAllCalendarEvent(this.getAllCalendarEventList).pipe(
       map(({ calendarEventList }: { calendarEventList: CalendarEventModel[] }) => {
         return calendarEventList.map((calendar: CalendarEventModel) => {
-
           return {
             id: calendar.eventId,
             title: calendar.title,
@@ -341,37 +347,41 @@ export class CalendarComponent implements OnInit {
       if (this.filterDays.includes(dayOfMonth)) {
         day.cssClass = this.cssClass;
       }
-        this.bellScheduleList.map((item)=>{
-          if(this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
+      if (this.bellScheduleList.length) {
+        this.bellScheduleList.map((item) => {
+          if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
             day.blockId = item.blockId;
           } else {
-            if(!day.blockId) {
+            if (!day.blockId) {
               day.blockId = "";
             }
           }
         });
+      }
     });
   }
 
   beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
     this.weekHeader = renderEvent.header;
     this.weekHeader.map((day: any) => {
-      this.bellScheduleList.map((item)=>{
-        if(this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
-          day.blockId = item.blockId;
-        } else {
-          if(!day.blockId) {
-            day.blockId = "";
+      if (this.bellScheduleList.length) {
+        this.bellScheduleList.map((item) => {
+          if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
+            day.blockId = item.blockId;
+          } else {
+            if (!day.blockId) {
+              day.blockId = "";
+            }
           }
-        }
-      });
+        });
+      }
     })
   }
 
- 
+
 
   // open event modal for view
-  viewEvent(eventData) {
+  viewEvent(eventData) {    
     this.dialog.open(AddEventComponent, {
       data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendarEvent: eventData },
       width: '600px'
@@ -397,14 +407,15 @@ export class CalendarComponent implements OnInit {
     this.calendarEventAddViewModel.schoolCalendarEvent = event.meta.calendar;
     this.calendarEventAddViewModel.schoolCalendarEvent.startDate = this.commonFunction.formatDateSaveWithoutTime(newStart);
     this.calendarEventAddViewModel.schoolCalendarEvent.endDate = this.commonFunction.formatDateSaveWithoutTime(newEnd);
+    delete this.calendarEventAddViewModel.schoolCalendarEvent.academicYear;
     this.calendarEventService.updateCalendarEvent(this.calendarEventAddViewModel).subscribe(data => {
-     if(data._failure){
+      if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
-        this.snackbar.open( data._message, '', {
+        this.snackbar.open(data._message, '', {
           duration: 10000
         });
       }
-      else{
+      else {
         this.getAllCalendarEvent();
       }
     });
@@ -414,13 +425,13 @@ export class CalendarComponent implements OnInit {
   //Open modal for add new calendar
   openAddNewCalendar() {
     this.dialog.open(AddCalendarComponent, {
-      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendarListCount: this.calendars.length },
+      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList?.getAllMemberList?.length, calendarListCount: this.calendars?.length },
       width: '600px'
     }).afterClosed().subscribe(data => {
       if (data === 'submited') {
-      this.getAllBellSchedule().then(()=>{
-        this.getAllCalendar();
-      });
+        this.getAllBellSchedule().then(() => {
+          this.getAllCalendar();
+        });
       }
     });
   }
@@ -445,11 +456,13 @@ export class CalendarComponent implements OnInit {
   }
 
   deleteCalendar(id: number) {
+    this.calendarAddViewModel.schoolCalendar.schoolId = this.defaultValuesService.getSchoolID();
+    this.calendarAddViewModel.schoolCalendar.tenantId = this.defaultValuesService.getTenantID()
     this.calendarAddViewModel.schoolCalendar.calenderId = id;
     this.calendarService.deleteCalendar(this.calendarAddViewModel).subscribe(
       (res) => {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
@@ -477,7 +490,7 @@ export class CalendarComponent implements OnInit {
 
   // Open add new event by clicking calendar day
   openAddNewEvent(event) {
-    if (this.permissions?.add){
+    if (this.permissions?.add && this.defaultValuesService.checkAcademicYear()) {
       if (event.inMonth) {
         this.dialog.open(AddEventComponent, {
           data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, day: event },
@@ -501,12 +514,12 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
-    else{
+    else {
       this.snackbar.open(this.defaultValuesService.translateKey('HaveNotAnyPermissionToAdd'), '', {
         duration: 2000
       });
     }
-    
+
   }
 
 }

@@ -35,7 +35,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { DataEditInfoComponent } from './data-edit-info/data-edit-info.component';
 import { MatDividerModule } from '@angular/material/divider';
@@ -45,6 +45,10 @@ import { WebsiteLinkValidatorDirective } from './user-defined-directives/website
 import { LinkedinLinkValidatorDirective } from './user-defined-directives/linkedin-link-validator.directive';
 import { InstagramLinkValidatorDirective } from './user-defined-directives/instagram-link-validator.directive';
 import { FacebookLinkValidatorDirective } from './user-defined-directives/facebook-link-validator.directive';
+import { SsnMaskPipe } from './user-define-pipe/ssn-mask.pipe';
+import { InputEffortGradesNgForDivFilterPipe } from './user-define-pipe/input-effort-grades-ng-for-div-filter.pipe';
+import { CustomMinDirective } from './user-defined-directives/custom-min.directive';
+
 
 @NgModule({
   declarations: [MatSpinnerOverlayComponent, ProfileImageComponent,PhoneMaskDirective,EmtyBooleanCheckPipe,EmtyBooleanCheckReversePipe,
@@ -56,7 +60,10 @@ import { FacebookLinkValidatorDirective } from './user-defined-directives/facebo
     WebsiteLinkValidatorDirective,
     LinkedinLinkValidatorDirective,
     InstagramLinkValidatorDirective,
-    FacebookLinkValidatorDirective],
+    FacebookLinkValidatorDirective,
+    SsnMaskPipe,
+    InputEffortGradesNgForDivFilterPipe,
+    CustomMinDirective],
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
@@ -77,7 +84,7 @@ import { FacebookLinkValidatorDirective } from './user-defined-directives/facebo
   ],
   exports:[MatSpinnerOverlayComponent, ProfileImageComponent,PhoneMaskDirective,EmtyBooleanCheckPipe,EmtyValueCheckPipe,EmtyNumberCheckPipe,InvalidControlScrollDirective,
     EmtyBooleanCheckReversePipe,TransformDateTimePipe,TransformTimePipe,EmailvalidatorDirective,PhonevalidatorDirective,SafePipe,AgePipe,EvenOddPipe,WeekDayPipe,NgForFilterPipe,Transform24to12Pipe,CourseNgForFilterPipe,SystemCategoryCheckPipe,
-    youtubeLinkValidatorDirective,TwitterLinkValidatorDirective,WebsiteLinkValidatorDirective,LinkedinLinkValidatorDirective,InstagramLinkValidatorDirective,FacebookLinkValidatorDirective],
+    youtubeLinkValidatorDirective,TwitterLinkValidatorDirective,WebsiteLinkValidatorDirective,LinkedinLinkValidatorDirective,InstagramLinkValidatorDirective,FacebookLinkValidatorDirective,SsnMaskPipe,InputEffortGradesNgForDivFilterPipe,CustomMinDirective],
     providers: [NgxImageCompressService]
 })
 export class SharedModuleModule { }

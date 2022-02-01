@@ -11,6 +11,7 @@ import { RelativeDateTimeModule } from '../../../pipes/relative-date-time/relati
 import { RouterModule } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IconModule } from '@visurel/iconify-angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ToolbarUserComponent, ToolbarUserDropdownComponent],
@@ -25,6 +26,7 @@ import { IconModule } from '@visurel/iconify-angular';
     RouterModule,
     MatTooltipModule,
     IconModule,
+    TranslateModule
   ],
   exports: [ToolbarUserComponent],
   entryComponents: [ToolbarUserDropdownComponent]

@@ -10,21 +10,34 @@ import { SchoolService } from '../../../services/school.service';
 })
 export class CommonLOV {
     lovList: LovList = new LovList();
-
+    getValueForEdit:boolean=false;
     constructor(private commonService: CommonService,
         private schoolService:SchoolService, private defaultValuesService:DefaultValuesService) { }
 
-      getLovByName(LovName) {
+        getValueForEditSchool(val){
+            if(val === true ){
+                this.getValueForEdit=val;
+            }
+        }
+
+      getLovByName(LovName, setSchoolIdNull?) {
         let schoolId=this.defaultValuesService.getSchoolID();
         if(schoolId!=null){
             this.lovList.schoolId=+schoolId;
             this.lovList._token = this.defaultValuesService.getToken();
+            if(this.getValueForEdit !== true){                // if the school is in CREATE mode then schoolId will be "null"
+                if(LovName === 'School Level' || LovName === 'School Classification'){
+                    this.lovList.isHasSchoolId=true;
+                }
+            }
+            
         }else{
             this.lovList.schoolId = this.defaultValuesService.getSchoolID();
             this.lovList._token = this.defaultValuesService.getToken();
         }
+        
         this.lovList.lovName = LovName;
-        return this.commonService.getAllDropdownValues(this.lovList)
+        return this.commonService.getAllDropdownValues(this.lovList, setSchoolIdNull)
             .pipe(
                 map((res:LovList) => {
                     if(LovName!=='Grade Level' && LovName!== 'Marital Status' && LovName!== 'Suffix'){
@@ -33,4 +46,5 @@ export class CommonLOV {
               return res.dropdownList;
             }))
     }
+    
 }

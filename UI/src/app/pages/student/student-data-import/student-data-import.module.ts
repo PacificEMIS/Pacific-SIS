@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -37,7 +38,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     MatSelectModule,
     MatProgressSpinnerModule,
     FormsModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    MatTooltipModule
   ],
   exports:[StudentDataImportComponent]
 })

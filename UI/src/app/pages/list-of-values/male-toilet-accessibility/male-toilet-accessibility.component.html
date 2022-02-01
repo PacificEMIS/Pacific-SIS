@@ -106,7 +106,7 @@
         </ng-container>
         <ng-container matColumnDef="noData">
             <td mat-footer-cell *matFooterCellDef colspan="6">
-              {{loading?'Fetching Data...':'No Data'}}
+                {{loading?('fetchingData' | translate):('noData' | translate) }}
             </td>
         </ng-container>
 

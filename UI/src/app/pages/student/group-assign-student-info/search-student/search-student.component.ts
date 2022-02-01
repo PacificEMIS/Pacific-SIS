@@ -5,20 +5,22 @@ import { MatSelect } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { CountryModel } from 'src/app/models/country.model';
-import { LanguageModel } from 'src/app/models/language.model';
-import { SearchFilterAddViewModel } from 'src/app/models/search-filter.model';
-import { GetAllSectionModel } from 'src/app/models/section.model';
-import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
-import { StudentListModel, StudentMasterSearchModel } from 'src/app/models/student.model';
-import { CommonLOV } from 'src/app/pages/shared-module/lov/common-lov';
-import { SharedFunction } from 'src/app/pages/shared/shared-function';
-import { CommonService } from 'src/app/services/common.service';
-import { LoginService } from 'src/app/services/login.service';
-import { SectionService } from 'src/app/services/section.service';
-import { StudentScheduleService } from 'src/app/services/student-schedule.service';
-import { StudentService } from 'src/app/services/student.service';
+import { DefaultValuesService } from '../../../../common/default-values.service';
+import { ProfilesTypes } from '../../../../enums/profiles.enum';
+import { CountryModel } from '../../../../models/country.model';
+import { LanguageModel } from '../../../../models/language.model';
+import { SearchFilterAddViewModel } from '../../../../models/search-filter.model';
+import { GetAllSectionModel } from '../../../../models/section.model';
+import { ScheduleStudentListViewModel } from '../../../../models/student-schedule.model';
+import { StudentListModel, StudentMasterSearchModel } from '../../../../models/student.model';
+import { CommonLOV } from '../../../../pages/shared-module/lov/common-lov';
+import { SharedFunction } from '../../../../pages/shared/shared-function';
+import { CommonService } from '../../../../services/common.service';
+import { LoginService } from '../../../../services/login.service';
+import { SectionService } from '../../../../services/section.service';
+import { StudentScheduleService } from '../../../../services/student-schedule.service';
+import { StudentService } from '../../../../services/student.service';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-group-assign-search-student',
@@ -60,7 +62,7 @@ export class SearchStudentComponent implements OnInit {
   languageList;
   searchAllSchool: boolean;
   inactiveStudents = false;
-
+  profiles=ProfilesTypes;
   countryCtrl: FormControl = new FormControl();
   countryFilterCtrl: FormControl = new FormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -307,7 +309,8 @@ export class SearchStudentComponent implements OnInit {
 
 
   submit() {
-    this.params = [];
+    this.scheduleStudentListViewModel.filterParams = [];
+    this.getAllStudent.filterParams = [];
     if (Array.isArray(this.studentMasterSearchModel.nationality)){
       this.studentMasterSearchModel.nationality = null;
     }
@@ -320,11 +323,28 @@ export class SearchStudentComponent implements OnInit {
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
       if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== '' && this.studentMasterSearchModel[key] !== undefined) {
-        if (key === 'dob') {
-          this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]) })
-        }
-        else {
-          this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.studentMasterSearchModel[key] })
+        if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+          this.scheduleStudentListViewModel.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.scheduleStudentListViewModel.filterParams.length - 1;
+          if (key === 'dob') {
+            this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
+            this.scheduleStudentListViewModel.filterParams[lastIndex].filterOption = 11;
+            this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
+          } else {
+            this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
+            this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
+          }
+        } else {
+          this.getAllStudent.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.getAllStudent.filterParams.length - 1;
+          if (key === 'dob') {
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterOption = 11;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
+          } else {
+            this.getAllStudent.filterParams[lastIndex].columnName = key;
+            this.getAllStudent.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
+          }
         }
       }
     }
@@ -335,11 +355,15 @@ export class SearchStudentComponent implements OnInit {
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Student';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.params);
+      if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+        this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.scheduleStudentListViewModel.filterParams);
+      } else {
+        this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.getAllStudent.filterParams);
+      }
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter updated failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -361,16 +385,15 @@ export class SearchStudentComponent implements OnInit {
       );
     }
 
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
-      this.scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+      this.scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
       this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.scheduleStudentListViewModel.searchAllSchool = this.searchAllSchool;
       this.scheduleStudentListViewModel.includeInactive = this.inactiveStudents;
-      this.scheduleStudentListViewModel.filterParams = this.params;
       this.scheduleStudentListViewModel.sortingModel = null;
       this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-      this.commonService.setSearchResult(this.params);
+      this.commonService.setSearchResult(this.scheduleStudentListViewModel.filterParams);
       this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -392,11 +415,10 @@ export class SearchStudentComponent implements OnInit {
     else{
       this.getAllStudent.searchAllSchool = this.searchAllSchool;
       this.getAllStudent.includeInactive = this.inactiveStudents;
-      this.getAllStudent.filterParams = this.params;
       this.getAllStudent.sortingModel = null;
       this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-      this.commonService.setSearchResult(this.params);
+      this.commonService.setSearchResult(this.getAllStudent.filterParams);
       this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -422,6 +444,7 @@ export class SearchStudentComponent implements OnInit {
     this.currentForm.reset();
     this.inactiveStudents = false;
     this.searchAllSchool = false;
+    this.studentMasterSearchModel = new StudentMasterSearchModel();
     this.submit();
   }
 

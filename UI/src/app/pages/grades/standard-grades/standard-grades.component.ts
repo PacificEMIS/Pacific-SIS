@@ -51,6 +51,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-standard-grades',
@@ -112,7 +113,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private excelService: ExcelService,
     private commonService: CommonService,
-
+    public defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
     this.formInit();
@@ -174,7 +175,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.addGradeScale(this.gradeScaleAddViewModel).subscribe(
       (res: GradeScaleAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -206,7 +207,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.updateGradeScale(this.gradeScaleAddViewModel).subscribe(
       (res: GradeScaleAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -234,7 +235,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.getAllGradeScaleList(this.gradeScaleListView).subscribe(
       (res: GradeScaleListView) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -300,7 +301,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.updateGradeSortOrder(this.gradeDragDropModel).subscribe(
       (res: GradeDragDropModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         } else {
@@ -355,7 +356,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.deleteGradeScale(this.gradeScaleAddViewModel).subscribe(
       (res: GradeScaleAddViewModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -402,7 +403,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     this.gradesService.deleteGrade(this.gradeAddViewModel).subscribe(
       (res: GradeAddViewModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -430,7 +431,7 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
       maxWidth: '400px',
       data: {
         title: 'Are you sure?',
-        message: 'You are about to delete report card grade ' + element.title + '.'
+        message: 'You are about to delete standard grade ' + element.title + '.'
       }
     });
     dialogRef.afterClosed().subscribe(dialogResult => {

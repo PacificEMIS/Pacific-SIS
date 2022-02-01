@@ -4,19 +4,22 @@
         <button mat-icon-button class="close-secondary-sidebar" (click)="toggleSecondarySidebar()"><mat-icon>close</mat-icon></button>
         <vex-scrollbar class="flex-auto vex-scrollbar">
             <div class="h-45 text-center sm:px-0 pt-5 pb-2">
-                <vex-profile-image [enableCropTool]="enableCropTool" [customCss]="'rounded'"
-                    [responseImage]="responseImage" class="p-3 rounded"></vex-profile-image>
+                <vex-profile-image [enableCropTool]="false" [customCss]="'rounded'"
+                    [responseImage]="schoolAddViewModel?.schoolMaster?.schoolDetail[0]?.schoolLogo" class="p-3 rounded"></vex-profile-image>
             </div>
             <div class="text-center px-4">
-                <h5 class="text-primary font-semibold mb-0">{{schoolTitle}}</h5>
+                <h5 class="text-primary font-semibold mb-0">{{schoolAddViewModel?.schoolMaster?.schoolName ? schoolAddViewModel?.schoolMaster?.schoolName : 'Add School Information'}}</h5>
                 <div *ngIf="isCopySchoolPossible" class="rounded-full pt-1 pb-0 px-3 border border-gray inline-block mt-3 cursor-pointer" (click)="addCopySchool()"> <mat-icon class="mr-1 text-lg">file_copy</mat-icon><span class="align-top">{{ 'copySchool' | translate}}</span></div>
+                <div *ngIf="schoolCount>1" class="text-center px-4">
+                    <h5 (click)="showAllSchools()" class="rounded-full py-1 px-3 border border-gray inline-block mt-3 cursor-pointer"><mat-icon [icIcon]="icAccountBalance" class="align-middle mr-2"></mat-icon><span>{{'showAllSchools'| translate }}</span></h5>
+                </div>
             </div>
             <hr class="mt-4">
             <div class="px-gutter sm:px-0">
                 <p *ngFor="let field of fieldsCategory;let index=index">
-                    <a @fadeInRight class="list-item mt-2 no-underline flex items-center w-full"
+                    <a @fadeInRight class="list-item no-underline flex items-center w-full"
                         [ngClass]="currentCategory == field?.categoryId?'text-blue active' : ''"
-                        (click)="changeCategory(field,index)" *ngIf="field.customFields!=''||index<2" matRipple>
+                        (click)="changeCategory(field,index)" *ngIf="field?.customFields!=''||index<2" matRipple>
                         <span *ngIf="field?.categoryId==2" class="w-full"><mat-icon [icIcon]="icCleanHands" class="mr-2">clean_hands_outlined</mat-icon><span class="align-top inline-block mt-1">{{field?.title|translate}}</span></span>
                         <span *ngIf="field?.categoryId!=2" class="w-full"><mat-icon class="mr-2">info_outlined</mat-icon><span class="align-top inline-block mt-1">{{field?.title}}</span></span>
                     </a>
@@ -34,19 +37,19 @@
         <vex-page-layout>
 
             <vex-page-layout-header class="pb-14" fxLayoutAlign="center start">
-                <vex-secondary-toolbar current="School Information" class="w-full">
-                    <vex-breadcrumbs [crumbs]="['School',pageStatus]" class="flex-auto"></vex-breadcrumbs>
+                <vex-secondary-toolbar current="{{'schoolInformation'}}" class="w-full">
+                    <vex-breadcrumbs [crumbs]="['school', schoolCreateMode === schoolCreate?.EDIT ? 'editSchool' : schoolCreateMode === schoolCreate?.VIEW ? 'viewSchool' : 'addSchool' ]" class="flex-auto"></vex-breadcrumbs>
                 </vex-secondary-toolbar>
             </vex-page-layout-header>
             <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">
                 <div class="flex items-center">
                     <button mat-icon-button class="text-white mr-2" (click)="toggleSecondarySidebar()"><mat-icon>apps</mat-icon></button>
                     <div class="h-45 text-center sm:px-0 relative">
-                        <vex-profile-image [enableCropTool]="enableCropTool" [responseImage]="responseImage" style="width:50px" [customCss]="'rounded'"
+                        <vex-profile-image [enableCropTool]="false" [responseImage]="schoolAddViewModel?.schoolMaster?.schoolDetail[0]?.schoolLogo" style="width:50px" [customCss]="'rounded'"
                             class="mx-auto inline-block rounded"></vex-profile-image>
                     </div>
                     <div class="text-left px-4">
-                        <h4 class="mb-0 text-white">{{schoolTitle}}</h4>
+                        <h4 class="mb-0 text-white">{{schoolAddViewModel?.schoolMaster?.schoolName ? schoolAddViewModel?.schoolMaster?.schoolName : ('addSchoolInformation'|translate)}}</h4>
                     </div>
                 </div>
             </div>    

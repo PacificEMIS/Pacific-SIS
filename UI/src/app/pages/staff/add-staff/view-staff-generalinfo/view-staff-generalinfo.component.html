@@ -5,50 +5,50 @@
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'staffName' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.salutation}}
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.salutation}}
                     {{staffViewDetails?.staffMaster.firstGivenName}} {{staffViewDetails?.staffMaster.middleName}}
                     {{staffViewDetails?.staffMaster.lastFamilyName}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'staffId' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.staffInternalId
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.staffInternalId
                     | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'alternateId' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.alternateId |
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.alternateId |
                     EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'districtId' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.districtId |
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.districtId |
                     EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'stateId' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.stateId |
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.stateId |
                     EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'preferredCommonName' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.preferredName
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.preferredName
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'previousMaidenName' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.previousName
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.previousName
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'socialSecurityNumber' | translate}}</label>
                 <!-- <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
                     {{staffViewDetails?.staffMaster.socialSecurityNumber |EmtyValueCheckPipe}}</p> -->
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">-</p>
+                    <p *ngIf="staffViewDetails?.staffMaster?.socialSecurityNumber" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster?.socialSecurityNumber | ssnMask}}</p>
+                    <p *ngIf="!staffViewDetails?.staffMaster?.socialSecurityNumber" class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">-</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'otherGovtIssuedNumber' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails?.staffMaster.otherGovtIssuedNumber |EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.otherGovtIssuedNumber |EmtyValueCheckPipe}}</p>
             </li>
         </ul>
         <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="staffViewDetails" [module]="module"
@@ -61,53 +61,53 @@
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'gender' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.gender
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.gender
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'race' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.race
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.race
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'ethnicity' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.ethnicity
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.ethnicity
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'maritalStatus' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.maritalStatus
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.maritalStatus
                     |EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'dateOfBirth' | translate}}</label>
 
                 <p *ngIf="staffViewDetails.staffMaster.dob !== null"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.dob |
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.dob |
                     date:'mediumDate' | EmtyValueCheckPipe}} | {{ getAge(staffViewDetails?.staffMaster.dob)}}</p>
-                <p *ngIf="staffViewDetails.staffMaster.dob == null"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{staffViewDetails?.staffMaster.dob |
+                <p *ngIf="staffViewDetails?.staffMaster?.dob == null"
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.dob |
                     date:'mediumDate' | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'countryOfBirth' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.countryName}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.countryName}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'nationality' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.nationality}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.nationality}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'firstLanguage' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.firstLanguage}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.firstLanguage}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'secondLanguage' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.secondLanguage}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.secondLanguage}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'thirdLanguage' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">{{nameOfMiscValues.thirdLanguage}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{nameOfMiscValues.thirdLanguage}}</p>
             </li>
         </ul>
 
@@ -118,23 +118,35 @@
         <ul class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-6 md:row-gap-10">
             <li>
                 <label class="text-sm leading-5 text-gray">{{'loginEmailAddress' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{staffViewDetails?.staffMaster.loginEmailAddress | EmtyValueCheckPipe}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{staffViewDetails?.staffMaster.loginEmailAddress | EmtyValueCheckPipe}}</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'password' | translate}}</label>
 
-                <p *ngIf="(staffViewDetails.staffMaster.loginEmailAddress) && (staffViewDetails.staffMaster.portalAccess) && (permissions?.edit)"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a (click)="openResetPassword()"
+                <p *ngIf="(staffViewDetails?.staffMaster?.loginEmailAddress) && (staffViewDetails?.staffMaster?.portalAccess) && (permissions?.edit)"
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><a (click)="openResetPassword()"
                         class="text-blue cursor-pointer hover:underline">Reset Password</a></p>
 
                 <p *ngIf="(!staffViewDetails.staffMaster.loginEmailAddress) || (!staffViewDetails.staffMaster.portalAccess) || (!permissions?.edit)"
-                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">-</p>
+                    class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">-</p>
             </li>
             <li>
                 <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
-                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green">
-                    {{staffViewDetails?.staffMaster?.portalAccess ? 'Yes' :'No'}}</p>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green whitespace-pre-wrap">{{staffViewDetails?.staffMaster?.portalAccess ? 'Yes' :'No'}}</p>
+            </li>
+            <li>
+                <div class="mr-6"
+                    *ngIf="staffViewDetails?.staffMaster?.isActive === true || staffViewDetails?.staffMaster?.isActive === null; else NotActive">
+                    <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
+                    <span class="inline-block text-base align-middle">{{'disableStaff' |translate}}</span>
+                </div>
+                <ng-template #NotActive>
+                    <div class="mr-6">
+                        <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2">
+                        </mat-icon>
+                        <span class="inline-block text-base align-middle">{{'disableStaff' |translate}}</span>
+                    </div>
+                </ng-template>
             </li>
             <!-- <li>
                 <label class="text-sm leading-5 text-gray">{{'lastLogin' | translate}}</label>

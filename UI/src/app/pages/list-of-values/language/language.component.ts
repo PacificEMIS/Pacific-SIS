@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input ,ViewChild} from '@angular/core';
+import { Component, OnInit, Input ,ViewChild, AfterViewInit} from '@angular/core';
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icEdit from '@iconify/icons-ic/twotone-edit';
@@ -38,7 +38,7 @@ import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation'
 import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { EditLanguageComponent } from './edit-language/edit-language.component';
-import {LanguageModel} from '../../../models/language.model';
+import { LOVLanguageModel} from '../../../models/language.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
@@ -52,6 +52,9 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { CryptoService } from '../../../services/Crypto.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'vex-language',
@@ -62,7 +65,7 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
     stagger40ms
   ]
 })
-export class LanguageComponent implements OnInit {
+export class LanguageComponent implements OnInit, AfterViewInit {
   columns = [
     { label: 'Title', property: 'locale', type: 'text', visible: true },
     { label: 'Short Code', property: 'languageCode', type: 'text', visible: true },
@@ -83,8 +86,11 @@ export class LanguageComponent implements OnInit {
   icImpersonate = icImpersonate;
   icFilterList = icFilterList; 
   loading;  
-  totalCount:Number;pageNumber:Number;pageSize:Number;
-  languageModel: LanguageModel = new LanguageModel();  
+  searchCtrl: FormControl
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  languageModel: LOVLanguageModel = new LOVLanguageModel();
   languageAddModel = new LanguageAddModel();
   languageModelList: MatTableDataSource<any>;
   languageListForExcel = [];
@@ -97,6 +103,7 @@ export class LanguageComponent implements OnInit {
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
   permissions: Permissions;
+  filterParams: { columnName: any; filterValue: any; filterOption: number; }[];
   constructor(private router: Router,
     private dialog: MatDialog,
     public translateService:TranslateService,
@@ -105,7 +112,8 @@ export class LanguageComponent implements OnInit {
     public snackbar:MatSnackBar,
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -115,18 +123,19 @@ export class LanguageComponent implements OnInit {
   }
 
   ngOnInit(): void { 
+    this.searchCtrl = new FormControl();
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/lov-settings/language')
    }
 
   deleteLanguageData(element){
-    this.languageAddModel._tenantName = sessionStorage.getItem("tenant");
-    this.languageAddModel._userName = sessionStorage.getItem("user");
-    this.languageAddModel._token = sessionStorage.getItem("token");
+    this.languageAddModel._tenantName = this.defaultValuesService.getTenantName();
+    this.languageAddModel._userName = this.defaultValuesService.getUserName();
+    this.languageAddModel._token = this.defaultValuesService.getToken();
     this.languageAddModel.language.langId = element;
     this.commonService.DeleteLanguage(this.languageAddModel).subscribe(
       (res)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Language Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Language Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -141,6 +150,9 @@ export class LanguageComponent implements OnInit {
             this.snackbar.open('' + res._message, '', {
               duration: 10000
             });
+            this.languageModel.pageSize = this.pageSize;
+            this.languageModel.pageNumber = this.pageNumber;
+            Object.assign(this.languageModel, { filterParams: this.filterParams });
             this.getLanguageList()
           }
         }
@@ -161,35 +173,36 @@ export class LanguageComponent implements OnInit {
    });
   }
   getLanguageList(){
-    this.languageModel._tenantName = sessionStorage.getItem("tenant");  
-    this.languageModel._userName = sessionStorage.getItem("user");
-    this.commonService.GetAllLanguage(this.languageModel).subscribe(data => {
+    this.languageModel.isListView = true;
+    if (this.languageModel.sortingModel?.sortColumn === "") {
+      this.languageModel.sortingModel = null;
+    }
+    this.commonService.LOVGetAllLanguage(this.languageModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Language list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Language list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else{
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
-          if(data.tableLanguage==null){
-            this.languageModelList = new MatTableDataSource([]);
-            this.languageModelList.sort=this.sort;
-            this.languageModelList.paginator = this.paginator;  
-            this.snackbar.open( data._message, '', {
-              duration: 10000
-            });
-          }
-          else{
-            this.languageModelList = new MatTableDataSource([]);
-            this.languageModelList.sort=this.sort;
-            this.languageModelList.paginator = this.paginator;  
-          }
-        }else{ 
-          this.languageModelList = new MatTableDataSource(data.tableLanguage);
-          this.languageListForExcel= data.tableLanguage;
-          this.languageModelList.sort=this.sort; 
-          this.languageModelList.paginator = this.paginator;         
-        } 
+         if (data.tableLanguage === null) {
+           this.languageModelList = new MatTableDataSource([]);
+           this.totalCount = null;
+           this.snackbar.open(data._message, '', {
+             duration: 10000
+           });
+         }
+         else {
+           this.languageModelList = new MatTableDataSource([]);
+           this.totalCount = null;
+         }
+       } else {
+         this.totalCount = data.totalCount;
+         this.pageNumber = data.pageNumber;
+         this.pageSize = data._pageSize;
+         this.languageModelList = new MatTableDataSource(data.tableLanguage);
+         this.languageModel = new LOVLanguageModel();
+       }
       }
     });
   }
@@ -201,26 +214,127 @@ export class LanguageComponent implements OnInit {
     return trnaslateKey;
   }
 
-  exportLanguageListToExcel(){
-    if(this.languageListForExcel.length!=0){
-      let languageList=this.languageListForExcel?.map((item)=>{
-        return{
-          [this.translateKey('title')]: item.locale,
-          [this.translateKey('shortCode')]: item.languageCode,
-          [this.translateKey('createdBy')]: item.createdBy ? item.createdBy: '-',
-          [this.translateKey('createDate')]: this.commonfunction.transformDateWithTime(item.createdOn),
-          [this.translateKey('updatedBy')]: item.updatedBy ? item.updatedBy: '-',
-          [this.translateKey('updateDate')]:  this.commonfunction.transformDateWithTime(item.updatedOn)
+  exportLanguageListToExcel() {
+    const getAllLanguage: LOVLanguageModel = new LOVLanguageModel();
+    getAllLanguage.pageNumber = 0;
+    getAllLanguage.pageSize = 0;
+    getAllLanguage.sortingModel = null;
+    this.commonService.LOVGetAllLanguage(getAllLanguage).subscribe(res => {
+      if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open('Failed to Export Language List.' + res._message, '', {
+          duration: 10000
+        });
+      } else {
+        if (res.tableLanguage.length > 0) {
+          let languageList;
+          languageList = res.tableLanguage?.map((item) => {
+            return {
+              [this.translateKey('title')]: item.locale,
+              [this.translateKey('shortCode')]: item.languageCode,
+              [this.translateKey('createdBy')]: item.createdBy ? item.createdBy : '-',
+              [this.translateKey('createDate')]: this.commonfunction.transformDateWithTime(item.createdOn),
+              [this.translateKey('updatedBy')]: item.updatedBy ? item.updatedBy : '-',
+              [this.translateKey('updateDate')]: this.commonfunction.transformDateWithTime(item.updatedOn)
+            }
+          });
+          this.excelService.exportAsExcelFile(languageList, 'Language_List_')
+        } else {
+          this.snackbar.open('No Records Found. Failed to Export Language List', '', {
+            duration: 5000
+          });
         }
-      });
-      this.excelService.exportAsExcelFile(languageList,'Language_List_')
-     }
-     else{
-    this.snackbar.open('No Records Found. Failed to Export Language List','', {
-      duration: 5000
+      }
     });
   }
-}
+
+  getPageEvent(event) {
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.languageModel.sortingModel.sortColumn = this.sort.active;
+      this.languageModel.sortingModel.sortDirection = this.sort.direction;
+    }
+    if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+      this.filterParams = [
+        {
+          columnName: null,
+          filterValue: this.searchCtrl.value,
+          filterOption: 3
+        }
+      ]
+      Object.assign(this.languageModel, { filterParams: this.filterParams });
+    }
+    this.pageNumber = event.pageIndex + 1;
+
+    this.languageModel.pageNumber = this.pageNumber;
+    this.pageSize = event.pageSize;
+    this.languageModel.pageSize = this.pageSize;
+    this.defaultValuesService.setPageSize(event.pageSize);
+    this.getLanguageList();
+  }
+
+  ngAfterViewInit() {
+    //  Sorting
+    this.languageModel = new LOVLanguageModel();
+    this.sort.sortChange.subscribe((res) => {
+      this.languageModel.pageNumber = this.pageNumber
+      this.languageModel.pageSize = this.pageSize;
+      this.languageModel.sortingModel.sortColumn = res.active;
+      if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+        this.filterParams = [
+          {
+            columnName: null,
+            filterValue: this.searchCtrl.value,
+            filterOption: 3
+          }
+        ]
+        Object.assign(this.languageModel, { filterParams: this.filterParams });
+      }
+      if (res.direction == "") {
+        this.languageModel.sortingModel = null;
+        this.getLanguageList();
+        this.languageModel = new LOVLanguageModel();
+        this.languageModel.sortingModel = null;
+      } else {
+        this.languageModel.sortingModel.sortDirection = res.direction;
+        this.getLanguageList();
+      }
+    });
+
+    //  Searching
+    this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
+      if (term.trim().length > 0) {
+        this.filterParams = [
+          {
+            columnName: null,
+            filterValue: term,
+            filterOption: 3
+          }
+        ]
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.languageModel.sortingModel.sortColumn = this.sort.active;
+          this.languageModel.sortingModel.sortDirection = this.sort.direction;
+        }
+        Object.assign(this.languageModel, { filterParams: this.filterParams });
+        this.pageNumber = 1;
+        this.languageModel.pageNumber = this.pageNumber;
+        this.paginator.pageIndex = 0;
+        this.languageModel.pageSize = this.pageSize;
+        this.getLanguageList();
+      }
+      else {
+      this.filterParams = null;
+        Object.assign(this.languageModel, { filterParams: null });
+        this.pageNumber = this.paginator.pageIndex + 1;
+        this.languageModel.pageNumber = this.pageNumber;
+        this.languageModel.pageSize = this.pageSize;
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.languageModel.sortingModel.sortColumn = this.sort.active;
+          this.languageModel.sortingModel.sortDirection = this.sort.direction;
+        }
+        this.getLanguageList();
+      }
+    })
+  }
 
   goToAdd(){
     this.dialog.open(EditLanguageComponent, {
@@ -228,6 +342,7 @@ export class LanguageComponent implements OnInit {
       width: '500px'
     }).afterClosed().subscribe((data) => {
       if(data){
+        this.languageModel.pageSize = this.pageSize;
         this.getLanguageList();
       }            
     });   
@@ -239,6 +354,7 @@ export class LanguageComponent implements OnInit {
       width: '500px'
     }).afterClosed().subscribe((data) => {
       if(data){
+        this.languageModel.pageSize = this.pageSize;
         this.getLanguageList();
       }            
     });   

@@ -34,6 +34,7 @@ import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animati
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-effort-item',
@@ -59,6 +60,7 @@ export class EditEffortItemComponent implements OnInit {
     private snackbar:MatSnackBar,
     private gradesService:GradesService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) { 
       this.form=fb.group({
         effortItemId:[0],
@@ -89,7 +91,7 @@ export class EditEffortItemComponent implements OnInit {
         this.gradesService.addEffortGradeLibraryCategoryItem(this.effortGradeLibraryCategoryItemAddViewModel).subscribe(
           (res:EffortGradeLibraryCategoryItemAddViewModel)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -116,7 +118,7 @@ export class EditEffortItemComponent implements OnInit {
         this.gradesService.updateEffortGradeLibraryCategoryItem(this.effortGradeLibraryCategoryItemAddViewModel).subscribe(
           (res:EffortGradeLibraryCategoryItemAddViewModel)=>{
             if(typeof(res)=='undefined'){
-              this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }else{

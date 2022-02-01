@@ -33,6 +33,7 @@ import { AddEditStudentMedicalAlertModel } from '../../../../../models/student.m
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from '../../../../../common/default-values.service';
 
 @Component({
   selector: 'vex-add-alert',
@@ -55,6 +56,7 @@ export class AddAlertComponent implements OnInit {
     private snackbar: MatSnackBar,
     private studentService: StudentService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.form = fb.group({
@@ -102,7 +104,7 @@ export class AddAlertComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -130,7 +132,7 @@ export class AddAlertComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

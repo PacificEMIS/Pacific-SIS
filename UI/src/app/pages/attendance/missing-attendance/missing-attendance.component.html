@@ -1,7 +1,7 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{ 'missingAttendance' | translate }}" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Attendance']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{ 'missingAttendance'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -38,7 +38,7 @@
                             <input [formControl]="searchCtrl"
                                 class="py-3 border-0 outline-none w-full bg-transparent table-search"
                                 placeholder="Search..." type="search">
-                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5">
+                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                                 <mat-icon>search</mat-icon>
                             </button>

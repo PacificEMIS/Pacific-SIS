@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SearchStudentCourseSection } from '../../../../models/search-student-course-section.model';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,7 +40,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CourseSectionService } from '../../../../services/course-section.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import * as _moment from 'moment';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -82,6 +82,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    @Inject(MAT_DIALOG_DATA) public data
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -90,102 +91,20 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getAllCourse();
-    this.getAllSubjectList();
-    this.getAllProgramList();
-    this.getAllMarkingPeriodList();
+    this.courseList= this.data.courseList;
+    this.subjectList=this.data.subjectList;
+    this.programList=this.data.programList;
+    this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriodList;
   }
 
 
-  getAllProgramList() {
-    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      }  
-    });
-  }
-  getAllSubjectList() {
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.subjectList=data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      } 
-
-    });
-  }
-
-  getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem("academicyear");
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
-        if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
-          this.snackbar.open(data._message, '', {
-            duration: 1000
-          }); 
-        }
-      } else {
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
-      }
-    });
-  }
+  
 
   changeMarkingPeriod(markingPeriodId) {
     let index = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.findIndex((item) => {
       return item.value == markingPeriodId
     })
     this.selectedMarkingPeriod = this.getMarkingPeriodTitleListModel.getMarkingPeriodView[index];
-  }
-
-  getAllCourse() {
-    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
-      if (data) {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.courseList = [];
-          if (!data.courseViewModelList) {
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            });
-          }
-        } else {
-          this.courseList = data.courseViewModelList;
-        }
-      } else {
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 10000
-        });
-      }
-    })
   }
 
   searchCourseSection() {
@@ -217,16 +136,18 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   }
 
   findMarkingPeriodTitleById(courseDetails) {
-    courseDetails = courseDetails.map((item) => {
+    courseDetails = courseDetails?.map((item) => {
       if (item.yrMarkingPeriodId) {
         item.yrMarkingPeriodId = '0_' + item.yrMarkingPeriodId;
       } else if (item.smstrMarkingPeriodId) {
         item.smstrMarkingPeriodId = '1_' + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = '2_' + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = '3_' + item.prgrsprdMarkingPeriodId;
       }
 
-      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId) {
+      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId || item.prgrsprdMarkingPeriodId) {
         for (let markingPeriod of this.getMarkingPeriodTitleListModel.getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
@@ -235,6 +156,9 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
+            item.markingPeriodTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           }
@@ -260,6 +184,9 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
       } else if (item.qtrMarkingPeriodId) {
         let qtrMarkingPeriodId = item.qtrMarkingPeriodId.toString().split('_');
         item.qtrMarkingPeriodId = parseInt(qtrMarkingPeriodId[1]);
+      } else if (item.prgrsprdMarkingPeriodId) {
+        let prgrsprdMarkingPeriodId = item.prgrsprdMarkingPeriodId.toString().split('_');
+        item.prgrsprdMarkingPeriodId = parseInt(prgrsprdMarkingPeriodId[1]);
       }
       return item;
     })

@@ -47,6 +47,8 @@ import { StaffCourseScheduleComponent } from './staff-course-schedule/staff-cour
 import { CalendarModule as AngularCalendarModule } from 'angular-calendar';
 import { MatDividerModule } from '@angular/material/divider';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatChipModule } from '../../shared-module/mat-chip/mat-chip.module';
+import { AddCertificateComponent } from './staff-certificationinfo/add-certificate/add-certificate.component';
 
 
 
@@ -61,7 +63,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ViewstaffCertificationinfoComponent,
     ViewStaffGeneralinfoComponent,
     ViewStaffAddressinfoComponent,
-    StaffCourseScheduleComponent
+    StaffCourseScheduleComponent,
+    AddCertificateComponent
   ],
   imports: [
     CommonModule,
@@ -100,6 +103,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatTooltipModule,
     MatSlideToggleModule,
     CustomFieldModule,
+    MatChipModule,
     CustomFieldWithoutFormModule,
     MatDialogModule,
     MatDividerModule

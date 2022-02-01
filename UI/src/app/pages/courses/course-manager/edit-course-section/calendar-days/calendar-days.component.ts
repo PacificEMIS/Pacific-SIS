@@ -58,6 +58,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseSectionService } from '../../../../../services/course-section.service';
 import { SharedFunction } from '../../../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-calendar-days',
@@ -133,6 +134,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
   color = ['bg-deep-orange', 'bg-red', 'bg-green', 'bg-teal', 'bg-cyan', 'bg-deep-purple', 'bg-pink', 'bg-blue'];
   showError: boolean = false;
   showMarkingPeriodError: boolean = false;
+  isThisComponent:boolean;
   constructor(
     private fb: FormBuilder,
     private schoolPeriodService: SchoolPeriodService,
@@ -141,6 +143,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     private commonFunction: SharedFunction,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
   ) {
     this.courseSectionService.currentUpdate.subscribe((res) => {
       if (res) {
@@ -148,14 +151,19 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
         this.sendCalendarScheduleDataToParent();
       }
     })
+    this.isThisComponent=true;
   }
 
 
 
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes): void {
     this.checkDurationChanges();
     this.checkCalendarChanges();
+    if(changes?.selectedCalendar?.previousValue?.title){
+      this.calendarSchedulingModel.courseCalendarScheduleList=[];
+      this.events=[];
+    }
   }
 
 
@@ -242,12 +250,14 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     else {
       document.getElementById('calendarDays').scrollIntoView();
       this.addClassTitle = 'addClass';
+      this.submitTitle = 'submit';
       this.classEditMode = false;
       this.showClassDetails = false;
       this.editClassDetails = true;
       this.addCalendarDay = 1;
       this.selectedDate = event.date;
       this.courseCalendarSchedule.date = event.date;
+      this.courseCalendarSchedule.eventId = this.events?.length + 1;
     }
 
   }
@@ -319,17 +329,36 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     this.durationType = mrChange.value;
   }
   classSubmit() {
-    let random = Math.floor((Math.random() * 7) + 0);
     this.currentForm.form.markAllAsTouched();
+    this.currentForm.form.controls.roomId.setErrors({ 'nomatch': null });
+    this.currentForm.form.controls.roomId.setValue(this.courseCalendarSchedule.roomId,{valid:true});
+    this.roomModelList.map((x) => {
+      if (x.roomId === this.courseCalendarSchedule.roomId) {
+        if (this.detailsFromParentModal.form.controls.seats.value !== "") {
+          if (this.detailsFromParentModal.form.controls.seats.value > x.capacity) {
+            this.currentForm.form.controls.roomId.setErrors({ 'nomatch': true });
+          }
+        } else {
+          this.currentForm.form.controls.roomId.setErrors({ 'nomatch': true });
+        }
+      }
+    })
+    let random = Math.floor((Math.random() * 7) + 0);
     this.courseCalendarSchedule.blockId = this.blockListViewModel.getBlockListForView[0].blockId;
     this.courseCalendarSchedule.date = this.commonFunction.formatDateSaveWithoutTime(this.courseCalendarSchedule.date);
     if (this.classEditMode) {
 
       if (this.courseCalendarSchedule.serial === 0) {
-        let eventIndex = this.events.findIndex(x => x.meta.scheduleDetails.serial == this.courseCalendarSchedule.serial);
+        let roomIndex = this.roomModelList.findIndex(x => x.roomId == this.courseCalendarSchedule.roomId);
+        let roomTitle = this.roomModelList[roomIndex].title;
+        this.courseCalendarSchedule.rooms.title = roomTitle;
+        let eventIndex = this.events.findIndex(x => x.meta.scheduleDetails.eventId == this.courseCalendarSchedule.eventId);
         this.events.splice(eventIndex, 1);
       }
       else {
+        let roomIndex = this.roomModelList.findIndex(x => x.roomId == this.courseCalendarSchedule.roomId);
+        let roomTitle = this.roomModelList[roomIndex].title;
+        this.courseCalendarSchedule.rooms.title = roomTitle;
         let classIndex = this.calendarSchedulingModel.courseCalendarScheduleList.findIndex(x => x.serial == this.courseCalendarSchedule.serial);
         this.calendarSchedulingModel.courseCalendarScheduleList.splice(classIndex, 1);
         this.calendarSchedulingModel.courseCalendarScheduleList.push(this.courseCalendarSchedule);
@@ -348,7 +377,6 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
 
 
     if (this.currentForm.form.valid) {
-
       if (this.periodTitle.length === 0) {
         let index = this.blockListViewModel.getBlockListForView[0].blockPeriod.findIndex(item => item.periodId == this.courseCalendarSchedule.periodId);
         this.periodTitle.push(this.blockListViewModel.getBlockListForView[0].blockPeriod[index].periodTitle);
@@ -377,11 +405,12 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     if (this.calendarSchedulingModel.courseCalendarScheduleList.length > 0) {
       this.calendarScheduleData.emit({ scheduleType: 'calendarschedule', roomList: this.roomModelList, scheduleDetails: this.calendarSchedulingModel.courseCalendarScheduleList, error: false });
     } else {
-
-      this.calendarScheduleData.emit({ scheduleType: 'calendarschedule', roomList: null, scheduleDetails: null, error: true });
-      this.snackbar.open('Please add minimum one class', '', {
-        duration: 10000
-      });
+      if( this.isThisComponent===true ){
+          this.calendarScheduleData.emit({ scheduleType: 'calendarschedule', roomList: null, scheduleDetails: null, error: true });
+          this.snackbar.open('Please add minimum one class', '', {
+          duration: 10000
+        });
+      }
     }
   }
 
@@ -467,4 +496,7 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
     this.addCalendarDay = 0;
   }
 
+  ngOnDestroy(){
+    this.isThisComponent=false;
+  }
 }

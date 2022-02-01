@@ -53,6 +53,7 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-honor-roll-setup',
@@ -108,6 +109,7 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
     public translateService:TranslateService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -119,6 +121,9 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
       {honor_roll: 'Gold', break_off: '90'},
       {honor_roll: 'Platinum', break_off: '96'}
     ]
+    if(!defaultValuesService.checkAcademicYear()){
+      this.columns.pop()
+    }
   }
   ngAfterViewInit(): void {
     //  Sorting
@@ -243,7 +248,7 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
     this.gradesService.deleteHonorRoll(this.honorRollAddViewModel).subscribe(
       (res:HonorRollAddViewModel)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -282,10 +287,11 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
     if(this.honorRollListModel.sortingModel?.sortColumn==""){
       this.honorRollListModel.sortingModel=null
     }
+    this.honorRollListModel.isListView=true;
     this.gradesService.getAllHonorRollList(this.honorRollListModel).subscribe(
       (res:HonorRollListModel)=>{
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

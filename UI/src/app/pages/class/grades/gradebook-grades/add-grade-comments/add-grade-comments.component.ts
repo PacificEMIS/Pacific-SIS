@@ -23,10 +23,11 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-add-grade-comments',
@@ -35,12 +36,22 @@ import icClose from '@iconify/icons-ic/twotone-close';
 })
 export class AddGradeCommentsComponent implements OnInit {
   icClose = icClose;
-
-  constructor(private dialogRef: MatDialogRef<AddGradeCommentsComponent>, public translateService:TranslateService) { 
-    //translateService.use('en');
+  isThisCurrentYeare;
+  constructor(
+    private dialogRef: MatDialogRef<AddGradeCommentsComponent>,
+     public translateService:TranslateService,
+    public defaultValuesService: DefaultValuesService,
+     @Inject(MAT_DIALOG_DATA) public data,
+     ) { 
+    // translateService.use('en');
+    this.isThisCurrentYeare=defaultValuesService.checkAcademicYear()
   }
 
   ngOnInit(): void {
+  }
+
+  submitComment() {
+    this.dialogRef.close(this.data.comment);
   }
 
 }

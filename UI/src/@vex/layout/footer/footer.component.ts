@@ -12,6 +12,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { SchoolService } from "../../../app/services/school.service";
 import { takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
+import { DefaultValuesService } from '../../../app/common/default-values.service';
 
 @Component({
   selector: "vex-footer",
@@ -23,12 +24,16 @@ export class FooterComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();
   icShoppingBasket = icShoppingBasket;
   releaseNumberAddViewModel: ReleaseNumberAddViewModel = new ReleaseNumberAddViewModel();
+  tenantFooter: any;
+  
   constructor(
     private commonService: CommonService,
     private snackbar: MatSnackBar,
     private schoolService: SchoolService,
-    
-  ) {}
+    private defaultValuesService: DefaultValuesService
+  ) {
+    this.tenantFooter = this.defaultValuesService.getPhotoAndFooter().tenantFooter;
+  }
 
   ngOnInit() {
     this.schoolService.schoolListCalled
@@ -41,18 +46,14 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   getReleaseNumber() {
-    this.releaseNumberAddViewModel.releaseNumber.schoolId = +sessionStorage.getItem(
-      "selectedSchoolId"
-    );
-    this.releaseNumberAddViewModel.releaseNumber.tenantId = sessionStorage.getItem(
-      "tenantId"
-    );
+    this.releaseNumberAddViewModel.releaseNumber.schoolId = this.defaultValuesService.getSchoolID();
+    this.releaseNumberAddViewModel.releaseNumber.tenantId =this.defaultValuesService.getTenantID();
     this.commonService
       .getReleaseNumber(this.releaseNumberAddViewModel)
       .subscribe((data) => {
         if (typeof data == "undefined") {
           this.snackbar.open(
-            "Release Number failed. " + sessionStorage.getItem("httpError"),
+            "Release Number failed. " + this.defaultValuesService.getHttpError(),
             "",
             {
               duration: 10000,

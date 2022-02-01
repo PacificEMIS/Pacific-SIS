@@ -1,5 +1,6 @@
 import { CommonField } from "./common-field.model";
 import { FieldsCategoryModel } from './fields-category.model';
+import { SchoolMasterModel } from "./school-master.model";
 
 export class StudentMasterModel {
     public tenantId: string;
@@ -19,6 +20,7 @@ export class StudentMasterModel {
     public lastFamilyName: string;
     public suffix: string;
     public preferredName: string;
+    public gradeLevelTitle: string;
     public previousName: string;
     public socialSecurityNumber: string;
     public otherGovtIssuedNumber: string;
@@ -28,6 +30,7 @@ export class StudentMasterModel {
     public gender: string;
     public race: string;
     public checked: boolean;
+    public isActive: boolean;
     public ethnicity: string;
     public maritalStatus: string;
     public countryOfBirth: number;
@@ -126,9 +129,9 @@ export class StudentMasterModel {
     public academicYear: string;
     public studentMedicalAlert: StudentMedicalModel[];
     constructor() {
-        this.academicYear = sessionStorage.getItem("academicyear");
-        this.tenantId = sessionStorage.getItem("tenantId");
-        // this.schoolId = +sessionStorage.getItem("selectedSchoolId");
+        this.academicYear = JSON.parse(sessionStorage.getItem("academicyear"));
+        this.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
+        // this.schoolId = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
     }
 }
 
@@ -143,6 +146,8 @@ export class StudentAddModel extends CommonField {
     public currentGradeLevel: string;
     public studentEnrollment: {};
     public academicYear:string;
+    public allowDuplicate:boolean;
+    public checkDuplicate:number;
     constructor() {
         super();
         this.studentMaster = new StudentMasterModel();
@@ -202,6 +207,8 @@ export class StudentEnrollmentDetailsForGroupAssignModel {
     schoolId: number;
     calenderId: number
     rollingOption: string;
+    gradeId: number;
+    gradeLevelTitle: string;
     updatedBy: string;
 }
 
@@ -283,6 +290,7 @@ export class StudentListModel extends CommonField {
     public academicYear: number;
     public dobEndDate: string;
     public fullName: string;
+    public emailAddress: string;
     constructor() {
         super();
         this.pageNumber = 1;
@@ -290,7 +298,28 @@ export class StudentListModel extends CommonField {
         this.dobStartDate = null;
         this.dobEndDate = null;
         this.sortingModel = new sorting();
-        this.filterParams = null;
+        this.filterParams = [];
+    }
+}
+
+export class StudentListByDateRangeModel extends CommonField {
+    public includeInactive: boolean;
+    public searchAllSchool: boolean;
+    public pageNumber: number;
+    public pageSize: number;
+    public sortingModel: sorting;
+    public filterParams: filterParams[];
+    public markingPeriodStartDate: string;
+    public markingPeriodEndDate: string;
+    public academicYear: number;
+    public EmailAddress: string;
+
+    constructor() {
+        super();
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.sortingModel = new sorting();
+        this.filterParams = [];
     }
 }
 
@@ -515,25 +544,26 @@ export class StudentSiblingAssociation extends CommonField {
     constructor() {
         super();
         this.studentMaster = new StudentMasterModel()
-        this.studentMaster.tenantId = sessionStorage.getItem("tenantId");
+        this.studentMaster.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
     }
 }
 
 export class StudentEnrollmentSchoolListModel extends CommonField {
-    public schoolMaster: []
+    public schoolMaster: SchoolMasterModel[]
     public tenantId: string;
     constructor() {
         super();
-        this.schoolMaster = null;
+        this.schoolMaster = [new SchoolMasterModel];
     }
 }
 
-export class StudentEnrollmentDetails extends CommonField {
+export class StudentEnrollmentDetails {
     tenantId: string;
     schoolId: number | string;
     studentId: number;
     academicYear: number;
     enrollmentId: number;
+    rolloverId: number;
     calenderId: number;
     rollingOption: string;
     schoolName: string;
@@ -556,10 +586,12 @@ export class StudentEnrollmentDetails extends CommonField {
     studentGuid: string;
     startYear: string;
     endYear: string;
+    isActive: boolean;
+    showDrop:boolean;
 }
 export class StudentEnrollmentModel extends CommonField {
     studentEnrollments: Array<StudentEnrollmentDetails>;
-    studentEnrollmentListForView: [StudentEnrollmentDetails];
+    studentEnrollmentListForView: StudentEnrollmentDetails[];
     tenantId: string;
     studentId: number;
     calenderId: number | string;
@@ -574,6 +606,9 @@ export class StudentEnrollmentModel extends CommonField {
     freeLunchEligibility: boolean;
     specialEducationIndicator: boolean;
     lepIndicator: boolean;
+    fieldsCategoryList;
+    selectedCategoryId;
+    
     constructor() {
         super();
         this.studentEnrollments = [new StudentEnrollmentDetails];
@@ -590,6 +625,7 @@ export class StudentMasterSearchModel {
     public stateId: number;
     public gradeId: number;
     public admissionNumber: string;
+    public courseSection: number;
     public rollNumber: string;
     public salutation: string;
     public firstGivenName: string;
@@ -602,7 +638,9 @@ export class StudentMasterSearchModel {
     public otherGovtIssuedNumber: string;
     public studentPhoto: string;
     public dob: string;
+    public rollingOption: string;
     public enrollmentDate: string;
+    public enrollmentCode: string;
     public exitDate: string;
     public exitCode: string;
     public displayAge: string;
@@ -722,6 +760,7 @@ export class StudentMasterImportModel {
     enrollmentDate: string;
     dob: string;
     estimatedGradDate: string;
+    _message: string;
     fieldsCategoryList: FieldsCategoryModel[];
     loginEmail?:string;
     passwordHash?: string;

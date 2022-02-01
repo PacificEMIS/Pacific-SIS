@@ -42,11 +42,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoaderService } from 'src/app/services/loader.service';
 import { StaffService } from 'src/app/services/staff.service';
 import { FinalGradeService } from 'src/app/services/final-grade.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Permissions } from '../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-input-effort-grades',
@@ -85,24 +85,15 @@ export class InputEffortGradesComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private staffService: StaffService,
     private finalGradeService: FinalGradeService,
-    private layoutService: LayoutService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
   ) {
     //translateService.use('en');
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
-
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
   }
 
   viewEffortGradeDetails(element) { 
@@ -214,6 +205,7 @@ export class InputEffortGradesComponent implements OnInit, AfterViewInit {
     if (this.getAllStaff.sortingModel?.sortColumn == "") {
       this.getAllStaff.sortingModel = null
     }
+    this.getAllStaff.isHomeRoomTeacher = true ;
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);

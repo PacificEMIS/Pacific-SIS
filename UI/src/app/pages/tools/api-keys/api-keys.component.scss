@@ -1,0 +1,47 @@
+.mat-expansion-panel {
+
+  .mat-expansion-panel-header {
+    @media (max-width: 790px) {
+      height: auto;
+      padding: 16px 10px;
+    }
+  }
+  .mat-expansion-panel-header.mat-expanded {
+    background-color: rgb(var(--color-primary));
+    height: 48px;
+    border-radius: 2px 2px 0 0;
+
+      @media (max-width: 790px) {
+        height: auto;
+        padding: 16px 10px;
+      }
+
+    .mat-expansion-panel-header-title {
+      color: var(--text-color-light);
+    }
+  }
+}
+
+.mat-expansion-panel.mat-expanded {
+  border: 2px solid rgb(var(--color-primary));
+}
+
+
+::ng-deep .mat-expansion-panel-header.mat-expanded {
+  .mat-expansion-indicator::after {
+    border-color: var(--text-color-light);
+    margin-top: -7px;
+  }
+}
+  
+.mat-accordion > .mat-expansion-panel-spacing:last-child,
+.mat-accordion
+  > *:last-child:not(.mat-expansion-panel)
+  .mat-expansion-panel-spacing {
+  margin-bottom: 12px;
+}
+
+::ng-deep .mat-expansion-panel .mat-expansion-panel-content .mat-expansion-panel-body {
+  padding-bottom: 10px;
+}
+  

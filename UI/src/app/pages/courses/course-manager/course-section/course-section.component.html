@@ -13,7 +13,7 @@
                     </a>
                 </div>
                 <div>
-                    <button *ngIf="permissions?.add" mat-raised-button color="primary" (click)="addCourseSection()">
+                    <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary" (click)="addCourseSection()">
                         <mat-icon [icIcon]="icAdd" class="mr-0 md:mr-2"></mat-icon>
                         <span class="hidden md:inline-block">{{'addNewCourseSection'|translate}}</span>
                     </button>
@@ -53,7 +53,7 @@
                                 <button *ngIf="permissions?.edit" mat-menu-item (click)="editCourseSection(section)">
                                     <span>{{'editItem' | translate}}</span>
                                 </button>
-                                <button *ngIf="permissions?.edit" mat-menu-item (click)="confirmDelete(section)">
+                                <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" mat-menu-item (click)="confirmDelete(section)">
                                     <span>{{'deleteItem' | translate}}</span>
                                 </button>
                             </mat-menu>
@@ -83,7 +83,7 @@
                         <button *ngIf="permissions?.edit" mat-menu-item (click)="editCourseSection(selectedSectionDetails)">
                             <span>{{'editItem' | translate}}</span>
                         </button>
-                        <button *ngIf="permissions?.edit" mat-menu-item (click)="confirmDelete(selectedSectionDetails)">
+                        <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" mat-menu-item (click)="confirmDelete(selectedSectionDetails)">
                             <span>{{'deleteItem' | translate}}</span>
                         </button>
                     </mat-menu>
@@ -130,7 +130,7 @@
                     <li>
                         <label class="text-sm leading-5 text-gray">{{'creditHours' | translate}}</label>
                         <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2">
-                            {{selectedSectionDetails.courseSection.creditHours | number:'0.2' | EmtyValueCheckPipe}}</p>
+                            {{selectedSectionDetails.courseSection.creditHours | number:'0.3' | EmtyValueCheckPipe}}</p>
                     </li>
                     <li>
                         <label class="text-sm leading-5 text-gray">{{'seats' | translate}}</label>

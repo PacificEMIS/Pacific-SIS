@@ -1,0 +1,196 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="card">
+    <ul class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 col-gap-6 row-gap-2 p-4 pb-0 items-center">
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "showReportBy" | translate }}</mat-label>
+                <mat-select [(ngModel)]="selectedReportBy" (selectionChange)="getReportBy($event)">
+                    <mat-option *ngFor="let option of selectOptions" [value]="option?.subTitle">{{option?.title}}</mat-option>
+                    <mat-option value="">{{'customDateRange' |translate}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <ng-container *ngIf="!selectedReportBy">
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "fromDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="fromDate" [(ngModel)]="getStudentAddDropReportModel.markingPeriodStartDate" required>
+                <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                <mat-datepicker #fromDate></mat-datepicker>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "toDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="toDate" [(ngModel)]="getStudentAddDropReportModel.markingPeriodEndDate" required>
+                <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                <mat-datepicker #toDate></mat-datepicker>
+
+            </mat-form-field>
+        </li>
+        </ng-container>
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "gradeLevel" | translate }}</mat-label>
+                <mat-select [(ngModel)]="getStudentAddDropReportModel.gradeLevel">
+                    <mat-option value="">{{'all'|translate}}</mat-option>
+                    <mat-option *ngFor="let gradeLevel of gradeLevelList" [value]='gradeLevel.title'>{{gradeLevel.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <button mat-raised-button color="primary" (click)="generateReportStudentList()">{{'search' | translate }}</button>
+        </li>
+    </ul>
+    <mat-divider class="mt-2"></mat-divider>
+    <div *ngIf="isVisible">
+        <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+            <div class="md:flex w-full justify-between">
+                <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                    <div class="md:flex w-full items-center">
+                        <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                            type="search">
+                        <button class="ml-4" mat-icon-button type="button">
+                            <mat-icon>search</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <hr class="-mx-4 block md:hidden" />
+                <div class="py-2 md:pt-2 items-center">
+                    <a (click)="printAddDropStudentList()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print">
+                        <mat-icon [icIcon]="icPrint"></mat-icon>
+                    </a>
+                    <a (click)="exportAddDropStudentListToExcel()" class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel">
+                        <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="overflow-x-auto overflow-y-hidden">
+            <table mat-table [dataSource]="addDropStudentList" class="mat-elevation-z8">
+
+                <ng-container matColumnDef="studentName">
+                    <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.studentMaster.firstGivenName}} {{element.studentMaster.middleName ? ' '+element.studentMaster.middleName+' ':''}} {{element.studentMaster.lastFamilyName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="studentId">
+                    <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.studentMaster.studentInternalId | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="school">
+                    <th mat-header-cell *matHeaderCellDef>{{'school' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.schoolName | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="enrolledDate">
+                    <th mat-header-cell *matHeaderCellDef>{{'enrolledDate' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.enrollmentDate | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="enrollmentCode">
+                    <th mat-header-cell *matHeaderCellDef>{{'enrollmentCode' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.enrollmentCode | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="droppedDate">
+                    <th mat-header-cell *matHeaderCellDef>{{'droppedDate' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.exitDate | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="dropCode">
+                    <th mat-header-cell *matHeaderCellDef>{{'dropCode' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.exitCode | EmtyValueCheckPipe}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="7">
+                        {{loading?('fetchingData' | translate):('noData' | translate) }}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount !== 0 && totalCount !== null"></tr>
+            </table>
+        </div>
+        <mat-paginator [length]="totalCount" [class.hidden]="totalCount===0 || totalCount===null" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)' aria-label="Select page">
+        </mat-paginator>
+    </div>
+</div>
+
+<!-- Print Section Start -->
+
+<div class="hidden" id="printSectionId">
+<div class="schedule-report">
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td>
+                <table class="report-header">
+                    <tr>
+                        <td class="header-left">
+                            <div class="float-left school-logo">
+                                <img *ngIf="reportSchoolInfo?.schoolLogo" [src]="reportSchoolInfo?.schoolLogo ? 'data:image/jpeg;base64,' + reportSchoolInfo?.schoolLogo : ''">
+                            </div>
+                            <div class="float-left information">
+                                <h4>{{reportSchoolInfo?.schoolName}}</h4>
+                                <p>{{reportSchoolInfo?.streetAddress1 ? reportSchoolInfo?.streetAddress1 : ''}}{{reportSchoolInfo?.streetAddress2 ? ', '+reportSchoolInfo?.streetAddress2 : ''}}{{reportSchoolInfo?.city ? ', '+reportSchoolInfo?.city : ''}}{{reportSchoolInfo?.district ? ', '+reportSchoolInfo?.district : ''}}{{reportSchoolInfo?.state ? ', '+reportSchoolInfo?.state : ''}}{{reportSchoolInfo?.zip ? ', '+reportSchoolInfo?.zip : ''}}</p>
+                            </div>
+                        </td>
+                        <td class="header-right text-right">
+                            <div class="text-center inline-block">{{'addDropReport' | translate}}</div>
+                            <p class="text-right">{{'poweredBy' | translate}} <b>openSIS</b></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="generate-date">
+                            <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{today | date:'mediumDate'}}</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="p-y-20 p-x-8">
+                <table>
+                    <tr>
+                        <td>
+                            <table class="information-table">
+                                <thead>
+                                    <tr>
+                                        <th class="bg-slate"><strong>{{'studentName' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'studentId' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'school' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'enrolledDate' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'enrollmentCode' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'droppedDate' | translate}}</strong></th>
+                                        <th class="bg-slate"><strong>{{'dropCode' | translate}}</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let student of studentEnrollmentList">
+                                        <td width="10%">{{student?.studentMaster?.firstGivenName}} {{student?.studentMaster?.middleName ? '
+                                            '+student?.studentMaster?.middleName+' ':''}} {{student?.studentMaster?.lastFamilyName}}</td>
+                                        <td width="10%">{{student?.studentMaster?.studentInternalId | EmtyValueCheckPipe}}</td>
+                                        <td width="10%">{{student?.schoolName | EmtyValueCheckPipe}}</td>
+                                        <td width="10%">{{student?.enrollmentDate | EmtyValueCheckPipe}}</td>
+                                        <td width="10%">{{student?.enrollmentCode | EmtyValueCheckPipe}}</td>
+                                        <td width="10%">{{student?.exitDate | EmtyValueCheckPipe}}</td>
+                                        <td width="10%">{{student?.exitCode | EmtyValueCheckPipe}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+</div>
+
+<!-- Print Section End -->

@@ -46,7 +46,6 @@ import { AddMembershipModel } from '../../../models/membership.model';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoaderService } from '../../../services/loader.service';
-import { LayoutService } from '../../../../@vex/services/layout.service';
 import { CryptoService } from '../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -94,12 +93,9 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
     public membershipService: MembershipService,
     private cdr: ChangeDetectorRef,
     private loaderService: LoaderService,
-    private layoutService: LayoutService,
     private defaultValueService: DefaultValuesService,
     private commonService: CommonService,
     ) {
-    //translateService.use('en');
-    this.layoutService.collapseSidenav();
 
   }
 
@@ -120,16 +116,16 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
         this.pages.push(option.title);
       }
     })
-    let availablePageId = localStorage.getItem("pageId");
+    let availablePageId = this.defaultValueService.getPageId();
     if (availablePageId == null || !this.pages.includes(availablePageId)) {
       for (let item of permissions?.permissionList[settingIndex]?.permissionGroup.permissionCategory[administrationMenu].permissionSubcategory) {
         if (item.rolePermission[0].canView) {
-          localStorage.setItem("pageId", item.title);
+          this.defaultValueService.setPageId(item.title);
           break;
         }
       }
     }
-    this.pageId = localStorage.getItem("pageId");
+    this.pageId = this.defaultValueService.getPageId();
 
     this.getAllMembership();
     this.getRolePermission(this.selectedMemeber, this.selectedMemeberProfile, this.selectedDescription);
@@ -140,7 +136,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
   }
   getSelectedPage(pageId) {
     this.pageId = pageId;
-    localStorage.setItem("pageId", pageId);
+    this.defaultValueService.setPageId(pageId);
   }
 
   goToAdd() {
@@ -197,7 +193,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
     this.membershipService.deleteMembership(this.addMembershipModel).subscribe(
       (res) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Member Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Member Deletion failed. ' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -221,7 +217,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
   getAllMembership() {
     this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Membership List failed. ' + this.defaultValueService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -244,7 +240,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
             obj['description'] = val.description
             obj['isSystem'] = val.isSystem
             obj['profileType'] = val.profileType
-            if (val.membershipId === +sessionStorage.getItem("userMembershipID")) {
+            if (val.membershipId === this.defaultValueService.getuserMembershipID()) {
               this.selectedDescription = val.description;
             }
             let icon = this.getIcon(val.profile);
@@ -273,8 +269,8 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
             }
           }
           if (!membershipIdFound) {
-            this.selectedMemeber = sessionStorage.getItem("userMembershipID");
-            this.selectedMemeberProfile = sessionStorage.getItem("membershipName");
+            this.selectedMemeber = this.defaultValueService.getuserMembershipID();
+            this.selectedMemeberProfile = this.defaultValueService.getuserMembershipName();
             this.getRolePermission(this.selectedMemeber, this.selectedMemeberProfile, this.selectedDescription);
           }
 
@@ -328,12 +324,12 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
     if (memberId) {
       this.rolePermissionListViewModel.membershipId = memberId;
     } else {
-      this.rolePermissionListViewModel.membershipId = +sessionStorage.getItem("userMembershipID");
+      this.rolePermissionListViewModel.membershipId = this.defaultValueService.getuserMembershipID();
     }
     this.rollBasedAccessService.getAllRolePermission(this.rolePermissionListViewModel).subscribe(
       (res) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Role Permission List failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Role Permission List failed. ' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }

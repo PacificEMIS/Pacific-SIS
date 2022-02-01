@@ -24,9 +24,9 @@ All rights reserved.
 ***********************************************************************************/
 
 import { StaffService } from '../../../../../services/staff.service';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ControlContainer, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
 import  icWarning  from '@iconify/icons-ic/warning';
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
@@ -37,6 +37,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { StaffCertificateModel } from '../../../../../models/staff.model';
 import { SharedFunction } from '../../../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { Module } from 'src/app/enums/module.enum';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
 
 @Component({
   selector: 'vex-add-certificate',
@@ -45,9 +50,10 @@ import { CommonService } from 'src/app/services/common.service';
   animations: [
     stagger60ms,
     fadeInUp400ms
-  ]
+  ],
+  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
-export class AddCertificateComponent implements OnInit {
+export class AddCertificateComponent implements OnInit, OnDestroy {
   icClose = icClose;
   icWarning= icWarning;
   form:FormGroup;
@@ -57,6 +63,12 @@ export class AddCertificateComponent implements OnInit {
   washinfo = WashInfoEnum;
   formvalidstatas: boolean=true;
   buttonType: string;
+  destroySubject$: Subject<void> = new Subject();
+  staffDetailsForViewAndEdit: any;
+  module = Module.STAFF;
+  categoryId: number;
+  staffCreateMode = SchoolCreate.ADD;
+
   constructor
     (
       private dialogRef: MatDialogRef<AddCertificateComponent>, 
@@ -66,8 +78,19 @@ export class AddCertificateComponent implements OnInit {
       private staffService:StaffService,
       private commonFunction: SharedFunction,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) 
     {
+      this.staffService.staffDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+        this.staffDetailsForViewAndEdit = res;
+      })
+
+      this.staffService.categoryIdSelected.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+        if(res){
+          this.categoryId = res;
+      }
+      })
+
       this.form=fb.group({
         id: [0],
         certificationName:[],
@@ -110,6 +133,17 @@ export class AddCertificateComponent implements OnInit {
         (this.form.controls.shortName.value!=null))
         ){
           if(this.form.controls.id.value==0){
+            this.staffCertificateModel.fieldsCategoryList =  this.staffDetailsForViewAndEdit.fieldsCategoryList;
+
+            if (this.staffCertificateModel.fieldsCategoryList !== null && this.categoryId) {
+              this.staffCertificateModel.selectedCategoryId = this.staffCertificateModel.fieldsCategoryList[this.categoryId]?.categoryId;
+              
+              for (let staffCustomField of this.staffCertificateModel?.fieldsCategoryList[this.categoryId]?.customFields) {
+                if (staffCustomField.type === "Multiple SelectBox" && this.staffService.getStaffMultiselectValue() !== undefined) {
+                  staffCustomField.customFieldsValue[0].customFieldValue = this.staffService.getStaffMultiselectValue().toString().replaceAll(",", "|");
+                }
+              }
+            }
             this.staffCertificateModel.staffCertificateInfo.staffId=this.staffService.getStaffId();
             this.staffCertificateModel.staffCertificateInfo.certificationName=this.form.controls.certificationName.value;
             this.staffCertificateModel.staffCertificateInfo.shortName=this.form.controls.shortName.value;
@@ -118,11 +152,11 @@ export class AddCertificateComponent implements OnInit {
             this.staffCertificateModel.staffCertificateInfo.certificationDate=this.commonFunction.formatDateSaveWithoutTime(this.form.controls.certificationDate.value);
             this.staffCertificateModel.staffCertificateInfo.certificationExpiryDate=this.commonFunction.formatDateSaveWithoutTime(this.form.controls.certificationExpiryDate.value);
             this.staffCertificateModel.staffCertificateInfo.certificationDescription=this.form.controls.certificationDescription.value;
-          
+            
             this.staffService.addStaffCertificateInfo(this.staffCertificateModel).subscribe(
               (res:StaffCertificateModel)=>{
                 if(typeof(res)=='undefined'){
-                  this.snackbar.open('Staff Certificate Insertion failed. ' + sessionStorage.getItem("httpError"), '', {
+                  this.snackbar.open('Staff Certificate Insertion failed. ' + this.defaultValuesService.getHttpError(), '', {
                     duration: 10000
                   });
                 }
@@ -145,6 +179,17 @@ export class AddCertificateComponent implements OnInit {
               
           }
           else{
+            this.staffCertificateModel.fieldsCategoryList =  this.staffDetailsForViewAndEdit.fieldsCategoryList;
+
+            if (this.staffCertificateModel.fieldsCategoryList !== null && this.categoryId) {
+              this.staffCertificateModel.selectedCategoryId = this.staffCertificateModel.fieldsCategoryList[this.categoryId]?.categoryId;
+              
+              for (let staffCustomField of this.staffCertificateModel?.fieldsCategoryList[this.categoryId]?.customFields) {
+                if (staffCustomField.type === "Multiple SelectBox" && this.staffService.getStaffMultiselectValue() !== undefined) {
+                  staffCustomField.customFieldsValue[0].customFieldValue = this.staffService.getStaffMultiselectValue().toString().replaceAll(",", "|");
+                }
+              }
+            }
             this.staffCertificateModel.staffCertificateInfo.staffId=this.staffService.getStaffId();
             this.staffCertificateModel.staffCertificateInfo.id=this.form.controls.id.value;
             this.staffCertificateModel.staffCertificateInfo.certificationName=this.form.controls.certificationName.value;
@@ -157,7 +202,7 @@ export class AddCertificateComponent implements OnInit {
             this.staffService.updateStaffCertificateInfo(this.staffCertificateModel).subscribe(
               (res:StaffCertificateModel)=>{
                 if(typeof(res)=='undefined'){
-                  this.snackbar.open('Staff Certificate Update failed. ' + sessionStorage.getItem("httpError"), '', {
+                  this.snackbar.open('Staff Certificate Update failed. ' + this.defaultValuesService.getHttpError(), '', {
                     duration: 10000
                   });
                 }
@@ -187,6 +232,11 @@ export class AddCertificateComponent implements OnInit {
   }
   cancel(){
     this.dialogRef.close();
+  }
+
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.unsubscribe();
   }
 
 }

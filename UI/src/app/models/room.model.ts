@@ -39,6 +39,8 @@ export class RoomListViewModel extends CommonField {
     public tableroomList: [RoomModel];
     public schoolId: number;
     public includeInactive: boolean;
+    public isListView:boolean;
+    public academicYear: number;
     constructor() {
         super();
     }

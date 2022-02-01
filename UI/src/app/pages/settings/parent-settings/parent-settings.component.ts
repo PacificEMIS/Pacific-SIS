@@ -25,6 +25,7 @@ All rights reserved.
 
 import { Component, OnInit } from '@angular/core';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-parent-settings',
@@ -43,10 +44,10 @@ export class ParentSettingsComponent implements OnInit {
 
   ParentFieldsFlag: boolean = true;
 
-  constructor() { }
+  constructor( private defaultValuesService: DefaultValuesService) { }
 
   ngOnInit(): void {
-    this.pageId = localStorage.getItem("pageId");
+    this.pageId = this.defaultValuesService.getPageId();
     this.showPage(this.pageId);
   }
 

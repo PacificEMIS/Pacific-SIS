@@ -17,7 +17,7 @@
 
     <div class="mb-2 md:flex md:flex-wrap -mx-6">
         <div class="flex-1 mx-6 md:w-1/2">
-            <mat-form-field class="mt-6 w-full" appearance="outline" color="primary">
+            <mat-form-field class="mt-4 w-full" appearance="outline" color="primary">
                 <mat-label>{{'capacity' | translate}}</mat-label>
                 <input matInput formControlName="capacity" type="number" name="capaciy" required>
                 <mat-error *ngIf="form.get('capacity').hasError('whitespace')">{{'capacityIsRequired'|translate}}</mat-error>
@@ -26,7 +26,7 @@
             </mat-form-field>
         </div>
         <div class="flex-1 mx-6 md:w-1/2">
-            <mat-form-field class="mt-6 w-full" appearance="outline" color="primary">
+            <mat-form-field class="mt-4 w-full" appearance="outline" color="primary">
                 <mat-label>{{'sortOrder' | translate}}</mat-label>
                 <input matInput type="number" formControlName="sortorder" required>
                 <mat-error *ngIf="form.get('sortorder').hasError('whitespace')">{{'sortOrderIsRequired'|translate}}</mat-error>
@@ -35,17 +35,17 @@
             </mat-form-field>
         </div>
     </div>
-    <mat-form-field class="mt-6" appearance="outline" color="primary">
+    <mat-form-field class="mb-" appearance="outline" color="primary">
         <mat-label>{{'description' | translate}}</mat-label>
         <textarea matInput formControlName="description" placeholder="Description"></textarea>
     </mat-form-field>
 
-    <mat-slide-toggle formControlName="isActive" color="primary">{{'active' | translate}}</mat-slide-toggle>
+    <mat-slide-toggle formControlName="isActive" color="primary" class="mt-4">{{'active' | translate}}</mat-slide-toggle>
 
 
 </mat-dialog-content>
 
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
     <button mat-button (click)="cancel()" type="button">{{'cancel' | translate}}</button>
-    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{editMode?'UPDATE':'SUBMIT' | translate}}</button>
+    <button color="primary" (click)="submit()" mat-raised-button type="submit">{{editMode?'Update':'Submit' | translate}}</button>
 </mat-dialog-actions>

@@ -9,8 +9,9 @@ import { StudentEffortGradeListModel } from '../models/student-effort-grade.mode
 })
 export class EffotrGradeService {
     apiUrl: string = environment.apiURL;
-    userName = sessionStorage.getItem('user');
+    userName = this.defaultValuesService.getUserName();
     httpOptions: { headers: any; };
+
     
     constructor(
         private http: HttpClient,
@@ -24,12 +25,14 @@ export class EffotrGradeService {
 
     addUpdateStudentEffortGrade(obj: StudentEffortGradeListModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.createdOrUpdatedBy = this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + obj._tenantName + "/StudentEffortGrade/addUpdateStudentEffortGrade";
         return this.http.post<StudentEffortGradeListModel>(apiurl, obj,this.httpOptions)
     }
 
     getAllStudentEffortGradeList(obj: StudentEffortGradeListModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/StudentEffortGrade/getAllStudentEffortGradeList";
         return this.http.post<StudentEffortGradeListModel>(apiurl, obj,this.httpOptions)
     }

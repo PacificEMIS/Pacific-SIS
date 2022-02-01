@@ -17,9 +17,10 @@ export class GetAllSectionModel extends CommonField{
     public tenantId: string;
     public schoolId: number;
     public isSectionAvailable: boolean;
+    public isListView:boolean;
     constructor() {
         super();
-        this.tableSectionsList = null;
+        this.tableSectionsList = [new TableSectionList];
         this.isSectionAvailable = false;
     }
 }

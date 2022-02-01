@@ -31,7 +31,7 @@ export class GradeLevelService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tblGradelevel.schoolId= this.defaultValuesService.getSchoolID();
     obj.tblGradelevel.tenantId= this.defaultValuesService.getTenantID();
-    obj.tblGradelevel.createdBy= this.defaultValuesService.getEmailId();
+    obj.tblGradelevel.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName+ "/Gradelevel/addGradelevel";
     return this.http.post<AddGradeLevelModel>(apiurl,obj,this.httpOptions)
   }
@@ -40,7 +40,7 @@ export class GradeLevelService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.tblGradelevel.schoolId= this.defaultValuesService.getSchoolID();
     obj.tblGradelevel.tenantId= this.defaultValuesService.getTenantID();
-    obj.tblGradelevel.updatedBy= this.defaultValuesService.getEmailId();
+    obj.tblGradelevel.updatedBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName+ "/Gradelevel/updateGradelevel";
     return this.http.put<AddGradeLevelModel>(apiurl,obj,this.httpOptions)
   }

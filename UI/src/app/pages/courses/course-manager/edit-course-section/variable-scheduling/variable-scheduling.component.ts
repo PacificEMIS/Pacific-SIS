@@ -38,6 +38,7 @@ import { map } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 import { weeks } from '../../../../../common/static-data';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-variable-scheduling',
   templateUrl: './variable-scheduling.component.html',
@@ -65,6 +66,8 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
   @ViewChild('form') currentForm: NgForm;
   @Input() detailsFromParentModal;
   @Output() variableScheduleData = new EventEmitter<OutputEmitDataFormat>();
+  isThisComponent:boolean;
+  checkDuplicate;
 
   constructor(private snackbar: MatSnackBar,
     private schoolPeriodService: SchoolPeriodService,
@@ -72,12 +75,14 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     private courseSectionService: CourseSectionService,
     private cdr: ChangeDetectorRef,
     private commonService: CommonService,
-    ) {
+    public defaultValuesService: DefaultValuesService
+  ) {
     this.courseSectionService.currentUpdate.subscribe((res) => {
       if (res) {
         this.sendVariableScheduleDataToParent();
       }
     })
+    this.isThisComponent=true;
   }
 
   ngOnInit(): void {
@@ -87,6 +92,7 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     if (this.detailsFromParentModal.editMode) {
       for (let i = 0; i < this.detailsFromParentModal.courseSectionDetails.courseVariableSchedule.length; i++) {
         this.courseSectionAddViewModel.courseVariableScheduleList[i] = this.detailsFromParentModal.courseSectionDetails.courseVariableSchedule[i];
+        this.courseSectionAddViewModel.courseVariableScheduleList[i].isActive = true;
         this.weekDaysList.map(val => {
           if (this.courseSectionAddViewModel.courseVariableScheduleList[i].day === val.name) {
             this.courseSectionAddViewModel.courseVariableScheduleList[i].day = val.name;
@@ -99,9 +105,17 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     }
 
   }
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes): void {
     if (this.selectedCalendar?.days) {
       this.getDays(this.selectedCalendar.days);
+    }
+
+    if (changes?.selectedCalendar?.previousValue?.title) {
+      this.selectedPeriod = [];
+      this.courseSectionAddViewModel.courseVariableScheduleList.length = 0;
+      this.courseSectionAddViewModel.courseVariableScheduleList = [new CourseVariableSchedule()]
+      this.divCount.length = 0;
+      this.pushDaysInAddMode()
     }
   }
 
@@ -110,38 +124,38 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     const calendarDays = days;
     let splitDays = calendarDays?.split('').map(x => +x).sort();
     let permittedWeekDays = []
-    for(let item of weeks){
-      for(let day of splitDays){
-        if(day === item.id){
+    for (let item of weeks) {
+      for (let day of splitDays) {
+        if (day === item.id) {
           permittedWeekDays.push(item);
           break;
         }
       }
     }
     this.weekDaysList = permittedWeekDays;
-    if(!this.detailsFromParentModal.editMode){
-      this.courseSectionAddViewModel.courseVariableScheduleList.length=0;
-      this.courseSectionAddViewModel.courseVariableScheduleList=[new CourseVariableSchedule()]
+    if (!this.detailsFromParentModal.editMode) {
+      this.courseSectionAddViewModel.courseVariableScheduleList.length = 0;
+      this.courseSectionAddViewModel.courseVariableScheduleList = [new CourseVariableSchedule()]
       this.divCount.length = 0;
       this.pushDaysInAddMode()
     }
   }
 
-  pushDaysInAddMode(){
+  pushDaysInAddMode() {
+    this.weekDaysList.map((item, i) => {
+      this.divCount.push(i);
+      if (i !== 0) {
+        this.courseSectionAddViewModel.courseVariableScheduleList.push(new CourseVariableSchedule());
+      }
+      this.courseSectionAddViewModel.courseVariableScheduleList[i].day = item.name;
+      this.courseSectionAddViewModel.courseVariableScheduleList[i].courseId = this.detailsFromParentModal.courseDetails.courseId;
+      this.courseSectionAddViewModel.courseVariableScheduleList[i].courseId = this.detailsFromParentModal.courseDetails.courseId;
+      this.courseSectionAddViewModel.courseVariableScheduleList[i].takeAttendance = false;
+      this.courseSectionAddViewModel.courseVariableScheduleList[i].isActive = true;
 
-      this.weekDaysList.map((item, i) => {
-        this.divCount.push(i);
-        if (i !== 0) {
-          this.courseSectionAddViewModel.courseVariableScheduleList.push(new CourseVariableSchedule());
-        }
-        this.courseSectionAddViewModel.courseVariableScheduleList[i].day = item.name;
-        this.courseSectionAddViewModel.courseVariableScheduleList[i].courseId = this.detailsFromParentModal.courseDetails.courseId;
-        this.courseSectionAddViewModel.courseVariableScheduleList[i].courseId = this.detailsFromParentModal.courseDetails.courseId;
-        this.courseSectionAddViewModel.courseVariableScheduleList[i].takeAttendance = false;
 
+    });
 
-      });
-  
   }
 
   onPeriodChange(periodId, indexOfDynamicRow) {
@@ -157,15 +171,12 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
   }
 
   deleteRow(indexOfDynamicRow) {
-    this.divCount.splice(indexOfDynamicRow, 1);
-    this.courseSectionAddViewModel.courseVariableScheduleList.splice(indexOfDynamicRow, 1);
-    this.selectedBlocks.splice(indexOfDynamicRow, 1);
-    this.selectedPeriod.splice(indexOfDynamicRow, 1);
+    this.courseSectionAddViewModel.courseVariableScheduleList[indexOfDynamicRow].isActive = false;
   }
 
   getAllBlockList() {
     this.schoolPeriodService.getAllBlockList(this.blockListViewModel).subscribe(data => {
-     if(data._failure){
+      if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         this.periodList = [];
         if (!data.getBlockListForView) {
@@ -198,18 +209,18 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     this.roomService.getAllRoom(this.roomListViewModel).subscribe(
       (res: RoomListViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Room list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Room list failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
         else {
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-              if(!res.tableroomList){
-                this.snackbar.open('Room List failed. ' + res._message, '', {
-                  duration: 10000
-                });
-              }
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            if (!res.tableroomList) {
+              this.snackbar.open('Room List failed. ' + res._message, '', {
+                duration: 10000
+              });
+            }
           }
           else {
             this.roomListViewModel = res;
@@ -226,6 +237,7 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
 
 
   sendVariableScheduleDataToParent() {
+    this.courseSectionAddViewModel.courseVariableScheduleList = this.courseSectionAddViewModel.courseVariableScheduleList.filter(item => item.isActive === true);
     this.currentForm.form.markAllAsTouched()
     let invalidSeatCapacity = false;
     invalidSeatCapacity = this.courseSectionAddViewModel.courseVariableScheduleList.some((item, i) => {
@@ -255,7 +267,8 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
         + this.courseSectionAddViewModel.courseVariableScheduleList[i].periodId.toString()
         + this.courseSectionAddViewModel.courseVariableScheduleList[i].roomId
     }
-    let checkDuplicate = Ids.sort().some((item, i) => {
+    if(this.isThisComponent){
+    this.checkDuplicate = Ids.sort().some((item, i) => {
       if (item == Ids[i + 1]) {
         this.snackbar.open('Cannot Save Duplicate Variable Schedule ', '', {
           duration: 5000
@@ -265,15 +278,20 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
         return false;
       }
     })
+  }
     for (let i = 0; i < this.courseSectionAddViewModel.courseVariableScheduleList.length; i++) {
       let blockId = this.periodList[0].blockId;
       this.courseSectionAddViewModel.courseVariableScheduleList[i].blockId = blockId
     }
 
-    if (checkDuplicate) {
+    if (this.checkDuplicate) {
       this.variableScheduleData.emit({ scheduleType: 'variableSchedule', roomList: null, scheduleDetails: this.courseSectionAddViewModel.courseVariableScheduleList, error: true });
     } else {
       this.variableScheduleData.emit({ scheduleType: 'variableSchedule', roomList: null, scheduleDetails: this.courseSectionAddViewModel.courseVariableScheduleList, error: false });
     }
+  }
+
+  ngOnDestroy(){
+    this.isThisComponent=false;
   }
 }

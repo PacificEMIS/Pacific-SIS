@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input ,ViewChild, OnDestroy } from '@angular/core';
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icEdit from '@iconify/icons-ic/twotone-edit';
@@ -43,6 +43,20 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, SchoolSpecificStandarModel , AddUsStandardData} from '../../../models/grades.model';
+import { GradesService } from '../../../services/grades.service';
+import { CommonService } from 'src/app/services/common.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { GradeLevelService } from '../../../services/grade-level.service';
+import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { ExcelService } from '../../../services/excel.service';
+import { LoaderService } from "src/app/services/loader.service";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'vex-us-common-core-standards',
@@ -54,6 +68,10 @@ import { Permissions } from '../../../models/roll-based-access.model';
   ]
 })
 export class UsCommonCoreStandardsComponent implements OnInit {
+
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort
+
   columns = [
     { label: 'Standard Ref No', property: 'standard_ref_no', type: 'text', visible: true },
     { label: 'Subject', property: 'subject', type: 'text', visible: true },
@@ -61,8 +79,7 @@ export class UsCommonCoreStandardsComponent implements OnInit {
     { label: 'Course', property: 'course', type: 'text', visible: true },
     { label: 'Domain', property: 'domain', type: 'text', visible: true },
     { label: 'Topic', property: 'topic', type: 'text', visible: true },
-    { label: 'Standard Details', property: 'standard_details', type: 'text', visible: false },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'Standard Details', property: 'standard_details', type: 'text', visible: false }
   ];
 
   CommonCoreStandardsModelList;
@@ -83,40 +100,166 @@ export class UsCommonCoreStandardsComponent implements OnInit {
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
   permisisons: Permissions
-  constructor(private router: Router,private dialog: MatDialog,public translateService:TranslateService,
-    private pageRolePermissions: PageRolesPermission) {
+  StudentModelList: MatTableDataSource<any>;
+  schoolSpecificStandardsList: GetAllSchoolSpecificListModel = new GetAllSchoolSpecificListModel();
+  addUsStandardDataModel: AddUsStandardData = new AddUsStandardData()
+  totalCount;
+  pageNumber;
+  pageSize;
+  searchCtrl: FormControl;
+  form: FormGroup;
+  gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  subjectList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
+  courseList: GradeStandardSubjectCourseListModel = new GradeStandardSubjectCourseListModel();
+  destroySubject$: Subject<void> = new Subject();
+  isDisabled:boolean;
+
+  constructor(private router: Router,
+              private dialog: MatDialog,
+              public translateService:TranslateService,
+              private pageRolePermissions: PageRolesPermission,
+              private gradesService:GradesService,
+              private commonService: CommonService,
+              private snackbar: MatSnackBar,
+              private fb: FormBuilder,
+              private gradeLevelService: GradeLevelService, 
+              private defaultValuesService: DefaultValuesService,
+              private excelService:ExcelService,
+              private loaderService: LoaderService,
+
+    ) {
     //translateService.use('en');
-    this.CommonCoreStandardsModelList = [
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Know number names and the count sequence.', standard_ref_no: 'CCSS.Math.Content.K.CC.A.1', standard_details: 'Count to 100 by ones and by tens.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Know number names and the count sequence.', standard_ref_no: 'CCSS.Math.Content.K.CC.A.2', standard_details: 'Count forward beginning from a given number within the known sequence (instead of having to begin at 1).'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Know number names and the count sequence.', standard_ref_no: 'CCSS.Math.Content.K.CC.A.3', standard_details: 'Write numbers from 0 to 20. Represent a number of objects with a written numeral 0-20 (with 0 representing a count of no objects).'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Count to tell the number of objects. ', standard_ref_no: 'CCSS.Math.Content.K.CC.B.4', standard_details: 'Understand the relationship between numbers and quantities; connect counting to cardinality.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Count to tell the number of objects.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.4a', standard_details: 'When counting objects, say the number names in the standard order, pairing each object with one and only one number name and each number name with one and only one object.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Count to tell the number of objects.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.4b', standard_details: 'Understand that the last number name said tells the number of objects counted. The number of objects is the same regardless of their arrangement or the order in which they were counted.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Count to tell the number of objects.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.4c', standard_details: 'Understand that each successive number name refers to a quantity that is one larger.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Count to tell the number of objects.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.5', standard_details: 'Count to answer “how many?” questions about as many as 20 things arranged in a line, a rectangular array, or a circle, or as many as 10 things in a scattered configuration; given a number from 1–20, count out that many objects.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Compare numbers.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.6', standard_details: 'Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in another group, e.g., by using matching and counting strategies.1'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Compare numbers.', standard_ref_no: 'CCSS.Math.Content.K.CC.B.7', standard_details: 'Compare two numbers between 1 and 10 presented as written numerals. '},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Understand addition, and understand subtraction.', standard_ref_no: 'CCSS.Math.Content.K.OA.A.1', standard_details: 'Represent addition and subtraction with objects, fingers, mental images, drawings1, sounds (e.g., claps), acting out situations, verbal explanations, expressions, or equations.'},
-      {subject: 'Mathematics', grade: 'Kindergarten', course: 'General Maths', domain: 'Counting and Cardinality', topic: 'Understand addition, and understand subtraction.', standard_ref_no: 'CCSS.Math.Content.K.OA.A.2', standard_details: 'Solve addition and subtraction word problems, and add and subtract within 10, e.g., by using objects or drawings to represent the problem.'},
-    ]
+    this.loaderService.isLoading
+    .pipe(takeUntil(this.destroySubject$))
+    .subscribe((currentState) => {
+      this.loading = currentState;
+    });
   }
 
   ngOnInit(): void {
     this.permisisons = this.pageRolePermissions.checkPageRolePermission('/school/settings/grade-settings/standard-grades-setup') 
+    this.searchCtrl = new FormControl();
+    this.form = this.fb.group({
+      subject:['all',[Validators.required]],
+      course:['all',[Validators.required]],
+      gradeLevel:['all',[Validators.required]],
+    })
+    this.getAllSchoolSpecificList();
   }
 
-
-  // goToAdd(){
-  //   this.dialog.open(EditEthnicityComponent, {
-  //     width: '500px'
-  //   })
-  // }
-
-  openViewDetails() {
-    this.dialog.open(ViewDetailsComponent, {
-      width: '600px'
+  ngAfterViewInit() {
+    //  Sorting
+    this.schoolSpecificStandardsList = new GetAllSchoolSpecificListModel();
+    this.sort.sortChange.subscribe((res) => {
+      this.schoolSpecificStandardsList.pageNumber = this.pageNumber
+      this.schoolSpecificStandardsList.pageSize = this.pageSize;
+      this.schoolSpecificStandardsList.sortingModel.sortColumn = res.active;
+      if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+        let filterParams = [
+          {
+            columnName: null,
+            filterValue: this.searchCtrl.value,
+            filterOption: 3
+          }
+        ]
+        Object.assign(this.schoolSpecificStandardsList, { filterParams: filterParams });
+      }
+      if (res.direction == "") {
+        this.schoolSpecificStandardsList.sortingModel = null;
+        this.getAllSchoolSpecificList();
+        this.schoolSpecificStandardsList = new GetAllSchoolSpecificListModel();
+        this.schoolSpecificStandardsList.sortingModel = null;
+      } else {
+        this.schoolSpecificStandardsList.sortingModel.sortDirection = res.direction;
+        this.getAllSchoolSpecificList();
+      }
     });
+
+    //  Searching
+    this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
+      if (term != '') {
+        this.searchWithTerm(term)
+      } else {
+        this.searchWithoutTerm()
+      }
+    })
+  }
+
+  
+  searchWithoutTerm() {
+    Object.assign(this.schoolSpecificStandardsList, { filterParams: null });
+    this.schoolSpecificStandardsList.pageNumber = this.paginator.pageIndex + 1;
+    this.schoolSpecificStandardsList.pageSize = this.pageSize;
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.schoolSpecificStandardsList.sortingModel.sortColumn = this.sort.active;
+      this.schoolSpecificStandardsList.sortingModel.sortDirection = this.sort.direction;
+    }
+    this.getAllSchoolSpecificList();
+  }
+  
+  searchWithTerm(term) {
+    let filterParams = [
+      {
+        columnName: null,
+        filterValue: term,
+        filterOption: 3
+      }
+    ]
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.schoolSpecificStandardsList.sortingModel.sortColumn = this.sort.active;
+      this.schoolSpecificStandardsList.sortingModel.sortDirection = this.sort.direction;
+    }
+    Object.assign(this.schoolSpecificStandardsList, { filterParams: filterParams });
+    this.schoolSpecificStandardsList.pageNumber = 1;
+    this.paginator.pageIndex = 0;
+    this.schoolSpecificStandardsList.pageSize = this.pageSize;
+    this.getAllSchoolSpecificList();
+  }
+
+  exportSchoolSpecificStandardsListToExcel() {
+    let schoolSpecificStandardsList=new GetAllSchoolSpecificListModel();
+    schoolSpecificStandardsList.pageNumber = 0;
+    schoolSpecificStandardsList.pageSize = 0;
+    schoolSpecificStandardsList.sortingModel=null;
+    schoolSpecificStandardsList.IsSchoolSpecific=false;
+    this.gradesService.getAllGradeUsStandardList(schoolSpecificStandardsList).subscribe(res => {
+    if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+          if(!res.gradeUsStandardList){
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+      } else {        
+        if (res.gradeUsStandardList?.length > 0) {
+          let StandardsList = res.gradeUsStandardList?.map((item) => {
+            return {
+                [this.translateKey('standardRefNo')]: item.standardRefNo,
+                [this.translateKey('subject')]: item.subject,
+                [this.translateKey('course')]: item.course,
+                [this.translateKey('gradeLevel')]: item.gradeLevel,
+                [this.translateKey('domain')]: item.domain? item.domain:'-',
+                [this.translateKey('topic')]: item.topic,
+                [this.translateKey('standardDetails')]: item.standardDetails
+            }
+          });
+          this.excelService.exportAsExcelFile(StandardsList, 'School_Specific_Standards_List_')
+        } else {
+          this.snackbar.open('No Records Found. Failed to Export School Specific Standards List', '', {
+            duration: 5000
+          });
+        }
+      }
+    });
+
+  }
+
+  translateKey(key) {
+    let trnaslateKey;
+    this.translateService.get(key).subscribe((res: string) => {
+       trnaslateKey = res;
+    });
+    return trnaslateKey;
   }
 
   toggleColumnVisibility(column, event) {
@@ -129,5 +272,136 @@ export class UsCommonCoreStandardsComponent implements OnInit {
     return this.columns.filter(column => column.visible).map(column => column.property);
   }
 
+  getAllSchoolSpecificList(){
+    if (this.schoolSpecificStandardsList.sortingModel?.sortColumn == "") {
+      this.schoolSpecificStandardsList.sortingModel=null;
+    }
+    this.schoolSpecificStandardsList.IsSchoolSpecific=false;
+    this.schoolSpecificStandardsList.isListView=true;
+    this.gradesService.getAllGradeUsStandardList(this.schoolSpecificStandardsList).subscribe(res => {
+    if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        if(!res.gradeUsStandardList){
+          this.snackbar.open( res._message, '', {
+            duration: 10000
+          });
+        }
+      } else {
+        if(res.gradeUsStandardList.length > 0){
+          this.isDisabled = true;
+          this.getAllGradeLevel();
+        } else {
+          this.isDisabled = false;
+        }
+        this.totalCount = res.totalCount;
+        this.pageNumber = res.pageNumber;
+        this.pageSize = res._pageSize;
+        this.CommonCoreStandardsModelList = new MatTableDataSource(res.gradeUsStandardList);
+      }
+    });
+  }
+
+  addUsStandardData(){
+  this.addUsStandardDataModel._token=this.defaultValuesService.getToken();
+  this.addUsStandardDataModel.createdBy=this.defaultValuesService.getUserGuidId();
+    this.gradesService.addUsStandardData(this.addUsStandardDataModel).subscribe(res => {
+    if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        if(!res.gradeUsStandardList){
+          this.snackbar.open( res._message, '', {
+            duration: 10000
+          });
+        }
+      } else {
+        this.getAllSchoolSpecificList()
+      }
+    });
+  }
+
+  getAllGradeLevel() {
+    this.gradeLevelService.getAllGradeLevels(this.gradeLevelList).subscribe((res) => {
+      if (typeof (res) == 'undefined') {
+        this.snackbar.open('Grade Level List failed. ' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+      else {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+            if (res.tableGradelevelList == null) {
+              this.gradeLevelList.tableGradelevelList=[]
+              this.snackbar.open( res._message, '', {
+                duration: 10000
+              });
+            }
+            else{
+              this.gradeLevelList.tableGradelevelList=[]
+            }
+
+        }
+        else {
+          this.gradeLevelList=res;
+        }
+      }
+    });
+  }
+
+  filterSchoolSpecificStandardsList(){
+    this.form.markAllAsTouched();
+    if (this.form.valid){
+        let filterParams= [
+          {
+            columnName: "subject",
+            filterValue: this.form.value.subject=="all"?null:this.form.value.subject,
+            filterOption: 11
+          },
+          {
+            columnName: "course",
+            filterValue: this.form.value.course=="all"?null:this.form.value.course,
+            filterOption: 11
+          },
+          {
+            columnName: "gradeLevel",
+            filterValue: this.form.value.gradeLevel=="all"?null:this.form.value.gradeLevel,
+            filterOption: 11
+          }
+        ]
+        Object.assign(this.schoolSpecificStandardsList, { filterParams: filterParams });
+        this.getAllSchoolSpecificList();      
+    }
+  }
+
+  getPageEvent(event) {
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.schoolSpecificStandardsList.sortingModel.sortColumn = this.sort.active;
+      this.schoolSpecificStandardsList.sortingModel.sortDirection = this.sort.direction;
+    }
+    if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+      let filterParams = [
+        {
+          columnName: null,
+          filterValue: this.searchCtrl.value,
+          filterOption: 3
+        }
+      ]
+      Object.assign(this.schoolSpecificStandardsList, { filterParams: filterParams });
+    }
+    this.schoolSpecificStandardsList.pageNumber = event.pageIndex + 1;
+    this.schoolSpecificStandardsList.pageSize = event.pageSize;
+    this.getAllSchoolSpecificList();
+  }
+
+  openViewDetails(viewDetails) {
+    this.dialog.open(ViewDetailsComponent, {
+      data: {
+        details: viewDetails
+      },
+      width: '600px'
+    });
+  }
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
 
 }

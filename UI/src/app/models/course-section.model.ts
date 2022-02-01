@@ -115,11 +115,13 @@ export class CourseCalendarSchedule {
     public updatedOn: string;
     public blockPeriod: BlockPeriod;
     public rooms: RoomModel;
+    public eventId: number;
     constructor() {
         this.courseSectionId = 0;
         this.createdOn = null;
         this.updatedOn = null;
         this.rooms= new RoomModel();
+        this.eventId=0;
     }
 }
 
@@ -148,12 +150,12 @@ export class CourseBlockSchedule {
     public courseSectionId: number;
     public gradeScaleId: number;
     public serial: number;
-    public blockId: number;
-    public periodId: number;
+    public blockId: number | string;
+    public periodId: number | string;
     public block:GetBlockListForView;
     public blockPeriod:BlockPeriod;
     public rooms:RoomModel;
-    public roomId: number;
+    public roomId: number | string;
     public takeAttendance: boolean;
     public createdBy: string;
     public createdOn: string;
@@ -161,9 +163,9 @@ export class CourseBlockSchedule {
     public updatedOn: string;
 
     constructor(){
-        this.blockId=null;
-        this.periodId=null;
-        this.roomId=null;
+        this.blockId="";
+        this.periodId="";
+        this.roomId="";
         this.takeAttendance=false;
     }
 }
@@ -213,6 +215,7 @@ export class CourseSection {
     public quarters:markingPeriodTitle;
     public schoolYears:markingPeriodTitle;
     public semesters:markingPeriodTitle;
+    public progressPeriods: markingPeriodTitle;
     public mpTitle:string; //[marking period title]This key is only used for front end view to extract mp title, this is not related to backend.
     public mpStartDate:string;
     public mpEndDate:string;
@@ -272,12 +275,14 @@ export class CourseVariableSchedule {
     public createdOn: string;
     public updatedBy: string;
     public updatedOn: string;
+    public isActive: boolean; // use for maipulate row
 
     constructor() {
         this.day=null;
         this.periodId=null;
         this.roomId=null;
         this.serial=0;
+        this.isActive= true;
     }
 }
 
@@ -305,7 +310,7 @@ export class CourseSectionAddViewModel extends CommonField {
         this.courseSection = new CourseSection();
         this.courseFixedSchedule = new CourseFixedSchedule;
         this.courseVariableScheduleList = [new CourseVariableSchedule()]
-        this.courseCalendarScheduleList = null;
+        this.courseCalendarScheduleList = [new CourseCalendarSchedule()];
         this.courseBlockScheduleList = [new CourseBlockSchedule()];
     }
 
@@ -354,7 +359,7 @@ export class ScheduledStaffForCourseSection extends CommonField{
     createdBy:string;
     constructor(){
         super();
-        this.courseSectionsList=[]
+        this.courseSectionsList = [new ScheduledStaffCourseSection]
     }
 
 }

@@ -46,9 +46,13 @@ import { SharedFunction } from '../../shared/shared-function';
 import { ExcelService } from '../../../services/excel.service';
 import { DatePipe } from '@angular/common';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
-import { Permissions } from '../../../models/roll-based-access.model';
-import { CommonService } from 'src/app/services/common.service';
-
+import { Permissions, RolePermissionListViewModel } from '../../../models/roll-based-access.model';
+import { CommonService } from '../../../services/common.service';
+import { DefaultValuesService } from '../../../common/default-values.service';
+import { RollBasedAccessService } from '../../../services/roll-based-access.service';
+import { ImageCropperService } from '../../../services/image-cropper.service';
+import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
+import { SchoolCreate } from '../../../enums/school-create.enum';
 @Component({
   selector: 'vex-student-re-enroll',
   templateUrl: './student-re-enroll.component.html',
@@ -75,10 +79,12 @@ export class StudentReEnrollComponent implements OnInit {
   loading: boolean = false;
   reenrollSchoolId: number;
   gradeId: number;
+  moduleIdentifier = ModuleIdentifier;
+  createMode = SchoolCreate;
   selectedSchoolId: number;
   gradeLevelTitle: string;
   enrollmentCode: number;
-  enrollmentDate: string;
+  enrollmentDate: Date=new Date();
   searchCtrl: FormControl;
   showAdvanceSearchPanel: boolean = false;
   getAllStudent: StudentListModel = new StudentListModel();
@@ -116,9 +122,12 @@ export class StudentReEnrollComponent implements OnInit {
     private commonFunction: SharedFunction,
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
+    public defaultValuesService: DefaultValuesService,
     private datePipe: DatePipe,
     private commonService: CommonService,
-    ) {
+    private rollBasedAccessService: RollBasedAccessService,
+    private imageCropperService: ImageCropperService,
+  ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -127,7 +136,8 @@ export class StudentReEnrollComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission()
-    this.reenrollSchoolId = +sessionStorage.getItem('selectedSchoolId');
+    this.reenrollSchoolId = this.defaultValuesService.getSchoolID();
+    this.getAllStudent.schoolId = this.defaultValuesService.getSchoolID();
     this.searchCtrl = new FormControl();
     this.searchForReEnrollStudent();
     this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
@@ -148,7 +158,8 @@ export class StudentReEnrollComponent implements OnInit {
           this.getAllStudent.schoolId = 0;
         }
         else {
-          this.getAllStudent.schoolId = +sessionStorage.getItem('selectedSchoolId');
+        
+          this.getAllStudent.schoolId=this.defaultValuesService.getSchoolID();
         }
         Object.assign(this.getAllStudent, { filterParams: filterParams });
         this.getAllStudent.pageNumber = 1;
@@ -161,7 +172,8 @@ export class StudentReEnrollComponent implements OnInit {
           this.getAllStudent.schoolId = 0;
         }
         else {
-          this.getAllStudent.schoolId = +sessionStorage.getItem('selectedSchoolId');
+         
+          this.getAllStudent.schoolId=this.defaultValuesService.getSchoolID();
         }
         Object.assign(this.getAllStudent, { filterParams: null });
         this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
@@ -176,6 +188,35 @@ export class StudentReEnrollComponent implements OnInit {
     this.showAdvanceSearchPanel = true;
   }
 
+  showStudentDetails(element) {
+    this.imageCropperService.enableUpload({ module: this.moduleIdentifier.STUDENT, upload: true, mode: this.createMode.VIEW });
+    this.studentService.setStudentId(element.studentId);
+    this.defaultValuesService.setSchoolID(element.schoolId, true);
+    // this.defaultValuesService.setAcademicYear(element.studentEnrollment[0]?.academicYear, true);
+    this.getPermissionForStudent();
+  }
+
+  getPermissionForStudent() {
+    let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+      } else{
+        let permittedDetails = this.pageRolePermissions.getPermittedSubCategories('/school/students', res);
+       if (permittedDetails.length) {
+            this.studentService.setCategoryId(0);
+            this.studentService.setCategoryTitle(permittedDetails[0].title);
+            this.router.navigate([permittedDetails[0].path], {state: res});
+        } else {
+          this.defaultValuesService.setSchoolID(undefined);
+          this.snackbar.open('Student didnot have permission to view details.', '', {
+            duration: 10000
+          });
+        }
+      }
+    });
+  }
+  
   getPageEvent(event) {
 
     if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
@@ -197,7 +238,7 @@ export class StudentReEnrollComponent implements OnInit {
     let indetermine = false;
     for (let user of this.listOfStudent) {
       for (let selectedUser of this.selectedStudent) {
-        if (user.StudentId == selectedUser.StudentId) {
+        if (user.studentGuid === selectedUser.studentGuid) {
           indetermine = true;
         }
       }
@@ -221,9 +262,9 @@ export class StudentReEnrollComponent implements OnInit {
     this.decideCheckUncheck();
   }
 
-  onChangeSelection(eventStatus: boolean, id) {
+  onChangeSelection(eventStatus: boolean, studentGuid) {
     for (let item of this.listOfStudent) {
-      if (item.studentId == id) {
+      if (item.studentGuid === studentGuid) {
         item.checked = eventStatus;
         break;
       }
@@ -241,7 +282,7 @@ export class StudentReEnrollComponent implements OnInit {
       let isIdIncludesInSelectedList = false;
       if (item.checked) {
         for (let selectedUser of this.selectedStudent) {
-          if (item.studentId == selectedUser.studentId) {
+          if (item.studentGuid === selectedUser.studentGuid) {
             isIdIncludesInSelectedList = true;
             break;
           }
@@ -251,8 +292,8 @@ export class StudentReEnrollComponent implements OnInit {
         }
       } else {
         for (let selectedUser of this.selectedStudent) {
-          if (item.studentId == selectedUser.studentId) {
-            this.selectedStudent = this.selectedStudent.filter((user) => user.studentId != item.studentId);
+          if (item.studentGuid === selectedUser.studentGuid) {
+            this.selectedStudent = this.selectedStudent.filter((user) => user.studentGuid !== item.studentGuid);
             break;
           }
         }
@@ -262,18 +303,6 @@ export class StudentReEnrollComponent implements OnInit {
     });
     this.selectedStudent = this.selectedStudent.filter((item) => item.checked);
   }
-
-  searchAllSchools(event: MatSlideToggle) {
-    if (event.checked) {
-      this.getAllStudent.schoolId = 0;
-      this.searchForReEnrollStudent();
-    }
-    else {
-      this.getAllStudent.schoolId = +sessionStorage.getItem('selectedSchoolId');
-      this.searchForReEnrollStudent();
-    }
-
-  };
 
   get visibleColumns() {
     return this.columns.filter(column => column.visible).map(column => column.property);
@@ -292,8 +321,8 @@ export class StudentReEnrollComponent implements OnInit {
         this.getAllStudent.sortingModel = null
       }
       this.studentService.searchStudentListForReenroll(this.getAllStudent, this.getAllStudent.schoolId).subscribe(data => {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           if (data.studentMaster === null) {
             this.studentReenrollList = new MatTableDataSource([]);
             this.snackbar.open(data._message, '', {
@@ -317,7 +346,7 @@ export class StudentReEnrollComponent implements OnInit {
           });
           let response = this.studentMasterList.map((item) => {
             this.selectedStudent.map((selectedUser) => {
-              if (item.studentId == selectedUser.studentId) {
+              if (item.studentGuid === selectedUser.studentGuid) {
                 item.checked = true;
                 return item;
               }
@@ -338,16 +367,16 @@ export class StudentReEnrollComponent implements OnInit {
 
   getAllSchoolListWithGradeLevelsAndEnrollCodes() {
     this.studentService.studentEnrollmentSchoolList(this.schoolListWithGrades).subscribe(res => {
-      if(res._failure){
+      if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);
       }
       this.schoolListWithGradeLevelsAndEnrollCodes = res.schoolMaster;
       this.changeSchool(this.reenrollSchoolId);
     });
-
   }
 
   changeSchool(schoolId) {
+    this.studentService.setSelectedSchoolId(schoolId);
     this.selectedSchoolId = schoolId;
     this.enrollmentCodelist = this.schoolListWithGradeLevelsAndEnrollCodes.filter(x => x.schoolId === +schoolId)[0].studentEnrollmentCode.filter(x => x.title === 'New' || x.title === 'Transferred In' || x.title === 'Rolled Over');
 
@@ -363,14 +392,15 @@ export class StudentReEnrollComponent implements OnInit {
     if (this.currentForm.form.valid) {
       if (this.selectedStudent.length > 0) {
         this.getAllStudent.studentMaster = this.selectedStudent;
-        this.getAllStudent.schoolId = this.reenrollSchoolId;
         this.getAllStudent.gradeLevelTitle = this.gradeLevelTitle;
         this.getAllStudent.gradeId = this.gradeId;
         this.getAllStudent.enrollmentDate = this.commonFunction.formatDateSaveWithoutTime(this.enrollmentDate);
         this.getAllStudent.enrollmentCode = this.enrollmentCode;
+      
+        this.getAllStudent.updatedBy=this.defaultValuesService.getUserName();
         this.studentService.reenrollmentForStudent(this.getAllStudent).subscribe(data => {
-         if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
+          if (data._failure) {
+            this.commonService.checkTokenValidOrNot(data._message);
 
           }
           else {
@@ -397,10 +427,19 @@ export class StudentReEnrollComponent implements OnInit {
 
   reenrollAnotherStudents() {
     this.getAllStudent = new StudentListModel();
+    if (this.showAllSchools) {
+      this.getAllStudent.schoolId = 0;
+    }
+    else {
+      this.getAllStudent.schoolId=this.defaultValuesService.getSchoolID();
+    }
     this.searchForReEnrollStudent().then(() => {
       this.showSuccessMessage = false;
       this.submitReenroll = true;
     });
+    this.enrollmentDate=new Date();
+    this.reenrollSchoolId = this.defaultValuesService.getSchoolID();
+    this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
   }
 
   exportToExcelReenroll() {
@@ -433,12 +472,12 @@ export class StudentReEnrollComponent implements OnInit {
       this.totalCount = res?.data.totalCount;
       this.pageNumber = res.data.pageNumber;
       this.pageSize = res?.data.pageSize;
-      this.showAllSchools= res.allSchool;
+      this.showAllSchools = res.allSchool;
       this.studentReenrollList = new MatTableDataSource(res?.data.studentMaster);
       this.getAllStudent = new StudentListModel();
     }
     else {
-      this.showAllSchools= res.allSchool;
+      this.showAllSchools = res.allSchool;
       this.totalCount = 0;
       this.studentReenrollList = new MatTableDataSource([]);
       this.getAllStudent = new StudentListModel();

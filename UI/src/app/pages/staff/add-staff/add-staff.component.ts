@@ -27,7 +27,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy
 import { Subject, Subscription } from 'rxjs';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 import icGeneralInfo from '@iconify/icons-ic/outline-account-circle';
@@ -46,14 +45,16 @@ import { StaffAddModel } from '../../../models/staff.model';
 import { StaffService } from '../../../services/staff.service';
 import { FieldsCategoryListView, FieldsCategoryModel } from '../../../models/fields-category.model';
 import { CustomFieldService } from '../../../services/custom-field.service';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { LoaderService } from '../../../services/loader.service';
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { RolePermissionListViewModel } from '../../../models/roll-based-access.model';
 import { CryptoService } from '../../../services/Crypto.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { CommonService } from '../../../services/common.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { Module } from 'src/app/enums/module.enum';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,7 +70,7 @@ import { PageRolesPermission } from '../../../common/page-roles-permissions.serv
 export class AddStaffComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();
   staffCreate = SchoolCreate;
-  @Input() staffCreateMode: SchoolCreate;
+  @Input() staffCreateMode: SchoolCreate =  SchoolCreate.ADD;
   staffAddModel: StaffAddModel = new StaffAddModel();
   staffId: number;
   fieldsCategory = [];
@@ -77,8 +78,8 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   permissionListViewModel:RolePermissionListViewModel = new RolePermissionListViewModel();
   currentCategory: number = 12; // because 12 is the id of general info.
   indexOfCategory: number = 0;
-  staffTitle = "Add Staff Information";
-  pageStatus = "Add Staff";
+  staffTitle = "addStaffInformation";
+  pageStatus = "addStaff";
   module = 'Staff';
   secondarySidebar = 0;
   responseImage: string;
@@ -96,7 +97,10 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   moduleIdentifier=ModuleIdentifier;
   profile:string;
   categoryTitle: string;
-  constructor(private layoutService: LayoutService, public translateService: TranslateService,
+  categoryPath: string;
+  currentRolePermission;
+
+  constructor(public translateService: TranslateService,
     private staffService: StaffService,
     private customFieldService: CustomFieldService,
     private snackbar: MatSnackBar,
@@ -107,21 +111,26 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     private imageCropperService:ImageCropperService,
     private pageRolePermission: PageRolesPermission,
     private router: Router,
+    private defaultValuesService: DefaultValuesService
     ) {
+
     //translateService.use('en');
-    this.layoutService.collapseSidenav();
+    if(!this.staffService.getStaffId() && this.defaultValuesService.getUserMembershipType() !== "Super Administrator") this.router.navigate(['school/teacher/dashboards'])
+    if (!this.defaultValuesService.checkAcademicYear() && !this.staffService.getStaffId()) this.staffService.redirectToStaffList();
     this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.staffService.setStaffImage(res[1]);
     });
     this.staffService.selectedCategoryTitle.pipe(takeUntil(this.destroySubject$)).subscribe((res:string) => {
       if(res){
-        this.categoryTitle=res;
+        this.categoryTitle=res;        
         let index=0;
         if(this.fieldsCategory.length>0){
           this.fieldsCategory.map((item,i)=>{
             if(item.title===this.categoryTitle){
-              this.currentCategory=item.categoryId;
+              // this.currentCategory=item.categoryId;
+              // this.categoryPath=item.path;
               index=i;
+              this.changeCategory(item, index, true)
             }
           });
         this.staffService.setCategoryId(index);
@@ -131,9 +140,9 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     });
     this.staffService.modeToUpdate.pipe(takeUntil(this.destroySubject$)).subscribe((res:any)=>{
       if(res==this.staffCreate.VIEW){
-        this.pageStatus="View Staff";
+        this.pageStatus="viewStaff";
       }else{
-        this.pageStatus="Edit Staff";
+        this.pageStatus="editStaff";
       }
     });
     this.staffService.getStaffDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StaffAddModel) => {
@@ -143,6 +152,8 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((currentState) => {
       this.loading = currentState;
     });
+    this.checkInitialState();
+
   }
 
   ngOnInit(): void {
@@ -157,27 +168,53 @@ export class AddStaffComponent implements OnInit, OnDestroy {
       this.profileFromSchoolInfo(res);
     });
 
-    this.staffCreateMode = this.staffCreate.ADD;
-    this.staffService.setStaffCreateMode(this.staffCreateMode);
-    this.staffId = this.staffService.getStaffId();
-    if (this.staffId != null || this.staffId != undefined) {
-      this.staffCreateMode = this.staffCreate.VIEW;
-    this.staffService.setStaffCreateMode(this.staffCreateMode);
 
+    this.router.onSameUrlNavigation = 'reload';
+
+    this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe((res) => {
+     this.checkInitialState();
+    });
+
+
+
+  }
+
+  checkInitialState() {
+  this.currentRolePermission = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.permissions : undefined;
+  this.staffCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type : this.staffCreateMode;
+  this.staffService.setStaffCreateMode(this.staffCreateMode);
+  
+    this.staffId = this.staffService.getStaffId();
+
+    if (this.staffCreateMode === SchoolCreate.VIEW || this.staffCreateMode === SchoolCreate.EDIT) {
      this.imageCropperService.enableUpload({module:this.moduleIdentifier.STAFF,upload:true,mode:this.staffCreate.VIEW});
+     if(!this.staffAddModel.staffMaster.staffId) {
       this.getStaffDetailsUsingId();
-      this.onViewMode();
-    } else if (this.staffCreateMode == this.staffCreate.ADD) {
-      this.getAllFieldsCategory();
-     this.imageCropperService.enableUpload({module:this.moduleIdentifier.STAFF,upload:true,mode:this.staffCreate.ADD});
+    } else {
+    if(this.staffAddModel.staffMaster.staffId !== this.staffService.getStaffId()){
+      this.getStaffDetailsUsingId();
     }
   }
+      this.onViewMode();
+    } else if (this.staffCreateMode == SchoolCreate.ADD) {
+      this.staffTitle = "addStaffInformation";
+      this.staffAddModel = new StaffAddModel();
+      this.responseImage = undefined;
+      this.staffService.setStaffDetailsForViewAndEdit(this.staffAddModel);
+      this.getAllFieldsCategory();
+     this.imageCropperService.enableUpload({module:this.moduleIdentifier.STAFF,upload:true,mode:this.staffCreate.ADD});
+     
+    }
+  }
+
   ngAfterViewChecked(){
     this.cdr.detectChanges();
  }
   onViewMode() {
     //this.staffService.setStaffImage(this.responseImage);
-    this.pageStatus = "View Staff"
+    this.pageStatus = "viewStaff"
   }
 
   afterSavingGeneralInfo(data){
@@ -193,7 +230,8 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     this.profile=data;
   }
 
-  changeCategory(field, index) {
+
+  changeCategory(field, index, triggerEvent?) {
 
     this.categoryTitle = field.title;
     this.commonService.setModuleName(this.module);
@@ -201,46 +239,56 @@ export class AddStaffComponent implements OnInit, OnDestroy {
 
     let staffDetails = this.staffService.getStaffDetails();
     if (staffDetails) {
+      if(!triggerEvent)
     this.staffService.setCategoryTitle(this.categoryTitle);
       this.staffCreateMode = this.staffCreate.EDIT;
       this.currentCategory = field.categoryId;
+      this.categoryPath = field.path;
+
       this.indexOfCategory = index;
       this.staffAddModel = staffDetails;
       this.staffService.setStaffDetailsForViewAndEdit(this.staffAddModel);
     }
 
     if (this.staffCreateMode == this.staffCreate.VIEW) {
-    this.staffService.setCategoryTitle(this.categoryTitle);
+      this.categoryPath = field.path;
+      if(!triggerEvent)
+      this.staffService.setCategoryTitle(this.categoryTitle);
       this.currentCategory = field.categoryId;
       this.indexOfCategory = index;
-      this.pageStatus = "View Staff"
+      this.pageStatus = "viewStaff"
     }
     this.staffService.setStaffCreateMode(this.staffCreateMode);
     this.staffService.setCategoryId(this.indexOfCategory);
     this.secondarySidebar = 0; // Close secondary sidenav in mobile view
+    if(this.pageStatus === "viewStaff" || this.pageStatus==="editStaff") { // only cange category in view and edit mode 
     this.checkCurrentCategoryAndRoute();
+    }
   }
 
-  checkCurrentCategoryAndRoute() {
-    if(this.currentCategory === 12) {
+  checkCurrentCategoryAndRoute() {    
+    if(this.categoryPath === '/school/staff/staff-generalinfo') {
       this.router.navigate(['/school', 'staff', 'staff-generalinfo']);
-    } else if(this.currentCategory === 13) {
+    } else if(this.categoryPath === '/school/staff/staff-schoolinfo') {
       this.router.navigate(['/school', 'staff', 'staff-schoolinfo']);
-    } else if(this.currentCategory === 14 ) {
+    } else if(this.categoryPath === '/school/staff/staff-addressinfo' ) {
       this.router.navigate(['/school', 'staff', 'staff-addressinfo']);
-    } else if(this.currentCategory === 15 ) {
+    } else if(this.categoryPath === '/school/staff/staff-certificationinfo' ) {
         this.router.navigate(['/school', 'staff', 'staff-certificationinfo']);
-    } else if(this.currentCategory === 16) {
+    } else if(this.categoryPath === '/school/staff/staff-course-schedule') {
       this.router.navigate(['/school', 'staff', 'staff-course-schedule']);
-    } else if(this.currentCategory>16){
+    } else{
       this.router.navigate(['/school', 'staff', 'custom', this.categoryTitle.trim().toLowerCase().split(' ').join('-')]);
     }
   }
 
-  changeTempCategory(step: number = 12) {
-    this.currentCategory = step;
-    this.secondarySidebar = 0; // Close secondary sidenav in mobile view
-    this.checkCurrentCategoryAndRoute();
+  changeTempCategory(step) {
+    if(this.pageStatus === "viewStaff" || this.pageStatus==="editStaff") {
+      this.currentCategory = null;
+      this.secondarySidebar = 0; // Close secondary sidenav in mobile view
+      this.categoryPath = step;
+      this.checkCurrentCategoryAndRoute();
+    }
   }
 
   toggleSecondarySidebar() {
@@ -252,13 +300,13 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   }
 
   showPage(pageId) {
-    localStorage.setItem("pageId", pageId);
+    this.defaultValuesService.setPageId(pageId);
     //this.disableSection();
   }
 
   getStaffDetailsUsingId() {
     this.staffAddModel.staffMaster.staffId = this.staffId;
-    this.staffService.viewStaff(this.staffAddModel).subscribe(data => {
+    this.staffService.viewStaff(this.staffAddModel).subscribe((data: any) => {
       if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
       } else {
@@ -281,19 +329,21 @@ export class AddStaffComponent implements OnInit, OnDestroy {
           this.staffTitle =this.staffAddModel.staffMaster.firstGivenName + " " + this.staffAddModel.staffMaster.lastFamilyName;
         }
         this.staffService.setStaffImage(this.responseImage);
-      }
-      
-      
+      }    
+      this.staffService.setStaffDetailsForViewAndEdit(this.staffAddModel);
     });
-    this.staffService.setStaffDetailsForViewAndEdit(this.staffAddModel);
+   
 
   }
 
+
+
+
   getAllFieldsCategory() {
-    this.fieldsCategoryListView.module = "Staff";
+    this.fieldsCategoryListView.module = Module.STAFF;
     this.customFieldService.getAllFieldsCategory(this.fieldsCategoryListView).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Category list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Category list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -308,6 +358,7 @@ export class AddStaffComponent implements OnInit, OnDestroy {
         }
         else {
           this.staffAddModel.fieldsCategoryList= this.checkViewPermission(res.fieldsCategoryList);
+
           this.fieldsCategory = this.staffAddModel.fieldsCategoryList;
           this.staffService.sendDetails(this.staffAddModel);
           this.staffService.setStaffDetailsForViewAndEdit(this.staffAddModel);
@@ -326,6 +377,7 @@ export class AddStaffComponent implements OnInit, OnDestroy {
           item.title.toLowerCase() ===
           permission.title.toLowerCase()
         ) {
+            item.path= permission.path;
             filteredCategory.push(item)
         }
       }
@@ -336,6 +388,7 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.defaultValuesService.setSchoolID(undefined);
     this.staffService.setStaffDetails(undefined);
     this.staffService.setStaffImage(null);
     this.staffService.setStaffFirstView(true);

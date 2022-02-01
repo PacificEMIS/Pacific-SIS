@@ -1,0 +1,225 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="card">
+    <ul class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 col-gap-6 row-gap-2 p-4 pb-0 items-center">
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "showReportBy" | translate }}</mat-label>
+                <mat-select [(ngModel)]="selectedReportBy" (selectionChange)="getReportBy($event)">
+                    <mat-option *ngFor="let reportBy of selectOptions" [value]="reportBy?.title">{{reportBy?.title}}</mat-option>
+                    <mat-option value="">{{'customDateRange' |translate}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <ng-container *ngIf="!selectedReportBy">
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "fromDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="fromDate" #fromDateValue [(ngModel)]="studentInfoReportModel.markingPeriodStartDate" required>
+                <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                <mat-datepicker #fromDate></mat-datepicker>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "toDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="toDate" required #toDateValue [(ngModel)]="studentInfoReportModel.markingPeriodEndDate"required>
+                <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                <mat-datepicker #toDate></mat-datepicker>
+            </mat-form-field>
+        </li>
+        </ng-container> 
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "gradeLevel" | translate }}</mat-label>
+                <mat-select (selectionChange)="getgrade($event)">
+                    <mat-option *ngFor="let gradeLevels of gradeLevelList" [value]="gradeLevels?.title">{{gradeLevels?.title}}</mat-option>
+                    <mat-option value=''>None</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <button mat-raised-button color="primary" class="" (click)="getStudentEnrollmentWithDate()">{{'search' | translate }}</button>
+        </li>
+    </ul>
+    <mat-divider class="mt-2"></mat-divider>
+    <div *ngIf="isVisible">
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                <div class="md:flex w-full items-center">
+                    <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" mat-icon-button type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <a (click)="showAdvanceSearchPanel = true;" [class.disabled]="totalCount == null"
+                    class="text-primary cursor-pointer ml-3 md:w-full">
+                    <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
+                    <span class="ml-2 hidden lg:inline-block">
+                        {{'advanceSearch' | translate}}
+                    </span>
+                </a>
+                </div>
+            </div>
+            <hr class="-mx-4 block md:hidden" />
+            <div class="py-2 md:pt-2 items-center">
+                <a  class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print" (click)="createPDF()" [class.disabled]="totalCount == null">
+                    <mat-icon [icIcon]="icPrint"></mat-icon>
+                </a>
+                <a  class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel" (click)="exportAccessLogListToExcel()" [class.disabled]="totalCount == null">
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden" *ngIf="isVisible">
+        <table mat-table [dataSource]="studentModelList" class="mat-elevation-z8">
+            <ng-container matColumnDef="studentName">
+                <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.firstGivenName}} {{element.middleName
+                    ? ''+element.middleName+' ':''}}{{element.lastFamilyName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="studentId">
+                <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.studentInternalId | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="alternateId">
+                <th mat-header-cell *matHeaderCellDef>{{'alternateId' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.alternateId | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="gradeLevel">
+                <th mat-header-cell *matHeaderCellDef>{{'gradeLevel' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element?.gradeLevelTitle | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="section">
+                <th mat-header-cell *matHeaderCellDef>{{'section' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.sectionName | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.homePhone | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="enrollmentDate">
+                <th mat-header-cell *matHeaderCellDef>{{'enrollmentDate' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{ element.enrollmentDate ? (element.enrollmentDate | date : 'mediumDate') : (element.enrollmentDate | EmtyValueCheckPipe)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{'status' | translate}}</th>
+                <td mat-cell *matCellDef="let element" [class.text-green]="element.isActive==true"
+                    [class.text-red]="element.isActive==false">
+                    {{element.isActive | EmtyBooleanCheckPipe:'status'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="7">
+                    {{studentModelList?.filteredData.length == 0 ?('noData' | translate):'' }}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null && totalCount != 0"></tr>
+        </table>
+    </div>
+    <mat-paginator [length]="totalCount" [class.hide]="totalCount == null || totalCount == 0" [pageSize]="pageSize"
+        [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'
+        aria-label="Select page">
+    </mat-paginator>
+</div>
+</div>
+<div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+    <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+        <vex-search-student [incomingSearchValue]="searchValue"
+            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
+            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)" (filteredValue)="filterData($event)" [rootSource]="pageSource">
+        </vex-search-student>
+    </div>
+    <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
+</div>
+
+
+<!-- the pdf section  -->
+
+<div class="hidden" id="printSectionId">
+   <div class="schedule-report" >
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <div class="float-left school-logo">
+                                    <img *ngIf="dataForPdf?.schoolLogo" [src]="dataForPdf?.schoolLogo ? 'data:image/jpeg;base64,'+dataForPdf?.schoolLogo : '' ">
+                                </div>
+                                <div class="float-left information">
+                                    <h4>{{dataForPdf?.schoolName}}</h4>
+                                    <p>
+                                        {{dataForPdf?.streetAddress1 ? dataForPdf?.streetAddress1 : ''}}
+                                        {{dataForPdf?.streetAddress2 ? ', '+dataForPdf?.streetAddress2 : ''}}
+                                        {{dataForPdf?.city ? ', '+dataForPdf?.city : ''}}
+                                        {{dataForPdf?.district ? ', '+dataForPdf?.district : ''}}
+                                        {{dataForPdf?.state ? ', '+dataForPdf?.state : ''}}
+                                        {{dataForPdf?.zip ? ', '+dataForPdf?.zip : ''}}
+                                    </p>
+                                </div>
+                            </td>
+                            <td class="header-right text-right">
+                                <div class="text-center inline-block">Student Enrollment Report</div>
+                                <p class="text-right">Powered by <b>openSIS</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="generate-date">
+                                <p class="text-center p-b-8">Report Generated on {{toDay | date : 'mediumDate'}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="p-y-20 p-x-8">
+                    <table>
+                        <tr>
+                            <td>
+                                <table class="information-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-slate"><strong>Student Name</strong></th>
+                                            <th class="bg-slate"><strong>Student ID</strong></th>
+                                            <th class="bg-slate"><strong>Alternate ID</strong></th>
+                                            <th class="bg-slate"><strong>Phone</strong></th>
+                                            <th class="bg-slate"><strong>Grade Level</strong></th>
+                                            <th class="bg-slate"><strong>Section</strong></th>
+                                            <th class="bg-slate"><strong>Enrollment Date</strong></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let element of allPDFValues;let i=index;">
+                                            <td> {{element.salutation? element.salutation : ''}} {{element.firstGivenName ? element.firstGivenName : ''}} {{element.middleName ? element.middleName : ''}} {{element.lastFamilyName ? element.lastFamilyName : ''}}</td>
+                                            <td>{{element.studentId ? element.studentId : '-'}}</td>
+                                            <td>{{element.alternateId ? element.alternateId : '-'}}</td>
+                                            <td>{{element.mobilePhone ? element.mobilePhone : '-'}}</td>
+                                            <td>{{element.gradeLevelTitle ? element.gradeLevelTitle : '-'}}</td>
+                                            <td>{{element.sectionName ? element.sectionName : '-'}}</td>
+                                            <td>{{element.enrollmentDate ? (element.enrollmentDate | date : 'mediumDate') : '-'}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</div>

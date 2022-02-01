@@ -1,0 +1,62 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+<vex-page-layout>
+    <vex-page-layout-header class="" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'My Classes'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['courses']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="mt-6">
+            <div *ngIf="classCount===0" class="card px-6 pt-4 mb-4">
+            <h5 class="text-warn pb-3">{{ 'noClassesFound' | translate }}</h5>
+            </div>
+
+            <div *ngIf="classCount>0" class="grid md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 mb-4">
+                <a *ngFor="let courseSection of scheduledCourseSectionViewModel.courseSectionViewList"
+                    class="card px-4 py-2 border-l-8 cursor-pointer" [ngClass]="courseSection.borderColor"
+                    (click)="selectCourseSection(courseSection)" [routerLink]="['/school', 'class']">
+                    <div class="flex justify-between items-center">
+                        <h5 [ngClass]="courseSection.text" class="uppercase font-semibold">{{courseSection.courseSectionName}}</h5>
+                        <p>{{this.getPeriodStartTime(courseSection)|transformTimePipe}}</p>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-gray font-medium mb-2">
+                            <span class="pr-2">{{courseSection.courseTitle}}</span>
+                            <span class="w-1 h-1 inline-block bg-gray-light rounded align-middle"></span>
+                            <span class="pl-2">{{courseSection.courseGradeLevel}}</span>
+                        </div>
+                        <div>
+                            <mat-icon *ngIf="getAttendanceForPeriod(courseSection)" class="text-blue text-xl"
+                                [icIcon]="icHowToReg"></mat-icon>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center font-medium flex-wrap">
+                        <div class="text-gray mb-2 pr-2">
+                            <span
+                                class="bg-gray text-white font-medium px-2 py-1 rounded">{{this.getPeriodTitle(courseSection)}}</span>
+                            <span class="pl-2">{{this.getRoomTitle(courseSection)}}</span>
+                        </div>
+                        <div class="mb-2">
+                            <ng-container
+                                *ngIf="courseSection.scheduleType=='Fixed Schedule' || courseSection.scheduleType=='Variable Schedule';else otherSchedule">
+                                <ng-container *ngFor="let day of courseSection.weekDays.split('').sort()">
+                                    <span [ngClass]="courseSection.meetingDays.includes(day)?'':'text-gray-light'"
+                                        [matTooltip]="day|weekDay:false:true"
+                                        [matTooltipPosition]="'above'">{{day|weekDay:true:false}}</span>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #otherSchedule>
+                                <span class="text-primary">
+                                    {{courseSection.scheduleType}}
+                                </span>
+                            </ng-template>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>
+            

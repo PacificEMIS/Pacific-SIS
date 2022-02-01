@@ -1,0 +1,597 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="card p-4 mb-6">
+    <h4 class="text-primary font-medium mb-2">
+        <mat-icon [icIcon]="icListAlt" class="align-middle mr-2"></mat-icon>{{ 'includeInReport' | translate }}
+    </h4>
+    <mat-divider></mat-divider>
+    <div class="mt-4">
+        <mat-slide-toggle [(ngModel)]="getSchoolReportModel.isGeneralInfo" class="mr-4 mb-2" color="primary">{{ 'generalInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="getSchoolReportModel.isAddressInfo" class="mr-4 mb-2" color="primary">{{ 'addressInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="getSchoolReportModel.isContactInfo" class="mr-4 mb-2" color="primary">{{ 'contactInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="getSchoolReportModel.isWashInfo" class="mr-4 mb-2" color="primary">{{ 'washInfo' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="getSchoolReportModel.isCustomCategory" class="mr-4 mb-2" color="primary">{{ 'customCategory' | translate }}</mat-slide-toggle>
+    </div>
+</div>
+<div class="card">
+    <h4 class="text-primary font-medium p-4">
+        <mat-icon [icIcon]="icAccountBalance" class="align-middle mr-2"></mat-icon>{{ 'selectSchools' | translate }}
+    </h4>
+    <mat-divider></mat-divider>
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                <div class="flex w-full items-center">
+                    <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" mat-icon-button type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden">
+        <table mat-table [dataSource]="instituteList" class="mat-elevation-z8">
+            <ng-container matColumnDef="schoolCheck">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox color="primary" [class.hidden]="totalCount == null || totalCount == 0" #masterCheckBox
+                    [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-checkbox color="primary" [checked]="element.checked"
+                    (change)="onChangeSelection($event.checked,element.schoolId)"></mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolName">
+                <th mat-header-cell *matHeaderCellDef>{{'schoolName' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.schoolName | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef>{{'address' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element?.streetAddress1 ? element?.streetAddress1 : ''}}{{element?.streetAddress2 ? ', '+element?.streetAddress2 : ''}}{{element?.city ? ', '+element?.city : ''}}{{element?.district ? ', '+element?.district : ''}}{{element?.zip ? ', '+element?.zip : ''}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="state">
+                <th mat-header-cell *matHeaderCellDef>{{'state' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.state | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="principal">
+                <th mat-header-cell *matHeaderCellDef>{{'principal' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.schoolDetail[0].nameOfPrincipal | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+                <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
+                <td mat-cell *matCellDef="let element"> {{element.schoolDetail[0].telephone | EmtyValueCheckPipe}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="noData">
+                <td mat-footer-cell *matFooterCellDef colspan="6">
+                    {{loading?('fetchingData' | translate):('noData' | translate) }}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount != null && totalCount != 0"></tr>
+        </table>
+    </div>
+    <mat-paginator [class.hidden]="totalCount == null || totalCount == 0" [length]="totalCount" [pageSize]="pageSize"
+        [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)="getPageEvent($event)" aria-label="Select page">
+    </mat-paginator>
+
+    <mat-divider></mat-divider>
+    <div class="p-4 text-right">
+        <button mat-raised-button color="primary" (click)="generateInstituteReport()">{{'generateReport' | translate }}</button>
+    </div>
+</div>
+
+<!-- Print section start -->
+
+<div class="hidden" id="printReportCardId">
+    <div class="student-information-report">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <h4 class="f-s-20">{{'instituteReport' | translate}}</h4>
+                            </td>
+                            <td class="header-right">
+                                <p class="text-right p-b-8">{{'reportGeneratedOn' | translate}} {{today |
+                                    date:'mediumDate'}}</p>
+                                <p class="text-right">{{'poweredBy' | translate}} <b>openSIS</b></p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <ng-container *ngFor="let schoolDetail of generatedReportCardData?.schoolViewForReports">
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="student-logo width-140">
+                                    <div>
+                                        <img *ngIf="schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" [src]="'data:image/jpeg;base64,' + schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" alt="School Logo">
+                                    </div>
+                                </td>
+                                <td class="school-details">
+                                    <p class="f-s-16 font-bold m-b-10">{{schoolDetail?.schoolMaster?.schoolName}}</p>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="card clearfix">
+                                                        <div class="float-left m-r-20">
+                                                            <img [src]="studentLogo" alt="Students Icon" width="45">
+                                                        </div>
+                                                        <div class="float-left">
+                                                            <h4 class="font-bold f-s-16">{{'students' |translate}}</h4>
+                                                            <p class="f-s-20">{{schoolDetail?.studentCount}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="card clearfix">
+                                                        <div class="float-left m-r-20">
+                                                            <img [src]="staffLogo" alt="Staff Icon" width="30">
+                                                        </div>
+                                                        <div class="float-left">
+                                                            <h4 class="font-bold f-s-16">{{'staff' |translate}}</h4>
+                                                            <p class="f-s-20">{{schoolDetail?.staffCount}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="card clearfix">
+                                                        <div class="float-left m-r-20">
+                                                            <img [src]="parentLogo" alt="Parent Icon" width="30">
+                                                        </div>
+                                                        <div class="float-left">
+                                                            <h4 class="font-bold f-s-16">{{'parents' |translate}}</h4>
+                                                            <p class="f-s-20">{{schoolDetail?.parentCount}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr *ngIf="getSchoolReportModel.isGeneralInfo">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="p-20 width-140">
+                                    <h4 class="f-s-18"><strong>General<br>Information</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'alternateName' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.alternateName | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'schoolId' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolInternalId | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'schoolAlternateId' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolAltId | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'stateId' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolStateId | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'districtId' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDistrictId | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'schoolLevel' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolLevel | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'schoolClassification' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolClassification | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'affiliation' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.affiliation | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'associations' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.associations | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'lowestGradeLevel' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.lowestGradeLevel | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'highestGradeLevel' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.highestGradeLevel | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'dateSchoolOpened' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.dateSchoolOpened | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'code' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.locale | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'gender' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.gender | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'internet' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.internet | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'electricity' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.electricity | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr *ngIf="getSchoolReportModel.isAddressInfo">
+                    <td class="p-t-15">
+                        <table>
+                            <tr>
+                                <td class="p-20 width-140">
+                                    <h4 class="f-s-18"><strong>Address<br>Information</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'streetAddress1' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.streetAddress1 | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'streetAddress2' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.streetAddress2 | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'city' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.city | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'county' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.county | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'division' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.division | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'stateRegionProvince' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.state | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'district' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.district | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'zipPostalCode' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.zip | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'Country' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.country | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'latitude' | translate}}, {{'longitude' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.latitude | EmtyValueCheckPipe}},{{schoolDetail?.schoolMaster?.longitude | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr *ngIf="getSchoolReportModel.isContactInfo">
+                    <td class="p-t-15">
+                        <table>
+                            <tr>
+                                <td class="p-20 width-140">
+                                    <h4 class="f-s-18"><strong>Contact<br>Information</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'principal' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.nameOfPrincipal | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'assistantPrincipal' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.nameOfAssistantPrincipal | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'telephone' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.telephone | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'fax' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.fax | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'website' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.website | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'email' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.email | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr *ngIf="getSchoolReportModel.isWashInfo">
+                    <td class="p-t-15">
+                        <table>
+                            <tr>
+                                <td class="p-20 width-140">
+                                    <h4 class="f-s-18"><strong>WASH<br>Information</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'runningWater' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.runningWater | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'mainSourceofDrinkingWater' | translate }} :
+                                                    </p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.mainSourceOfDrinkingWater | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'currentlyAvailable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.currentlyAvailable | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'handwashingAvailable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.handwashingAvailable | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'soapWaterAvailable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.soapAndWaterAvailable | EmtyBooleanCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'hygeneEducation' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.hygeneEducation | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <p class="f-s-16 m-t-20 font-bold">{{'femaleToiletInformation' | translate}}</p>
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'femaleToiletType' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.femaleToiletType | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalFemaleToilets' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalFemaleToilets | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalFemaleToiletsUsable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalFemaleToiletsUsable | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'femaleToiletAccessibility' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.femaleToiletAccessibility | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <p class="f-s-16 m-t-20 font-bold">{{'maleToiletInformation' | translate}}</p>
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'maleToiletType' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.maleToiletType | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalMaleToilets' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalMaleToilets | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalMaleToiletsUsable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalMaleToiletsUsable | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'maleToiletAccessibility' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.maleToiletAccessibility | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <p class="f-s-16 m-t-20 font-bold">{{'commonToiletInformation' | translate}}</p>
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'commonToiletType' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.comonToiletType | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalCommonToilets' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalCommonToilets | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'totalCommonToiletsUsable' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.totalCommonToiletsUsable | EmtyNumberCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">{{'commonToiletAccessibility' | translate}} :</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.commonToiletAccessibility | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5"></p>
+                                                    <p class="f-s-16"></p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr *ngIf="getSchoolReportModel.isCustomCategory">
+                    <td class="p-t-15">
+                        <table>
+                            <tr>
+                                <td class="p-20 width-140">
+                                    <h4 class="f-s-18"><strong>Custom<br>Category</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                                <td>
+                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
+                                                    <p class="f-s-16">Custom Field Value</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</div>
+
+<!-- Print section end -->

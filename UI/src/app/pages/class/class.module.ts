@@ -41,7 +41,6 @@ import { GradebookGradesComponent } from './grades/gradebook-grades/gradebook-gr
 import { AddGradeCommentsComponent } from './grades/gradebook-grades/add-grade-comments/add-grade-comments.component';
 import { GradebookGradeDetailsComponent } from './grades/gradebook-grades/gradebook-grade-details/gradebook-grade-details.component';
 import { GradesComponent } from './grades/grades.component';
-import { InputEffortGradesComponent } from './grades/input-effort-grades/input-effort-grades.component';
 import { InputFinalGradesComponent } from './grades/input-final-grades/input-final-grades.component';
 import { SharedModuleModule } from '../shared-module/shared-module.module';
 import { MatSortModule } from '@angular/material/sort';
@@ -52,10 +51,11 @@ import { GradebookConfigurationComponent } from './gradebook-configuration/grade
 import { MatRadioModule } from '@angular/material/radio';
 import { ViewAssignmentDetailsComponent } from './assignments/view-assignment-details/view-assignment-details.component';
 import { CopyAssignmentComponent } from './assignments/copy-assignment/copy-assignment.component';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
-  declarations: [ClassComponent, CourseOverviewComponent, StudentsComponent, AttendanceComponent, MissingAttendanceListComponent, AddTeacherCommentsComponent, AssignmentsComponent, AddAssignmentComponent, CreateAssignmentComponent, DeleteAssignmentsComponent, GradebookGradesComponent, AddGradeCommentsComponent, GradebookGradeDetailsComponent, GradesComponent, InputEffortGradesComponent, InputFinalGradesComponent, GradebookConfigurationComponent, ViewAssignmentDetailsComponent, CopyAssignmentComponent],
+  declarations: [ClassComponent, CourseOverviewComponent, StudentsComponent, AttendanceComponent, MissingAttendanceListComponent, AddTeacherCommentsComponent, AssignmentsComponent, AddAssignmentComponent, CreateAssignmentComponent, DeleteAssignmentsComponent, GradebookGradesComponent, AddGradeCommentsComponent, GradebookGradeDetailsComponent, GradesComponent, InputFinalGradesComponent, GradebookConfigurationComponent, ViewAssignmentDetailsComponent, CopyAssignmentComponent],
   imports: [
     CommonModule,
     ClassRoutingModule,
@@ -88,7 +88,9 @@ import { CopyAssignmentComponent } from './assignments/copy-assignment/copy-assi
     MatSelectModule,
     MatMenuModule,
     MatChipsModule,
+    MatNativeDateModule,
     MatRadioModule,
+    MatAutocompleteModule,
     QuillModule.forRoot({
       modules: {
         toolbar: [

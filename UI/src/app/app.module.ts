@@ -29,16 +29,18 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { UserIdleModule } from 'angular-user-idle';
+import { NgxMaskModule } from 'ngx-mask'
 import {enableProdMode} from '@angular/core';
 import { DatePipe } from '@angular/common';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-// enableProdMode();
+ enableProdMode();
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    NgxMaskModule.forRoot(),
     AngularCalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory

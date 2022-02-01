@@ -23,7 +23,7 @@
                 <li class="col-span-2">
                     <mat-form-field appearance="outline" color="primary" class="w-full mb-4">
                         <mat-label>{{ 'weightPercent' | translate }}</mat-label>
-                        <input formControlName="weightage"
+                        <input [readonly]="!isWeightedSection" formControlName="weightage"
                         oninput="javascript: if (this.value>100) this.value = 100;"
                         type="number" matInput>
                     </mat-form-field>

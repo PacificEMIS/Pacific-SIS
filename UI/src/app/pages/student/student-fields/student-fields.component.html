@@ -7,7 +7,7 @@
 
                 <div *ngFor="let fieldsCategory of fieldsCategoryList">
                     <div *ngIf="!restrictedCategoryid.includes(fieldsCategory.categoryId)"
-                        class="mt-2 flex flex-wrap justify-between">
+                        class="mt-1 flex flex-wrap justify-between h-8">
                         <a class="cursor-pointer"
                             [ngClass]="{'font-bold':currentCategoryId === fieldsCategory.categoryId}"
                             (click)="selectCategory(fieldsCategory)">{{fieldsCategory.title}} </a>
@@ -73,7 +73,7 @@
 
 
                     <ng-container matColumnDef="fieldId">
-                        <th mat-header-cell *matHeaderCellDef></th>
+                        <th mat-header-cell *matHeaderCellDef style="width: 26px;"></th>
                         <td mat-cell *matCellDef="let element;let i=index">
                             <mat-icon cdkDragHandle [ngClass]="noSortIndexContainer.includes(i) && currentCategoryId===3?'op-2':'cursor-move'">reorder</mat-icon>
                             <!--      <div class="w-10 drag-icon">
@@ -86,7 +86,7 @@
                     <ng-container matColumnDef="title">
                         <mat-header-cell *matHeaderCellDef>{{'fieldName'|translate}}</mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            {{element.title}}
+                            <span class="custom-field" *ngIf="!element.systemField" matTooltip="Custom Field">C</span><span class="default-field" *ngIf="element.systemField" matTooltip="Default Field">D</span>{{element.title}}
                         </mat-cell>
                     </ng-container>
 
@@ -132,7 +132,7 @@
                     </ng-container>
                     <ng-container matColumnDef="noData">
                         <td mat-footer-cell *matFooterCellDef colspan="6">
-                            No Data
+                            {{'noData' | translate}}
                         </td>
                     </ng-container>
 

@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { IconModule } from '@visurel/iconify-angular';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [WidgetTableComponent],
@@ -22,7 +22,8 @@ import { IconModule } from '@visurel/iconify-angular';
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    IconModule
+    IconModule,
+    TranslateModule
   ],
   exports: [WidgetTableComponent]
 })

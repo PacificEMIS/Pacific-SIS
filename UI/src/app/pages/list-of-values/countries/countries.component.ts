@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input,ViewChild } from '@angular/core';
+import { Component, OnInit, Input,ViewChild, AfterViewInit } from '@angular/core';
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icEdit from '@iconify/icons-ic/twotone-edit';
@@ -37,7 +37,7 @@ import { Router} from '@angular/router';
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
-import { CountryModel } from '../../../models/country.model';
+import { LOVCountryModel } from '../../../models/country.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
@@ -52,6 +52,9 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'vex-countries',
@@ -62,7 +65,7 @@ import { Permissions } from '../../../models/roll-based-access.model';
     stagger40ms
   ]
 })
-export class CountriesComponent implements OnInit {
+export class CountriesComponent implements OnInit, AfterViewInit {
   columns = [
     { label: 'Title', property: 'name', type: 'text', visible: true },
     { label: 'Short Name', property: 'countryCode', type: 'text', visible: true },
@@ -81,10 +84,12 @@ export class CountriesComponent implements OnInit {
   icFilterList = icFilterList; 
   loading;  
   countryAddModel = new CountryAddModel();
-  totalCount:Number;pageNumber:Number;pageSize:Number;
-  getCountryModel: CountryModel = new CountryModel();  
+  searchCtrl: FormControl;
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  getCountryModel: LOVCountryModel = new LOVCountryModel();
   CountryModelList: MatTableDataSource<any>;
-  countryListForExcel=[];
   searchKey:string;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -94,6 +99,7 @@ export class CountriesComponent implements OnInit {
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
   permissions: Permissions;
+  filterParams: { columnName: any; filterValue: any; filterOption: number; }[];
   constructor(private router: Router,
     private dialog: MatDialog,
     public translateService:TranslateService,
@@ -103,7 +109,8 @@ export class CountriesComponent implements OnInit {
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
     private cryptoService: CryptoService,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -113,36 +120,40 @@ export class CountriesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchCtrl = new FormControl();
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/lov-settings/countries')
   }
 
   getCountryList(){    
-    this.commonService.GetAllCountry(this.getCountryModel).subscribe(data => {
+    this.getCountryModel.isListView = true;
+    if (this.getCountryModel.sortingModel?.sortColumn === "") {
+      this.getCountryModel.sortingModel = null;
+    }
+    this.commonService.LOVGetAllCountry(this.getCountryModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Country list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Country list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else{
        if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
-          if (data.tableCountry) {
-            this.CountryModelList = new MatTableDataSource(data.tableCountry);
-            this.CountryModelList.sort=this.sort;      
-            this.CountryModelList.paginator = this.paginator;   
-          } else {
-            this.CountryModelList = new MatTableDataSource([]);
-            this.CountryModelList.sort=null;      
-            this.CountryModelList.paginator = null;
-            this.snackbar.open('' + data._message, '', {
-              duration: 10000
-            });
-          }
-        }else{
-          this.CountryModelList = new MatTableDataSource(data.tableCountry);
-          this.countryListForExcel= data.tableCountry;
-          this.CountryModelList.sort=this.sort;      
-          this.CountryModelList.paginator = this.paginator;  
-        }
+         if (data.tableCountry === null) {
+           this.CountryModelList = new MatTableDataSource([]);
+           this.totalCount = null;
+           this.snackbar.open('' + data._message, '', {
+             duration: 10000
+           });
+         } else {
+           this.CountryModelList = new MatTableDataSource([]);
+           this.totalCount = null;
+         }
+       } else {
+         this.totalCount = data.totalCount;
+         this.pageNumber = data.pageNumber;
+         this.pageSize = data._pageSize;
+         this.CountryModelList = new MatTableDataSource(data.tableCountry);
+         this.getCountryModel = new LOVCountryModel();
+       }
       }
     });
   }
@@ -155,32 +166,133 @@ export class CountriesComponent implements OnInit {
     return trnaslateKey;
   }
 
-  exportCountryListToExcel(){
-    if(this.countryListForExcel.length!=0){
-      let countryList=this.countryListForExcel?.map((item)=>{
-        return{
-          [this.translateKey('title')]: item.name,
-          [this.translateKey('shortName')]: item.countryCode,
-          [this.translateKey('createdBy')]: item.createdBy ? item.createdBy: '-',
-          [this.translateKey('createDate')]: this.commonfunction.transformDateWithTime(item.createdOn),
-          [this.translateKey('updatedBy')]: item.updatedBy ? item.updatedBy: '-',
-          [this.translateKey('updateDate')]:  this.commonfunction.transformDateWithTime(item.updatedOn)
+  exportCountryListToExcel() {
+    const getAllCountry: LOVCountryModel = new LOVCountryModel();
+    getAllCountry.pageNumber = 0;
+    getAllCountry.pageSize = 0;
+    getAllCountry.sortingModel = null;
+    this.commonService.LOVGetAllCountry(getAllCountry).subscribe(res => {
+      if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open('Failed to Export Country List.' + res._message, '', {
+          duration: 10000
+        });
+      } else {
+        if (res.tableCountry.length > 0) {
+          let countryList;
+          countryList = res.tableCountry?.map((item) => {
+            return {
+              [this.translateKey('title')]: item.name,
+              [this.translateKey('shortName')]: item.countryCode,
+              [this.translateKey('createdBy')]: item.createdBy ? item.createdBy : '-',
+              [this.translateKey('createDate')]: this.commonfunction.transformDateWithTime(item.createdOn),
+              [this.translateKey('updatedBy')]: item.updatedBy ? item.updatedBy : '-',
+              [this.translateKey('updateDate')]: this.commonfunction.transformDateWithTime(item.updatedOn)
+            }
+          });
+          this.excelService.exportAsExcelFile(countryList, 'Country_List_')
+        } else {
+          this.snackbar.open('No Records Found. Failed to Export Country List', '', {
+            duration: 5000
+          });
         }
-      });
-      this.excelService.exportAsExcelFile(countryList,'Country_List_')
-     }
-     else{
-    this.snackbar.open('No Records Found. Failed to Export Country List','', {
-      duration: 5000
+      }
     });
   }
-}
+
+  getPageEvent(event) {
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.getCountryModel.sortingModel.sortColumn = this.sort.active;
+      this.getCountryModel.sortingModel.sortDirection = this.sort.direction;
+    }
+    if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+      this.filterParams = [
+        {
+          columnName: null,
+          filterValue: this.searchCtrl.value,
+          filterOption: 3
+        }
+      ]
+      Object.assign(this.getCountryModel, { filterParams: this.filterParams });
+    }
+    this.pageNumber = event.pageIndex + 1;
+    this.getCountryModel.pageNumber = this.pageNumber;
+    this.pageSize = event.pageSize;
+    this.getCountryModel.pageSize = this.pageSize;
+    this.defaultValuesService.setPageSize(event.pageSize);
+    this.getCountryList();
+  }
+
+  ngAfterViewInit() {
+    //  Sorting
+    this.getCountryModel = new LOVCountryModel();
+    this.sort.sortChange.subscribe((res) => {
+      this.getCountryModel.pageNumber = this.pageNumber
+      this.getCountryModel.pageSize = this.pageSize;
+      this.getCountryModel.sortingModel.sortColumn = res.active;
+      if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+        this.filterParams = [
+          {
+            columnName: null,
+            filterValue: this.searchCtrl.value,
+            filterOption: 3
+          }
+        ]
+        Object.assign(this.getCountryModel, { filterParams: this.filterParams });
+      }
+      if (res.direction == "") {
+        this.getCountryModel.sortingModel = null;
+        this.getCountryList();
+        this.getCountryModel = new LOVCountryModel();
+        this.getCountryModel.sortingModel = null;
+      } else {
+        this.getCountryModel.sortingModel.sortDirection = res.direction;
+        this.getCountryList();
+      }
+    });
+
+    //  Searching
+    this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
+      if (term.trim().length > 0) {
+         this.filterParams = [
+          {
+            columnName: null,
+            filterValue: term,
+            filterOption: 3
+          }
+        ]
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.getCountryModel.sortingModel.sortColumn = this.sort.active;
+          this.getCountryModel.sortingModel.sortDirection = this.sort.direction;
+        }
+        Object.assign(this.getCountryModel, { filterParams: this.filterParams });
+        this.pageNumber = 1;
+        this.getCountryModel.pageNumber = this.pageNumber;
+        this.paginator.pageIndex = 0;
+        this.getCountryModel.pageSize = this.pageSize;
+        this.getCountryList();
+      }
+      else {
+        this.filterParams = null;
+        Object.assign(this.getCountryModel, { filterParams: this.filterParams });
+        this.pageNumber = this.paginator.pageIndex + 1;
+        this.getCountryModel.pageNumber = this.pageNumber;
+        this.getCountryModel.pageSize = this.pageSize;
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.getCountryModel.sortingModel.sortColumn = this.sort.active;
+          this.getCountryModel.sortingModel.sortDirection = this.sort.direction;
+        }
+        this.getCountryList();
+      }
+    })
+  }
 
   goToAdd(){
     this.dialog.open(EditCountryComponent, {      
       width: '500px'
     }).afterClosed().subscribe((data) => {
       if(data){
+        this.getCountryModel.pageSize = this.pageSize;
         this.getCountryList();
       }            
     });   
@@ -191,7 +303,7 @@ export class CountriesComponent implements OnInit {
     this.commonService.DeleteCountry(this.countryAddModel).subscribe(
       (res)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Country Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Country Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -206,6 +318,9 @@ export class CountriesComponent implements OnInit {
             this.snackbar.open('' + res._message, '', {
               duration: 10000
             });
+            this.getCountryModel.pageSize = this.pageSize;
+            this.getCountryModel.pageNumber = this.pageNumber;
+            Object.assign(this.getCountryModel, { filterParams: this.filterParams });
             this.getCountryList()
           }
         }
@@ -232,6 +347,7 @@ export class CountriesComponent implements OnInit {
       width: '500px'
     }).afterClosed().subscribe((data) => {
       if(data){
+        this.getCountryModel.pageSize = this.pageSize;
         this.getCountryList();
       }            
     });   

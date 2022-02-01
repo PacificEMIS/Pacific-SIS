@@ -2,7 +2,7 @@
   --navigation-height: 0px;
   --toolbar-width: 100%;
 
-  @screen xl {
+  @screen lg {
     --toolbar-width: calc(100% - var(--sidenav-width));
 
     &.sidenav-collapsed {
@@ -23,7 +23,7 @@
   }
 }
 
-@screen xl {
+@screen lg {
   body:not([dir="rtl"]) {
     .horizontal-layout {
       &.sidenav-collapsed .sidenav-content {
@@ -33,7 +33,7 @@
 
       &:not(.sidenav-collapsed) .sidenav-content {
         margin-left: var(--sidenav-width) !important;
-        margin-right: 0 !important;;
+        margin-right: 0 !important;
       }
     }
   }

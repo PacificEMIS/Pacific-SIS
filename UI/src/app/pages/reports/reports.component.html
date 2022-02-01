@@ -1,108 +1,38 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Reports" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Reports']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'reports'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['reports']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
     <vex-page-layout-content class="-mt-6">
-        <div class="card overflow-auto -mt-16 px-gutter pt-0 pb-5">
-
-            <ul class="md:grid md:grid-cols-3 md:col-gap-8 md:row-gap-5 mt-6">
-                <li class="hover:bg-primary-light p-5 rounded">
+        <div class="card mb-6 -mt-16">
+            <ng-container *ngFor="let submenu of reportSubmenu;let index=index">
+                <div class="px-4 py-6 border-b">
                     <div class="flex">
-                        <mat-icon [icIcon]="icSchool" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'schoolReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'advanceReport' | translate }}</a>
-                            </p>
-                        </div>
+                        <mat-icon [icIcon]="submenu.icon" size="24px" class="mr-4"></mat-icon>
+                        <h4 class="font-medium">
+                            <a>{{submenu.title}}</a>
+                        </h4>
                     </div>
-                </li>
-                <li class="hover:bg-primary-light p-5 rounded">
-                    <div class="flex">
-                        <mat-icon [icIcon]="icStudents" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'studentReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'advanceReport' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'addDropReport' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'printStudentInfo' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'printStudentContactInfo' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'studentEnrollmentInfo' | translate }}</a>
-                            </p>
-                        </div>
-                    </div>
-                </li>
-                <li class="hover:bg-primary-light p-5 rounded">
-                    <div class="flex">
-                        <mat-icon [icIcon]="icUsers" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'staffReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'advanceReport' | translate }}</a>
-                            </p>
-                        </div>
-                    </div>
-                </li>
-                <li class="hover:bg-primary-light p-5 rounded">
-                    <div class="flex">
-                        <mat-icon [icIcon]="icEventAvailable" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'schedulingReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'printSchedules' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'printClassList' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'scheduleReport' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'addDropReport' | translate }}</a>
-                            </p>
-                        </div>
-                    </div>
-                </li>
-                <li class="hover:bg-primary-light p-5 rounded">
-                    <div class="flex">
-                        <mat-icon [icIcon]="icAttendance" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'attendanceReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'attendanceReport' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'averageDailyAttendance' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'averageAttendanceByDay' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'attendanceChart' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'absenceSummary' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'teacherCompletion' | translate }}</a>
-                            </p>
-                        </div>
-                    </div>
-                </li>
-                <li class="hover:bg-primary-light p-5 rounded">
-                    <div class="flex">
-                        <mat-icon [icIcon]="icGrade" size="30px" class="text-primary"></mat-icon>
-                        <div class="ml-8">
-                            <h4 class="font-bold">
-                                <a class="cursor-pointer">{{ 'gradesReports' | translate }}</a>
-                            </h4>
-                            <p>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'teacherCompletion' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'studentFinalGrades' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'gpaClassRankList' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'progressReport' | translate }}, </a>
-                                <a class="hover:text-primary hover:underline cursor-pointer">{{ 'honorRoll' | translate }} </a>
-                            </p>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+                    <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 md:col-gap-8 mt-4">
+                        <ng-container *ngIf="submenu.permissionSubcategory?.length>0 && submenu.rolePermission[0].canView">
+                            <ng-container *ngFor="let option of submenu.permissionSubcategory;let index=index">
+                                <li>
+                                    <div class="flex items-center py-1">
+                                        <mat-icon class="mr-2">navigate_next</mat-icon>
+                                        <a *ngIf="option.rolePermission[0].canView"
+                                            (click)="setPageId(option.title)" [routerLink]="(option.path)!==''? option.path : null"
+                                            class="text-primary">{{option.title}}
+                                        </a>
+                                    </div>
+                                </li>               
+                            </ng-container>
+                        </ng-container>
+                    </ul>
+                </div>
+            </ng-container>
         </div>
     </vex-page-layout-content>
 </vex-page-layout>
+
+<router-outlet></router-outlet>

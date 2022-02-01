@@ -61,7 +61,7 @@ import { SharedFunction } from '../../../shared/shared-function';
 import { isNull } from 'util';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
-
+import { DecimalPipe } from '@angular/common';
 @Component({
   selector: 'vex-edit-course-section',
   templateUrl: './edit-course-section.component.html',
@@ -69,7 +69,8 @@ import { CommonService } from 'src/app/services/common.service';
   animations: [
     stagger60ms,
     fadeInUp400ms
-  ]
+  ],
+  providers: [DecimalPipe]
 })
 export class EditCourseSectionComponent implements OnInit {
 
@@ -100,6 +101,7 @@ export class EditCourseSectionComponent implements OnInit {
   getAllAttendanceCategoriesListModel: GetAllAttendanceCategoriesListModel = new GetAllAttendanceCategoriesListModel();
   view: CalendarView = CalendarView.Month;
   calendarError: boolean = false;
+  disabledCalendar:boolean= false;
   calendarList = [];
   selectedCalendar = new CalendarModel();
   selectedMarkingPeriod;
@@ -141,28 +143,34 @@ export class EditCourseSectionComponent implements OnInit {
     private snackbar: MatSnackBar,
     private gradesService: GradesService,
     private fb: FormBuilder,
-    private defaultValueService: DefaultValuesService,
     private courseSectionService: CourseSectionService,
     private attendanceCodeService: AttendanceCodeService,
     private markingPeriodService: MarkingPeriodService,
     private commonFunction: SharedFunction,
     private commonService: CommonService,
-
+    public defaultValuesService: DefaultValuesService,
+    private decimalPipe: DecimalPipe
     ) {
     if (this.data.editMode) {
+      if(this.data.courseSectionDetails?.totalStudentSchedule> 0 || this.data.courseSectionDetails?.totalStaffSchedule !== null ){
+        this.disabledCalendar= true;
+      }
       this.setScheduleTypeInEditMode()
     }
 
   }
   ngOnInit(): void {
     // Initializing the form
+
+    console.log(this.data.courseDetails?.creditHours);
+    
     this.form = this.fb.group(
       {
         courseSectionName: ['', Validators.required],
         calendarId: ['', Validators.required],
         isActive: [true],
         gradeScaleId: ['', Validators.required],
-        creditHours: [this.data.courseDetails?.creditHours],
+        creditHours: [this.data.courseDetails?.creditHours ? this.data.courseDetails?.creditHours+'' : '', Validators.pattern('[0-9]{1,3}[.][0-9]{1,3}')],
         seats: [''],
         attendanceCategoryId: [''],
         allowStudentConflict:[false],
@@ -286,6 +294,16 @@ export class EditCourseSectionComponent implements OnInit {
     });
   }
 
+  //credit hours 3 decimal places
+  onCrediHoursBlur(event){
+    if(event.target.value !== '')
+    this.form.controls.creditHours.patchValue(parseFloat(this.form.controls.creditHours.value).toFixed(3));
+    }
+
+    checkInputAndPrevent(event) {
+      ["e", "E", "+", "-"].includes(event.key) && event.preventDefault();
+    }
+
   changeCalendar(calendarId) {
     let index = this.calendarList.findIndex((item) => {
       return item.calenderId == +calendarId
@@ -365,7 +383,7 @@ export class EditCourseSectionComponent implements OnInit {
 
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem("academicyear");
+    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -528,9 +546,10 @@ export class EditCourseSectionComponent implements OnInit {
     }
   }
   addCourseSection() {
+    this.courseSectionAddViewModel.courseSection.createdBy = this.defaultValuesService.getUserGuidId();
     this.courseSectionService.addCourseSection(this.courseSectionAddViewModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Course Section Save failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Course Section Save failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }
@@ -550,10 +569,11 @@ export class EditCourseSectionComponent implements OnInit {
     });
   }
   updateCourseSection() {
+    this.courseSectionAddViewModel.courseSection.updatedBy = this.defaultValuesService.getUserGuidId();
     this.courseSection.courseSectionId = this.data.courseSectionDetails.courseSection.courseSectionId;
     this.courseSectionService.updateCourseSection(this.courseSectionAddViewModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Course Section Update failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Course Section Update failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }
@@ -615,9 +635,9 @@ export class EditCourseSectionComponent implements OnInit {
       this.courseSectionAddViewModel.courseBlockScheduleList = this.courseSectionAddViewModel.courseBlockScheduleList?.map((item) => {
         // item.gradeScaleId = this.form.value.gradeScaleId;
         if (this.data.editMode) {
-          item.updatedBy = this.defaultValueService.getEmailId();
+          item.updatedBy = this.defaultValuesService.getUserGuidId();
         } else {
-          item.createdBy = this.defaultValueService.getEmailId();
+          item.createdBy = this.defaultValuesService.getUserGuidId();
         }
         return item;
       });
@@ -644,21 +664,22 @@ export class EditCourseSectionComponent implements OnInit {
   manipulateFixedScheduleBeforeSubmit(details: OutputEmitDataFormat) {
     if (!details.error) {
       if (this.data.editMode) {
-        details.scheduleDetails.updatedBy = this.defaultValueService.getEmailId();
+        details.scheduleDetails.updatedBy = this.defaultValuesService.getUserGuidId();
       } else {
-        details.scheduleDetails.createdBy = this.defaultValueService.getEmailId();
+        details.scheduleDetails.createdBy = this.defaultValuesService.getUserGuidId();
       }
       this.courseSection.scheduleType = details.scheduleType;
       this.courseSection.attendanceTaken = details.scheduleDetails.attendanceTaken;
       this.courseSection.meetingDays = details.scheduleDetails.meetingDays;
       this.courseSectionAddViewModel.courseFixedSchedule = details.scheduleDetails;
-      this.courseSectionAddViewModel.courseFixedSchedule.schoolId = +sessionStorage.getItem("selectedSchoolId");
+      this.courseSectionAddViewModel.courseFixedSchedule.schoolId = this.defaultValuesService.getSchoolID();
       this.courseSectionAddViewModel.courseFixedSchedule.courseId = +this.data.courseDetails.courseId;
       this.submit();
     }
   }
 
   manipulateCalendarScheduleBeforeSubmit(details) {
+    this.calendarError = false;
     if (!details.error) {
       this.courseSection.scheduleType = details.scheduleType;
       this.courseSectionAddViewModel.courseCalendarScheduleList = details.scheduleDetails;

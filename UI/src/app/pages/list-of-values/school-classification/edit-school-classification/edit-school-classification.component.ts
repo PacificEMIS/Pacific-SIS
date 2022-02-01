@@ -34,6 +34,7 @@ import {CommonService} from '../../../../services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidationService } from 'src/app/pages/shared/validation.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-edit-school-classification',
   templateUrl: './edit-school-classification.component.html',
@@ -56,7 +57,8 @@ export class EditSchoolClassificationComponent implements OnInit {
     public translateService: TranslateService,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
     this.form=fb.group({
       id:[0],
@@ -90,7 +92,7 @@ export class EditSchoolClassificationComponent implements OnInit {
         this.lovModel.dropdownValue.lovName = "School Classification";
         this.commonService.addDropdownValue(this.lovModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Classification Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Classification Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -115,7 +117,7 @@ export class EditSchoolClassificationComponent implements OnInit {
         this.lovModel.dropdownValue.lovName = "School Classification";
         this.commonService.updateDropdownValue(this.lovModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Classification Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Classification Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

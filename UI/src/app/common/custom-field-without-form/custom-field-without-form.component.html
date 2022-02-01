@@ -1,7 +1,8 @@
 <!--School Module-->
-<div *ngIf="schoolAddViewModel.schoolMaster.fieldsCategory && module =='School'">
+<div *ngIf="schoolDetailsForViewAndEdit?.schoolMaster?.fieldsCategory && module =='School'">
     <div @stagger fxLayout="column"
         *ngIf="schoolCustomFields?.length > 0">
+        <hr class="-mx-4 my-6">
         <div *ngIf="schoolCreateMode==schoolCreate.EDIT">
             <ul ngModelGroup="vex-custom-field-without-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                 <li *ngFor="let customField of schoolCustomFields; let index = index"
@@ -13,7 +14,7 @@
                             {{customField.title}}
                         </mat-checkbox>
                             <mat-error *ngIf="stCheckBox.errors?.required">
-                            {{customField.title}} is required</mat-error> 
+                            {{customField.title}} {{'isRequired'|translate}}</mat-error> 
 
                         <!-- <input type="checkbox" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
                         name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
@@ -31,7 +32,7 @@
                                     {{ option }}</mat-option>
                             </mat-select>
                             <mat-error *ngIf="schoolDropdown.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -43,7 +44,7 @@
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </div>
                     <div *ngSwitchCase="'number'">
@@ -53,7 +54,7 @@
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="schoolNumber.errors?.required">
-                                    {{customField.title}} is required</mat-error>
+                                    {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                         
                     </div>
@@ -67,7 +68,7 @@
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>
                             <mat-error *ngIf="schoolDate.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                         
                     </div>
@@ -79,7 +80,7 @@
                                 matInput type="customField.type" maxlength="100"
                                 [required]="customField.required ? true : null ">
                             <mat-error *ngIf="schoolField.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -104,17 +105,14 @@
             <li
                 *ngFor="let customField of schoolCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>
-                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue
-                    | EmtyValueCheckPipe}}
+                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
                         class="inline-block align-middle mr-1">
                     </mat-icon>
                 </p>
-                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
+                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
                 </p>
             </li>
         </ul>
@@ -128,7 +126,7 @@
     <div class="py-6" @stagger fxLayout="column"
         *ngIf="studentCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
-        <ul *ngIf="studentCreateMode==schoolCreate.EDIT" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0" ngModelGroup="vex-custom-field-without-form">
+        <ul *ngIf="studentCreateMode !== schoolCreate.VIEW" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-0" >
                 <li *ngFor="let customField of studentCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -137,14 +135,13 @@
                         name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                         <label class="form-check-label">{{customField.title}}</label>-->
                        
-                      
                         <mat-checkbox
-                            [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
+                            [(ngModel)]="customField?.customFieldsValue[0].customFieldValue" 
                             name="{{customField.title.replace(' ','_')}}" color="primary" class="mr-6" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
                             {{customField.title}}
                         </mat-checkbox>
                          <mat-error *ngIf="stCheckBox.errors?.required">
-                            {{customField.title}} is required</mat-error> 
+                            {{customField.title}} {{'isRequired'|translate}}</mat-error> 
                     </div>
                     <div *ngSwitchCase="'Dropdown'">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -157,7 +154,7 @@
                                     {{ option }}</mat-option>
                             </mat-select>
                             <mat-error *ngIf="schoolDropdown.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -169,7 +166,7 @@
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </div>
                     <div *ngSwitchCase="'number'">
@@ -179,7 +176,7 @@
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="studentNumber.errors?.required">
-                                    {{customField.title}} is required</mat-error>
+                                    {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                         
                     </div>
@@ -193,7 +190,7 @@
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>
                             <mat-error *ngIf="studentDate.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                         
                     </div>
@@ -205,7 +202,7 @@
                                 matInput type="customField.type" maxlength="100"
                                 [required]="customField.required ? true : null ">
                             <mat-error *ngIf="schoolField.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -225,22 +222,18 @@
                 </li>
         </ul>
 
-        <ul *ngIf="studentCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
+        <ul *ngIf="studentCreateMode === schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
             <li
                 *ngFor="let customField of studentCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>
-                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue
-                    | EmtyValueCheckPipe}}
+                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true ? icCheckboxChecked:icCheckboxUnchecked"
                         class="inline-block align-middle mr-1">
                     </mat-icon>
                 </p>
-                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
-                </p>
+                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}</p>
             </li>
         </ul>
     </div>
@@ -248,11 +241,11 @@
 <!---->
 
 <!--Start Staff Module-->
-<div *ngIf="staffAddModel?.fieldsCategoryList && module =='Staff'">
+<div *ngIf="staffAddModel?.fieldsCategoryList && module === 'Staff'">
     <div class="py-6" @stagger fxLayout="column"
         *ngIf="staffCustomFields?.length > 0">
-        <ul *ngIf="staffCreateMode==schoolCreate.EDIT" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 md:row-gap-0">
-            <fieldset ngModelGroup="vex-custom-field-without-form">
+        <hr class="-mx-4 my-6">
+        <ul *ngIf="staffCreateMode === schoolCreate.EDIT || staffCreateMode === schoolCreate.ADD" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 md:row-gap-0">
                 <li *ngFor="let customField of staffCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -266,7 +259,7 @@
                             {{customField.title}}
                         </mat-checkbox>
                         <mat-error *ngIf="stCheckBox.errors?.required">
-                            {{customField.title}} is required</mat-error>
+                            {{customField.title}} {{'isRequired'|translate}}</mat-error>
                     </div>
                     <div *ngSwitchCase="'Dropdown'">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -279,7 +272,7 @@
                                     {{ option }}</mat-option>
                             </mat-select>
                             <mat-error *ngIf="schoolDropdown.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -291,7 +284,7 @@
                                 [required]="customField.required ? true : null "></textarea>
 
                             <mat-error *ngIf="schoolTextArea.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </div>
                     <div *ngSwitchCase="'number'">
@@ -301,7 +294,7 @@
                                 [required]="customField.required ? true : null"
                                 name="{{customField.title.replace(' ','_')}}">
                                 <mat-error *ngIf="staffNumber.errors?.required">
-                                    {{customField.title}} is required</mat-error>
+                                    {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                        
                     </div>
@@ -315,7 +308,7 @@
                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #testDate></mat-datepicker>
                             <mat-error *ngIf="staffDate.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
                         </mat-form-field>
                         
                     </div>
@@ -327,7 +320,7 @@
                                 matInput type="customField.type" maxlength="100"
                                 [required]="customField.required ? true : null ">
                             <mat-error *ngIf="staffField.errors?.required">
-                                {{customField.title}} is required</mat-error>
+                                {{customField.title}} {{'isRequired'|translate}}</mat-error>
 
                         </mat-form-field>
                     </div>
@@ -343,27 +336,21 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-
                 </li>
-            </fieldset>
         </ul>
 
         <ul *ngIf="staffCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
             <li
                 *ngFor="let customField of staffCustomFields; let index = index">
                 <label class="text-sm leading-5 text-gray">{{customField.title}}</label>
-                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue
-                    | EmtyValueCheckPipe}}
+                <p *ngIf="customField.type !== 'Checkbox' && customField.type !== 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | EmtyValueCheckPipe}}
                 </p>
                 <p *ngIf="customField.type === 'Checkbox'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                    <mat-icon [icIcon]="customField?.customFieldsValue[0].customFieldValue === true?icCheckboxChecked:icCheckboxUnchecked"
                         class="inline-block align-middle mr-1">
                     </mat-icon>
                 </p>
-                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">
-                    {{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}
-                </p>
+                <p *ngIf="customField.type === 'Date'" class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{customField?.customFieldsValue[0].customFieldValue | date:'mediumDate' | EmtyValueCheckPipe}}</p>
             </li>
         </ul>
     </div>

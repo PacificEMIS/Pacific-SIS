@@ -43,6 +43,7 @@ import { ValidationService } from '../../../shared/validation.service';
 import { SchoolService } from '../../../../services/school.service';
 import { MarkingPeriodListModel } from '../../../../models/marking-period.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 const moment = _moment;
 @Component({
   selector: 'vex-edit-marking-period',
@@ -87,7 +88,6 @@ export class EditMarkingPeriodComponent implements OnInit {
   };
   sentArray = [];
 
-
   constructor(
     private dialogRef: MatDialogRef<EditMarkingPeriodComponent>,
     private fb: FormBuilder,
@@ -96,7 +96,8 @@ export class EditMarkingPeriodComponent implements OnInit {
     private commonFunction: SharedFunction,
     private schoolService: SchoolService,
     private commonService: CommonService,
-    @Inject(MAT_DIALOG_DATA) public data) {
+    @Inject(MAT_DIALOG_DATA) public data,
+    private defaultValuesService: DefaultValuesService,) {
 
   }
 
@@ -116,7 +117,8 @@ export class EditMarkingPeriodComponent implements OnInit {
       });
 
     if (this.data && (Object.keys(this.data).length !== 0 || Object.keys(this.data).length > 0)) {
-
+        this.form.controls.doesExam.disable()
+        this.form.controls.doesComments.disable()
       if (this.data.isAdd === true && this.data.isEdit === false) {
         this.isEdit = false;
         this.parentStartDate = this.commonFunction.formatDateInEditMode(this.data.details.startDate);
@@ -124,26 +126,25 @@ export class EditMarkingPeriodComponent implements OnInit {
         if (this.data.details.isParent) {
           this.markingPeriodLevel = 'Year';
           this.assignFieldsValue('semesterAddModel', 'tableSemesters', 'yearId', '', '', 'markingPeriodId');
-
-        } else {
+        } else {          
           if (this.data.details.yearId > 0) {
             this.markingPeriodLevel = 'Semester';
             this.assignFieldsValue('quarterAddModel', 'tableQuarter', 'semesterId', '', '', 'markingPeriodId');
-
           } else {
             this.markingPeriodLevel = 'Quarter';
             this.assignFieldsValue('progressPeriodAddModel', 'tableProgressPeriods', 'quarterId', '', '', 'markingPeriodId');
-
           }
         }
+        
       } else {
         this.isEdit = true;
         if (this.data.editDetails.doesGrades) {
           this.doesGrades = true;
-        }
-
+          this.form.controls.doesExam.enable()
+          this.form.controls.doesComments.enable()
+        }        
+       
         if (this.data.editDetails.yearId > 0) {
-
           if (this.data.fullData.length > 0) {
             this.data.fullData.forEach((value, index) => {
               if (value.markingPeriodId === this.data.editDetails.yearId) {
@@ -152,15 +153,12 @@ export class EditMarkingPeriodComponent implements OnInit {
               }
             });
           }
-
-
           this.markingPeriodLevel = 'Year';
           this.assignFieldsValue('semesterAddModel', 'tableSemesters', 'doesGrades', 'markingPeriodAddModel', 'tableSchoolYears', '');
           this.assignFieldsValue('semesterAddModel', 'tableSemesters', 'markingPeriodId', '', '', '');
           this.assignFieldsValue('semesterAddModel', 'tableSemesters', 'yearId', '', '', '');
 
         } else if (this.data.editDetails.semesterId > 0) {
-
           if (this.data.fullData.length > 0) {
             this.data.fullData.forEach((value, index) => {
               value.children.forEach((val) => {
@@ -169,15 +167,13 @@ export class EditMarkingPeriodComponent implements OnInit {
                   this.parentEndDate = this.commonFunction.formatDateInEditMode(val.endDate);
                 }
               });
-
             });
           }
-          this.markingPeriodLevel = 'Semester';
+          this.markingPeriodLevel = 'Semester';          
           this.assignFieldsValue('quarterAddModel', 'tableQuarter', 'doesGrades', 'markingPeriodAddModel', 'tableSchoolYears', '');
           this.assignFieldsValue('quarterAddModel', 'tableQuarter', 'markingPeriodId', '', '', '');
           this.assignFieldsValue('quarterAddModel', 'tableQuarter', 'semesterId', '', '', '');
         } else if (this.data.editDetails.quarterId > 0) {
-
           if (this.data.fullData.length > 0) {
             this.data.fullData.forEach((value, index) => {
               value.children.forEach((val) => {
@@ -220,17 +216,29 @@ export class EditMarkingPeriodComponent implements OnInit {
     }
   }
 
-  checkStartDate() {
-    let dateSchoolOpened = new Date(sessionStorage.getItem('schoolOpened'));
+  checkStartDate(){
+    let dateSchoolOpened = new Date(this.defaultValuesService.getSchoolOpened());
     return dateSchoolOpened;
   }
 
-  checkGrade(data) {
+  checkEndDate(){
+    if(this.markingPeriodLevel === 'Year'){
+      let dateSchoolClosed = new Date(this.defaultValuesService.getSchoolClosed());
+      return dateSchoolClosed;
+    }
+  }
 
+  checkGrade(data) {
     if (data === false || data === undefined || data === null) {
       this.doesGrades = true;
+      this.form.controls.doesExam.enable()
+      this.form.controls.doesComments.enable()
     } else {
       this.doesGrades = false;
+      this.markingPeriodAddModel.tableSchoolYears.doesExam=false;
+      this.markingPeriodAddModel.tableSchoolYears.doesComments=false;
+      this.form.controls.doesExam.disable()
+      this.form.controls.doesComments.disable()
       this.markingPeriodAddModel.tableSchoolYears.postStartDate = null;
       this.markingPeriodAddModel.tableSchoolYears.postEndDate = null;
     }
@@ -244,14 +252,12 @@ export class EditMarkingPeriodComponent implements OnInit {
 
         this[toModel][toTable][toField] = this[fromModel][fromTable][toField];
       } else {
-
         this[toModel][toTable][toField] = this.data.editDetails[toField];
       }
     }
   }
 
   submit() {
-
     if (this.form.valid) {
       if (this.isEdit) {
         if (this.markingPeriodLevel === 'Year') {
@@ -259,7 +265,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('semesterAddModel', 'tableSemesters', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.semesterAddModel.tableSemesters.academicYear = +sessionStorage.getItem('academicyear');
+          // this.semesterAddModel.tableSemesters.academicYear =  this.defaultValuesService.getAcademicYear();
           this.semesterAddModel.tableSemesters.startDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.startDate);
           this.semesterAddModel.tableSemesters.endDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.endDate);
           this.semesterAddModel.tableSemesters.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.postStartDate);
@@ -272,7 +278,6 @@ export class EditMarkingPeriodComponent implements OnInit {
                   duration: 10000
                 });
               } else {
-
                 this.snackbar.open(data._message, '', {
                   duration: 10000
                 });
@@ -281,7 +286,7 @@ export class EditMarkingPeriodComponent implements OnInit {
               }
             }
             else {
-              this.snackbar.open('School Semester Updation failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Semester Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -292,7 +297,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('quarterAddModel', 'tableQuarter', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.quarterAddModel.tableQuarter.academicYear = +sessionStorage.getItem('academicyear');
+          // this.quarterAddModel.tableQuarter.academicYear = this.defaultValuesService.getAcademicYear();
           this.quarterAddModel.tableQuarter.startDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.startDate);
           this.quarterAddModel.tableQuarter.endDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.endDate);
           this.quarterAddModel.tableQuarter.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.postStartDate);
@@ -314,7 +319,7 @@ export class EditMarkingPeriodComponent implements OnInit {
               }
             }
             else {
-              this.snackbar.open('School Quarter Updation failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Quarter Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -325,7 +330,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('progressPeriodAddModel', 'tableProgressPeriods', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.progressPeriodAddModel.tableProgressPeriods.academicYear = +sessionStorage.getItem('academicyear');
+          // this.progressPeriodAddModel.tableProgressPeriods.academicYear = this.defaultValuesService.getAcademicYear();
           this.progressPeriodAddModel.tableProgressPeriods.startDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.startDate);
           this.progressPeriodAddModel.tableProgressPeriods.endDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.endDate);
           this.progressPeriodAddModel.tableProgressPeriods.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.postStartDate);
@@ -347,7 +352,7 @@ export class EditMarkingPeriodComponent implements OnInit {
               }
             }
             else {
-              this.snackbar.open('School Progress Period Updation failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Progress Period Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -355,7 +360,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           });
         } else {
           this.markingPeriodAddModel.tableSchoolYears.startDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.startDate);
-          this.markingPeriodAddModel.tableSchoolYears.academicYear = +sessionStorage.getItem('academicyear');
+          // this.markingPeriodAddModel.tableSchoolYears.academicYear = this.defaultValuesService.getAcademicYear();
           this.markingPeriodAddModel.tableSchoolYears.endDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.endDate);
           this.markingPeriodAddModel.tableSchoolYears.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.postStartDate);
           this.markingPeriodAddModel.tableSchoolYears.postEndDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.postEndDate);
@@ -376,7 +381,7 @@ export class EditMarkingPeriodComponent implements OnInit {
               }
             }
             else {
-              this.snackbar.open('School Year Updation failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Year Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -389,7 +394,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('semesterAddModel', 'tableSemesters', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.semesterAddModel.tableSemesters.academicYear = +sessionStorage.getItem('academicyear');
+          // this.semesterAddModel.tableSemesters.academicYear = this.defaultValuesService.getAcademicYear();
           this.semesterAddModel.tableSemesters.startDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.startDate);
           this.semesterAddModel.tableSemesters.endDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.endDate);
           this.semesterAddModel.tableSemesters.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.semesterAddModel.tableSemesters.postStartDate);
@@ -406,13 +411,13 @@ export class EditMarkingPeriodComponent implements OnInit {
                 this.snackbar.open(data._message, '', {
                   duration: 10000
                 });
-                this.sentArray = [true, sessionStorage.getItem('academicyear')];
+                this.sentArray = [true, this.defaultValuesService.getAcademicYear()];
                 this.markingPeriodService.getCurrentYear(true);
                 this.dialogRef.close(this.sentArray);
               }
             }
             else {
-              this.snackbar.open('School Semester Submission failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Semester Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -423,7 +428,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('quarterAddModel', 'tableQuarter', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.quarterAddModel.tableQuarter.academicYear = +sessionStorage.getItem('academicyear');
+          // this.quarterAddModel.tableQuarter.academicYear = this.defaultValuesService.getAcademicYear();
           this.quarterAddModel.tableQuarter.startDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.startDate);
           this.quarterAddModel.tableQuarter.endDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.endDate);
           this.quarterAddModel.tableQuarter.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.quarterAddModel.tableQuarter.postStartDate);
@@ -440,13 +445,13 @@ export class EditMarkingPeriodComponent implements OnInit {
                 this.snackbar.open(data._message, '', {
                   duration: 10000
                 });
-                this.sentArray = [true, sessionStorage.getItem('academicyear')];
+                this.sentArray = [true, this.defaultValuesService.getAcademicYear()];
                 this.markingPeriodService.getCurrentYear(true);
                 this.dialogRef.close(this.sentArray);
               }
             }
             else {
-              this.snackbar.open('School Quarter Submission failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Quarter Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -457,7 +462,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           for (let i of arrList) {
             this.assignFieldsValue('progressPeriodAddModel', 'tableProgressPeriods', i, 'markingPeriodAddModel', 'tableSchoolYears', '');
           }
-          this.progressPeriodAddModel.tableProgressPeriods.academicYear = +sessionStorage.getItem('academicyear');
+          // this.progressPeriodAddModel.tableProgressPeriods.academicYear = this.defaultValuesService.getAcademicYear();
           this.progressPeriodAddModel.tableProgressPeriods.startDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.startDate);
           this.progressPeriodAddModel.tableProgressPeriods.endDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.endDate);
           this.progressPeriodAddModel.tableProgressPeriods.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.progressPeriodAddModel.tableProgressPeriods.postStartDate);
@@ -473,13 +478,13 @@ export class EditMarkingPeriodComponent implements OnInit {
                 this.snackbar.open(data._message, '', {
                   duration: 10000
                 });
-                this.sentArray = [true, sessionStorage.getItem('academicyear')];
+                this.sentArray = [true, this.defaultValuesService.getAcademicYear()];
                 this.markingPeriodService.getCurrentYear(true);
                 this.dialogRef.close(this.sentArray);
               }
             }
             else {
-              this.snackbar.open('School Progress Period Submission failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Progress Period Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -487,7 +492,7 @@ export class EditMarkingPeriodComponent implements OnInit {
           });
         } else {
           this.markingPeriodAddModel.tableSchoolYears.startDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.startDate);
-          this.markingPeriodAddModel.tableSchoolYears.academicYear = +sessionStorage.getItem('academicyear');
+          // this.markingPeriodAddModel.tableSchoolYears.academicYear = this.defaultValuesService.getAcademicYear();
           this.markingPeriodAddModel.tableSchoolYears.endDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.endDate);
           this.markingPeriodAddModel.tableSchoolYears.postStartDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.postStartDate);
           this.markingPeriodAddModel.tableSchoolYears.postEndDate = this.commonFunction.formatDateSaveWithoutTime(this.markingPeriodAddModel.tableSchoolYears.postEndDate);
@@ -503,14 +508,14 @@ export class EditMarkingPeriodComponent implements OnInit {
                 this.snackbar.open(data._message, '', {
                   duration: 10000
                 });
-                sessionStorage.setItem('academicyear', this.markingPeriodAddModel.tableSchoolYears.startDate.substr(0, 4));
+                // this.defaultValuesService.setAcademicYear(this.markingPeriodAddModel.tableSchoolYears.startDate.substr(0, 4))
                 this.markingPeriodService.getCurrentYear(true);
-                this.sentArray = [true, sessionStorage.getItem('academicyear')];
+                this.sentArray = [true, this.defaultValuesService.getAcademicYear()];
                 this.dialogRef.close(this.sentArray);
               }
             }
             else {
-              this.snackbar.open('School Year Submission failed. ' + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open('School Year Submission failed. ' +  this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

@@ -25,3 +25,24 @@ export class StudentTranscript extends CommonField{
     studentId: number;
     studentGuid: string;
   }
+
+export class GetStudentTranscriptModel extends CommonField {
+  schoolLogo: boolean;
+  studentPhoto: boolean;
+  gradeLagend: boolean;
+  gradeLavels: string;
+  academicYear: number;
+  studentsDetailsForTranscripts: studentsDetailsForTranscriptsModel[];
+
+  constructor() {
+    super();
+    this.schoolLogo = true;
+    this.studentPhoto = true;
+    this.gradeLagend = true;
+    this.studentsDetailsForTranscripts = [];
+  }
+}
+
+export class studentsDetailsForTranscriptsModel {
+  studentId: number;
+}

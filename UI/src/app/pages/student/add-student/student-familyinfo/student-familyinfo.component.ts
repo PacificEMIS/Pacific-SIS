@@ -33,6 +33,7 @@ import icDelete from '@iconify/icons-ic/twotone-delete';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StudentService } from '../../../../services/student.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-student-familyinfo',
   templateUrl: './student-familyinfo.component.html',
@@ -52,7 +53,9 @@ export class StudentFamilyinfoComponent implements OnInit {
   currentTab: string;
   studentDetailsForViewAndEditData;
   constructor(public translateService: TranslateService,
-    private studentService: StudentService) {
+    private studentService: StudentService,
+    private defaultValuesService: DefaultValuesService) {
+      this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
   ngOnInit(): void {

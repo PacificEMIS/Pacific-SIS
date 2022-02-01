@@ -51,6 +51,7 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { CryptoService } from '../../../services/Crypto.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-race',
@@ -100,7 +101,8 @@ export class RaceComponent implements OnInit {
     private commonService: CommonService,
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
 
@@ -146,10 +148,11 @@ export class RaceComponent implements OnInit {
 
   getAllRace() {
     this.raceListViewModel.lovName = "Race";
+    this.raceListViewModel.isListView = true;
     this.commonService.getAllDropdownValues(this.raceListViewModel).subscribe(
       (res: LovList) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Race List failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Race List failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -218,7 +221,7 @@ export class RaceComponent implements OnInit {
     this.commonService.deleteDropdownValue(this.lovAddView).subscribe(
       (res:LovAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Race Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Race Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

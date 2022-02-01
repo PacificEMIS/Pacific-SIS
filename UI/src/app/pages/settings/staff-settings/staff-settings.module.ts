@@ -30,8 +30,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { SharedModuleModule } from '../../../pages/shared-module/shared-module.module';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import {DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { StaffDataImportModule } from '../../staff/staff-data-import/staff-data-import.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { StaffDataImportModule } from '../../staff/staff-data-import/staff-data-
     MatCheckboxModule,
     MatButtonToggleModule,
     DragDropModule,
-    StaffDataImportModule
+    StaffDataImportModule,
+    MatTooltipModule
   ]
 })
 export class StaffSettingsModule { }

@@ -53,6 +53,7 @@ import { DefaultValuesService } from '../../../common/default-values.service';
 import { SchoolService } from '../../../services/school.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { Module } from 'src/app/enums/module.enum';
 
 
 @Component({
@@ -135,7 +136,7 @@ export class StudentFieldsComponent implements OnInit {
    goToAdd(){
     this.dialog.open(EditStudentFieldsComponent, {
       data: {categoryID: this.currentCategoryId},
-      width: '600px'
+      width: '500px'
     }).afterClosed().subscribe((data) => {
       if (data === 'submited'){
         this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -187,7 +188,7 @@ export class StudentFieldsComponent implements OnInit {
           }
         }
         else{
-          this.snackbar.open(this.defaultValuesService.translateKey('customFieldFailed') + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.translateKey('customFieldFailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -211,7 +212,7 @@ export class StudentFieldsComponent implements OnInit {
   openEditdata(element){
     this.dialog.open(EditStudentFieldsComponent, {
       data: {information: element},
-        width: '800px'
+        width: '500px'
     }).afterClosed().subscribe((data) => {
       if (data === 'submited'){
         this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -220,7 +221,7 @@ export class StudentFieldsComponent implements OnInit {
     });
   }
   getAllCustomFieldCategory(){
-    this.fieldsCategoryListView.module = this.fieldCategoryModuleEnum.Student;
+    this.fieldsCategoryListView.module = Module.STUDENT;
     this.customFieldservice.getAllFieldsCategory(this.fieldsCategoryListView).subscribe(
       (res: FieldsCategoryListView) => {
         if (res){
@@ -250,7 +251,7 @@ export class StudentFieldsComponent implements OnInit {
           }
         }
         else{
-          this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryListFailed') + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryListFailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -260,7 +261,7 @@ export class StudentFieldsComponent implements OnInit {
   editFieldCategory(element){
     this.dialog.open(StudentFieldsCategoryComponent, {
       data: element,
-      width: '800px'
+      width: '500px'
     }).afterClosed().subscribe((data) => {
       if (data === 'submited'){
       this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
@@ -291,7 +292,7 @@ export class StudentFieldsComponent implements OnInit {
         }
         else{
           this.snackbar.open(this.defaultValuesService.translateKey('fieldCategoryDeleteFailed') 
-          + sessionStorage.getItem('httpError'), '', {
+          + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -337,7 +338,7 @@ export class StudentFieldsComponent implements OnInit {
         }
         else{
           this.snackbar.open(this.defaultValuesService.translateKey('customFieldDragShortFailed')
-          + sessionStorage.getItem('httpError'), '', {
+          + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

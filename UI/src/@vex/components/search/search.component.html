@@ -7,7 +7,7 @@
     <mat-icon [icIcon]="icClose"></mat-icon>
   </button>
 
-  <input #searchInput (keyup.enter)="search()" [formControl]="searchCtrl" class="search-input" placeholder="Search..."/>
+  <input #searchInput (keyup.enter)="search()" [formControl]="searchCtrl" class="search-input" placeholder="{{'search...'| translate}}"/>
   <div class="search-hint">Hit enter to search</div>
 </div>
 

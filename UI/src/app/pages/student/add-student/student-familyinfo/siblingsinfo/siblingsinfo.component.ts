@@ -43,7 +43,10 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { CryptoService } from '../../../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../../common/page-roles-permissions.service';
-import { CommonService } from 'src/app/services/common.service';
+import { CommonService } from '../../../../../services/common.service';
+import { LovList } from '../../../../../models/lov.model';
+import { GradeLevelService } from '../../../../../services/grade-level.service';
+import { GetAllGradeLevelsModel } from '../../../../../models/grade-level.model';
 
 @Component({
   selector: 'vex-siblingsinfo',
@@ -59,7 +62,10 @@ export class SiblingsinfoComponent implements OnInit {
   icEdit = icEdit;
   icRemove = icRemove;
   icAdd = icAdd;
-
+  gradeLevelArr;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  relationShipList = [];
+  lovList: LovList = new LovList();
   removeStudentSibling: StudentSiblingAssociation = new StudentSiblingAssociation();
   studentViewSibling: StudentViewSibling = new StudentViewSibling();
   permissions: Permissions;
@@ -69,6 +75,7 @@ export class SiblingsinfoComponent implements OnInit {
     private defaultValuesService: DefaultValuesService,
     public translateService: TranslateService,
     private cryptoService: CryptoService,
+    private gradeLevelService: GradeLevelService,
     private pageRolePermissions: PageRolesPermission,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
@@ -77,13 +84,23 @@ export class SiblingsinfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.getRelationship();
+    this.getGradeLevel();
     this.getAllSiblings();
   }
 
   openAddNew() {
     this.dialog.open(AddSiblingComponent, {
       width: '800px',
-      disableClose: true
+      disableClose: true,
+      data: {
+        parentData: {
+          relationShipList: this.relationShipList,
+          gradeLevelArr: this.gradeLevelArr
+        },
+        parentInfo: null,
+        source : "siblingInfo"
+      }
     }).afterClosed().subscribe((res) => {
       if (res) {
         this.getAllSiblings();
@@ -97,6 +114,40 @@ export class SiblingsinfoComponent implements OnInit {
         siblingDetails: siblingDetails,
       },
       width: '800px'
+    });
+  }
+
+  getRelationship() {
+
+    this.lovList.lovName = 'Relationship';
+    this.commonService.getAllDropdownValues(this.lovList).subscribe(
+      (res: LovList) => {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+        }
+        this.relationShipList = res.dropdownList;
+
+      }
+    );
+
+  }
+  getGradeLevel() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
+        } else {
+          this.gradeLevelArr = res.tableGradelevelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.translateKey('gradeLevelInformationfailed')
+          + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
     });
   }
 
@@ -117,7 +168,7 @@ export class SiblingsinfoComponent implements OnInit {
           this.studentViewSibling.studentMaster = res.studentMaster;
         }
       } else {
-        this.snackbar.open(this.defaultValuesService.translateKey('siblingsFailedToFetch') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('siblingsFailedToFetch') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -158,7 +209,7 @@ export class SiblingsinfoComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open(this.defaultValuesService.translateKey('siblingIsFailedToRemove') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('siblingIsFailedToRemove') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

@@ -5,7 +5,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { filter } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { SearchService } from '../../services/search.service';
-
+import { TranslateService } from '@ngx-translate/core';
 @UntilDestroy()
 @Component({
   selector: 'vex-search',
@@ -21,7 +21,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   @ViewChild('searchInput', { static: true }) input: ElementRef;
 
   constructor(private layoutService: LayoutService,
-              private searchService: SearchService) { }
+              private searchService: SearchService,
+              public translateService:TranslateService) { }
 
   ngOnInit() {
     this.searchService.isOpenSubject.next(true);

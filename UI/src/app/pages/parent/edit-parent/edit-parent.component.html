@@ -8,15 +8,15 @@
             </div>
             <div class="text-center px-4">
                 <h5 class="text-primary font-semibold mb-0">{{parentTitle}}</h5>
-                <div class="rounded-full py-1 px-3 bg-gray text-white inline-block mt-3">Parent</div>
+                <div class="rounded-full py-1 px-3 bg-gray text-white inline-block mt-3">{{'parent' |translate}}</div>
             </div>
             <hr class="mt-4"/>
             <div class="px-gutter sm:px-0">
-                <a @fadeInRight routerLink="" *ngIf="showGeneralInfo" (click)='showPage("General info")' [ngClass]=" pageId =='general info' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
-                    <mat-icon [icIcon]="icGeneralInfo" class="mr-3"></mat-icon> General Info
+                <a @fadeInRight *ngIf="showGeneralInfo" (click)='showPage("/school/parents/parent-generalinfo")' [ngClass]=" categoryPath =='/school/parents/parent-generalinfo' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
+                    <mat-icon [icIcon]="icGeneralInfo" class="mr-3"></mat-icon> {{'generalInfo' |translate}}
                 </a>
-                <a @fadeInRight routerLink="" *ngIf="showAddressInfo" (click)='showPage("Address info")' [ngClass]=" pageId =='address info' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
-                    <mat-icon [icIcon]="icAddress" class="mr-3"></mat-icon> Address Info
+                <a @fadeInRight *ngIf="showAddressInfo" (click)='showPage("/school/parents/parent-addressinfo")' [ngClass]=" categoryPath =='/school/parents/parent-addressinfo' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
+                    <mat-icon [icIcon]="icAddress" class="mr-3"></mat-icon> {{'addressInfo' |translate}}
                 </a>
                 <!-- <a @fadeInRight routerLink="" (click)='showPage("School Access")' [ngClass]=" pageId =='School Access' ? 'text-primary active' : ''" class="list-item no-underline flex items-center rounded-none" matRipple>
                     <mat-icon [icIcon]="icAccessInfo" class="mr-3"></mat-icon> Login Information
@@ -27,8 +27,8 @@
     <div class="right-content">
         <vex-page-layout>
             <vex-page-layout-header class="pb-10 pt-6" fxLayoutAlign="center start">
-                <vex-secondary-toolbar current="Parent Information" class="w-full">
-                    <vex-breadcrumbs [crumbs]="['Parents',pageStatus]" class="flex-auto"></vex-breadcrumbs>
+                <vex-secondary-toolbar current="{{'parentInformation'}}" class="w-full">
+                    <vex-breadcrumbs [crumbs]="['parents',pageStatus]" class="flex-auto"></vex-breadcrumbs>
                 </vex-secondary-toolbar>
             </vex-page-layout-header>
             <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">
@@ -40,7 +40,7 @@
                         </div>
                     <div class="px-4">
                         <h4 class="mb-0 text-white">{{parentTitle}}</h4>
-                        <div class="text-white opacity-50">Parent</div>
+                        <div class="text-white opacity-50">{{'parent' |translate}}</div>
                     </div>
                 </div>
             </div>

@@ -42,13 +42,13 @@ import { SectionService } from '../../../services/section.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
-import {LayoutService} from 'src/@vex/services/layout.service';
 import { CryptoService } from 'src/app/services/Crypto.service';
 import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/models/roll-based-access.model';
 import { ExcelService } from '../../../services/excel.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-sections',
   templateUrl: './sections.component.html',
@@ -86,25 +86,13 @@ export class SectionsComponent implements OnInit {
     private loaderService:LoaderService,
     private sectionService:SectionService,
     private snackbar: MatSnackBar,
-    private layoutService:LayoutService,
     private cryptoService: CryptoService,
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
-
+    public defaultValuesService: DefaultValuesService
     ) 
-  { 
-    
-    //translateService.use('en');   
-    if(localStorage.getItem("collapseValue") !== null){
-      if( localStorage.getItem("collapseValue") === "false"){
-        this.layoutService.expandSidenav();
-      }else{
-        this.layoutService.collapseSidenav();
-      } 
-    }else{
-      this.layoutService.expandSidenav();
-    }
+  {
     this.loaderService.isLoading.subscribe((val) => {
        this.loading = val;
      });
@@ -141,6 +129,7 @@ export class SectionsComponent implements OnInit {
   }
 
   callAllSection(getAllSection){
+    this.getAllSection.isListView=true;
     this.sectionService.GetAllSection(this.getAllSection).subscribe(data => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -189,12 +178,12 @@ export class SectionsComponent implements OnInit {
      });
     }
   deleteSection(deleteDetails){
-    this.sectionAddModel.tableSections.schoolId=+sessionStorage.getItem("selectedSchoolId");
+    this.sectionAddModel.tableSections.schoolId=this.defaultValuesService.getSchoolID();
     this.sectionAddModel.tableSections.sectionId = deleteDetails.sectionId;
           
     this.sectionService.deleteSection(this.sectionAddModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Section Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Section Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

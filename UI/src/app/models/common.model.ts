@@ -6,8 +6,8 @@ export class AgeRangeList extends CommonField{
     gradeAgeRangeList:[GradeRange]
     constructor(){
         super();
-        this._tenantName=sessionStorage.getItem('tenant');
-        this._userName = sessionStorage.getItem("user");
+        this._tenantName=JSON.parse(sessionStorage.getItem('tenant'));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
     }
 }
 
@@ -20,8 +20,8 @@ export class EducationalStage extends CommonField{
     gradeEducationalStageList:[EducationalStageList]
     constructor(){
         super();
-        this._tenantName=sessionStorage.getItem('tenant');
-        this._userName = sessionStorage.getItem("user");
+        this._tenantName=JSON.parse(sessionStorage.getItem('tenant'));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
     }
 }
 
@@ -63,9 +63,31 @@ class EducationalStageList{
     educationalStage:string;
 }
 
+export class FilterParamsForAdvancedSearch {
+    columnName: string;
+    filterValue: string;
+    filterOption: number;
+    constructor() {
+        this.filterOption = 1;
+    }
+}
+
+export class ActiveDeactiveUserModel extends CommonField {
+    public userId: number;
+    public isActive: boolean;
+    public module: string;
+    public loginEmail: string;
+}
+
 export class BulkDataImportExcelHeader extends CommonField{
     customfieldTitle:CustomFieldModel[];
     module: string;
+    constructor(){
+        super();
+    }
+}
+
+export class DatabaseBackupModel extends CommonField {
     constructor(){
         super();
     }

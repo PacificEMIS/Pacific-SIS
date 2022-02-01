@@ -30,7 +30,7 @@ export class SchoolPeriodService {
   updateBlockPeriod(obj: BlockPeriodAddViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.blockPeriod.schoolId = this.defaultValuesService.getSchoolID();
-    obj.blockPeriod.updatedBy = this.defaultValuesService.getEmailId();
+    obj.blockPeriod.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.blockPeriod.tenantId = this.defaultValuesService.getTenantID();
     let apiurl = this.apiUrl + obj._tenantName + "/Period/updateBlockPeriod";
     return this.http.put<BlockPeriodAddViewModel>(apiurl, obj,this.httpOptions)
@@ -39,7 +39,7 @@ export class SchoolPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.blockPeriod.schoolId = this.defaultValuesService.getSchoolID();
     obj.blockPeriod.tenantId = this.defaultValuesService.getTenantID();
-    obj.blockPeriod.createdBy = this.defaultValuesService.getEmailId();
+    obj.blockPeriod.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Period/addBlockPeriod';
     return this.http.post<BlockPeriodAddViewModel>(apiurl, obj,this.httpOptions);
   }
@@ -48,7 +48,7 @@ export class SchoolPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.block.tenantId = this.defaultValuesService.getTenantID();
     obj.block.schoolId = this.defaultValuesService.getSchoolID();
-    obj.block.createdBy = this.defaultValuesService.getEmailId();
+    obj.block.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Period/addBlock';
     return this.http.post<BlockAddViewModel>(apiurl, obj,this.httpOptions);
   }
@@ -56,7 +56,7 @@ export class SchoolPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.block.tenantId = this.defaultValuesService.getTenantID();
     obj.block.schoolId = this.defaultValuesService.getSchoolID();
-    obj.block.updatedBy = this.defaultValuesService.getEmailId();
+    obj.block.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Period/updateBlock' ;
     return this.http.put<BlockAddViewModel>(apiurl, obj,this.httpOptions);
   }
@@ -72,18 +72,19 @@ export class SchoolPeriodService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.block.tenantId = this.defaultValuesService.getTenantID();
     obj.block.schoolId = this.defaultValuesService.getSchoolID();
-    obj.block.updatedBy = this.defaultValuesService.getEmailId();
+    obj.block.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Period/updateHalfDayFullDayMinutesForBlock';
     return this.http.put<BlockPeriodForHalfDayFullDayModel>(apiurl, obj,this.httpOptions);
   }
   getAllBlockList(obj: BlockListViewModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear()
     let apiurl = this.apiUrl + obj._tenantName + '/Period/getAllBlockList' ;
     return this.http.post<BlockListViewModel>(apiurl,obj);
   }
   updateBlockPeriodSortOrder(obj: BlockPeriodSortOrderViewModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.updatedBy = this.defaultValuesService.getEmailId();
+    obj.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Period/updateBlockPeriodSortOrder' ;
     return this.http.put<BlockPeriodSortOrderViewModel>(apiurl, obj,this.httpOptions);
   }

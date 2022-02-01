@@ -32,7 +32,7 @@ export class MembershipService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.membership.schoolId = this.defaultValuesService.getSchoolID();
     obj.membership.tenantId = this.defaultValuesService.getTenantID();
-    obj.membership.createdBy = this.defaultValuesService.getEmailId();
+    obj.membership.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Membership/addMembership';
     return this.http.post<AddMembershipModel>(apiurl, obj,this.httpOptions);
   }
@@ -40,7 +40,7 @@ export class MembershipService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.membership.schoolId = this.defaultValuesService.getSchoolID();
     obj.membership.tenantId = this.defaultValuesService.getTenantID();
-    obj.membership.updatedBy = this.defaultValuesService.getEmailId();
+    obj.membership.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + obj._tenantName + '/Membership/updateMembership';
     return this.http.put<AddMembershipModel>(apiurl, obj,this.httpOptions);
   }

@@ -44,12 +44,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LoaderService } from '../../../services/loader.service';
-import { LayoutService } from '../../../../@vex/services/layout.service';
 import { ExcelService } from '../../../services/excel.service';
 import { CryptoService } from '../../../services/Crypto.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-rooms',
   templateUrl: './rooms.component.html',
@@ -78,21 +78,12 @@ export class RoomsComponent implements OnInit {
     private snackbar: MatSnackBar,
     private excelService: ExcelService,
     private translateService: TranslateService,
-    private loaderService: LoaderService, private layoutService: LayoutService,
+    private loaderService: LoaderService,
     private cryptoService: CryptoService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
   ) {
-    //translateService.use('en');
-    if (localStorage.getItem('collapseValue') !== null) {
-      if (localStorage.getItem('collapseValue') === 'false') {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
@@ -110,15 +101,16 @@ export class RoomsComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/school-settings/rooms')
-    this.roomListViewModel.schoolId = +sessionStorage.getItem('selectedSchoolId');
+    this.roomListViewModel.schoolId = this.defaultValuesService.getSchoolID();
     this.getAllRooms();
   }
   getAllRooms() {
     this.roomListViewModel.includeInactive = true;
+    this.roomListViewModel.isListView=true;
     this.roomService.getAllRoom(this.roomListViewModel).subscribe(
       (res: RoomListViewModel) => {
-        if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        if (typeof(res) === 'undefined'){
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -206,8 +198,8 @@ export class RoomsComponent implements OnInit {
             this.getAllRooms();
           }
         }
-        else {
-          this.snackbar.open(sessionStorage.getItem('httpError'), '', {
+        else{
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

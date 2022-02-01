@@ -26,8 +26,8 @@
         <mat-label>{{'allowEntryBy' | translate}}</mat-label>
         <mat-select name="allowEntryBy" formControlName="allowEntryBy">
             <mat-option value="null">N/A</mat-option>
-            <mat-option value="Teacher & Office">Teacher & Office</mat-option>
-            <mat-option value="Office Only">Office Only</mat-option>
+            <mat-option value="Teacher & Office">{{'teacherAndOffice'|translate}}</mat-option>
+            <mat-option value="Office Only">{{'officeOnly'|translate}}</mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -36,9 +36,9 @@
     <mat-form-field class="w-full" appearance="outline" color="primary" >
         <mat-label>{{'stateCode' | translate}}</mat-label>
         <mat-select name="stateCode" formControlName="stateCode" required>
-            <mat-option value="Present">Present</mat-option>
-            <mat-option value="Absent">Absent</mat-option>
-            <mat-option value="Half Day">Half Day</mat-option>
+            <mat-option value="Present">{{'present'|translate}}</mat-option>
+            <mat-option value="Absent">{{'absent'|translate}}</mat-option>
+            <mat-option value="Half Day">{{'halfDay'|translate}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('stateCode').hasError('required')">{{'stateCodeIsRequired'|translate}}</mat-error>
     </mat-form-field>

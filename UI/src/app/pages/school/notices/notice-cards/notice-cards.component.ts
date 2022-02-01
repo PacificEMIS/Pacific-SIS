@@ -78,7 +78,7 @@ export class NoticeCardsComponent implements OnInit {
     private Activeroute: ActivatedRoute,
     private snackbar: MatSnackBar,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
   ) {
     //translateService.use('en');

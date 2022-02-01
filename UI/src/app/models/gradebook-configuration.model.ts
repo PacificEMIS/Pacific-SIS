@@ -1,7 +1,25 @@
 import { CommonField } from "./common-field.model";
-import { TableQuarter, TableSchoolSemester, TableSchoolYear } from "./marking-period.model";
+import { TableProgressPeriod, TableQuarter, TableSchoolSemester, TableSchoolYear } from "./marking-period.model";
 
-
+export class GradebookConfigurationProgressPeriods {
+    id: number;
+    tenantId: string;
+    schoolId: number;
+    courseId: number;
+    courseSectionId: number;
+    academicYear: number;
+    gradebookConfigurationId: number;
+    prgrsprdMarkingPeriodId: number;
+    gradingPercentage: number;
+    examPercentage: number;
+    title: string;  // for view
+    doesGrades: boolean;  // for view
+    doesExam: boolean;  // for view
+    createdBy: string;
+    createdOn: string;
+    updatedBy: string;
+    updatedOn: string;
+}
 
 export class GradebookConfigurationQuarter{
     id: number;
@@ -12,6 +30,7 @@ export class GradebookConfigurationQuarter{
     academicYear: number;
     gradebookConfigurationId: number;
     qtrMarkingPeriodId: number;
+    prgrsprdMarkingPeriodId: number;
     gradingPercentage: number;
     examPercentage: number;
     title: string;  // for view
@@ -97,6 +116,7 @@ export class GradebookConfiguration {
     maxAnomalousGrade: number;
     upgradedAssignmentGradeDays: number;
     gradebookConfigurationGradescale: GradebookConfigurationGradescale[];
+    gradebookConfigurationProgressPeriods: GradebookConfigurationProgressPeriods[];
     gradebookConfigurationQuarter: GradebookConfigurationQuarter[];
     gradebookConfigurationSemester:GradebookConfigurationSemester[];
     gradebookConfigurationYear: GradebookConfigurationYear[];
@@ -107,6 +127,7 @@ export class GradebookConfiguration {
     constructor(){
         this.scoreRounding = 'up';
         this.assignmentSorting = 'newestFirst';
+        this.gradebookConfigurationProgressPeriods = [new GradebookConfigurationProgressPeriods()];
         this.gradebookConfigurationQuarter= [new GradebookConfigurationQuarter()];
         this.gradebookConfigurationSemester= [new GradebookConfigurationSemester()];
         this.gradebookConfigurationYear= [new GradebookConfigurationYear()];
@@ -125,6 +146,7 @@ export class FinalGradingMarkingPeriodList extends CommonField{
     tenantId: string;
     schoolId: number;
     academicYear: number;
+    progressPeriods: TableProgressPeriod[];
     quarters: TableQuarter[];
     semesters: TableSchoolSemester[];
     schoolYears: TableSchoolYear;

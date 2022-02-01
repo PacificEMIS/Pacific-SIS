@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input , AfterViewInit,OnDestroy, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
@@ -32,7 +32,7 @@ import { StudentService } from '../../../../services/student.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from '../../../../services/common.service';
-import { StudentAddModel} from '../../../../models/student.model';
+import { StudentAddModel } from '../../../../models/student.model';
 import { CountryModel } from '../../../../models/country.model';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
@@ -50,6 +50,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 @Component({
   selector: 'vex-student-addressandcontacts',
   templateUrl: './student-addressandcontacts.component.html',
@@ -60,7 +62,7 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
     fadeInRight400ms
   ],
 })
-export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, AfterViewInit {
+export class StudentAddressandcontactsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() studentDetailsForViewAndEdit;
   @ViewChild('f') currentForm: NgForm;
   @ViewChild('checkBox') checkBox;
@@ -90,43 +92,47 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
   mailingAddressCountryFilterCtrl: FormControl = new FormControl();
   public filteredMailingAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   permissions: Permissions;
-  constructor(public translateService: TranslateService,
-              private snackbar: MatSnackBar,
-              private studentService: StudentService,
-              private commonService: CommonService,
-              private cryptoService: CryptoService,
-              private defaultValuesService: DefaultValuesService,
-              private pageRolePermissions: PageRolesPermission,
-              private imageCropperService: ImageCropperService) {
-      //translateService.use('en');
-    }
+  constructor(
+    public translateService: TranslateService,
+    private snackbar: MatSnackBar,
+    private dialog: MatDialog,
+    private studentService: StudentService,
+    private commonService: CommonService,
+    private cryptoService: CryptoService,
+    private defaultValuesService: DefaultValuesService,
+    private pageRolePermissions: PageRolesPermission,
+    private imageCropperService: ImageCropperService
+  ) {
+    //translateService.use('en');
+    this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
+  }
 
   ngOnInit(): void {
-    this.studentService.studentCreatedMode.subscribe((res)=>{
+    this.studentService.studentCreatedMode.subscribe((res) => {
       this.studentCreateMode = res;
     });
-    this.studentService.studentDetailsForViewedAndEdited.subscribe((res)=>{
+    this.studentService.studentDetailsForViewedAndEdited.subscribe((res) => {
       this.studentDetailsForViewAndEdit = res;
     });
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllCountry();
-    if (this.studentCreateMode === this.studentCreate.VIEW){
+    if (this.studentCreateMode === this.studentCreate.VIEW) {
       this.studentService.changePageMode(this.studentCreateMode);
       this.data = this.studentDetailsForViewAndEdit?.studentMaster;
       this.studentAddModel = this.studentDetailsForViewAndEdit;
       this.cloneStudentAddModel = JSON.stringify(this.studentAddModel);
-    }else{
+    } else {
       this.studentService.changePageMode(this.studentCreateMode);
       this.studentAddModel = this.studentService.getStudentDetails();
       this.cloneStudentAddModel = JSON.stringify(this.studentAddModel);
       this.data = this.studentAddModel?.studentMaster;
     }
   }
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.homeAddressCountryValueChange();
     this.mailingAddressCountryValueChange();
   }
-  filterHomeAddressCountry(){
+  filterHomeAddressCountry() {
     if (!this.countryListArr) {
       return;
     }
@@ -142,7 +148,7 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
       this.countryListArr.filter(country => country.name.toLowerCase().indexOf(search) > -1)
     );
   }
-  filterMailingAddressCountry(){
+  filterMailingAddressCountry() {
     if (!this.countryListArr) {
       return;
     }
@@ -158,34 +164,38 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
       this.countryListArr.filter(country => country.name.toLowerCase().indexOf(search) > -1)
     );
   }
-  homeAddressCountryValueChange(){
+  homeAddressCountryValueChange() {
     this.homeAddressCountryFilterCtrl.valueChanges
-    .pipe(takeUntil(this._onDestroy))
-    .subscribe(() => {
-      this.filterHomeAddressCountry();
-    });
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
+        this.filterHomeAddressCountry();
+      });
   }
-  mailingAddressCountryValueChange(){
+  mailingAddressCountryValueChange() {
     this.mailingAddressCountryFilterCtrl.valueChanges
-    .pipe(takeUntil(this._onDestroy))
-    .subscribe(() => {
-      this.filterMailingAddressCountry();
-    });
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
+        this.filterMailingAddressCountry();
+      });
   }
 
 
 
-  editAddressContactInfo(){
+  editAddressContactInfo() {
     this.studentCreateMode = this.studentCreate.EDIT;
     this.studentService.changePageMode(this.studentCreateMode);
     this.actionButtonTitle = 'update';
     this.getAllCountry();
-    this.studentAddModel.studentMaster.homeAddressCountry = +this.studentAddModel.studentMaster.homeAddressCountry;
+    if( this.studentAddModel.studentMaster.homeAddressCountry == 0 || this.studentAddModel.studentMaster.homeAddressCountry === null){
+      this.studentAddModel.studentMaster.homeAddressCountry = null;
+    } else {
+      this.studentAddModel.studentMaster.homeAddressCountry = +this.studentAddModel.studentMaster.homeAddressCountry;
+    }
     this.studentAddModel.studentMaster.mailingAddressCountry = +this.studentAddModel.studentMaster.mailingAddressCountry;
   }
 
-  cancelEdit(){
-    if (JSON.stringify(this.studentAddModel) !== this.cloneStudentAddModel){
+  cancelEdit() {
+    if (JSON.stringify(this.studentAddModel) !== this.cloneStudentAddModel) {
       this.studentAddModel = JSON.parse(this.cloneStudentAddModel);
       this.studentDetailsForViewAndEdit = JSON.parse(this.cloneStudentAddModel);
       this.studentService.sendDetails(JSON.parse(this.cloneStudentAddModel));
@@ -197,25 +207,25 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
     this.imageCropperService.cancelImage('student');
   }
 
-  copyHomeAddress(check){
-    if(this.studentAddModel.studentMaster.mailingAddressSameToHome === false || this.studentAddModel.studentMaster.mailingAddressSameToHome === null){
-      if(this.studentAddModel.studentMaster.homeAddressLineOne !== undefined && this.studentAddModel.studentMaster.homeAddressCity !== undefined &&
-        this.studentAddModel.studentMaster.homeAddressState !== undefined && this.studentAddModel.studentMaster.homeAddressZip !== undefined ){
-      this.studentAddModel.studentMaster.mailingAddressLineOne = this.studentAddModel.studentMaster.homeAddressLineOne;
-      this.studentAddModel.studentMaster.mailingAddressLineTwo = this.studentAddModel.studentMaster.homeAddressLineTwo;
-      this.studentAddModel.studentMaster.mailingAddressCity = this.studentAddModel.studentMaster.homeAddressCity;
-      this.studentAddModel.studentMaster.mailingAddressState = this.studentAddModel.studentMaster.homeAddressState;
-      this.studentAddModel.studentMaster.mailingAddressZip = this.studentAddModel.studentMaster.homeAddressZip;
-      this.studentAddModel.studentMaster.mailingAddressCountry = +this.studentAddModel.studentMaster.homeAddressCountry;
+  copyHomeAddress(check) {
+    if (this.studentAddModel.studentMaster.mailingAddressSameToHome === false || this.studentAddModel.studentMaster.mailingAddressSameToHome === null) {
+      if (this.studentAddModel.studentMaster.homeAddressLineOne !== undefined && this.studentAddModel.studentMaster.homeAddressCity !== undefined &&
+        this.studentAddModel.studentMaster.homeAddressState !== undefined && this.studentAddModel.studentMaster.homeAddressZip !== undefined) {
+        this.studentAddModel.studentMaster.mailingAddressLineOne = this.studentAddModel.studentMaster.homeAddressLineOne;
+        this.studentAddModel.studentMaster.mailingAddressLineTwo = this.studentAddModel.studentMaster.homeAddressLineTwo;
+        this.studentAddModel.studentMaster.mailingAddressCity = this.studentAddModel.studentMaster.homeAddressCity;
+        this.studentAddModel.studentMaster.mailingAddressState = this.studentAddModel.studentMaster.homeAddressState;
+        this.studentAddModel.studentMaster.mailingAddressZip = this.studentAddModel.studentMaster.homeAddressZip;
+        this.studentAddModel.studentMaster.mailingAddressCountry = +this.studentAddModel.studentMaster.homeAddressCountry;
 
-    }else{
-      this.checkBoxChecked = check ? true : false;
-      this.snackbar.open('Please Provide All Mandatory Fields First', '', {
-        duration: 10000
-      });
-    }
+      } else {
+        this.checkBoxChecked = check ? true : false;
+        this.snackbar.open('Please Provide All Mandatory Fields First', '', {
+          duration: 10000
+        });
+      }
 
-    }else{
+    } else {
       this.studentAddModel.studentMaster.mailingAddressLineOne = '';
       this.studentAddModel.studentMaster.mailingAddressLineTwo = '';
       this.studentAddModel.studentMaster.mailingAddressCity = '';
@@ -224,44 +234,45 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
       this.studentAddModel.studentMaster.mailingAddressCountry = null;
     }
   }
-  getAllCountry(){
+  getAllCountry() {
     this.commonService.GetAllCountry(this.countryModel).subscribe(data => {
-      if (data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
+      if (data) {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.countryListArr = [];
-          if(!data.tableCountry){
+          if (!data.tableCountry) {
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
           }
         } else {
-          this.countryListArr = data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1 );
+          this.filteredHomeAddressCountry.next(data.tableCountry?.slice());
+          this.countryListArr = data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1);
           if (this.studentCreateMode === this.studentCreate.VIEW) {
-          this.findCountryNameById();
-         }
+            this.findCountryNameById();
+          }
         }
-      }else{
+      } else {
         this.countryListArr = [];
       }
     });
   }
 
-  findCountryNameById(){
+  findCountryNameById() {
     this.countryListArr.map((val) => {
       const countryInNumber = +this.data.homeAddressCountry;
       const mailingAddressCountry = +this.data.mailingAddressCountry;
-      if (val.id === countryInNumber){
-          this.nameOfMiscValuesForView.countryName = val.name;
+      if (val.id === countryInNumber) {
+        this.nameOfMiscValuesForView.countryName = val.name;
       }
-      if (val.id === mailingAddressCountry){
-          this.nameOfMiscValuesForView.mailingAddressCountry = val.name;
+      if (val.id === mailingAddressCountry) {
+        this.nameOfMiscValuesForView.mailingAddressCountry = val.name;
       }
     });
   }
 
-  checkBoxCheckInEditMode(){
-    if (this.checkBox?.checked){
+  checkBoxCheckInEditMode() {
+    if (this.checkBox?.checked) {
       this.studentAddModel.studentMaster.mailingAddressLineOne = this.studentAddModel.studentMaster.homeAddressLineOne;
       this.studentAddModel.studentMaster.mailingAddressLineTwo = this.studentAddModel.studentMaster.homeAddressLineTwo;
       this.studentAddModel.studentMaster.mailingAddressCity = this.studentAddModel.studentMaster.homeAddressCity;
@@ -270,15 +281,42 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
       this.studentAddModel.studentMaster.mailingAddressCountry = +this.studentAddModel.studentMaster.homeAddressCountry;
     }
   }
-  submit(){
+
+  confirmAddStudent() {
+    let mode = 'add';
+    if (this.studentCreateMode === this.studentCreate.EDIT) {
+      mode = 'update';
+    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: "400px",
+      disableClose: true,
+      data: {
+        title: "Are you sure?",
+        message: "You are about to " + mode + " duplicate data"
+      }
+    });
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if (dialogResult) {
+        this.studentAddModel.allowDuplicate = true;
+        this.submit();
+      }
+    });
+  }
+
+  submit() {
     this.checkBoxCheckInEditMode();
     this.studentService.UpdateStudent(this.studentAddModel).subscribe(data => {
-      if (data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.snackbar.open( data._message, '', {
-            duration: 10000
-          });
+      if (data) {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
+          if (data.checkDuplicate === 1) {
+            this.confirmAddStudent();
+          }
+          else {
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          }
         } else {
           this.snackbar.open(data._message, '', {
             duration: 10000
@@ -294,19 +332,22 @@ export class StudentAddressandcontactsComponent implements OnInit,OnDestroy, Aft
           this.studentService.changePageMode(this.studentCreateMode);
         }
       }
-      else{
-        this.snackbar.open(this.defaultValuesService.translateKey('studentUpdationfailed') + sessionStorage.getItem('httpError'), '', {
+      else {
+        this.snackbar.open(this.defaultValuesService.translateKey('studentUpdationfailed') +
+          this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
     });
   }
 
-  ngOnDestroy(){
-    if (JSON.stringify(this.studentAddModel) !== this.cloneStudentAddModel){
+  ngOnDestroy() {
+    if(this.studentService.getStudentId()){
+    if (JSON.stringify(this.studentAddModel) !== this.cloneStudentAddModel) {
       this.studentAddModel = JSON.parse(this.cloneStudentAddModel);
       this.studentDetailsForViewAndEdit = JSON.parse(this.cloneStudentAddModel);
       this.studentService.sendDetails(JSON.parse(this.cloneStudentAddModel));
     }
+  }
   }
 }

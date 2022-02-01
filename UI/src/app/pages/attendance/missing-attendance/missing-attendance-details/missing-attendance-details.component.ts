@@ -26,6 +26,7 @@ All rights reserved.
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import icSearch from "@iconify/icons-ic/search";
+import icHowToReg from "@iconify/icons-ic/outline-how-to-reg";
 import { StudentAttendanceService } from "src/app/services/student-attendance.service";
 import { ScheduledCourseSectionViewModel } from "src/app/models/dashboard.model";
 import { GetAllStaffModel } from "src/app/models/staff.model";
@@ -43,6 +44,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { FormControl } from "@angular/forms";
 import { CommonService } from "src/app/services/common.service";
 
+import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
   selector: "vex-missing-attendance-details",
   templateUrl: "./missing-attendance-details.component.html",
@@ -55,6 +57,7 @@ import { CommonService } from "src/app/services/common.service";
 })
 export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit, OnDestroy{
   icSearch = icSearch;
+  icHowToReg = icHowToReg;
   scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();
   getAllStaffModel: GetAllStaffModel= new GetAllStaffModel();
   staffDetails;
@@ -83,8 +86,9 @@ export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit,
     private loaderService: LoaderService,
     private studentAttendanceService: StudentAttendanceService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
     ) {
-    translateService.use("en");
+    // translateService.use("en");
     this.staffDetails = this.studentAttendanceService.getStaffDetails();
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -220,7 +224,7 @@ this.searchCtrl= new FormControl();
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

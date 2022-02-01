@@ -1,7 +1,7 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{ 'missingAttendance' | translate }}" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Attendance']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{ 'missingAttendance'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
@@ -20,7 +20,7 @@
                             <input [formControl]="searchCtrl"
                             class="py-3 border-0 outline-none w-full bg-transparent table-search"
                             placeholder="Search..." type="search">
-                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5">
+                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
                         <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                             <mat-icon>search</mat-icon>
                         </button>
@@ -41,7 +41,7 @@
                     <ng-container matColumnDef="staffName">
                         <th mat-header-cell *matHeaderCellDef>{{'teacher' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
-                            {{element.staffFirstGivenName + '' + element.staffLastFamilyName }}
+                            {{element.staffFirstGivenName + ' ' + element.staffLastFamilyName }}
                         </td>
                     </ng-container>
     
@@ -60,7 +60,7 @@
                     <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef>{{'takeAttendance' | translate}}</th>
                         <td mat-cell *matCellDef="let element" class="cursor-pointer text-primary">
-                            <a (click)="takeAttendance(element)"><mat-icon class="mr-1 align-middle">how_to_reg</mat-icon></a>
+                            <a (click)="takeAttendance(element)"><mat-icon class="mr-1 align-middle" [icIcon]="icHowToReg"></mat-icon></a>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="noData">

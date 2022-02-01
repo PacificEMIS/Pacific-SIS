@@ -37,6 +37,11 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { SchoolAddViewModel } from '../../../../../models/school-master.model';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
+import { StudentService } from 'src/app/services/student.service';
+import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
+import { RollBasedAccessService } from 'src/app/services/roll-based-access.service';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'vex-view-sibling',
   templateUrl: './view-sibling.component.html',
@@ -63,6 +68,10 @@ export class ViewSiblingComponent implements OnInit {
               private parentInfoService: ParentInfoService,
               private defaultValuesService: DefaultValuesService,
               private commonService: CommonService,
+              private studentService: StudentService,
+              public rollBasedAccessService: RollBasedAccessService,
+              private pageRolePermission: PageRolesPermission,
+              private router: Router,
               @Optional() @Inject(MAT_DIALOG_DATA) public data: any) {}
 
 
@@ -142,6 +151,37 @@ export class ViewSiblingComponent implements OnInit {
         duration: 5000
       });
     }
+  }
+
+  viewStudentDetails() {
+    this.studentService.setStudentId(this.data?.studentDetails?.studentId);
+    this.defaultValuesService.setSchoolID(this.data?.studentDetails?.schoolId, true);
+    // this.defaultValuesService.setAcademicYear(data.academicYear, true);
+    this.getPermissionForStudent();
+    this.dialogRef.close();
+
+    // this.router.navigate(["school/students/student-generalinfo"]); 
+  }
+
+  getPermissionForStudent() {
+    let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
+      if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
+      } else {
+        let permittedDetails = this.pageRolePermission.getPermittedSubCategories('/school/students', res);
+        if (permittedDetails.length) {
+          this.studentService.setCategoryId(0);
+          this.studentService.setCategoryTitle(permittedDetails[0].title);
+          this.router.navigate([permittedDetails[0].path], { state: { permissions: res } });
+        } else {
+          this.defaultValuesService.setSchoolID(undefined);
+          this.snackbar.open(`You don't have permission to view student details.`, '', {
+            duration: 10000
+          });
+        }
+      }
+    });
   }
 
 }

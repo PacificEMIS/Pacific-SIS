@@ -30,7 +30,7 @@
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'type' | translate}}</mat-label>
         <mat-select name="type" formControlName="type" required>
-                <mat-option *ngFor="let typevalue of enrollmentCodeEnum" [value]="typevalue" >
+                <mat-option *ngFor="let typevalue of filterdListOfValus" [value]="typevalue" >
                     {{typevalue}}
                 </mat-option>
         </mat-select>

@@ -41,6 +41,29 @@ export const color = [
     }
 ];
 
+export const reportCardType = [
+  {
+    reportCardType: 'default',
+    reportCardTypeName: 'Default'
+  },
+  {
+    reportCardType: 'chuuk',
+    reportCardTypeName: 'Chuuk'
+  },
+  {
+    reportCardType: 'kosrae',
+    reportCardTypeName: 'Kosrae'
+  },
+  {
+    reportCardType: 'pohnpei',
+    reportCardTypeName: 'Pohnpei'
+  },
+  {
+    reportCardType: 'yap',
+    reportCardTypeName: 'Yap'
+  },
+];
+
 export const uniqueColors = [
     {
         id: null,

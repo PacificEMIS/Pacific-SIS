@@ -44,23 +44,23 @@ export class LovSettingsComponent implements OnInit {
   pageTitle:string;
   pageId: string = '';
 
-  constructor(private pageRolePermissions:PageRolesPermission) { }
+  constructor(private pageRolePermissions:PageRolesPermission, private defaultValuesService: DefaultValuesService) { }
 
   ngOnInit(): void {
     let permittedSubmenuList = this.pageRolePermissions.getPermittedSubCategories('/school/settings/lov-settings');
     permittedSubmenuList.map((option)=>{
         this.pages.push(option.title);
     })
-    let availablePageId=localStorage.getItem("pageId");
+    let availablePageId=this.defaultValuesService.getPageId();
     if(!availablePageId){
-          localStorage.setItem("pageId",this.pages[0]);
+         this.defaultValuesService.setPageId(this.pages[0]);
     }
-    this.pageId = localStorage.getItem("pageId");
+    this.pageId = this.defaultValuesService.getPageId();
   }
 
   getSelectedPage(pageId){
     this.pageId = pageId;
-    localStorage.setItem("pageId", pageId);
+    this.defaultValuesService.setPageId(pageId);
   }
 
 }

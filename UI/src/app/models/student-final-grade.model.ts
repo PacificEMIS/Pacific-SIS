@@ -1,5 +1,6 @@
 
 import { CommonField } from './common-field.model'
+import { StudentListView } from './student.model';
 
 export class StudentFinalGrade {
     public tenantId: string;
@@ -54,6 +55,44 @@ export class AddUpdateStudentFinalGradeModel extends CommonField {
     isPercent: boolean;
     markingPeriodId: string;
     academicYear: number;
+    isExamGrade: boolean;
+    isCustomMarkingPeriod: boolean;
     createdOrUpdatedBy: string;
+}
 
+export class GetAllStudentListForFinalGradeModel extends CommonField {
+    public studentListViews: StudentListView[];
+    public studentId: number;
+    public enrollmentCode: number;
+    public enrollmentDate: string;
+    public gradeId: number;
+    public gradeLevelTitle: string;
+    public academicYear: number;
+    public updatedBy: string;
+    public totalCount: number;
+    public pageNumber: number;
+    public pageSize: number;
+    public _pageSize: number;
+    public filterParams: filterParams[];
+    public dobStartDate: string;
+    public dobEndDate: string;
+    public includeInactive: boolean;
+    public emailAddress: string;
+    constructor() {
+        super();
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.filterParams = [];
+    }
+}
+
+export class filterParams {
+    columnName: string;
+    filterValue: string;
+    filterOption: number;
+    constructor() {
+        this.columnName = null;
+        this.filterOption = 3;
+        this.filterValue = null;
+    }
 }

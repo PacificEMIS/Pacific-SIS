@@ -1,20 +1,25 @@
+
 <vex-page-layout>
     <vex-page-layout-header fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Database Backup" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Tools']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'databaseBackup'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['tools']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
     <vex-page-layout-content>
+
         <div class="md:w-3/5 m-auto">
-            <div class="card pt-10 pb-4 px-8 text-center">
-                <img src="assets/img/database-backup.jpeg" width="250" class="inline-block mb-8">
-                <h3 class="text-warn font-bold mb-2 text-xl">{{ 'pleaseNote' | translate }}</h3>
-                <p class="mb-8">{{'thisBackupUtilityWillCreateaBackupOfTheDatabaseAlongWithTheDatabaseStructureYouWillBeAbleToUseThisBackupFileToRestoreTheDatabaseHoweverInOrderToRestoreYouWillNeedToHaveAccessToMysqlAdministrationApplicationLikePhpMyadminAndTheRootUserIdAndPasswordToMysql' | translate }}</p>
-                <div class="text-right">
-                    <button mat-flat-button>{{ 'cancel' | translate }}</button>
-                    <button mat-raised-button color="primary" class="ml-4"><mat-icon>download</mat-icon><span class="ml-2">{{ 'backupDatabase' | translate }}</span></button>
+            <div class="card pt-10 pb-4 px-4 text-center">
+                <img src="assets/img/database-backup.jpeg" alt="Database backup icon" width="250" class="inline-block mb-8">
+                <p class="mb-8 px-4"><span class="text-warn font-bold">{{ 'pleaseNote' | translate }}</span><span class="text-warn font-bold mx-1">:</span>{{'thisBackupUtilityWillCreateaBackupOfTheDatabaseAlongWithTheDatabaseStructureYouWillBeAbleToUseThisBackupFileToRestoreTheDatabaseHoweverInOrderToRestoreYouWillNeedToHaveAccessToMysqlAdministrationApplicationLikePhpMyadminAndTheRootUserIdAndPasswordToMysql' | translate }}</p>
+                <mat-divider class="-mx-4"></mat-divider>
+                <div class="sm:flex justify-between items-center py-3 sm:py-2">
+                    <p class="mb-2 sm:mb-0"></p>
+                    <!-- <p class="mb-2 sm:mb-0">10 {{ 'backupFound' | translate }}</p> -->
+                    <button mat-raised-button color="primary" (click)="crateDatabaseBackup()">{{ 'createDatabaseBackup' | translate }}</button>
                 </div>
+                <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
             </div>
         </div>
     </vex-page-layout-content>

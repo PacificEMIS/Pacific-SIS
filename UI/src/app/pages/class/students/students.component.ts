@@ -185,7 +185,7 @@ export class StudentsComponent implements OnInit, AfterViewInit {
 
   searchScheduledStudentForGroupDrop(){
     this.getAllStudent.includeInactive=this.showInactiveStudents;
-    this.getAllStudent.courseSectionId = +localStorage.getItem('courseSectionId');
+    this.getAllStudent.courseSectionId = this.defaultValuesService.getCourseSectionId();
     if (this.getAllStudent.sortingModel?.sortColumn === ''){
       this.getAllStudent.sortingModel = null;
     }

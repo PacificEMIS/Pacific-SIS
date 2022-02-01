@@ -213,7 +213,7 @@
                         teacher.firstGivenName + ' ' + teacher.lastFamilyName
                       " aria-label="Button that displays a tooltip when focused or hovered over"
                         [matTooltipPosition]="'above'">
-                        <img src="assets/img/icons/teacher_blue.svg" alt="" width="20" />
+                        <img src="assets/img/icons/teacher_blue.svg" alt="Teacher icon" width="20" />
                       </button>
                     </ng-container>
                     <ng-container *ngIf="course.staffMasterList?.length===0|| !course.staffMasterList">
@@ -221,13 +221,30 @@
                     </ng-container>
                   </td>
                   <td>{{ course.markingPeriodTitle }}</td>
-                  <td>{{ course.enrolledDate | date: "mediumDate" }}</td>
+                  <!-- <td>{{ course.enrolledDate | date: "mediumDate" }}</td> -->
                   <td>
-                    <span *ngIf="!course.takeInput; else inputBox">
+                    <span *ngIf="!course.takeInput; else inputBoxEnroll">
+                      {{ course.effectiveStartDate | date: "mediumDate" }}
+                    </span>
+                    <ng-template #inputBoxEnroll>
+                      <mat-form-field class="w-ful mb-0" appearance="outline" color="primary">
+                        <mat-label>{{ "enrolledDate" | translate }}</mat-label>
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="
+                          selectionForDropDateUpdate[index].effectiveStartDate"  
+                          [min]="selectionForDropDateUpdate[index].courseSectionDurationStartDate"
+                          [max]="selectionForDropDateUpdate[index].courseSectionDurationEndDate" />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </ng-template>
+                  </td>
+
+                  <td>
+                    <span *ngIf="!course.takeInput; else inputBoxEnd">
                       {{ course.effectiveDropDate | date: "mediumDate" }}
                     </span>
 
-                    <ng-template #inputBox>
+                    <ng-template #inputBoxEnd>
                       <mat-form-field class="w-ful mb-0" appearance="outline" color="primary">
                         <mat-label>{{ "endDropDate" | translate }}</mat-label>
                         <input matInput [matDatepicker]="picker" [(ngModel)]="
@@ -377,11 +394,13 @@
 									-
                   '+(period.periodEndTime|transform24to12Pipe)}}
                 </td>
-                <ng-container *ngFor="let courseSection of period.filteredEvents;let first=first;let last=last">
+                <ng-container *ngFor="let courseSections of period.filteredEvents;let first=first;let last=last">
                   <td [ngClass]="(first || last)?!showWeekendsRoutingView?'hidden':'bg-red-light':''">
-                    <ng-container *ngIf="courseSection">
+                    <ng-container *ngIf="courseSections">
+                      <ng-container *ngFor="let courseSection of courseSections">
                       <p class="font-semibold" [class]="courseSection.color">{{courseSection.courseSectionName}}</p>
                       {{courseSection.staffName?.split('-')[1]}}
+                    </ng-container>
                     </ng-container>
                   </td>
                 </ng-container>

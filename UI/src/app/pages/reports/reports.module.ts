@@ -19,7 +19,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 
-
 @NgModule({
   declarations: [ReportsComponent],
   imports: [

@@ -159,11 +159,39 @@
                                     <mat-row *matRowDef="let row; columns: displayedVariableColumns;"></mat-row>
                                 </table>
                             </div>
+
+                            <div *ngIf="detail.element.scheduleType == 'Block Schedule'" class="flex-1 border rounded mb-4">
+                                <table mat-table #table [dataSource]="detail.element.scheduleDetails" class="sub-table">
+     
+                                    <ng-container matColumnDef="day">
+                                        <mat-header-cell *matHeaderCellDef> {{'day' | translate }} </mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.day}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="period">
+                                        <mat-header-cell *matHeaderCellDef> {{'period' | translate }} </mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.period}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="time">
+                                        <mat-header-cell *matHeaderCellDef> {{'time' | translate }} </mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.time}} </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="room">
+                                        <mat-header-cell *matHeaderCellDef> {{'room' | translate }} </mat-header-cell>
+                                        <mat-cell *matCellDef="let element"> {{element.room}} </mat-cell>
+                                    </ng-container>
+
+                                    <mat-header-row *matHeaderRowDef="displayedVariableColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedVariableColumns;"></mat-row>
+                                </table>
+                            </div>
                         </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="noData">
                         <td mat-footer-cell *matFooterCellDef colspan="6">
-                            {{('noData'|translate)}}
+                            {{('thisStaffHasNotBeenScheduledIntoAnyCourse'|translate)}}
                         </td>
                     </ng-container>
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -263,12 +291,14 @@
                                                   -
                                 '+(period.periodEndTime|transform24to12Pipe)}}
                               </td>
-                              <ng-container *ngFor="let courseSection of period.filteredEvents;let first=first;let last=last">
+                              <ng-container *ngFor="let courseSections of period.filteredEvents;let first=first;let last=last">
                                 <td>
-                                  <ng-container *ngIf="courseSection">
+                                  <ng-container *ngIf="courseSections">
+                                    <ng-container *ngFor="let courseSection of courseSections">
                                     <p class="font-semibold" [class]="courseSection.color">{{courseSection.courseSectionName}}</p>
                                     {{courseSection.gradeLevel}}
                                   </ng-container>
+                                </ng-container>
                                 </td>
                               </ng-container>
                             </tr>

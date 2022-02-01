@@ -64,8 +64,13 @@ export class CourseSectionList {
 export class AllScheduledCourseSectionForStaffModel extends CommonField {
     courseSectionViewList: CourseSectionList[];
     staffId: number;
+    academicYear: number;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+
     constructor() {
         super();
+        this.courseSectionViewList= [new CourseSectionList()];
     }
 }
 

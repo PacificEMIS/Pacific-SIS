@@ -15,7 +15,7 @@ export class ParentInfoService {
   private parentId;
   private parentDetails;
   private advanceSearchParams=null;
-  userName = sessionStorage.getItem('user');
+  userName = this.defaultValuesService.getUserName();
 
   private parentCreateMode = new BehaviorSubject(this.parentCreate.VIEW);
   parentCreatedMode = this.parentCreateMode.asObservable();
@@ -39,10 +39,10 @@ export class ParentInfoService {
 
 
   setParentId(id: number) {
-    this.parentId = id
+    sessionStorage.setItem('ParentID', JSON.stringify(id));
   }
   getParentId() {
-    return this.parentId;
+    return JSON.parse(sessionStorage.getItem('ParentID'));
   }
   setParentDetails(data) {
     this.parentDetails = data
@@ -77,7 +77,7 @@ export class ParentInfoService {
     parentInfo.passwordHash = this.cryptoService.encrypt(parentInfo.passwordHash);
     parentInfo.parentInfo.schoolId = this.defaultValuesService.getSchoolID();
     parentInfo.parentInfo.tenantId = this.defaultValuesService.getTenantID();
-    parentInfo.parentInfo.updatedBy = this.defaultValuesService.getEmailId();
+    parentInfo.parentInfo.updatedBy = this.defaultValuesService.getUserGuidId();
     parentInfo.parentInfo.parentPhoto = this.parentImage;
     parentInfo.parentInfo.parentAddress[0].parentId= parentInfo.parentInfo.parentId;
     parentInfo.parentInfo.parentAddress[0].tenantId = this.defaultValuesService.getTenantID();
@@ -94,7 +94,7 @@ export class ParentInfoService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.parentInfo.schoolId = this.defaultValuesService.getSchoolID();
     obj.parentInfo.tenantId = this.defaultValuesService.getTenantID();
-    obj.parentInfo.createdBy = this.defaultValuesService.getEmailId();
+    obj.parentInfo.createdBy = this.defaultValuesService.getUserGuidId();
     obj.parentAssociationship.tenantId= this.defaultValuesService.getTenantID();
     obj.passwordHash = this.cryptoService.encrypt(obj.passwordHash);
     obj.parentInfo.parentPhoto = this.parentImage;
@@ -133,7 +133,7 @@ export class ParentInfoService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.parentInfo.schoolId = this.defaultValuesService.getSchoolID();
     obj.parentInfo.tenantId = this.defaultValuesService.getTenantID();
-    obj.parentInfo.updatedBy = this.defaultValuesService.getEmailId();
+    obj.parentInfo.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.parentInfo.parentId = this.getParentId();
     obj.parentInfo.parentPhoto = this.parentImage;
     let apiurl = this.apiUrl + obj._tenantName + "/ParentInfo/addUpdateParentPhoto";
@@ -167,7 +167,7 @@ export class ParentInfoService {
 
   getAdvanceSearchParams(){
     if(this.advanceSearchParams){
-      let parentSearchModel: ParentAdvanceSearchModel = new ParentAdvanceSearchModel();;
+      let parentSearchModel: ParentAdvanceSearchModel = new ParentAdvanceSearchModel();
       for(let param of this.advanceSearchParams){
         parentSearchModel[param.columnName] = param.filterValue;
       }

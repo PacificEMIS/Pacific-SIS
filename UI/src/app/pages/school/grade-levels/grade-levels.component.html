@@ -22,7 +22,7 @@
           matTooltip="Filter Columns" type="button">
           <mat-icon [icIcon]="icFilterList"></mat-icon>
         </button>
-        <button *ngIf="permissions?.add" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
+        <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
           (click)='openAddNew()'>
           <ic-icon [icon]="icAdd" class="mr-0 md:mr-2" inline="true" size="24px">
           </ic-icon>
@@ -34,21 +34,21 @@
   <div class="overflow-x-auto overflow-y-hidden">
     <table @stagger mat-table [dataSource]="gradeLevelList" matSort class="w-full">
       <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'title' | translate}}</th>
         <td mat-cell *matCellDef="let element">
           {{element.title}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="shortName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Short Name</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'shortName' |translate}}</th>
         <td mat-cell *matCellDef="let element">
           {{element.shortName}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="sortOrder">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sort Order</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'sortOrder' | translate}}</th>
         <td mat-cell *matCellDef="let element">
           {{element.sortOrder}}
         </td>
@@ -69,12 +69,16 @@
       </ng-container>
 
       <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <th mat-header-cell *matHeaderCellDef>
+          <ng-container *ngIf="this.defaultValuesService.checkAcademicYear()">
+            {{'action' | translate}}
+          </ng-container>
+        </th>
         <td mat-cell *matCellDef="let element">
-          <a *ngIf="permissions?.edit" (click)="openEdit(element)" class="mr-3 cursor-pointer">
+          <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="openEdit(element)" class="mr-3 cursor-pointer">
             <mat-icon [icIcon]="icEdit"></mat-icon>
           </a>
-          <a *ngIf="permissions?.delete" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
+          <a *ngIf="permissions?.delete && this.defaultValuesService.checkAcademicYear()" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
             <mat-icon [icIcon]="icDelete"></mat-icon>
           </a>
         </td>
@@ -87,7 +91,7 @@
       </ng-container>
       <ng-container matColumnDef="noData">
         <td mat-footer-cell *matFooterCellDef colspan="5">
-          No Data
+          {{'noData'|translate}}
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>

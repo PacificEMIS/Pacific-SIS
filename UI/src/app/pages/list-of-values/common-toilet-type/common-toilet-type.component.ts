@@ -50,6 +50,7 @@ import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/mo
 import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-common-toilet-type',
@@ -102,7 +103,8 @@ export class CommonToiletTypeComponent implements OnInit {
     private loaderService:LoaderService,
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -161,7 +163,7 @@ export class CommonToiletTypeComponent implements OnInit {
     this.commonService.deleteDropdownValue(this.lovAddView).subscribe(
       (res:LovAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -199,10 +201,11 @@ export class CommonToiletTypeComponent implements OnInit {
  
   getAllCommonToiletType(){
     this.lovList.lovName=this.lovName;
+    this.lovList.isListView = true;
     this.commonService.getAllDropdownValues(this.lovList).subscribe(
       (res:LovList)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

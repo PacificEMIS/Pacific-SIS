@@ -46,7 +46,6 @@ import { SharedFunction } from '../../shared/shared-function';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LoaderService } from '../../../services/loader.service';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { RollBasedAccessService } from '../../../services/roll-based-access.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
@@ -100,20 +99,11 @@ export class MarkingPeriodsComponent implements OnInit {
     private commonFunction: SharedFunction,
     private loaderService: LoaderService,
     public rollBasedAccessService: RollBasedAccessService,
-    public translateService: TranslateService, private layoutService: LayoutService,
+    public translateService: TranslateService,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
   ) {
-    if (localStorage.getItem('collapseValue') !== null) {
-      if (localStorage.getItem('collapseValue') === 'false') {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
@@ -123,7 +113,7 @@ export class MarkingPeriodsComponent implements OnInit {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
 
 
-    this.academicYear = +sessionStorage.getItem('academicyear');
+    this.academicYear = this.defaultValuesService.getAcademicYear();
 
     this.getMarkingPeriod();
   }
@@ -195,7 +185,7 @@ export class MarkingPeriodsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('General Info Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('General Info Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -285,7 +275,7 @@ export class MarkingPeriodsComponent implements OnInit {
           }
         }
         else {
-          this.snackbar.open('School Year Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('School Year Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -312,7 +302,7 @@ export class MarkingPeriodsComponent implements OnInit {
             }
           }
           else {
-            this.snackbar.open('School Semester Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('School Semester Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -337,7 +327,7 @@ export class MarkingPeriodsComponent implements OnInit {
             }
           }
           else {
-            this.snackbar.open('School Quarter Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('School Quarter Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -362,7 +352,7 @@ export class MarkingPeriodsComponent implements OnInit {
             }
           }
           else {
-            this.snackbar.open('School Progress Period Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('School Progress Period Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

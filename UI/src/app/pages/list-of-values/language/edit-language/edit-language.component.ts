@@ -35,6 +35,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ValidationService } from '../../../shared/validation.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 
+
 @Component({
   selector: 'vex-edit-language',
   templateUrl: './edit-language.component.html',
@@ -56,8 +57,8 @@ export class EditLanguageComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data:any,
     private snackbar:MatSnackBar,
     private commonService:CommonService,
-    private defaultValueService: DefaultValuesService,
-    fb:FormBuilder
+    fb:FormBuilder,
+     private defaultValuesService: DefaultValuesService
     ) {
       this.form=fb.group({
         langId:[0],
@@ -85,9 +86,13 @@ export class EditLanguageComponent implements OnInit {
       if(this.form.controls.langId.value==0){
         this.languageModel.language.locale=this.form.controls.locale.value;
         this.languageModel.language.languageCode=this.form.controls.languageCode.value;
+        this.languageModel.language.createdBy = this.defaultValuesService.getUserGuidId();
+        this.languageModel._tenantName = this.defaultValuesService.getTenantName();
+        this.languageModel._userName = this.defaultValuesService.getUserName();
+        this.languageModel._token = this.defaultValuesService.getToken();
         this.commonService.AddLanguage(this.languageModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Language Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Language Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -110,9 +115,13 @@ export class EditLanguageComponent implements OnInit {
         this.languageModel.language.langId=this.form.controls.langId.value;
         this.languageModel.language.locale=this.form.controls.locale.value;
         this.languageModel.language.languageCode=this.form.controls.languageCode.value;
+        this.languageModel.language.updatedBy = this.defaultValuesService.getUserGuidId();
+        this.languageModel._tenantName = this.defaultValuesService.getTenantName();
+        this.languageModel._userName = this.defaultValuesService.getUserName();
+        this.languageModel._token = this.defaultValuesService.getToken();
         this.commonService.UpdateLanguage(this.languageModel).subscribe(data => {
           if (typeof (data) == 'undefined') {
-            this.snackbar.open('Language Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+            this.snackbar.open('Language Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }

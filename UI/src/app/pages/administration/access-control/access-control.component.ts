@@ -24,7 +24,6 @@ All rights reserved.
 ***********************************************************************************/
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import icExpandAll from '@iconify/icons-ic/unfold-more';
 import icCollapseAll from '@iconify/icons-ic/unfold-less';
 import icExpand from '@iconify/icons-ic/expand-more';
@@ -63,7 +62,6 @@ export class AccessControlComponent implements OnInit {
   rolePermissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroupListViewModel: PermissionGroupListViewModel = new PermissionGroupListViewModel();
   constructor(
-    private layoutService: LayoutService,
     private rollBasedAccessService: RollBasedAccessService,
     private snackbar: MatSnackBar,
     private defaultValuesService: DefaultValuesService,
@@ -168,7 +166,7 @@ export class AccessControlComponent implements OnInit {
     if (memberId) {
       this.rolePermissionListViewModel.membershipId = memberId;
     } else {
-      this.rolePermissionListViewModel.membershipId = +sessionStorage.getItem('userMembershipID');
+      this.rolePermissionListViewModel.membershipId = this.defaultValuesService.getuserMembershipID();
     }
     this.rolePermissionListViewModel.permissionList.map((val, i) => {
       val.permissionGroup.permissionCategory.map((val1, j) => {
@@ -182,7 +180,7 @@ export class AccessControlComponent implements OnInit {
     this.rollBasedAccessService.getAllRolePermission(this.rolePermissionListViewModel).subscribe(
       (res) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Role Permission List failed. ' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('Role Permission List failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -197,7 +195,7 @@ export class AccessControlComponent implements OnInit {
             }
           }
           else {
-            if (this.rolePermissionListViewModel.membershipId == +sessionStorage.getItem('userMembershipID')) {
+            if (this.rolePermissionListViewModel.membershipId == this.defaultValuesService.getuserMembershipID()){
               this.defaultValuesService.setPermissionList(res);
               this.rollBasedAccessService.changeAccessControl(true);
             }
@@ -216,12 +214,12 @@ export class AccessControlComponent implements OnInit {
     });
     this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory.map((res, j) => {
       if (e.source.checked) {
-        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canView !== null) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canView = true;
 
         }
-        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();;
+        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
         this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
           permissionSubcategory.map((res1, k) => {
             if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
@@ -235,13 +233,13 @@ export class AccessControlComponent implements OnInit {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.rolePermission[0].canView = true;
         }
       } else {
-        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canView !== null) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canView = false;
         } if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canEdit !== null) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canEdit = false;
         }
-        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();;
+        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
         this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
           permissionSubcategory.map((res1, k) => {
             if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
@@ -271,7 +269,7 @@ export class AccessControlComponent implements OnInit {
     });
     this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory.map((res, j) => {
       if (e.source.checked) {
-        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.rolePermission[0].canView !== null) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.rolePermission[0].canView = true;
         }
@@ -283,7 +281,7 @@ export class AccessControlComponent implements OnInit {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canView = true;
 
         }
-        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
           permissionSubcategory !== undefined) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
@@ -306,11 +304,11 @@ export class AccessControlComponent implements OnInit {
         }
 
       } else {
-        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canEdit !== null) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].canEdit = false;
         }
-        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+        this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
         if (this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
           permissionSubcategory !== undefined) {
           this.rolePermissionListViewModel.permissionList[index].permissionGroup.permissionCategory[j].
@@ -331,7 +329,7 @@ export class AccessControlComponent implements OnInit {
   }
   changeCategoryCanEdit(e: MatSlideToggleChange, i, j) {
     if (e.source.checked) {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getUserGuidId();
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].
         permissionSubcategory.map((res, k) => {
           if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].
@@ -349,7 +347,7 @@ export class AccessControlComponent implements OnInit {
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView = true;
       }
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canEdit === false) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canEdit = true;
 
@@ -359,8 +357,8 @@ export class AccessControlComponent implements OnInit {
       }
 
     } else {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getEmailId();
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getUserGuidId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory.map((res, k) => {
         if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].
           permissionSubcategory[k].rolePermission[0].canEdit !== null) {
@@ -399,11 +397,11 @@ export class AccessControlComponent implements OnInit {
 
   changeCategoryCanView(e: MatSlideToggleChange, i, j) {
     if (e.source.checked === false) {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canEdit !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canEdit = false;
       }
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory.map((res, k) => {
         if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].
           permissionSubcategory[k].rolePermission[0].canView !== null) {
@@ -419,11 +417,11 @@ export class AccessControlComponent implements OnInit {
 
       });
     } else {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canView = true;
       }
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory.map((res, k) => {
         if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
           rolePermission[0].canView !== null) {
@@ -461,7 +459,7 @@ export class AccessControlComponent implements OnInit {
 
   changeSubCategoryCanView(i, j, k, e) {
     if (e.source.checked === false) {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
         rolePermission[0].canEdit !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
@@ -469,9 +467,9 @@ export class AccessControlComponent implements OnInit {
       }
 
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
-        rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+        rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
     } else {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.rolePermission[0].canView = true;
       }
@@ -479,7 +477,7 @@ export class AccessControlComponent implements OnInit {
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView = true;
       }
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
     }
     const permissionSubCategoryLength = this.rolePermissionListViewModel.permissionList[i].
       permissionGroup.permissionCategory[j].permissionSubcategory.length;
@@ -526,7 +524,7 @@ export class AccessControlComponent implements OnInit {
 
   changeSubCategoryCanEdit(i, j, k, e) {
     if (e.source.checked) {
-      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getEmailId();
+      this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
         rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
@@ -534,7 +532,7 @@ export class AccessControlComponent implements OnInit {
       }
 
       this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].permissionSubcategory[k].
-        rolePermission[0].updatedBy = this.defaultValuesService.getEmailId();
+        rolePermission[0].updatedBy = this.defaultValuesService.getUserGuidId();
       if (this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView !== null) {
         this.rolePermissionListViewModel.permissionList[i].permissionGroup.permissionCategory[j].rolePermission[0].canView = true;
       }
@@ -590,7 +588,6 @@ export class AccessControlComponent implements OnInit {
   submit() {
     this.rolePermissionListViewModel.permissionList.map((val, i) => {
       if (val.permissionGroup !== undefined) {
-
         if (this.permissionGroupListViewModel.permissionGroupList[i].rolePermission.length > 0) {
 
           this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canEdit =
@@ -604,7 +601,11 @@ export class AccessControlComponent implements OnInit {
           if (this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canEdit) {
             this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canAdd = true;
             this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canDelete = true;
-          } else {
+          } else if(this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canEdit === null) {
+            this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canAdd = null;
+            this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canDelete = null;
+          }
+          else{
             this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canAdd = false;
             this.permissionGroupListViewModel.permissionGroupList[i].rolePermission[0].canDelete = false;
           }
@@ -621,9 +622,13 @@ export class AccessControlComponent implements OnInit {
             if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canEdit) {
               this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = true;
               this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canDelete = true;
-            } else {
-              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = false;
-              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canDelete = false;
+            } else if(this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canEdit === null) {
+              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = null;
+              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canDelete = null;
+            }
+            else{
+              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = null;
+              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canDelete = null;
             }
             val.permissionSubcategory.map((val1, k) => {
               if (val1.permissionSubcategoryName !== undefined && this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k] !== undefined) {
@@ -635,7 +640,11 @@ export class AccessControlComponent implements OnInit {
                   if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canEdit) {
                     this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canAdd = true;
                     this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canDelete = true;
-                  } else {
+                  } else if(this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canEdit === null) {
+                    this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canAdd = null;
+                    this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canDelete = null;
+                  }
+                  else{
                     this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canAdd = false;
                     this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canDelete = false;
                   }
@@ -648,8 +657,8 @@ export class AccessControlComponent implements OnInit {
     });
 
     this.permissionGroupListViewModel.permissionGroupList.map((val, i) => {
-      let falseFlagCategoryCanEdit = false;
-      let falseFlagCategoryCanView = false;
+      let falseFlagCategoryCanEdit = null;
+      let falseFlagCategoryCanView = null;
       if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory.length > 0) {
         this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory.map((val1, j) => {
           if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canEdit) {
@@ -659,11 +668,18 @@ export class AccessControlComponent implements OnInit {
             falseFlagCategoryCanView = true;
           }
           if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory.length > 0) {
-            let falseFlagSubCategoryCanEdit = false;
-            let falseFlagSubCategoryCanView = false;
+            let falseFlagSubCategoryCanEdit = null;
+            let falseFlagSubCategoryCanView = null;
             this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory.map((val2, k) => {
               if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canEdit) {
                 falseFlagSubCategoryCanEdit = true;
+              }
+
+              if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canEdit=== false) {
+                falseFlagSubCategoryCanEdit = false;
+              }
+              if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canView === false) {
+                falseFlagSubCategoryCanView = false;
               }
               if (this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].permissionSubcategory[k].rolePermission[0].canView) {
                 falseFlagSubCategoryCanView = true;
@@ -709,8 +725,8 @@ export class AccessControlComponent implements OnInit {
             this.getRolePermission(this.memberId);
           }
         }
-        else {
-          this.snackbar.open(this.defaultValuesService.translateKey('roleBaseAccessSubmissionFailed') + sessionStorage.getItem('httpError'), '', {
+        else{
+          this.snackbar.open(this.defaultValuesService.translateKey('roleBaseAccessSubmissionFailed') + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

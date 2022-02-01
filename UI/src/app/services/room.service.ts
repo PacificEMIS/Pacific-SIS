@@ -23,7 +23,7 @@ export class RoomService {
     Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
     Obj.tableRoom.schoolId = this.defaultValuesService.getSchoolID();
     Obj.tableRoom.tenantId = this.defaultValuesService.getTenantID();
-    Obj.tableRoom.createdBy = this.defaultValuesService.getEmailId();
+    Obj.tableRoom.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + Obj._tenantName + '/Room/addRoom';
     return this.http.post<RoomAddView>(apiurl, Obj,this.httpOptions);
   }
@@ -31,7 +31,7 @@ export class RoomService {
     Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
     Obj.tableRoom.schoolId = this.defaultValuesService.getSchoolID();
     Obj.tableRoom.tenantId = this.defaultValuesService.getTenantID();
-    Obj.tableRoom.updatedBy = this.defaultValuesService.getEmailId();
+    Obj.tableRoom.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + Obj._tenantName + '/Room/updateRoom';
     return this.http.put<RoomAddView>(apiurl, Obj,this.httpOptions);
   }
@@ -44,6 +44,7 @@ export class RoomService {
   }
   getAllRoom(obj: RoomListViewModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
     let apiurl = this.apiUrl + obj._tenantName + '/Room/getAllRoom';
     return this.http.post<RoomListViewModel>(apiurl, obj,this.httpOptions);
   }

@@ -109,7 +109,7 @@ export class EditNoticeComponent implements OnInit {
       this.membercount = this.data.membercount;
       this.getAllMembersList=this.data.allMembers;
       if(this.data.notice==null){
-        this.AddOrEditNotice = 'Add Notice';
+        this.AddOrEditNotice = 'addNotice';
       }
       else{
         this.AddOrEditNotice = 'editNotice';

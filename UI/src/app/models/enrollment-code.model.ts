@@ -34,9 +34,11 @@ export class EnrollmentCodeListView extends CommonField{
   public studentEnrollmentCodeList:[EnrollmentCodeModel];
   public schoolId:number;
   public tenantId:string;
+  public isListView:boolean;
+  public academicYear: number;
   constructor() {
     super();
-    this.studentEnrollmentCodeList=null
+    this.studentEnrollmentCodeList = [new EnrollmentCodeModel]
 }
   //"_failure": true,
 //  "_message": "string"

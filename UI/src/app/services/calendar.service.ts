@@ -25,8 +25,8 @@ export class CalendarService {
         calendar = this.defaultValuesService.getAllMandatoryVariable(calendar);
         calendar.schoolCalendar.schoolId= this.defaultValuesService.getSchoolID();
         calendar.schoolCalendar.tenantId= this.defaultValuesService.getTenantID();
-        calendar.schoolCalendar.createdBy= this.defaultValuesService.getEmailId();
-        calendar.schoolCalendar.academicYear= this.defaultValuesService.getAcademicYear();
+        calendar.schoolCalendar.createdBy= this.defaultValuesService.getUserGuidId();
+        // calendar.schoolCalendar.academicYear= this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + calendar._tenantName + "/Calendar/addCalendar";
         return this.http.post<CalendarListModel>(apiurl, calendar, this.httpOptions)
     }
@@ -43,8 +43,8 @@ export class CalendarService {
         calendar = this.defaultValuesService.getAllMandatoryVariable(calendar);
         calendar.schoolCalendar.schoolId= this.defaultValuesService.getSchoolID();
         calendar.schoolCalendar.tenantId= this.defaultValuesService.getTenantID();
-        calendar.schoolCalendar.updatedBy= this.defaultValuesService.getEmailId();
-        calendar.schoolCalendar.academicYear= this.defaultValuesService.getAcademicYear();
+        calendar.schoolCalendar.updatedBy= this.defaultValuesService.getUserGuidId();
+        // calendar.schoolCalendar.academicYear= this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + calendar._tenantName + "/Calendar/updateCalendar";
         return this.http.put<CalendarListModel>(apiurl, calendar, this.httpOptions)
     }

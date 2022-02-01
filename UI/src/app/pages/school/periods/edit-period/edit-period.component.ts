@@ -120,7 +120,7 @@ export class EditPeriodComponent implements OnInit {
           this.schoolPeriodService.addBlockPeriod(this.blockPeriodAddViewModel).subscribe(
             (res: BlockPeriodAddViewModel) => {
               if (typeof (res) == 'undefined') {
-                this.snackbar.open('Period Creation failed. ' + sessionStorage.getItem("httpError"), '', {
+                this.snackbar.open('Period Creation failed. ' + this.defaultValuesService.getHttpError(), '', {
                   duration: 10000
                 });
               }
@@ -153,7 +153,7 @@ export class EditPeriodComponent implements OnInit {
           this.schoolPeriodService.updateBlockPeriod(this.blockPeriodAddViewModel).subscribe(
             (res: BlockPeriodAddViewModel) => {
               if (typeof (res) == 'undefined') {
-                this.snackbar.open('Period Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+                this.snackbar.open('Period Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                   duration: 10000
                 });
               }

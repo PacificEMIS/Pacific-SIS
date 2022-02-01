@@ -40,7 +40,7 @@ export class GradesComponent implements OnInit {
     public translateService: TranslateService,
     private dialog: MatDialog
   ) {
-    translateService.use("en");
+    // translateService.use("en");
   }
 
   ngOnInit(): void {

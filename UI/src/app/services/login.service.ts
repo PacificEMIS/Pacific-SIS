@@ -5,11 +5,13 @@ import { CheckUserEmailAddressViewModel, UserViewModel } from '../models/user.mo
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CryptoService } from '../services/Crypto.service';
 import { LanguageModel } from '../models/language.model';
+import{GetAccessLogInfoModel} from '../models/get-access-log.model'
 import { DefaultValuesService } from '../common/default-values.service';
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
+  ipAdd:any;
   apiUrl: string = environment.apiURL;
   httpOptions: { headers: any; };
   constructor(private http: HttpClient,
@@ -23,7 +25,6 @@ export class LoginService {
         })
       }
      }
-
   getAllLanguage(obj: LanguageModel) {
     obj= this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllLanguage";
@@ -35,13 +36,14 @@ export class LoginService {
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getAllLanguageForLogin";
     return this.http.post<LanguageModel>(apiurl, obj,this.httpOptions)
   }
-
   ValidateLogin(obj: UserViewModel) {
     obj.schoolId = this.defaultValuesService.getSchoolID() === 0 ? null : this.defaultValuesService.getSchoolID();
     obj._tenantName= this.defaultValuesService.getTenent();
     obj._userName = this.defaultValuesService.getUserName();
     obj._token= this.defaultValuesService.getToken();
     obj.password = this.cryptoService.encrypt(obj.password);
+    obj.userAccessLog.Emailaddress = obj.email;
+    // obj.userAccessLog={"ipaddress":this.ipAdd.ip};
     let apiurl = this.apiUrl + obj._tenantName + "/User/ValidateLogin";
     return this.http.post<UserViewModel>(apiurl, obj,this.httpOptions)
   }
@@ -54,11 +56,14 @@ export class LoginService {
       return false;
     }
   }
-
   checkUserLoginEmail(obj : CheckUserEmailAddressViewModel){
     obj= this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/User/checkUserLoginEmail";
     return this.http.post<CheckUserEmailAddressViewModel>(apiurl, obj,this.httpOptions)
   }
-
+  getAllUserAccessLog(obj: GetAccessLogInfoModel) {
+    obj= this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/User/getAllUserAccessLog";
+    return this.http.post<GetAccessLogInfoModel>(apiurl, obj,this.httpOptions)
+  }
 }

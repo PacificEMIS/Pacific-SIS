@@ -1,11 +1,11 @@
 <!-- Add absences -->
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Add Absences" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Attendance']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'addAbsences'|translate}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
-
+<form (ngSubmit)="addAbsence()" #f="ngForm" >
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16 mb-4">
             <div class="px-6 py-4">
@@ -14,31 +14,41 @@
                     <li class="col-span-1 md:col-span-2">
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "courseSection" | translate }}</mat-label>
-                            <mat-select>
-                                <mat-option value="absent">ATTNPD - Attendance</mat-option>
+                            <mat-select name="courseSectionId" #courseSection="ngModel" [(ngModel)]="studentAttendanceAddViewModel.courseSectionId" required>
+                                <mat-option *ngFor="let section of courseSectionViewList"
+                                    (click)="selectCourseSection(section)" [value]="section.courseSectionId">
+                                    {{section.courseSectionName}}</mat-option>
                             </mat-select>
+                            <mat-error class="text-red" *ngIf="courseSection.errors?.required">
+                                {{'courseSectionIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "attendanceCategory" | translate }}</mat-label>
-                            <mat-select>
-                                <mat-option value="main">Main</mat-option>
+                            <mat-select #attendanceCategoryId="ngModel" name="attendanceCategoryId" (selectionChange)="selectCategory($event)"  [(ngModel)]="studentAttendanceAddViewModel.attendanceCategoryId" required>
+                                <mat-option *ngFor="let category of attendanceCategories"
+                                    [value]="category.attendanceCategoryId">{{category.title}}</mat-option>
                             </mat-select>
+                            <mat-error class="text-red" *ngIf="attendanceCategoryId.errors?.required">
+                                {{'attendanceCategoryIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "attendanceCode" | translate }}</mat-label>
-                            <mat-select>
-                                <mat-option value="absent">Absent</mat-option>
+                            <mat-select name="attendanceCode" #attendanceCode="ngModel" [(ngModel)]="studentAttendanceAddViewModel.attendanceCode" required>
+                                <mat-option *ngFor="let attendance of attendanceCodeList"
+                                    [value]="attendance.attendanceCode1">{{attendance.title}}</mat-option>
                             </mat-select>
+                            <mat-error class="text-red" *ngIf="attendanceCode.errors?.required">
+                                {{'attendanceCodeIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li class="col-span-1 md:col-span-2">
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "absenceReason" | translate }}</mat-label>
-                            <input matInput>
+                            <input matInput name="absenceReason" [(ngModel)]="studentAttendanceAddViewModel.absencesReason">
                         </mat-form-field>
                     </li>
                     <li class="col-span-1 md:col-span-2">
@@ -48,8 +58,10 @@
                                 <mat-form-field class="m-0 md:-mr-2">
                                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker [startAt]="init" [dateClass]="dateClass"></mat-datepicker>
-                                    <input [value]="resetModel" matInput [matDatepicker]="picker" placeholder="Choose a date"
-                                        (dateChange)="dateChanged($event)" [matChipInputFor]="chipList" hidden />
+                                    <input [value]="resetModel" name="absenceDates" [matDatepickerFilter]="myHolidayFilter" [max]="durationEndDate" [min]="durationStartDate"
+                                        matInput [matDatepicker]="picker" placeholder="Choose a date"
+                                        (dateChange)="dateChanged($event)" [matChipInputFor]="chipList" hidden [disabled]="durationStartDate?false:true"
+                                        />
                                 </mat-form-field>
                             </div>
                             <div class="w-full p-0">
@@ -70,75 +82,100 @@
             <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
                 <div class="lg:flex w-full justify-between">
                     <div class="flex items-center">
-                        <input matInput class="py-3 border-0 outline-none w-full bg-transparent"
-                            appearance="outline" color="primary" placeholder="Search..." type="search">
-                        <button class="ml-4" mat-icon-button type="button">
-                            <mat-icon [icIcon]="icSearch"></mat-icon>
-                        </button>
-                        <a class="lg:w-full text-primary cursor-pointer ml-3 pt-2">
-                            <mat-icon aria-hidden="false" class="mr-0 lg:mr-2 align-middle">tune</mat-icon><span class="hidden lg:inline-block">{{'advanceSearch' | translate}}</span>
+                        <input [formControl]="searchCtrl"
+                                    class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
+                                    placeholder="Search..." type="search">
+                                <img *ngIf="loading" src="assets/img/icons/loading-process.svg"
+                                    class="animate-spin w-5">
+                                <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
+                                    type="button">
+                                    <mat-icon [icIcon]="icSearch"></mat-icon>
+                                </button>
+                        <a (click)="showAdvanceSearch()" [class.disabled]="!disabledAdvancedSearch" class="lg:w-full text-primary cursor-pointer ml-3">
+                            <mat-icon aria-hidden="false" class="mr-0 lg:mr-2 align-middle">tune</mat-icon><span
+                                class="hidden lg:inline-block">{{'advanceSearch' | translate}}</span>
                         </a>
                     </div>
                 </div>
             </div>
 
             <div class="overflow-x-auto overflow-y-hidden">
-                <table mat-table [dataSource]="studentList" class="">
-
+                <table mat-table [dataSource]="studentDetails" class="mat-elevation-z8 shadow-none">
                     <ng-container matColumnDef="studentChecked">
-                        <th mat-header-cell *matHeaderCellDef><mat-checkbox color="primary"></mat-checkbox></th>
+                        <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox color="primary" #masterCheckBox [indeterminate]="someComplete()"
+                                (change)="setAll($event.checked)"></mat-checkbox>
+                        </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary"></mat-checkbox>
+                            <mat-checkbox color="primary" [checked]="element.checked"
+                                (change)="onChangeSelection($event.checked,element.studentId)">
+                            </mat-checkbox>
                         </td>
                     </ng-container>
-
                     <ng-container matColumnDef="studentName">
-                        <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
-                        <td mat-cell *matCellDef="let element">
-                            <div class="text-primary">
-                                {{element.studentName}}
-                            </div>
-                        </td>
+                        <th mat-header-cell *matHeaderCellDef>{{ "studentName" | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.firstGivenName }}
+                            {{element.lastFamilyName}}</td>
                     </ng-container>
-
                     <ng-container matColumnDef="studentId">
-                        <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.studentId}} </td>
+                        <th mat-header-cell *matHeaderCellDef>{{ 'studentId' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.studentInternalId }}</td>
                     </ng-container>
-
                     <ng-container matColumnDef="alternateId">
-                        <th mat-header-cell *matHeaderCellDef>{{'alternateId' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.alternateId}} </td>
+                        <th mat-header-cell *matHeaderCellDef>{{ 'alternateId' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.alternateId }}</td>
                     </ng-container>
-
                     <ng-container matColumnDef="grade">
-                        <th mat-header-cell *matHeaderCellDef>{{'grade' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.grade}} </td>
+                        <th mat-header-cell *matHeaderCellDef>{{ 'grade' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.gradeLevel }}</td>
                     </ng-container>
-
                     <ng-container matColumnDef="section">
-                        <th mat-header-cell *matHeaderCellDef>{{'section' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.section}} </td>
+                        <th mat-header-cell *matHeaderCellDef>{{ 'section' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.section }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="phone">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'phone' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element.phoneNumber }}</td>
                     </ng-container>
 
-                    <ng-container matColumnDef="phone">
-                        <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
-                        <td mat-cell *matCellDef="let element">
-                            {{element.phone}}
+                    <ng-container matColumnDef="loading">
+                        <mat-footer-cell *matFooterCellDef colspan="7">
+                            <!-- <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay> -->
+                        </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="noData">
+                        <td mat-footer-cell *matFooterCellDef colspan="7">
+                            {{loading?('fetchingData' | translate):('noData' | translate) }}
                         </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="studentDetails?.data.length!=0"></tr>
+        
                 </table>
-
-
+                <mat-paginator [length]="totalCount" [ngClass]="totalCount>10?'':'hidden'" [pageSize]="pageSize"
+                    [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'>
+                </mat-paginator>
             </div>
 
             <div class="text-right p-4">
-                <button color="primary" mat-flat-button type="submit">{{ 'submit' | translate }}
+                <button color="primary" mat-flat-button >{{ 'submit' | translate }}
                 </button>
             </div>
         </div>
     </vex-page-layout-content>
+</form>
 </vex-page-layout>
+
+<div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+    <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+        <vex-search-student (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams"
+            [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)"
+            [incomingToggleValues]="toggleValues" [parentData]="parentData" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
+            (searchValue)="getSearchInput($event)">
+        </vex-search-student>
+    </div>
+    <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
+</div>

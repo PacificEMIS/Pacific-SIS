@@ -1,0 +1,17 @@
+.custom-tab {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+::-webkit-scrollbar {
+  display: none;
+}
+.hide{
+  display: none;
+}
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}

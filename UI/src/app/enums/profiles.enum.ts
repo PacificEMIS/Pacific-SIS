@@ -7,3 +7,14 @@ export enum Profiles{
     Parent,
     Student
  }
+
+ export enum ProfilesTypes {
+    SuperAdmin='SuperAdmin',
+    SchoolAdmin='SchoolAdmin',
+    AdminAssitant='AdminAssitant',
+    Teacher='Teacher',
+    HomeroomTeacher='Homeroom Teacher',
+    Parent='Parent',
+    Student='Student'
+    
+}

@@ -1,38 +1,38 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="Settings" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Settings']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{'settings'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['settings']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
 
     <vex-page-layout-content class="-mt-6">
-        <div class="card overflow-auto -mt-16 px-gutter pt-0 pb-5">
-
-            <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 md:col-gap-8 md:row-gap-5 mt-6">
-                <ng-container *ngFor="let submenu of settingSubmenu;let index=index">
-                    <li class="hover:bg-primary-light p-5 rounded"
-                        *ngIf="submenu.permissionSubcategory?.length>0 && submenu.rolePermission[0].canView">
-                        <div class="flex">
-                            <mat-icon [icIcon]="submenu.icon" size="30px" class="text-primary"></mat-icon>
-                            <div class="ml-8">
-                                <h4 class="font-bold">
-                                    <a  (click)="setParentId(index)"
-                                        [routerLink]="submenu.path">{{submenu.title}}</a>
-                                </h4>
-                                <p>
-                                    <ng-container *ngFor="let option of submenu.permissionSubcategory;let index=index">
-                                    <a *ngIf="option.rolePermission[0].canView"
-                                        (click)="setPageId(option.title)" [routerLink]="submenu.path"
-                                        class="hover:text-primary hover:underline">{{option.title}}{{index!=submenu.permissionSubcategory.length-1?',
-                                        ':''}}</a>
-                                    </ng-container>
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                </ng-container>
-            </ul>
-
+        <div class="card mb-6 -mt-16">
+            <ng-container *ngFor="let submenu of settingSubmenu;let index=index">
+                <div class="px-4 py-6 border-b">
+                    <div class="flex">
+                        <mat-icon [icIcon]="submenu.icon" size="24px" class="mr-4"></mat-icon>
+                        <h4 class="font-medium">
+                            <a  (click)="setParentId(index)"
+                                [routerLink]="submenu.path">{{submenu.title}}</a>
+                        </h4>
+                    </div>
+                    <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:col-gap-8 mt-4">
+                        <ng-container *ngIf="submenu.permissionSubcategory?.length>0 && submenu.rolePermission[0].canView">
+                            <ng-container *ngFor="let option of submenu.permissionSubcategory;let index=index">
+                                <li>
+                                    <div class="flex items-center py-1">
+                                        <mat-icon class="mr-2">navigate_next</mat-icon>
+                                        <a *ngIf="option.rolePermission[0].canView"
+                                            (click)="setPageId(option.title,option.path)" [routerLink]="submenu.path"
+                                            class="text-primary">{{option.title}}
+                                        </a>
+                                    </div>
+                                </li>               
+                            </ng-container>
+                        </ng-container>
+                    </ul>
+                </div>
+            </ng-container>
         </div>
     </vex-page-layout-content>
 </vex-page-layout>

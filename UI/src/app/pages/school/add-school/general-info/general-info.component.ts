@@ -62,6 +62,9 @@ import { CryptoService } from '../../../../services/Crypto.service';
 import { MatSelect } from '@angular/material/select';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { Module } from 'src/app/enums/module.enum';
+import { MatDialog } from "@angular/material/dialog";
+import { CaptureDateComponent } from '../capture-date/capture-date.component';
 
 @Component({
   selector: 'vex-general-info',
@@ -84,7 +87,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   schoolCreate = SchoolCreate;
   @ViewChild('f') currentForm: NgForm;
   schoolCreateMode: SchoolCreate;
-  schoolDetailsForViewAndEdit;
+  // schoolDetailsForViewAndEdit;
   categoryId;
   editPermission = false;
   permissionList = [];
@@ -111,7 +114,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   stateListArr = [];
   cityListArr = [];
   schoolInternalId = '';
-  module = 'School';
+  module = Module.SCHOOL;
   generalInfo = WashInfoEnum;
   statusInfo = status;
   city: number;
@@ -120,10 +123,10 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   minDate: string | Date;
   selectedLowGradeLevelIndex: number;
   selectedHighGradeLevelIndex: number;
-  formActionButtonTitle = 'submit';
+  // formActionButtonTitle = 'submit';
   internalId: FormControl;
   cloneSchool: string;
-  countryCtrl: FormControl = new FormControl('', [ValidationService.noArrayValidator]);
+  countryCtrl: FormControl = new FormControl('', [Validators.required]);
   countryFilterCtrl: FormControl = new FormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
@@ -141,17 +144,21 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
     private commonLOV: CommonLOV,
     private pageRolePermission: PageRolesPermission,
     private router: Router,
+    private dialog: MatDialog,
     public rollBasedAccessService: RollBasedAccessService,
     private cryptoService: CryptoService
   ) {
+    this.internalId = new FormControl('', Validators.required);
+
+    // this.schoolCreateMode = this.router.getCurrentNavigation().extras?.state ? this.router.getCurrentNavigation().extras.state.type : SchoolCreate.ADD;
     //translateService.use('en');
-    this.schoolService.getSchoolDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: SchoolAddViewModel) => {
-      this.schoolAddViewModel = res;
-      this.isMarkingPeriod = res.isMarkingPeriod;
-      this.cloneSchool = JSON.stringify(res);
-      this.schoolDetailsForViewAndEdit = res;
-      this.schoolInternalId = res.schoolMaster.schoolInternalId;
-    });
+    // this.schoolService.getSchoolDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: SchoolAddViewModel) => {
+    //   this.schoolAddViewModel = res;
+    //   this.isMarkingPeriod = res.isMarkingPeriod;
+    //   this.cloneSchool = JSON.stringify(res);
+    //   this.schoolDetailsForViewAndEdit = res;
+    //   this.schoolInternalId = res.schoolMaster.schoolInternalId;
+    // });
   }
   protected setInitialValue() {
     this.filteredCountry
@@ -161,47 +168,39 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
   ngOnInit(): void {
-    this.permissions = this.pageRolePermission.checkPageRolePermission()
-
+    this.permissions = this.pageRolePermission.checkPageRolePermission(null, null, true);
+    if(!this.permissions.view) return;
     this.schoolService.schoolCreatedMode.subscribe((res) => {
       this.schoolCreateMode = res;
     });
 
-    this.schoolService.schoolDetailsForViewedAndEdited.subscribe((res) => {
-      this.schoolDetailsForViewAndEdit = res;
-      this.countryCtrl.setValue(res.schoolMaster.country);
-    });
+    this.schoolService.schoolDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      if(res) {
+        this.schoolAddViewModel = res;
+        this.countryCtrl.setValue(res.schoolMaster.country);
+        this.internalId.setValue(res.schoolMaster.schoolInternalId);
+        this.internalId.setErrors(null);
 
-    this.schoolService.categoryIdSelected.subscribe((res) => {
-      this.categoryId = res;
-    });
 
-    if (this.schoolCreateMode === this.schoolCreate.VIEW){
+        if (this.schoolCreateMode === this.schoolCreate.ADD) {
+          this.initializeDropdownsForSchool();
+          this.getAllCountry();
+          this.openCaptureDate()
+        } else if (this.schoolCreateMode === this.schoolCreate.VIEW) {
+          this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
+          this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.VIEW });
+        }
+        else if (this.schoolCreateMode === this.schoolCreate.EDIT && this.schoolAddViewModel) {
+          this.getAllCountry();
+          this.initializeDropdownsForSchool();
+          this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
+        }
       }
+      
+    });
 
-
-    this.internalId = new FormControl('', Validators.required);
     this.genderOptions = ['Male', 'Female', 'Co-education'];
-    if (this.schoolCreateMode === this.schoolCreate.ADD) {
-      this.initializeDropdownsForSchool();
-      this.getAllCountry();
-
-    }
-    else if (this.schoolCreateMode === this.schoolCreate.VIEW) {
-      this.schoolService.changePageMode(this.schoolCreateMode);
-      this.schoolAddViewModel = this.schoolDetailsForViewAndEdit;
-      this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
-      this.schoolInternalId = this.schoolDetailsForViewAndEdit.schoolMaster.schoolInternalId;
-      this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.VIEW });
-    }
-    else if (this.schoolCreateMode == this.schoolCreate.EDIT && (this.schoolDetailsForViewAndEdit != undefined && this.schoolDetailsForViewAndEdit != null)) {
-      this.getAllCountry();
-      this.initializeDropdownsForSchool();
-      this.schoolService.changePageMode(this.schoolCreateMode);
-      this.formActionButtonTitle = 'update';
-      this.schoolAddViewModel = this.schoolDetailsForViewAndEdit;
-      this.cloneSchool = JSON.stringify(this.schoolAddViewModel);
-    }
+   
   }
   filterContry() {
     if (!this.countryListArr) {
@@ -228,15 +227,19 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   initializeDropdownsForSchool() {
-    this.commonLOV.getLovByName('School Level').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+    if (this.schoolCreateMode === this.schoolCreate.EDIT){
+      this.commonLOV.getValueForEditSchool(true);
+    }
+
+    this.commonLOV.getLovByName('School Level', this.schoolCreateMode === this.schoolCreate.ADD).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.schoolLevelOptions = res;
     });
-    this.commonLOV.getLovByName('School Classification').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+    this.commonLOV.getLovByName('School Classification', this.schoolCreateMode === this.schoolCreate.ADD).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.schoolClassificationOptions = res;
     });
     this.commonLOV.getLovByName('Grade Level').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.gradeLevel = res;
-      if (this.schoolCreateMode === this.schoolCreate.EDIT) {
+      if (this.schoolCreateMode === this.schoolCreate.EDIT) {        
         this.checkGradeLevelsOnEdit();
       }
     });
@@ -248,7 +251,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.internalId.setErrors({ 'nomatch': false });
     this.internalId.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
       if (term !== '') {
-        if (this.schoolInternalId === term) {
+        if (this.schoolAddViewModel.schoolMaster.schoolInternalId === term) {
           this.internalId.setErrors(null);
         }
         else {
@@ -258,14 +261,15 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
             if(data._failure){
               this.commonService.checkTokenValidOrNot(data._message);
             }
-            if (data.isValidInternalId) {
-              this.internalId.setErrors(null);
-              this.isSchoolInternalId = false;
-            }
             else {
-              this.internalId.markAsTouched();
-              this.internalId.setErrors({ nomatch: true });
-              this.isSchoolInternalId = false;
+              if (data.isValidInternalId) {
+                this.internalId.setErrors(null);
+                this.isSchoolInternalId = false;
+              } else {
+                this.internalId.markAsTouched();
+                this.internalId.setErrors({ nomatch: true });
+                this.isSchoolInternalId = false;
+              }
             }
           });
         }
@@ -278,22 +282,21 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   editGeneralInfo() {
     this.schoolCreateMode = this.schoolCreate.EDIT;
-    this.schoolService.changePageMode(this.schoolCreateMode);
-    this.formActionButtonTitle = 'update';
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
     this.getAllCountry();
     this.initializeDropdownsForSchool();
     this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.EDIT });
   }
   cancelEdit() {
     this.schoolCreateMode = this.schoolCreate.VIEW;
-    this.imageCropperService.cancelImage('school');
+    // this.imageCropperService.cancelImage('school');
     this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.VIEW });
     if (JSON.stringify(this.schoolAddViewModel) !== this.cloneSchool) {
       this.schoolAddViewModel = JSON.parse(this.cloneSchool);
-      this.schoolDetailsForViewAndEdit = this.schoolAddViewModel;
+      // this.schoolDetailsForViewAndEdit = this.schoolAddViewModel;
       this.schoolService.sendDetails(this.schoolAddViewModel);
     }
-    this.schoolService.changePageMode(this.schoolCreateMode);
+    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
   }
 
   checkLowGradeLevel(event) {
@@ -392,9 +395,9 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getAllStateByCountry(data) {
     if (this.stateCount > 0) {
-      if ((this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)
-        || (this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)
-        || (this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)) {
+      if ((this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)
+        || (this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)
+        || (this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)) {
 
         if (data.value === '') {
           this.stateModel.countryId = 0;
@@ -445,9 +448,9 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   getAllCitiesByState(data) {
-    if ((this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)
-      || (this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)
-      || (this.commonFunction.checkEmptyObject(this.schoolDetailsForViewAndEdit) === true)) {
+    if ((this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)
+      || (this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)
+      || (this.commonFunction.checkEmptyObject(this.schoolAddViewModel) === true)) {
       if (data.value === '') {
         this.cityModel.stateId = 0;
         this.stateName = '';
@@ -515,7 +518,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   submit() {
-
+    this.internalId.markAsTouched();
     this.countryCtrl.markAsTouched();
     this.currentForm.form.markAllAsTouched();
     if (this.currentForm.form.valid) {
@@ -533,8 +536,8 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   modifyCustomFields() {
-    this.schoolAddViewModel.selectedCategoryId = this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].categoryId;
-    for (const schoolCustomField of this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields) {
+    this.schoolAddViewModel.selectedCategoryId = this.schoolAddViewModel.schoolMaster.fieldsCategory[0].categoryId;
+    for (const schoolCustomField of this.schoolAddViewModel.schoolMaster.fieldsCategory[0].customFields) {
       if (schoolCustomField.type === 'Multiple SelectBox' && this.schoolService.getSchoolMultiselectValue() !== undefined) {
         schoolCustomField.customFieldsValue[0].customFieldValue = this.schoolService.getSchoolMultiselectValue().toString().replaceAll(',', '|');
       }
@@ -546,12 +549,21 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.internalId.invalid) {
       this.invalidScroll();
       return;
+    }    
+    if(!this.schoolAddViewModel.StartDate || !this.schoolAddViewModel.EndDate) {
+      this.openCaptureDate();
+      this.snackbar.open('Please enter start date and end date.', '', {
+        duration: 10000
+      });
+      return;
     }
-    this.schoolAddViewModel.schoolId= this.defaultValuesService.getSchoolID();
+    // this.schoolAddViewModel.schoolId= this.defaultValuesService.getSchoolID();
+    this.schoolAddViewModel.schoolMaster.schoolInternalId = this.internalId.value;
+
     this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened);
     this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed);
     this.schoolService.AddSchool(this.schoolAddViewModel).pipe(takeUntil(this.destroySubject$)).subscribe(
-      data => {
+      (data: any) => {
         if (data) {
          if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -564,17 +576,18 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             this.schoolService.setSchoolId(data.schoolMaster.schoolId);
             this.schoolService.setSchoolCloneImage(data.schoolMaster.schoolDetail[0].schoolLogo);
-            const schoolIdToString = data.schoolMaster.schoolId.toString();
-            sessionStorage.setItem('selectedSchoolId', schoolIdToString);
+            this.defaultValuesService.setSchoolID(data.schoolMaster.schoolId.toString());
             this.schoolCreateMode = this.schoolCreate.EDIT
-            this.schoolService.changePageMode(this.schoolCreateMode);
+            this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
             this.schoolService.changeMessage(true);
             this.schoolService.setSchoolDetails(data);
+            this.schoolService.setSchoolDetailsForViewAndEdit(data);
+            this.router.navigate(['/school', 'schoolinfo', 'washinfo'],{state: {type: this.schoolCreateMode}});
             this.schoolService.changeCategory(2);
           }
         }
         else {
-          this.snackbar.open('General Info Submission failed. ' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('General Info Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -589,6 +602,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
       this.invalidScroll();
       return;
     }
+    this.schoolAddViewModel.schoolMaster.schoolInternalId = this.internalId.value;
     this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened);
     this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed);
     this.schoolService.UpdateSchool(this.schoolAddViewModel).pipe(takeUntil(this.destroySubject$)).subscribe(
@@ -605,16 +619,15 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
             });
             this.schoolService.setSchoolCloneImage(data.schoolMaster.schoolDetail[0].schoolLogo);
             data.schoolMaster.schoolDetail[0].schoolLogo = null;
-            this.schoolService.changeMessage(true);
             this.schoolCreateMode = this.schoolCreate.VIEW;
             this.cloneSchool = JSON.stringify(data);
             this.schoolService.updateSchoolName(data.schoolMaster.schoolName);
-            this.schoolService.changePageMode(this.schoolCreateMode);
+            this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
             this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.VIEW });
           }
         }
         else {
-          this.snackbar.open('General Info Updation failed. ' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('General Info Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -626,6 +639,18 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
       'input.ng-invalid'
     );
     firstInvalidControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  openCaptureDate(){
+    this.dialog.open(CaptureDateComponent, {
+      width: '500px',
+      disableClose: true,
+      data: {schoolAddViewModel: this.schoolAddViewModel}
+    }).afterClosed().subscribe(result => {
+      if(result) {
+        this.schoolAddViewModel = result;
+      }
+    });
   }
 
   ngOnDestroy() {

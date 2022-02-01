@@ -93,6 +93,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "exitCode" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.exitCode" name="exitCode">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let enrollment of enrollmentList" [value]="enrollment.title">
                                     {{enrollment.title}}</mat-option>
                             </mat-select>
@@ -123,6 +124,7 @@
                         <mat-form-field appearance="outline" color="primary">
                             <mat-label>{{ "gender" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.gender" name="gender">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let gender of genderList" [value]="gender.lovColumnValue">
                                     {{gender.lovColumnValue}}</mat-option>
                             </mat-select>
@@ -132,7 +134,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "race" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.race" name="race">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let race of raceList" [value]="race.lovColumnValue">
                                     {{race.lovColumnValue}}</mat-option>
                             </mat-select>
@@ -142,6 +144,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "ethnicity" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.ethnicity" name="ethnicity">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let ethnicity of ethnicityList" [value]="ethnicity.lovColumnValue">
                                     {{ethnicity.lovColumnValue}}
                                 </mat-option>
@@ -152,6 +155,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "maritalStatus" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.maritalStatus" name="maritalStatus">
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let maritalStatus of maritalStatusList"
                                     [value]="maritalStatus.lovColumnValue">
                                     {{maritalStatus.lovColumnValue}}</mat-option>
@@ -163,7 +167,7 @@
                             <mat-label>{{'countryOfBirth'|translate}}</mat-label>
                             <mat-select [formControl]="countryOfBirthCtrl" [(ngModel)]="studentMasterSearchModel.countryOfBirth"
                                 name="countryOfBirth">
-                                <!-- <mat-option value=""></mat-option> -->
+                                <!-- <mat-option></mat-option> -->
                                 <mat-option>
                                     <ngx-mat-select-search  [formControl]="countryOfBirthFilterCtrl" 
                                     ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found" 
@@ -187,7 +191,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "nationality" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.nationality" name="nationality">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let country of countryListArr" [value]='country.id'>
                                     {{country.name}}
                                 </mat-option>
@@ -198,7 +202,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "firstLanguage" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.firstLanguageId" name="firstLanguageId">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>
@@ -209,7 +213,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "secondLanguage" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.secondLanguageId" name="secondLanguageId">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>
@@ -220,7 +224,7 @@
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{ "thirdLanguage" | translate }}</mat-label>
                             <mat-select [(ngModel)]="studentMasterSearchModel.thirdLanguageId" name="thirdLanguageId">
-                                <mat-option value=""></mat-option>
+                                <mat-option></mat-option>
                                 <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>

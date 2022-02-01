@@ -39,7 +39,6 @@ import { TableColumn } from '../../../../@vex/interfaces/table-column.interface'
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icPreview from '@iconify/icons-ic/round-preview';
 import icPeople from '@iconify/icons-ic/twotone-people';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DasboardService } from '../../../services/dasboard.service';
@@ -52,6 +51,13 @@ import { CustomDateFormatter } from '../../shared-module/user-defined-directives
 import { CommonService } from '../../../services/common.service';
 import { SchoolService } from '../../../services/school.service';
 import { NavigationStart, Router } from '@angular/router';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { SchoolAddViewModel } from '../../../models/school-master.model';
+import * as _moment from 'moment';
+import { default as _rollupMoment } from 'moment';
+const moment = _rollupMoment || _moment;
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -75,7 +81,7 @@ import { NavigationStart, Router } from '@angular/router';
   ],
 })
 export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
-
+  isActive: boolean;
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
   events: CalendarEvent[] = [];
@@ -84,7 +90,6 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   activeDayIsOpen = true;
   weekendDays: number[];
   filterDays = [];
-
 
   tableColumns: TableColumn<Order>[] = [
     {
@@ -165,9 +170,11 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   studentCount: number;
   parentCount: number;
   staffCount: number;
+  showRollOver: boolean = false;
   missingAttendanceCount: number = 0;
   scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();
   dashboardViewModel: DashboardViewModel = new DashboardViewModel();
+  schoolAddViewModel: SchoolAddViewModel = new SchoolAddViewModel();
   destroySubject$: Subject<void> = new Subject();
   noticeTitle: string;
   calendarTitle: string;
@@ -183,24 +190,23 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   //   history.pushState(null, null, location.href);
   // }
 
-  constructor(private cd: ChangeDetectorRef, private layoutService: LayoutService, private router: Router,
+  constructor(
+    private cd: ChangeDetectorRef,
+    private router: Router,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
     private dasboardService: DasboardService,
-    private schoolService: SchoolService) {
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
+    private schoolService: SchoolService,
+    private pageRolePermission: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService,
+    public translateService: TranslateService,
+  ) {
+    // translateService.use('en');
 
   }
 
   ngOnInit() {
+
     // this.router.events
     // .subscribe((event: NavigationStart) => {
     //   if (event.navigationTrigger === 'popstate') {
@@ -212,6 +218,14 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
 
       if (res.academicYearChanged || res.academicYearLoaded) {
+        // let endDate = this.defaultValuesService.getFullYearEndDate();
+        // let rollOverDate = moment(endDate).subtract(15, "days").format("YYYY-MM-DD");
+        if (!this.defaultValuesService.checkAcademicYear()) {
+          this.showRollOver = true;
+        }
+        else{
+          this.showRollOver = false;
+        }
         this.getDashboardView();
         this.getDashboardViewForCalendarView();
         this.getMissingAttendanceCountForDashboardView();
@@ -243,8 +257,8 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   getDashboardView() {
     this.dasboardService.getDashboardView(this.dashboardViewModel).subscribe((res) => {
       if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
         }
         else {
           this.studentCount = res.totalStudent !== null ? res.totalStudent : 0;
@@ -263,7 +277,7 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
         }
       }
       else {
-        this.snackbar.open('Dashboard View failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -273,8 +287,8 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   getDashboardViewForCalendarView() {
     this.events$ = this.dasboardService.getDashboardViewForCalendarView(this.dashboardViewModel).pipe(shareReplay(), tap((res) => {
       if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
         }
         else {
           this.calendars = res.schoolCalendar;
@@ -287,7 +301,7 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
         }
       }
       else {
-        this.snackbar.open('Dashboard View failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -325,25 +339,40 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     );
   }
 
-  getMissingAttendanceCountForDashboardView(){
+  getMissingAttendanceCountForDashboardView() {
+    this.scheduledCourseSectionViewModel.academicYear=this.defaultValuesService.getAcademicYear()
     this.dasboardService.getMissingAttendanceCountForDashboardView(this.scheduledCourseSectionViewModel).subscribe((res) => {
       if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
         }
         else {
           this.missingAttendanceCount = res.missingAttendanceCount !== null ? res.missingAttendanceCount : 0;
         }
       }
       else {
-        this.snackbar.open('Dashboard View failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Dashboard View failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
     });
   }
 
+  getHoliDay(event) {
+    let events = [];
+    events = event;
+    if (events.filter(x => x?.meta?.calendar?.isHoliday).length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
+  getEventColor(event) {
+    let events = [];
+    events = event;
+    return events.filter(x => x?.meta?.calendar?.isHoliday)[0].meta.calendar.eventColor;
+  }
 
   getDays(days: string) {
     const calendarDays = days;
@@ -355,6 +384,34 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     this.refresh.next();
   }
 
+  checkIsActive(data) {
+    if (this.pageRolePermission.checkPageRolePermission(`/school/${data}`).view) {
+      this.router.navigate([`school/${data}`]);
+    } else {
+      this.snackbar.open(`You don't have permission to view ${data} details`, '', {
+        duration: 10000
+      });
+    }
+  }
+
+  goToCalendar() {
+    if (this.pageRolePermission.checkPageRolePermission('/school/schoolcalendars').view) {
+      this.router.navigate(['school/schoolcalendars']);
+    } else {
+      this.snackbar.open(`You don't have permission to view Calendar`, '', {
+        duration: 10000
+      });
+    }
+  }
+  goToMissingAttendence() {
+    if (this.pageRolePermission.checkPageRolePermission('/school/attendance/missing-attendance').view) {
+      this.router.navigate(['school/attendance/missing-attendance']);
+    } else {
+      this.snackbar.open(`You don't have permission to view missing attendance`, '', {
+        duration: 10000
+      });
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroySubject$.next();

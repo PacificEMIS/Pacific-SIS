@@ -26,11 +26,12 @@ import { VariableSchedulingComponent } from './variable-scheduling/variable-sche
 import { CalendarDaysComponent } from './calendar-days/calendar-days.component';
 import { RotatingSchedulingComponent } from './rotating-scheduling/rotating-scheduling.component';
 import { SharedModuleModule } from '../../../../pages/shared-module/shared-module.module';
-
+import { NgxMaskModule } from 'ngx-mask';
 @NgModule({
   declarations: [EditCourseSectionComponent, FixedSchedulingComponent, VariableSchedulingComponent, CalendarDaysComponent, RotatingSchedulingComponent],
   imports: [
     CommonModule,
+    NgxMaskModule.forRoot(),
     AngularCalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory

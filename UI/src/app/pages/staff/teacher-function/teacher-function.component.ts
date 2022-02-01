@@ -35,6 +35,7 @@ import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation'
 import { stagger60ms } from '../../../../@vex/animations/stagger.animation';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
+import { GradebookGradesComponent } from './gradebook-grades/gradebook-grades.component';
 import { InputEffortGradesComponent } from './input-effort-grades/input-effort-grades.component';
 import { InputFinalGradeComponent } from './input-final-grade/input-final-grade.component';
 import { TakeAttendanceComponent } from './take-attendance/take-attendance.component';
@@ -61,12 +62,17 @@ export class TeacherFunctionComponent implements OnInit {
   //currentCategory: number = 1;
   gradeComponent: any;
   gradeComponentListCat = [InputFinalGradeComponent, InputEffortGradesComponent];
-  takeAttendance = [TakeAttendanceComponent]
+  takeAttendance = [TakeAttendanceComponent];
+  gradebookGrades = [GradebookGradesComponent];
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
   permissionGroup;
   permissionCategoryForTeacherFunctions;
   loading:boolean;
   permissions: Permissions;
+  showIsFinalGrade: boolean;
+  showIsEffortGrade: boolean;
+  showIsTakeAttendance: boolean;
+  showIsMissingAttendance: boolean;
   constructor(
     public translateService:TranslateService,
     private router: Router,
@@ -74,8 +80,6 @@ export class TeacherFunctionComponent implements OnInit {
     private titlecasePipe: TitleCasePipe,
     private loaderService:LoaderService,
     ) { 
-    //translateService.use('en');
-
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
@@ -101,6 +105,9 @@ export class TeacherFunctionComponent implements OnInit {
       if(this.router.url == '/school/staff/teacher-functions/input-effort-grade'){
         this.activeMenu = 'inputEffortGrade';
       } 
+      if(this.router.url == '/school/staff/teacher-functions/gradebook-grades'){
+        this.activeMenu = 'gradebookGrades';
+      }
       if(this.router.url == '/school/staff/teacher-functions/take-attendance'){
         this.activeMenu = 'takeAttendance';
       }
@@ -131,10 +138,22 @@ export class TeacherFunctionComponent implements OnInit {
     if(permittedTabs.length){
       this.router.navigateByUrl(permittedTabs[0].path);
     }
+
+    permittedTabs.map((item)=>{
+      if(item.path === '/school/staff/teacher-functions/input-final-grade') {
+        this.showIsFinalGrade = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/input-final-grade').view
+      } else if(item.path === '/school/staff/teacher-functions/input-effort-grade') {
+        this.showIsEffortGrade = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/input-effort-grade').view
+      } else if(item.path === '/school/staff/teacher-functions/take-attendance') {
+        this.showIsTakeAttendance = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/take-attendance').view
+      } else if(item.path === '/school/staff/teacher-functions/missing-attendance') {
+        this.showIsMissingAttendance = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/missing-attendance').view
+      }
+    })
   }
 
-  checkViewEnableOrNot(path: string): boolean {
-    // Need to find different solution. We are using this function in ngIf. This is Costly.
-    return this.pageRolePermissions.checkPageRolePermission(path).view;
-  }
+  // checkViewEnableOrNot(path: string): boolean {
+  //   // Need to find different solution. We are using this function in ngIf. This is Costly.
+  //   return this.pageRolePermissions.checkPageRolePermission(path).view;
+  // }
 }

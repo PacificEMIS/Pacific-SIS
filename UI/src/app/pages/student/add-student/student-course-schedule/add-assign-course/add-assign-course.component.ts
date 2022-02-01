@@ -85,6 +85,9 @@ export class AddAssignCourseComponent implements OnInit {
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.markingPeriod;
+    this.getAllCourseListModel.courseViewModelList= data.courseList;
+    this.getAllSubjectModel.subjectList= data.subjectList;
+    this.getAllProgramModel.programList= data.programList;
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -93,77 +96,9 @@ export class AddAssignCourseComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission("/school/students/student-course-schedule");
-    this.getAllCourse();
-    this.getAllSubjectList();
-    this.getAllProgramList();
+   
   }
-
-
-  getAllProgramList() {
-    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllProgramModel.programList=[];
-          if(!data.programList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllProgramModel.programList=data.programList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      } 
-    });
-  }
-  getAllSubjectList() {
-    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
-      if(data){
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllSubjectModel.subjectList=[];
-          if(!data.subjectList){
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            }); 
-          }
-        }else{
-          this.getAllSubjectModel.subjectList = data.subjectList;
-        }
-      }else{
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 1000
-        }); 
-      } 
-    });
-  }
-
-  getAllCourse() {
-    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
-      if (data) {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          this.getAllCourseListModel.courseViewModelList = [];
-          if (!data.courseViewModelList) {
-            this.snackbar.open(data._message, '', {
-              duration: 1000
-            });
-          }
-        } else {
-          this.getAllCourseListModel.courseViewModelList = data.courseViewModelList;
-        }
-      } else {
-        this.snackbar.open(sessionStorage.getItem('httpError'), '', {
-          duration: 10000
-        });
-      }
-    })
-  }
-
+ 
   onSearchCriteriaChange() {
     this.searchCourseSection();
   }
@@ -229,9 +164,11 @@ export class AddAssignCourseComponent implements OnInit {
         item.smstrMarkingPeriodId = '1_' + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = '2_' + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = '3_' + item.prgrsprdMarkingPeriodId;
       }
 
-      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId) {
+      if (item.yrMarkingPeriodId || item.smstrMarkingPeriodId || item.qtrMarkingPeriodId || item.prgrsprdMarkingPeriodId) {
         for (let markingPeriod of this.getMarkingPeriodTitleListModel.getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
@@ -240,6 +177,9 @@ export class AddAssignCourseComponent implements OnInit {
             item.markingPeriodTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
+            item.markingPeriodTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId){
             item.markingPeriodTitle = markingPeriod.text;
             break;
           }
@@ -317,6 +257,7 @@ export class AddAssignCourseComponent implements OnInit {
     studentDetails[0].studentId = this.studentService.getStudentId();
     studentDetails[0].firstGivenName = this.studentService.getStudentName().firstGivenName;
     studentDetails[0].lastFamilyName = this.studentService.getStudentName().lastFamilyName;
+    studentDetails[0].schoolId = this.defaultService.getSchoolID();
 
     this.studentCourseSectionScheduleAddViewModel.courseSectionList = courseSectionList;
     this.studentCourseSectionScheduleAddViewModel.studentMasterList = studentDetails;
@@ -335,7 +276,7 @@ export class AddAssignCourseComponent implements OnInit {
           this.dialogRef.close(true);
         }
       } else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+        this.snackbar.open(this.defaultService.getHttpError(), "", {
           duration: 10000,
         }
         );
@@ -355,6 +296,9 @@ export class AddAssignCourseComponent implements OnInit {
       } else if (item.qtrMarkingPeriodId) {
         let qtrMarkingPeriodId = item.qtrMarkingPeriodId.toString().split('_');
         item.qtrMarkingPeriodId = parseInt(qtrMarkingPeriodId[1]);
+      } else if (item.prgrsprdMarkingPeriodId) {
+        let prgrsprdMarkingPeriodId = item.prgrsprdMarkingPeriodId.toString().split('_');
+        item.prgrsprdMarkingPeriodId = parseInt(prgrsprdMarkingPeriodId[1]);
       }
       return item;
     });

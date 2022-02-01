@@ -34,3 +34,21 @@
 .op-2{
   opacity: 0.2;
 }
+
+.custom-field {
+  display: inline-block;
+  padding: 0 4px;
+  margin-right: 8px;
+  background: #ffedcb;
+  border-radius: 4px;
+  color: #ec9f11;
+}
+
+.default-field {
+  display: inline-block;
+  padding: 0 4px;
+  margin-right: 8px;
+  background: #ebf9e4;
+  border-radius: 4px;
+  color: #7dd471;
+}

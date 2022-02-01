@@ -2,15 +2,15 @@
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{ 'groupAssignStudentInfo' | translate }}" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Student']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{ 'groupAssignStudentInfo'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['student']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16 mb-6" *ngIf="groupAssignStudents">
             <div class="sm:flex p-4 items-center justify-between">
                 <div class="sm:flex items-center pr-0 sm:pr-4">
-                    <img src="assets/img/groupAssignStudentInfo.png" class="w-40 md:w-auto mr-4">
+                    <img src="assets/img/groupAssignStudentInfo.png" alt="Search a group of students icon" class="w-40 md:w-auto mr-4">
                     <div>
                         <h4 class="font-bold text-xl">{{ 'searchAndSelectStudents' | translate }}</h4>
                         <p class="text-gray">{{ 'selectaGroupOfStudentsWhichYouWantToAddTheSameInfo' | translate }}</p>
@@ -30,7 +30,7 @@
                             <input [formControl]="searchCtrl" class="pr-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                                 type="search">
                                 <img *ngIf="loading" src="assets/img/icons/loading-process.svg"
-                                    class="animate-spin w-5">
+                                    class="animate-spin w-5" alt="Loader icon">
                             <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
                                 <mat-icon>search</mat-icon>
                             </button>
@@ -97,7 +97,7 @@
 
                     <ng-container matColumnDef="section">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'section' | translate }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element?.section | EmtyValueCheckPipe}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element?.sectionName | EmtyValueCheckPipe}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="schoolEmail">
@@ -112,10 +112,9 @@
                     </ng-container>
                     <ng-container matColumnDef="invalidsearct">
                         <td mat-footer-cell *matFooterCellDef colspan="7">
-                            No record found as per your search criteria. Please <a
-                                class="cursor-pointer text-blue underline" (click)="resetStudentList()">click here</a>
-                            to
-                            reset
+                            {{'noRecordFoundAsPerYourSearchCriteriaDotPlease' | translate}} <a
+                                class="cursor-pointer text-blue underline" (click)="resetStudentList()">{{'clickHere' | translate}}</a>
+                            {{'toReset' | translate}}
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="noData">
@@ -132,18 +131,19 @@
                     <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null"></tr>
                 </table>
             </div>
-            <mat-paginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
+            <mat-paginator #studentsPaginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
                 [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator>
         </div>
 
         <!-- start Assign Info - General Info -->
-        <div *ngIf="showSelectedStudent">
+        <div [ngStyle]="{'display':showSelectedStudent?'block':'none'}">
+        <!-- <div *ngIf="showSelectedStudent"> -->
             <div class="card -mt-16 mb-6">
                 <div class="sm:flex p-4 items-center justify-between">
                     <div class="flex items-center">
-                        <img src="assets/img/groupAssignStudentInfo.png" class="w-40 md:w-auto mr-4">
+                        <img src="assets/img/groupAssignStudentInfo.png" alt="Search a group of students icon" class="w-40 md:w-auto mr-4">
                         <div>
-                            <h4 class="font-bold text-xl">6 {{ 'studentsSelected' | translate }}</h4>
+                            <h4 class="font-bold text-xl">{{selectedStudentListModel.length}} {{ 'studentsSelected' | translate }}</h4>
                             <p class="text-gray">{{ 'clickHereToChangeTheSelection' | translate }}</p>
                         </div>
                     </div>
@@ -159,22 +159,22 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div *ngIf="!isShow">
+                <div [ngStyle]="{'display': isShow ? 'none' : 'block'}">
                     <h4 class="font-bold text-lg p-4">{{ 'selectedStudents' | translate }}</h4>
                     <div class="overflow-x-auto overflow-y-hidden border-t">
-                        <table mat-table [dataSource]="selectedStudentListModel" class="mat-elevation-z8">
+                        <table mat-table [dataSource]="selectedStudentList" class="mat-elevation-z8">
 
                             <ng-container matColumnDef="remove">
                                 <th mat-header-cell *matHeaderCellDef> {{ 'remove' | translate }} </th>
                                 <td mat-cell *matCellDef="let element">
-                                    <mat-icon [icIcon]="icRemoveCircle" class="cursor-pointer"></mat-icon>
+                                    <mat-icon (click)="setSelectedStudentList({checked: false}, element)" [icIcon]="icRemoveCircle" class="cursor-pointer"></mat-icon>
                                 </td>
                             </ng-container>
 
                             <ng-container matColumnDef="firstGivenName">
                                 <th mat-header-cell *matHeaderCellDef> {{ 'firstGivenName' | translate }} </th>
-                                <td mat-cell *matCellDef="let element"> {{element.lastFamilyName+",
-                                    "+element.firstGivenName}}{{element.middleName!=null?"
+                                <td mat-cell *matCellDef="let element"> {{element.lastFamilyName+","
+                                    +element.firstGivenName}}{{element.middleName!=null?"
                                     "+element.middleName:''}} </td>
                             </ng-container>
 
@@ -197,7 +197,7 @@
 
                             <ng-container matColumnDef="section">
                                 <th mat-header-cell *matHeaderCellDef> {{ 'section' | translate }} </th>
-                                <td mat-cell *matCellDef="let element"> {{element.section | EmtyValueCheckPipe}} </td>
+                                <td mat-cell *matCellDef="let element"> {{element.sectionName | EmtyValueCheckPipe}} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="schoolEmail">
@@ -211,8 +211,8 @@
                             <tr mat-row *matRowDef="let row; columns: displayedColumnsStudents;"></tr>
                         </table>
                     </div>
-                    <mat-paginator [length]="selectedStudentListModel?.length" [pageSize]="10"
-                        [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="pageSize" showFirstLastButtons>
+                    <mat-paginator #selectedStudentsPaginator [length]="selectedStudentList?.data.length" showFirstLastButtons
+                        [class.hide]="selectedStudentList?.data.length===0" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]">
                     </mat-paginator>
                 </div>
             </div>
@@ -294,7 +294,7 @@
                                     <mat-label>{{'gender'|translate}}</mat-label>
                                     <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.gender"
                                         name="gender">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let gender of genderList" [value]="gender.lovColumnValue">
                                             {{gender.lovColumnValue}}</mat-option>
                                     </mat-select>
@@ -305,7 +305,7 @@
                                     <mat-label>{{'race'|translate}}</mat-label>
                                     <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.race"
                                         name="race">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let race of raceList" [value]="race.lovColumnValue">
                                             {{race.lovColumnValue}}</mat-option>
                                     </mat-select>
@@ -316,7 +316,7 @@
                                     <mat-label>{{'ethnicity'|translate}}</mat-label>
                                     <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.ethnicity"
                                         name="ethnicity">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let ethnicity of ethnicityList"
                                             [value]="ethnicity.lovColumnValue">
                                             {{ethnicity.lovColumnValue}}
@@ -329,7 +329,7 @@
                                     <mat-label>{{'maritalStatus'|translate}}</mat-label>
                                     <mat-select [(ngModel)]="studentAddForGroupAssignModel.studentMaster.maritalStatus"
                                         name="maritalStatus">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let maritalStatus of maritalStatusList"
                                             [value]="maritalStatus.lovColumnValue">
                                             {{maritalStatus.lovColumnValue}}</mat-option>
@@ -342,7 +342,7 @@
                                     <mat-select [formControl]="countryOfBirthCtrl"
                                         [(ngModel)]="studentAddForGroupAssignModel.studentMaster.countryOfBirth"
                                         name="countryOfBirth">
-                                        <!-- <mat-option value=""></mat-option> -->
+                                        <!-- <mat-option></mat-option> -->
                                         <mat-option>
                                             <ngx-mat-select-search [formControl]="countryOfBirthFilterCtrl"
                                                 ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found"
@@ -361,7 +361,7 @@
                                     <mat-select [formControl]="nationalityCtrl"
                                         [(ngModel)]="studentAddForGroupAssignModel.studentMaster.nationality"
                                         name="nationality">
-                                        <!-- <mat-option value=""></mat-option> -->
+                                        <!-- <mat-option></mat-option> -->
                                         <mat-option>
                                             <ngx-mat-select-search [formControl]="nationalityFilterCtrl"
                                                 ngxMatSelectSearchClear
@@ -381,7 +381,7 @@
                                     <mat-select
                                         [(ngModel)]="studentAddForGroupAssignModel.studentMaster.firstLanguageId"
                                         name="firstLanguageId">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                             {{language.locale}}
                                         </mat-option>
@@ -394,7 +394,7 @@
                                     <mat-select
                                         [(ngModel)]="studentAddForGroupAssignModel.studentMaster.secondLanguageId"
                                         name="secondLanguageId">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                             {{language.locale}}
                                         </mat-option>
@@ -407,7 +407,7 @@
                                     <mat-select
                                         [(ngModel)]="studentAddForGroupAssignModel.studentMaster.thirdLanguageId"
                                         name="thirdLanguageId">
-                                        <mat-option value=""></mat-option>
+                                        <mat-option></mat-option>
                                         <mat-option *ngFor="let language of languageList" [value]="language.langId">
                                             {{language.locale}}
                                         </mat-option>
@@ -427,11 +427,12 @@
                                     [ngSwitch]="customField.type">
                                     <div *ngSwitchCase="'Checkbox'">
                                         
-                                        <input type="checkbox" [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
-                                        name="{{customField.title.replace(' ','_')}}" color="primary" class="form-check-input mr-2" #stCheckBox="ngModel" [required]="customField.required ? true : null ">
-                                        <label class="form-check-label">{{customField.title}}</label>
-                                        <mat-error *ngIf="stCheckBox.errors?.required">
-                                            {{customField.title}} is required</mat-error>
+                                    <mat-checkbox
+                                        [(ngModel)]="customField.customFieldsValue[0].customFieldValue"
+                                        name="{{customField.title.replace(' ','_')}}" color="primary" class="mr-6"  #stCheckBox="ngModel" [required]="customField.required ? true : null ">
+                                        {{customField.title}}
+                                    </mat-checkbox>
+                                    <mat-error *ngIf="stCheckBox.errors?.required">{{customField.title}} {{'isRequired' | translate}}</mat-error>
                                       
                                         <!-- <mat-checkbox
                                             [(ngModel)]="customField?.customFieldsValue[0].customFieldValue"
@@ -450,7 +451,7 @@
                                                     {{ option }}</mat-option>
                                             </mat-select>
                                             <mat-error *ngIf="schoolDropdown.errors?.required">
-                                                {{customField.title}} is required</mat-error>
+                                                {{customField.title}} {{'isRequired' | translate}}</mat-error>
                 
                                         </mat-form-field>
                                     </div>
@@ -462,7 +463,7 @@
                                                 [required]="customField.required ? true : null "></textarea>
                 
                                             <mat-error *ngIf="schoolTextArea.errors?.required">
-                                                {{customField.title}} is required</mat-error>
+                                                {{customField.title}} {{'isRequired' | translate}}</mat-error>
                                         </mat-form-field>
                                     </div>
                                     <div *ngSwitchCase="'number'">
@@ -472,7 +473,7 @@
                                                 [required]="customField.required ? true : null"
                                                 name="{{customField.title.replace(' ','_')}}">
                                                 <mat-error *ngIf="studentNumber.errors?.required">
-                                                    {{customField.title}} is required</mat-error>
+                                                    {{customField.title}} {{'isRequired' | translate}}</mat-error>
                                         </mat-form-field>
                                         
                                     </div>
@@ -486,7 +487,7 @@
                                             <mat-datepicker-toggle [for]="testDate" matSuffix></mat-datepicker-toggle>
                                             <mat-datepicker #testDate></mat-datepicker>
                                             <mat-error *ngIf="studentDate.errors?.required">
-                                                {{customField.title}} is required</mat-error>
+                                                {{customField.title}} {{'isRequired' | translate}}</mat-error>
                                         </mat-form-field>
                                         
                                     </div>
@@ -498,7 +499,7 @@
                                                 matInput type="customField.type" maxlength="100"
                                                 [required]="customField.required ? true : null ">
                                             <mat-error *ngIf="schoolField.errors?.required">
-                                                {{customField.title}} is required</mat-error>
+                                                {{customField.title}} {{'isRequired' | translate}}</mat-error>
                 
                                         </mat-form-field>
                                     </div>
@@ -569,8 +570,7 @@
                                     <mat-label>{{'section'|translate}}</mat-label>
                                     <mat-select [(ngModel)]="studentEnrollmentForGroupAssignModel.sectionId"
                                         name="sectionId">
-                                        <mat-option value="" *ngIf="sectionList?.tableSectionsList?.length==0">No
-                                            Sections Found
+                                        <mat-option *ngIf="sectionList?.tableSectionsList?.length==0">{{'noSectionsFound' | translate}}
                                         </mat-option>
                                         <mat-option *ngFor="let section of sectionList.tableSectionsList"
                                             [value]='section.sectionId'>
@@ -586,6 +586,16 @@
                                         [matDatepicker]="estimatedGradDate" matInput>
                                     <mat-datepicker-toggle [for]="estimatedGradDate" matSuffix></mat-datepicker-toggle>
                                     <mat-datepicker #estimatedGradDate></mat-datepicker>
+                                </mat-form-field>
+                            </li>
+                            <li>
+                                <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                                    <mat-label>{{'gradeLevel'|translate}}</mat-label>
+                                    <mat-select [(ngModel)]="studentEnrollmentForGroupAssignModel.studentEnrollments.gradeId" name="gradeLevel">
+                                        <mat-option *ngFor="let grade of gradeLevelList" [value]='grade.gradeId' (click)="selectGrade(grade)">
+                                            {{grade.title}}
+                                        </mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </li>
                         </ul>
@@ -631,7 +641,9 @@
                                     <mat-label>{{'primaryCarePhysicianPhone'|translate}}</mat-label>
                                     <input name="primaryCarePhysicianPhone"
                                         [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.primaryCarePhysicianPhone"
-                                        matInput>
+                                        maxlength="20" minlength="10" #primaryCarePhysicianPhone="ngModel" matInput>
+                                        <mat-error *ngIf="!primaryCarePhysicianPhone.errors?.required && primaryCarePhysicianPhone.errors?.minlength">
+                                            {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                 </mat-form-field>
                             </li>
                             <li>
@@ -647,7 +659,9 @@
                                     <mat-label>{{'insuranceCompanyPhone'|translate}}</mat-label>
                                     <input name="insuranceCompanyPhone"
                                         [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.insuranceCompanyPhone"
-                                        matInput>
+                                        maxlength="20" minlength="10" #insuranceCompanyPhone="ngModel" matInput>
+                                        <mat-error *ngIf="!insuranceCompanyPhone.errors?.required && insuranceCompanyPhone.errors?.minlength">
+                                            {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                 </mat-form-field>
                             </li>
                             <li>
@@ -663,7 +677,9 @@
                                     <mat-label>{{'preferredMedicalFacilityPhone'|translate}}</mat-label>
                                     <input name="medicalFacilityPhone"
                                         [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.preferredMedicalFacilityPhone"
-                                        matInput>
+                                        maxlength="20" minlength="10" #medicalFacilityPhone="ngModel" matInput>
+                                        <mat-error *ngIf="!medicalFacilityPhone.errors?.required && medicalFacilityPhone.errors?.minlength">
+                                            {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                 </mat-form-field>
                             </li>
                             <li>
@@ -679,7 +695,9 @@
                                     <mat-label>{{'dentistsPhone'|translate}}</mat-label>
                                     <input name="dentistPhone"
                                         [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.dentistPhone"
-                                        matInput>
+                                        #dentistPhone="ngModel" maxlength="20" minlength="10" matInput>
+                                        <mat-error *ngIf="!dentistPhone.errors?.required && dentistPhone.errors?.minlength">
+                                            {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                 </mat-form-field>
                             </li>
                             <li>
@@ -695,7 +713,9 @@
                                     <mat-label>{{'visionProvidersPhone'|translate}}</mat-label>
                                     <input name="visionPhone"
                                         [(ngModel)]="AddEditStudentMedicalProviderForGroupAssignModel.studentMedicalProvider.visionProviderPhone"
-                                        matInput>
+                                        #visionPhone="ngModel" maxlength="20" minlength="10" matInput>
+                                        <mat-error *ngIf="!visionPhone.errors?.required && visionPhone.errors?.minlength">
+                                            {{'minLengthTelephoneNumber'|translate}}</mat-error>
                                 </mat-form-field>
                             </li>
                         </ul>

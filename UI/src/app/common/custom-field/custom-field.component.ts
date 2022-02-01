@@ -48,10 +48,13 @@ import { PermissionGroup, Permissions, RolePermissionListViewModel, RolePermissi
 import { CommonService } from '../../services/common.service';
 import { DefaultValuesService } from '../default-values.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { PageRolesPermission } from '../page-roles-permissions.service';
 import icCheckboxChecked from '@iconify/icons-ic/check-box';
 import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { ConstantPool } from '@angular/compiler';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-custom-field',
@@ -94,7 +97,7 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
   schoolPermissions: Permissions = new Permissions();
   studentPermissions: Permissions;
   staffPermissions: Permissions;
-
+  studentCustomSectionFixedRouteUrl="/school/students/custom/";
   constructor(
     private snackbar: MatSnackBar,
     private commonFunction: SharedFunction,
@@ -104,38 +107,64 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private cryptoService: CryptoService,
     private defaultService: DefaultValuesService,
-    private pageRolePermissions: PageRolesPermission
+    private pageRolePermissions: PageRolesPermission,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public translateService: TranslateService,
   ) {
+    // translateService.use("en");
+    this.module = this.commonService.getModuleName();
+    this.checkRouteAndinitilisedData();
+    if(this.router.url.search(this.studentCustomSectionFixedRouteUrl) !== -1 && !this.studentService.getStudentId()){
+      if (this.defaultService.checkAcademicYear()) {
+        this.studentService.redirectToGeneralInfo();
+      } else {
+        this.studentService.redirectToStudentList();
+      }
+    } 
   }
 
   ngOnInit(): void {
-    this.module = this.commonService.getModuleName();
     // School Details Subscription
 
 
-    this.schoolService.selectedCategoryTitle.subscribe((res) => {
-      if (res && this.module === 'School') {
-        this.categoryTitle = res;
-      }
+    // this.schoolService.selectedCategoryTitle.subscribe((res) => {
+    //   if (res && this.module === 'School') {
+    //     this.categoryTitle = res;
+    //   }
+    // });
+
+    this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
+      filter((event: RouterEvent) => event instanceof NavigationEnd)
+    ).subscribe(() => {
+     this.checkRouteAndinitilisedData();
+    //  this.checkInitialState();
     });
-    this.schoolService.categoryIdSelected.subscribe((res) => {
-      if (res >= 0 && this.module === 'School') {
-        this.categoryId = res;
-        this.checkCustomValue();
-      }
-    });
+
+
+    // this.schoolService.categoryIdSelected.subscribe((res) => {
+    //   if (res >= 0 && this.module === 'School') {
+    //     this.categoryId = res;
+    //     this.checkCustomValue();
+    //   }
+    // });
     this.schoolService.schoolCreatedMode.subscribe((res) => {
       if (res >= 0 && this.module === 'School') {
         this.schoolCreateMode = res;
       }
     });
+
+
+    
+
     this.schoolService.schoolDetailsForViewedAndEdited.subscribe((res) => {
       if (res?.schoolMaster?.fieldsCategory && this.module === 'School') {
         this.schoolDetailsForViewAndEdit = res;
-        this.schoolAddViewModel = res;
-        // this.checkCustomValue();
+        this.checkCustomValue();
       }
     });
+
+ 
 
 
     // Student Details Subscription
@@ -184,26 +213,60 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
         this.staffCreateMode = res;
       }
     })
-
-
-    if (this.module === 'Student') {
-      this.studentPermissions = this.pageRolePermissions.checkPageRolePermission('/school/students/custom/'+this.categoryTitle.trim().toLowerCase().split(' ').join('-'))
-      this.studentAddViewModel = this.schoolDetailsForViewAndEdit;
-      this.checkStudentCustomValue();
-    }
-    else if (this.module === 'School') {
-      if(this.schoolAddViewModel.schoolMaster.schoolId===this.defaultService.getSchoolID()){
-        this.schoolPermissions = this.pageRolePermissions.checkPageRolePermission('/school/schoolinfo/custom/'+this.categoryTitle.trim().toLowerCase().split(' ').join('-'))
-      }else{
-         this.schoolPermissions.edit=true;
+    
+    this.studentService.selectedCatgoryTitle.subscribe((res) => {
+      if (this.module === 'Student') {
+        this.studentPermissions = this.pageRolePermissions.checkPageRolePermission('/school/students/custom/' + this.categoryTitle.trim().toLowerCase().split(' ').join('-'))
+        this.studentAddViewModel = this.schoolDetailsForViewAndEdit;
+        this.checkStudentCustomValue();
       }
-      this.checkCustomValue();
-    }
-    else if (this.module === 'Staff') {
-      this.staffPermissions = this.pageRolePermissions.checkPageRolePermission('/school/staff/custom/'+this.categoryTitle?.trim().toLowerCase().split(' ').join('-'))
-      this.staffAddViewModel = this.schoolDetailsForViewAndEdit;
-      this.checkStaffCustomValue();
-    }
+    });
+
+    this.staffService.selectedCategoryTitle.subscribe((res) => {
+      if (this.module === 'Staff') {
+        this.staffPermissions = this.pageRolePermissions.checkPageRolePermission('/school/staff/custom/' + this.categoryTitle?.trim().toLowerCase().split(' ').join('-'))
+        this.staffAddViewModel = this.schoolDetailsForViewAndEdit;
+        this.checkStaffCustomValue();
+      }
+    });
+    
+    this.schoolService.schoolCreatedMode.subscribe((res) => {
+      if (this.module === 'School') {
+        if (this.schoolCreateMode === SchoolCreate.ADD) {
+          this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
+        } else {
+          if (this.schoolDetailsForViewAndEdit.schoolMaster.schoolId === this.defaultService.getSchoolID()) {
+            this.schoolPermissions = this.pageRolePermissions.checkPageRolePermission(this.router.url)
+          } else {
+            this.schoolPermissions.edit = true;
+          }
+          this.checkCustomValue();
+        }
+      }
+    });
+
+    // if (this.module === 'Student') {
+    //   this.studentPermissions = this.pageRolePermissions.checkPageRolePermission('/school/students/custom/'+this.categoryTitle.trim().toLowerCase().split(' ').join('-'))
+    //   this.studentAddViewModel = this.schoolDetailsForViewAndEdit;
+    //   this.checkStudentCustomValue();
+    // }
+    // else if (this.module === 'School') {
+    //   if(this.schoolCreateMode === SchoolCreate.ADD) {
+    //     this.router.navigate(['/school', 'schoolinfo', 'generalinfo']);
+    //   } else {
+    //     if(this.schoolDetailsForViewAndEdit.schoolMaster.schoolId===this.defaultService.getSchoolID()){
+    //       this.schoolPermissions = this.pageRolePermissions.checkPageRolePermission(this.router.url)
+    //     }else{
+    //        this.schoolPermissions.edit=true;
+    //     }
+    //     this.checkCustomValue();
+    //   }
+    // }
+    // else if (this.module === 'Staff') {
+    //   this.staffPermissions = this.pageRolePermissions.checkPageRolePermission('/school/staff/custom/'+this.categoryTitle?.trim().toLowerCase().split(' ').join('-'))
+    //   this.staffAddViewModel = this.schoolDetailsForViewAndEdit;
+    //   this.checkStaffCustomValue();
+    // }
   }
 
   submit() {
@@ -221,6 +284,18 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkRouteAndinitilisedData() {
+    if (this.router.getCurrentNavigation().extras.state && this.module === 'School') {
+      if (this.router.getCurrentNavigation().extras?.state.categoryTitle) {
+        this.categoryId = this.router.getCurrentNavigation().extras?.state.categoryId;
+        this.categoryTitle = this.router.getCurrentNavigation().extras?.state.categoryTitle;
+        this.checkCustomValue();
+      }
+    } else {
+      // this.router.navigate(['/school', 'schoolinfo', 'generalinfo'], {state: {type: this.schoolCreateMode}});
+    }
+  }
+
 
 
   checkStudentCustomValue() {
@@ -229,19 +304,26 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
         this.studentCustomFields = this.studentAddViewModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x => !x.systemField && !x.hide);
         if (this.studentCustomFields?.length > 0) {
           for (let studentCustomField of this.studentCustomFields) {
-            if (studentCustomField?.customFieldsValue.length == 0) {
-              studentCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
-              if (studentCustomField.type === 'Checkbox') {
-                studentCustomField.customFieldsValue[0].customFieldValue = studentCustomField.defaultSelection === 'Y' ? 'true' : 'false';
+            if (studentCustomField?.customFieldsValue.length !== 0) {
+              if (studentCustomField?.type === 'Multiple SelectBox') {
+                this.studentMultiSelectValue = studentCustomField?.customFieldsValue[0].customFieldValue.split('|');
               }
-              else {
-                studentCustomField.customFieldsValue[0].customFieldValue = studentCustomField.defaultSelection;
+              else if(studentCustomField?.type === 'Checkbox'){
+                if(studentCustomField.customFieldsValue[0].customFieldValue === "true"){
+                  studentCustomField.customFieldsValue[0].customFieldValue = true;
+                }
+                else if (studentCustomField.customFieldsValue[0].customFieldValue === "false"){
+                  studentCustomField.customFieldsValue[0].customFieldValue = false;
+                }
               }
             }
             else {
-              if (studentCustomField?.type === 'Multiple SelectBox') {
-                this.studentMultiSelectValue = studentCustomField?.customFieldsValue[0].customFieldValue.split('|');
-
+              studentCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
+              if (studentCustomField.type === 'Checkbox') {
+                studentCustomField.customFieldsValue[0].customFieldValue = studentCustomField.defaultSelection === "false" ? false : true;
+              }
+              else {
+                studentCustomField.customFieldsValue[0].customFieldValue = studentCustomField.defaultSelection;
               }
             }
           }
@@ -257,20 +339,26 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
         this.staffCustomFields = this.staffAddViewModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x => !x.systemField && !x.hide);
         if (this.staffCustomFields?.length > 0) {
           for (let staffCustomField of this.staffCustomFields) {
-            if (staffCustomField?.customFieldsValue.length == 0) {
-
-              staffCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
-              if (staffCustomField.type === 'Checkbox') {
-                staffCustomField.customFieldsValue[0].customFieldValue = staffCustomField.defaultSelection === 'Y' ? 'true' : 'false';
+            if (staffCustomField?.customFieldsValue.length !== 0) {
+              if (staffCustomField?.type === 'Multiple SelectBox') {
+                this.staffMultiSelectValue = staffCustomField?.customFieldsValue[0].customFieldValue.split('|');
               }
-              else {
-                staffCustomField.customFieldsValue[0].customFieldValue = staffCustomField.defaultSelection;
+              else if(staffCustomField?.type === 'Checkbox'){
+                if(staffCustomField.customFieldsValue[0].customFieldValue === "true"){
+                  staffCustomField.customFieldsValue[0].customFieldValue = true;
+                }
+              else if (staffCustomField.customFieldsValue[0].customFieldValue === "false"){
+                  staffCustomField.customFieldsValue[0].customFieldValue = false;
+                }
               }
             }
             else {
-              if (staffCustomField?.type === 'Multiple SelectBox') {
-                this.staffMultiSelectValue = staffCustomField?.customFieldsValue[0].customFieldValue.split('|');
-
+              staffCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
+              if (staffCustomField.type === 'Checkbox') {
+                staffCustomField.customFieldsValue[0].customFieldValue = staffCustomField.defaultSelection === "false" ? false : true;
+              }
+              else {
+                staffCustomField.customFieldsValue[0].customFieldValue = staffCustomField.defaultSelection;
               }
             }
           }
@@ -280,26 +368,34 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
   }
 
   checkCustomValue() {
-    if (this.schoolAddViewModel?.schoolMaster?.fieldsCategory?.length > 0 && this.categoryId >= 0) {
-      this.schoolCustomFields= this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
+    if (this.schoolDetailsForViewAndEdit?.schoolMaster?.fieldsCategory?.length > 0 && this.categoryId >= 0) {       
+     if(this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId]) {
+        this.schoolCustomFields= this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId].customFields.filter(x => !x.systemField && !x.hide);
       for (let schoolCustomField of this.schoolCustomFields) {
-        if (schoolCustomField.customFieldsValue.length == 0) {
-
+        if (schoolCustomField.customFieldsValue.length !== 0) {
+          if (schoolCustomField?.type === 'Multiple SelectBox') {
+            this.schoolMultiSelectValue = schoolCustomField?.customFieldsValue[0].customFieldValue.split('|');
+          }
+          else if(schoolCustomField?.type === 'Checkbox'){
+            if(schoolCustomField.customFieldsValue[0].customFieldValue ==="true"){
+              schoolCustomField.customFieldsValue[0].customFieldValue = true;
+            }
+            else if (schoolCustomField.customFieldsValue[0].customFieldValue ==="false"){
+              schoolCustomField.customFieldsValue[0].customFieldValue = false;
+            }
+          } 
+        }
+        else {
           schoolCustomField.customFieldsValue.push(new CustomFieldsValueModel());
           if(schoolCustomField.type==='Checkbox'){
-            schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection==='Y'? 'true':'false';
+            schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection === "false"? false : true;
           }
           else{
             schoolCustomField.customFieldsValue[0].customFieldValue= schoolCustomField.defaultSelection;
           }
         }
-        else {
-          if (schoolCustomField?.type === 'Multiple SelectBox') {
-            this.schoolMultiSelectValue = schoolCustomField?.customFieldsValue[0].customFieldValue.split('|');
-
-          }
-        }
       }
+    }
     }
 
 
@@ -313,7 +409,7 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
     }
     this.studentService.UpdateStudent(this.studentAddViewModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open(this.categoryTitle + ' Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.categoryTitle + ' Updation failed. ' + this.defaultService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -354,18 +450,18 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
   }
 
   updateSchool() {
-    this.schoolAddViewModel.selectedCategoryId = this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].categoryId;
-    this.schoolAddViewModel.schoolMaster.city = this.schoolAddViewModel.schoolMaster.city.toString();
-    this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened);
-    this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed = this.commonFunction.formatDateSaveWithoutTime(this.schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolClosed);
-    for (let schoolCustomField of this.schoolAddViewModel.schoolMaster.fieldsCategory[this.categoryId].customFields) {
+    this.schoolDetailsForViewAndEdit.selectedCategoryId = this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId].categoryId;
+    // this.schoolDetailsForViewAndEdit.schoolMaster.city = this.schoolDetailsForViewAndEdit.schoolMaster.city.toString();
+    this.schoolDetailsForViewAndEdit.schoolMaster.schoolDetail[0].dateSchoolOpened = this.commonFunction.formatDateSaveWithoutTime(this.schoolDetailsForViewAndEdit.schoolMaster.schoolDetail[0].dateSchoolOpened);
+    this.schoolDetailsForViewAndEdit.schoolMaster.schoolDetail[0].dateSchoolClosed = this.commonFunction.formatDateSaveWithoutTime(this.schoolDetailsForViewAndEdit.schoolMaster.schoolDetail[0].dateSchoolClosed);
+    for (let schoolCustomField of this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId].customFields) {
       if (schoolCustomField.type === "Multiple SelectBox" && this.schoolMultiSelectValue !== undefined) {
         schoolCustomField.customFieldsValue[0].customFieldValue = this.schoolMultiSelectValue.toString().replaceAll(",", "|");
       }
     }
-    this.schoolService.UpdateSchool(this.schoolAddViewModel).subscribe(data => {
+    this.schoolService.UpdateSchool(this.schoolDetailsForViewAndEdit).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open(this.categoryTitle + ' ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.categoryTitle + ' ' + this.defaultService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -399,7 +495,7 @@ export class CustomFieldComponent implements OnInit, OnDestroy {
     }
     this.staffService.updateStaff(this.staffAddViewModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open(this.categoryTitle + ' ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.categoryTitle + ' ' + this.defaultService.getHttpError(), '', {
           duration: 10000
         });
       }

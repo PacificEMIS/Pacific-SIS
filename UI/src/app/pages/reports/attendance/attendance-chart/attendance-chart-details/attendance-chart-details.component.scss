@@ -1,0 +1,43 @@
+.attendance-chart-table {
+    .attentdance-chart-left {
+        width: 200px;
+    }
+    .attentdance-chart-right {
+        width: calc(100% - 200px);
+
+        .table {
+            thead th {
+                border-bottom: 1px solid rgba(82, 63, 105, 0.06);
+                border-top: none;
+            }
+            th, td {
+                padding: 0.5rem;
+            }
+            td {
+                height: 3.5rem;
+                vertical-align: middle;
+                border-color: rgba(82, 63, 105, 0.06);
+                min-width: 36px;
+                text-align: center;
+            }
+            th {
+                height: 2.5rem;
+            }
+            tbody {
+                tr {
+                    &:last-child td {
+                        border-bottom: 1px solid rgba(82, 63, 105, 0.06);;
+                    }
+                }
+            }
+        }
+        .bg-gray-light {
+            background-color: rgb(211 211 211 / 50%);
+        }
+        .attendance-chart-right-col {
+            border-right: 1px solid #dfdfdf;
+            min-width: 125%;
+        }
+    }
+
+}

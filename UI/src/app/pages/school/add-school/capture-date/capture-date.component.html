@@ -1,0 +1,26 @@
+<mat-dialog-content>
+    <h3 class="text-xl mb-6">{{ 'pleaseProvideTheBeginDateAndEndDateOfThe'| translate }} <span class="font-semibold">{{ 'schoolYear'| translate }}</span> {{ 'forTheNewSchoolYouAreAdding'| translate }}</h3>
+    <h5 class="text-lg mb-6">{{ 'thisImportantInformationWillBeUsedToCreateThe'| translate }} <span class="font-semibold">{{ 'schoolCalendar'| translate }}</span> {{ 'and'| translate }} <span class="font-semibold">{{ 'markingperiods'| translate }}</span></h5>
+    <ul>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ 'schoolBeginDate'| translate }}</mat-label>
+                <input matInput [(ngModel)]="data.schoolAddViewModel.StartDate" [matDatepicker]="beginDate" required>
+                <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
+                <mat-datepicker #beginDate></mat-datepicker>
+              </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ 'schoolEndDate'| translate }}</mat-label>
+                <input matInput [(ngModel)]="data.schoolAddViewModel.EndDate" [min]="data.schoolAddViewModel.StartDate" [max]="generateMax(data.schoolAddViewModel.StartDate)" [matDatepicker]="endDate" required>
+                <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                <mat-datepicker #endDate></mat-datepicker>
+              </mat-form-field>
+        </li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pb-4 justify-end">
+    <button mat-button mat-dialog-close>{{ 'cancel' | translate }}</button>
+    <button color="primary" mat-flat-button type="submit" class="text-white ml-2" (click)="submit()">{{ 'submit'| translate }}</button>
+</mat-dialog-actions>

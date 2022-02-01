@@ -21,13 +21,13 @@
     </div>
     <p class="font-semibold mb-2">{{ 'includeOnTranscript' | translate }}</p>
     <div class="mb-4">
-        <mat-slide-toggle color="primary" class="mr-8" [checked]="studentTranscipt.schoolLogo" [(ngModel)]="studentTranscipt.schoolLogo">
+        <mat-slide-toggle color="primary" class="mr-8" [checked]="getStudentTranscriptModel.schoolLogo" [(ngModel)]="getStudentTranscriptModel.schoolLogo">
             {{ 'schoolLogo' | translate }}
         </mat-slide-toggle>
-        <mat-slide-toggle color="primary" class="mr-8" [checked]="studentTranscipt.studentPhoto" [(ngModel)]="studentTranscipt.studentPhoto">
+        <mat-slide-toggle color="primary" class="mr-8" [checked]="getStudentTranscriptModel.studentPhoto" [(ngModel)]="getStudentTranscriptModel.studentPhoto">
             {{ 'studentPhoto' | translate }}
         </mat-slide-toggle>
-        <mat-slide-toggle color="primary" class="mr-8" [checked]="studentTranscipt.gradeLagend" [(ngModel)]="studentTranscipt.gradeLagend">
+        <mat-slide-toggle color="primary" class="mr-8" [checked]="getStudentTranscriptModel.gradeLagend" [(ngModel)]="getStudentTranscriptModel.gradeLagend">
             {{ 'gradeLegend' | translate }}
         </mat-slide-toggle>
         <mat-slide-toggle color="primary" class="mr-8" [checked]="true" disbaled>{{ 'signatureLine' | translate }}</mat-slide-toggle>
@@ -50,9 +50,168 @@
     </div>
 </mat-card>
 <mat-card *ngIf="pdfByteArrayForTranscript">
-    <ngx-doc-viewer [url]="'data:application/pdf;base64,' + pdfByteArrayForTranscript" viewer="pdf"  style="width:100%;height:93vh;">
-    </ngx-doc-viewer>
+    <!-- <ngx-doc-viewer [url]="'data:application/pdf;base64,' + pdfByteArrayForTranscript" viewer="pdf"  style="width:100%;height:93vh;">
+    </ngx-doc-viewer> -->
 </mat-card>
+
+
+<div class="container">
+    <div class="pdf-class hidden" id="printSectionId">
+        <div class="report-card" *ngFor="let transcript of generatedTranscriptData?.studentsDetailsForTranscripts">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table class="report-card-header" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <div class="logo float-left">
+                                        <img
+                                            [src]=" transcript?.schoolPicture ? 'data:image/jpeg;base64,' + transcript?.schoolPicture : ''">
+                                    </div>
+                                    <div class="header-left float-left">
+                                        <h2>{{transcript?.schoolName}}</h2>
+                                        <p>{{transcript?.streetAddress1 ? transcript?.streetAddress1 : ''}}{{transcript?.streetAddress2 ? ', '+transcript?.streetAddress2 : ''}}{{transcript?.city ? ', '+transcript?.city : ''}}{{transcript?.district ? ', '+transcript?.district : ''}}{{transcript?.state ? ', '+transcript?.state : ''}}{{transcript?.zip ? ', '+transcript?.zip : ''}}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="header-right">
+                                        <h3>{{'transcript' | translate}}</h3>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="student-info-header">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td width="65%">
+                                    <div class="student-photo float-left">
+                                        <img
+                                            [src]="transcript?.studentPhoto ? 'data:image/jpeg;base64,' + transcript?.studentPhoto : ''">
+                                    </div>
+                                    <div class="info-left float-left">
+                                        <h2>{{transcript?.firstGivenName+" "+transcript?.lastFamilyName}}</h2>
+                                        <p>{{transcript?.homeAddressLineOne ? transcript?.homeAddressLineOne : ''}}{{transcript?.homeAddressLineTwo ? ', '+transcript?.homeAddressLineTwo : ''}}{{transcript?.homeAddressCity ? ', '+transcript?.homeAddressCity : ''}}{{transcript?.homeAddressState ? ', '+transcript?.homeAddressState : ''}}{{transcript?.homeAddressZip ? ', '+transcript?.homeAddressZip : ''}}</p>
+                                        <p>Date of Birth : {{transcript?.dob}}</p>
+                                        <p>Student ID : {{transcript?.studentInternalId}}</p>
+                                    </div>
+                                </td>
+                                <td width="35%">
+                                    <div class="info-right">
+                                        <table class="text-right" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>{{'cumulativeGpa' | translate}}</td>
+                                                <td>{{transcript?.cumulativeGPA}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{'totalCreditAttempted' | translate}}</td>
+                                                <td>{{transcript?.totalCreditAttempeted}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{'totalCreditEarned' | translate}}</td>
+                                                <td>{{transcript?.totalCreditEarned}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr *ngFor="let gradeLevelDetails of transcript?.gradeLevelDetailsForTranscripts">
+                    <td class="semester-table">
+                        <table>
+                            <caption>
+                                <h2 class="float-left">
+                                    <b>{{gradeLevelDetails?.gradeLevelTitle}}</b>&nbsp;<span>({{gradeLevelDetails?.schoolName}})</span>
+                                </h2>
+                                <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{'courseCode' | translate}}</th>
+                                    <th>{{'course' | translate}}</th>
+                                    <th>{{'creditHours' | translate}}</th>
+                                    <th>{{'creditsEarned' | translate}}</th>
+                                    <th>{{'grade' | translate}}</th>
+                                    <th>{{'gpValue' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let reportCardDetails of gradeLevelDetails?.reportCardDetailsForTranscripts">
+                                    <td>{{reportCardDetails?.courseCode}}</td>
+                                    <td>{{reportCardDetails?.courseSectionName}}</td>
+                                    <td>{{reportCardDetails?.creditHours}}</td>
+                                    <td>{{reportCardDetails?.creditEarned}}</td>
+                                    <td>{{reportCardDetails?.grade}}</td>
+                                    <td>{{reportCardDetails?.gpValue}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6"><b>Credit Attempted: {{gradeLevelDetails?.creditAttemped}} / Credit
+                                            Earned: {{gradeLevelDetails?.creditEarned}} / GPA:
+                                            {{gradeLevelDetails?.gpa}}</b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+            <table>
+                <tr>
+                    <td class="gpa-table">
+                        <table>
+                            <caption>
+                                <h4><b>{{'GPAAndCGPABasedOnA4PointScaleAsFollows' | translate}}</b></h4>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{'gradeLetter' | translate}}</th>
+                                    <th>{{'weightedGradePoints' | translate}}</th>
+                                    <th>{{'unweightedGradePoints' | translate}}</th>
+                                    <th>{{'comments' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let gradeDetails of transcript?.gradeList">
+                                    <td>{{gradeDetails?.title}}</td>
+                                    <td>{{gradeDetails?.weightedGpValue}}</td>
+                                    <td>{{gradeDetails?.unweightedGpValue}}</td>
+                                    <td>{{gradeDetails?.comment}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="signature-table">
+                        <table cell-padding="10">
+                            <tr>
+                                <td width="60%" style="vertical-align: top;">
+                                    <i>{{'notOfficialUnlessSigned' | translate}}</i>
+                                </td>
+                                <td width="40%">
+                                    <p class="short-sign"></p>
+                                    <p class="long-line ml-auto"></p>
+                                    <p class="text-center sign">{{'signature' | translate}}</p>
+                                    <p class="text-center name">{{transcript?.principalName ? transcript?.principalName + ", Principal" : ''}}</p>
+                                    <p class="long-line ml-auto"></p>
+                                    <p class="text-center sign">{{'nameAndTitle' | translate}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
 <!-- <mat-card class="w-full mb-6 py-4">
     <div class="flex justify-between items-center -ml-4 flex-wrap">
         <div class="flex items-center py-1 border-l-4 border-green flex-wrap">

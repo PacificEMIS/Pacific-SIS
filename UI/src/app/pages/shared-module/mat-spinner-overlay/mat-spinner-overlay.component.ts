@@ -34,9 +34,9 @@ export class MatSpinnerOverlayComponent implements OnInit {
 
  
   // @Input() value : number = 100;
-  @Input() diameter: number = 100;
+  @Input() diameter: number = 50;
   @Input() mode : string ="indeterminate";
-  @Input() strokeWidth : number = 10;
+  @Input() strokeWidth : number = 6;
   @Input() overlay: boolean = false;
   @Input() color: string = "primary";
   

@@ -50,7 +50,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
-
+import { DefaultValuesService } from "src/app/common/default-values.service";
 @Component({
   selector: 'vex-attendance-codes',
   templateUrl: './attendance-codes.component.html',
@@ -103,6 +103,7 @@ export class AttendanceCodesComponent implements OnInit {
     private snackbar: MatSnackBar,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    public defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -281,7 +282,7 @@ export class AttendanceCodesComponent implements OnInit {
 
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -293,6 +294,7 @@ export class AttendanceCodesComponent implements OnInit {
   // Get All Attendance Codes
   getAllAttendanceCode() {
     this.getAllAttendanceCodeModel.attendanceCategoryId = this.selectedAttendanceCategory;
+    this.getAllAttendanceCodeModel.isListView=true;
     this.attendanceCodeService.getAllAttendanceCode(this.getAllAttendanceCodeModel).subscribe((res: any) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -334,7 +336,7 @@ export class AttendanceCodesComponent implements OnInit {
             this.getAllAttendanceCode();
           }
         } else {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -362,7 +364,7 @@ export class AttendanceCodesComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

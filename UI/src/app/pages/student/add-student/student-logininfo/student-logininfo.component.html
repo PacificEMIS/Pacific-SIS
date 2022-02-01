@@ -20,7 +20,7 @@
                             <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
                         </button>
                     </mat-form-field>
-                    <p class="flex-none -mt-3 mb-4"><a routerLink="http://www.google.com" class="text-primary underline">Auto Generate Password</a></p>
+                    <p class="flex-none -mt-3 mb-4"><a ="http://www.google.com" class="text-primary underline">{{'autoGeneratePassword' | translate}}</a></p>
                 </div>
             </div>
             <h4 class="text-primary pt-6 pb-2 px-4">{{'secretQuestionAndAnswer'|translate}}</h4>
@@ -29,6 +29,7 @@
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion1'|translate}}</mat-label>
                         <mat-select name="suffix">
+                            <mat-option></mat-option>
                             <mat-option value="Jr.">List valu items</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -45,6 +46,7 @@
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion2'|translate}}</mat-label>
                         <mat-select name="suffix">
+                            <mat-option></mat-option>
                             <mat-option value="Jr.">List valu items</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -61,6 +63,7 @@
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion3'|translate}}</mat-label>
                         <mat-select name="suffix">
+                            <mat-option></mat-option>
                             <mat-option value="Jr.">List valu items</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -77,6 +80,7 @@
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion4'|translate}}</mat-label>
                         <mat-select name="suffix">
+                            <mat-option></mat-option>
                             <mat-option value="Jr.">List valu items</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -93,6 +97,7 @@
                     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'secretQuestion5'|translate}}</mat-label>
                         <mat-select name="suffix">
+                            <mat-option></mat-option>
                             <mat-option value="Jr.">List value items</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -125,11 +130,11 @@
             <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-2 mx-4">
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'username' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">simondavis@example.com</p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">simondavis@example.com</p>
                 </li>
                 <li>
                     <label class="text-sm leading-5 text-gray">{{'password' | translate}}</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2"><a href="" class="text-primary pointer">Reset Password</a></p>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap"><a href="" class="text-primary pointer">Reset Password</a></p>
                 </li>
                 <li>
                     <mat-slide-toggle color="primary" class="mb-4">{{'portalAccess' | translate}}</mat-slide-toggle>
@@ -140,24 +145,24 @@
             <p class="pb-3 pb-2 px-4 text-gray">( {{'answersAreHiddenForSecurityReasons' | translate}} )</p>
             <ul class="grid grid-cols-2 col-gap-8 row-gap-10 mt-2 mx-4">
                 <li>
-                    <label class="text-sm leading-5 text-gray">Your Favourite Movie?</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">*****</p>
+                    <label class="text-sm leading-5 text-gray">{{'yourFavouriteMovie' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">*****</p>
                 </li>
                 <li>
-                    <label class="text-sm leading-5 text-gray">In which city were you born?</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">*****</p>
+                    <label class="text-sm leading-5 text-gray">{{'inWhichCityWereYouBorn' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">*****</p>
                 </li>
                 <li>
-                    <label class="text-sm leading-5 text-gray">Who was your childhood hero?</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">*****</p>
+                    <label class="text-sm leading-5 text-gray">{{'whoWasYourChildhoodHero' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">*****</p>
                 </li>
                 <li>
-                    <label class="text-sm leading-5 text-gray">What is your favourite book?</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">*****</p>
+                    <label class="text-sm leading-5 text-gray">{{'whatIsYourFavouriteBook' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">*****</p>
                 </li>
                 <li>
-                    <label class="text-sm leading-5 text-gray">Who is your favourite cartoon character?</label>
-                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2">*****</p>
+                    <label class="text-sm leading-5 text-gray">{{'whoIsYourFavouriteCartoonCharacter' | translate}}</label>
+                    <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">*****</p>
                 </li>
             </ul>
 

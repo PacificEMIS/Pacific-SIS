@@ -59,6 +59,13 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import { CryptoService } from '../../../../services/Crypto.service';
 import { ResetPasswordComponent } from 'src/app/pages/shared-module/reset-password/reset-password.component';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
+import icCheckbox from '@iconify/icons-ic/baseline-check-box';
+import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
+import { GradeLevelService } from '../../../../services/grade-level.service';
+import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
+
 
 @Component({
   selector: 'vex-editparent-generalinfo',
@@ -83,6 +90,8 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   icEdit = icEdit;
   icDelete = icDelete;
   icRemove = icRemove;
+  icCheckbox = icCheckbox;
+  icCheckboxOutline = icCheckboxOutline;
   inputType = 'password';
   visible = false;
   salutationEnum = Object.keys(salutation);
@@ -96,6 +105,7 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   associateStudentMode = "";
   addParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   duplicateAddParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
+  activeDeactiveUserModel: ActiveDeactiveUserModel = new ActiveDeactiveUserModel();
   parentInfoList: ParentInfoList = new ParentInfoList();
   lovList: LovList = new LovList();
   studentSiblingAssociation: StudentSiblingAssociation = new StudentSiblingAssociation();
@@ -111,6 +121,10 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   editPermission = false;
   deletePermission = false;
   addPermission = false;
+  relationShipList = [];
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelArr;
+
   permissions: Permissions;
   constructor(
     public translateService: TranslateService,
@@ -123,7 +137,10 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private commonLOV: CommonLOV,
     private pageRolePermissions: PageRolesPermission,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private defaultValuesService: DefaultValuesService,
+    private gradeLevelService: GradeLevelService,
+
   ) {
     //translateService.use('en');
 
@@ -151,7 +168,8 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
         this.setEmptyValue(this.parentInfo, this.studentInfo);
       })
     } */
-
+    this.getRelationship();
+    this.getGradeLevel();
   }
   getParentDetailsUsingId(){
     this.addParentInfoModel.parentInfo.parentId = this.parentInfoService.getParentId();
@@ -226,11 +244,39 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     });
   }
 
+  activateUser(event) {
+    if (event === false) {
+      this.activeDeactiveUserModel.userId = this.addParentInfoModel.parentInfo.parentId;
+      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.module = 'parent';
+      this.activeDeactiveUserModel.loginEmail = this.addParentInfoModel.parentInfo.loginEmail;
+      this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+            // this.addParentInfoModel.parentInfo.isActive = true;
+          }
+        } else {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+    }
+  }
+
   submit() {
     this.addParentInfoModel.parentInfo.parentId = this.parentInfoService.getParentId();
     this.parentInfoService.updateParentInfo(this.addParentInfoModel).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Parent Information Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Parent Information Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -274,7 +320,12 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     this.associateStudentMode = "search";
     this.dialog.open(AddSiblingComponent, {
       data: {
-        data: this.addParentInfoModel
+        data: this.addParentInfoModel,
+        parentData: {
+          relationShipList: this.relationShipList,
+          gradeLevelArr: this.gradeLevelArr
+        },
+        source : "editParentInfo"
       },
       width: '600px'
     }).afterClosed().subscribe(data => {
@@ -310,7 +361,7 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     this.parentInfoService.removeAssociatedParent(this.removeAssociateParent).subscribe(
       data => {
         if (typeof (data) == 'undefined') {
-          this.snackbar.open('Student Information failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Student Information failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -333,7 +384,39 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
       })
   }
 
+  getRelationship() {
 
+    this.lovList.lovName = 'Relationship';
+    this.commonService.getAllDropdownValues(this.lovList).subscribe(
+      (res: LovList) => {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+        }
+        this.relationShipList = res.dropdownList;
+        
+      }
+    );
+
+  }
+  getGradeLevel() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
+        } else {
+          this.gradeLevelArr = res.tableGradelevelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.translateKey('gradeLevelInformationfailed')
+          + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
 
   toggleVisibility() {
     if (this.visible) {

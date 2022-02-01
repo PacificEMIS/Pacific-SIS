@@ -27,7 +27,6 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { TakeAttendanceList } from '../../../../models/take-attendance-list.model';
 import { Router} from '@angular/router';
-import { LayoutService } from '../../../../../@vex/services/layout.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LoaderService } from '../../../../services/loader.service';
@@ -47,6 +46,8 @@ import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animati
 import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { StaffService } from 'src/app/services/staff.service';
 
 @Component({
   selector: 'vex-take-attendance',
@@ -98,21 +99,15 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
   constructor(
     public translateService:TranslateService,
     private router: Router,
-    private layoutService: LayoutService,
     private loaderService: LoaderService,
     private studentAttendanceService: StudentAttendanceService,
+    private staffService: StaffService,
     private commonService:CommonService,
     private snackbar: MatSnackBar,
     private pageRolePermissions: PageRolesPermission,
     private excelService: ExcelService,
+    private defaultValuesService: DefaultValuesService
     ) { 
-    //translateService.use('en');
-      if(JSON.parse(localStorage.getItem("collapseValue"))){
-        this.layoutService.collapseSidenav();
-      }else{
-      this.layoutService.expandSidenav();
-      }
-
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -235,8 +230,8 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
 
   getAllSearchFilter(){
     this.searchFilterListViewModel.module='Staff';
-    this.searchFilterListViewModel.schoolId = JSON.parse(sessionStorage.getItem('selectedSchoolId'));
-    this.searchFilterListViewModel.tenantId = sessionStorage.getItem("tenantId");
+    this.searchFilterListViewModel.schoolId = this.defaultValuesService.getSchoolID();
+    this.searchFilterListViewModel.tenantId = this.defaultValuesService.getTenantID();
     this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -259,7 +254,7 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
           }
         }
       } else {
-        this.snackbar.open('Filter list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Filter list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -271,7 +266,7 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
     if (this.getAllStaff.sortingModel?.sortColumn == "") {
       this.getAllStaff.sortingModel = null
     }
-    this.studentAttendanceService.getAllStaffList(this.getAllStaff).subscribe(res => {
+    this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
         this.staffList = new MatTableDataSource([]);
@@ -301,7 +296,7 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
     getAllStaff.pageNumber=0;
     getAllStaff.pageSize=0;
     getAllStaff.sortingModel=null;
-      this.studentAttendanceService.getAllStaffList(getAllStaff).subscribe(res => {
+      this.staffService.getAllStaffList(getAllStaff).subscribe(res => {
        if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open('Failed to Export Staff List.'+ res._message, '', {

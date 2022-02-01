@@ -34,6 +34,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedFunction } from '../../../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
 
+import { DefaultValuesService } from '../../../../../common/default-values.service';
 @Component({
   selector: 'vex-add-medical',
   templateUrl: './add-medical.component.html',
@@ -57,6 +58,7 @@ export class AddMedicalComponent implements OnInit {
     private studentService: StudentService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
   }
@@ -104,7 +106,7 @@ export class AddMedicalComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -132,7 +134,7 @@ export class AddMedicalComponent implements OnInit {
                 this.dialogRef.close('submited');
               }
             }else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

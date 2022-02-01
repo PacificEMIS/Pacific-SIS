@@ -14,7 +14,7 @@
     
             <div class="flex my-3 px-6" *ngIf ="programList.length>0">
                 <div class="w-3/4 pr-4 font-bold">{{'programName'|translate}}</div>
-                <div class="w-1/4 font-bold">{{'actions'|translate}}</div>
+                <div class="w-1/4 font-bold" *ngIf="this.defaultValuesService.checkAcademicYear()">{{'actions'|translate}}</div>
             </div>
             <hr/>
             <!-- Table Body -->
@@ -26,10 +26,10 @@
                     <input type="text" [(ngModel)]="updateProgramModel.programList[index].programName"  name="{{'programName'+index}}"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">
                 </div>        
                 <div class="w-1/4">
-                    <a *ngIf="permissions?.edit" (click)="updateProgram(program,index)" [hidden]="hideDiv[index]" matTooltip="Edit Info" class="mr-3 cursor-pointer">
+                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="updateProgram(program,index)" [hidden]="hideDiv[index]" matTooltip="Edit Info" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icEdit"></mat-icon>
                     </a>
-                    <a (click)="confirmDelete(program)" *ngIf="permissions?.edit" [hidden]="hideDiv[index]" matTooltip="Delete Info" class="mr-3 cursor-pointer">
+                    <a (click)="confirmDelete(program)" *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [hidden]="hideDiv[index]" matTooltip="Delete Info" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icDelete"></mat-icon>
                     </a>
                 </div>
@@ -37,9 +37,9 @@
             
             <hr/>
             <form (ngSubmit)="update.form.valid && submit()" #update="ngForm" novalidate>
-                <div *ngIf="permissions?.edit" class="flex my-3 px-6 items-center">
+                <div *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" class="flex my-3 px-6 items-center">
                     <div class="w-3/4 pr-4">
-                        <input type="text"  [(ngModel)]="addProgramModel.programList[0].programName" name="programName"  #programName="ngModel"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">                   
+                        <input type="text" [(ngModel)]="addProgramModel.programList[0].programName" name="programName"  #programName="ngModel"  placeholder="Program Name" class="border rounded p-3 w-full box-border focus:border-0 focus:border-none focus:outline-none border-gray-light">                   
                     </div>
                     <div class="w-1/4">
                         <mat-icon [icIcon]="icAdd"></mat-icon>
@@ -51,6 +51,6 @@
     
         <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="py-6">
             <button mat-button mat-dialog-close type="button">{{'cancel' | translate}}</button>
-            <button *ngIf="permissions?.edit" color="primary" mat-raised-button type="submit">{{'submit' | translate}}</button>
+            <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" color="primary" mat-raised-button type="submit">{{'submit' | translate}}</button>
         </mat-dialog-actions>
     </form>

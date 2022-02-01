@@ -50,7 +50,8 @@ export class ErrorIntercept implements HttpInterceptor {
                         errorMessage = `Error Status: ${error.status}\nMessage: ${error.message}`;
                         notifier.showError(errorMessage);
                     }
-                    sessionStorage.setItem("httpError",errorMessage);
+                    
+                    this.defaultValuesService.setErrorMessage(errorMessage);
                     return throwError(errorMessage);
                 })
             )

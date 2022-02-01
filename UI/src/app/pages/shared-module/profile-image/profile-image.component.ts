@@ -47,6 +47,9 @@ import { ParentInfoService } from '../../../services/parent-info.service';
 import { AddParentInfoModel } from '../../../models/parent-info.model';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { CommonService } from 'src/app/services/common.service';
+import { Router } from '@angular/router';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-profile-image',
@@ -85,6 +88,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   studentAddModel: StudentAddModel = new StudentAddModel();
   schoolAddModel: SchoolAddViewModel = new SchoolAddViewModel();
   AddParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
+  endEdit: boolean;
   constructor(private dialog: MatDialog,
     private imageCropperService: ImageCropperService,
     private snackbar: MatSnackBar,
@@ -95,15 +99,27 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private imageCompressService: NgxImageCompressService,
     private commonService: CommonService,
+    private router: Router,
+    private pageRolePermission: PageRolesPermission,
+    private defaultValuesService: DefaultValuesService
     ) {
+      this.checkPermission();
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
+    });
+
+    this.schoolService.schoolDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      if(res){
+        this.schoolAddModel = res;
+        this.preview = '';
+        this.responseImage = this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo;
+      }
     });
 
     this.imageCropperService.shareImageStatus.pipe(takeUntil(this.destroySubject$)).subscribe((message) => {
       if (message == "school") {
         this.preview = '';
-        this.responseImage = this.schoolService.getSchoolCloneImage();
+        // this.responseImage = this.schoolService.getSchoolCloneImage();
       }
       if (message == "staff") {
         this.preview = '';
@@ -130,6 +146,22 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
         this.inputType = "none"
       }
     });
+  }
+
+  checkPermission() {
+    if(this.pageRolePermission.checkPageRolePermission(this.router.url).edit) {
+     this.endEdit =  true;
+    } else {
+      this.endEdit = false;
+    }
+  }
+
+  checkPermissionAndExecute(fileUpload) {
+    if(this.endEdit) {
+      fileUpload.click();
+      this.unsetImage();
+    };
+    
   }
 
   imageCropped(event: ImageCroppedEvent) {
@@ -237,7 +269,9 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
     let sendImageData2 = (e) => {
       this.imageCropperService.sendUncroppedEvent(e);
       if (this.moduleIdentifier == this.modules.SCHOOL && this.createMode != this.modes.ADD) {
-        this.updateSchoolImage();
+        this.preview = '';
+        this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo = e;
+        this.updateSchoolImage(e);
       }
       this.fileUploader.value = null;
     }
@@ -259,9 +293,9 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   onClose() {
     this.hideCropperToolButton = false;
     this.fileUploader.value = null;
-    // this.cancelPhoto();
+    this.cancelPhoto();
     // this.showCropperandButton=true;
-    this.dialog.closeAll();
+    // this.dialog.closeAll();
   }
 
   cancelPhoto() {
@@ -288,10 +322,11 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSchoolImage() {
+  updateSchoolImage(logo) {
+    this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo = logo;
     this.schoolService.addUpdateSchoolLogo(this.schoolAddModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }
@@ -305,7 +340,8 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
           this.snackbar.open(res._message, '', {
             duration: 5000
           });
-          this.schoolService.setSchoolCloneImage(res.schoolMaster.schoolDetail[0].schoolLogo);
+          // this.schoolService.setSchoolCloneImage(res.schoolMaster.schoolDetail[0].schoolLogo);
+          this.schoolService.setSchoolDetailsForViewAndEdit(res);
         }
       }
     });
@@ -314,7 +350,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   updateStudentImage() {
     this.studentService.addUpdateStudentPhoto(this.studentAddModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }
@@ -338,7 +374,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   updateStaffImage() {
     this.staffService.addUpdateStaffPhoto(this.staffAddModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }
@@ -353,6 +389,10 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
             duration: 5000
           });
           this.staffService.setStaffCloneImage(res.staffMaster.staffPhoto);
+          if (this.defaultValuesService.getUserId() === res.staffMaster.staffId.toString()) {
+            this.defaultValuesService.sendPhoto(res.staffMaster.staffPhoto);
+            this.defaultValuesService.setUserPhoto(res.staffMaster.staffPhoto);
+          }
           this.dialog.closeAll();
         }
       }
@@ -362,7 +402,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   updateParentImage() {
     this.parentService.addUpdateParentPhoto(this.AddParentInfoModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 5000
         });
       }

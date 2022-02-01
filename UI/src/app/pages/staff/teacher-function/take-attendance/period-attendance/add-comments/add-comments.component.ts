@@ -38,37 +38,40 @@ import { CommonService } from 'src/app/services/common.service';
   templateUrl: './add-comments.component.html',
   styleUrls: ['./add-comments.component.scss']
 })
-export class AddCommentsComponent implements OnInit {
-  icClose = icClose;
+export class AddCommentsComponent implements OnInit {  icClose = icClose;
   comments:string;
   actionButtonTitle='submit';
   headerTitle='addCommentTo';
   commentBox = false;
   administratorComment = true;
-  tapForEdit: boolean;
+  tapForEdit: boolean = false;
   studentAttendanceList: StudentUpdateAttendanceCommentsModel= new StudentUpdateAttendanceCommentsModel();
 
-  constructor(
-    private dialogRef: MatDialogRef<AddCommentsComponent>,
-     public translateService:TranslateService,
+  constructor(private dialogRef: MatDialogRef<AddCommentsComponent>,
+    public translateService:TranslateService,
      @Inject(MAT_DIALOG_DATA) public data,
      public defaultValuesService: DefaultValuesService,
      private studentAttendanceService: StudentAttendanceService,
-    private snackbar: MatSnackBar,
-    private commonService: CommonService,
-     ) { 
-    //translateService.use('en');
-      // this.comments=data.commentData[0].comment
-      if(data.commentData) {
-        data.commentData.map((item)=>{
-          if(item?.membership?.profileType === 'Super Administrator') {
-            this.comments = item.comment;
-            this.actionButtonTitle='update'
-            this.headerTitle='updateCommentTo'
-          }
-        });
+     private commonService: CommonService,
+    private snackbar: MatSnackBar,) { 
+      if (data.type === 'update') {
+        if (data.commentData) {
+          data.commentData.map((item) => {
+            if (item?.membership?.profileType === 'Homeroom Teacher' || item?.membership?.profileType === 'Teacher') {
+              this.comments = item.comment;
+              this.actionButtonTitle = 'update'
+              this.headerTitle = 'updateCommentTo'
+              if (data?.type === 'update' && (item.comment?.trim() === '' || item.comment === null)) {
+                this.tapForEdit = true;
+              }
+            }
+          });
+        }
+      } else {
+        if (data.commentData) {
+          this.comments = data.commentData[0].comment;
+        }
       }
-   
   }
 
   ngOnInit(): void {
@@ -77,6 +80,7 @@ export class AddCommentsComponent implements OnInit {
   addOrUpdateComments() {
     if(this.data?.type === 'update') {
     this.studentAttendanceList.studentAttendanceComments.comment =  this.comments;
+    this.studentAttendanceList.staffId = +this.defaultValuesService.getUserId();
     this.studentAttendanceList.studentAttendanceComments.studentAttendanceId = this.data.commentData[0].studentAttendanceId;
     this.studentAttendanceList.studentAttendanceComments.CommentId = this.data.commentData[0].commentId;
     this.studentAttendanceList.studentAttendanceComments.studentId = this.data.commentData[0].studentId;
@@ -92,11 +96,11 @@ export class AddCommentsComponent implements OnInit {
     this.snackbar.open(response._message, '', {
       duration: 10000
     });   
-    this.dialogRef.close({ response: response.studentAttendanceComments ,submit:true});
+    this.dialogRef.close({ response: response.studentAttendanceComments ,submit:true, status: 'update'});
   }
 });
     } else {
-      this.dialogRef.close({response :{comment:this.comments},submit:true});
+      this.dialogRef.close({response :{comment:this.comments, membershipId:+this.defaultValuesService.getuserMembershipID()},submit:true, status: 'submit'});
     }
     
   }

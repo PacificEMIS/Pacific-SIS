@@ -99,6 +99,7 @@ export class StudentDocumentsComponent implements OnInit {
   pageNumber: number;
   pageSize: number;
   studentDocument = [];
+  membershipType;
   getAllStudentDocumentsList: GetAllStudentDocumentsList = new GetAllStudentDocumentsList();
   StudentDocumentModelList: MatTableDataSource<any>;
   studentDocumentAddModel: StudentDocumentAddModel = new StudentDocumentAddModel();
@@ -110,7 +111,7 @@ export class StudentDocumentsComponent implements OnInit {
     private studentService: StudentService,
     private snackbar: MatSnackBar,
     private dialog: MatDialog,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
   ) {
@@ -118,9 +119,11 @@ export class StudentDocumentsComponent implements OnInit {
     this.loaderService.isLoading.subscribe((val) => {
        this.loading = val;
      });
+     this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
 
   }
   ngOnInit(): void {
+    this.membershipType = this.defaultValuesService.getUserMembershipType();
     this.studentService.studentCreatedMode.subscribe((res)=>{
       this.studentCreateMode = res;
     })
@@ -203,7 +206,7 @@ export class StudentDocumentsComponent implements OnInit {
           });
         }
       }else{
-        this.snackbar.open(this.defaultValuesService.translateKey('fileDeletionfailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('fileDeletionfailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -221,7 +224,7 @@ export class StudentDocumentsComponent implements OnInit {
             filename: this.filesName[index],
             filetype: this.filesType[index],
             fileUploaded: value,
-            uploadedBy: this.defaultValuesService.getEmailId(),
+            uploadedBy: this.defaultValuesService.getUserGuidId(),
             studentMaster: null
           };
         this.studentDocument.push(obj);
@@ -252,7 +255,7 @@ export class StudentDocumentsComponent implements OnInit {
               });
             }
           }else{
-            this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentUploadfailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentUploadfailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -296,7 +299,7 @@ export class StudentDocumentsComponent implements OnInit {
         }
       }
       else{
-        this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentListfailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentListfailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

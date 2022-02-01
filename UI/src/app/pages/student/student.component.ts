@@ -39,8 +39,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, NgForm } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { LayoutService } from '../../../@vex/services/layout.service';
+import { debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs/operators';
 import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -65,6 +64,8 @@ import { PageRolesPermission } from '../../common/page-roles-permissions.service
 import { Permissions } from '../../models/roll-based-access.model';
 import { StudentScheduleService } from '../../services/student-schedule.service';
 import { ScheduleStudentListViewModel } from '../../models/student-schedule.model';
+import { ProfilesTypes } from '../../enums/profiles.enum';
+
 
 @Component({
   selector: 'vex-student',
@@ -78,14 +79,15 @@ import { ScheduleStudentListViewModel } from '../../models/student-schedule.mode
 })
 export class StudentComponent implements OnInit, OnDestroy {
   columns = [
-    { label: 'Name', property: 'firstGivenName', type: 'text', visible: true },
+    { label: 'Name', property: 'lastFamilyName', type: 'text', visible: true },
     { label: 'Student ID', property: 'studentInternalId', type: 'text', visible: true },
     { label: 'Alternate ID', property: 'alternateId', type: 'text', visible: true },
     { label: 'Grade Level', property: 'gradeLevelTitle', type: 'text', visible: true },
     { label: 'Email', property: 'schoolEmail', type: 'text', visible: true },
     { label: 'Telephone', property: 'homePhone', type: 'text', visible: true },
+    { label: 'School Name', property: 'schoolName', type: 'text', visible: false },
     { label: 'Status', property: 'status', type: 'text', visible: false },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'Action', property: 'action', type: 'text', visible: true },
   ];
   icImpersonate = icImpersonate;
   icRestore = icRestore;
@@ -107,6 +109,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   staffMembershipType: string;
   showSaveFilter: boolean = false;
   allStudentList = [];
+  isAdvance:boolean;
   destroySubject$: Subject<void> = new Subject();
   getAllStudent: StudentListModel = new StudentListModel();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
@@ -127,6 +130,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   showLoadFilter = true;
+  profiles=ProfilesTypes;
   categories = [
     {
       categoryId: 3,
@@ -155,12 +159,12 @@ export class StudentComponent implements OnInit, OnDestroy {
   ];
   permissions: Permissions;
   constructor(
+    
     private studentService: StudentService,
     private snackbar: MatSnackBar,
     private router: Router,
     private loaderService: LoaderService,
     private imageCropperService: ImageCropperService,
-    private layoutService: LayoutService,
     private excelService: ExcelService,
     private cryptoService: CryptoService,
     public translateService: TranslateService,
@@ -169,29 +173,24 @@ export class StudentComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private studentScheduleService: StudentScheduleService,
     private pageRolePermission: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    public defaultValuesService: DefaultValuesService
   ) {
+    this.defaultValuesService.sendAllSchoolFlag(false);
+    this.defaultValuesService.sendIncludeInactiveFlag(false);
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     //translateService.use('en');
     this.getAllStudent.filterParams = null;
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
+    
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
       this.callAllStudentForTeacher();
     }
     else {
       this.callAllStudent();
     }
+    
   }
 
   ngOnInit(): void {
@@ -199,6 +198,10 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.staffMembershipType = this.defaultValuesService.getUserMembershipType();
     this.permissions = this.pageRolePermission.checkPageRolePermission('/school/students/student-generalinfo')
     this.getAllSearchFilter();
+    this.defaultValuesService.sendAllSchoolFlagSubject.subscribe(data=>{
+      this.isAdvance=data;
+    })
+    
   }
 
   getSearchResult(res) {
@@ -213,7 +216,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.showSaveFilter = true;
     this.pageNumber = res.pageNumber;
     this.pageSize = res._pageSize;
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
       this.StudentModelList = new MatTableDataSource(res.scheduleStudentForView);
       this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
     }
@@ -225,10 +228,10 @@ export class StudentComponent implements OnInit, OnDestroy {
   getToggleValues(event) {
     this.toggleValues = event;
     if (event.inactiveStudents === true) {
-      this.columns[6].visible = true;
+      this.columns[7].visible = true;
     }
     else if (event.inactiveStudents === false) {
-      this.columns[6].visible = false;
+      this.columns[7].visible = false;
     }
   }
   getSearchInput(event) {
@@ -237,7 +240,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   resetStudentList() {
     this.searchCount = null;
     this.searchValue = null;
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
       this.callAllStudentForTeacher();
     }
     else {
@@ -246,7 +249,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
 
       //  Sorting
       this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
@@ -322,7 +325,6 @@ export class StudentComponent implements OnInit, OnDestroy {
       this.sort.sortChange.subscribe((res) => {
         this.getAllStudent.pageNumber = this.pageNumber
         this.getAllStudent.pageSize = this.pageSize;
-
         this.getAllStudent.sortingModel.sortColumn = res.active;
         if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
           let filterParams = [
@@ -400,8 +402,8 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   navigateToSetting() {
-    localStorage.setItem('pageId', 'Student Bulk Data Import')
-    this.router.navigate(["school/settings/student-settings"]);
+    //this.defaultValuesService.setPageId('Student Bulk Data Import');
+    this.router.navigate(["school/tools/student-bulk-data-import"]);
   }
 
   saveFilter() {
@@ -421,7 +423,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.searchFilterListViewModel.module = 'Student';
     this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
       if (typeof (res) === 'undefined') {
-        this.snackbar.open('Filter list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Filter list failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -478,7 +480,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.commonService.deleteSearchFilter(this.searchFilterAddViewModel).subscribe(
       (res: SearchFilterAddViewModel) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -491,7 +493,7 @@ export class StudentComponent implements OnInit, OnDestroy {
           }
           else {
             this.getAllSearchFilter();
-            if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+            if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
               this.scheduleStudentListViewModel.filterParams = null;
               this.callAllStudentForTeacher();
             }
@@ -512,8 +514,8 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.showLoadFilter = false;
     this.showSaveFilter = false;
 
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
-      this.scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+      this.scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
       this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.scheduleStudentListViewModel.filterParams = JSON.parse(filter.jsonList);
       this.scheduleStudentListViewModel.sortingModel = null;
@@ -568,6 +570,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.imageCropperService.enableUpload({ module: this.moduleIdentifier.STUDENT, upload: true, mode: this.createMode.VIEW });
     this.studentService.setStudentId(data.studentId);
     this.defaultValuesService.setSchoolID(data.schoolId, true);
+    // this.defaultValuesService.setAcademicYear(data.academicYear, true);
     this.getPermissionForStudent();
    
     // this.router.navigate(["school/students/student-generalinfo"]); 
@@ -575,6 +578,7 @@ export class StudentComponent implements OnInit, OnDestroy {
 
   getPermissionForStudent() {
     let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    rolePermissionListView.permissionList = [];
     this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -583,7 +587,7 @@ export class StudentComponent implements OnInit, OnDestroy {
         if (permittedDetails.length) {
           this.studentService.setCategoryId(0);
           this.studentService.setCategoryTitle(permittedDetails[0].title);
-          this.router.navigate([permittedDetails[0].path], {state: res});
+          this.router.navigate([permittedDetails[0].path], {state: {permissions: res}});
         } else {
           this.defaultValuesService.setSchoolID(undefined);
           this.snackbar.open('Student didnot have permission to view details.', '', {
@@ -650,7 +654,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   // }
 
   getPageEvent(event) {
-    if(this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher'){
+    if(this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher){
       if (this.sort.active != undefined && this.sort.direction != "") {
         this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
         this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
@@ -721,7 +725,7 @@ export class StudentComponent implements OnInit, OnDestroy {
 
 
   callAllStudentForTeacher() {
-    this.scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+    this.scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
     this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
     if (this.scheduleStudentListViewModel.sortingModel?.sortColumn == "") {
       this.scheduleStudentListViewModel.sortingModel = null;
@@ -750,12 +754,12 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   exportStudentListToExcel() {
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
       const scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
       scheduleStudentListViewModel.pageNumber = 0;
       scheduleStudentListViewModel.pageSize = 0;
       scheduleStudentListViewModel.sortingModel = null;
-      scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+      scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
       scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.studentScheduleService.searchScheduledStudentForGroupDrop(scheduleStudentListViewModel).subscribe(res => {
       if(res._failure){
@@ -808,7 +812,8 @@ export class StudentComponent implements OnInit, OnDestroy {
               [this.defaultValuesService.translateKey('alternateID')]: x.alternateId,
               [this.defaultValuesService.translateKey('gradeLevel')]: x.gradeLevelTitle,
               [this.defaultValuesService.translateKey('email')]: x.schoolEmail,
-              [this.defaultValuesService.translateKey('telephone')]: x.homePhone
+              [this.defaultValuesService.translateKey('telephone')]: x.homePhone,
+              [this.defaultValuesService.translateKey('schoolName')]: x.schoolName
             };
           });
           this.excelService.exportAsExcelFile(studentList, 'Students_List_')

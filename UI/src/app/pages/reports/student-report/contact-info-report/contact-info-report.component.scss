@@ -1,0 +1,190 @@
+
+    
+    
+.student-information-report{
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+      margin: 0;
+    }
+    body {
+      -webkit-print-color-adjust: exact;
+      font-family: Arial;
+      background-color: #fff;
+      margin: 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 14px;
+    }
+    .student-report {
+        width: 1024px;
+        margin: auto;
+    }
+    .float-left {
+      float: left;
+    }
+    .float-right {
+      float: right;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .text-left {
+        text-align: left;
+    }
+    .ml-auto {
+      margin-left: auto;
+    }
+    .m-auto {
+      margin: auto;
+    }
+    .inline-block {
+        display: inline-block;
+    }
+    .border-table {
+        border: 1px solid #000;
+    }
+    .clearfix::after {
+        display: block;
+        clear: both;
+        content: "";
+      }
+    .report-header {
+        padding: 20px 0;
+        border-bottom: 2px solid #000;
+    }
+    .school-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid #cacaca;
+        margin-right: 20px;
+        text-align: center;
+        overflow: hidden;
+    }
+    .school-logo img {
+        width: 100%;
+        overflow: hidden;
+    }
+    .report-header td {
+        padding: 20px 8px 0;
+    }
+    .report-header td.generate-date {
+        padding: 0;
+    }
+    .report-header .information h4 {
+        font-size: 20px;
+        font-weight: 600;
+        padding: 10px 0;
+    }
+    .report-header .information p, .header-right p {
+        font-size: 16px;
+    }
+    .header-right div {
+        background-color: #000;
+        color: #fff;
+        font-size: 20px;
+        padding: 5px 20px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    .p-y-20 {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .p-t-0 {
+        padding-top: 0px;
+    }
+    .p-b-8 {
+        padding-bottom: 8px;
+    }
+    .width-160 {
+        width: 160px;
+    }
+    .m-r-20 {
+        margin-right: 20px;
+    }
+    .m-b-5 {
+        margin-bottom: 5px;
+    }
+    .m-b-8 {
+        margin-bottom: 8px;
+    }
+    .m-b-20 {
+        margin-bottom: 20px;
+    }
+    .m-b-15 {
+        margin-bottom: 15px;
+    }
+    .m-b-10 {
+        margin-bottom: 10px;
+    }
+    .m-t-20 {
+        margin-top: 20px;
+    }
+    .m-b-15 {
+        margin-bottom: 15px;
+    }
+    .font-bold {
+        font-weight: 600;
+    }
+    .font-medium {
+        font-weight: 500;
+    }
+    .f-s-20 {
+        font-size: 20px;
+    }
+    .f-s-18 {
+        font-size: 18px;
+    }
+    .f-s-16 {
+        font-size: 16px;
+    }
+    .p-y-5 {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .p-x-10 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .bg-slate {
+        background-color: #E5E5E5;
+    }
+    .information-table {
+        border: 1px solid #000;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 10px;
+    }
+    .information-table th {
+        border-bottom: 1px solid #000;
+        padding: 8px 5px;
+        text-align: left;
+    }
+    .information-table td {
+        padding: 8px 5px;
+        border-bottom: 1px solid #000;
+    }
+    .information-table tr:first-child th:first-child {
+        border-top-left-radius: 10px;
+    }
+    .information-table tr:first-child th:last-child {
+        border-top-right-radius: 10px;
+    }
+    .information-table tr:last-child td {
+        border-bottom: none;
+    }
+    table td {
+        vertical-align: top;
+    }
+}

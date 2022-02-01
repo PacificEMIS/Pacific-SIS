@@ -28,7 +28,9 @@ export class LovAddView extends CommonField{
 
 export class LovList extends CommonField{
     public dropdownList:[lovModel];
+    public isListView: boolean;
     public schoolId: number;
     public lovName: string;
     public tenantId: string;
+    public isHasSchoolId:boolean;
 }

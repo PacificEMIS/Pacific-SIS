@@ -1,8 +1,10 @@
 import { CommonField } from "./common-field.model";
+import { CourseSectionAddViewModel } from "./course-section.model";
 import { GradeUsStandard } from "./grades.model";
 
 export class GetAllSubjectModel extends CommonField {
     public subjectList: [];
+    public academicYear: number;
     public tenantId: string;
     public schoolId: number;
 }
@@ -104,6 +106,7 @@ export class DeleteProgramModel extends CommonField {
 
 export class GetAllCourseListModel extends CommonField {
     public courseViewModelList: [];
+    public academicYear: number;
     public tenantId: string;
     public schoolId: number;
 }
@@ -112,6 +115,7 @@ export class CourseStandardModel {
     public schoolId: number;
     public courseId: number;
     public standardRefNo: string;
+    public gradeStandardId: number;
     public gradeUsStandard:GradeUsStandard;
     public createdBy: string;
     public createdOn: string;
@@ -137,7 +141,7 @@ export class CourseModel {
     public courseProgram: string;
     public courseSubject: string;
     public courseCategory: number;
-    public creditHours: number;
+    public creditHours: string;
     public courseDescription: string;
     public isCourseActive: boolean;
     public createdBy: string;
@@ -153,6 +157,8 @@ export class AddCourseModel extends CommonField {
     public course: CourseModel;
     public programId: number;
     public subjectId: number;
+    public grade_standard_id;
+    
     constructor() {
         super();
         this.course = new CourseModel();
@@ -202,6 +208,7 @@ export class AllCourseSectionView {
     public yrMarkingPeriodId: number;
     public smstrMarkingPeriodId: number;
     public qtrMarkingPeriodId: number;
+    public prgrsprdMarkingPeriodId: number;
     public scheduleType: string;
     public fixedDays: string;
     public fixedRoomId: number;
@@ -222,6 +229,36 @@ export class AllCourseSectionView {
 
 export class SearchCourseForScheduleModel extends CommonField {
     course: CourseModel[]
+    academicYear: number;
     courseSubject: string;
     courseProgram: string;
+}
+
+export class CourseWithCourseSectionDetailsViewModel extends CommonField {
+    getCourseSectionForView: CourseSectionAddViewModel[];
+    tenantId: string;
+    schoolId: number;
+    courseId: number;
+    courseTitle: string;
+    courseShortName: string;
+    courseGradeLevel: string;
+    courseProgram: string;
+    courseSubject: string;
+    creditHours: number;
+}
+
+export class CourseCatelogViewModel extends CommonField {
+    courseWithCourseSectionDetailsViewModels: CourseWithCourseSectionDetailsViewModel[];
+    academicYear: number;
+    courseId: number | string;
+    markingPeriodId: string;
+    gradeLevel: string;
+    courseSubject: string;
+    constructor(){
+        super();
+        this.markingPeriodId = '';
+        this.courseSubject = '';
+        this.courseId = '';
+        this.gradeLevel = '';
+    }
 }

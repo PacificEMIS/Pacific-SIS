@@ -37,18 +37,20 @@ export class ScheduleStudentListViewModel extends CommonField {
   public searchAllSchool: boolean;
   public dobStartDate: string;
   public dobEndDate: string;
+  public attendanceDate: string;
   public pageSize: number;
   public pageNumber: number;
   public sortingModel: Sorting;
   public totalCount: number;
   public profilePhoto: boolean;
   public _pageSize: number; // this is from response.
+  public IsDropped: boolean;
   constructor() {
     super();
     this.pageNumber = 1;
     this._pageSize = 10;
-    this.sortingModel = new Sorting();
-    this.filterParams = null;
+    this.sortingModel = null;
+    this.filterParams = [];
   }
 }
 
@@ -85,12 +87,14 @@ export class ScheduleStudentForView {
   public homePhone: string;
   public mobilePhone: string;
   public schoolEmail: string;
+  public isDropped: boolean;
 }
 
 export class ScheduledStudentDropModel extends CommonField {
   public studentCoursesectionScheduleList: StudentCoursesectionSchedule[];
   public courseSectionId: number;
   public effectiveDropDate: string;
+  public effectiveStartDate:string;
   public studentId: number;
   public updatedBy: string;
   constructor() {
@@ -122,6 +126,7 @@ export class StudentCoursesectionSchedule {
   public calendarId: number;
   public isDropped: true;
   public effectiveDropDate: string;
+  public effectiveStartDate: string;
   public createdBy: string;
   public createdOn: string;
   public updatedBy: string;
@@ -177,6 +182,7 @@ export class ScheduleCourseSectionForViewModel extends CommonField {
   updatedBy: string;
   updatedOn: string;
   isDropped: boolean;
+  effectiveStartDate: string;
   courseSectionDurationStartDate: string;
   courseSectionDurationEndDate: string;
   isAssociationship: boolean;
@@ -201,7 +207,7 @@ export class RoutineView {
   periodStartTime: string;
   periodEndTime: string;
   events: RoutineViewEvent[];
-  filteredEvents: RoutineViewEvent[];
+  filteredEvents: any;
 }
 
 export class RoutineViewEvent {

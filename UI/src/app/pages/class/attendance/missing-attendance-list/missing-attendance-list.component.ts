@@ -41,6 +41,7 @@ import { stagger40ms } from '../../../../../@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
 import { CommonService } from 'src/app/services/common.service';
 
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 @Component({
   selector: 'vex-missing-attendance-list',
   templateUrl: './missing-attendance-list.component.html',
@@ -82,6 +83,7 @@ export class MissingAttendanceListComponent implements OnInit, AfterViewInit, On
     private staffPortalService: StaffPortalService,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
   }
 
@@ -98,8 +100,8 @@ export class MissingAttendanceListComponent implements OnInit, AfterViewInit, On
 
   missingAttendanceListForCourseSection() {
     this.getAllStaffModel.sortingModel = null;
-    this.getAllStaffModel.staffId = +sessionStorage.getItem('userId');
-    this.getAllStaffModel.courseSectionId = +this.courseSectionClass.courseSectionId;
+    this.getAllStaffModel.staffId = this.defaultValuesService.getUserId();
+    this.getAllStaffModel.courseSectionId = this.defaultValuesService.getCourseSectionId();
     this.staffPortalService.missingAttendanceListForCourseSection(this.getAllStaffModel).subscribe((res: ScheduledCourseSectionViewModel) => {
       if (res) {
       if(res._failure){
@@ -119,7 +121,7 @@ export class MissingAttendanceListComponent implements OnInit, AfterViewInit, On
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

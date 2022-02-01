@@ -34,6 +34,7 @@ import { GradesService } from '../../../../services/grades.service';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-honor-roll',
@@ -58,6 +59,7 @@ export class EditHonorRollComponent implements OnInit,AfterViewInit {
     private snackbar:MatSnackBar,
     private gradesService:GradesService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService,
     fb:FormBuilder
     ) { 
       this.editmod=data.mod
@@ -105,7 +107,7 @@ export class EditHonorRollComponent implements OnInit,AfterViewInit {
     this.gradesService.addHonorRoll(this.honorRollAddViewModel).subscribe(
       (res)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }else{
@@ -132,7 +134,7 @@ export class EditHonorRollComponent implements OnInit,AfterViewInit {
     this.gradesService.updateHonorRoll(this.honorRollAddViewModel).subscribe(
       (res)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }else{

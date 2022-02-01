@@ -1,7 +1,7 @@
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{ 'recalculateDailyAttendance' | translate }}" class="w-full">
-            <vex-breadcrumbs [crumbs]="['Attendance']" class="flex-auto"></vex-breadcrumbs>
+        <vex-secondary-toolbar current="{{ 'recalculateDailyAttendance'}}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
     <vex-page-layout-content class="-mt-6">
@@ -36,7 +36,7 @@
             </div>
 
             <div class="py-10 px-8 text-center" *ngIf="isShowLoadingView">
-                <img src="assets/img/calculater.gif" width="200" class="block rounded-full m-auto mb-4" style="height: 200px">
+                <div class="recalculate-attendance-animation"></div>
                 <h4 class="text-primary text-2xl font-semibold mb-1">{{ 'recalculatingAttendanceBetweenGivenTimeframe' | translate }}</h4>
                 <p class="">{{ 'pleaseDoNotRefreshThePageOrClickBackButton' | translate }}</p>
             </div>

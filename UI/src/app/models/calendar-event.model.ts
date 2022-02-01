@@ -16,6 +16,8 @@ export class CalendarEventModel {
     public updatedBy: string;
     public visibleToMembershipId :string;
     public eventColor :string;
+    public isHoliday :boolean;
+    public applicableToAllSchool :boolean;
     public systemWideEvent :boolean;
     public startDate :string;
     public endDate : string;

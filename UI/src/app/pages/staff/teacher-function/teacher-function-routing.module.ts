@@ -21,8 +21,16 @@ const routes: Routes = [
         loadChildren: () => import('./input-final-grade/input-final-grade.module').then(m => m.InputFinalGradeModule),
       },
       {
+        path: 'gradebook-grades',
+        loadChildren: () => import('./gradebook-grades/gradebook-grades.module').then(m => m.GradebookGradesModule),
+      },
+      {
         path: 'input-effort-grade',
         loadChildren: () => import('./input-effort-grades/input-effort-grades.module').then(m => m.InputEffortGradesModule),
+      },
+      {
+        path: 'missing-attendance',
+        loadChildren: () => import('./missing-attendance/missing-attendance.module').then(m => m.MissingAttendanceModule),
       }
     ]
   },

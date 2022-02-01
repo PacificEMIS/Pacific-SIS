@@ -1,5 +1,5 @@
 export enum RollingOptionsEnum {
-    "Next Grade at Current School"="Next Grade at Current School", 
+    "Next grade at current school"="Next grade at current school", 
     "Retain"="Retain",
     "Do not enroll after this school year"="Do not enroll after this school year"
   }

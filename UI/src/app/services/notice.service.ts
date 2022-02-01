@@ -28,14 +28,14 @@ export class NoticeService {
     notice = this.defaultValuesService.getAllMandatoryVariable(notice);
     notice.notice.schoolId = this.defaultValuesService.getSchoolID();
     notice.notice.tenantId = this.defaultValuesService.getTenantID();
-    notice.notice.createdBy = this.defaultValuesService.getEmailId();
+    notice.notice.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + notice._tenantName + '/Notice/addNotice';
     return this.http.post<NoticeAddViewModel>(apiurl, notice,this.httpOptions);
   }
   updateNotice(notice: NoticeAddViewModel) {
     notice = this.defaultValuesService.getAllMandatoryVariable(notice);
     notice.notice.tenantId = this.defaultValuesService.getTenantID();
-    notice.notice.updatedBy = this.defaultValuesService.getEmailId();
+    notice.notice.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + notice._tenantName + '/Notice/updateNotice';
     return this.http.post<NoticeAddViewModel>(apiurl, notice,this.httpOptions);
   }

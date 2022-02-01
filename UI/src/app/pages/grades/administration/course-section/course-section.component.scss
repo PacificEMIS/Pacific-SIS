@@ -1,0 +1,9 @@
+.course-list {
+    min-height: 300px;
+    max-height: 300px;
+    overflow-x: auto;
+    li {
+        padding: 10px 20px;
+        border-bottom: 1px solid #EBEBEB;
+    }
+}

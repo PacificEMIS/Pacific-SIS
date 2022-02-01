@@ -72,7 +72,10 @@ import { AddNurseVisitComponent } from './add-nurse-visit/add-nurse-visit.compon
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ConfirmDialogComponent } from 'src/app/pages/shared-module/confirm-dialog/confirm-dialog.component';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
-import { CommonService } from 'src/app/services/common.service';
+import { CommonService } from '../../../../services/common.service';
+import { FieldsCategoryListView } from '../../../../models/fields-category.model';
+import { Module } from '../../../../enums/module.enum';
+import { CustomFieldService } from '../../../../services/custom-field.service';
 @Component({
   selector: 'vex-student-medicalinfo',
   templateUrl: './student-medicalinfo.component.html',
@@ -89,6 +92,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   @Output() studentDetailsForParent = new EventEmitter<StudentAddModel>();
   studentAddModel: StudentAddModel = new StudentAddModel();
   parentInfoModel: ViewParentInfoModel = new ViewParentInfoModel();
+  fieldsCategoryListView = new FieldsCategoryListView();
   icEdit = icEdit;
   icDelete = icDelete;
   icDeleteForever = icDeleteForever;
@@ -117,6 +121,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
     public translateService: TranslateService,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
+    private customFieldservice: CustomFieldService,
     private defaultValuesService: DefaultValuesService,
     private parentInfoService: ParentInfoService,
     private imageCropperService: ImageCropperService,
@@ -126,6 +131,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
   ) {
     //translateService.use('en');
+    this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
   ngOnInit(): void {
@@ -155,6 +161,9 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   }
 
   editMedicalInfo() {
+    this.addEditStudentMedicalProviderModel.fieldsCategoryList= this.checkViewPermission(
+      this.studentMedicalInfoListModel.fieldsCategoryList
+    );
     this.actionButtonTitle='update';
     this.getAllParents();
     this.studentCreateMode = this.studentCreate.EDIT;
@@ -274,6 +283,15 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
 
   changeTab(status) {
     this.currentTab = status;
+    if(this.currentTab === 'providerInformation'){
+      this.addEditStudentMedicalProviderModel.fieldsCategoryList= this.checkViewPermission(
+        this.studentMedicalInfoListModel.fieldsCategoryList
+      );
+      // if(this.studentCreateMode === this.studentCreate.ADD){
+        this.getAllFieldsCategory();
+      //}
+     
+    }
     if(this.studentCreateMode !== this.studentCreate.EDIT && this.studentCreateMode !== this.studentCreate.ADD ){
      
       this.studentCreateMode = this.studentCreate.VIEW;
@@ -281,8 +299,40 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
     else{
       this.studentCreateMode = this.studentCreate.EDIT;
     }
-   
   }
+
+  getAllFieldsCategory() {
+    this.fieldsCategoryListView.module = Module.STUDENT;
+    this.customFieldservice
+      .getAllFieldsCategory(this.fieldsCategoryListView)
+      .subscribe((res) => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            if (!res.fieldsCategoryList) {
+              this.snackbar.open(res._message, "", {
+                duration: 10000,
+              });
+            }
+          } else {
+            this.addEditStudentMedicalProviderModel.fieldsCategoryList = this.checkViewPermission(
+              res.fieldsCategoryList
+            );
+          }
+        } else {
+          this.snackbar.open(
+            this.defaultValuesService.translateKey("categoryListFailed") +
+            this.defaultValuesService.getHttpError(),
+            "",
+            {
+              duration: 10000,
+            }
+          );
+        }
+      });
+  }
+ 
+
   deleteStudentMedicalAlert(element){
     this.addEditStudentMedicalAlertModel.studentMedicalAlert = element;
     this.studentService.deleteStudentMedicalAlert(this.addEditStudentMedicalAlertModel).subscribe(
@@ -302,7 +352,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -341,7 +391,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -381,7 +431,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -422,7 +472,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -479,7 +529,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
               }
             }
             else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -501,7 +551,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
               }
             }
             else{
-              this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -552,7 +602,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
             this.snackbar.open(
               this.defaultValuesService.translateKey(
                 'medicalInformationUpdationFailed'
-              ) + sessionStorage.getItem('httpError'),
+              ) + this.defaultValuesService.getHttpError(),
               '',
               {
                 duration: 10000,
@@ -590,7 +640,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
             }
           }
         }else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

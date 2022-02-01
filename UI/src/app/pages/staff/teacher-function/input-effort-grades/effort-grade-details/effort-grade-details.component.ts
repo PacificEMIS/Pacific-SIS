@@ -28,7 +28,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
-import { LayoutService } from '../../../../../../@vex/services/layout.service';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 import { EffortGradeLibraryCategoryListView, GetAllEffortGradeScaleListModel } from '../../../../../models/grades.model';
 import { GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
@@ -47,6 +46,7 @@ import { fadeInRight400ms } from '../../../../../../@vex/animations/fade-in-righ
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
 import { CommonService } from 'src/app/services/common.service';
+
 
 @Component({
   selector: 'vex-effort-grade-details',
@@ -88,10 +88,9 @@ export class EffortGradeDetailsComponent implements OnInit {
     private studentScheduleService: StudentScheduleService,
     private markingPeriodService: MarkingPeriodService,
     private router: Router,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private loaderService: LoaderService,
     private gradesService: GradesService,
-    private layoutService: LayoutService,
     private effotrGradeService: EffotrGradeService,
     private commonService: CommonService,
     ) {
@@ -100,7 +99,6 @@ export class EffortGradeDetailsComponent implements OnInit {
     });
     //translateService.use('en');
     this.staffDetails = this.finalGradeService.getStaffDetails();
-    this.layoutService.collapseSidenav();
   }
 
   ngOnInit(): void {
@@ -119,8 +117,8 @@ export class EffortGradeDetailsComponent implements OnInit {
  
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem("academicyear");
+    this.getMarkingPeriodTitleListModel.schoolId = this.defaultValuesService.getSchoolID();
+    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
@@ -138,10 +136,10 @@ export class EffortGradeDetailsComponent implements OnInit {
   }
 
   getAllScheduledCourseSectionBasedOnTeacher() {
-    this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
+    //this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
     this.teacherReassignmentService.getAllScheduledCourseSectionForStaff(this.allScheduledCourseSectionBasedOnTeacher).pipe(
       map((res) => {
-        res._userName = sessionStorage.getItem('user');
+        res._userName = this.defaultValuesService.getUserName();
         return res;
       })
     ).subscribe((res) => {
@@ -160,7 +158,7 @@ export class EffortGradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
 
@@ -208,7 +206,7 @@ export class EffortGradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -219,7 +217,7 @@ export class EffortGradeDetailsComponent implements OnInit {
 
   goToAddEffortGrade(){
     this.router.navigate(['/school', 'settings', 'grade-settings']);
-    localStorage.setItem('pageId','Effort Grade Setup');
+    this.defaultValuesService.setPageId('Effort Grade Setup');
   }
 
   findMarkingPeriodTitleById(courseDetails) {
@@ -229,6 +227,8 @@ export class EffortGradeDetailsComponent implements OnInit {
       courseDetails.markingPeriodId = '1_' + courseDetails.smstrMarkingPeriodId;
     } else if (courseDetails.qtrMarkingPeriodId) {
       courseDetails.markingPeriodId = '2_' + courseDetails.qtrMarkingPeriodId;
+    } else if (courseDetails.prgrsprdMarkingPeriodId) {
+      courseDetails.markingPeriodId = '3_' + courseDetails.prgrsprdMarkingPeriodId;
     }
     else {
       courseDetails.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView[0].value;
@@ -261,7 +261,7 @@ export class EffortGradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -272,7 +272,7 @@ export class EffortGradeDetailsComponent implements OnInit {
     this.gradesService.getAllEffortGradeLlibraryCategoryList(this.effortGradeLibraryCategoryListView).subscribe(
       (res: EffortGradeLibraryCategoryListView) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -354,6 +354,7 @@ export class EffortGradeDetailsComponent implements OnInit {
   }
 
   submitEffortGrade() {
+    delete this.studentEffortGradeListModel.academicYear;
     this.effotrGradeService.addUpdateStudentEffortGrade(this.studentEffortGradeListModel).subscribe(data => {
       if (data) {
 

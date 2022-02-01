@@ -47,6 +47,7 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { SharedFunction } from '../../../shared/shared-function';
 import moment from 'moment';
 import { MatSelect } from '@angular/material/select';
+import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-search-staff',
@@ -312,7 +313,7 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
   getAllMembership() {
     this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Membership List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -342,7 +343,7 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   search() {
-    this.params = [];
+    this.getAllStaff.filterParams = [];
     if (Array.isArray(this.staffMasterSearchModel.nationality)) {
       this.staffMasterSearchModel.nationality = null;
     }
@@ -355,11 +356,16 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
     for (let key in this.staffMasterSearchModel) {
       if (this.staffMasterSearchModel.hasOwnProperty(key))
         if (this.staffMasterSearchModel[key] !== null && this.staffMasterSearchModel[key] !== '' && this.staffMasterSearchModel[key] !== undefined) {
+          this.getAllStaff.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.getAllStaff.filterParams.length - 1;
           if (key === 'joiningDate' || key === 'endDate' || key === 'dob') {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.commonFunction.formatDateSaveWithoutTime(this.staffMasterSearchModel[key]) })
+            this.getAllStaff.filterParams[lastIndex].columnName = key;
+            this.getAllStaff.filterParams[lastIndex].filterOption = 11;
+            this.getAllStaff.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.staffMasterSearchModel[key]);
           }
           else {
-            this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.staffMasterSearchModel[key] })
+            this.getAllStaff.filterParams[lastIndex].columnName = key;
+            this.getAllStaff.filterParams[lastIndex].filterValue = this.staffMasterSearchModel[key];
           }
         }
     }
@@ -368,13 +374,14 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Staff';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.params);
+      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.getAllStaff.filterParams);
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter updated failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
+          this.checkSearchRecord = 0;
         }
         else {
         if(res._failure){
@@ -382,6 +389,7 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
+            this.checkSearchRecord = 0;
           }
           else {
             this.snackbar.open(res._message, '', {
@@ -394,13 +402,16 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     }
 
-    this.getAllStaff.filterParams = this.params;
     this.getAllStaff.sortingModel = null;
     this.getAllStaff.searchAllSchool = this.searchAllSchool;
     this.getAllStaff.includeInactive = this.inactiveStaff;
     this.getAllStaff.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
     this.getAllStaff.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-    this.commonService.setSearchResult(this.params);
+    this.commonService.setSearchResult(this.getAllStaff.filterParams);
+    // this.getAllStaff.searchAllSchool = this.searchAllSchool;
+    // this.getAllStaff.includeInactive = this.inactiveStaff;
+    this.defaultValuesService.sendAllSchoolFlag(this.searchAllSchool);
+      this.defaultValuesService.sendIncludeInactiveFlag(this.inactiveStaff);
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -410,9 +421,11 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
         this.snackbar.open(res._message, '', {
           duration: 10000
         });
+        this.checkSearchRecord = 0;
       } else {
         let outStafflist = res;
         for (let staff of outStafflist.staffMaster) {
+          if (staff.isActive === true || staff.isActive === null) {
           if (staff?.staffSchoolInfo[0]?.endDate) {
             let today = moment().format('DD-MM-YYYY').toString();
             let todayarr = today.split('-');
@@ -449,6 +462,9 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           else {
             staff.status = 'active';
+          }
+          } else {
+            staff.status = 'inactive';
           }
         }
         this.searchList.emit(outStafflist);

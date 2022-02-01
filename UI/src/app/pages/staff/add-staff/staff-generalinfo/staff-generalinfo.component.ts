@@ -60,6 +60,8 @@ import { CryptoService } from '../../../../services/Crypto.service';
 import { Router } from '@angular/router';
 import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
 @Component({
   selector: 'vex-staff-generalinfo',
   templateUrl: './staff-generalinfo.component.html',
@@ -73,8 +75,8 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 export class StaffGeneralinfoComponent implements OnInit {
   moduleIdentifier = ModuleIdentifier;
   staffCreate = SchoolCreate;
-  staffDetailsForViewAndEdit;
-  categoryId;
+  staffDetailsForViewAndEdit : StaffAddModel = new StaffAddModel();
+  categoryId = 0;
   @ViewChild('f') currentForm: NgForm;
   staffCreateMode: SchoolCreate;
   nameOfMiscValuesForView:MiscModel=new MiscModel();
@@ -84,6 +86,7 @@ export class StaffGeneralinfoComponent implements OnInit {
   lovListViewModel: LovList = new LovList()
   checkStaffInternalIdViewModel: CheckStaffInternalIdViewModel = new CheckStaffInternalIdViewModel();
   checkUserEmailAddressViewModel: CheckUserEmailAddressViewModel = new CheckUserEmailAddressViewModel();
+  activeDeactiveUserModel: ActiveDeactiveUserModel = new ActiveDeactiveUserModel();
   destroySubject$: Subject<void> = new Subject();
   languageList = [];
   ethnicityList = [];
@@ -114,6 +117,12 @@ export class StaffGeneralinfoComponent implements OnInit {
   protected _onDestroy = new Subject<void>();
   nationalityCtrl: FormControl = new FormControl();
   nationalityFilterCtrl: FormControl = new FormControl();
+  firstLanguageFilterCtrl:FormControl=new FormControl();
+  secondLanguageFilterCtrl:FormControl=new FormControl();
+  thirdLanguageFilterCtrl:FormControl=new FormControl();  
+  public filteredFirstLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public filteredSecondLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
+  public filteredThirdLanguage: ReplaySubject<any> = new ReplaySubject<any>(1);
   public filteredNationality: ReplaySubject<any> = new ReplaySubject<any>(1);
   @ViewChild('singleSelect') singleSelect: MatSelect;
   countryOfBirthCtrl: FormControl = new FormControl();
@@ -127,6 +136,8 @@ export class StaffGeneralinfoComponent implements OnInit {
   today = new Date();
   cloneStaffAddModel;
   permissions: Permissions;
+  isReadOnly: boolean;
+
   constructor(private fb: FormBuilder,
               private el: ElementRef,
               public translateService: TranslateService,
@@ -141,7 +152,8 @@ export class StaffGeneralinfoComponent implements OnInit {
               public rollBasedAccessService: RollBasedAccessService,
               private cd: ChangeDetectorRef,
               private imageCropperService: ImageCropperService,
-              private commonLOV: CommonLOV) {
+              private commonLOV: CommonLOV,
+              private defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
 
     this.staffService.getStaffDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StaffAddModel) => {
@@ -160,21 +172,28 @@ export class StaffGeneralinfoComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
 
-    this.staffService.staffCreatedMode.subscribe((res)=>{
+    this.staffService.staffCreatedMode.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
       this.staffCreateMode = res;
+      if(this.staffCreateMode === SchoolCreate.ADD) {
+        this.hideAccess = false;
+        this.fieldDisabled = false;
+        this.hidePasswordAccess = false;
+      }
     })
-    this.staffService.staffDetailsForViewedAndEdited.subscribe((res)=>{
-      this.staffDetailsForViewAndEdit = res;
+    this.staffService.staffDetailsForViewedAndEdited.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      if(res) {
+      this.staffDetailsForViewAndEdit = res;      
       this.countryOfBirthCtrl.setValue(res?.staffMaster?.countryOfBirth);
       this.nationalityCtrl.setValue(res?.staffMaster?.nationality);
+    }
     })
 
-    this.staffService.categoryIdSelected.subscribe((res)=>{
-      if(res>=0){
+    this.staffService.categoryIdSelected.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
+      if(res){
         this.categoryId = res;
-      }
+    }
     })
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
 
@@ -193,6 +212,7 @@ export class StaffGeneralinfoComponent implements OnInit {
         this.GetAllLanguage();
         this.getAllCountry();
       }
+
       this.staffAddModel = this.staffDetailsForViewAndEdit;
       this.data = this.staffDetailsForViewAndEdit?.staffMaster;
       this.cloneStaffAddModel=JSON.stringify(this.staffAddModel);
@@ -202,13 +222,40 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.initializeDropdowns();
       this.staffService.changePageMode(this.staffCreateMode);
       this.saveAndNext = 'update';
-      if (this.staffAddModel.staffMaster.loginEmailAddress !== null) {
+      if (this.staffAddModel?.staffMaster?.loginEmailAddress !== null) {
         this.hideAccess = true;
         this.fieldDisabled = true;
 
       }
     }
   }
+
+  checkExternalSchoolId(arrayOfArray, schoolId) {
+    return new Promise((resolve, reject)=>{
+    let isReadOnly = false;
+    if(arrayOfArray?.length > 0) {
+      const index = arrayOfArray.findIndex(x => x === this.defaultValuesService.getSchoolID())      
+      if(this.defaultValuesService.getSchoolID() !== schoolId && index >=0) {        
+        if(this.staffAddModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x=> !x.systemField && !x.hide).length === 0) {
+        this.snackbar.open('Please go to Abc school for edit', '', { duration: 10000 });
+        reject({});
+      } else {
+          isReadOnly =  true;
+          resolve({isReadOnly});
+        }
+
+      } else if(this.defaultValuesService.getSchoolID() !== schoolId && index === -1) {
+          this.snackbar.open('Please go to Abc school for edit', '', { duration: 10000 });
+          reject();
+      } else if(this.defaultValuesService.getSchoolID() === schoolId) {
+        resolve({isReadOnly});
+      }
+      }
+  })
+
+   
+  }
+
   filterNationalitis(){
     if (!this.countryListArr) {
       return;
@@ -223,6 +270,54 @@ export class StaffGeneralinfoComponent implements OnInit {
     }
     this.filteredNationality.next(
       this.countryListArr.filter(country => country.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+  filterFirstLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.firstLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredFirstLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredFirstLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
+    );
+  }
+   filterSecondLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.secondLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredSecondLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredSecondLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
+    );
+  }
+   filterThirdLanguage(){
+    if (!this.languageList) {
+      return;
+    }
+    let search = this.thirdLanguageFilterCtrl.value;
+    if (!search) {
+      this.filteredThirdLanguage.next(this.languageList.slice());
+      return;
+    }
+    else {
+      search = search.toLowerCase();
+    }
+    this.filteredThirdLanguage.next(
+      this.languageList.filter(language => language.locale.toLowerCase().indexOf(search) > -1)
     );
   }
   filterCountryOfBirth(){
@@ -255,7 +350,27 @@ export class StaffGeneralinfoComponent implements OnInit {
         this.filterCountryOfBirth();
       });
   }
-
+  firstLanguageValueChange(){
+    this.firstLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterFirstLanguage();
+      });
+  }
+   secondLanguageValueChange(){
+    this.secondLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterSecondLanguage();
+      });
+  }
+   thirdLanguageValueChange(){
+    this.thirdLanguageFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe((res) => {
+        this.filterThirdLanguage();
+      });
+  }
   initializeDropdowns(){
      this.getAllCountry();
       this.GetAllLanguage();
@@ -265,8 +380,11 @@ export class StaffGeneralinfoComponent implements OnInit {
   ngAfterViewInit(){
     this.countryOfBirthValueChange();
     this.nationalityValueChange();
+    this.firstLanguageValueChange();
+    this.secondLanguageValueChange();
+    this.thirdLanguageValueChange();
     this.staffInternalId = this.data?.staffInternalId;
-    if(this.staffAddModel.staffMaster.loginEmailAddress ==null){
+    if(this.staffAddModel?.staffMaster?.loginEmailAddress ==null){
       this.staffPortalId = this.staffAddModel.staffMaster.loginEmailAddress;
     }
     else{
@@ -423,6 +541,9 @@ export class StaffGeneralinfoComponent implements OnInit {
             });
           }
         }else{
+          this.filteredFirstLanguage.next(res.tableLanguage?.slice());
+          this.filteredSecondLanguage.next(res.tableLanguage?.slice());
+          this.filteredThirdLanguage.next(res.tableLanguage?.slice());
         this.languageList=res.tableLanguage?.sort((a, b) => {return a.locale < b.locale ? -1 : 1;} )   
         if (this.staffCreateMode == this.staffCreate.VIEW) {
           this.findNameById();
@@ -471,6 +592,11 @@ export class StaffGeneralinfoComponent implements OnInit {
     this.currentForm.controls.passwordHash.setValue(this.commonFunction.autoGeneratePassword());
   }
 
+  omitSpecialChar(event) {
+    let k = event.charCode;
+    return ((k > 64 && k < 91) || (k > 96 && k < 123) || k === 8 || (k >= 48 && k <= 57));
+  }
+
   isPortalAccess(event) {
     if (event.checked) {
       if (this.staffCreateMode == this.staffCreate.ADD) {
@@ -494,9 +620,42 @@ export class StaffGeneralinfoComponent implements OnInit {
     }
   }
 
-
+  activateUser(event) {
+    if (event === false) {
+      this.activeDeactiveUserModel.userId = this.staffAddModel.staffMaster.staffId;
+      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.module = 'staff';
+      this.activeDeactiveUserModel.loginEmail = this.staffAddModel.staffMaster.loginEmailAddress;
+      this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+            this.staffAddModel.staffMaster.isActive = true;
+            this.cloneStaffAddModel = JSON.parse(this.cloneStaffAddModel);
+            this.cloneStaffAddModel.staffMaster.isActive = true;
+            this.cloneStaffAddModel = JSON.stringify(this.cloneStaffAddModel);
+          }
+        } else {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+    }
+  }
 
   editGeneralInfo() {
+    this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
+    this.isReadOnly = res.isReadOnly;
+    this.isReadOnly ? this.internalId.disable() : this.internalId.enable();
+    this.isReadOnly ? this.loginEmail.disable() : this.loginEmail.enable();
     this.staffCreateMode = this.staffCreate.EDIT
     this.staffService.changePageMode(this.staffCreateMode);
     this.saveAndNext = 'update';
@@ -509,6 +668,7 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.showDisabilityDescription = true;
     }
     this.callLOVs();
+  });
   }
 
   cancelEdit() {
@@ -569,16 +729,32 @@ export class StaffGeneralinfoComponent implements OnInit {
     .subscribe(() => {
       this.singleSelect.compareWith = (a, b) => a && b && a.name === b.name;
     });
+    this.filteredFirstLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
+    this.filteredSecondLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
+    this.filteredThirdLanguage
+    .pipe(take(1), takeUntil(this._onDestroy))
+    .subscribe(() => {
+      this.singleSelect.compareWith = (a, b) => a && b && a.locale === b.locale;
+    });
   }
   addStaff() {
     if(this.internalId.invalid){
       this.invalidScroll();
       return
     }
+    this.staffAddModel.selectedCategoryId = this.staffAddModel.fieldsCategoryList[0].categoryId;
     this.staffAddModel.staffMaster.dob = this.commonFunction.formatDateSaveWithoutTime(this.staffAddModel.staffMaster.dob);
     this.staffService.addStaff(this.staffAddModel).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Staff Save failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff Save failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -597,11 +773,11 @@ export class StaffGeneralinfoComponent implements OnInit {
           this.staffService.setStaffDetails(data);
           this.countryOfBirthCtrl.setValue(data?.staffMaster?.countryOfBirth);
           this.nationalityCtrl.setValue(data?.staffMaster?.nationality);
-          this.checkPermissionAndSwitchNextCategory();
           this.staffCreateMode = this.staffCreate.EDIT
           this.staffService.changePageMode(this.staffCreateMode);
           // this.dataAfterSavingGeneralInfo.emit(data);
           this.staffService.setDataAfterSavingGeneralInfo(data);
+          this.checkPermissionAndSwitchNextCategory();
           this.imageCropperService.enableUpload({module:this.moduleIdentifier.STAFF,upload:true,mode:this.staffCreate.EDIT});
         }
       }
@@ -623,7 +799,7 @@ export class StaffGeneralinfoComponent implements OnInit {
     this.staffAddModel.staffMaster.dob = this.commonFunction.formatDateSaveWithoutTime(this.staffAddModel.staffMaster.dob);
     this.staffService.updateStaff(this.staffAddModel).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
       if (typeof (data) == 'undefined') {
-        this.snackbar.open('Staff Update failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff Update failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -634,6 +810,12 @@ export class StaffGeneralinfoComponent implements OnInit {
             duration: 10000
           });
         } else {
+
+          if(this.defaultValuesService.getUserId()==data.staffMaster.staffId.toString()){
+          this.defaultValuesService.sendName(data.staffMaster.firstGivenName);
+          this.defaultValuesService.setFirstGivenName(data.staffMaster.firstGivenName);
+          }
+
           this.snackbar.open( data._message, '', {
             duration: 10000
           });

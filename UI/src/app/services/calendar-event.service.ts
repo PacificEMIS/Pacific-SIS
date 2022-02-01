@@ -31,7 +31,7 @@ export class CalendarEventService {
         calendarEvent = this.defaultValuesService.getAllMandatoryVariable(calendarEvent);
         calendarEvent.schoolCalendarEvent.schoolId = this.defaultValuesService.getSchoolID();
         calendarEvent.schoolCalendarEvent.tenantId = this.defaultValuesService.getTenantID();
-        calendarEvent.schoolCalendarEvent.createdBy = this.defaultValuesService.getEmailId();
+        calendarEvent.schoolCalendarEvent.createdBy = this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + calendarEvent._tenantName + "/CalendarEvent/addCalendarEvent";
         return this.http.post<CalendarEventAddViewModel>(apiurl, calendarEvent,this.httpOptions)
     }
@@ -47,7 +47,7 @@ export class CalendarEventService {
         calendarEvent = this.defaultValuesService.getAllMandatoryVariable(calendarEvent);
         calendarEvent.schoolCalendarEvent.schoolId = this.defaultValuesService.getSchoolID();
         calendarEvent.schoolCalendarEvent.tenantId = this.defaultValuesService.getTenantID();
-        calendarEvent.schoolCalendarEvent.updatedBy = this.defaultValuesService.getEmailId();
+        calendarEvent.schoolCalendarEvent.updatedBy = this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + calendarEvent._tenantName + "/CalendarEvent/updateCalendarEvent";
         return this.http.put<CalendarEventAddViewModel>(apiurl, calendarEvent,this.httpOptions)
     }

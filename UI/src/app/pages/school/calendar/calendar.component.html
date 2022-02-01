@@ -1,8 +1,8 @@
 <vex-mat-spinner-overlay *ngIf="loading"></vex-mat-spinner-overlay>
 <vex-page-layout>
   <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-    <vex-secondary-toolbar current="Calendar" class="w-full">
-      <vex-breadcrumbs [crumbs]="['School Info','Calendar']" class="flex-auto"></vex-breadcrumbs>
+    <vex-secondary-toolbar current="{{'calendar'}}" class="w-full">
+      <vex-breadcrumbs [crumbs]="['schoolInfo','calendar']" class="flex-auto"></vex-breadcrumbs>
     </vex-secondary-toolbar>
   </vex-page-layout-header>
   <div class="-mt-16 w-full" vexContainer>
@@ -12,12 +12,9 @@
 
           <div class="flex-auto">
             <div style="text-align: center !important;"><label
-                *ngIf="!showCalendarView && isMarkingPeriod!='null'">{{'NoCalendarWereFound'| translate }}</label></div>
-            <div style="text-align: center !important;"><label *ngIf="isMarkingPeriod=='null'">
-                <ic-icon [icon]="icWarning" inline="true"></ic-icon>{{'pleaseCreateMarkingPeriodBeforeAddingCalender'|
-                translate}}
-              </label></div>
-            <mat-form-field *ngIf="showCalendarView" class="my-3"  appearance="outline" color="primary">
+                *ngIf="showCalendarView===false">{{'NoCalendarWereFound'| translate }}</label>
+            </div>
+            <mat-form-field *ngIf="showCalendarView" class="my-3" appearance="outline" color="primary">
               <mat-label>{{'calendar' | translate}}</mat-label>
               <mat-select [(value)]="selectedCalendar" (selectionChange)="changeCalendar($event.value)">
                 <mat-option *ngFor="let calendar of calendars" [value]="calendar">
@@ -27,7 +24,8 @@
             </mat-form-field>
           </div>
 
-          <button type="button" *ngIf="permissions?.add" [disabled]="isMarkingPeriod=='null'" color="primary" mat-raised-button class="my-4" (click)="openAddNewCalendar()">
+          <button type="button" *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary"
+            mat-raised-button class="my-4" (click)="openAddNewCalendar()">
             <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2 ic-inline" inline="true"></ic-icon>
             {{'addCalendar' | translate}}
           </button>
@@ -35,13 +33,14 @@
             (click)="openEditCalendar(this.selectedCalendar)">
             <ic-icon [icon]="icEdit" inline="true" class="text-2xl"></ic-icon>
           </a>
-          <a *ngIf="showCalendarView && permissions?.edit" class="mx-3" href="javascript:void(0)"
+          <a *ngIf="showCalendarView && permissions?.edit && !selectedCalendar.sessionCalendar && this.defaultValuesService.checkAcademicYear()" class="mx-3" href="javascript:void(0)"
             (click)="deleteCalendarConfirm(this.selectedCalendar)">
             <ic-icon [icon]="icDelete" class="text-2xl" inline="true"></ic-icon>
           </a>
         </div>
         <hr *ngIf="showCalendarView" />
-        <div class="flex-auto flex flex-col sm:flex-row justify-between items-center my-3  px-4"  *ngIf="showCalendarView">
+        <div class="flex-auto flex flex-col sm:flex-row justify-between items-center my-3  px-4"
+          *ngIf="showCalendarView">
           <div class="headline text-md text-gray">
             {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</div>
 
@@ -55,62 +54,70 @@
               </button>
             </div>
             <div class="flex">
-              <button (click)="view = CalendarView.Month" mat-button>MONTH</button>
-              <button (click)="view = CalendarView.Week" mat-button>WEEK</button>
-              <button (click)="view = CalendarView.Day" mat-button>DAY</button>
+              <button (click)="view = CalendarView.Month" mat-button>{{'month' | translate}}</button>
+              <button (click)="view = CalendarView.Week" mat-button>{{'week' | translate}}</button>
+              <button (click)="view = CalendarView.Day" mat-button>{{'day'| translate}}</button>
             </div>
           </div>
         </div>
 
         <ng-template #customCellTemplate let-day="day" let-locale="locale">
-          <div class="cal-cell-top">
-            <div class="flex justify-between items-center mx-3 mt-2">
-              <!-- <span class="cal-day-badge hidden md:inline-block" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
-              <div class="select-container bg-white border  rounded p-2">
-                <mat-select (click)="$event.stopPropagation()"
-              (selectionChange)="changeBlockPeriod($event, day)" [value]="day.blockId">
-                <mat-option value="">N/A</mat-option>
-                <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
-                </mat-select>
+          <div [ngClass]="{'cell-holiday flex-grow' : day.events.length > 0 && getHoliDay(day.events) }" [ngStyle]="{backgroundColor: day.events.length > 0 && getHoliDay(day.events) ? '#ffdee4' : 'transparent'}">  
+            
+            <div class="cal-cell-top">
+              <div class="flex justify-between items-center mx-3 mt-2">
+                <!-- <span class="cal-day-badge hidden md:inline-block" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
+                <div *ngIf="periodList.length > 1 && !day.isWeekend && this.defaultValuesService.checkAcademicYear() &&  permissions?.edit && userType !='Teacher' && userType !='Homeroom Teacher'"
+                  class="select-container bg-white border  rounded p-2">
+                  <mat-select (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
+                    [value]="day.blockId ? day.blockId : 1">
+                    <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
+                  </mat-select>
+                </div>
+                <span class="calendar-date"><span>{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span></span>
               </div>
-              <span class="calendar-date"><span>{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span></span>
-            </div>
-            <div class="px-4">
+              <div class="px-4">
 
-            </div>
-          </div>
-         
-
-          <div class="cal-events" *ngIf="day.events.length > 0">
-            <div *ngFor="let event of day.events;" class="events-wrapper">
-              <div class="cal-event" [ngClass]="event?.cssClass"
-                [mwlCalendarTooltip]="event.title | calendarEventTitle:'monthTooltip':event" [tooltipEvent]="event"
-                mwlDraggable [class.cal-draggable]="event.draggable" dragActiveClass="cal-drag-active"
-                [dropData]="{event: event}" [dragAxis]="{x: event.draggable, y: event.draggable}">
-                <span (click)="$event.stopPropagation(); viewEvent(event)" class="event-color inline-block" [style.backgroundColor]="event.meta.calendar.eventColor"></span>
-                <span (click)="$event.stopPropagation(); viewEvent(event)" class="hidden md:inline-block text-xs cursor-pointer">{{ event.title}}</span>
               </div>
             </div>
+
+            <div class="cal-events" *ngIf="day.events.length > 0">
+              <div *ngFor="let event of day.events;" class="events-wrapper">
+                
+                  <div class="cal-event" [ngClass]="event?.cssClass"
+                    [mwlCalendarTooltip]="event.title | calendarEventTitle:'monthTooltip':event" [tooltipEvent]="event"
+                    mwlDraggable [class.cal-draggable]="event.draggable" dragActiveClass="cal-drag-active"
+                    [dropData]="{event: event}" [dragAxis]="{x: event.draggable, y: event.draggable}">
+                    <span (click)="$event.stopPropagation(); viewEvent(event)" class="event-color inline-block"
+                      [style.backgroundColor]="event.meta.calendar.eventColor"></span>
+                    <span (click)="$event.stopPropagation(); viewEvent(event)"
+                      class="hidden md:inline-block text-xs cursor-pointer">{{ event.title}}</span>
+                  </div>
+
+              </div>
+            </div>
+
           </div>
         </ng-template>
 
-        <ng-template #customEventTemplate let-weekEvent="weekEvent" let-dayEvent="dayEvent" let-day="day" let-locale="locale">
+        <ng-template #customEventTemplate let-weekEvent="weekEvent" let-dayEvent="dayEvent" let-day="day"
+          let-locale="locale">
           <div class="cal-day-headers">
             <div class="cal-header" *ngFor="let header of weekHeader"
               [ngClass]="{'cal-today' : header?.isToday, 'cal-future' : header?.isFuture, 'cal-past' : header?.isPast, 'cal-weekend' : header?.isWeekend}">
               <div class="flex justify-between my-2">
-            <b>{{header?.date | date : 'EEEE'}}</b>
-            <span>{{header?.date | date : 'MMMM d'}}</span>
+                <b>{{header?.date | date : 'EEEE'}}</b>
+                <span>{{header?.date | date : 'MMMM d'}}</span>
               </div>
-              <div class="bg-white border border-gray-light rounded px-2 py-1">
-                <mat-select (click)="$event.stopPropagation()"
-              (selectionChange)="changeBlockPeriod($event, header)" [value]="header.blockId">
-                <mat-option value="">N/A</mat-option>
-                <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
+              <div *ngIf="periodList.length > 1 && !header.isWeekend && permissions?.edit && userType !='Teacher' && userType !='Homeroom Teacher'"
+                class="bg-white border border-gray-light rounded px-2 py-1">
+                <mat-select (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, header)"
+                  [value]="header.blockId ? header.blockId : 1">
+                  <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
                 </mat-select>
               </div>
+            </div>
           </div>
-        </div>
 
           <!-- <div class="custom-event" mwlCalendarTooltip="true"
                     [tooltipEvent]="dayEvent"
@@ -119,24 +126,25 @@
               <p class="time">{{ dayEvent }}</p>
               <p class="desc">{{ dayEvent }}</p>
           </div> -->
-      </ng-template> 
+        </ng-template>
 
         <div *ngIf="showCalendarView" class="border-t event-calendar">
           <!-- <vex-scrollbar *ngIf="events$ | async; let events" [ngSwitch]="view" class="px-0 shadow flex-auto relative" vexContainer> -->
-            <div *ngIf="events$ | async; let events" [ngSwitch]="view">
+          <div *ngIf="events$ | async; let events" [ngSwitch]="view">
             <mwl-calendar-month-view *ngSwitchCase="'month'" [refresh]="refresh"
               (beforeViewRender)="beforeMonthViewRender($event)" [viewDate]="viewDate" [events]="events"
               (dayClicked)="openAddNewEvent($event.day)" [cellTemplate]="customCellTemplate"
-              (eventTimesChanged)="eventTimesChanged($event)" [weekendDays]="weekendDays">
+              [style.backgroundColor]="events.eventColor" (eventTimesChanged)="eventTimesChanged($event)"
+              [weekendDays]="weekendDays">
             </mwl-calendar-month-view>
             <mwl-calendar-week-view *ngSwitchCase="'week'" [headerTemplate]="customEventTemplate"
-            (beforeViewRender)="beforeWeekViewRender($event)" (eventTimesChanged)="eventTimesChanged($event)"
+              (beforeViewRender)="beforeWeekViewRender($event)" (eventTimesChanged)="eventTimesChanged($event)"
               [weekendDays]="weekendDays" [refresh]="refresh" [viewDate]="viewDate" [events]="events">
             </mwl-calendar-week-view>
             <mwl-calendar-day-view *ngSwitchCase="'day'" (eventTimesChanged)="eventTimesChanged($event)"
               [refresh]="refresh" [viewDate]="viewDate" [events]="events">
             </mwl-calendar-day-view>
-            </div>
+          </div>
           <!-- </vex-scrollbar> -->
         </div>
       </mat-card>

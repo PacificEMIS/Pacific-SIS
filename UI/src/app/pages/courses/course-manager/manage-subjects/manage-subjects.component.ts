@@ -80,7 +80,7 @@ export class ManageSubjectsComponent implements OnInit {
     private snackbar: MatSnackBar,
     private fb: FormBuilder,
     public translateService: TranslateService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private dialog: MatDialog,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
@@ -149,7 +149,7 @@ export class ManageSubjectsComponent implements OnInit {
         this.dialogRef.close(true);
       }
     }else{
-      this.snackbar.open('Subject Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+      this.snackbar.open('Subject Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
         duration: 10000
       });
     }
@@ -180,8 +180,8 @@ updateSubject(element,index){
           obj["subjectName"] = val.subjectName;
           obj["tenantId"]= this.defaultValuesService.getTenantID();
           obj["schoolId"] = this.defaultValuesService.getSchoolID();
-          obj["createdBy"] = this.defaultValuesService.getEmailId();
-          obj["updatedBy"]= this.defaultValuesService.getEmailId();
+          obj["createdBy"] = this.defaultValuesService.getUserGuidId();
+          obj["updatedBy"]= this.defaultValuesService.getUserGuidId();
           this.massUpdateSubjectModel.subjectList.push(obj);
         }
       }      
@@ -192,10 +192,10 @@ updateSubject(element,index){
       let obj1 ={};
       obj1["subjectId"] = 0
       obj1["subjectName"] = this.addSubjectModel.subjectList[0].subjectName;
-      obj1["tenantId"]= sessionStorage.getItem("tenantId");
-      obj1["schoolId"] = +sessionStorage.getItem("selectedSchoolId");  
-      obj1["createdBy"] = sessionStorage.getItem("email");       
-      obj1["updatedBy"]=  sessionStorage.getItem("email");       
+      obj1["tenantId"]= this.defaultValuesService.getTenantID();
+      obj1["schoolId"] = this.defaultValuesService.getSchoolID();  
+      obj1["createdBy"] = this.defaultValuesService.getUserGuidId();       
+      obj1["updatedBy"]=  this.defaultValuesService.getUserGuidId();       
       this.massUpdateSubjectModel.subjectList.push(obj1); 
     }
     if(this.massUpdateSubjectModel.subjectList.length > 0){
@@ -219,7 +219,7 @@ updateSubject(element,index){
             this.dialogRef.close(true);
           }
         }else{
-          this.snackbar.open('Subject Submission failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Subject Submission failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

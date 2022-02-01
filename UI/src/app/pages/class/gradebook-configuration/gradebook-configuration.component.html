@@ -3,25 +3,25 @@
     <ul class="flex flex-row mb-4 flex-wrap">
         <li class="mr-6 mb-2">
             <mat-checkbox color="primary" (change)="generalValue('weightGrades',$event.checked)"
-                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('weightGrades') ? true:false">
+                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('weightGrades') ? true:false" [disabled]="!defaultValuesService.checkAcademicYear()">
                 {{ 'weightGrades' | translate }}</mat-checkbox>
         </li>
         <li class="mr-6 mb-2">
             <mat-checkbox color="primary" (change)="generalValue('assignedDateDefaultsToToday',$event.checked)"
-                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('assignedDateDefaultsToToday')? true:false">
+                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('assignedDateDefaultsToToday')? true:false" [disabled]="!defaultValuesService.checkAcademicYear()">
                 {{ 'assignedDateDefaultsToToday' | translate }}</mat-checkbox>
         </li>
         <li class="mr-6 mb-2">
             <mat-checkbox color="primary" (change)="generalValue('dueDateDefaultsToToday',$event.checked)"
-                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('dueDateDefaultsToToday')? true:false">
+                [checked]="gradebookConfigurationAddViewModel?.gradebookConfiguration?.general?.includes('dueDateDefaultsToToday')? true:false" [disabled]="!defaultValuesService.checkAcademicYear()">
                 {{ 'dueDateDefaultsToToday' | translate }}</mat-checkbox>
         </li>
     </ul>
-    <div class="grid lg:grid-cols-2 justify-between col-gap-8 row-gap-4 mb-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between col-gap-8 row-gap-4 mb-4">
         <div>
             <h5 class="font-semibold mb-2">{{ 'scoreRounding' | translate }}</h5>
             <mat-radio-group [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.scoreRounding"
-                aria-label="Select an option">
+                aria-label="Select an option" [disabled]="!defaultValuesService.checkAcademicYear()">
                 <mat-radio-button value="up" class="mr-4 mb-1" color="primary">{{ 'up' | translate }}</mat-radio-button>
                 <mat-radio-button value="down" class="mr-4 mb-1" color="primary">{{ 'down' | translate }}
                 </mat-radio-button>
@@ -34,7 +34,7 @@
         <div>
             <h5 class="font-semibold mb-2">{{ 'assignmentSorting' | translate }}</h5>
             <mat-radio-group [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.assignmentSorting"
-                aria-label="Select an option">
+                aria-label="Select an option" [disabled]="!defaultValuesService.checkAcademicYear()">
                 <mat-radio-button value="newestFirst" class="mr-4 mb-1" color="primary">{{ 'newestFirst' | translate }}
                 </mat-radio-button>
                 <mat-radio-button value="dueDate" class="mr-4 mb-1" color="primary">{{ 'dueDate' | translate }}
@@ -47,15 +47,15 @@
             </mat-radio-group>
         </div>
     </div>
-    <div class="grid xl:grid-cols-2 justify-between col-gap-8 row-gap-0 mb-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 justify-between col-gap-8 row-gap-0 mb-4">
         <div>
             <h5 class="font-semibold mb-2">{{ 'allowedMaximumPercentInAnomalousGrades' | translate }}</h5>
             <ul>
                 <li>
-                    <mat-form-field appearance="outline" color="primary" class="w-full">
+                    <mat-form-field appearance="outline" color="primary" class="w-full" >
                         <mat-label>{{ 'percent' | translate }}</mat-label>
                         <input matInput type="number"
-                            [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.maxAnomalousGrade">
+                            [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.maxAnomalousGrade" [readonly]="!defaultValuesService.checkAcademicYear()">
                     </mat-form-field>
                 </li>
             </ul>
@@ -68,7 +68,7 @@
                     <mat-form-field appearance="outline" color="primary" class="w-full">
                         <mat-label>{{ 'days' | translate }}</mat-label>
                         <input matInput type="number"
-                            [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.upgradedAssignmentGradeDays">
+                            [(ngModel)]="gradebookConfigurationAddViewModel.gradebookConfiguration.upgradedAssignmentGradeDays" [readonly]="!defaultValuesService.checkAcademicYear()">
                     </mat-form-field>
                 </li>
             </ul>
@@ -95,11 +95,31 @@
     <h3 class="text-green font-semibold mb-1">{{ 'finalGradingPercentages' | translate }}</h3>
     <p class="text-gray font-medium mb-6">{{ 'totalMustBe100ForEachMarkingPeriod' | translate }}</p>
     <div>
-        <ul *ngFor="let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter; let i= index"
+        <ul *ngFor="let progressPeriod of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationProgressPeriods; let i= index"
             class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
-            <li class="col-span-2 md:col-span-1 flex items-center w-full">
-                <p class="font-semibold">{{ quater.title}}</p>
-                <p *ngIf="checkConfiguration('quater', i)" class="text-warn">{{ 'totalNot100' | translate }}</p>
+            <li class="col-span-2 md:col-span-1 flex flex-col align-middle w-full">
+                <p class="font-semibold mt-2">{{ progressPeriod.title}}</p>
+                <p *ngIf="checkConfiguration('progressPeriods', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
+            </li>
+            <li *ngIf="progressPeriod.doesGrades">
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                    <mat-label>{{ progressPeriod.title }}</mat-label>
+                    <input [(ngModel)]="progressPeriod.gradingPercentage" matInput type="number">
+                </mat-form-field>
+            </li>
+            <li *ngIf="progressPeriod.doesExam">
+                <mat-form-field appearance="outline" color="primary" class="w-full">
+                    <mat-label>{{ progressPeriod.title + ' Exam' }}</mat-label>
+                    <input matInput [(ngModel)]="progressPeriod.examPercentage" type="number">
+                </mat-form-field>
+            </li>
+        </ul>
+
+        <!-- <ul *ngFor="let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter; let i= index"
+            class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+            <li class="col-span-2 md:col-span-1 flex flex-col align-middle w-full">
+                <p class="font-semibold mt-2">{{ quater.title}}</p>
+                <p *ngIf="checkConfiguration('quater', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
             </li>
             <li *ngIf="quater.doesGrades">
                 <mat-form-field appearance="outline" color="primary" class="w-full">
@@ -113,7 +133,36 @@
                     <input matInput [(ngModel)]="quater.examPercentage" type="number">
                 </mat-form-field>
             </li>
-        </ul>
+        </ul> -->
+
+        <ng-container
+            *ngFor="let quater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter; let i=index">
+            <ul *ngIf="quater?.qtrMarkingPeriodId && !quater?.prgrsprdMarkingPeriodId"
+                class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
+                <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
+                    <p class="font-semibold mt-2">{{ quater.title }}</p>
+                    <p *ngIf="checkConfiguration('quater', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
+                </li>
+                <ng-container
+                    *ngFor="let progressPeriodForQuater of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationQuarter">
+                    <li
+                        *ngIf="progressPeriodForQuater?.prgrsprdMarkingPeriodId && progressPeriodForQuater?.doesGrades && progressPeriodForQuater?.qtrMarkingPeriodId === quater?.qtrMarkingPeriodId ">
+                        <mat-form-field appearance="outline" color="primary" class="w-full">
+                            <mat-label>{{ progressPeriodForQuater.title }}</mat-label>
+                            <input [(ngModel)]="progressPeriodForQuater.gradingPercentage" type="number" matInput>
+                        </mat-form-field>
+                    </li>
+                </ng-container>
+        
+        
+                <li *ngIf="quater.doesExam">
+                    <mat-form-field appearance="outline" color="primary" class="w-full">
+                        <mat-label>{{ quater.title + ' Exam' }}</mat-label>
+                        <input [(ngModel)]="quater.examPercentage" type="number" matInput>
+                    </mat-form-field>
+                </li>
+            </ul>
+        </ng-container>
 
         <ng-container
             *ngFor="let semester of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester; let i=index">
@@ -121,7 +170,7 @@
                 class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-2">
                 <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
                     <p class="font-semibold mt-2">{{ semester.title }}</p>
-                    <p *ngIf="checkConfiguration('semester', i)" class="text-warn">{{ 'totalNot100' | translate }}</p>
+                    <p *ngIf="checkConfiguration('semester', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
                 </li>
                 <ng-container
                     *ngFor="let quaterForSemester of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationSemester">
@@ -150,7 +199,7 @@
                 class="grid grid-cols-2 md:grid-cols-4 justify-between col-gap-8 row-gap-0 mb-4">
                 <li class="col-span-2 md:col-span-1 flex flex-col w-full align-middle">
                     <p class="font-semibold mt-2">{{ year.title }}</p>
-                    <p *ngIf="checkConfiguration('year', i)" class="text-warn">{{ 'totalNot100' | translate }}</p>
+                    <p *ngIf="checkConfiguration('year', i)" class="text-warn mb-2">{{ 'totalNot100' | translate }}</p>
                 </li>
                 <ng-container
                     *ngFor="let semesterForYear of this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationYear">
@@ -174,7 +223,7 @@
     </div>
 
     <div class="text-right">
-        <button mat-flat-button (click)="addUpdateGradebookConfiguration()" color="primary">{{ 'submit' | translate
+        <button mat-flat-button (click)="addUpdateGradebookConfiguration()" color="primary" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate
             }}</button>
     </div>
 </div>

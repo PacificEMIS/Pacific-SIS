@@ -19,6 +19,7 @@ import { AddStudentComponent } from './add-student.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
   declarations: [AddStudentComponent],
   imports: [
@@ -41,7 +42,8 @@ import { MatSortModule } from '@angular/material/sort';
     MatTableModule,
     FormsModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatTooltipModule
   ]
 })
 export class AddStudentModule { }

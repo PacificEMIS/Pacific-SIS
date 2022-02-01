@@ -36,21 +36,29 @@ export class ReportCardService {
 
   updateSortOrderForCourseCommentCategory(reportCardComment:UpdateSortOrderForCourseCommentCategoryModel){
     reportCardComment = this.defaultValuesService.getAllMandatoryVariable(reportCardComment);
-    reportCardComment.updatedBy = this.defaultValuesService.getEmailId();
+    reportCardComment.updatedBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + reportCardComment._tenantName+"/ReportCard/updateSortOrderForCourseCommentCategory";
     return this.http.post<UpdateSortOrderForCourseCommentCategoryModel>(apiurl,reportCardComment,this.httpOptions)
   }
 
   getAllCourseCommentCategory(reportCardComment:GetAllCourseCommentCategoryModel){
     reportCardComment = this.defaultValuesService.getAllMandatoryVariable(reportCardComment);
+    reportCardComment.academicYear = this.defaultValuesService.getAcademicYear()
     let apiurl = this.apiUrl + reportCardComment._tenantName+"/ReportCard/getAllCourseCommentCategory";
     return this.http.post<GetAllCourseCommentCategoryModel>(apiurl,reportCardComment,this.httpOptions)
   }
 
   addReportCard(reportCard:AddReportCardPdf){
     reportCard = this.defaultValuesService.getAllMandatoryVariable(reportCard);
-    reportCard.createdBy= this.defaultValuesService.getEmailId();
+    reportCard.createdBy= this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + reportCard._tenantName+"/ReportCard/addReportCard";
+    return this.http.post<GetAllCourseCommentCategoryModel>(apiurl,reportCard,this.httpOptions)
+  }
+
+  getReportCardForStudents(reportCard:AddReportCardPdf){
+    reportCard = this.defaultValuesService.getAllMandatoryVariable(reportCard);
+    reportCard.createdBy= this.defaultValuesService.getUserGuidId();
+    let apiurl = this.apiUrl + reportCard._tenantName+"/ReportCard/getReportCardForStudents";
     return this.http.post<GetAllCourseCommentCategoryModel>(apiurl,reportCard,this.httpOptions)
   }
 

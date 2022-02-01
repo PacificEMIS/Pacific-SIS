@@ -47,6 +47,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { CommonService } from '../../../services/common.service';
 import { AgeRangeList, EducationalStage } from '../../../models/common.model';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-grade-levels',
@@ -94,7 +95,8 @@ export class GradeLevelsComponent implements OnInit {
     private loaderService: LoaderService,
     private snackbar: MatSnackBar,
     private pageRolePermissions: PageRolesPermission,
-    private commonService:CommonService) {
+    private commonService:CommonService,
+    public defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
@@ -112,7 +114,7 @@ export class GradeLevelsComponent implements OnInit {
   getGradeEquivalency() {
     this.gradeLevelService.getAllGradeEquivalency(this.getGradeEquivalencyList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Equivalency List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Equivalency List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -136,7 +138,7 @@ export class GradeLevelsComponent implements OnInit {
   getAgeRangeList(){
     this.commonService.getAllGradeAgeRange(this.ageRangeList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Age Range List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Age Range List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -159,7 +161,7 @@ export class GradeLevelsComponent implements OnInit {
   getEducationalStageList(){
     this.commonService.getAllGradeEducationalStage(this.educationalStageList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Educational Stage List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Educational Stage List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -219,12 +221,13 @@ export class GradeLevelsComponent implements OnInit {
 
 
   getAllGradeLevel() {
-    this.getAllGradeLevels.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    this.getAllGradeLevels._tenantName = sessionStorage.getItem("tenant");
-    this.getAllGradeLevels._token = sessionStorage.getItem("token");
+    this.getAllGradeLevels.schoolId =this.defaultValuesService.getSchoolID();
+    this.getAllGradeLevels._tenantName = this.defaultValuesService.getTenantName();
+    this.getAllGradeLevels._token = this.defaultValuesService.getToken();
+    this.getAllGradeLevels.isListView=true;
     this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevels).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Level List failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Level List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -295,11 +298,11 @@ export class GradeLevelsComponent implements OnInit {
   deleteGradeLevel(deleteDetails) {
     this.deleteGradeLevelData.tblGradelevel.schoolId = deleteDetails.schoolId;
     this.deleteGradeLevelData.tblGradelevel.gradeId = deleteDetails.gradeId;
-    this.deleteGradeLevelData._tenantName = sessionStorage.getItem("tenant");
-    this.deleteGradeLevelData._token = sessionStorage.getItem("token");
+    this.deleteGradeLevelData._tenantName = this.defaultValuesService.getTenantName();
+    this.deleteGradeLevelData._token = this.defaultValuesService.getToken();
     this.gradeLevelService.deleteGradelevel(this.deleteGradeLevelData).subscribe((res) => {
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Grade Level Deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Grade Level Deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       } else if(res._failure){

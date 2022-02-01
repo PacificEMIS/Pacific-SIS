@@ -1,0 +1,153 @@
+<div class="card">
+    <ul class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 col-gap-6 row-gap-2 items-center p-4 pb-0">
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "showAttendanceBy" | translate }}</mat-label>
+                <mat-select>
+                    <mat-option>This School Year</mat-option>
+                    <mat-option>This Month</mat-option>
+                    <mat-option>All Marking Periods</mat-option>
+                    <mat-option>Custom Date Range</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "fromDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="fromDate" required>
+                <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                <mat-datepicker #fromDate></mat-datepicker>
+            </mat-form-field>
+        <li>
+            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                <mat-label>{{ "toDate" | translate }}</mat-label>
+                <input matInput [matDatepicker]="toDate" required>
+                <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                <mat-datepicker #toDate></mat-datepicker>
+            </mat-form-field>
+        </li>
+        <li>
+            <button mat-raised-button color="primary">{{'search' | translate }}</button>
+        </li>
+    </ul>
+    <mat-divider class="mt-2"></mat-divider>
+    <div class="bg-white px-4 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+        <div class="md:flex w-full justify-between">
+            <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
+                <div class="flex w-full items-center">
+                    <input class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                        type="search">
+                    <button class="ml-4" mat-icon-button type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                    <a class="text-primary cursor-pointer ml-3 md:w-full">
+                        <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
+                        <span class="ml-2 hidden lg:inline-block">
+                            {{'advanceSearch' | translate}}
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <hr class="block md:hidden" />
+            <div class="py-2 md:pt-2 items-center">
+                <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+                </a>
+                <a class="cursor-pointer p-1 mt-1 inline-block align-middle ml-4" matTooltip="Filter">
+                    <mat-icon>filter_list</mat-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-x-auto overflow-y-hidden">
+        <table class="table mb-0">
+              <thead class="text-left">
+                  <tr>
+                      <th>{{ 'grade' | translate }}</th>
+                      <th>{{ 'students' | translate }}</th>
+                      <th>{{ 'daysPossible' | translate }}</th>
+                      <th>{{ 'attendancePossible' | translate }}</th>
+                      <th>{{ 'present' | translate }}</th>
+                      <th>{{ 'absent' | translate }}</th>
+                      <th>{{ 'others' | translate }}</th>
+                      <th>{{ 'notTaken' | translate }}</th>
+                      <th>{{ 'ada' | translate }}</th>
+                      <th>{{ 'avgAttendance' | translate }}</th>
+                      <th>{{ 'avgAbsent' | translate }}</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>9th Grade</td>
+                      <td>300</td>
+                      <td>99</td>
+                      <td>194</td>
+                      <td>170</td>
+                      <td>4</td>
+                      <td>0</td>
+                      <td>12</td>
+                      <td>87.63%</td>
+                      <td>0.88</td>
+                      <td>0.02</td>
+                  </tr>
+
+                  <tr>
+                    <td>10th Grade</td>
+                    <td>280</td>
+                    <td>99</td>
+                    <td>679</td>
+                    <td>593</td>
+                    <td>16</td>
+                    <td>0</td>
+                    <td>6</td>
+                    <td>87.33%</td>
+                    <td>0.87</td>
+                    <td>0.02</td>
+                </tr>
+
+                <tr>
+                    <td>11th Grade</td>
+                    <td>378</td>
+                    <td>99</td>
+                    <td>388</td>
+                    <td>342</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>88.14%</td>
+                    <td>0.88</td>
+                    <td>0.02</td>
+                </tr>
+
+                <tr>
+                    <td>12th Grade</td>
+                    <td>317</td>
+                    <td>99</td>
+                    <td>194</td>
+                    <td>167</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>89.08%</td>
+                    <td>0.86</td>
+                    <td>0.04</td>
+                </tr>
+              </tbody>
+              <tfoot class="bg-base font-bold">
+                <tr>
+                    <td>Total</td>
+                    <td>317</td>
+                    <td>99</td>
+                    <td>194</td>
+                    <td>167</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>89.08%</td>
+                    <td>0.86</td>
+                    <td>0.04</td>
+                </tr>
+              </tfoot>
+          </table>
+    </div>
+</div>

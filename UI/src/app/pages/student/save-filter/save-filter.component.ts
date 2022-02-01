@@ -33,6 +33,7 @@ import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { SearchFilterAddViewModel } from 'src/app/models/search-filter.model';
 import { CommonService } from 'src/app/services/common.service';
 import { ValidationService } from '../../shared/validation.service';
+import { DefaultValuesService } from '../../../common/default-values.service';
 
 @Component({
   selector: 'vex-save-filter',
@@ -54,7 +55,8 @@ export class SaveFilterComponent implements OnInit {
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private snackbar: MatSnackBar) {
+    private snackbar: MatSnackBar,
+    private defaultValuesService: DefaultValuesService) {
     this.form = fb.group({
       filterId: [0],
       filterName: ['', [ValidationService.noWhitespaceValidator]],
@@ -73,9 +75,11 @@ export class SaveFilterComponent implements OnInit {
       this.searchFilterAddViewModel.searchFilter.module = 'Student';
       this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.commonService.getSearchResult());
       this.searchFilterAddViewModel.searchFilter.filterName = this.form.value.filterName;
+     
+      this.searchFilterAddViewModel.searchFilter.createdBy = this.defaultValuesService.getUserGuidId();
       this.commonService.addSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
-          this.snackbar.open('Search filter added failed' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Search filter added failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

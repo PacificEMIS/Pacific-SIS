@@ -33,6 +33,7 @@ import { CommonService } from '../../../../services/common.service';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-ethnicity',
@@ -55,7 +56,8 @@ export class EditEthnicityComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
-    private commonService: CommonService) {
+    private commonService: CommonService,
+     private defaultValuesService: DefaultValuesService) {
       //translateService.use('en');
     this.form = this.fb.group({
       id: [0],
@@ -87,7 +89,7 @@ export class EditEthnicityComponent implements OnInit {
         this.commonService.addDropdownValue(this.ethnicityAddViewModel).subscribe(
           (res) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Ethnicity Addition failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Ethnicity Addition failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -116,7 +118,7 @@ export class EditEthnicityComponent implements OnInit {
         this.commonService.updateDropdownValue(this.ethnicityAddViewModel).subscribe(
           (res) => {
             if (typeof (res) == 'undefined') {
-              this.snackbar.open('Ethnicity Updation failed. ' + sessionStorage.getItem("httpError"), '', {
+              this.snackbar.open('Ethnicity Updation failed. ' + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }

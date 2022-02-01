@@ -3,48 +3,51 @@ import { TranslateService } from '@ngx-translate/core';
 import icRemoveCircle from '@iconify/icons-ic/twotone-remove-circle';
 import { ControlContainer, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AddEditStudentMedicalProviderForGroupAssignModel, StudentAddForGroupAssignModel, StudentDocumentAddForGroupAssignModel, StudentEnrollmentForGroupAssignModel, StudentListModel } from 'src/app/models/student.model';
-import { StudentService } from 'src/app/services/student.service';
+import { StudentService } from '../../../services/student.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { LoaderService } from 'src/app/services/loader.service';
+import { DefaultValuesService } from '../../../common/default-values.service';
+import { LoaderService } from '../../../services/loader.service';
 import { debounceTime, distinctUntilChanged, take, takeUntil } from 'rxjs/operators';
 import { ReplaySubject, Subject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
-import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
+import { ScheduleStudentListViewModel } from '../../../models/student-schedule.model';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms, stagger60ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
-import { SearchFilter, SearchFilterListViewModel } from 'src/app/models/search-filter.model';
-import { CommonService } from 'src/app/services/common.service';
+import { SearchFilter, SearchFilterListViewModel } from '../../../models/search-filter.model';
+import { CommonService } from '../../../services/common.service';
 import { MatSelect } from '@angular/material/select';
-import { LanguageModel } from 'src/app/models/language.model';
-import { LoginService } from 'src/app/services/login.service';
-import { SchoolCreate } from 'src/app/enums/school-create.enum';
-import { MiscModel } from 'src/app/models/misc-data-student.model';
-import { CountryModel } from 'src/app/models/country.model';
-import { CalendarService } from 'src/app/services/calendar.service';
-import { CalendarListModel } from 'src/app/models/calendar.model';
-import { RollingOptionsEnum } from 'src/app/enums/rolling-retention-option.enum';
-import { GetAllSectionModel } from 'src/app/models/section.model';
-import { SectionService } from 'src/app/services/section.service';
-import { StudentCommentsAddForGroupAssign } from 'src/app/models/student-comments.model';
+import { LanguageModel } from '../../../models/language.model';
+import { LoginService } from '../../../services/login.service';
+import { SchoolCreate } from '../../../enums/school-create.enum';
+import { MiscModel } from '../../../models/misc-data-student.model';
+import { CountryModel } from '../../../models/country.model';
+import { CalendarService } from '../../../services/calendar.service';
+import { CalendarListModel } from '../../../models/calendar.model';
+import { RollingOptionsEnum } from '../../../enums/rolling-retention-option.enum';
+import { GetAllSectionModel } from '../../../models/section.model';
+import { SectionService } from '../../../services/section.service';
+import { StudentCommentsAddForGroupAssign } from '../../../models/student-comments.model';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
 import { CommonLOV } from '../../shared-module/lov/common-lov';
 import { SharedFunction } from '../../shared/shared-function';
-import { ImageCropperService } from 'src/app/services/image-cropper.service';
-import { ModuleIdentifier } from 'src/app/enums/module-identifier.enum';
-import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
-import { FieldsCategoryListView, FieldsCategoryModel } from 'src/app/models/fields-category.model';
-import { CustomFieldService } from 'src/app/services/custom-field.service';
+import { ImageCropperService } from '../../../services/image-cropper.service';
+import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
+import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
+import { FieldsCategoryListView, FieldsCategoryModel } from '../../../models/fields-category.model';
+import { CustomFieldService } from '../../../services/custom-field.service';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from '../../shared/format-datepicker';
-import { CustomFieldsValueModel } from 'src/app/models/custom-fields-value.model';
-import { StudentScheduleService } from 'src/app/services/student-schedule.service';
+import { CustomFieldsValueModel } from '../../../models/custom-fields-value.model';
+import { StudentScheduleService } from '../../../services/student-schedule.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { Module } from 'src/app/enums/module.enum';
+import { ProfilesTypes } from '../../../enums/profiles.enum';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 export interface StudentList {
   selectStudent: boolean;
@@ -56,19 +59,6 @@ export interface StudentList {
   email: string;
 }
 
-export const studentList: StudentList[] = [
-  {selectStudent: true, studentName: 'Arthur boucher', studentId: 5421, alternateId: 'ST-5542', grade: 'Grade 10', section: 'Section A', email: 'arthur.boucher@example.com'},
-  {selectStudent: false, studentName: 'Sophia Brown', studentId: 5469, alternateId: 'ST-2213', grade: 'Grade 10', section: 'Section A', email: 'sophiabrown1995@example.com'},
-  {selectStudent: false, studentName: 'Wang Fang', studentId: 4563, alternateId: 'ST-4563', grade: 'Grade 10', section: 'Section B', email: 'w.fang12@example.com'},
-  {selectStudent: true, studentName: 'Clare Garcia', studentId: 3465, alternateId: 'ST-4538', grade: 'Grade 10', section: 'Section A', email: 'clareg123@example.com'},
-  {selectStudent: true, studentName: 'Amelia Jones', studentId: 4465, alternateId: 'ST-5543', grade: 'Grade 10', section: 'Section B', email: 'ameliajones@example.com'},
-  {selectStudent: true, studentName: 'Audre Ketia', studentId: 2154, alternateId: 'ST-4444', grade: 'Grade 10', section: 'Section A', email: 'audreketia111@example.com'},
-  {selectStudent: false, studentName: 'Kwame Kimathi', studentId: 4653, alternateId: 'ST-4499', grade: 'Grade 10', section: 'Section C', email: 'kwamekimathi1995@example.com'},
-  {selectStudent: true, studentName: 'James Miller', studentId: 5123, alternateId: 'ST-3468', grade: 'Grade 10', section: 'Section A', email: 'miller.j.miller@example.com'},
-  {selectStudent: false, studentName: 'Victor Jones', studentId: 5444, alternateId: 'ST-3364', grade: 'Grade 10', section: 'Section C', email: 'victorjones@example.com'},
-  {selectStudent: false, studentName: 'Sophia Miller', studentId: 6253, alternateId: 'ST-5422', grade: 'Grade 10', section: 'Section B', email: 'sophiamiller@example.com'},
-];
-
 export interface SelectedStudentList {
   remove: string;
   studentName: string;
@@ -79,14 +69,7 @@ export interface SelectedStudentList {
   email: string;
 }
 
-export const selectedStudentList: SelectedStudentList[] = [
-  {remove: '', studentName: 'Danny Anderson', studentId: 1, alternateId: 'ST01', gradeLevel: 'Grade 9', section: 'Section A', email: 'danny.anderson@example.com'},
-  {remove: '', studentName: 'Justin Aponte', studentId: 2, alternateId: 'ST02', gradeLevel: 'Grade 9', section: 'Section A', email: 'justinaponte@example.com'},
-  {remove: '', studentName: 'Julie Davis', studentId: 3, alternateId: 'ST03', gradeLevel: 'Grade 9', section: 'Section A', email: 'j.davis@example.com'},
-  {remove: '', studentName: 'Javier Holmes', studentId: 4, alternateId: 'ST04', gradeLevel: 'Grade 9', section: 'Section A', email: 'javierh.3612@example.com'},
-  {remove: '', studentName: 'Roman Loafer', studentId: 5, alternateId: 'ST05', gradeLevel: 'Grade 9', section: 'Section A', email: 'romanloafer2021@example.com'},
-  {remove: '', studentName: 'Laura Paiva', studentId: 6, alternateId: 'ST06', gradeLevel: 'Grade 9', section: 'Section A', email: 'laura.paiva@example.com'},
-];
+
 
 @Component({
   selector: 'vex-group-assign-student-info',
@@ -108,9 +91,10 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   form: FormGroup;
   groupAssignStudents = true;
   showSelectedStudent = false;
-  isShow = true;
+  isShow = false;
   getAllStudent: StudentListModel = new StudentListModel();
   selectedStudentListModel;
+  selectedStudentList: MatTableDataSource<any>;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
   totalCount: number = 0;
@@ -133,7 +117,10 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   toggleValues: any = null;
   studentDocument = [];
   fieldsCategoryListView = new FieldsCategoryListView();
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  // @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild('studentsPaginator') paginator: MatPaginator;
+
+  @ViewChild('selectedStudentsPaginator') selectedStudentsPaginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
 
 
@@ -146,10 +133,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     { label: 'Section', property: 'section', type: 'text', visible: true },
     { label: 'Email', property: 'schoolEmail', type: 'text', visible: true },
   ];
-  studentList = studentList;
-
   displayedColumnsStudents: string[] = ['remove', 'firstGivenName', 'studentInternalId', 'alternateId', 'gradeLevelTitle', 'section', 'schoolEmail'];
-  selectedStudentList = selectedStudentList;
   loading: boolean;
   studentAddForGroupAssignModel: StudentAddForGroupAssignModel = new StudentAddForGroupAssignModel();
   today = new Date();
@@ -174,8 +158,10 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   AddEditStudentMedicalProviderForGroupAssignModel: AddEditStudentMedicalProviderForGroupAssignModel =  new AddEditStudentMedicalProviderForGroupAssignModel();
   StudentCommentsAddForGroupAssign: StudentCommentsAddForGroupAssign = new StudentCommentsAddForGroupAssign();
   StudentDocumentAddForGroupAssignModel: StudentDocumentAddForGroupAssignModel = new StudentDocumentAddForGroupAssignModel();
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList = [];
   moduleIdentifier = ModuleIdentifier;
-  
+  profiles=ProfilesTypes;
   body: string;
   cloneFiles: File[] = [];
   filesName = [];
@@ -212,31 +198,25 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     private pageRolePermission: PageRolesPermission,
     private customFieldservice: CustomFieldService,
     private studentScheduleService: StudentScheduleService,
-    private layoutService: LayoutService,
+    private gradeLevelService: GradeLevelService
     ) {
       this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       //translateService.use('en');
       this.getAllStudent.filterParams = null;
-      if (localStorage.getItem("collapseValue") !== null) {
-        if (localStorage.getItem("collapseValue") === "false") {
-          this.layoutService.expandSidenav();
-        } else {
-          this.layoutService.collapseSidenav();
-        }
-      } else {
-        this.layoutService.expandSidenav();
-      }
+      
       this.studentCreateMode = this.studentCreate.EDIT
       this.selectedStudentListModel = [];
+      this.selectedStudentList = new MatTableDataSource([]);
       this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
         this.loading = val;
       });
-    translateService.use('en');
+    // translateService.use('en');
     this.callAllStudent();
     this.GetAllLanguage();
     this.getAllCountry();
     this.getAllCalendar();
     this.getAllSection();
+    this.getAllGradeLevelList();
     this.getAllFieldsCategory();
 
     this.form = fb.group({
@@ -273,6 +253,8 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
     this.countryOfBirthValueChange();
     this.nationalityValueChange();
+
+    this.selectedStudentList.paginator = this.selectedStudentsPaginator;
 
       //  Sorting
       this.getAllStudent = new StudentListModel();
@@ -374,7 +356,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
               }
             }
             else{
-              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + sessionStorage.getItem('httpError'), '', {
+              this.snackbar.open(this.defaultValuesService.translateKey('commentFailed') + this.defaultValuesService.getHttpError(), '', {
                 duration: 10000
               });
             }
@@ -412,7 +394,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
             filename: this.filesName[index],
             filetype: this.filesType[index],
             fileUploaded: value,
-            uploadedBy: this.defaultValuesService.getEmailId(),
+            uploadedBy: this.defaultValuesService.getUserGuidId(),
             studentMaster: null
           };
         this.studentDocument.push(obj);
@@ -442,7 +424,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
               });
             }
           }else{
-            this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentUploadfailed') + sessionStorage.getItem('httpError'), '', {
+            this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentUploadfailed') + this.defaultValuesService.getHttpError(), '', {
               duration: 10000
             });
           }
@@ -471,7 +453,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
           }
         }
         else{
-          this.snackbar.open( sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open( this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -523,6 +505,32 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     }
   }
 
+  selectGrade(grade) {
+    this.studentEnrollmentForGroupAssignModel.studentEnrollments.gradeLevelTitle = grade.title;
+  }
+
+  // For get all grade level list
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data) {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
+          this.gradeLevelList = [];
+          if (!data.tableGradelevelList) {
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          }
+        } else {
+          this.gradeLevelList = data.tableGradelevelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
   
 
   nationalityValueChange(){
@@ -589,7 +597,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   GetAllLanguage() {
     if (!this.languages.isLanguageAvailable) {
       this.languages.isLanguageAvailable = true;
-      this.languages._tenantName = sessionStorage.getItem('tenant');
+      this.languages._tenantName = this.defaultValuesService.getTenantName();
       this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe(
         (res) => {
           if (res) {
@@ -684,10 +692,10 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   }
 
   goToselectedStudent(){
-    console.log(this.selectedStudentList.length);
     if(this.selectedStudentListModel.length) {
+      this.selectedStudentList.paginator = this.selectedStudentsPaginator;
       this.groupAssignStudents = false;
-      this.isShow = false;
+      this.isShow = true;
       this.showSelectedStudent = true;
       this.checkStudentCustomValue();
       this.checkStudentMedicalCustomValue();
@@ -703,6 +711,16 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     this.groupAssignStudents = true;
     this.isShow = true;
     this.showSelectedStudent = false;
+    this.StudentModelList.filteredData.map(user => {
+      user.selectStudent = false;
+      this.selectedStudentListModel = [];
+      this.selectedStudentList = new MatTableDataSource([]);
+      this.studentEnrollmentForGroupAssignModel.studentIds = [];
+      this.studentAddForGroupAssignModel.studentIds = [];
+      this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds = [];
+      this.StudentCommentsAddForGroupAssign.studentIds = [];
+      this.StudentDocumentAddForGroupAssignModel.studentIds = [];
+    });
   }
 
   toggleStudentList() {
@@ -711,7 +729,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
 
   getPageEvent(event) {
-    if(this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher'){
+    if(this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher){
       if (this.sort.active != undefined && this.sort.direction != "") {
         this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
         this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
@@ -778,7 +796,6 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
         });
 
         this.StudentModelList = new MatTableDataSource(data.studentListViews);
-        console.log(this.StudentModelList)
         this.getAllStudent = new StudentListModel();
         this.StudentModelList.filteredData = data.studentListViews.map((item: any) => {
           this.studentEnrollmentForGroupAssignModel.studentIds.map((selectedUser) => {
@@ -825,13 +842,13 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     this.showSaveFilter = true;
     this.pageNumber = res.pageNumber;
     this.pageSize = res._pageSize;
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
       this.StudentModelList = new MatTableDataSource(res.scheduleStudentForView);
       this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
     }
     else{
       this.StudentModelList = new MatTableDataSource(res.studentListViews);
-
+      if (res.studentListViews) {
       this.StudentModelList.filteredData = res.studentListViews.map((item: any) => {
         this.studentEnrollmentForGroupAssignModel.studentIds.map((selectedUser) => {
           if (item.studentId == selectedUser) {
@@ -841,6 +858,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
         });
         return item;
       });
+      }
       this.masterCheckBox.checked = this.StudentModelList.filteredData.every((item) => {
         return item.checked;
       })
@@ -853,7 +871,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     this.searchFilterListViewModel.module = 'Student';
     this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
       if (typeof (res) === 'undefined') {
-        this.snackbar.open('Filter list failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Filter list failed. ' +this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -884,12 +902,6 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
   getToggleValues(event) {
     this.toggleValues = event;
-    if (event.inactiveStudents === true) {
-      this.columns[6].visible = true;
-    }
-    else if (event.inactiveStudents === false) {
-      this.columns[6].visible = false;
-    }
   }
 
   hideAdvanceSearch(event) {
@@ -931,7 +943,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
         }
       }
       else{
-        this.snackbar.open( this.defaultValuesService.translateKey('enrollmentUpdatefailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open( this.defaultValuesService.translateKey('enrollmentUpdatefailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -965,7 +977,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
         }
       }
       else {
-        this.snackbar.open(this.defaultValuesService.translateKey('studentSaveFailed') + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open(this.defaultValuesService.translateKey('studentSaveFailed') + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -984,9 +996,11 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   }
 
   setSelectedStudentList(event, element: any) {
-
     if(event.checked) {
       this.selectedStudentListModel.push(element);
+      this.selectedStudentList = new MatTableDataSource(this.selectedStudentListModel);
+      this.selectedStudentList.paginator = this.selectedStudentsPaginator;
+
       this.studentAddForGroupAssignModel.studentIds.push(element.studentId);
       this.studentEnrollmentForGroupAssignModel.studentIds.push(element.studentId);
       this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds.push(element.studentId);
@@ -995,6 +1009,9 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     } else {
       const index = this.selectedStudentListModel.findIndex(x => x.studentId === element.studentId);
       this.selectedStudentListModel.splice(index, 1);
+      this.selectedStudentList = new MatTableDataSource(this.selectedStudentListModel);
+      this.selectedStudentList.paginator = this.selectedStudentsPaginator;
+
       this.studentAddForGroupAssignModel.studentIds.splice(index, 1);
       this.studentEnrollmentForGroupAssignModel.studentIds.splice(index, 1);
       this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds.splice(index, 1);
@@ -1021,7 +1038,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   }
 
   getAllFieldsCategory() {
-    this.fieldsCategoryListView.module = "Student";
+    this.fieldsCategoryListView.module = Module.STUDENT;
     this.customFieldservice
       .getAllFieldsCategory(this.fieldsCategoryListView)
       .subscribe((res) => {
@@ -1060,7 +1077,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
         } else {
           this.snackbar.open(
             this.defaultValuesService.translateKey("categoryListFailed") +
-            sessionStorage.getItem("httpError"),
+            this.defaultValuesService.getHttpError(),
             "",
             {
               duration: 10000,
@@ -1080,7 +1097,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
             studentCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
             if(studentCustomField.type==='Checkbox'){
-              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection==='Y'? 'true':'false';
+              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection === 'true' ? true : false;
             }
             else{
               studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection;
@@ -1102,8 +1119,8 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     this.showLoadFilter = false;
     this.showSaveFilter = false;
 
-    if (this.defaultValuesService.getUserMembershipType() === 'Homeroom Teacher' || this.defaultValuesService.getUserMembershipType() === 'Teacher') {
-      this.scheduleStudentListViewModel.staffId = +sessionStorage.getItem('userId');
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+      this.scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
       this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.scheduleStudentListViewModel.filterParams = JSON.parse(filter.jsonList);
       this.scheduleStudentListViewModel.sortingModel = null;
@@ -1185,14 +1202,40 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     this.StudentModelList.filteredData.map(user => {
       user.selectStudent = event;
       if(event) {
-      this.selectedStudentListModel.push(user);
-        this.studentEnrollmentForGroupAssignModel.studentIds.push(user.studentId);
-        this.studentAddForGroupAssignModel.studentIds.push(user.studentId);
-        this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds.push(user.studentId);
-        this.StudentCommentsAddForGroupAssign.studentIds.push(user.studentId);
-        this.StudentDocumentAddForGroupAssignModel.studentIds.push(user.studentId);
+        let isIdIncludesInSelectedList = false;
+        if (this.selectedStudentListModel) {
+          this.selectedStudentListModel.map((element) => {
+            if (element.studentId === user.studentId) {
+              isIdIncludesInSelectedList = true;
+              return;
+            }
+          });
+          if (!isIdIncludesInSelectedList) {
+            this.selectedStudentListModel.push(user);
+            this.selectedStudentList = new MatTableDataSource(this.selectedStudentListModel);
+            this.selectedStudentList.paginator = this.selectedStudentsPaginator;
+
+            this.studentEnrollmentForGroupAssignModel.studentIds.push(user.studentId);
+            this.studentAddForGroupAssignModel.studentIds.push(user.studentId);
+            this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds.push(user.studentId);
+            this.StudentCommentsAddForGroupAssign.studentIds.push(user.studentId);
+            this.StudentDocumentAddForGroupAssignModel.studentIds.push(user.studentId);
+          }
+        } else {
+          this.selectedStudentListModel.push(user);
+          this.selectedStudentList = new MatTableDataSource(this.selectedStudentListModel);
+          this.selectedStudentList.paginator = this.selectedStudentsPaginator;
+
+          this.studentEnrollmentForGroupAssignModel.studentIds.push(user.studentId);
+          this.studentAddForGroupAssignModel.studentIds.push(user.studentId);
+          this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds.push(user.studentId);
+          this.StudentCommentsAddForGroupAssign.studentIds.push(user.studentId);
+          this.StudentDocumentAddForGroupAssignModel.studentIds.push(user.studentId);
+        }
       } else {
         this.selectedStudentListModel = [];
+        this.selectedStudentList = new MatTableDataSource([]);
+        
         this.studentEnrollmentForGroupAssignModel.studentIds = [];
         this.studentAddForGroupAssignModel.studentIds = [];
         this.AddEditStudentMedicalProviderForGroupAssignModel.studentIds = [];
@@ -1240,7 +1283,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
 
             studentCustomField?.customFieldsValue.push(new CustomFieldsValueModel());
             if(studentCustomField.type==='Checkbox'){
-              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection==='Y'? 'true':'false';
+              studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection==='true' ? true : false;
             }
             else{
               studentCustomField.customFieldsValue[0].customFieldValue= studentCustomField.defaultSelection;

@@ -125,7 +125,7 @@ export class RolePermissionListViewModel extends CommonField {
         super()
         this.membershipId = 1;
         this.permissionList = [new RolePermissionViewModel]
-        this.membershipId = +sessionStorage.getItem("userMembershipID");
+        this.membershipId = JSON.parse(sessionStorage.getItem("userMembershipID"));
     }
 }
 

@@ -47,6 +47,8 @@ import { LoaderService } from '../../../services/loader.service';
 import { FieldsCategoryListView,FieldsCategoryAddView } from '../../../models/fields-category.model';
 import {FieldCategoryModuleEnum} from '../../../enums/field-category-module.enum'
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { Module } from 'src/app/enums/module.enum';
 
 @Component({
   selector: 'vex-parent-fields',
@@ -95,6 +97,7 @@ export class ParentFieldsComponent implements OnInit {
     private customFieldservice:CustomFieldService,
     private loaderService:LoaderService,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
@@ -160,7 +163,7 @@ export class ParentFieldsComponent implements OnInit {
     this.customFieldservice.deleteCustomField(this.customFieldAddView).subscribe(
       (res:CustomFieldAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Custom Field failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Custom Field failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -202,11 +205,11 @@ export class ParentFieldsComponent implements OnInit {
     })
   }
   getAllCustomFieldCategory(){
-    this.fieldsCategoryListView.module=this.fieldCategoryModuleEnum.Parent;
+    this.fieldsCategoryListView.module= Module.PARENT;
     this.customFieldservice.getAllFieldsCategory(this.fieldsCategoryListView).subscribe(
       (res:FieldsCategoryListView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Field Category list failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Field Category list failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -247,13 +250,13 @@ export class ParentFieldsComponent implements OnInit {
         this.getAllCustomFieldCategory();
       }
     })
-  }
+  } 
   deleteFieldCategory(element){
     this.fieldsCategoryAddView.fieldsCategory=element
     this.customFieldservice.deleteFieldsCategory(this.fieldsCategoryAddView).subscribe(
       (res:FieldsCategoryAddView)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('Field Category delete failed. ' + sessionStorage.getItem('httpError'), '', {
+          this.snackbar.open('Field Category delete failed. ' + this.defaultValuesService.getHttpError() , '', {
             duration: 10000
           });
         }

@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BreadcrumbsModule } from '../breadcrumbs/breadcrumbs.module';
 import { ContainerModule } from '../../directives/container/container.module';
 import {MatMenuModule} from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SecondaryToolbarComponent],
@@ -21,7 +22,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatIconModule,
     BreadcrumbsModule,
     ContainerModule,
-    MatMenuModule
+    MatMenuModule,
+    TranslateModule
   ],
   exports: [SecondaryToolbarComponent]
 })

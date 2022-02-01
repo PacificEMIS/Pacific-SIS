@@ -34,7 +34,6 @@ import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditBlockComponent } from './edit-block/edit-block.component';
-import { LayoutService } from '../../../../@vex/services/layout.service';
 import { SchoolPeriodService } from '../../../services/school-period.service';
 import { BlockAddViewModel, BlockListViewModel, BlockPeriodAddViewModel, BlockPeriodForHalfDayFullDayModel, BlockPeriodSortOrderViewModel } from '../../../models/school-period.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -77,6 +76,8 @@ export class PeriodsComponent implements OnInit {
   blockAddViewModel: BlockAddViewModel = new BlockAddViewModel();
   currentBlockId: number = null;
   loading: boolean;
+  closeFullDayMinutes:any;
+  closeHalfDayMinutes:any;
   blockPeriodForHalfDayFullDayModel: BlockPeriodForHalfDayFullDayModel = new BlockPeriodForHalfDayFullDayModel();
 
   columns = [
@@ -98,7 +99,6 @@ export class PeriodsComponent implements OnInit {
     public translateService: TranslateService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar,
-    private layoutService: LayoutService,
     private schoolPeriodService: SchoolPeriodService,
     private excelService : ExcelService,
     private loaderService: LoaderService,
@@ -106,18 +106,8 @@ export class PeriodsComponent implements OnInit {
     private pageRolePermissions: PageRolesPermission,
     private cryptoService: CryptoService,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     ) {
-    //translateService.use('en');
-    if (localStorage.getItem("collapseValue") !== null) {
-      if (localStorage.getItem("collapseValue") === "false") {
-        this.layoutService.expandSidenav();
-      } else {
-        this.layoutService.collapseSidenav();
-      }
-    } else {
-      this.layoutService.expandSidenav();
-    }
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
@@ -131,6 +121,15 @@ export class PeriodsComponent implements OnInit {
   openSetMinutes(){
     this.viewSetMinutes = false;
     this.editSetminutes = true;
+    this.closeFullDayMinutes=this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes;
+    this.closeHalfDayMinutes=this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes;
+  }
+
+  closeSetMinutes(){
+    this.viewSetMinutes = true;
+    this.editSetminutes = false;
+    this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes=this.closeFullDayMinutes;
+    this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes=this.closeHalfDayMinutes;
   }
 
   selectBlock(element) {
@@ -159,11 +158,11 @@ export class PeriodsComponent implements OnInit {
     this.blockPeriodList.sort = this.sort;
   }
   getAllBlockList() {
-    this.blockListViewModel.getBlockListForView = [];
+    this.blockListViewModel.isListView=true;
     this.schoolPeriodService.getAllBlockList(this.blockListViewModel).subscribe(
       (res: BlockListViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -266,7 +265,7 @@ export class PeriodsComponent implements OnInit {
     this.schoolPeriodService.deleteBlock(this.blockAddViewModel).subscribe(
       (res: BlockAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -330,9 +329,10 @@ export class PeriodsComponent implements OnInit {
   }
 
   updateFullDayHalfDayMinutes() {
-if(this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes > this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes) {
-    this.schoolPeriodService.updateFullDayHalfDayMinutes(this.blockPeriodForHalfDayFullDayModel).subscribe(
-      (res: BlockPeriodForHalfDayFullDayModel) => {
+    if((this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes>0 && this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes>0)){
+        if(this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes > this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes) {
+        this.schoolPeriodService.updateFullDayHalfDayMinutes(this.blockPeriodForHalfDayFullDayModel).subscribe(
+          (res: BlockPeriodForHalfDayFullDayModel) => {
         if(res) {
           if(res._failure){
             this.commonService.checkTokenValidOrNot(res._message);
@@ -349,26 +349,36 @@ if(this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes > this.blockPerio
                     });
                   }
         } else {
-          this.snackbar.open('Update failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Update failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
       }
     )
-  } else {
-    this.snackbar.open( this.defaultValuesService.translateKey('fullDayMinuitesnotlessthanHalfDayMinutes'), '', {
-      duration: 10000
-    });
-  }
+     }  else if((this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes < this.blockPeriodForHalfDayFullDayModel.block.halfDayMinutes)){
+      this.snackbar.open( this.defaultValuesService.translateKey('halfDayMinutesShouldBeLessThanFullDayMinutes'), '', {
+        duration: 10000
+      });
+    }
+     else {
+      this.snackbar.open( this.defaultValuesService.translateKey('halfDayMinutesShouldBeLessThanFullDayMinutes'), '', {
+        duration: 10000
+      });
+     }
+    }
+    else{
+      this.snackbar.open( this.defaultValuesService.translateKey('fullDayAndHalfDayMinutesCannotBeBlank'), '', {
+        duration: 10000
+      });
+    }
   }
 
 
   exportPeriodListToExcel(){
-    this.blockListViewModel.getBlockListForView = [];
     this.schoolPeriodService.getAllBlockList(this.blockListViewModel).subscribe(
       (res: BlockListViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -447,7 +457,7 @@ if(this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes > this.blockPerio
     this.schoolPeriodService.updateBlockPeriodSortOrder(this.blockPeriodSortOrderViewModel).subscribe(
       (res: BlockPeriodSortOrderViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Period Drag failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Period Drag failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         } else {
@@ -508,7 +518,7 @@ if(this.blockPeriodForHalfDayFullDayModel.block.fullDayMinutes > this.blockPerio
     this.schoolPeriodService.deleteBlockPeriod(this.blockPeriodAddViewModel).subscribe(
       (res: BlockPeriodAddViewModel) => {
         if (typeof (res) == 'undefined') {
-          this.snackbar.open('Period deletion failed. ' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('Period deletion failed. ' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }

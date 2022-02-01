@@ -14,7 +14,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "subject" | translate }}</mat-label>
                 <mat-select formControlName="subject">
-                    <mat-option value=''>All Subject</mat-option>
+                    <mat-option>{{'allSubject' | translate}}</mat-option>
                     <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">{{subject.subjectName}}</mat-option>
 
                 </mat-select>
@@ -24,7 +24,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "program" | translate }}</mat-label>
                 <mat-select formControlName="program">
-                    <mat-option value=''>All Program</mat-option>
+                    <mat-option>{{'allProgram' | translate}}</mat-option>
                     <mat-option *ngFor="let program of getAllProgramModel.programList" [value]="program.programName">{{program.programName}}</mat-option>
                 </mat-select>
             </mat-form-field>

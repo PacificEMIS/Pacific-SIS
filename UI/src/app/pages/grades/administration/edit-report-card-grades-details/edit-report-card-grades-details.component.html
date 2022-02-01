@@ -1,0 +1,99 @@
+<div *ngIf="studentReportCardGrades.courseSectionWithGradesViewModelList.length">
+    <form #f="ngForm" (ngSubmit)="f.form.valid && submit()">
+    <div class="text-green bg-base font-medium text-lg px-6 py-2 border-b border-t">{{ 'grades' | translate }}</div>
+    <div class="overflow-x-auto overflow-y-hidden border">
+        <table class="w-full schedule-table">
+            <thead>
+                <tr>
+                    <th>{{ "courseName" | translate }}</th>
+                    <th>{{ "percentage" | translate }}</th>
+                    <th>{{ "letterGrade" | translate }}</th>
+                    <th>{{ "gpValue" | translate }}</th>
+                    <th>{{ "weightedGp" | translate }}</th>
+                    <th>{{ "gradeScaleName" | translate }}</th>
+                    <th>{{ "gradeScaleValue" | translate }}</th>
+                    <th>{{ "action" | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let grade of studentReportCardGrades.courseSectionWithGradesViewModelList; let i = index">
+                    <td>{{grade.courseSectionName}}</td>
+                    <td>
+                        <div *ngIf="!grade.isGradeEdit">{{grade.percentMarks}}</div>
+                        <div *ngIf="grade.isGradeEdit">
+                            <div class="border border-gray-light rounded p-2 w-32">
+                            <input type="text" (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" [customMin]="grade?.minValue" name="percentMarks" #percentMarks="ngModel" (ngModelChange)="percentToGrade($event,i,grade?.gradeScaleList)" [(ngModel)]="responseStudentReportCardGradesModel.courseSectionWithGradesViewModelList[i].percentMarks" class="w-full"/>
+                            </div>
+                            <div *ngIf="percentMarks.errors?.customMin" class="text-red">
+                                {{'invalidBreakoff'|translate}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="!grade.isGradeEdit">{{grade.gradeObtained}}</div>
+                        <div  *ngIf="grade.isGradeEdit" class="select-dropdown">
+                            <select (change)="gradeToPercent($event.target.value,i,grade?.gradeScaleList)" name="gradeObtained" [(ngModel)]="responseStudentReportCardGradesModel.courseSectionWithGradesViewModelList[i].gradeObtained">
+                                <option *ngFor="let report of grade?.gradeScaleList" [value]="report.title">{{report.title}}</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>{{grade.gpValue |number : '1.2'|EmtyValueCheckPipe:'0.00'}}</td>
+                    <td>{{grade.weightedGP}}</td>
+                    <td>{{grade.gradeScaleName}}</td>
+                    <td>{{grade.gradeScaleValue |number : '1.2'|EmtyValueCheckPipe:'0.00'}}</td>
+                    <td class="text-primary cursor-pointer">
+                        <mat-icon [icIcon]="icEdit" class="mr-2 cursor-pointer" (click)="grade.isGradeEdit=true;showUpdate=true"></mat-icon>
+                        <mat-icon [icIcon]="icRestore" class="cursor-pointer" (click)="openDataEdit(grade)"></mat-icon>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-green bg-base font-medium text-lg px-6 py-2 border-b border-t">{{ 'credits' | translate }}</div>
+    <div class="overflow-x-auto overflow-y-hidden border">
+        <table class="w-full schedule-table">
+            <thead>
+                <tr>
+                    <th class="w-4/12">{{ "courseName" | translate }}</th>
+                    <th class="w-3/12">{{ "creditAttempted" | translate }}</th>
+                    <th class="w-3/12">{{ "creditEarned" | translate }}</th>
+                    <th class="w-2/12">{{ "action" | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let credit of studentReportCardGrades.courseSectionWithGradesViewModelList; let i = index">
+                    <td>{{credit.courseSectionName}}</td>
+                    <td>
+                        <div *ngIf="!credit.isCreditEdit">{{credit.creditAttempted |number : '1.2'|EmtyValueCheckPipe:'0.00'}}</div>
+                        <div *ngIf="credit.isCreditEdit" class="border border-gray-light rounded p-2 w-32">
+                            <input type="text" (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" name="creditAttempted" [(ngModel)]="responseStudentReportCardGradesModel.courseSectionWithGradesViewModelList[i].creditAttempted" class="w-full"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="!credit.isCreditEdit">{{credit.creditEarned |number : '1.2'|EmtyValueCheckPipe:'0.00'}}</div>
+                        <div *ngIf="credit.isCreditEdit" class="border border-gray-light rounded p-2 w-32">
+                            <input type="text" (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" name="creditEarned" [(ngModel)]="responseStudentReportCardGradesModel.courseSectionWithGradesViewModelList[i].creditEarned" class="w-full"/>
+                        </div>
+                    </td>
+                    <td class="text-primary cursor-pointer">
+                        <mat-icon [icIcon]="icEdit" class="mr-2 cursor-pointer" (click)="credit.isCreditEdit=true;showUpdate=true"></mat-icon>
+                        <mat-icon [icIcon]="icRestore" class="cursor-pointer" (click)="openDataEdit(credit)"></mat-icon>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-right px-4 py-6" *ngIf="showUpdate">
+        <button mat-flat-button type="button" class="" (click)="cancel()">{{ 'cancel' |translate }}</button>
+        <button color="primary" mat-flat-button type="submit" class="text-white ml-2">{{ 'update' |translate }}</button>
+    </div>
+</form>
+</div>
+
+<div class="p-6 text-center" *ngIf="!studentReportCardGrades.courseSectionWithGradesViewModelList.length">
+    {{'noRecordFoundPleaseSelectAnotherMarkingPeriod'|translate}}.
+</div>
+
+

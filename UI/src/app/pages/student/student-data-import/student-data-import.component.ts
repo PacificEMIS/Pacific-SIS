@@ -94,7 +94,7 @@ export class StudentDataImportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/student-settings/student-bulk-data-import')
+    this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/tools/student-bulk-data-import')
     this.getAllLanguage();
     this.getAllCountry();
     this.getAllSection();
@@ -142,6 +142,14 @@ export class StudentDataImportComponent implements OnInit {
         }
         else {
           res.customfieldTitle.map((item)=>{
+            
+            if(item.fieldName === "dob") {
+              item.title = "Date of Birth (YYYY.MM.DD)"
+            } else if(item.fieldName === "estimatedGradDate") {
+              item.title = "Estimated Graduation Date (YYYY.MM.DD)"
+            } else if(item.fieldName === "enrollmentDate") {
+              item.title = "Enrollment Date (YYYY.MM.DD)"
+            }
             Object.assign(this.headerObject, {[item.title]: null});
             this.fieldList.push(item)
           });
@@ -149,7 +157,7 @@ export class StudentDataImportComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValueService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -269,7 +277,7 @@ export class StudentDataImportComponent implements OnInit {
     oReq.send();
   }
 
-  uploadFile() {
+  uploadFile() {    
     this.currentTab = this.bulkDataImport.MAP;
     this.permissionStatus[this.currentTab] = true;
   }
@@ -322,6 +330,7 @@ export class StudentDataImportComponent implements OnInit {
       this.importStudentModel.studentAddViewModelList[i].thirdLanguageName = item.thirdLanguageId;
       this.importStudentModel.studentAddViewModelList[i].sectionName = item.sectionId;
       this.importStudentModel.studentAddViewModelList[i].currentGradeLevel = item.gradeLevelTitle;
+
       if (moment(item.enrollmentDate).isValid() && item.enrollmentDate) {
         this.importStudentModel.studentAddViewModelList[i].enrollmentDate = moment(item.enrollmentDate).format('YYYY/MM/DD');
       } else {
@@ -380,7 +389,7 @@ export class StudentDataImportComponent implements OnInit {
   }
 
   pushIntoExistingFieldCategory(item, key, i, categoryIndex) {
-    let customField: CustomFieldModel = new CustomFieldModel();;
+    let customField: CustomFieldModel = new CustomFieldModel();
     customField.categoryId = +key.split('|')[1];
     customField.title = key.split('|')[0];
     customField.fieldId=+key.split('|')[2];
@@ -425,7 +434,7 @@ export class StudentDataImportComponent implements OnInit {
     customFieldValue.fieldId = +key.split('|')[2];
     customFieldValue.module = this.fieldCategoryModuleEnum.Student;
     customFieldValue.customFieldType = key.split('|')[3];
-    customFieldValue.updatedBy=this.defaultValueService.getEmailId()
+    customFieldValue.updatedBy=this.defaultValueService.getUserGuidId();
     return customFieldValue;
   }
 
@@ -567,6 +576,18 @@ export class StudentDataImportComponent implements OnInit {
   }
 
   twoDArrayToObject(TwoDArray,headerKeys?) {
+    if (headerKeys) {
+      let keys = headerKeys;
+      let arrayOfObjects = []
+      for (let i = 0; i < TwoDArray.length; i++) {
+        let tempObject = {}
+        for (let j = 0; j < TwoDArray[i].fieldValue.length; j++) {
+          tempObject[keys[j]] = TwoDArray[i].fieldValue[j];
+        }
+        arrayOfObjects.push(tempObject);
+      }
+      return arrayOfObjects;
+    } else {
     let keys = headerKeys?headerKeys:TwoDArray.shift();
     let arrayOfObjects = []
     for (let i = 0; i < TwoDArray.length; i++) {
@@ -577,6 +598,7 @@ export class StudentDataImportComponent implements OnInit {
       arrayOfObjects.push(tempObject);
     }
     return arrayOfObjects;
+    }
   }
 
   checkForSameHeader(){
@@ -611,9 +633,9 @@ export class StudentDataImportComponent implements OnInit {
           this.calculateImportStatus();
 
           } else {
-            res.conflictIndexNo?.split(',').map((index,i)=>{
-                this.rejectedStudentList[i]=[...this.tempJsonData[+index+1]]
-            })
+            res.conflictIndexNo?.split(',').map((index, i) => {
+              this.rejectedStudentList[i] = { message: res.studentAddViewModelList[i]._message, fieldValue: this.tempJsonData[+index + 1] }
+            });
             this.calculateImportStatus();
           }
         }
@@ -622,7 +644,7 @@ export class StudentDataImportComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('Student Import failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Student Import failed. ' + this.defaultValueService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -648,7 +670,7 @@ export class StudentDataImportComponent implements OnInit {
 
   exportRejectionList(){
     let rejectedListInObject = [];
-    rejectedListInObject=this.twoDArrayToObject(this.rejectedStudentList,this.headers);
+    rejectedListInObject=this.twoDArrayToObject(this.rejectedStudentList,this.headers);  
     this.excelService.exportAsExcelFile(rejectedListInObject,'Rejected_Students_List_')
   }
 

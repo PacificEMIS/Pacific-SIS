@@ -33,6 +33,7 @@ import { EffortGradeScaleModel } from '../../../../models/grades.model';
 import {GradesService} from '../../../../services/grades.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-edit-effort-grade-scale',
@@ -57,6 +58,7 @@ export class EditEffortGradeScaleComponent implements OnInit {
     private gradesService:GradesService,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
+    private defaultValuesService: DefaultValuesService
     ) {
       if(this.data.editMode){
         this.editMode = this.data.editMode;
@@ -103,7 +105,7 @@ export class EditEffortGradeScaleComponent implements OnInit {
     this.effortGradeScaleModel.effortGradeScale.gradeScaleComment=this.form.value.gradeScaleComment;
     this.gradesService.updateEffortGradeScale(this.effortGradeScaleModel).subscribe((res)=>{
      if (typeof (res) == 'undefined') {
-       this.snackbar.open('Failed to Update Effort Grade Scale ' + sessionStorage.getItem("httpError"), '', {
+       this.snackbar.open('Failed to Update Effort Grade Scale ' + this.defaultValuesService.getHttpError(), '', {
          duration: 10000
        });
      }else
@@ -126,7 +128,7 @@ export class EditEffortGradeScaleComponent implements OnInit {
      this.effortGradeScaleModel.effortGradeScale.gradeScaleComment=this.form.value.gradeScaleComment;
      this.gradesService.addEffortGradeScale(this.effortGradeScaleModel).subscribe((res)=>{
       if (typeof (res) == 'undefined') {
-        this.snackbar.open('Failed to Add Effort Grade Scale ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Failed to Add Effort Grade Scale ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }else

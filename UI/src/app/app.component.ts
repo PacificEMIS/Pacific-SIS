@@ -110,12 +110,14 @@ export class AppComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private loginService: LoginService,
     private zone: NgZone,
-
+    @Inject(DOCUMENT) private _document: HTMLDocument
     ) {
+      // this.getIpAdressFromExternal();
+
+      this._document.getElementById('appFavicon').setAttribute('href',  this.defaultValueService.getPhotoAndFooter() ? 'data:image/jpeg;base64,'+ this.defaultValueService.getPhotoAndFooter().tenantFavIcon : '');
+
 
       Settings.defaultLocale = this.localeId;
-
-
 
     if (this.platform.BLINK) {
       this.renderer.addClass(this.document.body, 'is-blink');
@@ -586,6 +588,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   }
 
+  // getIpAdressFromExternal() {
+  //   this.commonService.getIpAddress().subscribe((res)=>{
+  //     if(res) {
+  //     }
+  //   })
+  // }
+
   renderMenuFromLocalStorage(){
     let permissions:RolePermissionListViewModel = this.defaultValuesService.getPermissionList();
           this.generateMenuBasedOnSchoolId(permissions);
@@ -610,8 +619,8 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.commonService.changedLanguage.subscribe((res)=>{
-      sessionStorage.getItem("language") ? this.translateService.use(sessionStorage.getItem("language")) : this.translateService.use('en');
+    this.commonService.changedLanguage.subscribe((res)=>{      
+      this.defaultValueService.getLanguage() ? this.translateService.use(this.defaultValueService.getLanguage()) : this.translateService.use('en');
     })
 
     this.rollBasedAccessService.permissionsChanged.subscribe((res)=>{
@@ -705,6 +714,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.timerStartSubscription.unsubscribe();
     this.pingSubscription.unsubscribe();
     }
+    this.dialog.closeAll();
   }
 
   logout() {
@@ -742,8 +752,8 @@ export class AppComponent implements OnInit, OnDestroy {
     if (schoolId) {
       this.defaultValueService.setSchoolID(JSON.stringify(schoolId))
     }
-    sessionStorage.setItem('tenant', this.defaultValueService.getDefaultTenant());
-    let a = sessionStorage.setItem('tenant', this.defaultValueService.getDefaultTenant());
+    this.defaultValueService.setTenantIdVal(this.defaultValueService.getDefaultTenant());
+    let a = this.defaultValueService.setTenantIdVal(this.defaultValueService.getDefaultTenant());
   }
 
   generateMenuBasedOnSchoolId(permissions: RolePermissionListViewModel) {
@@ -768,8 +778,8 @@ export class AppComponent implements OnInit, OnDestroy {
           });
         } else if (item.permissionGroup.type === 'sub') {
           const children: MenuModel[] = [];
-          let membershipName = sessionStorage.getItem('membershipName');
-          if (membershipName !== 'Teacher') {
+          let membershipType = this.defaultValueService.getUserMembershipType();
+          if (membershipType !== 'Teacher') {
             item.permissionGroup.permissionCategory?.map((child) => {
               if (child.rolePermission[0]?.canView && child.type !== '') {
                 children.push({

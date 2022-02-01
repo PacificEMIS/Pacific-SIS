@@ -18,13 +18,13 @@ export class SearchCourseSectionForStudentAttendance {
     _token: string;
     _failure: boolean;
     _message: string;
-    
+    academicYear: number;
     constructor() {
-        this.tenantId = sessionStorage.getItem("tenantId");
-        this.schoolId = +sessionStorage.getItem("selectedSchoolId");
-        this._tenantName = sessionStorage.getItem("tenant");
-        this._userName = sessionStorage.getItem("user");
-        this._token = sessionStorage.getItem("token");
+        this.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
+        this.schoolId = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
+        this._tenantName = JSON.parse(sessionStorage.getItem("tenant"));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
+        this._token = JSON.parse(sessionStorage.getItem("token"));
         this._failure = false;
         this._message = "";
     }
@@ -47,11 +47,11 @@ export class GetAllStudentAttendanceListModel extends CommonField{
     courseId: number;
     constructor(){
         super();
-        this.tenantId = sessionStorage.getItem("tenantId");
-        this.schoolId = +sessionStorage.getItem("selectedSchoolId");
-        this._tenantName = sessionStorage.getItem("tenant");
-        this._userName = sessionStorage.getItem("user");
-        this._token = sessionStorage.getItem("token");
+        this.tenantId = JSON.parse(sessionStorage.getItem("tenantId"));
+        this.schoolId = JSON.parse(sessionStorage.getItem("selectedSchoolId"));
+        this._tenantName = JSON.parse(sessionStorage.getItem("tenant"));
+        this._userName = JSON.parse(sessionStorage.getItem("user"));
+        this._token = JSON.parse(sessionStorage.getItem("token"));
     }
 }
 export class StudentAttendanceModel extends CommonField{
@@ -85,6 +85,7 @@ export class StudentAttendanceCommentsModel {
 
 export class StudentUpdateAttendanceCommentsModel extends CommonField {
         studentAttendanceComments: StudentUpdateCommentsModel =  new StudentUpdateCommentsModel();
+        staffId: number;
     constructor(){
         super();
     }
@@ -95,7 +96,7 @@ export class StudentUpdateCommentsModel {
         CommentId: number;
         comment: string;
         membershipId: number;
-        studentId: string;
+        studentId: number;
         tenantId: string;
         schoolId: number;
     constructor(){
@@ -129,7 +130,7 @@ export class StudentAttendanceModelFor360{
     attendanceCategoryId: number;
     attendanceCode: number | string;
     attendanceDate: string;
-    studentAttendanceComments:[];
+    studentAttendanceComments: StudentUpdateCommentsModel[];
     blockId: number;
     periodId: number;
     updatedBy: string;
@@ -146,8 +147,43 @@ export class AddUpdateStudentAttendanceModelFor360 extends CommonField{
     createdBy: string;
     updatedBy: string;
     courseId: number;
+    memberShipId: number;
+    userId: number;
     constructor(){
         super();
         this.studentAttendance = []
     }
+}
+
+
+export class StudentAttendanceHistoryViewModel extends CommonField{
+    attendanceHistoryViewModels:AttendanceHistoryViewModel[];
+    tenantId: string;
+    schoolId: number;
+    studentId: number;
+    courseId: number;
+    courseSectionId: number;
+    attendanceDate: string;
+    blockId: number;
+    periodId: number;
+}
+
+export class AttendanceHistoryViewModel{
+    tenantId: string;
+    schoolId: number;
+    studentId: number;
+    attendanceHistoryId: number;
+    courseId: number;
+    courseSectionId: number;
+    attendanceDate: string;
+    attendanceCategoryId: number;
+    attendanceCode: number | string;
+    blockId: number;
+    periodId: number;
+    modifiedBy: string;
+    membershipId: number;
+    modificationTimestamp: string;
+    userName: string;
+    profileType: string;
+    attendanceCodeTitle: string;
 }

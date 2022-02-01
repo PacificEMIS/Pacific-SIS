@@ -37,7 +37,6 @@ import { AttendanceCodeService } from '../../../../../services/attendance-code.s
 import {SharedFunction} from '../../../../shared/shared-function'
 import { LoaderService } from '../../../../../services/loader.service';
 import { ScheduleStudentListViewModel } from '../../../../../models/student-schedule.model';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 @Component({
@@ -59,7 +58,7 @@ export class PeriodAttendanceComponent implements OnInit {
   actionButtonTitle:string = 'submit';
   loading:boolean;
   commentsArray = [];
-
+  getTheIndexNumbersForDroppedStudentForCourseSection=[];
   constructor(
     private dialog: MatDialog,
     public translateService:TranslateService,
@@ -69,7 +68,6 @@ export class PeriodAttendanceComponent implements OnInit {
     private studentScheduleService:StudentScheduleService,
     private attendanceCodeService:AttendanceCodeService,
     private commonFunction: SharedFunction,
-    private layoutService: LayoutService,
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
 
@@ -79,8 +77,7 @@ export class PeriodAttendanceComponent implements OnInit {
     Object.keys(this.staffDetails).length > 0 ? '' : this.router.navigate(['/school', 'staff', 'teacher-functions', 'take-attendance']);
 
   
-    this.staffDetails.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.staffDetails.attendanceDate)
-    this.layoutService.collapseSidenav();
+    this.staffDetails.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(this.staffDetails.attendanceDate);
    }
 
   ngOnInit(): void {
@@ -102,6 +99,7 @@ export class PeriodAttendanceComponent implements OnInit {
     this.scheduleStudentListViewModel.pageNumber=0;
     this.scheduleStudentListViewModel.pageSize = 0;
     this.scheduleStudentListViewModel.sortingModel= null;
+    this.scheduleStudentListViewModel.attendanceDate = this.staffDetails.attendanceDate;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res)=>{
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -117,7 +115,11 @@ export class PeriodAttendanceComponent implements OnInit {
       } else {
         this.scheduleStudentListViewModel.scheduleStudentForView=res.scheduleStudentForView;
         this.getAllAttendanceCode();
-
+        this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
+          if(x.isDropped === true){
+            this.getTheIndexNumbersForDroppedStudentForCourseSection.push(index)
+          }
+         })
       }
     })
   }
@@ -159,12 +161,12 @@ export class PeriodAttendanceComponent implements OnInit {
         if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
             this.studentAttendanceList.studentAttendance = [];
-            if (!res.studentAttendance) {
-              this.snackbar.open(res._message, '', {
-                duration: 5000
-              });
-            this.updateStudentAttendanceList();
-            }
+            // if (!res.studentAttendance) {
+            //   this.snackbar.open(res._message, '', {
+            //     duration: 5000
+            //   });
+            // this.updateStudentAttendanceList();
+            // }
           } else {
             this.studentAttendanceList.studentAttendance = res.studentAttendance;
             this.updateStudentAttendanceList();
@@ -180,7 +182,7 @@ export class PeriodAttendanceComponent implements OnInit {
       this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCategoryId=this.staffDetails.attendanceCategoryId;
       this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceDate=this.staffDetails.attendanceDate;
       this.addUpdateStudentAttendanceModel.studentAttendance[i].blockId=this.staffDetails.blockId;
-      this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getEmailId();
+      this.addUpdateStudentAttendanceModel.studentAttendance[i].updatedBy=this.defaultValuesService.getUserGuidId();
       this.getAllAttendanceCodeModel.attendanceCodeList.map((element) => {
         if (element.defaultCode) {
           this.addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode = element.attendanceCode1.toString();
@@ -229,6 +231,14 @@ export class PeriodAttendanceComponent implements OnInit {
   }
 
   addUpdateStudentAttendance() {
+    this.addUpdateStudentAttendanceModel.studentAttendance.map((data,index)=>{
+      this.getTheIndexNumbersForDroppedStudentForCourseSection.map(val=>{
+        if(val === index){
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCode = 0;
+          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCategoryId = 0;
+        }
+      })
+     })
     this.addUpdateStudentAttendanceModel={...this.setDefaultDataInStudentAttendance(this.addUpdateStudentAttendanceModel)};
       this.studentAttendanceService.addUpdateStudentAttendance(this.addUpdateStudentAttendanceModel).subscribe((res)=>{
       if(res._failure){
@@ -239,7 +249,8 @@ export class PeriodAttendanceComponent implements OnInit {
         } else {
           this.snackbar.open(res._message, '', {
             duration: 10000
-          });          
+          }); 
+          this.getScheduledStudentList();         
         }
       })
     
@@ -251,7 +262,7 @@ export class PeriodAttendanceComponent implements OnInit {
     attendanceModel.attendanceDate=this.staffDetails.attendanceDate;
     attendanceModel.periodId=this.staffDetails.periodId;
     attendanceModel.staffId=this.staffDetails.staffId;
-    attendanceModel.updatedBy = this.defaultValuesService.getEmailId();
+    attendanceModel.updatedBy = this.defaultValuesService.getUserGuidId();
     return attendanceModel;
   }
 

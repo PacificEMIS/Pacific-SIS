@@ -10,7 +10,7 @@ const routes: Routes = [
     component: InputFinalGradeComponent,
   },
   {
-    path: "grade-details",
+    path: "final-grade-details",
     component: GradeDetailsComponent,
   },
 ];

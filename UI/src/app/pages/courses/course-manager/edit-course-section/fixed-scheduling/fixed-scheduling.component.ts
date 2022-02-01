@@ -57,7 +57,7 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
     private roomService:RoomService,
     private schoolPeriodService:SchoolPeriodService,
     private snackbar: MatSnackBar,
-    private defaultValueService : DefaultValuesService,
+    public defaultValueService : DefaultValuesService,
     private courseSectionService:CourseSectionService,
     private commonService: CommonService,
     ) {
@@ -106,7 +106,7 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
     this.fixedSchedulingModel.courseFixedSchedule.serial=this.detailsFromParentModal.courseSectionDetails.courseFixedSchedule.serial;
     this.fixedSchedulingModel.courseFixedSchedule.gradeScaleId=this.detailsFromParentModal.courseSectionDetails.courseSection.gradeScaleId;
     this.fixedSchedulingModel.courseFixedSchedule.tenantId= this.defaultValueService.getTenantID();
-    this.fixedSchedulingModel.courseFixedSchedule.updatedBy=this.defaultValueService.getEmailId();
+    this.fixedSchedulingModel.courseFixedSchedule.updatedBy=this.defaultValueService.getUserGuidId();
     this.activeDays = this.detailsFromParentModal.courseSectionDetails.courseSection.meetingDays.split('|');
       }
  
@@ -114,7 +114,7 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
     this.roomService.getAllRoom(this.roomListViewModel).subscribe(
       (res:RoomListViewModel)=>{
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }
@@ -138,11 +138,11 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
   getAllBlockList() {
     let blockListViewModel:BlockListViewModel= new BlockListViewModel();
     blockListViewModel.tenantId = this.defaultValueService.getTenantID();
-    blockListViewModel.schoolId = +sessionStorage.getItem('selectedSchoolId');
+    blockListViewModel.schoolId = this.defaultValueService.getSchoolID();
     this.schoolPeriodService.getAllBlockList(blockListViewModel).subscribe(
       (res: BlockListViewModel) => {
         if(typeof(res)=='undefined'){
-          this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+          this.snackbar.open('' + this.defaultValueService.getHttpError(), '', {
             duration: 10000
           });
         }

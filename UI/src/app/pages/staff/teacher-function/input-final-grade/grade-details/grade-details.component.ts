@@ -36,7 +36,7 @@ import { map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from '../../../../../models/student-schedule.model';
 import { StudentScheduleService } from '../../../../../services/student-schedule.service';
-import { GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
+import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
 import { MarkingPeriodService } from '../../../../../services/marking-period.service';
 import { Router } from '@angular/router';
 import { AddUpdateStudentFinalGradeModel, StudentFinalGrade, StudentFinalGradeStandard } from '../../../../../models/student-final-grade.model';
@@ -48,7 +48,6 @@ import { CourseStandardForCourseViewModel, GetAllCourseListModel } from 'src/app
 import { LoaderService } from 'src/app/services/loader.service';
 import { GradesService } from 'src/app/services/grades.service';
 import { GradeScaleListView } from 'src/app/models/grades.model';
-import { LayoutService } from 'src/@vex/services/layout.service';
 import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -111,6 +110,8 @@ export class GradeDetailsComponent implements OnInit {
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
   isPercent: boolean = false;
   studentMasterList: ScheduleStudentForView[];
+  getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
+
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
     private teacherReassignmentService: TeacherScheduleService,
@@ -120,10 +121,9 @@ export class GradeDetailsComponent implements OnInit {
     private router: Router,
     private gradesService: GradesService,
     private reportCardService: ReportCardService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private courseManager: CourseManagerService,
     private loaderService: LoaderService,
-    private layoutService: LayoutService,
     private commonService: CommonService,
   ) {
     this.loaderService.isLoading.subscribe((val) => {
@@ -131,9 +131,6 @@ export class GradeDetailsComponent implements OnInit {
     });
     //translateService.use('en');
     this.staffDetails = this.finalGradeService.getStaffDetails();
-    this.layoutService.collapseSidenav();
-
-
   }
 
   ngOnInit(): void {
@@ -146,7 +143,9 @@ export class GradeDetailsComponent implements OnInit {
     else {
       this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade']);
     }
-    this.getAllMarkingPeriodList();
+    this.getAllScheduledCourseSectionBasedOnTeacher();
+
+    // this.getAllMarkingPeriodList();
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -195,30 +194,36 @@ export class GradeDetailsComponent implements OnInit {
 
   }
 
-  getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.schoolId = +sessionStorage.getItem("selectedSchoolId");
-    this.getMarkingPeriodTitleListModel.academicYear = +sessionStorage.getItem("academicyear");
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
-        if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
-          this.snackbar.open(data._message, '', {
-            duration: 1000
-          }); 
+  getAllMarkingPeriodByCourseSection(courseSectionId) {
+    return new Promise((resolve, reject)=>{
+      this.getMarkingPeriodByCourseSectionModel.courseSectionId =  courseSectionId;
+      this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe(data => {
+       if(data._failure){
+          this.commonService.checkTokenValidOrNot(data._message);
+          this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
+          if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+          reject();
+        } else {
+          this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
+          this.markingPeriodList = this.getMarkingPeriodTitleListModel.getMarkingPeriodView;
+          resolve({});
         }
-      } else {
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
-        this.getAllScheduledCourseSectionBasedOnTeacher();
-      }
-    });
+      });
+    })
+
   }
 
   getAllScheduledCourseSectionBasedOnTeacher() {
-    this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
+    //this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
+    this.allScheduledCourseSectionBasedOnTeacher.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    this.allScheduledCourseSectionBasedOnTeacher.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
     this.teacherReassignmentService.getAllScheduledCourseSectionForStaff(this.allScheduledCourseSectionBasedOnTeacher).pipe(
       map((res) => {
-        res._userName = sessionStorage.getItem('user');
+        res._userName = this.defaultValuesService.getUserName();
         return res;
       })
     ).subscribe((res) => {
@@ -238,7 +243,7 @@ export class GradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
 
@@ -246,26 +251,32 @@ export class GradeDetailsComponent implements OnInit {
     })
   }
 
-  selectedMarkingPeriod(markingPeriodId) {
-    this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodId;
-
-  }
-
-  inActiveStudent(value) {
-  }
-
-  selectedCourseSection(courseSection) {
-    this.courseSectionId = courseSection;
+  selectedMarkingPeriod(markingPerioTitle) {
+    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === markingPerioTitle);
+    console.log(markingPeriodDetails);
+    
+    if(markingPeriodDetails.value === 'Custom') {
+      this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+      this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
+    } else {
+    this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
+    }
+    this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
+    console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
+    
+    // return;
     this.courseSectionDetails = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.courseSectionId === +this.courseSectionId);
-    this.courseSectionData = this.findMarkingPeriodTitleById(this.courseSectionDetails[0]);
-    this.markingPeriodList = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId);
-    this.addUpdateStudentFinalGradeModel.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId)[0].value;
+    // this.courseSectionData = this.findMarkingPeriodTitleById(this.courseSectionDetails[0]);
+    // this.markingPeriodList = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId);
+    // this.addUpdateStudentFinalGradeModel.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId)[0].value;
     this.addUpdateStudentFinalGradeModel.schoolId = this.defaultValuesService.getSchoolID();
     this.addUpdateStudentFinalGradeModel.tenantId = this.defaultValuesService.getTenantID();
     this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionDetails[0].courseId;
     this.addUpdateStudentFinalGradeModel.courseSectionId = this.courseSectionDetails[0].courseSectionId;
     this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionDetails[0].calendarId;
     //this.addUpdateStudentFinalGradeModel.studentFinalGradeList= [];
+    console.log(this.addUpdateStudentFinalGradeModel);
+    
     this.finalGradeService.getAllStudentFinalGradeList(this.addUpdateStudentFinalGradeModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -314,6 +325,15 @@ export class GradeDetailsComponent implements OnInit {
             }
           });
           this.addUpdateStudentFinalGradeModel = res;
+
+          if(markingPeriodDetails.value === 'Custom') {
+            this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+            this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
+          } else {
+          this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
+          }
+          this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
+
           this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
             let commentArray = [];
             item.studentFinalGradeComments.map((subItem) => {
@@ -338,13 +358,23 @@ export class GradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
 
 
     });
+  }
+
+  inActiveStudent(value) {
+  }
+
+  selectedCourseSection(courseSection) {
+
+    this.getAllMarkingPeriodByCourseSection(courseSection)
+    this.courseSectionId = courseSection;
+    
   }
 
   findMarkingPeriodTitleById(courseDetails) {
@@ -354,6 +384,8 @@ export class GradeDetailsComponent implements OnInit {
       courseDetails.markingPeriodId = '1_' + courseDetails.smstrMarkingPeriodId;
     } else if (courseDetails.qtrMarkingPeriodId) {
       courseDetails.markingPeriodId = '2_' + courseDetails.qtrMarkingPeriodId;
+    } else if (courseDetails.prgrsprdMarkingPeriodId) {
+      courseDetails.markingPeriodId = '3_' + courseDetails.prgrsprdMarkingPeriodId;
     }
     else {
       courseDetails.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView[0].value;
@@ -385,7 +417,7 @@ export class GradeDetailsComponent implements OnInit {
 
         }
       } else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -484,7 +516,7 @@ export class GradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -512,8 +544,8 @@ export class GradeDetailsComponent implements OnInit {
   }
 
   submitFinalGrade() {
-    this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
-    this.addUpdateStudentFinalGradeModel.createdOrUpdatedBy = this.defaultValuesService.getUserName();
+    // this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
+    delete this.addUpdateStudentFinalGradeModel.academicYear;
     this.finalGradeService.addUpdateStudentFinalGrade(this.addUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){
@@ -528,7 +560,7 @@ export class GradeDetailsComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open('' + sessionStorage.getItem('httpError'), '', {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }

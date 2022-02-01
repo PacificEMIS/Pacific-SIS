@@ -95,7 +95,7 @@ export class StaffDataImportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/staff-settings/staff-bulk-data-import')
+    this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/tools/staff-bulk-data-import')
     this.getExcelHeader();
     this.getAllLanguage();
     this.getAllCountry();
@@ -125,7 +125,13 @@ export class StaffDataImportComponent implements OnInit {
               item.title = "Emergency Mobile Phone"
             } else if(item.fieldName === "emergencyHomePhone") {
               item.title = "Emergency Home Phone"
-            }
+            } else if(item.fieldName === "dob") {
+              item.title = "Date of Birth (YYYY.MM.DD)"
+            } else if(item.fieldName === "joiningDate") {
+              item.title = "Joining Date (YYYY.MM.DD)"              
+            } else if(item.fieldName === "startDate") {
+              item.title = "Start Date (YYYY.MM.DD)"
+            } 
             Object.assign(this.headerObject, {[item.title]: null});
             this.fieldList.push(item)
           });
@@ -133,7 +139,7 @@ export class StaffDataImportComponent implements OnInit {
         }
       }
       else {
-        this.snackbar.open(sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open(this.defaultValueService.getHttpError(), '', {
           duration: 10000
         });
       }
@@ -304,6 +310,7 @@ export class StaffDataImportComponent implements OnInit {
       this.importStaffModel.staffAddViewModelList[i].secondLanguageName = item.secondLanguage;
       this.importStaffModel.staffAddViewModelList[i].thirdLanguageName = item.thirdLanguage;
       this.importStaffModel.staffAddViewModelList[i].profile = item.profile;
+      
       if (moment(item.dob).isValid() && item.dob) {
         this.importStaffModel.staffAddViewModelList[i].dob = moment(item.dob).format('YYYY/MM/DD');
       } else {
@@ -356,7 +363,7 @@ export class StaffDataImportComponent implements OnInit {
   }
 
   pushIntoExistingFieldCategory(item, key, i, categoryIndex) {
-    let customField: CustomFieldModel = new CustomFieldModel();;
+    let customField: CustomFieldModel = new CustomFieldModel();
     customField.categoryId = +key.split('|')[1];
     customField.title = key.split('|')[0];
     customField.fieldId=+key.split('|')[2];
@@ -401,7 +408,7 @@ export class StaffDataImportComponent implements OnInit {
     customFieldValue.fieldId = +key.split('|')[2];
     customFieldValue.module = this.fieldCategoryModuleEnum.Staff;
     customFieldValue.customFieldType = key.split('|')[3];
-    customFieldValue.updatedBy=this.defaultValueService.getEmailId()
+    customFieldValue.updatedBy=this.defaultValueService.getUserGuidId();
     return customFieldValue;
   }
 
@@ -525,6 +532,18 @@ export class StaffDataImportComponent implements OnInit {
   }
 
   twoDArrayToObject(TwoDArray,headerKeys?) {
+    if (headerKeys) {
+      let keys = headerKeys;
+      let arrayOfObjects = []
+      for (let i = 0; i < TwoDArray.length; i++) {
+        let tempObject = {}
+        for (let j = 0; j < TwoDArray[i].fieldValue.length; j++) {
+          tempObject[keys[j]] = TwoDArray[i].fieldValue[j];
+        }
+        arrayOfObjects.push(tempObject);
+      }
+      return arrayOfObjects;
+    } else {
     let keys = headerKeys?headerKeys:TwoDArray.shift();
     let arrayOfObjects = []
     for (let i = 0; i < TwoDArray.length; i++) {
@@ -535,6 +554,7 @@ export class StaffDataImportComponent implements OnInit {
       arrayOfObjects.push(tempObject);
     }
     return arrayOfObjects;
+    }
   }
 
 
@@ -570,8 +590,8 @@ export class StaffDataImportComponent implements OnInit {
           this.calculateImportStatus();
           } else {
             if(!res.staffAddViewModelList) return;
-            res.conflictIndexNo?.split(',').map((index,i)=>{
-                this.rejectedStaffList[i]=[...this.tempJsonData[+index+1]]
+            res.conflictIndexNo?.split(',').map((index, i) => {
+              this.rejectedStaffList[i] = { message: res.staffAddViewModelList[i]._message, fieldValue: this.tempJsonData[+index + 1] }
             })
             this.calculateImportStatus();
           }
@@ -583,7 +603,7 @@ export class StaffDataImportComponent implements OnInit {
         this.importDone=true;
       }
       else {
-        this.snackbar.open('Staff Import failed. ' + sessionStorage.getItem("httpError"), '', {
+        this.snackbar.open('Staff Import failed. ' + this.defaultValueService.getHttpError(), '', {
           duration: 10000
         });
       }

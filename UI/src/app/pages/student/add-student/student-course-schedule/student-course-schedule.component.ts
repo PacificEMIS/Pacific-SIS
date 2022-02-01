@@ -59,7 +59,9 @@ import { ExcelService } from "../../../../services/excel.service";
 import { format } from 'date-fns'
 import { PageRolesPermission } from "../../../../common/page-roles-permissions.service";
 import { Permissions } from "../../../../models/roll-based-access.model";
-import { CommonService } from "src/app/services/common.service";
+import { CommonService } from "../../../../services/common.service";
+import { CourseManagerService } from "../../../../services/course-manager.service";
+import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from "../../../../models/course-manager.model";
 @Component({
   selector: "vex-student-course-schedule",
   templateUrl: "./student-course-schedule.component.html",
@@ -81,6 +83,9 @@ export class StudentCourseScheduleComponent implements OnInit {
   activeDayIsOpen: boolean = true;
   CalendarView = CalendarView;
   scheduleSwitch = true;
+  getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   scheduleCoursesForStudent360Model: ScheduleCoursesForStudent360Model = new ScheduleCoursesForStudent360Model();
   showDropCourse: boolean = false;
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
@@ -105,15 +110,20 @@ export class StudentCourseScheduleComponent implements OnInit {
     private markingPeriodService: MarkingPeriodService,
     private defaultService: DefaultValuesService,
     public commonFunction: SharedFunction,
+    private courseManagerService: CourseManagerService,
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
   ) {
-    translateService.use("en");
+    // translateService.use("en");
+    this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.getAllProgramList();
+    this.getAllSubjectList();
+    this.getAllCourse();
     this.getAllMarkingPeriodList().then(() => {
       this.getAllScheduleCoursesForStudent360();
     });
@@ -123,6 +133,72 @@ export class StudentCourseScheduleComponent implements OnInit {
   onDropCourseChange() {
     this.getAllScheduleCoursesForStudent360();
   }
+
+  getAllProgramList() {
+    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllProgramModel.programList=[];
+          if(!data.programList){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.getAllProgramModel.programList=data.programList;
+        }
+      }else{
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      } 
+    });
+  }
+  getAllSubjectList() {
+    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllSubjectModel.subjectList=[];
+          if(!data.subjectList){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.getAllSubjectModel.subjectList = data.subjectList;
+        }
+      }else{
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      } 
+    });
+  }
+
+  getAllCourse() {
+    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
+      if (data) {
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllCourseListModel.courseViewModelList = [];
+          if (!data.courseViewModelList) {
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.getAllCourseListModel.courseViewModelList = data.courseViewModelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    })
+  }
+
 
   getAllMarkingPeriodList() {
     return new Promise((resolve, rej) => {
@@ -173,14 +249,13 @@ export class StudentCourseScheduleComponent implements OnInit {
             this.scheduleCoursesForStudent360Model = res;
             this.selectionForDropDateUpdate
             = JSON.parse(JSON.stringify(this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView));
-
             this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView = this.findMarkingPeriodTitleById(
               res.scheduleCourseSectionForView
             );
             this.generateEvents();
           }
         } else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+          this.snackbar.open(this.defaultService.getHttpError(), "", {
             duration: 10000,
           });
         }
@@ -193,6 +268,9 @@ export class StudentCourseScheduleComponent implements OnInit {
         data: {
           markingPeriod: this.getMarkingPeriodTitleListModel
             .getMarkingPeriodView,
+            courseList: this.getAllCourseListModel.courseViewModelList,
+            subjectList: this.getAllSubjectModel.subjectList,
+            programList: this.getAllProgramModel.programList
         },
         width: "900px",
       })
@@ -265,7 +343,7 @@ export class StudentCourseScheduleComponent implements OnInit {
             this.getAllScheduleCoursesForStudent360();
           }
         } else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+          this.snackbar.open(this.defaultService.getHttpError(), "", {
             duration: 10000,
           });
         }
@@ -297,6 +375,8 @@ export class StudentCourseScheduleComponent implements OnInit {
             this.renderVariableSchedule(item, dayName, formatedDate, uniqueColorClass);
           } else if (item.courseCalendarScheduleList?.length > 0) {
             this.renderCalendarSchedule(item, dayName, formatedDate, uniqueColorClass);
+          } else if (item.courseBlockScheduleList?.length > 0) {
+            this.renderBlockSchedule(item, dayName, formatedDate, uniqueColorClass);
           }
         }
       }
@@ -429,6 +509,51 @@ export class StudentCourseScheduleComponent implements OnInit {
     });
   }
 
+  renderBlockSchedule(item, dayName, formatedDate, uniqueColorClass) {
+    item.courseBlockScheduleList.forEach((blockSchedule) => {
+      const startTime = blockSchedule.blockPeriod.periodStartTime;
+      const startDateTime = new Date(
+        formatedDate + " " + startTime
+      );
+
+      const endTime = blockSchedule.blockPeriod.periodEndTime;
+      const endDateTime = new Date(
+        formatedDate + " " + endTime
+      );
+
+      item.bellScheduleList.forEach((value) => {
+        const scheduledDate = new Date(
+          this.commonFunction.serverToLocalDateAndTime(value.bellScheduleDate)
+        ).toLocaleDateString();
+        if (formatedDate === scheduledDate) {
+          let teacherName = item?.staffMasterList?.length > 0 ? (" - " +
+            item?.staffMasterList[0]?.firstGivenName +
+            " " +
+            item?.staffMasterList[0]?.lastFamilyName) : null;
+          this.events.push({
+            title:
+              item.courseSectionName + '' + (teacherName ? teacherName : ''),
+            start: startDateTime,
+            end: endDateTime,
+            color: { primary: uniqueColorClass.textColorInHex, secondary: "white" },
+            meta: {
+              color: uniqueColorClass,
+              teacherName,
+              monthTitle:
+                Transform24to12Pipe.prototype.transform(
+                  blockSchedule.blockPeriod.periodStartTime
+                ) +
+                " - " +
+                item.courseSectionName,
+              scheduleDetails: item,
+              periodDetails: blockSchedule.blockPeriod
+            },
+          });
+        }
+      });
+    });
+  }
+
   generateUniqueColor(item) {
     let uniqueColorClass = {
       backgroundColor: null,
@@ -485,7 +610,7 @@ export class StudentCourseScheduleComponent implements OnInit {
     const updateScheduledStudents = new ScheduledStudentDropModel();
     updateScheduledStudents.studentCoursesectionScheduleList = this.createDatasetBeforeUpdate();
     updateScheduledStudents.studentId = this.studentService.getStudentId();
-    updateScheduledStudents.updatedBy = this.defaultService.getEmailId();
+    updateScheduledStudents.updatedBy = this.defaultService.getUserGuidId();
     this.studentScheduleService
       .groupDropForScheduledStudent(updateScheduledStudents)
       .subscribe((res) => {
@@ -502,7 +627,7 @@ export class StudentCourseScheduleComponent implements OnInit {
             this.getAllScheduleCoursesForStudent360();
           }
         } else {
-          this.snackbar.open(sessionStorage.getItem("httpError"), "", {
+          this.snackbar.open(this.defaultService.getHttpError(), "", {
             duration: 10000,
           });
         }
@@ -519,6 +644,9 @@ export class StudentCourseScheduleComponent implements OnInit {
           ].effectiveDropDate = this.commonFunction.formatDateSaveWithoutTime(
             this.selectionForDropDateUpdate[i].effectiveDropDate
           );
+          this.selectionForDropDateUpdate[i].effectiveStartDate =this.commonFunction.formatDateSaveWithoutTime(
+            this.selectionForDropDateUpdate[i].effectiveStartDate
+          );
           let courseSection: StudentCoursesectionSchedule = new StudentCoursesectionSchedule();
           courseSection.courseSectionId = this.selectionForDropDateUpdate[
             i
@@ -526,8 +654,9 @@ export class StudentCourseScheduleComponent implements OnInit {
           courseSection.effectiveDropDate = this.selectionForDropDateUpdate[
             i
           ].effectiveDropDate;
+          courseSection.effectiveStartDate=this.selectionForDropDateUpdate[i]?.effectiveStartDate;
           courseSection.updatedOn = this.commonFunction.formatDateSaveWithoutTime(new Date());
-          courseSection.updatedBy = this.defaultService.getEmailId();
+          courseSection.updatedBy = this.defaultService.getUserGuidId();
           courseSections.push(courseSection);
         }
       }
@@ -544,26 +673,33 @@ export class StudentCourseScheduleComponent implements OnInit {
         item.smstrMarkingPeriodId = "1_" + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = "2_" + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = "3_" + item.prgrsprdMarkingPeriodId;
       }
 
       if (
         item.yrMarkingPeriodId ||
         item.smstrMarkingPeriodId ||
-        item.qtrMarkingPeriodId
+        item.qtrMarkingPeriodId ||
+        item.prgrsprdMarkingPeriodId
       ) {
         for (const markingPeriod of this.getMarkingPeriodTitleListModel
           .getMarkingPeriodView) {
           if (markingPeriod.value == item.yrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
-            item.mpStartDate = item.schoolYears.startDate;
+            item.mpStartDate = item.schoolYears?.startDate;
             break;
           } else if (markingPeriod.value == item.smstrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
-            item.mpStartDate = item.semesters.startDate;
+            item.mpStartDate = item.semesters?.startDate;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
             item.markingPeriodTitle = markingPeriod.text;
-            item.mpStartDate = item.quarters.startDate;
+            item.mpStartDate = item.quarters?.startDate;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId) {
+            item.markingPeriodTitle = markingPeriod.text;
+            // item.mpStartDate = item.progressPeriods?.startDate;
             break;
           }
         }
@@ -647,10 +783,10 @@ export class StudentCourseScheduleComponent implements OnInit {
       dt.setDate(dt.getDate() + 1)) {
 
       this.routineViewWithEvent.routineView.map((period) => {
-        let filtered = null;
+        let filtered = [];
         period.events.forEach((event) => {
           if (new Date(event.date).getTime() == new Date(dt.toISOString().split('T')[0]).getTime()) {
-            filtered = event;
+            filtered.push(event);
           }
         })
         period.filteredEvents[count] = filtered

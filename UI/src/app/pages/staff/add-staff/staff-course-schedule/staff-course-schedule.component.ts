@@ -263,6 +263,41 @@ export class StaffCourseScheduleComponent implements OnInit {
           room: "-",
           scheduleDetails,
         });
+      } else if(courseSection.scheduleType === this.SCHEDULE_TYPE.blockSchedule) {
+        let scheduleDetails = [];
+        courseSection.bellScheduleList?.map((bellSchedule) => {
+          let block;
+          courseSection.courseBlockSchedule.map((subItem)=>{
+            if(subItem.blockId === bellSchedule.blockId) {
+              block = subItem;
+            }
+          })
+          scheduleDetails.push({
+            date: bellSchedule.bellScheduleDate,
+            day: this.dayToName(new Date(bellSchedule.bellScheduleDate).getDay()),
+            period: block.blockPeriod.periodTitle,
+            room: block.rooms.title,
+            time:
+              Transform24to12Pipe.prototype.transform(
+                block.blockPeriod.periodStartTime
+              ) +
+              " - " +
+              Transform24to12Pipe.prototype.transform(
+                block.blockPeriod.periodEndTime
+              ),
+          });
+        });
+
+        this.courseSectionDataTable.push({
+          scheduleType: this.SCHEDULE_TYPE.blockSchedule,
+          rowExpand: true,
+          courseSection: courseSection.courseSectionName,
+          period: "-",
+          time: "-",
+          markingPeriod: courseSection.mpTitle,
+          room: "-",
+          scheduleDetails,
+        });
       }
     });
     const rows = [];
@@ -287,7 +322,7 @@ export class StaffCourseScheduleComponent implements OnInit {
 
   changeCalendarView(calendarType) {
     this.scheduleSwitch = false;
-    this.view = calendarType;
+    this.view = calendarType;    
   }
 
   listAll() {
@@ -302,12 +337,15 @@ export class StaffCourseScheduleComponent implements OnInit {
         item.smstrMarkingPeriodId = "1_" + item.smstrMarkingPeriodId;
       } else if (item.qtrMarkingPeriodId) {
         item.qtrMarkingPeriodId = "2_" + item.qtrMarkingPeriodId;
+      } else if (item.prgrsprdMarkingPeriodId) {
+        item.prgrsprdMarkingPeriodId = "3_" + item.prgrsprdMarkingPeriodId;
       }
 
       if (
         item.yrMarkingPeriodId ||
         item.smstrMarkingPeriodId ||
-        item.qtrMarkingPeriodId
+        item.qtrMarkingPeriodId ||
+        item.prgrsprdMarkingPeriodId
       ) {
         for (let markingPeriod of this.getMarkingPeriodTitleListModel
           .getMarkingPeriodView) {
@@ -318,6 +356,9 @@ export class StaffCourseScheduleComponent implements OnInit {
             item.mpTitle = markingPeriod.text;
             break;
           } else if (markingPeriod.value == item.qtrMarkingPeriodId) {
+            item.mpTitle = markingPeriod.text;
+            break;
+          } else if (markingPeriod.value == item.prgrsprdMarkingPeriodId) {
             item.mpTitle = markingPeriod.text;
             break;
           }
@@ -369,7 +410,13 @@ export class StaffCourseScheduleComponent implements OnInit {
             formatedDate,
             uniqueColorClass
           );
-        }
+        } 
+      }
+     if(item.bellScheduleList?.length > 0) {
+        this.renderBlockSchedule(
+          item,
+          uniqueColorClass
+        );
       }
     });
     this.createDatasetForRoutine();
@@ -399,6 +446,25 @@ export class StaffCourseScheduleComponent implements OnInit {
       }
     });
   }
+
+  renderBlockSchedule(item, uniqueColorClass) {
+    item.bellScheduleList.forEach((blockSchedule) => {      
+      let startDateTime;
+      let endDateTime;
+      let blockPeriod;
+      item.courseBlockSchedule.map((subItem)=>{
+        if(subItem.blockId === blockSchedule.blockId) {
+          blockPeriod = subItem.blockPeriod;
+          const startTime = subItem.blockPeriod.periodStartTime;          
+           startDateTime = new Date(blockSchedule.bellScheduleDate.split('T')[0] + " " + startTime);
+          const endTime = subItem.blockPeriod.periodEndTime;
+           endDateTime = new Date(blockSchedule.bellScheduleDate.split('T')[0] + " " + endTime);
+        }
+      })
+      this.pushItemIntoEvent(item,startDateTime, endDateTime, uniqueColorClass, blockPeriod)
+    });
+  }
+
 
   pushItemIntoEvent(item,startDateTime, endDateTime, uniqueColorClass, blockPeriod ){
     this.events.push({
@@ -441,6 +507,8 @@ export class StaffCourseScheduleComponent implements OnInit {
       }
     });
   }
+
+  
 
   generateUniqueColor(item) {
     let uniqueColorClass = {
@@ -567,13 +635,13 @@ export class StaffCourseScheduleComponent implements OnInit {
       dt.setDate(dt.getDate() + 1)
     ) {
       this.routineViewWithEvent.routineView.map((period) => {
-        let filtered = null;
+        let filtered = [];
         period.events.forEach((event) => {
           if (
             new Date(event.date).getTime() ==
             new Date(dt.toISOString().split("T")[0]).getTime()
           ) {
-            filtered = event;
+            filtered.push(event);
           }
         });
         period.filteredEvents[count] = filtered;

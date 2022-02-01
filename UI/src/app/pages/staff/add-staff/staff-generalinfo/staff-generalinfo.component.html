@@ -6,64 +6,70 @@
             <div @stagger fxLayout="column">
                 <h4 class="text-primary">{{'identificationInformation'|translate}}</h4>
                 <div class="bg-skyblue-light pt-4 px-4 mb-4 rounded border border-skyblue">
-                    <h6 class="font-medium">Staff Name</h6>
+                    <h6 class="font-medium">{{'staffName' | translate}}</h6>
 
-                <ul class="staff-name-grid items-center flex-wrap">
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline" color="primary">
-                            <mat-label>{{'salutation'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.salutation" name="salutation">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let salutation of salutationList" [value]="salutation.lovColumnValue">
-                                    {{salutation.lovColumnValue}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                           
-                    </li>
-                    <li>
-                                <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline" color="primary">
-                                    <mat-label>{{'firstGivenName'|translate}}</mat-label>
-                                    <input #firstGivenName="ngModel"
-                                        [(ngModel)]="staffAddModel.staffMaster.firstGivenName" name="firstGivenName"
-                                        matInput required>
-                                    <mat-error class="text-red" *ngIf="firstGivenName.errors?.required">
-                                        {{'firstGivenNameIsRequired'|translate}}</mat-error>
-                                </mat-form-field>
-                    </li>
-                    <li>
-                                <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline" color="primary">
-                                    <mat-label>{{'middleName'|translate}}</mat-label>
-                                    <input [(ngModel)]="staffAddModel.staffMaster.middleName" name="middleName"
-                                        matInput>
-                                </mat-form-field>
-                    </li>
-                    <li>
-                        <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline" color="primary">
-                            <mat-label>{{'lastFamilyName'|translate}}</mat-label>
-                            <input #lastFamilyName="ngModel" [(ngModel)]="staffAddModel.staffMaster.lastFamilyName"
-                                name="lastFamilyName" matInput required>
-                            <mat-error class="text-red" *ngIf="lastFamilyName.errors?.required">
-                                {{'lastFamilyNameIsRequired'|translate}}</mat-error>
-                        </mat-form-field>
-                    </li>
-                    <li>
-                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline" color="primary">
-                                <mat-label>{{'suffix'|translate}}</mat-label>
-                                <mat-select [(ngModel)]="staffAddModel.staffMaster.suffix" name="suffix">
-                                    <mat-option value=""></mat-option>
-                                    <mat-option *ngFor="let suffix of suffixList" [value]="suffix.lovColumnValue">{{suffix.lovColumnValue}}</mat-option>
+                    <ul class="staff-name-grid items-center flex-wrap">
+                        <li>
+                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                                color="primary">
+                                <mat-label>{{'salutation'|translate}}</mat-label>
+                                <mat-select [(ngModel)]="staffAddModel.staffMaster.salutation" name="salutation" [disabled]="isReadOnly">
+                                    <mat-option></mat-option>
+                                    <mat-option *ngFor="let salutation of salutationList"
+                                        [value]="salutation.lovColumnValue">
+                                        {{salutation.lovColumnValue}}</mat-option>
                                 </mat-select>
                             </mat-form-field>
-                    </li>
+
+                        </li>
+                        <li>
+                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                                color="primary">
+                                <mat-label>{{'firstGivenName'|translate}}</mat-label>
+                                <input #firstGivenName="ngModel" [(ngModel)]="staffAddModel.staffMaster.firstGivenName"
+                                    name="firstGivenName" matInput [disabled]="isReadOnly" required>
+                                <mat-error class="text-red" *ngIf="firstGivenName.errors?.required">
+                                    {{'firstGivenNameIsRequired'|translate}}</mat-error>
+                            </mat-form-field>
+                        </li>
+                        <li>
+                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                                color="primary">
+                                <mat-label>{{'middleName'|translate}}</mat-label>
+                                <input [(ngModel)]="staffAddModel.staffMaster.middleName" name="middleName" matInput [disabled]="isReadOnly">
+                            </mat-form-field>
+                        </li>
+                        <li>
+                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                                color="primary">
+                                <mat-label>{{'lastFamilyName'|translate}}</mat-label>
+                                <input #lastFamilyName="ngModel" [(ngModel)]="staffAddModel.staffMaster.lastFamilyName"
+                                    name="lastFamilyName" matInput [disabled]="isReadOnly" required>
+                                <mat-error class="text-red" *ngIf="lastFamilyName.errors?.required">
+                                    {{'lastFamilyNameIsRequired'|translate}}</mat-error>
+                            </mat-form-field>
+                        </li>
+                        <li>
+                            <mat-form-field fxFlex="auto" class="w-full bg-white mb-0 rounded" appearance="outline"
+                                color="primary">
+                                <mat-label>{{'suffix'|translate}}</mat-label>
+                                <mat-select [(ngModel)]="staffAddModel.staffMaster.suffix" name="suffix" [disabled]="isReadOnly">
+                                    <mat-option></mat-option>
+                                    <mat-option *ngFor="let suffix of suffixList" [value]="suffix.lovColumnValue">
+                                        {{suffix.lovColumnValue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </li>
                     </ul>
-                    </div>
+                </div>
                 <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'staffId'|translate}}</mat-label>
-                            <input [formControl]="internalId"
-                                [(ngModel)]="staffAddModel.staffMaster.staffInternalId" name="staffInternalId" matInput required>
-                                <span matSuffix><img *ngIf="isStaffInternalId" src="assets/img/icons/loading-process.svg" class="animate-spin w-5"></span>
+                            <input [formControl]="internalId" [(ngModel)]="staffAddModel.staffMaster.staffInternalId"
+                                name="staffInternalId" matInput required>
+                            <span matSuffix><img *ngIf="isStaffInternalId" alt="Loader icon"
+                                    src="assets/img/icons/loading-process.svg" class="animate-spin w-5"></span>
                             <mat-error *ngIf="internalId.errors?.required">
                                 {{'staffInternalIdIsRequired'|translate}}</mat-error>
                             <mat-error *ngIf="internalId.errors?.nomatch">
@@ -73,46 +79,48 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'alternateID'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.alternateId" name="alternateId" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.alternateId" name="alternateId" [disabled]="isReadOnly" matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'districtID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.districtId" name="districtId"
+                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.districtId" name="districtId" [disabled]="isReadOnly"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.stateId" name="stateId"
+                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.stateId" name="stateId" [disabled]="isReadOnly"
                                 matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'preferredCommonName'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.preferredName" name="preferredName" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.preferredName" name="preferredName" matInput [disabled]="isReadOnly">
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'previousMaidenName'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.previousName" name="previousName" matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.previousName" name="previousName" matInput [disabled]="isReadOnly">
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'socialSecurityNumber'|translate}}</mat-label>
-                            <input type="password" [(ngModel)]="staffAddModel.staffMaster.socialSecurityNumber"
-                                name="socialSecurityNumber" matInput>
+                            <input (paste)="$event.preventDefault()" type="password" [disabled]="isReadOnly"
+                                (keypress)="omitSpecialChar($event)"
+                                [(ngModel)]="staffAddModel.staffMaster.socialSecurityNumber" name="socialSecurityNumber"
+                                matInput>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'otherGovtIssuedNumber'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.otherGovtIssuedNumber"
+                            <input [(ngModel)]="staffAddModel.staffMaster.otherGovtIssuedNumber" [disabled]="isReadOnly"
                                 name="otherGovtIssuedNumber" matInput>
                         </mat-form-field>
                     </li>
@@ -127,27 +135,30 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'gender'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.gender" name="gender">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let gender of genderList" [value]="gender.lovColumnValue">{{gender.lovColumnValue}}</mat-option>
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.gender" name="gender" [disabled]="isReadOnly">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let gender of genderList" [value]="gender.lovColumnValue">
+                                    {{gender.lovColumnValue}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'race'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.race" name="race">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let race of raceList" [value]="race.lovColumnValue">{{race.lovColumnValue}}</mat-option>
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.race" name="race" [disabled]="isReadOnly">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let race of raceList" [value]="race.lovColumnValue">
+                                    {{race.lovColumnValue}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'ethnicity'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.ethnicity" name="ethnicity">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let ethnicity of ethnicityList" [value]="ethnicity.lovColumnValue">{{ethnicity.lovColumnValue}}
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.ethnicity" name="ethnicity" [disabled]="isReadOnly">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let ethnicity of ethnicityList" [value]="ethnicity.lovColumnValue">
+                                    {{ethnicity.lovColumnValue}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -155,9 +166,10 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'maritalStatus'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.maritalStatus" name="maritalStatus">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let maritalStatus of maritalStatusList" [value]="maritalStatus.lovColumnValue">
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.maritalStatus" name="maritalStatus" [disabled]="isReadOnly">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let maritalStatus of maritalStatusList"
+                                    [value]="maritalStatus.lovColumnValue">
                                     {{maritalStatus.lovColumnValue}}</mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -165,8 +177,8 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'dateOfBirth'|translate}}</mat-label>
-                            <input [(ngModel)]="staffAddModel.staffMaster.dob" name="dob" [max]="today" [matDatepicker]="dob"
-                                matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.dob" name="dob" [max]="today" [disabled]="isReadOnly"
+                                [matDatepicker]="dob" matInput>
                             <mat-datepicker-toggle [for]="dob" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #dob></mat-datepicker>
                         </mat-form-field>
@@ -174,10 +186,13 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'countryOfBirth'|translate}}</mat-label>
-                            <mat-select [formControl]="countryOfBirthCtrl" [(ngModel)]="staffAddModel.staffMaster.countryOfBirth" name="countryOfBirth">
-                                <!-- <mat-option value=""></mat-option> -->
+                            <mat-select [formControl]="countryOfBirthCtrl" [disabled]="isReadOnly"
+                                [(ngModel)]="staffAddModel.staffMaster.countryOfBirth" name="countryOfBirth">
+                                <!-- <mat-option></mat-option> -->
                                 <mat-option>
-                                    <ngx-mat-select-search  [formControl]="countryOfBirthFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found" placeholderLabel="Find country..."></ngx-mat-select-search>
+                                    <ngx-mat-select-search [formControl]="countryOfBirthFilterCtrl"
+                                        ngxMatSelectSearchClear noEntriesFoundLabel="No matching country found"
+                                        placeholderLabel="Find country..."></ngx-mat-select-search>
                                 </mat-option>
                                 <mat-option *ngFor="let country of filteredcountryOfBirth| async" [value]='country.id'>
                                     {{country.name}}
@@ -188,10 +203,13 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'nationality'|translate}}</mat-label>
-                            <mat-select [formControl]="nationalityCtrl" [(ngModel)]="staffAddModel.staffMaster.nationality" name="nationality">
-                                <!-- <mat-option value=""></mat-option> -->
+                            <mat-select [formControl]="nationalityCtrl"
+                                [(ngModel)]="staffAddModel.staffMaster.nationality" name="nationality" [disabled]="isReadOnly">
+                                <!-- <mat-option></mat-option> -->
                                 <mat-option>
-                                    <ngx-mat-select-search  [formControl]="nationalityFilterCtrl" ngxMatSelectSearchClear noEntriesFoundLabel="No matching nationality found" placeholderLabel="Find nationality..."></ngx-mat-select-search>
+                                    <ngx-mat-select-search [formControl]="nationalityFilterCtrl" ngxMatSelectSearchClear
+                                        noEntriesFoundLabel="No matching nationality found"
+                                        placeholderLabel="Find nationality..."></ngx-mat-select-search>
                                 </mat-option>
                                 <mat-option *ngFor="let country of filteredNationality| async" [value]='country.id'>
                                     {{country.name}}
@@ -202,9 +220,14 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'firstLanguage'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.firstLanguage" name="firstLanguage">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let language of languageList" [value]="language.langId">
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.firstLanguage" name="firstLanguage" [disabled]="isReadOnly">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="firstLanguageFilterCtrl"
+                                        ngxMatSelectSearchClear noEntriesFoundLabel="No matching language found"
+                                        placeholderLabel="Find language..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let language of filteredFirstLanguage| async"
+                                    [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>
                             </mat-select>
@@ -213,10 +236,14 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'secondLanguage'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.secondLanguage"
-                                name="secondLanguage">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let language of languageList" [value]="language.langId">
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.secondLanguage" name="secondLanguage" [disabled]="isReadOnly">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="secondLanguageFilterCtrl"
+                                        ngxMatSelectSearchClear noEntriesFoundLabel="No matching language found"
+                                        placeholderLabel="Find language..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let language of filteredSecondLanguage| async"
+                                    [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>
                             </mat-select>
@@ -225,9 +252,14 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'thirdLanguage'|translate}}</mat-label>
-                            <mat-select [(ngModel)]="staffAddModel.staffMaster.thirdLanguage" name="thirdLanguage">
-                                <mat-option value=""></mat-option>
-                                <mat-option *ngFor="let language of languageList" [value]="language.langId">
+                            <mat-select [(ngModel)]="staffAddModel.staffMaster.thirdLanguage" name="thirdLanguage" [disabled]="isReadOnly">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="thirdLanguageFilterCtrl"
+                                        ngxMatSelectSearchClear noEntriesFoundLabel="No matching language found"
+                                        placeholderLabel="Find language..."></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let language of filteredThirdLanguage| async"
+                                    [value]="language.langId">
                                     {{language.locale}}
                                 </mat-option>
                             </mat-select>
@@ -236,7 +268,8 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'physicalDisability'|translate}}</mat-label>
-                            <mat-select name="physicalDisability" (selectionChange)="checkDisability($event)"  [(ngModel)]="staffAddModel.staffMaster.physicalDisability">
+                            <mat-select name="physicalDisability" (selectionChange)="checkDisability($event)"
+                                [(ngModel)]="staffAddModel.staffMaster.physicalDisability" [disabled]="isReadOnly">
                                 <mat-option></mat-option>
                                 <mat-option [value]="disablity.Yes">{{disablity['true']}}</mat-option>
                                 <mat-option [value]="disablity.No">{{disablity['false']}}</mat-option>
@@ -246,7 +279,8 @@
                     <li *ngIf="showDisabilityDescription">
                         <mat-form-field class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'disabilityDescription'|translate}}</mat-label>
-                            <textarea name="disabilityDescription"  [(ngModel)]="staffAddModel.staffMaster.disabilityDescription" matInput></textarea>
+                            <textarea name="disabilityDescription"
+                                [(ngModel)]="staffAddModel.staffMaster.disabilityDescription" matInput [disabled]="isReadOnly"></textarea>
                         </mat-form-field>
                     </li>
                 </ul>
@@ -254,11 +288,11 @@
                 <hr class="-mx-4 my-4">
                 <div>
                     <mat-slide-toggle color="primary" [checked]="staffAddModel.staffMaster.portalAccess"
-                        (change)="isPortalAccess($event)" class="mb-4">
+                        (change)="isPortalAccess($event)" class="mb-4" [disabled]="isReadOnly">
                         {{'portalAccess' | translate}}
                     </mat-slide-toggle>
                 </div>
-                
+
                 <div *ngIf="hideAccess">
                     <h4 class="text-primary pt-3">{{'accessInformation'|translate}}</h4>
                     <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
@@ -267,8 +301,9 @@
                                 <mat-label>{{'loginEmailAddress'|translate}}</mat-label>
                                 <input [formControl]="loginEmail" name="loginEmailAddress"
                                     [(ngModel)]="staffAddModel.staffMaster.loginEmailAddress" matInput
-                                    [required]="hideAccess ? true : null " >
-                                <span matSuffix><img *ngIf="isUser" src="assets/img/icons/loading-process.svg" class="animate-spin w-5"></span>
+                                    [required]="hideAccess ? true : null ">
+                                <span matSuffix><img *ngIf="isUser" src="assets/img/icons/loading-process.svg"
+                                        alt="Loader icon" class="animate-spin w-5"></span>
                                 <mat-error class="text-red" *ngIf="loginEmail.errors?.required && hideAccess">
                                     {{'loginEmailAddressIsRequired'|translate}}</mat-error>
                                 <mat-error *ngIf="loginEmail.errors?.nomatch">
@@ -280,7 +315,7 @@
                                 appearance="outline" color="primary">
                                 <mat-label>{{'password'|translate}}</mat-label>
                                 <input #passwordHash="ngModel" ngModel [type]="inputType" name="passwordHash" matInput
-                                    [required]="hidePasswordAccess ? true : null " [readonly]="fieldDisabled">
+                                    [required]="hidePasswordAccess ? true : null " [readonly]="fieldDisabled" [disabled]="isReadOnly">
                                 <mat-error class="text-red" *ngIf="passwordHash.errors?.required && hidePasswordAccess">
                                     {{'passwordIsRequired'|translate}}</mat-error>
                                 <button (click)="toggleVisibility()" mat-icon-button matSuffix
@@ -290,17 +325,24 @@
                                 </button>
                             </mat-form-field>
                             <p *ngIf="hidePasswordAccess" class="flex-none mb-4"><a (click)="generate()"
-                                    class="text-primary underline cursor-pointer">Auto Generate Password</a></p>
+                                    class="text-primary underline cursor-pointer">{{'autoGeneratePassword' |translate}}</a></p>
+                        </li>
+                        <li *ngIf="staffCreateMode === staffCreate.EDIT">
+                            <mat-checkbox name="activeDeactiveUser" [checked]="staffAddModel?.staffMaster.isActive===false"
+                                (change)="activateUser($event.checked)" color="primary" [disabled]="isReadOnly">
+                                {{'disableStaff'
+                                | translate}}
+                            </mat-checkbox>
                         </li>
                     </ul>
-                        </div>
-                    </div>
-        </mat-card-content>
-        <div class="pb-2 flex w-full justify-end">
-                    <button mat-button type="button" *ngIf="staffCreateMode == staffCreate.EDIT"
-                    (click)="cancelEdit()">{{'cancel'|translate}}</button>
-                <button color="primary" class="ml-2" mat-raised-button>{{saveAndNext |translate}}</button>
                 </div>
+            </div>
+        </mat-card-content>
+        <div class="flex w-full justify-end">
+            <button mat-button type="button" *ngIf="staffCreateMode == staffCreate.EDIT"
+                (click)="cancelEdit()">{{'cancel'|translate}}</button>
+            <button color="primary" class="ml-2" mat-raised-button>{{saveAndNext |translate}}</button>
+        </div>
     </form>
 </mat-card>
 
@@ -315,11 +357,8 @@
                 class="hidden md:inline-block">{{'editInformation' |translate}}</span>
         </button>
     </div>
-    <vex-view-staff-generalinfo
-    [staffCreateMode]="staffCreateMode"
-     [categoryId]="categoryId"
-     [staffViewDetails]="staffDetailsForViewAndEdit"
-     [nameOfMiscValues]="nameOfMiscValuesForView">
+    <vex-view-staff-generalinfo [staffCreateMode]="staffCreateMode" [categoryId]="categoryId"
+        [staffViewDetails]="staffDetailsForViewAndEdit" [nameOfMiscValues]="nameOfMiscValuesForView">
 
     </vex-view-staff-generalinfo>
 </mat-card>

@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import {HttpClientModule} from '@angular/common/http';
 import {SharedModuleModule} from '../../shared-module/shared-module.module'
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
   declarations: [StaffDataImportComponent],
   imports: [
@@ -38,7 +39,8 @@ import {SharedModuleModule} from '../../shared-module/shared-module.module'
     FormsModule,
     NgxDropzoneModule,
     HttpClientModule,
-    SharedModuleModule
+    SharedModuleModule,
+    MatTooltipModule
   ],
   exports:[StaffDataImportComponent]
 })

@@ -1,5 +1,5 @@
 <mat-error *ngIf="weekArray.length==0 && !detailsFromParentModal.editMode;else fixedSchedule">
-Please Select a Calendar.
+{{'pleaseSelectACalendar'|translate}}.
 </mat-error>
 <ng-template #fixedSchedule>
     <form #f="ngForm">
@@ -7,7 +7,7 @@ Please Select a Calendar.
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'room' | translate}}</mat-label>
-                    <mat-select #room="ngModel" name="room"
+                    <mat-select #room="ngModel" name="room" [disabled]="!this.defaultValueService.checkAcademicYear()"
                     [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.roomId" required>
                         <mat-option *ngFor="let room of roomListViewModel.tableroomList" [value]="room.roomId">
                             {{room.title}}
@@ -21,7 +21,7 @@ Please Select a Calendar.
             <li>
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'period' | translate}}</mat-label>
-                    <mat-select #period="ngModel" name="period"
+                    <mat-select #period="ngModel" name="period" [disabled]="!this.defaultValueService.checkAcademicYear()"
                     [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.periodId" required>
                         <mat-option *ngFor="let period of periodList" [value]="period.periodId">{{period.periodTitle}}</mat-option>
                     </mat-select>
@@ -34,16 +34,16 @@ Please Select a Calendar.
         <h4 class="font-bold mb-2">{{'meetingDays' | translate}}</h4>
         <div class="mb-6">    
             <span *ngFor="let day of weeks">
-                <mat-checkbox class="mr-5" [checked]="activeDays.indexOf(day.name) != -1" [disabled]="weekArray.indexOf(day.name) == -1" (click)="selectDays($event,day.name)"
+                <mat-checkbox class="mr-5" [checked]="activeDays.indexOf(day.name) != -1" [disabled]="weekArray.indexOf(day.name) == -1 || !this.defaultValueService.checkAcademicYear()" (click)="selectDays($event,day.name)"
                     color="primary">
                     {{day.name | translate}}</mat-checkbox>
             </span>  
             <mat-error *ngIf="activeDaysError && activeDays.length<1">
-                You must select at least 1 day.
+                {{'youMustSelectStLeastOneDay'|translate}}.
             </mat-error>
         </div>
         <div>
-            <mat-slide-toggle class="mb-3" name="takeAttendance" [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.attendanceTaken" color="primary">{{'takeAttendance' | translate}}</mat-slide-toggle>
+            <mat-slide-toggle class="mb-3" name="takeAttendance" [disabled]="!this.defaultValueService.checkAcademicYear()" [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.attendanceTaken" color="primary">{{'takeAttendance' | translate}}</mat-slide-toggle>
         </div>
         </form>
 </ng-template>

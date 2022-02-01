@@ -11,7 +11,7 @@
                 </span>
             </div>
             <div class="text-center px-4">
-                <h5 class="text-primary font-semibold mb-0">{{studentTitle}}</h5>
+                <h5 class="text-primary font-semibold mb-0">{{studentTitle |translate}}</h5>
                 <div class="rounded-full py-1 px-3 bg-gray text-white inline-block mt-3"
                     *ngIf="studentAddModel.currentGradeLevel">{{studentAddModel.currentGradeLevel}}</div>
             </div>
@@ -44,10 +44,10 @@
 
             <div>
                 <a *ngIf="otherTabs?.courseSchedule" @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple
-                    (click)="changeTempCategory(100)" [ngClass]="currentCategory == 100 ?'text-blue' : ''">
+                    (click)="changeTempCategory('/school/students/student-course-schedule')" [ngClass]="categoryPath === '/school/students/student-course-schedule' ?'text-blue' : ''">
                     <mat-icon [icIcon]="icCalendar" class="mr-3"></mat-icon> {{ 'courseSchedule' | translate }}
                 </a>
-                <a *ngIf="otherTabs?.attendance" @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple (click)="changeTempCategory(101)" [ngClass]="currentCategory == 101 ?'text-blue' : ''">
+                <a *ngIf="otherTabs?.attendance" @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple (click)="changeTempCategory('/school/students/student-attendance')" [ngClass]="categoryPath === '/school/students/student-attendance' ?'text-blue' : ''">
                     <mat-icon [icIcon]="icAlarm" class="mr-3"></mat-icon> {{ 'attendance' | translate }}
                 </a>
             </div>
@@ -61,10 +61,10 @@
                     <div>
                         <ul class="nav-sub-item">
                             <li *ngIf="otherTabs?.reportCard">
-                                <a (click)="changeTempCategory(103)" @fadeInRight [ngClass]="currentCategory == 103 ?'text-blue' : ''">{{ 'reportCard' | translate }}</a>
+                                <a (click)="changeTempCategory('/school/students/student-report-card')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-report-card' ?'text-blue' : ''">{{ 'reportCard' | translate }}</a>
                             </li>
                             <li *ngIf="otherTabs?.transcript">
-                                <a (click)="changeTempCategory(102)" @fadeInRight [ngClass]="currentCategory == 102 ?'text-blue' : ''">{{ 'transcripts' | translate }}</a>
+                                <a (click)="changeTempCategory('/school/students/student-transcript')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-transcript' ?'text-blue' : ''">{{ 'transcripts' | translate }}</a>
                             </li>
                         </ul>
                     </div>
@@ -76,9 +76,9 @@
         <vex-page-layout>
             <vex-page-layout-header class="pb-10 pt-6" fxLayoutAlign="center start">
                 <vex-secondary-toolbar
-                    current="{{studentCreateMode==studentCreate.ADD?'Add Student Information':'Student Information'}}"
+                    current="{{studentCreateMode==studentCreate.ADD?'addStudentInformation':'studentInformation'}}"
                     class="w-full">
-                    <vex-breadcrumbs [crumbs]="['Students',pageStatus]" class="flex-auto"></vex-breadcrumbs>
+                    <vex-breadcrumbs [crumbs]="['students',pageStatus]" class="flex-auto"></vex-breadcrumbs>
                 </vex-secondary-toolbar>
             </vex-page-layout-header>
             <div class="bg-primary px-4 py-2 rounded -mt-16 mx-4 persistent-bar">

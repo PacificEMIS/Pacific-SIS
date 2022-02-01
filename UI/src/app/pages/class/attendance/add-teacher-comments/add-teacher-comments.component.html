@@ -36,7 +36,7 @@
                 <div class="timeline-content" *ngIf="comment?.membership?.profileType ===  'Homeroom Teacher' || comment?.membership?.profileType === 'Teacher'">
                     <div class="flex justify-between items-center talk-bubble border border-gray-light">
                         <p class="text-base">{{comments}}</p>
-                        <span class="cursor-pointer" (click)="tapForEdit = true">
+                        <span class="cursor-pointer" (click)="tapForEdit = true" *ngIf="defaultValuesService.checkAcademicYear()">
                             <mat-icon class="text-black ml-2 align-middle">edit</mat-icon>
                         </span>
                     </div>
@@ -75,5 +75,5 @@
 <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" class="pt-0 pb-4">
     <button mat-button mat-dialog-close>{{ 'cancel' | translate }}</button>
     <button color="primary" mat-flat-button type="submit" class="text-white ml-2"
-        (click)="addOrUpdateComments()">{{actionButtonTitle|translate}}</button>
+        (click)="addOrUpdateComments()" *ngIf="defaultValuesService.checkAcademicYear()">{{actionButtonTitle|translate}}</button>
 </mat-dialog-actions>
