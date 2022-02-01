@@ -1,4 +1,5 @@
-﻿using opensis.data.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.report.report.data.Interface;
 using opensis.report.report.data.ViewModels.StaffReport;
@@ -29,7 +30,7 @@ namespace opensis.report.report.data.Repository
             StaffAdvancedReport reportList = new();
             try
             {
-                var schoolList = this.context?.SchoolMaster.Where(x => x.TenantId == reportModel.TenantId && x.StaffMaster.Any(x => x.SchoolId == reportModel.SchoolId && reportModel.StaffGuids.Contains(x.StaffGuid) && x.TenantId == reportModel.TenantId));
+                var schoolList = this.context?.SchoolMaster.Where(x => x.TenantId == reportModel.TenantId && x.SchoolId == reportModel.SchoolId);
                 if (schoolList?.Any() == true)
                 {
                     reportList.schoolListForReport = schoolList.Select(x => new StaffSchoolReport()
@@ -75,7 +76,11 @@ namespace opensis.report.report.data.Repository
                         schoolReport.Latitude = school.Latitude;
                         List<StaffReport> staffListForReport = new();
 
-                        var staffData = this.context?.StaffMaster.Where(x => x.TenantId == school.TenantId && x.SchoolId == school.SchoolId && reportModel!.StaffGuids!.Contains(x.StaffGuid)).ToList();
+                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == reportModel.TenantId && reportModel.StaffIds.Contains(x.StaffId.Value) && x.SchoolAttachedId == reportModel.SchoolId).Select(s => s.StaffId).ToList();
+
+                       var staffData = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == reportModel.TenantId && schoolAttachedStaffId!.Contains(x.StaffId) /*&& (reportModel.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true)*/).ToList();
+
+                        //var staffData = this.context?.StaffMaster.Where(x => x.TenantId == school.TenantId && x.SchoolId == school.SchoolId && reportModel!.StaffGuids!.Contains(x.StaffGuid)).ToList();
 
                         foreach (var staff in staffData)
                         {
