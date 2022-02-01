@@ -200,6 +200,7 @@ namespace opensis.data.Repository
                             StreetAddress1 = p.StreetAddress1,
                             StreetAddress2 = p.StreetAddress2,
                             State = p.State,
+                            District = p.District,
                             City = p.City,
                             Country = p.Country,
                             CreatedBy = p.CreatedBy,
@@ -250,6 +251,12 @@ namespace opensis.data.Repository
                     schoolListModel._tenantName = pageResult._tenantName;
                     schoolListModel._token = pageResult._token;
                     schoolListModel._failure = false;
+                }
+                else
+                {
+                    schoolListModel._failure = true;
+                    schoolListModel._message = NORECORDFOUND;
+
                 }
             }
             catch (Exception es)

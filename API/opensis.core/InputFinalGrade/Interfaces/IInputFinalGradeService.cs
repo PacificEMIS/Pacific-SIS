@@ -40,5 +40,6 @@ namespace opensis.core.InputFinalGrade.Interfaces
         public StudentReportCardGradesViewModel UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
         public StudentListModel GetAllStudentListForFinalGrade(PageResult pageResult);
         //public ReportCardCommentListViewModel GetReportCardCommentsForInputFinalGrade(ReportCardCommentListViewModel reportCardCommentListViewModel);
+        public GardeBookGradeViewModel GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel);
     }
 }

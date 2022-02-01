@@ -24,22 +24,40 @@ All rights reserved.
 ***********************************************************************************/
 
 using opensis.data.Models;
-using opensis.data.ViewModels.InputFinalGrade;
-using opensis.data.ViewModels.Student;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace opensis.data.Interface
+namespace opensis.data.ViewModels.InputFinalGrade
 {
-    public interface IInputFinalGradeRepository
+    public class GardeBookGradeViewModel : CommonFields
     {
-        public StudentFinalGradeListModel AddUpdateStudentFinalGrade(StudentFinalGradeListModel studentFinalGradeListModel);
-        public StudentFinalGradeListModel GetAllStudentFinalGradeList(StudentFinalGradeListModel studentFinalGradeListModel);
-        //public ReportCardCommentListViewModel GetReportCardCommentsForInputFinalGrade(ReportCardCommentListViewModel reportCardCommentListViewModel);
-        public StudentReportCardGradesViewModel GetStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
-        public StudentReportCardGradesViewModel UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
-        public StudentListModel GetAllStudentListForFinalGrade(PageResult pageResult);
-        public GardeBookGradeViewModel GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel);
+        public GardeBookGradeViewModel()
+        {
+            studentWithGradeBookViewModelList = new List<StudentWithGradeBookViewModel>();
+        }
+        public List<StudentWithGradeBookViewModel> studentWithGradeBookViewModelList { get; set; }
+        public Guid TenantId { get; set; }
+        public int SchoolId { get; set; }
+        public decimal AcademicYear { get; set; }
+        public int CourseSectionId { get; set; }
+        public string? MarkingPeriodId { get; set; }
+    }
+
+    public class StudentWithGradeBookViewModel
+    {
+        public Guid? TenantId { get; set; }
+        public int? SchoolId { get; set; }
+        public int? StudentId { get; set; }
+        public Guid? StudentGuid { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
+        public decimal? Percentage { get; set; }
+        public string? Grade { get; set; }
+
     }
 }
