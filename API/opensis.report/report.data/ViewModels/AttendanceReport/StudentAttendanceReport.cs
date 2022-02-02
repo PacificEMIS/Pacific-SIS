@@ -2,6 +2,7 @@
 using opensis.data.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
             studendAttendanceAdministrationList = new List<StudendAttendanceViewModelForReport>();
         }
         public List<StudendAttendanceViewModelForReport> studendAttendanceAdministrationList { get; set; }
+        public DataTable? StudentAttendanceReportForExcel { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
@@ -42,5 +44,16 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
         public string? LastFamilyName { get; set; }
         public string? GradeLevelTitle { get; set; }
         public List<StudentAttendance> studentAttendanceList { get; set; }
+    }
+
+    public class AttendanceExcelReport 
+    {
+        public int StudentId { get; set; }
+        public DateTime? AttendanceDate { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? StudentName { get; set; }
+        public string? PeriodName { get; set; }
+        public string? AttendanceCode { get; set; }
+        public string? GradeLevelTitle { get; set; }
     }
 }

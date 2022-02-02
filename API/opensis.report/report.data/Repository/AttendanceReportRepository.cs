@@ -71,9 +71,6 @@ namespace opensis.report.report.data.Repository
                                 administrationViewModel.LastFamilyName = attendance.StudentCoursesectionSchedule.StudentMaster.LastFamilyName;
                                 administrationViewModel.GradeLevelTitle = attendance.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
 
-                                administrationViewModel.GradeLevelTitle = attendance.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
-
-
                             }
 
                             studentAttendance.ToList().ForEach(x => { x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.AttendanceCodeNavigation.StudentAttendance = new HashSet<StudentAttendance>(); x.StudentCoursesectionSchedule.StudentMaster = new(); x.Membership = null; });
@@ -86,6 +83,11 @@ namespace opensis.report.report.data.Repository
 
                     if (attendanceData.Count() > 0)
                     {
+                        if (pageResult.GradeLevel != null)
+                        {
+                            attendanceData = attendanceData.Where(x=>x.GradeLevelTitle== pageResult.GradeLevel).ToList();
+                        }
+
                         if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                         {
                             transactionIQ = attendanceData.AsQueryable();
@@ -137,6 +139,56 @@ namespace opensis.report.report.data.Repository
                         studentAttendanceList._failure = true;
                         studentAttendanceList._message = NORECORDFOUND;
                     }
+                }
+            }
+            catch (Exception es)
+            {
+                studentAttendanceList._failure = true;
+                studentAttendanceList._message = es.Message;
+            }
+            return studentAttendanceList;
+
+        }
+
+        /// <summary>
+        /// Get Student Attendanced Excel Report
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentAttendanceReport GetStudentAttendanceExcelReport(PageResult pageResult)
+        {
+            StudentAttendanceReport studentAttendanceList = new StudentAttendanceReport();
+            studentAttendanceList.TenantId = pageResult.TenantId;
+            studentAttendanceList.SchoolId = pageResult.SchoolId;
+            studentAttendanceList._userName = pageResult._userName;
+            studentAttendanceList.MarkingPeriodStartDate = pageResult.MarkingPeriodStartDate;
+            studentAttendanceList.MarkingPeriodEndDate = pageResult.MarkingPeriodEndDate;
+            studentAttendanceList._tenantName = pageResult._tenantName;
+            studentAttendanceList._userName = pageResult._userName;
+            List<StudendAttendanceViewModelForReport> attendanceData = new List<StudendAttendanceViewModelForReport>();
+            try
+            {
+                var studentAttendanceData = this.context?.StudentAttendance.Include(x=>x.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(x=>x.StudentCoursesectionSchedule).ThenInclude(x=> x.StudentMaster).ThenInclude(x=>x.StudentEnrollment).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x=> new AttendanceExcelReport()
+                {
+                    StudentId= x.StudentId,
+                    AttendanceDate= x.AttendanceDate,
+                    StudentInternalId= x.StudentCoursesectionSchedule.StudentInternalId,
+                    StudentName = x.StudentCoursesectionSchedule.StudentMaster.FirstGivenName +" "+ (x.StudentCoursesectionSchedule.StudentMaster.MiddleName !=null? x.StudentCoursesectionSchedule.StudentMaster.MiddleName + " ": null) + x.StudentCoursesectionSchedule.StudentMaster.LastFamilyName,
+                    PeriodName= x.BlockPeriod.PeriodTitle,
+                    AttendanceCode= x.AttendanceCodeNavigation.Title,
+                    GradeLevelTitle= x.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
+                });
+                if (studentAttendanceData != null && studentAttendanceData.Any())
+                {
+                    if (pageResult.GradeLevel != null)
+                    {
+                        studentAttendanceData = studentAttendanceData.Where(x => x.GradeLevelTitle == pageResult.GradeLevel);
+                    }
+                    var attendancedExcelData = studentAttendanceData.ToPivotTable(
+                item => item.PeriodName,
+                item => new { item.AttendanceDate,item.StudentName, item.StudentInternalId,item.GradeLevelTitle },
+                items => items.Any() ? items.First().AttendanceCode : null);
+                    studentAttendanceList.StudentAttendanceReportForExcel = attendancedExcelData;
                 }
             }
             catch (Exception es)
