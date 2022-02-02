@@ -94,7 +94,6 @@ export class TakeAttendanceComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/attendance/missing-attendance');
-    // console.log(this.permissions)
     this.getScheduledStudentList();
     this.isToday();
   }

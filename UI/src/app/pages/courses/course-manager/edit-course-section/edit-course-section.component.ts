@@ -160,10 +160,7 @@ export class EditCourseSectionComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    // Initializing the form
-
-    console.log(this.data.courseDetails?.creditHours);
-    
+    // Initializing the form    
     this.form = this.fb.group(
       {
         courseSectionName: ['', Validators.required],

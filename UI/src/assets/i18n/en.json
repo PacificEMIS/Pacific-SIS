@@ -1597,5 +1597,6 @@
     "adminOfficeComment": "Admin & Office Comment",
     "instituteReport" : "Institute Report",
     "homeAddressState":"State/Province/Locality(Home)",
-    "mailingAddressState":"State/Province/Locality(Mailing)"
+    "mailingAddressState":"State/Province/Locality(Mailing)",
+    "includeOnlyCoursesActiveAsOf": "Include only courses active as of"
 }

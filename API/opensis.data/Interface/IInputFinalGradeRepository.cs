@@ -40,5 +40,6 @@ namespace opensis.data.Interface
         public StudentReportCardGradesViewModel GetStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
         public StudentReportCardGradesViewModel UpdateStudentReportCardGrades(StudentReportCardGradesViewModel studentReportCardGradesViewModel);
         public StudentListModel GetAllStudentListForFinalGrade(PageResult pageResult);
+        public GardeBookGradeViewModel GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel);
     }
 }

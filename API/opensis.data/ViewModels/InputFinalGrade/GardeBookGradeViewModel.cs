@@ -26,26 +26,38 @@ All rights reserved.
 using opensis.data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace opensis.data.ViewModels.StaffPortalGradebook
+namespace opensis.data.ViewModels.InputFinalGrade
 {
-    public class FinalGradingMarkingPeriodList : CommonFields
+    public class GardeBookGradeViewModel : CommonFields
     {
-        public FinalGradingMarkingPeriodList()
+        public GardeBookGradeViewModel()
         {
-            quarters = new List<Quarters>();
-            semesters = new List<Semesters>();
-            progressPeriods = new List<ProgressPeriods>();
+            studentWithGradeBookViewModelList = new List<StudentWithGradeBookViewModel>();
         }
-        public List<ProgressPeriods> progressPeriods { set; get; }
-        public List<Quarters> quarters { set; get; }
-        public List<Semesters> semesters { set; get; }
-        public SchoolYears? schoolYears { get; set; }
-        public int SchoolId { get; set; }
+        public List<StudentWithGradeBookViewModel> studentWithGradeBookViewModelList { get; set; }
         public Guid TenantId { get; set; }
-        public decimal? AcademicYear { get; set; }
-        public int? CourseSectionId { get; set; }
-        public bool? IsConfiguration { get; set; }
+        public int SchoolId { get; set; }
+        public decimal AcademicYear { get; set; }
+        public int CourseSectionId { get; set; }
+        public string? MarkingPeriodId { get; set; }
+    }
+
+    public class StudentWithGradeBookViewModel
+    {
+        public Guid? TenantId { get; set; }
+        public int? SchoolId { get; set; }
+        public int? StudentId { get; set; }
+        public Guid? StudentGuid { get; set; }
+        public string? StudentInternalId { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
+        public decimal? Percentage { get; set; }
+        public string? Grade { get; set; }
+
     }
 }
