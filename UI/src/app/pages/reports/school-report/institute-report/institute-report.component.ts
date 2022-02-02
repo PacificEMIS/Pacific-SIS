@@ -17,6 +17,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { GetSchoolReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import icCheckboxChecked from '@iconify/icons-ic/check-box';
+import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 
 @Component({
   selector: 'vex-institute-report',
@@ -26,6 +28,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewInit {
   icListAlt = icListAlt;
   icAccountBalance = icAccountBalance;
+  icCheckboxChecked = icCheckboxChecked;
+  icCheckboxUnchecked = icCheckboxUnchecked;
   displayedColumns: string[] = ['schoolCheck', 'schoolName', 'address', 'state', 'principal', 'phone'];
   getAllSchoolModel: GetAllSchoolModel = new GetAllSchoolModel();
   getSchoolReportModel: GetSchoolReportModel = new GetSchoolReportModel();
@@ -245,6 +249,29 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
     }
     this.getSchoolReport().then((res: any) => {
       this.generatedReportCardData = res;
+      this.generatedReportCardData?.schoolViewForReports?.map((item: any) => {
+        item.schoolMaster.fieldsCategoryForPDF = [];
+        item?.schoolMaster?.fieldsCategory?.map(subItem => {
+          if (!subItem?.isSystemCategory && subItem?.customFields?.length) {
+            item.schoolMaster.fieldsCategoryForPDF.push(subItem);
+          }
+        });
+      });
+      this.generatedReportCardData?.schoolViewForReports?.map((item: any) => {
+        if (item?.schoolMaster?.fieldsCategoryForPDF?.length) {
+          item?.schoolMaster?.fieldsCategoryForPDF.map(subItem => {
+            subItem?.customFields?.map(subOfSubItem => {
+              if (subOfSubItem?.customFieldsValue?.length) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.customFieldsValue[0].customFieldValue;
+              } else if (subOfSubItem?.defaultSelection) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.defaultSelection;
+              } else {
+                subOfSubItem.customFieldsValueForPDF = null;
+              }
+            });
+          });
+        }
+      });
       setTimeout(() => {
         this.generatePdf();
       }, 100 * this.generatedReportCardData?.schoolViewForReports?.length);

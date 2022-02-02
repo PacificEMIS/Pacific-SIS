@@ -1598,5 +1598,7 @@
     "instituteReport" : "Informe del Instituto",
     "homeAddressState":"Estado / Provincia / Localidad (Inicio)",
     "mailingAddressState":"Estado / provincia / localidad (correo)",
-    "includeOnlyCoursesActiveAsOf": "Incluir solo cursos activos a partir de"
+    "includeOnlyCoursesActiveAsOf": "Incluir solo cursos activos a partir de",
+    "contact": "Contacto",
+    "wash": "LAVAR"
 }

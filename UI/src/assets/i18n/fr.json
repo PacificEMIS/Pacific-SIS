@@ -1598,5 +1598,7 @@
     "instituteReport" : "Rapport de l'Institut",
     "homeAddressState":"Etat / Province / Localité (Accueil)",
     "mailingAddressState":"Etat / Province / Localité (Envoi)",
-    "includeOnlyCoursesActiveAsOf": "N'inclure que les cours actifs au"
+    "includeOnlyCoursesActiveAsOf": "N'inclure que les cours actifs au",
+    "contact": "Contact",
+    "wash": "LAVAGE"
 }
