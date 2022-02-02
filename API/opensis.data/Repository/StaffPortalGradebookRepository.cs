@@ -267,59 +267,152 @@ namespace opensis.data.Repository
         public FinalGradingMarkingPeriodList PopulateFinalGrading(FinalGradingMarkingPeriodList finalGradingMarkingPeriodList)
         {
             FinalGradingMarkingPeriodList finalGradingMarkingPeriod = new FinalGradingMarkingPeriodList();
+            finalGradingMarkingPeriod.TenantId = finalGradingMarkingPeriodList.TenantId;
+            finalGradingMarkingPeriod.SchoolId = finalGradingMarkingPeriodList.SchoolId;
+            finalGradingMarkingPeriod._tenantName = finalGradingMarkingPeriodList._tenantName;
+            finalGradingMarkingPeriod._token = finalGradingMarkingPeriodList._token;
+            finalGradingMarkingPeriod.AcademicYear = finalGradingMarkingPeriodList.AcademicYear;
+            finalGradingMarkingPeriod.CourseSectionId = finalGradingMarkingPeriodList.CourseSectionId;
+            finalGradingMarkingPeriod.IsConfiguration = finalGradingMarkingPeriodList.IsConfiguration;
             try
             {
-                var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
-
-                if (markingPeriodDataList != null)
+                if (finalGradingMarkingPeriodList.IsConfiguration == true)
                 {
-                    if (markingPeriodDataList.Semesters.Count > 0 || markingPeriodDataList.Semesters != null)
+                    // this block for when this api call from gradebook configuration.
+                    var courseSectionData = this.context?.CourseSection.Where(x => x.TenantId == finalGradingMarkingPeriodList.TenantId && x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.CourseSectionId == finalGradingMarkingPeriodList.CourseSectionId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
+                    if (courseSectionData != null)
                     {
-                        finalGradingMarkingPeriod.semesters.AddRange(markingPeriodDataList.Semesters);
-
-                        foreach (var markingperiodData in markingPeriodDataList.Semesters)
+                        if (courseSectionData.YrMarkingPeriodId != null)
                         {
-                            if (markingperiodData.Quarters?.Count > 0 || markingperiodData.Quarters != null)
-                            {
-                                finalGradingMarkingPeriod.quarters.AddRange(markingperiodData.Quarters.ToList());
+                            var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && x.MarkingPeriodId == courseSectionData.YrMarkingPeriodId).FirstOrDefault();
 
-                                foreach (var markingperiod in markingperiodData.Quarters)
+                            if (markingPeriodDataList != null)
+                            {
+                                finalGradingMarkingPeriod.schoolYears = markingPeriodDataList;
+
+                                if (markingPeriodDataList.Semesters.Count > 0 || markingPeriodDataList.Semesters != null)
                                 {
-                                    if (markingperiod.ProgressPeriods?.Count > 0 || markingperiod.ProgressPeriods != null)
+                                    finalGradingMarkingPeriod.semesters.AddRange(markingPeriodDataList.Semesters);
+
+                                    foreach (var markingperiodData in markingPeriodDataList.Semesters)
                                     {
-                                        finalGradingMarkingPeriod.progressPeriods.AddRange(markingperiod.ProgressPeriods.ToList());
+                                        if (markingperiodData.Quarters?.Count > 0 || markingperiodData.Quarters != null)
+                                        {
+                                            finalGradingMarkingPeriod.quarters.AddRange(markingperiodData.Quarters.ToList());
+
+                                            foreach (var markingperiod in markingperiodData.Quarters)
+                                            {
+                                                if (markingperiod.ProgressPeriods?.Count > 0 || markingperiod.ProgressPeriods != null)
+                                                {
+                                                    finalGradingMarkingPeriod.progressPeriods.AddRange(markingperiod.ProgressPeriods.ToList());
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                        else if (courseSectionData.SmstrMarkingPeriodId != null)
+                        {
+                            var markingPeriodDataList = this.context?.Semesters.Include(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && x.MarkingPeriodId == courseSectionData.SmstrMarkingPeriodId).FirstOrDefault();
 
-                    finalGradingMarkingPeriod.schoolYears = markingPeriodDataList;
-                    //markingPeriodDataList.Semesters.ToList().ForEach(b => b.Quarters = null);
-                    if (finalGradingMarkingPeriod.progressPeriods.Count > 0)
-                    {
-                        finalGradingMarkingPeriod.progressPeriods.ForEach(e => { e.Quarters = new(); e.CourseSections = new List<CourseSection>(); e.StaffCoursesectionSchedules = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMasters = new List<StudentEffortGradeMaster>(); e.StudentFinalGrades = new List<StudentFinalGrade>(); });
-                    }
+                            if (markingPeriodDataList != null)
+                            {
+                                finalGradingMarkingPeriod.semesters.Add(markingPeriodDataList);
 
-                    if (finalGradingMarkingPeriod.quarters.Count > 0)
-                    {
-                        finalGradingMarkingPeriod.quarters.ForEach(e => { e.Semesters = null; e.CourseSection = new List<CourseSection>(); e.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>(); e.StudentFinalGrade = new List<StudentFinalGrade>(); });
-                    }
+                                if (markingPeriodDataList.Quarters.Count > 0 || markingPeriodDataList.Quarters != null)
+                                {
+                                    finalGradingMarkingPeriod.quarters.AddRange(markingPeriodDataList.Quarters);
 
-                    if (finalGradingMarkingPeriod.semesters.Count > 0)
-                    {
-                        finalGradingMarkingPeriod.semesters.ForEach(e => { e.SchoolYears = null; e.CourseSection = new List<CourseSection>(); e.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>(); e.StudentFinalGrade = new List<StudentFinalGrade>(); });
-                    }
+                                    foreach (var quater in markingPeriodDataList.Quarters)
+                                    {
+                                        if (quater.ProgressPeriods?.Count > 0 || quater.ProgressPeriods != null)
+                                        {
+                                            finalGradingMarkingPeriod.progressPeriods.AddRange(quater.ProgressPeriods.ToList());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (courseSectionData.QtrMarkingPeriodId != null)
+                        {
+                            var markingPeriodDataList = this.context?.Quarters.Include(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && x.MarkingPeriodId == courseSectionData.QtrMarkingPeriodId).FirstOrDefault();
 
-                    if (finalGradingMarkingPeriod.schoolYears != null)
-                    {
-                        finalGradingMarkingPeriod.schoolYears.CourseSection = new List<CourseSection>();
-                        //finalGradingMarkingPeriod.schoolYears.HonorRolls = new List<HonorRolls>();
-                        finalGradingMarkingPeriod.schoolYears.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>();
-                        finalGradingMarkingPeriod.schoolYears.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>();
-                        finalGradingMarkingPeriod.schoolYears.StudentFinalGrade = new List<StudentFinalGrade>();
-                        //finalGradingMarkingPeriod.schoolYears.Semesters.ToList().ForEach(v => v.Quarters = null);
+                            if (markingPeriodDataList != null)
+                            {
+                                finalGradingMarkingPeriod.quarters.Add(markingPeriodDataList);
+
+                                if (markingPeriodDataList.ProgressPeriods.Count > 0 || markingPeriodDataList.ProgressPeriods != null)
+                                {
+                                    finalGradingMarkingPeriod.progressPeriods.AddRange(markingPeriodDataList.ProgressPeriods);
+
+                                }
+                            }
+                        }
+                        else if (courseSectionData.PrgrsprdMarkingPeriodId != null)
+                        {
+                            var markingPeriodDataList = this.context?.ProgressPeriods.Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && x.MarkingPeriodId == courseSectionData.PrgrsprdMarkingPeriodId).FirstOrDefault();
+
+                            if (markingPeriodDataList != null)
+                            {
+                                finalGradingMarkingPeriod.progressPeriods.Add(markingPeriodDataList);
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
+
+                    if (markingPeriodDataList != null)
+                    {
+                        if (markingPeriodDataList.Semesters.Count > 0 || markingPeriodDataList.Semesters != null)
+                        {
+                            finalGradingMarkingPeriod.semesters.AddRange(markingPeriodDataList.Semesters);
+
+                            foreach (var markingperiodData in markingPeriodDataList.Semesters)
+                            {
+                                if (markingperiodData.Quarters?.Count > 0 || markingperiodData.Quarters != null)
+                                {
+                                    finalGradingMarkingPeriod.quarters.AddRange(markingperiodData.Quarters.ToList());
+
+                                    foreach (var markingperiod in markingperiodData.Quarters)
+                                    {
+                                        if (markingperiod.ProgressPeriods?.Count > 0 || markingperiod.ProgressPeriods != null)
+                                        {
+                                            finalGradingMarkingPeriod.progressPeriods.AddRange(markingperiod.ProgressPeriods.ToList());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        finalGradingMarkingPeriod.schoolYears = markingPeriodDataList;
+                    }
+                }
+                //remove extra data
+                if (finalGradingMarkingPeriod.progressPeriods.Count > 0)
+                {
+                    finalGradingMarkingPeriod.progressPeriods.ForEach(e => { e.Quarters = new(); e.CourseSections = new List<CourseSection>(); e.StaffCoursesectionSchedules = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMasters = new List<StudentEffortGradeMaster>(); e.StudentFinalGrades = new List<StudentFinalGrade>(); });
+                }
+
+                if (finalGradingMarkingPeriod.quarters.Count > 0)
+                {
+                    finalGradingMarkingPeriod.quarters.ForEach(e => { e.Semesters = null; e.CourseSection = new List<CourseSection>(); e.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>(); e.StudentFinalGrade = new List<StudentFinalGrade>(); });
+                }
+
+                if (finalGradingMarkingPeriod.semesters.Count > 0)
+                {
+                    finalGradingMarkingPeriod.semesters.ForEach(e => { e.SchoolYears = null; e.CourseSection = new List<CourseSection>(); e.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>(); e.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>(); e.StudentFinalGrade = new List<StudentFinalGrade>(); });
+                }
+
+                if (finalGradingMarkingPeriod.schoolYears != null)
+                {
+                    finalGradingMarkingPeriod.schoolYears.CourseSection = new List<CourseSection>();
+                    //finalGradingMarkingPeriod.schoolYears.HonorRolls = new List<HonorRolls>();
+                    finalGradingMarkingPeriod.schoolYears.StaffCoursesectionSchedule = new List<StaffCoursesectionSchedule>();
+                    finalGradingMarkingPeriod.schoolYears.StudentEffortGradeMaster = new List<StudentEffortGradeMaster>();
+                    finalGradingMarkingPeriod.schoolYears.StudentFinalGrade = new List<StudentFinalGrade>();
+                    //finalGradingMarkingPeriod.schoolYears.Semesters.ToList().ForEach(v => v.Quarters = null);
                 }
             }
             catch (Exception es)
