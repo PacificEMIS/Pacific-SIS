@@ -146,8 +146,7 @@ export class InputFinalGradesComponent implements OnInit {
 
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodByCourseSectionModel.courseSectionId =  this.courseSectionId;
-console.log(123);
+    this.getMarkingPeriodByCourseSectionModel.courseSectionId =  this.courseSection.courseSectionId;
 
     this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe(data => {
       if (data._failure) {
@@ -170,9 +169,7 @@ console.log(123);
 
   changeMarkingPeriod(event) {
     // this.addUpdateStudentFinalGradeModel.markingPeriodId = event.value;
-
-    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);
-    console.log(markingPeriodDetails);
+    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);    
     
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
@@ -181,8 +178,6 @@ console.log(123);
     this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
     }
     this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-    console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
-
     this.addUpdateStudentFinalGradeModel.schoolId = this.defaultValuesService.getSchoolID();
     this.addUpdateStudentFinalGradeModel.tenantId = this.defaultValuesService.getTenantID();
     this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionData.courseId;
@@ -229,8 +224,6 @@ console.log(123);
           this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
           }
           this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-          console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
-
           this.addUpdateStudentFinalGradeModel = res;
           this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
             let commentArray = [];

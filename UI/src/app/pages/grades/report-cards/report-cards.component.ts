@@ -659,7 +659,6 @@ export class ReportCardsComponent implements OnInit {
     // return new Promise((resolve, reject) => {
     //   const element = document.getElementById('pdfData');
     //   element.style.display = 'block';
-    //   console.log(element.innerHTML);
     //   const opt = {
     //     margin: 1,
     //     image: { type: 'png', quality: 0.98 },
@@ -674,7 +673,6 @@ export class ReportCardsComponent implements OnInit {
     //       // order_id: this.orderDetails.order_id,
     //       // ticket_pdf: new File([this.dataURItoBlob(res)], `Ticket_${this.orderDetails.order_id}.pdf`, { type: 'application/pdf' })
     //     };
-    //     // console.log(dataWithTicket);
     //     resolve(dataWithTicket);
     //   });
     // });

@@ -76,9 +76,6 @@ export class AddTeacherCommentsComponent implements OnInit {
         this.comments = data.commentData[0].comment;
       }
     }
-    // console.log(this.pageRolePermissions.checkPageRolePermission("/school/staff/teacher-functions/missing-attendance").view);
-    // console.log(data);
-    
   }
 
   ngOnInit(): void {
