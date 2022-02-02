@@ -15,6 +15,7 @@ import { DefaultValuesService } from '../common/default-values.service';
 import { SchoolCreate } from '../enums/school-create.enum';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { PageRolesPermission } from '../common/page-roles-permissions.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -75,7 +76,8 @@ export class StaffService {
     private defaultValuesService: DefaultValuesService,
     private snackbar: MatSnackBar,
     private router: Router,
-    private cryptoService: CryptoService) {
+    private pageRolePermission: PageRolesPermission,
+    private cryptoService: CryptoService,) {
       this.httpOptions = {
         headers: new HttpHeaders({
           'Cache-Control': 'no-cache',
@@ -322,6 +324,18 @@ export class StaffService {
     obj.academicYear = this.defaultValuesService.getAcademicYear() 
     const apiurl = this.apiUrl + obj._tenantName + '/Staff/getScheduledCourseSectionsForStaff';
     return this.http.post<ScheduledCourseSectionsForStaffModel>(apiurl, obj,this.httpOptions);
+  }
+
+  redirectToGeneralInfo() {
+    let permission = this.pageRolePermission.checkPageRolePermission('/school/staff/staff-generalinfo', null, true);
+    if (!permission.add) {
+      this.router.navigate(['/school', 'staff']);
+      this.snackbar.open('You did not have permission to add staff details.', '', {
+        duration: 10000
+      });
+    } else {
+      this.router.navigate(['/school', 'staff', 'staff-generalinfo']);
+    }
   }
 
 }
