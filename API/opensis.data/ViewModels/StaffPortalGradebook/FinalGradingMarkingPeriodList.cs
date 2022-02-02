@@ -45,5 +45,7 @@ namespace opensis.data.ViewModels.StaffPortalGradebook
         public int SchoolId { get; set; }
         public Guid TenantId { get; set; }
         public decimal? AcademicYear { get; set; }
+        public int? CourseSectionId { get; set; }
+        public bool? IsConfiguration { get; set; }
     }
 }
