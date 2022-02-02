@@ -87,7 +87,7 @@ namespace opensis.report.report.data.Repository
                         {
                             attendanceData = attendanceData.Where(x=>x.GradeLevelTitle== pageResult.GradeLevel).ToList();
                         }
-
+                        attendanceData = attendanceData.OrderBy(x=> x.AttendanceDate).ToList();
                         if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                         {
                             transactionIQ = attendanceData.AsQueryable();
@@ -184,6 +184,7 @@ namespace opensis.report.report.data.Repository
                     {
                         studentAttendanceData = studentAttendanceData.Where(x => x.GradeLevelTitle == pageResult.GradeLevel);
                     }
+                    studentAttendanceData= studentAttendanceData.OrderBy(x => x.AttendanceDate);
                     var attendancedExcelData = studentAttendanceData.ToPivotTable(
                 item => item.PeriodName,
                 item => new { item.AttendanceDate,item.StudentName, item.StudentInternalId,item.GradeLevelTitle },
