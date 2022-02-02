@@ -115,8 +115,13 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     ) {
 
     //translateService.use('en');
-    if(!this.staffService.getStaffId() && this.defaultValuesService.getUserMembershipType() !== "Super Administrator") this.router.navigate(['school/teacher/dashboards'])
-    if (!this.defaultValuesService.checkAcademicYear() && !this.staffService.getStaffId()) this.staffService.redirectToStaffList();
+    if(this.defaultValuesService.getUserMembershipType() === "Super Administrator" || this.defaultValuesService.getUserMembershipType() === "School Administrator" || 
+    this.defaultValuesService.getUserMembershipType() === "Admin Assistant") {
+      this.defaultValuesService.checkAcademicYear() && !this.staffService.getStaffId() ? this.staffService.redirectToGeneralInfo() : 
+      !this.defaultValuesService.checkAcademicYear() && !this.staffService.getStaffId() ? this.staffService.redirectToStaffList():''
+    } else if (this.defaultValuesService.getUserMembershipType() === "Teacher" || this.defaultValuesService.getUserMembershipType() === "Homeroom Teacher"){
+      !this.staffService.getStaffId() ? this.router.navigate(['school/teacher/dashboards']) : ''
+    }
     this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.staffService.setStaffImage(res[1]);
     });
