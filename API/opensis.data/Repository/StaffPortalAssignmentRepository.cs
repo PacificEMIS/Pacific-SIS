@@ -51,41 +51,177 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AssignmentTypeAddViewModel AddAssignmentType(AssignmentTypeAddViewModel assignmentTypeAddViewModel)
         {
-            if(assignmentTypeAddViewModel.assignmentType is null)
+            if (assignmentTypeAddViewModel.assignmentType is null)
             {
                 return assignmentTypeAddViewModel;
             }
             try
             {
                 assignmentTypeAddViewModel.assignmentType.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, assignmentTypeAddViewModel.assignmentType.TenantId, assignmentTypeAddViewModel.assignmentType.SchoolId);
-                //var checkAssignmentTypeTitle = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.Title.ToLower() == assignmentTypeAddViewModel.assignmentType.Title.ToLower()).FirstOrDefault();
 
-                var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
+                var courseSectionData = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear);
 
-                if (checkAssignmentTypeTitle != null)
+                if (courseSectionData != null)
                 {
-                    assignmentTypeAddViewModel._failure = true;
-                    assignmentTypeAddViewModel._message = "Title Already Exists";
-                }
-                else
-                {
-                    int? assignmentTypeId = 1;
-
-                    var assignmentTypeData = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId).OrderByDescending(x => x.AssignmentTypeId).FirstOrDefault();
-
-                    if (assignmentTypeData != null)
+                    if (courseSectionData.DurationBasedOnPeriod == false)
                     {
-                        assignmentTypeId = assignmentTypeData.AssignmentTypeId + 1;
+                        var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear && x.YrMarkingPeriodId == null && x.SmstrMarkingPeriodId == null && x.QtrMarkingPeriodId == null && x.PrgrsprdMarkingPeriodId == null).FirstOrDefault();
+
+                        if (checkAssignmentTypeTitle != null)
+                        {
+                            assignmentTypeAddViewModel._failure = true;
+                            assignmentTypeAddViewModel._message = "Title Already Exists";
+                        }
+                        else
+                        {
+                            int? assignmentTypeId = 1;
+
+                            var assignmentTypeData = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId).OrderByDescending(x => x.AssignmentTypeId).FirstOrDefault();
+
+                            if (assignmentTypeData != null)
+                            {
+                                assignmentTypeId = assignmentTypeData.AssignmentTypeId + 1;
+                            }
+                            assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
+                            assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
+                            this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
+                            this.context?.SaveChanges();
+                            assignmentTypeAddViewModel._failure = false;
+
+                            assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                        }
                     }
-                    assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
-                    assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
-                    this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
-                    this.context?.SaveChanges();
-                    assignmentTypeAddViewModel._failure = false;
+                    else
+                    {
+                        if (assignmentTypeAddViewModel.MarkingPeriodStartDate != null && assignmentTypeAddViewModel.MarkingPeriodEndDate != null)
+                        {
+                            if (assignmentTypeAddViewModel.MarkingPeriodStartDate >= courseSectionData.DurationStartDate && assignmentTypeAddViewModel.MarkingPeriodStartDate <= courseSectionData.DurationEndDate && assignmentTypeAddViewModel.MarkingPeriodEndDate >= courseSectionData.DurationStartDate && assignmentTypeAddViewModel.MarkingPeriodEndDate <= courseSectionData.DurationEndDate)
+                            {
+                                int? assignmentTypeId = 1;
 
-                    assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                var assignmentTypeData = this.context?.AssignmentType.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId).OrderByDescending(x => x.AssignmentTypeId).FirstOrDefault();
+
+                                if (assignmentTypeData != null)
+                                {
+                                    assignmentTypeId = assignmentTypeData.AssignmentTypeId + 1;
+                                }
+
+                                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.StartDate == assignmentTypeAddViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeAddViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
+
+                                if (progressPeriodsData != null)
+                                {
+                                    var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear && x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).FirstOrDefault();
+
+                                    if (checkAssignmentTypeTitle != null)
+                                    {
+                                        assignmentTypeAddViewModel._failure = true;
+                                        assignmentTypeAddViewModel._message = "Title Already Exists";
+                                    }
+                                    else
+                                    {
+                                        assignmentTypeAddViewModel.assignmentType.PrgrsprdMarkingPeriodId = progressPeriodsData.MarkingPeriodId;
+                                        assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
+                                        assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
+                                        this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
+                                        this.context?.SaveChanges();
+                                        assignmentTypeAddViewModel._failure = false;
+
+                                        assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                    }
+
+                                }
+                                else
+                                {
+                                    var quarterData = this.context?.Quarters.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.StartDate == assignmentTypeAddViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeAddViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
+
+                                    if (quarterData != null)
+                                    {
+                                        var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear && x.QtrMarkingPeriodId == quarterData.MarkingPeriodId).FirstOrDefault();
+
+                                        if (checkAssignmentTypeTitle != null)
+                                        {
+                                            assignmentTypeAddViewModel._failure = true;
+                                            assignmentTypeAddViewModel._message = "Title Already Exists";
+                                        }
+                                        else
+                                        {
+                                            assignmentTypeAddViewModel.assignmentType.QtrMarkingPeriodId = quarterData.MarkingPeriodId;
+                                            assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
+                                            assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
+                                            this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
+                                            this.context?.SaveChanges();
+                                            assignmentTypeAddViewModel._failure = false;
+
+                                            assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var semesterData = this.context?.Semesters.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.StartDate == assignmentTypeAddViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeAddViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
+
+                                        if (semesterData != null)
+                                        {
+                                            var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear && x.SmstrMarkingPeriodId == semesterData.MarkingPeriodId).FirstOrDefault();
+
+                                            if (checkAssignmentTypeTitle != null)
+                                            {
+                                                assignmentTypeAddViewModel._failure = true;
+                                                assignmentTypeAddViewModel._message = "Title Already Exists";
+                                            }
+                                            else
+                                            {
+                                                assignmentTypeAddViewModel.assignmentType.SmstrMarkingPeriodId = semesterData.MarkingPeriodId;
+                                                assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
+                                                assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
+                                                this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
+                                                this.context?.SaveChanges();
+                                                assignmentTypeAddViewModel._failure = false;
+
+                                                assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var yearData = this.context?.SchoolYears.Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.StartDate == assignmentTypeAddViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeAddViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear).FirstOrDefault();
+
+                                            if (yearData != null)
+                                            {
+                                                var checkAssignmentTypeTitle = this.context?.AssignmentType.AsEnumerable().Where(x => x.SchoolId == assignmentTypeAddViewModel.assignmentType.SchoolId && x.TenantId == assignmentTypeAddViewModel.assignmentType.TenantId && x.CourseSectionId == assignmentTypeAddViewModel.assignmentType.CourseSectionId && String.Compare(x.Title, assignmentTypeAddViewModel.assignmentType.Title, true) == 0 && x.AcademicYear == assignmentTypeAddViewModel.assignmentType.AcademicYear && x.YrMarkingPeriodId == yearData.MarkingPeriodId).FirstOrDefault();
+
+                                                if (checkAssignmentTypeTitle != null)
+                                                {
+                                                    assignmentTypeAddViewModel._failure = true;
+                                                    assignmentTypeAddViewModel._message = "Title Already Exists";
+                                                }
+                                                else
+                                                {
+                                                    assignmentTypeAddViewModel.assignmentType.YrMarkingPeriodId = yearData.MarkingPeriodId;
+                                                    assignmentTypeAddViewModel.assignmentType.AssignmentTypeId = (int)assignmentTypeId;
+                                                    assignmentTypeAddViewModel.assignmentType.CreatedOn = DateTime.UtcNow;
+                                                    this.context?.AssignmentType.Add(assignmentTypeAddViewModel.assignmentType);
+                                                    this.context?.SaveChanges();
+                                                    assignmentTypeAddViewModel._failure = false;
+
+                                                    assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                assignmentTypeAddViewModel._failure = true;
+                                assignmentTypeAddViewModel._message = "Assignment can't be added in the course section for the selected marking period";
+                            }
+                        }
+                        else
+                        {
+                            assignmentTypeAddViewModel._failure = true;
+                            assignmentTypeAddViewModel._message = "Please send Marking Period Start Date and Marking Period End Date";
+                        }
+                    }
                 }
-
             }
             catch (Exception es)
             {
@@ -395,10 +531,48 @@ namespace opensis.data.Repository
                 int? totalWeightPercent = 0;
                 bool weightedGrades = false;
 
-                var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == assignmentTypeListViewModel.SchoolId && c.TenantId == assignmentTypeListViewModel.TenantId && c.CourseSectionId == assignmentTypeListViewModel.CourseSectionId && c.AcademicYear== assignmentTypeListViewModel.AcademicYear).ToList();
+                var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == assignmentTypeListViewModel.SchoolId && c.TenantId == assignmentTypeListViewModel.TenantId && c.CourseSectionId == assignmentTypeListViewModel.CourseSectionId && c.AcademicYear == assignmentTypeListViewModel.AcademicYear).ToList();
 
                 if (assignmentTypeList != null && assignmentTypeList.Any())
                 {
+
+                    if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
+                    {
+                        var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == assignmentTypeListViewModel.SchoolId && x.TenantId == assignmentTypeListViewModel.TenantId && x.StartDate == assignmentTypeListViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeListViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeListViewModel.AcademicYear).FirstOrDefault();
+
+                        if (progressPeriodsData != null)
+                        {
+                            assignmentTypeList = assignmentTypeList.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).ToList();
+                        }
+                    }
+                    if (assignmentTypeList.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                    {
+                        var quartersData = this.context?.Quarters.Where(x => x.SchoolId == assignmentTypeListViewModel.SchoolId && x.TenantId == assignmentTypeListViewModel.TenantId && x.StartDate == assignmentTypeListViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeListViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeListViewModel.AcademicYear).FirstOrDefault();
+
+                        if (quartersData != null)
+                        {
+                            assignmentTypeList = assignmentTypeList.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).ToList();
+                        }
+                    }
+                    if (assignmentTypeList.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                    {
+                        var semestersData = this.context?.Semesters.Where(x => x.SchoolId == assignmentTypeListViewModel.SchoolId && x.TenantId == assignmentTypeListViewModel.TenantId && x.StartDate == assignmentTypeListViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeListViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeListViewModel.AcademicYear).FirstOrDefault();
+
+                        if (semestersData != null)
+                        {
+                            assignmentTypeList = assignmentTypeList.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).ToList();
+                        }
+                    }
+                    if (assignmentTypeList.FirstOrDefault()!.YrMarkingPeriodId != null)
+                    {
+                        var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == assignmentTypeListViewModel.SchoolId && x.TenantId == assignmentTypeListViewModel.TenantId && x.StartDate == assignmentTypeListViewModel.MarkingPeriodStartDate && x.EndDate == assignmentTypeListViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentTypeListViewModel.AcademicYear).FirstOrDefault();
+
+                        if (yearsData != null)
+                        {
+                            assignmentTypeList = assignmentTypeList.Where(x => x.YrMarkingPeriodId == yearsData.MarkingPeriodId).ToList();
+                        }
+                    }
+
                     totalWeightPercent = assignmentTypeList.Select(c => c.Weightage).Sum();
 
                     var gradebookConfigurationData = this.context?.GradebookConfiguration.FirstOrDefault(e => e.SchoolId == assignmentTypeListViewModel.SchoolId && e.TenantId == assignmentTypeListViewModel.TenantId && e.CourseSectionId == assignmentTypeListViewModel.CourseSectionId);
@@ -514,7 +688,9 @@ namespace opensis.data.Repository
                             foreach (var courseSectionId in assignmentAddViewModel.courseSectionIds)
                             {
                                 //var checkAssignmentType = assignmentTypeDataList.FirstOrDefault(x => x.CourseSectionId == courseSectionId && x.Title.ToLower() == assignmentTypeData.Title.ToLower());
-                                var checkAssignmentType = assignmentTypeDataList.AsEnumerable().FirstOrDefault(x => x.CourseSectionId == courseSectionId && String.Compare(x.Title, assignmentTypeData.Title, true) == 0);
+
+
+                                var checkAssignmentType = assignmentTypeDataList.AsEnumerable().FirstOrDefault(x => x.CourseSectionId == courseSectionId && String.Compare(x.Title, assignmentTypeData.Title, true) == 0 && (assignmentTypeData.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == assignmentTypeData.PrgrsprdMarkingPeriodId || assignmentTypeData.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == assignmentTypeData.QtrMarkingPeriodId || assignmentTypeData.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == assignmentTypeData.SmstrMarkingPeriodId || assignmentTypeData.YrMarkingPeriodId != null && x.YrMarkingPeriodId == assignmentTypeData.YrMarkingPeriodId));
 
                                 if (checkAssignmentType != null)
                                 {
@@ -562,10 +738,15 @@ namespace opensis.data.Repository
                                         CourseSectionId = courseSectionId,
                                         Title = assignmentTypeData.Title,
                                         Weightage = assignmentTypeData.Weightage,
+                                        PrgrsprdMarkingPeriodId = assignmentTypeData.PrgrsprdMarkingPeriodId,
+                                        QtrMarkingPeriodId = assignmentTypeData.QtrMarkingPeriodId,
+                                        SmstrMarkingPeriodId = assignmentTypeData.SmstrMarkingPeriodId,
+                                        YrMarkingPeriodId = assignmentTypeData.YrMarkingPeriodId,
                                         CreatedBy = assignmentAddViewModel.assignment.CreatedBy,
                                         CreatedOn = DateTime.UtcNow
                                     };
                                     this.context?.AssignmentType.Add(assignmentTypeAdd);
+
                                     //this.context?.SaveChanges();
 
                                     var AssignmentDataAdd = new Assignment()
