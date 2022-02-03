@@ -117,8 +117,8 @@
                         <table>
                             <tr>
                                 <td class="student-logo width-140">
-                                    <div>
-                                        <img *ngIf="schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" [src]="'data:image/jpeg;base64,' + schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" alt="School Logo">
+                                    <div *ngIf="schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo">
+                                        <img [src]="'data:image/jpeg;base64,' + schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" alt="School Logo">
                                     </div>
                                 </td>
                                 <td class="school-details">
@@ -265,6 +265,27 @@
                                         </tbody>
                                     </table>
 
+                                    <table class="border-table" *ngIf="schoolDetail?.schoolMaster?.fieldsCategory[0]?.customFields?.length">
+                                        <tbody>
+                                            <tr>
+                                                <td *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[0]?.customFields">
+                                                    <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
+                                                    <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
+                                                        {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
+                                                    <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
+                                                        <mat-icon
+                                                            [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                                                            class="inline-block align-middle mr-1">
+                                                        </mat-icon>
+                                                    </p>
+                                                    <p *ngIf="customField?.type === 'Date'" class="f-s-16">
+                                                        {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
                                 </td>
                             </tr>
                         </table>
@@ -326,7 +347,7 @@
                                             <tr>
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5">{{'latitude' | translate}}, {{'longitude' | translate}} :</p>
-                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.latitude | EmtyValueCheckPipe}},{{schoolDetail?.schoolMaster?.longitude | EmtyValueCheckPipe}}</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.latitude | EmtyNumberCheckPipe}}, {{schoolDetail?.schoolMaster?.longitude | EmtyNumberCheckPipe}}</p>
                                                 </td>
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5"></p>
@@ -430,6 +451,27 @@
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5">{{'hygeneEducation' | translate}} :</p>
                                                     <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.hygeneEducation | EmtyValueCheckPipe}}</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="border-table" *ngIf="schoolDetail?.schoolMaster?.fieldsCategory[1]?.customFields?.length">
+                                        <tbody>
+                                            <tr>
+                                                <td *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[1]?.customFields">
+                                                    <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
+                                                    <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
+                                                        {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
+                                                    <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
+                                                        <mat-icon
+                                                            [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                                                            class="inline-block align-middle mr-1">
+                                                        </mat-icon>
+                                                    </p>
+                                                    <p *ngIf="customField?.type === 'Date'" class="f-s-16">
+                                                        {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
+                                                    </p>
                                                 </td>
                                             </tr>
                                         </tbody>

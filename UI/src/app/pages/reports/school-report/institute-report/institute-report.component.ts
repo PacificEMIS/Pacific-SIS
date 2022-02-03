@@ -248,8 +248,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
       return;
     }
     this.getSchoolReport().then((res: any) => {
-      this.generatedReportCardData = res;
-      this.generatedReportCardData?.schoolViewForReports?.map((item: any) => {
+      res?.schoolViewForReports?.map((item: any) => {
         item.schoolMaster.fieldsCategoryForPDF = [];
         item?.schoolMaster?.fieldsCategory?.map(subItem => {
           if (!subItem?.isSystemCategory && subItem?.customFields?.length) {
@@ -257,7 +256,24 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
           }
         });
       });
-      this.generatedReportCardData?.schoolViewForReports?.map((item: any) => {
+
+      res?.schoolViewForReports?.map((item: any) => {
+        item?.schoolMaster?.fieldsCategory?.map(subItem => {
+          if (subItem?.isSystemCategory && subItem?.customFields?.length) {
+            subItem?.customFields?.map(subOfSubItem => {
+              if (subOfSubItem?.customFieldsValue?.length) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.customFieldsValue[0].customFieldValue;
+              } else if (subOfSubItem?.defaultSelection) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.defaultSelection;
+              } else {
+                subOfSubItem.customFieldsValueForPDF = null;
+              }
+            });
+          }
+        });
+      });
+
+      res?.schoolViewForReports?.map((item: any) => {
         if (item?.schoolMaster?.fieldsCategoryForPDF?.length) {
           item?.schoolMaster?.fieldsCategoryForPDF.map(subItem => {
             subItem?.customFields?.map(subOfSubItem => {
@@ -272,6 +288,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
           });
         }
       });
+      this.generatedReportCardData = res;
       setTimeout(() => {
         this.generatePdf();
       }, 100 * this.generatedReportCardData?.schoolViewForReports?.length);
@@ -404,6 +421,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
               border: 1px solid rgb(136, 136, 136);
               border-radius: 3px;
               overflow: hidden;
+              min-height: 100px;
           }
           .student-logo img {
               width: 100%;
@@ -547,7 +565,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
           }
           .school-details {
               vertical-align: middle;
-              padding: 0 20px 0 10px;
+              padding: 20px 10;
           }
           .school-details table td {
               vertical-align: middle;
