@@ -155,6 +155,22 @@ namespace opensisAPI.Controllers
             return studentAttendanced;
         }
 
+        [HttpPost("getStudentAttendanceExcelReport")]
+        public ActionResult<StudentAttendanceReport> GetStudentAttendanceExcelReport(PageResult pageResult)
+        {
+            StudentAttendanceReport studentAttendanced = new();
+            try
+            {
+                studentAttendanced = _attendanceReportService.GetStudentAttendanceExcelReport(pageResult);
+            }
+            catch (Exception es)
+            {
+                studentAttendanced._failure = true;
+                studentAttendanced._message = es.Message;
+            }
+            return studentAttendanced;
+        }
+
 
         [HttpPost("scheduledCourseSectionList")]
         public ActionResult<ScheduleClassList> ScheduledCourseSectionList(ScheduleClassList courseSectionList)
