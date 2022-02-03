@@ -146,14 +146,14 @@ export class AverageDailyAttendanceComponent implements OnInit {
   }
 
   getAllAverageDailyAttendance() {
-
     // this.averageDailyAttendanceReportModel.markingPeriodStartDate = this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodStartDate())
     // this.averageDailyAttendanceReportModel.markingPeriodEndDate = this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodEndDate())
 
     this.attendenceService.getAverageDailyAttendanceReport(this.averageDailyAttendanceReportModel).subscribe(res => {
-      this.isVisible = true;
+      
       this.averageDailyAttendance = res;
       if (this.averageDailyAttendance._failure) {
+        this.isVisible = false;
         // if (this.averageDailyAttendance.averageDailyAttendanceReport === null) {
         //   this.averageDailyAttendanceTable = new MatTableDataSource([this.averageDailyAttendance.averageDailyAttendanceReport]);
         //   this.snackbar.open(this.averageDailyAttendance._message, '', {
@@ -168,6 +168,7 @@ export class AverageDailyAttendanceComponent implements OnInit {
         this.averageDailyAttendanceTable = new MatTableDataSource([this.averageDailyAttendance.averageDailyAttendanceReport])
         this.totalCount = 0;
       } else {
+        this.isVisible = true;
         this.totalCount = this.averageDailyAttendance.averageDailyAttendanceReport.length;
         /** This dataSet is for the the last Total object */
         /** This forIn is for remove all data from final object */
@@ -188,9 +189,9 @@ export class AverageDailyAttendanceComponent implements OnInit {
           this.excelDataSet.avgAttendance += val.avgAttendance
           this.excelDataSet.avgAbsent += val.avgAbsent
         })
-        this.excelDataSet.ada /= this.totalCount
-        this.excelDataSet.avgAttendance /= this.totalCount
-        this.excelDataSet.avgAbsent /= this.totalCount
+        this.excelDataSet.ada = +((this.excelDataSet.present/this.excelDataSet.attendancePossible)*100).toFixed(2)
+        this.excelDataSet.avgAttendance = +(this.excelDataSet.present/this.excelDataSet.attendancePossible).toFixed(2)
+        this.excelDataSet.avgAbsent = +(this.excelDataSet.absent/this.excelDataSet.attendancePossible).toFixed(2)
         /** dataSet End */
 
         this.averageDailyAttendance.averageDailyAttendanceReport.push(this.excelDataSet)
