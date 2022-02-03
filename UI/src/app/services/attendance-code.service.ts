@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { AttendanceCodeCategoryModel, AttendanceCodeModel, AttendanceCodeDragDropModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel } from '../models/attendance-code.model';
+import { AttendanceCodeCategoryModel, AttendanceCodeModel, AttendanceCodeDragDropModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel,AverageDailyAttendanceReportModel } from '../models/attendance-code.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -96,5 +96,14 @@ export class AttendanceCodeService {
     return this.http.post<AttendanceCodeDragDropModel>(apiurl, AttendanceCode, this.httpOptions);
   }
 
+  getAverageDailyAttendanceReport(AverageDailyAttendanceReport: AverageDailyAttendanceReportModel) {
+    AverageDailyAttendanceReport = this.defaultValuesService.getAllMandatoryVariable(AverageDailyAttendanceReport);
+    AverageDailyAttendanceReport.updatedBy = this.defaultValuesService.getUserGuidId();
+    AverageDailyAttendanceReport.schoolId=this.defaultValuesService.getSchoolID();
+    AverageDailyAttendanceReport.tenantId=this.defaultValuesService.getTenantID();
+    AverageDailyAttendanceReport.academicYear=this.defaultValuesService.getAcademicYear();
+    let apiurl = this.apiUrl + AverageDailyAttendanceReport._tenantName + "/Report/getAverageDailyAttendanceReport";
+    return this.http.post<AverageDailyAttendanceReportModel>(apiurl, AverageDailyAttendanceReport, this.httpOptions);
+  }
 
 }
