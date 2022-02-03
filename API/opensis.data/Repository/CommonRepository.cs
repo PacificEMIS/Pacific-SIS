@@ -1474,7 +1474,17 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData;
+
+                        if(scheduledCourseSectionViewModel.MarkingPeriodStartDate != null && scheduledCourseSectionViewModel.MarkingPeriodEndDate != null)
+                        {
+                            staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.CourseSection.DurationBasedOnPeriod == false || ((scheduledCourseSectionViewModel.MarkingPeriodStartDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodStartDate <= x.DurationEndDate) && (scheduledCourseSectionViewModel.MarkingPeriodEndDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodEndDate <= x.DurationEndDate))).ToList();
+                        }
+                        else
+                        {
+                            scheduledCourseSectionView._failure = true;
+                            scheduledCourseSectionView._message = "Please send Marking Period Start Date and Marking Period End Date";
+                            return scheduledCourseSectionView;
+                        }
                     }
                 }
                 else
