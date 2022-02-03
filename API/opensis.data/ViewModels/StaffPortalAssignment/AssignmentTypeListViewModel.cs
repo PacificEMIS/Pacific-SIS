@@ -18,5 +18,7 @@ namespace opensis.data.ViewModels.StaffPortalAssignment
         public int? TotalWeightage { get; set; }
         public bool? WeightedGrades { get; set; }
         public decimal? AcademicYear { get; set; }
+        public DateTime? MarkingPeriodStartDate { get; set; }
+        public DateTime? MarkingPeriodEndDate { get; set; }
     }
 }

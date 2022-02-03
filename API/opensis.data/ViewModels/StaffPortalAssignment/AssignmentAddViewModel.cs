@@ -13,5 +13,6 @@ namespace opensis.data.ViewModels.StaffPortalAssignment
         }
         public Assignment? assignment { get; set; }
         public List<int> courseSectionIds { get; set; }
+        public decimal? AcademicYear { get; set; }
     }
 }

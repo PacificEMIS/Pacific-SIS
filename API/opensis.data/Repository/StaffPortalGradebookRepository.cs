@@ -282,9 +282,9 @@ namespace opensis.data.Repository
                     var courseSectionData = this.context?.CourseSection.Where(x => x.TenantId == finalGradingMarkingPeriodList.TenantId && x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.CourseSectionId == finalGradingMarkingPeriodList.CourseSectionId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
                     if (courseSectionData != null)
                     {
-                        if (courseSectionData.YrMarkingPeriodId != null)
+                        if (courseSectionData.YrMarkingPeriodId != null || courseSectionData.DurationBasedOnPeriod == false)
                         {
-                            var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && x.MarkingPeriodId == courseSectionData.YrMarkingPeriodId).FirstOrDefault();
+                            var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
 
                             if (markingPeriodDataList != null)
                             {
