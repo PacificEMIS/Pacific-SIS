@@ -2,6 +2,8 @@ import { CommonField } from "./common-field.model";
 
 export class AddAssignmentTypeModel extends CommonField{
     assignmentType: AssignmentType;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
     constructor(){
         super();
         this.assignmentType = new AssignmentType();
@@ -29,6 +31,8 @@ export class GetAllAssignmentsModel extends CommonField{
     courseSectionId: number;
     totalWeightage: number;
     academicYear: number;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
     constructor(){
         super();
     }
