@@ -107,7 +107,7 @@
 
             <ng-container matColumnDef="ada">
                 <th mat-header-cell *matHeaderCellDef>{{'ada' | translate }}</th>
-                <td mat-cell *matCellDef="let element;let i = index" [ngClass]="i == totalCount ? 'bg-base font-bold':''"> {{ element.ada}} </td>
+                <td mat-cell *matCellDef="let element;let i = index" [ngClass]="i == totalCount ? 'bg-base font-bold':''"> {{ element.ada}}{{'%'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="avgAttendance">
