@@ -1598,6 +1598,8 @@
     "instituteReport" : "Institute Report",
     "homeAddressState":"State/Province/Locality(Home)",
     "mailingAddressState":"State/Province/Locality(Mailing)",
+    "includeOnlyCoursesActiveAsOf": "Include only courses active as of",
+    "contact": "Contact",
+    "wash": "WASH",
     "others":"Others",
-    "includeOnlyCoursesActiveAsOf": "Include only courses active as of"
 }

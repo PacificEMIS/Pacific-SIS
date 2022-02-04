@@ -17,6 +17,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { GetSchoolReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import icCheckboxChecked from '@iconify/icons-ic/check-box';
+import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 
 @Component({
   selector: 'vex-institute-report',
@@ -26,6 +28,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewInit {
   icListAlt = icListAlt;
   icAccountBalance = icAccountBalance;
+  icCheckboxChecked = icCheckboxChecked;
+  icCheckboxUnchecked = icCheckboxUnchecked;
   displayedColumns: string[] = ['schoolCheck', 'schoolName', 'address', 'state', 'principal', 'phone'];
   getAllSchoolModel: GetAllSchoolModel = new GetAllSchoolModel();
   getSchoolReportModel: GetSchoolReportModel = new GetSchoolReportModel();
@@ -244,6 +248,46 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
       return;
     }
     this.getSchoolReport().then((res: any) => {
+      res?.schoolViewForReports?.map((item: any) => {
+        item.schoolMaster.fieldsCategoryForPDF = [];
+        item?.schoolMaster?.fieldsCategory?.map(subItem => {
+          if (!subItem?.isSystemCategory && subItem?.customFields?.length) {
+            item.schoolMaster.fieldsCategoryForPDF.push(subItem);
+          }
+        });
+      });
+
+      res?.schoolViewForReports?.map((item: any) => {
+        item?.schoolMaster?.fieldsCategory?.map(subItem => {
+          if (subItem?.isSystemCategory && subItem?.customFields?.length) {
+            subItem?.customFields?.map(subOfSubItem => {
+              if (subOfSubItem?.customFieldsValue?.length) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.customFieldsValue[0].customFieldValue;
+              } else if (subOfSubItem?.defaultSelection) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.defaultSelection;
+              } else {
+                subOfSubItem.customFieldsValueForPDF = null;
+              }
+            });
+          }
+        });
+      });
+
+      res?.schoolViewForReports?.map((item: any) => {
+        if (item?.schoolMaster?.fieldsCategoryForPDF?.length) {
+          item?.schoolMaster?.fieldsCategoryForPDF.map(subItem => {
+            subItem?.customFields?.map(subOfSubItem => {
+              if (subOfSubItem?.customFieldsValue?.length) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.customFieldsValue[0].customFieldValue;
+              } else if (subOfSubItem?.defaultSelection) {
+                subOfSubItem.customFieldsValueForPDF = subOfSubItem?.defaultSelection;
+              } else {
+                subOfSubItem.customFieldsValueForPDF = null;
+              }
+            });
+          });
+        }
+      });
       this.generatedReportCardData = res;
       setTimeout(() => {
         this.generatePdf();
@@ -377,6 +421,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
               border: 1px solid rgb(136, 136, 136);
               border-radius: 3px;
               overflow: hidden;
+              min-height: 100px;
           }
           .student-logo img {
               width: 100%;
@@ -520,7 +565,7 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
           }
           .school-details {
               vertical-align: middle;
-              padding: 0 20px 0 10px;
+              padding: 20px 10;
           }
           .school-details table td {
               vertical-align: middle;
