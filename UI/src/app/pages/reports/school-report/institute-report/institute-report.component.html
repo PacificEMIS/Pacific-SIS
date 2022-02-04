@@ -594,9 +594,10 @@
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
-                                        <tbody>
-                                            <tr>
-                                                <td *ngFor="let customField of customCategory?.customFields; let i = index;">
+                                        <ng-container *ngFor="let customField of customCategory?.customFields; let i = index;">
+                                            <tr *ngIf="i === 0 || i%3 === 0">
+                                                <ng-container *ngFor="let customField of customCategory?.customFields; let j = index;">
+                                                <td *ngIf="j >= i && j <= i+2">
                                                     <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
                                                     <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
                                                         {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
