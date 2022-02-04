@@ -42,6 +42,8 @@ export class DasboardService {
   }
   getDashboardViewForStaff(obj: ScheduledCourseSectionViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getDashboardViewForStaff";
     return this.http.post<ScheduledCourseSectionViewModel>(apiurl, obj,this.httpOptions)
   }
