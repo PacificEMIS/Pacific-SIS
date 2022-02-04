@@ -96,6 +96,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   categoryId = 1;
   defaultSchoolId: number=0;
   destroySubject$: Subject<void> = new Subject();
+  today : Date
   
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
@@ -112,6 +113,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     ) {
     //translateService.use('en');
+    this.today = new Date()
   }
 
   ngOnInit(): void {

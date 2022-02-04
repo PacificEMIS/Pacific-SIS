@@ -97,7 +97,7 @@
                                     <mat-form-field class="w-full" appearance="outline" color="primary">
                                         <mat-label>{{'school'|translate}}</mat-label>
                                         <mat-select #school="ngModel"  (selectionChange)="onSchoolChange($event.value,i)" name="{{'school'+i}}" 
-                                        [disabled]="(staffSchoolInfoModel.staffSchoolInfoList[i]?.id!=null || staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide || isReadOnly) && staffSchoolInfoModel?.staffSchoolInfoList[i]?.schoolId !== +staffSchoolInfoModel?.staffSchoolInfoList[i]?.schoolAttachedId" required 
+                                        [disabled]="(staffSchoolInfoModel.staffSchoolInfoList[i]?.id!=null || staffSchoolInfoModel?.staffSchoolInfoList[i]?.hide || isReadOnly) && staffSchoolInfoModel?.staffSchoolInfoList[i]?.schoolId !== +staffSchoolInfoModel?.staffSchoolInfoList[i]?.schoolAttachedId || (this.staffSchoolInfoModel.staffSchoolInfoList[i].startDate != null && this.staffSchoolInfoModel.staffSchoolInfoList[i].endDate < today)" required 
                                         [(ngModel)]="staffSchoolInfoModel.staffSchoolInfoList[i].schoolAttachedId">
                                             <mat-option *ngFor="let school of getSchoolList.schoolMaster" value={{school.schoolId}}
                                             [disabled]="selectedSchoolId.includes(+school.schoolId)">{{school.schoolName}}</mat-option>
