@@ -1,12 +1,13 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="card overflow-auto">
-    <div class="card -mt-16">
+    <div class="card -mt-30">
         <div class="flex justify-between items-center px-4">
             <div class="flex items-center py-4">
                 <a [routerLink]="['/school', 'staff', 'teacher-functions', 'missing-attendance' , 'missing-attendance-details']" class="cursor-pointer">
                     <mat-icon class="ml-1 mr-4 align-middle text-blue">west</mat-icon>
                 </a>
-                <span class="font-medium text-lg">{{staffDetails?.staffFullName}} / {{staffDetails?.courseSectionName}} - {{staffDetails?.periodTitle}}</span>
+                <!-- <span class="font-medium text-lg">{{staffDetails?.staffFullName}} / {{staffDetails?.courseSectionName}} - {{staffDetails?.periodTitle}}</span> -->
+                <span class="font-medium text-lg">{{staffDetails?.staffFullName}}</span>
             </div>
             <div>
                 <h4 class="">{{scheduleStudentListViewModel?.scheduleStudentForView?.length}} {{ 'studentsFound' | translate }}</h4>
