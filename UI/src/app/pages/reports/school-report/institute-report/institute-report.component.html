@@ -595,7 +595,7 @@
                                 <td class="student-details">
                                     <table class="border-table">
                                         <ng-container *ngFor="let customField of customCategory?.customFields; let i = index;">
-                                            <tr *ngIf="i === 0 || (i+1)%3 === 0">
+                                            <tr *ngIf="i === 0 || i%3 === 0">
                                                 <ng-container *ngFor="let customField of customCategory?.customFields; let j = index;">
                                                 <td *ngIf="j >= i && j <= i+2">
                                                     <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
