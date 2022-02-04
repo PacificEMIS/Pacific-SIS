@@ -440,40 +440,23 @@ namespace opensis.data.Repository
 
                     var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == gradebookGradeListViewModel.AcademicYear && x.BreakoffPoints > 0).ToList();
 
-                    var AssignmentTypeData = this.context?.AssignmentType.Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == gradebookGradeListViewModel.AcademicYear);
+                    var AssignmentTypeIdList = gradebookGradeListViewModel.assignmentsListViewModels.ToList().Select(x => x.AssignmentTypeId).Distinct();
+
+                    var AssignmentTypeData = this.context?.AssignmentType.Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == gradebookGradeListViewModel.AcademicYear && AssignmentTypeIdList.Contains(x.AssignmentTypeId));
 
                     int? YrMarkingPeriodId = null;
                     int? SmstrMarkingPeriodId = null;
                     int? QtrMarkingPeriodId = null;
                     int? PrgrsprdMarkingPeriodId = null;
 
-                    if (gradebookGradeListViewModel.MarkingPeriodId != null)
+                    if (AssignmentTypeData?.Any() == true)
                     {
-                        string[] markingPeriodID = gradebookGradeListViewModel.MarkingPeriodId.Split("_");
-
-                        if (markingPeriodID.First() == "0")
-                        {
-                            YrMarkingPeriodId = Convert.ToInt32(markingPeriodID[1]);
-                        }
-
-                        if (markingPeriodID.First() == "1")
-                        {
-                            SmstrMarkingPeriodId = Convert.ToInt32(markingPeriodID[1]);
-                        }
-
-                        if (markingPeriodID.First() == "2")
-                        {
-                            QtrMarkingPeriodId = Convert.ToInt32(markingPeriodID[1]);
-                        }
-
-                        if (markingPeriodID.First() == "3")
-                        {
-                            PrgrsprdMarkingPeriodId = Convert.ToInt32(markingPeriodID[1]);
-                        }
+                        YrMarkingPeriodId = AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId;
+                        SmstrMarkingPeriodId = AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId;
+                        QtrMarkingPeriodId = AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId;
+                        PrgrsprdMarkingPeriodId = AssignmentTypeData.FirstOrDefault()!.PrgrsprdMarkingPeriodId;
                     }
 
-
-                    var AssignmentTypeIdList = gradebookGradeListViewModel.assignmentsListViewModels.ToList().Select(x => x.AssignmentTypeId).Distinct();
                     //var studentIds = gradebookGradeListViewModel.assignmentsListViewModels.FirstOrDefault().studentsListViewModels.Select(x => x.StudentId).ToList();
                     var studentIds = gradebookGradeListViewModel.assignmentsListViewModels.FirstOrDefault()!.studentsListViewModels.Select(x => x.StudentId).ToList();
 
@@ -481,9 +464,9 @@ namespace opensis.data.Repository
                     {
                         List<GradebookGrades> GradebookGradeList = new();
 
-                        var GradebookGradeData = this.context?.GradebookGrades.Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId /*&& x.MarkingPeriodId == gradebookGradeListViewModel.MarkingPeriodId*/ && x.AcademicYear == gradebookGradeListViewModel.AcademicYear && x.StudentId == studentId).ToList();
+                        var GradebookGradeData = this.context?.GradebookGrades.Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId /*&& x.MarkingPeriodId == gradebookGradeListViewModel.MarkingPeriodId*/ && x.AcademicYear == gradebookGradeListViewModel.AcademicYear && x.StudentId == studentId && (PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId || QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId || SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId || YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId)).ToList();
 
-                        if (GradebookGradeData!=null&& GradebookGradeData.Any())
+                        if (GradebookGradeData != null && GradebookGradeData.Any())
                         {
                             this.context?.GradebookGrades.RemoveRange(GradebookGradeData);
                             this.context?.SaveChanges();
@@ -581,7 +564,7 @@ namespace opensis.data.Repository
                         }
                         GradebookGradeList.ForEach(x => { x.RunningAvg = (Math.Round((decimal)runingAvgSum, 2).ToString()); x.RunningAvgGrade = runningGrade; });
                         this.context?.GradebookGrades.AddRange(GradebookGradeList);
-                        this.context?.SaveChanges();                        
+                        this.context?.SaveChanges();
                     }
                     transaction?.Commit();
                     gradebookGradeListViewModel._message = "Data Submitted Successfully";
@@ -614,13 +597,51 @@ namespace opensis.data.Repository
                 gradebookGradeList._tenantName = gradebookGradeListViewModel._tenantName;
                 gradebookGradeList._token = gradebookGradeListViewModel._token;
 
-                var AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId);
+                var AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).ToList();
 
                 var studentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Include(x => x.StudentMaster).ThenInclude(x => x.GradebookGrades).Where(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == gradebookGradeListViewModel.AcademicYear && (gradebookGradeListViewModel.IncludeInactive == false || gradebookGradeListViewModel.IncludeInactive == null ? x.IsDropped != true : true)).ToList();
-                if (studentCoursesectionScheduleData!=null && studentCoursesectionScheduleData.Any())
+                if (studentCoursesectionScheduleData != null && studentCoursesectionScheduleData.Any())
                 {
-                    if (AssignmentTypeData?.Any()==true)
+                    //Fetch Assignment Type By Marking Period
+                    if (AssignmentTypeData?.Any() == true)
                     {
+                        if (AssignmentTypeData.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
+                        {
+                            var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
+
+                            if (progressPeriodsData != null)
+                            {
+                                AssignmentTypeData = AssignmentTypeData.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).ToList();
+                            }
+                        }
+                        if (AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                        {
+                            var quartersData = this.context?.Quarters.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
+
+                            if (quartersData != null)
+                            {
+                                AssignmentTypeData = AssignmentTypeData.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).ToList();
+                            }
+                        }
+                        if (AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                        {
+                            var semestersData = this.context?.Semesters.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
+
+                            if (semestersData != null)
+                            {
+                                AssignmentTypeData = AssignmentTypeData.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).ToList();
+                            }
+                        }
+                        if (AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId != null)
+                        {
+                            var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
+
+                            if (yearsData != null)
+                            {
+                                AssignmentTypeData = AssignmentTypeData.Where(x => x.YrMarkingPeriodId == yearsData.MarkingPeriodId).ToList();
+                            }
+                        }
+
                         foreach (var AssignmentType in AssignmentTypeData)
                         {
                             foreach (var Assignment in AssignmentType.Assignment)
@@ -710,7 +731,7 @@ namespace opensis.data.Repository
                     gradebookGradeList._message = NORECORDFOUND;
                 }
             }
-            catch(Exception es)
+            catch (Exception es)
             {
                 gradebookGradeList._failure = true;
                 gradebookGradeList._message = es.Message;
