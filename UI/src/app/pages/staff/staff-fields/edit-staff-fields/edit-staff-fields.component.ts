@@ -203,13 +203,18 @@ export class EditStaffFieldsComponent implements OnInit {
   }
   
   checkFieldType(event) {
-    if(event.value === "Checkbox") {
-      this.form.controls.defaultSelection.setValidators([Validators.required]);
-      this.form.controls.defaultSelection.updateValueAndValidity();
-    } else {
-      this.form.controls.defaultSelection.clearValidators();
-      this.form.controls.defaultSelection.updateValueAndValidity();
+    let selectedValue;
+    if (selectedValue != event.value) {
+      this.form.controls.defaultSelection.setValue('');
+      if (event.value === "Checkbox") {
+        this.form.controls.defaultSelection.setValidators([Validators.required]);
+        this.form.controls.defaultSelection.updateValueAndValidity();
+      } else {
+        this.form.controls.defaultSelection.clearValidators();
+        this.form.controls.defaultSelection.updateValueAndValidity();
+      }
     }
+    selectedValue = event.value;
   }
   
 }

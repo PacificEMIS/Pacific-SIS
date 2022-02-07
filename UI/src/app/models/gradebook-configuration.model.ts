@@ -150,4 +150,6 @@ export class FinalGradingMarkingPeriodList extends CommonField{
     quarters: TableQuarter[];
     semesters: TableSchoolSemester[];
     schoolYears: TableSchoolYear;
+    courseSectionId: number;
+    isConfiguration: boolean;
 }
