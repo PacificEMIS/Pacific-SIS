@@ -67,9 +67,10 @@
             <div class="cal-cell-top">
               <div class="flex justify-between items-center mx-3 mt-2">
                 <!-- <span class="cal-day-badge hidden md:inline-block" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
-                <div *ngIf="periodList.length > 1 && !day.isWeekend && this.defaultValuesService.checkAcademicYear() &&  permissions?.edit && userType !='Teacher' && userType !='Homeroom Teacher'"
+                <div *ngIf="periodList.length > 1 && !day.isWeekend && this.defaultValuesService.checkAcademicYear()"
                   class="select-container bg-white border  rounded p-2">
-                  <mat-select (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
+                  <p *ngIf="userType =='Teacher' || userType =='Homeroom Teacher'">{{day.blockTitle}}</p>
+                  <mat-select *ngIf=" userType !='Teacher' && userType !='Homeroom Teacher'" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
                     [value]="day.blockId ? day.blockId : 1">
                     <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
                   </mat-select>
@@ -109,9 +110,10 @@
                 <b>{{header?.date | date : 'EEEE'}}</b>
                 <span>{{header?.date | date : 'MMMM d'}}</span>
               </div>
-              <div *ngIf="periodList.length > 1 && !header.isWeekend && permissions?.edit && userType !='Teacher' && userType !='Homeroom Teacher'"
+              <div *ngIf="periodList.length > 1 && !header.isWeekend"
                 class="bg-white border border-gray-light rounded px-2 py-1">
-                <mat-select (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, header)"
+                <p *ngIf="userType =='Teacher' || userType =='Homeroom Teacher'">{{header.blockTitle}}</p>
+                <mat-select *ngIf=" userType !='Teacher' && userType !='Homeroom Teacher'" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, header)"
                   [value]="header.blockId ? header.blockId : 1">
                   <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
                 </mat-select>
