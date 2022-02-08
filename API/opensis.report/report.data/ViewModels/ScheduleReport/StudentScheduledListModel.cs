@@ -13,6 +13,7 @@ namespace opensis.report.report.data.ViewModels.ScheduleReport
         public int SchoolId { get; set; }
         public List<CourseIds>? courseIds { get; set; }
         public List<CourseSectionForStaff>? courseSectionForStaffs { get; set; }
+        public int? TotalStudents { get; set; }
     }
     public class CourseIds
     {
