@@ -45,7 +45,6 @@ namespace opensis.data.Models
         public string? LetterGrade { get; set; }
         public decimal? GpValue { get; set; }
         public bool? CalculateGpa { get; set; }
-        public bool? WeightedGp { get; set; }
         public decimal? GradeScale { get; set; }
         public decimal? CreditAttempted { get; set; }
         public decimal? CreditEarned { get; set; }
@@ -53,6 +52,7 @@ namespace opensis.data.Models
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public string? CourseType { get; set; }
         [ValidateNever]
         public virtual HistoricalGrade HistoricalGrade { get; set; } = null!;
     }
