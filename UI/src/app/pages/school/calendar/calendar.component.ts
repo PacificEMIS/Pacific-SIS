@@ -46,7 +46,7 @@ import { MembershipService } from '../../../services/membership.service';
 import { CalendarEventService } from '../../../services/calendar-event.service';
 import { CalendarEventAddViewModel, CalendarEventListViewModel, CalendarEventModel } from '../../../models/calendar-event.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { find, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
@@ -124,6 +124,7 @@ export class CalendarComponent implements OnInit {
   weekHeader;
   valueSetCount: number;
   userType : string
+    // selectedBlockTitle : string
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -158,7 +159,7 @@ export class CalendarComponent implements OnInit {
       }
     )
     // getting membershipType from session storage
-    const userType = sessionStorage.getItem('membershipType');
+    this.userType = this.defaultValuesService.getUserMembershipType()
   }
 
   ngOnInit(): void {
@@ -351,9 +352,11 @@ export class CalendarComponent implements OnInit {
         this.bellScheduleList.map((item) => {
           if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
             day.blockId = item.blockId;
+            this.findDayBlockTitle(day, item.blockId)
           } else {
             if (!day.blockId) {
               day.blockId = "";
+              day.blockTitle = "All Day"
             }
           }
         });
@@ -368,9 +371,11 @@ export class CalendarComponent implements OnInit {
         this.bellScheduleList.map((item) => {
           if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
             day.blockId = item.blockId;
+            this.findWeekBlockTitle(day, item.blockId)
           } else {
             if (!day.blockId) {
               day.blockId = "";
+              day.blockTitle = "All Day"
             }
           }
         });
@@ -378,7 +383,21 @@ export class CalendarComponent implements OnInit {
     })
   }
 
-
+  findDayBlockTitle(day: any, blockId : number) {
+    this.periodList.forEach(item=>{
+      if (blockId == item.blockId) {
+        day.blockTitle = item.blockTitle
+      }
+    }) 
+  }
+  
+  findWeekBlockTitle(day: any, blockId : number) {
+    this.periodList.forEach(item=>{
+      if (blockId == item.blockId) {
+        day.blockTitle = item.blockTitle
+      }
+    }) 
+  }
 
   // open event modal for view
   viewEvent(eventData) {    
