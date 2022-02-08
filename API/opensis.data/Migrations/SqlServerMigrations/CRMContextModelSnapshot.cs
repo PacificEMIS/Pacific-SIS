@@ -3972,6 +3972,10 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("assignment_sorting");
 
+                    b.Property<bool?>("ConfigUpdateFlag")
+                        .HasColumnType("bit")
+                        .HasColumnName("config_update_flag");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
@@ -5014,6 +5018,11 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(150)")
                         .HasColumnName("course_name");
 
+                    b.Property<string>("CourseType")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("course_type");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
@@ -5059,10 +5068,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
-
-                    b.Property<bool?>("WeightedGp")
-                        .HasColumnType("bit")
-                        .HasColumnName("weighted_gp");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "HistGradeId", "HistMarkingPeriodId", "CreditTransferId")
                         .HasName("PK_historical_credit_transfer_tenant_id");
