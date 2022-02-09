@@ -39,7 +39,7 @@ import { StudentScheduleService } from '../../../../../services/student-schedule
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
 import { MarkingPeriodService } from '../../../../../services/marking-period.service';
 import { Router } from '@angular/router';
-import { AddUpdateStudentFinalGradeModel, StudentFinalGrade, StudentFinalGradeStandard } from '../../../../../models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetGradebookGradeinFinalGradeModel, StudentFinalGrade, StudentFinalGradeStandard } from '../../../../../models/student-final-grade.model';
 import { ReportCardService } from '../../../../../services/report-card.service';
 import { GetAllCourseCommentCategoryModel } from '../../../../../models/report-card.model';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
@@ -111,6 +111,7 @@ export class GradeDetailsComponent implements OnInit {
   isPercent: boolean = false;
   studentMasterList: ScheduleStudentForView[];
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
+  getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -364,6 +365,36 @@ export class GradeDetailsComponent implements OnInit {
   inActiveStudent(value) {
   }
 
+  getGradeBookGrades() {
+    this.getGradebookGradeinFinalGradeModel.courseSectionId = this.addUpdateStudentFinalGradeModel.courseSectionId;
+    this.getGradebookGradeinFinalGradeModel.markingPeriodId = this.addUpdateStudentFinalGradeModel.markingPeriodId;
+
+    this.finalGradeService.getGradebookGradeinFinalGrade(this.getGradebookGradeinFinalGradeModel).subscribe((res: any) => {
+      if (res) {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open(res._message, '', {
+          duration: 10000
+        });      
+        } else {
+          res.studentWithGradeBookViewModelList.map((item)=>{
+            this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((subItem)=>{
+              if(subItem.studentId === item.studentId) {
+                subItem.percentMarks = item.percentage;
+                subItem.gradeObtained = item?.grade?.trim()?.length > 0 ? item.grade : null;
+              }
+            })
+          })
+        }
+      }
+      else {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+  
   selectedCourseSection(courseSection) {
 
     this.getAllMarkingPeriodByCourseSection(courseSection)
