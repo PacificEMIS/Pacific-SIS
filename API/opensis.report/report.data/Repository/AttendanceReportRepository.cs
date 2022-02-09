@@ -66,9 +66,9 @@ namespace opensis.report.report.data.Repository
                                 administrationViewModel.AttendanceDate = date;
                                 administrationViewModel.StudentInternalId = attendance.StudentCoursesectionSchedule.StudentMaster.StudentInternalId;
                                 administrationViewModel.StudentGuid = attendance.StudentCoursesectionSchedule.StudentMaster.StudentGuid;
-                                administrationViewModel.FirstGivenName = attendance.StudentCoursesectionSchedule.StudentMaster.FirstGivenName;
-                                administrationViewModel.MiddleName = attendance.StudentCoursesectionSchedule.StudentMaster.MiddleName;
-                                administrationViewModel.LastFamilyName = attendance.StudentCoursesectionSchedule.StudentMaster.LastFamilyName;
+                                administrationViewModel.FirstGivenName = attendance.StudentCoursesectionSchedule.FirstGivenName;
+                                administrationViewModel.MiddleName = attendance.StudentCoursesectionSchedule.MiddleName;
+                                administrationViewModel.LastFamilyName = attendance.StudentCoursesectionSchedule.LastFamilyName;
                                 administrationViewModel.GradeLevelTitle = attendance.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
 
                             }
@@ -132,6 +132,8 @@ namespace opensis.report.report.data.Repository
                         else
                         {
                             studentAttendanceList.TotalCount = 0;
+                            studentAttendanceList._failure = true;
+                            studentAttendanceList._message = NORECORDFOUND;
                         }
                     }
                     else
@@ -139,6 +141,11 @@ namespace opensis.report.report.data.Repository
                         studentAttendanceList._failure = true;
                         studentAttendanceList._message = NORECORDFOUND;
                     }
+                }
+                else
+                {
+                    studentAttendanceList._failure = true;
+                    studentAttendanceList._message = NORECORDFOUND;
                 }
             }
             catch (Exception es)
