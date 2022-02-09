@@ -15,7 +15,7 @@
     <mat-divider class=""></mat-divider>
     <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 col-gap-4 row-gap-2 mt-4 mx-gutter">
         <li>
-            <button
+            <button (click)="getGradeBookGrades()" [ngClass]="{'opacity-75 cursor-not-allowed': addUpdateStudentFinalGradeModel?.isExamGrade || !this.addUpdateStudentFinalGradeModel.courseSectionId || !this.addUpdateStudentFinalGradeModel.markingPeriodId}" [disabled]="addUpdateStudentFinalGradeModel?.isExamGrade"
                 class="flex items-center h-12 w-full btn cursor-pointer bg-primary text-white p-2 rounded font-medium">
                 <mat-icon class="mr-2">move_to_inbox</mat-icon><span>{{ "getGradebookGrades" | translate
                     }}</span>

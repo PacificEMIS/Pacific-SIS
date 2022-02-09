@@ -37,7 +37,7 @@ import { CourseStandardForCourseViewModel } from 'src/app/models/course-manager.
 import { GradeScaleListView } from 'src/app/models/grades.model';
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { GetAllCourseCommentCategoryModel } from 'src/app/models/report-card.model';
-import { AddUpdateStudentFinalGradeModel, StudentFinalGrade } from 'src/app/models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetGradebookGradeinFinalGradeModel, StudentFinalGrade } from 'src/app/models/student-final-grade.model';
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { AllScheduledCourseSectionForStaffModel } from 'src/app/models/teacher-schedule.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -111,8 +111,7 @@ export class InputFinalGradesComponent implements OnInit {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   courseSection: any;
-
-  
+  getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
 
   constructor(
     public translateService: TranslateService,
@@ -549,6 +548,36 @@ export class InputFinalGradesComponent implements OnInit {
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+        }
+      }
+      else {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+  
+  getGradeBookGrades() {
+    this.getGradebookGradeinFinalGradeModel.courseSectionId = this.addUpdateStudentFinalGradeModel.courseSectionId;
+    this.getGradebookGradeinFinalGradeModel.markingPeriodId = this.addUpdateStudentFinalGradeModel.markingPeriodId;
+
+    this.finalGradeService.getGradebookGradeinFinalGrade(this.getGradebookGradeinFinalGradeModel).subscribe((res: any) => {
+      if (res) {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open(res._message, '', {
+          duration: 10000
+        });      
+        } else {
+          res.studentWithGradeBookViewModelList.map((item)=>{
+            this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((subItem)=>{
+              if(subItem.studentId === item.studentId) {
+                subItem.percentMarks = item.percentage;
+                subItem.gradeObtained = item?.grade?.trim()?.length > 0 ? item.grade : null;
+              }
+            })
+          })
         }
       }
       else {
