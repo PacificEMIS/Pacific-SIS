@@ -253,19 +253,43 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        //var userData = this.context?.StaffMaster.Where(x => x.TenantId == user.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
-                        var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
+                        var staffDefaultData = this.context?.StaffMaster.Where(x => x.TenantId == objModel.TenantId && x.LoginEmailAddress == objModel.Email).Select(g => new StaffMaster()
                         {
-                            StaffPhoto = x.StaffPhoto,
-                            FirstGivenName = x.FirstGivenName,
-                            StaffGuid = x.StaffGuid,
+                            StaffId = g.StaffId,
+                            SchoolId = g.SchoolId,
                         }).FirstOrDefault();
 
-                        if (userData != null)
+                        var userEndDate = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == staffDefaultData!.SchoolId && x.StaffId == staffDefaultData.StaffId).Select(x => x.EndDate).FirstOrDefault();
+
+                        if (userEndDate >= DateTime.UtcNow.Date || userEndDate == null)
                         {
-                            ReturnModel.UserPhoto = userData.StaffPhoto;
-                            ReturnModel.FirstGivenName = userData.FirstGivenName;
-                            ReturnModel.UserGuid = userData.StaffGuid.ToString();
+                            var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
+                            {
+                                StaffPhoto = x.StaffPhoto,
+                                FirstGivenName = x.FirstGivenName,
+                                StaffGuid = x.StaffGuid,
+                            }).FirstOrDefault();
+
+                            if (userData != null)
+                            {
+                                ReturnModel.UserPhoto = userData.StaffPhoto;
+                                ReturnModel.FirstGivenName = userData.FirstGivenName;
+                                ReturnModel.UserGuid = userData.StaffGuid.ToString();
+                            }
+                        }
+                        else
+                        {
+                            ReturnModel.UserId = user?.UserId;
+                            ReturnModel.TenantId = user?.TenantId;
+                            ReturnModel.Email = user?.EmailAddress;
+                            ReturnModel.Name = user?.Name;
+                            ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
+                            ReturnModel.MembershipName = user?.Membership.Profile;
+                            ReturnModel.MembershipType = user?.Membership.ProfileType;
+                            ReturnModel.MembershipId = user?.Membership.MembershipId;
+                            ReturnModel._failure = true;
+                            ReturnModel._message = "You are not longer member please contact to Administrator";
+                            return ReturnModel;
                         }
                     }
 
