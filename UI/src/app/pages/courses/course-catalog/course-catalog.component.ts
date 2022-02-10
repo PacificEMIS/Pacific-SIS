@@ -46,7 +46,7 @@ export class CourseCatalogComponent implements OnInit {
   courseSectionDetailsListForPDF;
   weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   mDays: any;
- 
+  newCourseDataSet:any=[];
 
   constructor(
     private gradesService: GradesService,
@@ -368,6 +368,13 @@ export class CourseCatalogComponent implements OnInit {
         this.courseWithCourseSectionDetails = data.courseWithCourseSectionDetailsViewModels;
         for (let course of this.courseWithCourseSectionDetails) {
           this.courseSectionDetailsList =this.createTableDataset(course.getCourseSectionForView);
+          let item=[]
+          this.courseSectionDetailsList.map(x=>{
+           if(x.courseId===course.courseId){
+            item.push(x);
+           }
+          })
+          this.newCourseDataSet.push(item)
         }
       }
     });

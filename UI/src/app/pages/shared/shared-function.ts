@@ -139,4 +139,14 @@ export class SharedFunction {
     }
 
   }
+
+
+  formatDateYearAtLast(date){
+    if (date === undefined || date === null) {
+      return undefined;
+    } else {
+      let dt = moment(date).format('DD-MMM-YYYY');
+      return dt;
+    }
+  }
 }
