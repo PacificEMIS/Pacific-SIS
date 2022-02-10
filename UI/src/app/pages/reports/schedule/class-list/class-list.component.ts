@@ -1,4 +1,29 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+/***********************************************************************************
+openSIS is a free student information system for public and non-public
+schools from Open Solutions for Education, Inc.Website: www.os4ed.com.
+
+Visit the openSIS product website at https://opensis.com to learn more.
+If you have question regarding this software or the license, please contact
+via the website.
+
+The software is released under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, version 3 of the License.
+See https://www.gnu.org/licenses/agpl-3.0.en.html.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Copyright (c) Open Solutions for Education, Inc.
+
+All rights reserved.
+***********************************************************************************/
+
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icPrint from '@iconify/icons-ic/twotone-print';
 import icHome from '@iconify/icons-ic/twotone-home';
@@ -20,6 +45,12 @@ import { SchoolPeriodService } from 'src/app/services/school-period.service';
 import { GetAllCourseListModel } from 'src/app/models/course-manager.model';
 import { CourseManagerService } from 'src/app/services/course-manager.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoaderService } from 'src/app/services/loader.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { GetStudentListByCourseSectionModel } from 'src/app/models/report.model';
+import { ReportService } from 'src/app/services/report.service';
+import { ExcelService } from 'src/app/services/excel.service';
 
 
 // export interface ClassListData {
@@ -70,7 +101,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './class-list.component.html',
   styleUrls: ['./class-list.component.scss']
 })
-export class ClassListComponent implements OnInit, AfterViewInit {
+export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   icPrint = icPrint;
   icHome = icHome;
   icMarkunreadMailbox = icMarkunreadMailbox;
@@ -97,8 +128,80 @@ export class ClassListComponent implements OnInit, AfterViewInit {
   blockListViewModel: BlockListViewModel = new BlockListViewModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   filteredCourseListModel: ScheduleReportStaddAndCourseListFilterModel = new ScheduleReportStaddAndCourseListFilterModel();
+  getStudentListByCourseSectionModel: GetStudentListByCourseSectionModel = new GetStudentListByCourseSectionModel();
   @ViewChild(MatSort) sort: MatSort
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
+  destroySubject$: Subject<void> = new Subject();
+  loading: boolean;
+  selectedFieldsArray = [];
+  generateCourseSectionList: any;
+  totalStudentCount: number;
+
+  fieldsDetailsArray = {
+    identificationInformation: [
+      { label: 'fullName', property: 'fullName', checked: false },
+      { label: 'salutation', property: 'salutation', checked: false },
+      { label: 'firstGivenName', property: 'firstGivenName', checked: false },
+      { label: 'middleName', property: 'middleName', checked: false },
+      { label: 'lastFamilyName', property: 'lastFamilyName', checked: false },
+      { label: 'suffix', property: 'suffix', checked: false },
+      { label: 'preferredCommonName', property: 'preferredCommonName', checked: false },
+      { label: 'previousMaidenName', property: 'previousMaidenName', checked: false },
+      { label: 'studentId', property: 'studentId', checked: false },
+      { label: 'alternateId', property: 'alternateId', checked: false },
+      { label: 'districtId', property: 'districtId', checked: false },
+      { label: 'stateId', property: 'stateId', checked: false },
+      { label: 'admissionNumber', property: 'admissionNumber', checked: false },
+      { label: 'rollNumber', property: 'rollNumber', checked: false },
+      { label: 'socialSecurityNumber', property: 'socialSecurityNumber', checked: false },
+      { label: 'otherGovtIssuedNumber', property: 'otherGovtIssuedNumber', checked: false },
+    ],
+    demographicInformation: [
+      { label: 'dateOfBirth', property: 'dateOfBirth', checked: false },
+      { label: 'gender', property: 'gender', checked: false },
+      { label: 'race', property: 'race', checked: false },
+      { label: 'ethnicity', property: 'ethnicity', checked: false },
+      { label: 'maritalStatus', property: 'maritalStatus', checked: false },
+      { label: 'countryOfBirth', property: 'countryOfBirth', checked: false },
+      { label: 'nationality', property: 'nationality', checked: false },
+      { label: 'firstLanguage', property: 'firstLanguage', checked: false },
+      { label: 'secondLanguage', property: 'secondLanguage', checked: false },
+      { label: 'thirdLanguage', property: 'thirdLanguage', checked: false },
+    ],
+    schoolEnrollmentInfo: [
+      { label: 'rollingRetentionOption', property: 'rollingRetentionOption', checked: false },
+      { label: 'section', property: 'section', checked: false },
+      { label: 'estimatedGraduationDate', property: 'estimatedGraduationDate', checked: false },
+      { label: 'gradeLevel', property: 'gradeLevel', checked: false },
+    ],
+    addressContact: [
+      { label: 'studentsFullHomeAddress', property: 'studentsFullHomeAddress', checked: false },
+      { label: 'homeAddressLineOne', property: 'homeAddressLineOne', checked: false },
+      { label: 'homeAddressLineTwo', property: 'homeAddressLineTwo', checked: false },
+      { label: 'homeAddressCountry', property: 'homeAddressCountry', checked: false },
+      { label: 'stateProvinceLocality', property: 'homeAddressState', checked: false },
+      { label: 'homeAddressCity', property: 'homeAddressCity', checked: false },
+      { label: 'homeAddressZip', property: 'homeAddressZip', checked: false },
+      { label: 'busNo', property: 'busNo', checked: false },
+      { label: 'busPickup', property: 'busPickup', checked: false },
+      { label: 'busDropoff', property: 'busDropoff', checked: false },
+    ],
+    studentMailingAddress: [
+      { label: 'studentsFullMailingAddress', property: 'studentsFullMailingAddress', checked: false },
+      { label: 'mailingAddressLineOne', property: 'mailingAddressLineOne', checked: false },
+      { label: 'mailingAddressLineTwo', property: 'mailingAddressLineTwo', checked: false },
+      { label: 'mailingAddressCountry', property: 'mailingAddressCountry', checked: false },
+      { label: 'stateProvinceLocality', property: 'mailingAddressState', checked: false },
+      { label: 'mailingAddressCity', property: 'mailingAddressCity', checked: false },
+      { label: 'mailingAddressZip', property: 'mailingAddressZip', checked: false },
+    ],
+    personalContactInformation: [
+      { label: 'homePhone', property: 'homePhone', checked: false },
+      { label: 'mobilePhone', property: 'mobilePhone', checked: false },
+      { label: 'personalEmail', property: 'personalEmail', checked: false },
+      { label: 'schoolEmail', property: 'schoolEmail', checked: false },
+    ]
+  }
 
   constructor(
        public translateService: TranslateService,
@@ -110,8 +213,14 @@ export class ClassListComponent implements OnInit, AfterViewInit {
        private schoolPeriodService: SchoolPeriodService,
        private courseManager: CourseManagerService,
        private fb: FormBuilder,
+       private loaderService: LoaderService,
+       private reportService: ReportService,
+       private excelService: ExcelService
     ) { 
-    translateService.use("en");
+    // translateService.use("en");
+    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
+      this.loading = val;
+    });
     this.getAllStaff.pageSize =  0;
     this.getAllStaff.filterParams = null;
     this.getAllStaff.pageNumber = 1;
@@ -172,9 +281,9 @@ export class ClassListComponent implements OnInit, AfterViewInit {
     })
   }
 
-  changeTab(status) {
-    this.currentTab = status;
-  }
+  // changeTab(status) {
+  //   this.currentTab = status;
+  // }
 
   getDropDownData() {
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
@@ -300,4 +409,162 @@ export class ClassListComponent implements OnInit, AfterViewInit {
        })
     }
    }
+
+  generateClassLists() {
+    let selectedCourseSection = this.staffAndCourseCheck.filter(item => item.scheduledStudentCount !== 0);
+    if (selectedCourseSection?.length === 0) {
+      this.snackbar.open('Please select any course section to generate report.', '', {
+        duration: 2000
+      });
+      return;
+    }
+
+    this.getStudentListByCourseSectionModel.courseIds = selectedCourseSection.map(item => {
+      return { courseId: item.courseId, courseSectionId: item.courseSectionId };
+    });
+
+    this.reportService.getStudentListByCourseSection(this.getStudentListByCourseSectionModel).subscribe((res: any) => {
+      if (res) {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+        } else {
+          this.generateCourseSectionList = res?.courseSectionForStaffs;
+          this.totalStudentCount = res?.totalStudents;
+          if (this.generateCourseSectionList?.length) {
+            this.generateCourseSectionList.map(item => {
+              if (item.studentLists?.length) {
+                item.studentLists?.map(subItem => {
+                  const middleName = subItem.studentView?.middleName ? ' ' + subItem.studentView?.middleName + ' ' : ' ';
+                  subItem.studentView.fullName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
+
+                  subItem.studentView.studentId = subItem.studentView?.studentInternalId;
+
+                  subItem?.fieldsCategoryList[0]?.customFields?.map(subOfSubItem => {
+                    subItem.studentView[subOfSubItem.title] = subOfSubItem.customFieldsValue?.length > 0 ? subOfSubItem.customFieldsValue[0].customFieldValue : subOfSubItem.defaultSelection;
+                  });
+
+                  subItem?.fieldsCategoryList[1]?.customFields?.map(subOfSubItem => {
+                    subItem.studentView[subOfSubItem.title] = subOfSubItem.customFieldsValue?.length > 0 ? subOfSubItem.customFieldsValue[0].customFieldValue : subOfSubItem.defaultSelection;
+                  });
+
+                  subItem.customCategory = [];
+                  subItem?.fieldsCategoryList?.map(subOfSubItem => {
+                    if (!subOfSubItem?.isSystemCategory && subOfSubItem?.customFields?.length) {
+                      subItem.customCategory.push(subOfSubItem);
+                    }
+                  });
+
+                  if (subItem?.customCategory?.length) {
+                    subItem.customCategory.map(innerItem => {
+                      innerItem?.customFields?.map(subOfSubItem => {
+                        subItem.studentView[subOfSubItem.title] = subOfSubItem.customFieldsValue?.length > 0 ? subOfSubItem.customFieldsValue[0].customFieldValue : subOfSubItem.defaultSelection;
+                      });
+                    });
+                  }
+                });
+              }
+            });
+          }
+          this.currentTab = 'selectFields';
+        }
+      }
+    });
+  }
+
+  changeTab(status) {
+    if (status === 'selectFields' && this.generateCourseSectionList?.length > 0 && this.staffAndCourseCheck.length > 0) {
+      this.currentTab = status;
+    } else if (status === 'generateReport' && this.selectedFieldsArray.length > 0) {
+      this.currentTab = status;
+    } else if (status === 'selectSTeacher') {
+      this.currentTab = status;
+    }
+  }
+
+  changeFields(event, type, masterCheck?, key?) {
+    if (masterCheck) {
+      if (this.fieldsDetailsArray[key][0].checked) {
+        this.fieldsDetailsArray[key].map((item, index) => {
+          if (index > 0) {
+            item.checked = true;
+            if (this.selectedFieldsArray.findIndex(x => x.property === item.property) === -1) {
+              this.selectedFieldsArray.push({ property: item.property, visible: this.selectedFieldsArray.length < 7 ? true : false });
+            }
+          }
+        })
+      } else {
+        this.fieldsDetailsArray[key].map((item, index) => {
+          if (index > 0) {
+            item.checked = false;
+            const index = this.selectedFieldsArray.findIndex(x => x.property === item.property);
+            this.selectedFieldsArray.splice(index, 1);
+          }
+        })
+      }
+    } else {
+      if (event.checked) {
+        if (key) {
+          const [, ...dataWithoutfirstIndex] = this.fieldsDetailsArray[key];
+          if (dataWithoutfirstIndex.every(x => x.checked)) {
+            this.fieldsDetailsArray[key][0].checked = true;
+            // this.selectedFieldsArray.push(this.fieldsDetailsArray[key][0].property);
+          }
+          this.selectedFieldsArray.push({ property: type, visible: this.selectedFieldsArray.length < 7 ? true : false });
+
+        } else {
+          this.selectedFieldsArray.push({ property: type, visible: this.selectedFieldsArray.length < 7 ? true : false });
+        }
+      } else {
+        if (key) {
+          this.fieldsDetailsArray[key][0].checked = false;
+          const index = this.selectedFieldsArray.findIndex(x => x.property === type);
+          this.selectedFieldsArray.splice(index, 1);
+        } else {
+          const index = this.selectedFieldsArray.findIndex(x => x.property === type);
+          this.selectedFieldsArray.splice(index, 1);
+        }
+      }
+    }
+  }
+
+  generateExcel() {
+    if (this.generateCourseSectionList?.length) {
+      let object = {};
+      let object1 = {};
+      let blankRow = {};
+      let studentList = [];
+      let isFirstRow = true;
+      this.generateCourseSectionList.map((item) => {
+        Object.assign(object, {
+          [this.defaultValuesService.translateKey('courseSection')]: item.courseSectionName,
+          [this.defaultValuesService.translateKey('course')]: item.courseTitle,
+          [this.defaultValuesService.translateKey('teacher')]: item.staffName ? item.staffName : this.defaultValuesService.translateKey('noTeacherScheduled')
+        });
+        if (item.studentLists?.length) {
+          item.studentLists?.map(subItem => {
+            this.selectedFieldsArray.map((fields) => {
+              Object.assign(object1, { [this.defaultValuesService.translateKey(fields.property)]: subItem.studentView[fields.property] ? subItem.studentView[fields.property] : '-' });
+            });
+            if (isFirstRow) {
+              Object.assign(object, object1);
+              studentList.push(JSON.parse(JSON.stringify(object)));
+              isFirstRow = false;
+            } else {
+              studentList.push(JSON.parse(JSON.stringify(object1)));
+            }
+          });
+          studentList.push(JSON.parse(JSON.stringify(blankRow)));
+        }
+        isFirstRow = true;
+      });
+      this.excelService.exportAsExcelFile(studentList, 'Schedule_Class_Lists Report');
+    }
+  }
+
+   // For destroy the isLoading subject.
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
+  
 }

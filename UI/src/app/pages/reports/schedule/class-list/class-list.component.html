@@ -1,3 +1,4 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="mb-6">
     <div class="md:grid grid-cols-3 gap-6 report-steps">
         <div class="report-box bg-white rounded text-center py-4 px-6 relative cursor-pointer flex items-center" (click)="changeTab('selectSTeacher')" [class.active]="currentTab === 'selectSTeacher'" [ngClass]="currentTab === 'selectSTeacher' ? 'bg-primary text-white arrow-bottom' : ''">
@@ -20,8 +21,8 @@
     </div>
 </div>
 
-<div [ngSwitch]="currentTab">
-    <div *ngSwitchCase="'selectSTeacher'">
+<div>
+    <div [class.hidden]="currentTab !== 'selectSTeacher'">
         <!-- Start Select Teacher & Course section -->
         <div class="card">
             <form [formGroup]="form">
@@ -77,7 +78,7 @@
                             </mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]="element.checked"
+                            <mat-checkbox color="primary" [disabled]="element.scheduledStudentCount === 0" [checked]="element.checked && element.scheduledStudentCount !== 0"
                                 (change)="onChangeSelection($event.checked,element.courseSectionId)">
                             </mat-checkbox>
                         </td>
@@ -90,17 +91,17 @@
 
                     <ng-container matColumnDef="teacher">
                         <th mat-header-cell *matHeaderCellDef>{{'teacher' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.staffName}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.staffName | EmtyValueCheckPipe}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="subject">
                         <th mat-header-cell *matHeaderCellDef>{{'subject' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.courseSubject}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.courseSubject | EmtyValueCheckPipe}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="course">
                         <th mat-header-cell *matHeaderCellDef>{{'course' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.courseTitle}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.courseTitle | EmtyValueCheckPipe}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="noOfAssociatedStudent">
@@ -108,17 +109,24 @@
                         <td mat-cell *matCellDef="let element"> {{element.scheduledStudentCount}} </td>
                     </ng-container>
 
+                    <ng-container matColumnDef="noData">
+                        <td mat-footer-cell *matFooterCellDef colspan="6">
+                            {{loading?('fetchingData' | translate):('noData' | translate) }}
+                        </td>
+                    </ng-container>
+
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount !== 0 && totalCount !== null"></tr>
                 </table>
             </div>
             <div class="p-4 text-right">
-                <button mat-raised-button color="primary">{{'continue' | translate }}</button>
+                <button mat-raised-button color="primary" (click)="generateClassLists()">{{'continue' | translate }}</button>
             </div>
         </div>
     </div>
 
-    <div *ngSwitchCase="'selectFields'">
+    <div *ngIf="currentTab === 'selectFields'">
         <!-- Start Select Fields -->
         <div class="md:flex my-6">
             <div class="md:w-3/4 md:mr-4 card">
@@ -127,44 +135,19 @@
                     <mat-divider class="-mx-4 pb-4"></mat-divider>
                     <p class="font-medium mb-4">{{'identificationInformation' | translate }}</p>
                     <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'fullName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'salutation' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'firstGivenName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'middleName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'lastFamilyName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'suffix' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'prefferdCommonName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'previousMaidenName' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'studentId' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'alternateId' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'districtId' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'stateId' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'admissionNumber' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'rollNumber' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'socialSecurityNumber' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'otherGovtIssuedNumber' | translate }}</li>
+                        <li *ngFor="let field of fieldsDetailsArray?.identificationInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                        <li *ngFor="let field of generateCourseSectionList[0]?.studentLists[0]?.fieldsCategoryList[0]?.customFields"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.title)" class="align-middle mr-2"></mat-slide-toggle>{{field?.title}}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'demographicInformation' | translate }}</p>
                     <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'dateOfBirth' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'gender' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'race' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'ethnicity' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'maritalStatus' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'countryOfBirth' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'nationality' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'firstLanguage' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'secondLanguage' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'thirdLanguage' | translate }}</li>
+                        <li *ngFor="let field of fieldsDetailsArray?.demographicInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'schoolEnrollmentInfo' | translate }}</p>
                     <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'rollingRetentionOption' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'section' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'estimatedGraduationDate' | translate }}</li>
-                        <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'gradeLevel' | translate }}</li>
+                        <li *ngFor="let field of fieldsDetailsArray?.schoolEnrollmentInfo"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                        <li *ngFor="let field of generateCourseSectionList[0]?.studentLists[0]?.fieldsCategoryList[1]?.customFields"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.title)" class="align-middle mr-2"></mat-slide-toggle>{{field?.title}}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'addressContact' | translate }}</p>
@@ -174,18 +157,16 @@
                             <mat-icon class="mr-2 align-bottom" [icIcon]="icHome"></mat-icon>{{'studentHomeAddress' | translate }}
                         </div>
                         <div class="w-2/3">
-                            <mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'studentsFullHomeAddress' | translate }}
+                            <ng-container *ngFor="let field of fieldsDetailsArray?.addressContact; let i = index;">
+                                <ng-container *ngIf="i === 0">
+                                    <mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, true, 'addressContact')"></mat-slide-toggle>{{field?.label | translate }}
+                                </ng-container>
+                            </ng-container>
                             <div class="section-divider"><div class="w-10 h-10 bg-white rounded-full align-middle text-center m-auto relative text-gray text-base">{{'or' | translate }}</div></div>
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'streetAddress1' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'streetAddress2' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'country' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'stateProvinceLocality' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'city' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'zipPostalCode' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'busNo' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'busPickup' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'busDropoff' | translate }}</li>
+                                <ng-container *ngFor="let field of fieldsDetailsArray?.addressContact; let i = index;">
+                                    <li *ngIf="i > 0"><mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, false, 'addressContact')"></mat-slide-toggle>{{field?.label | translate }}</li>
+                                </ng-container>
                             </ul>
                         </div>
                     </div>
@@ -195,15 +176,16 @@
                             <mat-icon class="mr-2 align-bottom" [icIcon]="icMarkunreadMailbox"></mat-icon>{{'studentMailingAddress' | translate }}
                         </div>
                         <div class="w-2/3">
-                            <mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'studentsFullMailingAddress' | translate }}
+                            <ng-container *ngFor="let field of fieldsDetailsArray?.studentMailingAddress; let i = index;">
+                                <ng-container *ngIf="i === 0">
+                                    <mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, true, 'studentMailingAddress')"></mat-slide-toggle>{{field?.label | translate }}
+                                </ng-container>
+                            </ng-container>
                             <div class="section-divider"><div class="w-10 h-10 bg-white rounded-full align-middle text-center m-auto relative text-gray text-base">{{'or' | translate }}</div></div>
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'streetAddress1' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'streetAddress2' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'country' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'stateProvinceLocality' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'city' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'zipPostalCode' | translate }}</li>
+                                <ng-container *ngFor="let field of fieldsDetailsArray?.studentMailingAddress; let i = index;">
+                                    <li *ngIf="i > 0"><mat-slide-toggle color="primary" class="align-middle mr-2" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property, false, 'studentMailingAddress')"></mat-slide-toggle>{{field?.label | translate }}</li>
+                                </ng-container>
                             </ul>
                         </div>
                     </div>
@@ -214,282 +196,78 @@
                         </div>
                         <div class="w-2/3">
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'homePhone' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'mobilePhone' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'officePhone' | translate }}</li>
-                                <li><mat-slide-toggle color="primary" class="align-middle mr-2"></mat-slide-toggle>{{'schoolEmail' | translate }}</li>
+                                <li *ngFor="let field of fieldsDetailsArray?.personalContactInformation"><mat-slide-toggle color="primary" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                             </ul>
                         </div>
                     </div>
+
+                    <ng-container *ngFor="let customCategory of generateCourseSectionList[0]?.studentLists[0]?.customCategory">
+                        <p class="font-medium mb-4">{{customCategory?.title}}</p>
+                        <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                            <li *ngFor="let field of customCategory?.customFields">
+                                <mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.title)"
+                                    class="align-middle mr-2"></mat-slide-toggle>{{field?.title}}
+                            </li>
+                        </ul>
+                    </ng-container>
                     
                 </div>
             </div>
             <div class="md:w-1/4 card">
-                <div class="px-4 py-6">
+                <div class="px-4 py-6" *ngIf="selectedFieldsArray?.length > 0">
                     <h4 class="text-primary mb-2 font-medium">{{'selectedFields' | translate }}</h4>
                     <mat-divider class="-mx-4 pb-2"></mat-divider>
                     <div class="counter-increment">
-                        <p>{{'fullName' | translate }}</p>
-                        <p>{{'studentId' | translate }}</p>
-                        <p>{{'alternateId' | translate }}</p>
-                        <p>{{'gradeLevel' | translate }}</p>
-                        <p>{{'section' | translate }}</p>
-                        <p>Mobile Phone</p>
+                        <p *ngFor="let field of selectedFieldsArray">{{field?.property | translate}}</p>
                     </div>
-                    <button mat-raised-button color="primary" class="w-full my-4">{{'generateReport' | translate }}</button>
+                    <button mat-raised-button color="primary" class="w-full my-4" (click)="changeTab('generateReport')">{{'generateReport' | translate }}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div *ngSwitchCase="'generateReport'">
+    <div [ngStyle]="{'display':currentTab === 'generateReport' ?'block':'none'}">
         <!-- Start Generate Report -->
 
         <div class="card">
             <div class="bg-white px-4 py-2 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
                 <div class="md:flex w-full justify-between items-center">
-                    <h4 class="text-primary font-semibold">2 Course Section and 25 Students Found</h4>
+                    <h4 class="text-primary font-semibold">{{generateCourseSectionList?.length}} {{'courseSectionAnd' | translate}} {{totalStudentCount}} {{'studentsFound' | translate}}.</h4>
                     <div class="py-2 md:pt-2 items-center">
-                        <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                        <a class="cursor-pointer inline-block align-middle" (click)="generateExcel()" matTooltip="Export to Excel">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="generate-list">
+            <div class="generate-list" *ngFor="let courseSection of generateCourseSectionList">
                 <div class="flex justify-between p-4 pr-0">
                     <div class="">
-                        <h4 class="text-green font-bold text-xl">WRT002</h4>
+                        <h4 class="text-green font-bold text-xl"><span class="mr-2 text-black">{{'courseSection' | translate}} :</span>{{courseSection?.courseSectionName}}</h4>
                         <p class="flex items-center">
-                            <strong class="mr-1">{{'course' | translate }} :</strong> <span>Writing</span><span class="inline-block w-1 h-1 rounded-full bg-gray mx-4"></span>
-                            <strong class="mr-1">{{'teacher' | translate }} :</strong> <span>Adriana Martin, Alyssa Kimathi</span>
+                            <strong class="mr-1">{{'course' | translate }} :</strong> <span>{{courseSection?.courseTitle}}</span><span class="inline-block w-1 h-1 rounded-full bg-gray mx-4"></span>
+                            <strong class="mr-1">{{'teacher' | translate }} :</strong> <span>{{courseSection?.staffName ? courseSection?.staffName : 'noTeacherScheduled' | translate}}</span>
                         </p>
                     </div>
                     <div>
-                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">9</span> / 20 {{'seats' | translate }}</div>
+                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{'seats' | translate }}</div>
                     </div>
                 </div>
                 <div class="overflow-x-auto overflow-y-hidden">
                     <table class="table">
                         <thead class="text-left">
                             <tr>
-                                <th>{{'studentName' | translate }}</th>
-                                <th>{{'studentId' | translate }}</th>
-                                <th>{{'alternateId' | translate }}</th>
-                                <th>{{'gradeLevel' | translate }}</th>
-                                <th>{{'section' | translate }}</th>
-                                <th>{{'phone' | translate }}</th>
+                                <th *ngFor="let column of selectedFieldsArray">{{column?.property | translate}}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Arthur Boucher</td>
-                                <td>STD0012</td>
-                                <td>STD0012</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7895643231</td>
-                            </tr>
-                            <tr>
-                                <td>Sophia Brown</td>
-                                <td>STD0015</td>
-                                <td>STD0015</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>7795643231</td>
-                            </tr>
-                            <tr>
-                                <td>Wang Wang</td>
-                                <td>STD0035</td>
-                                <td>STD0035</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7655643231</td>
-                            </tr>
-                            <tr>
-                                <td>Clare Garcia</td>
-                                <td>STD0102</td>
-                                <td>STD0102</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>5595643231</td>
-                            </tr>
-                            <tr>
-                                <td>Amelia Jones</td>
-                                <td>STD0057</td>
-                                <td>STD0057</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7655643231</td>
-                            </tr>
-                            <tr>
-                                <td>Audre Keita</td>
-                                <td>STD0061</td>
-                                <td>STD0061</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>6595643231</td>
-                            </tr>
-                            <tr>
-                                <td>Kwame Kimathi</td>
-                                <td>STD0052</td>
-                                <td>STD0052</td>
-                                <td>Grade 10</td>
-                                <td>Section A</td>
-                                <td>9655643231</td>
-                            </tr>
-                            <tr>
-                                <td>James Miller</td>
-                                <td>STD0013</td>
-                                <td>STD0013</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>5598643231</td>
+                            <tr *ngFor="let student of courseSection?.studentLists">
+                                <td *ngFor="let column of selectedFieldsArray">{{student?.studentView[column?.property] ? student?.studentView[column?.property] : '' | EmtyValueCheckPipe}}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="generate-list">
-                <div class="flex justify-between p-4 pr-0">
-                    <div class="">
-                        <h4 class="text-green font-bold text-xl">GEOM002</h4>
-                        <p class="flex items-center">
-                            <strong class="mr-1">{{'course' | translate }} :</strong> <span>Mathematics</span><span class="inline-block w-1 h-1 rounded-full bg-gray mx-4"></span>
-                            <strong class="mr-1">{{'teacher' | translate }} :</strong> <span>Ella Brown</span>
-                        </p>
-                    </div>
-                    <div>
-                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">15</span> / 20 {{'seats' | translate }}</div>
-                    </div>
-                </div>
-                <div class="overflow-x-auto overflow-y-hidden">
-                    <table class="table">
-                        <thead class="text-left">
-                            <tr>
-                                <th>{{'studentName' | translate }}</th>
-                                <th>{{'studentId' | translate }}</th>
-                                <th>{{'alternateId' | translate }}</th>
-                                <th>{{'gradeLevel' | translate }}</th>
-                                <th>{{'section' | translate }}</th>
-                                <th>{{'phone' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Arthur Boucher</td>
-                                <td>STD0012</td>
-                                <td>STD0012</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7895643231</td>
-                            </tr>
-                            <tr>
-                                <td>Sophia Brown</td>
-                                <td>STD0015</td>
-                                <td>STD0015</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>7795643231</td>
-                            </tr>
-                            <tr>
-                                <td>Wang Wang</td>
-                                <td>STD0035</td>
-                                <td>STD0035</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7655643231</td>
-                            </tr>
-                            <tr>
-                                <td>Clare Garcia</td>
-                                <td>STD0102</td>
-                                <td>STD0102</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>5595643231</td>
-                            </tr>
-                            <tr>
-                                <td>Amelia Jones</td>
-                                <td>STD0057</td>
-                                <td>STD0057</td>
-                                <td>Grade 11</td>
-                                <td>Section A</td>
-                                <td>7655643231</td>
-                            </tr>
-                            <tr>
-                                <td>Audre Keita</td>
-                                <td>STD0061</td>
-                                <td>STD0061</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>6595643231</td>
-                            </tr>
-                            <tr>
-                                <td>Kwame Kimathi</td>
-                                <td>STD0052</td>
-                                <td>STD0052</td>
-                                <td>Grade 10</td>
-                                <td>Section A</td>
-                                <td>9655643231</td>
-                            </tr>
-                            <tr>
-                                <td>James Miller</td>
-                                <td>STD0013</td>
-                                <td>STD0013</td>
-                                <td>Grade 10</td>
-                                <td>Section B</td>
-                                <td>5598643231</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- <div class="overflow-x-auto overflow-y-hidden">
-                <table mat-table [dataSource]="generateList" class="mat-elevation-z8">
-
-                    <ng-container matColumnDef="staffName">
-                        <th mat-header-cell *matHeaderCellDef>{{'staffName' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.staffName}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="staffId">
-                        <th mat-header-cell *matHeaderCellDef>{{'staffId' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.staffId}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="gender">
-                        <th mat-header-cell *matHeaderCellDef>{{'gender' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="dateOfBirth">
-                        <th mat-header-cell *matHeaderCellDef>{{'dateOfBirth' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.dateOfBirth}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="firstLanguage">
-                        <th mat-header-cell *matHeaderCellDef>{{'firstLanguage' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.firstLanguage}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="mobilePhone">
-                        <th mat-header-cell *matHeaderCellDef>{{'mobilePhone' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.mobilePhone}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="fullAddress">
-                        <th mat-header-cell *matHeaderCellDef>{{'fullHomeAddress' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.fullAddress}} </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="displayedColumnsReportList"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsReportList;"></tr>
-                </table>
-            </div>
-            <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
-            </mat-paginator> -->
         </div>
     </div>
 </div>
