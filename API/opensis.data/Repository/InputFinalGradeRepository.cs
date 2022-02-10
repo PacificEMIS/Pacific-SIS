@@ -59,7 +59,6 @@ namespace opensis.data.Repository
                 try
                 {
                     List<StudentFinalGrade> studentFinalGradeList = new List<StudentFinalGrade>();
-                    //List<StudentFinalGradeStandard> studentFinalGradeStandardList = new List<StudentFinalGradeStandard>();
                     List<StudentFinalGradeComments> studentFinalGradeCommentList = new List<StudentFinalGradeComments>();
 
                     int Id = 1;
@@ -74,6 +73,7 @@ namespace opensis.data.Repository
                     int? SmstrMarkingPeriodId = 0;
                     int? QtrMarkingPeriodId = 0;
                     int? PrgrsprdMarkingPeriodId = 0;
+                    bool? Exam = null;
 
                     if (studentFinalGradeListModel.MarkingPeriodId != null)
                     {
@@ -82,18 +82,38 @@ namespace opensis.data.Repository
                         if (markingPeriodid.First() == "3")
                         {
                             PrgrsprdMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                Exam = true;
+                            }
                         }
                         if (markingPeriodid.First() == "2")
                         {
                             QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                Exam = true;
+                            }
                         }
                         if (markingPeriodid.First() == "1")
                         {
                             SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                Exam = true;
+                            }
                         }
                         if (markingPeriodid.First() == "0")
                         {
                             YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                Exam = true;
+                            }
                         }
                     }
                     foreach (var studentFinalGrade in studentFinalGradeListModel.StudentFinalGradeList)
@@ -116,40 +136,41 @@ namespace opensis.data.Repository
                     {
                         var studentFinalGradeData = new List<StudentFinalGrade>();
 
-                        //if (studentFinalGradeListModel.MarkingPeriodId != null)
-                        //{
-                            studentFinalGradeData = this.context?.StudentFinalGrade.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CourseId == studentFinalGradeListModel.CourseId && e.CourseSectionId == studentFinalGradeListModel.CourseSectionId && e.CalendarId == studentFinalGradeListModel.CalendarId /*&& (YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId)*/).ToList();
-                        //}
-                        //else
-                        //{
-                        //    studentFinalGradeData = this.context?.StudentFinalGrade.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CourseId == studentFinalGradeListModel.CourseId && e.CourseSectionId == studentFinalGradeListModel.CourseSectionId && e.CalendarId == studentFinalGradeListModel.CalendarId && e.YrMarkingPeriodId == null && e.SmstrMarkingPeriodId == null && e.QtrMarkingPeriodId == null).ToList();
-                        //}
-
-                        if (studentFinalGradeData!=null && studentFinalGradeData.Any())
+                        if (studentFinalGradeListModel.MarkingPeriodId != null)
                         {
+                            if (Exam == true)
+                            {
+                                studentFinalGradeData = this.context?.StudentFinalGrade.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CourseId == studentFinalGradeListModel.CourseId && e.CourseSectionId == studentFinalGradeListModel.CourseSectionId && e.CalendarId == studentFinalGradeListModel.CalendarId && (YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.IsExamGrade == true).ToList();
+                            }
+                            else
+                            {
+                                studentFinalGradeData = this.context?.StudentFinalGrade.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CourseId == studentFinalGradeListModel.CourseId && e.CourseSectionId == studentFinalGradeListModel.CourseSectionId && e.CalendarId == studentFinalGradeListModel.CalendarId && (YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.IsExamGrade != true).ToList();
+                            }
+                        }
+                        else
+                        {
+                            studentFinalGradeData = this.context?.StudentFinalGrade.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CourseId == studentFinalGradeListModel.CourseId && e.CourseSectionId == studentFinalGradeListModel.CourseSectionId && e.CalendarId == studentFinalGradeListModel.CalendarId && e.YrMarkingPeriodId == null && e.SmstrMarkingPeriodId == null && e.QtrMarkingPeriodId == null && e.PrgrsprdMarkingPeriodId == null).ToList();
+                        }
 
-                            var containStudentFinalGradeSrlno = studentFinalGradeData.Select(x => x.StudentFinalGradeSrlno).Distinct().ToList();
-
-                            List<long> studentFinalGradeSrlnos = new List<long> { };
-                            studentFinalGradeSrlnos = containStudentFinalGradeSrlno;
+                        if (studentFinalGradeData != null && studentFinalGradeData.Any())
+                        {
+                            var studentFinalGradeSrlnos = studentFinalGradeData.Select(x => x.StudentFinalGradeSrlno).Distinct().ToList();
 
                             var studentFinalGradeStandardData = this.context?.StudentFinalGradeStandard.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CalendarId == studentFinalGradeListModel.CalendarId && /*(YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId) &&*/ (studentFinalGradeSrlnos == null || (studentFinalGradeSrlnos.Contains(e.StudentFinalGradeSrlno)))).ToList();
 
-                            if (studentFinalGradeStandardData!=null && studentFinalGradeStandardData.Any())
+                            if (studentFinalGradeStandardData != null && studentFinalGradeStandardData.Any())
                             {
-
                                 this.context?.StudentFinalGradeStandard.RemoveRange(studentFinalGradeStandardData);
                             }
 
                             var studentFinalGradeCommentsData = this.context?.StudentFinalGradeComments.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && (studentFinalGradeSrlnos == null || (studentFinalGradeSrlnos.Contains(e.StudentFinalGradeSrlno)))).ToList();
 
-                            if (studentFinalGradeCommentsData !=null &&studentFinalGradeCommentsData.Any())
+                            if (studentFinalGradeCommentsData != null && studentFinalGradeCommentsData.Any())
                             {
                                 this.context?.StudentFinalGradeComments.RemoveRange(studentFinalGradeCommentsData);
                             }
                             this.context?.StudentFinalGrade.RemoveRange(studentFinalGradeData);
                             this.context?.SaveChanges();
-
 
                             long? studentFinalGradeSrlno = 1;
 
@@ -189,23 +210,19 @@ namespace opensis.data.Repository
                                     TeacherComment = studentFinalGrade.TeacherComment,
                                     IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
                                     IsExamGrade = studentFinalGradeListModel.IsExamGrade,
-                                    //StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments?.Select(c =>
-                                    //{
-                                    //    c.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
-                                    //    c.UpdatedOn = DateTime.UtcNow;
-                                    //    return c;
-                                    //}).ToList(),
-                                    StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments.Select(c => { c.UpdatedOn = DateTime.UtcNow;
+                                    StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments.Select(c =>
+                                    {
+                                        c.UpdatedOn = DateTime.UtcNow;
                                         c.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
                                         return c;
                                     }).ToList(),
                                     StudentFinalGradeStandard = studentFinalGrade.StudentFinalGradeStandard.Select(c =>
-                                     {
-                                         c.AcademicYear = academicYear;
-                                         c.UpdatedBy =  studentFinalGradeListModel.CreatedOrUpdatedBy ; 
-                                         c.UpdatedOn = DateTime.UtcNow;
-                                         return c;
-                                     }).ToList()
+                                    {
+                                        c.AcademicYear = academicYear;
+                                        c.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
+                                        c.UpdatedOn = DateTime.UtcNow;
+                                        return c;
+                                    }).ToList()
                                 };
                                 studentFinalGradeList.Add(studentFinalGradeUpdate);
                                 studentFinalGradeSrlno++;
@@ -250,8 +267,8 @@ namespace opensis.data.Repository
                                     StudentFinalGradeSrlno = (long)studentFinalGradeSrlno,
                                     BasedOnStandardGrade = studentFinalGrade.BasedOnStandardGrade,
                                     TeacherComment = studentFinalGrade.TeacherComment,
-                                    IsCustomMarkingPeriod= studentFinalGradeListModel.IsCustomMarkingPeriod,
-                                    IsExamGrade= studentFinalGradeListModel.IsExamGrade,
+                                    IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
+                                    IsExamGrade = studentFinalGradeListModel.IsExamGrade,
                                     StudentFinalGradeComments = studentFinalGrade!.StudentFinalGradeComments.Select(c => { c.CreatedBy = studentFinalGradeListModel?.CreatedOrUpdatedBy; c.CreatedOn = DateTime.UtcNow; return c; }).ToList(),
                                     StudentFinalGradeStandard = studentFinalGrade.StudentFinalGradeStandard.Select(c =>
                                     {
@@ -265,8 +282,8 @@ namespace opensis.data.Repository
                             }
                             studentFinalGradeListModel._message = "Student Final Grade Added succsesfully.";
                         }
+
                         this.context?.StudentFinalGrade.AddRange(studentFinalGradeList);
-                        //this.context?.StudentFinalGradeStandard.AddRange(studentFinalGradeStandardList);
                         this.context?.SaveChanges();
                         transaction?.Commit();
                         studentFinalGradeListModel._failure = false;
