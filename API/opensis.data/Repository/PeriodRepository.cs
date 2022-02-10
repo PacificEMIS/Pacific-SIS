@@ -57,7 +57,9 @@ namespace opensis.data.Repository
             }
             try
             {
-                var blockTitle = this.context?.Block.AsEnumerable().Where(x => x.TenantId == blockAddViewModel.block.TenantId && x.SchoolId == blockAddViewModel.block.SchoolId && String.Compare(x.BlockTitle,blockAddViewModel.block.BlockTitle,true)==0).FirstOrDefault();
+                blockAddViewModel.block.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, blockAddViewModel.block.TenantId, blockAddViewModel.block.SchoolId);
+
+                var blockTitle = this.context?.Block.AsEnumerable().Where(x => x.TenantId == blockAddViewModel.block.TenantId && x.SchoolId == blockAddViewModel.block.SchoolId && x.AcademicYear == blockAddViewModel.block.AcademicYear && String.Compare(x.BlockTitle, blockAddViewModel.block.BlockTitle, true) == 0).FirstOrDefault();
 
                 if (blockTitle == null)
                 {
@@ -70,7 +72,7 @@ namespace opensis.data.Repository
                         BlockId = blockData.BlockId + 1;
                     }
 
-                    if(blockAddViewModel.block != null)
+                    if (blockAddViewModel.block != null)
                     {
                         blockAddViewModel.block.BlockId = (int)BlockId;
                         blockAddViewModel.block.CreatedOn = DateTime.UtcNow;
@@ -111,11 +113,11 @@ namespace opensis.data.Repository
 
                 if (blockUpdate != null)
                 {
-                    var blockTitle = this.context?.Block.AsEnumerable().Where(x => x.TenantId == blockAddViewModel.block.TenantId && x.SchoolId == blockAddViewModel.block.SchoolId && String.Compare(x.BlockTitle, blockAddViewModel.block.BlockTitle, true) == 0 && x.BlockId != blockAddViewModel.block.BlockId).FirstOrDefault();
+                    var blockTitle = this.context?.Block.AsEnumerable().Where(x => x.TenantId == blockAddViewModel.block.TenantId && x.SchoolId == blockAddViewModel.block.SchoolId && String.Compare(x.BlockTitle, blockAddViewModel.block.BlockTitle, true) == 0 && x.BlockId != blockAddViewModel.block.BlockId && x.AcademicYear == blockUpdate.AcademicYear).FirstOrDefault();
 
                     if (blockTitle == null)
                     {
-                        if(blockAddViewModel.block != null && blockUpdate != null)
+                        if (blockAddViewModel.block != null && blockUpdate != null)
                         {
                             blockAddViewModel.block.CreatedBy = blockUpdate.CreatedBy;
                             blockAddViewModel.block.CreatedOn = blockUpdate.CreatedOn;
@@ -495,8 +497,8 @@ namespace opensis.data.Repository
             BlockListViewModel blockListModel = new BlockListViewModel();
             try
             {
-                var blockDataList = this.context?.Block.Where(x => x.TenantId == blockListViewModel.TenantId && x.SchoolId == blockListViewModel.SchoolId).OrderBy(x => x.BlockSortOrder).ToList();
-                
+                var blockDataList = this.context?.Block.Where(x => x.TenantId == blockListViewModel.TenantId && x.SchoolId == blockListViewModel.SchoolId && x.AcademicYear == blockListViewModel.AcademicYear).OrderBy(x => x.BlockSortOrder).ToList();
+
                 if (blockDataList != null && blockDataList.Any())
                 {
                     foreach (var block in blockDataList)
@@ -508,16 +510,16 @@ namespace opensis.data.Repository
                             BlockId = block.BlockId,
                             BlockTitle = block.BlockTitle,
                             BlockSortOrder = block.BlockSortOrder,
-                            HalfDayMinutes=block.HalfDayMinutes,
-                            FullDayMinutes=block.FullDayMinutes,
+                            HalfDayMinutes = block.HalfDayMinutes,
+                            FullDayMinutes = block.FullDayMinutes,
                             CreatedBy = block.CreatedBy,
                             CreatedOn = block.CreatedOn,
                             UpdatedBy = block.UpdatedBy,
                             UpdatedOn = block.UpdatedOn
                         };
                         var blockPeriodDataList = this.context?.BlockPeriod.Where(x => x.TenantId == block.TenantId && x.SchoolId == block.SchoolId && x.BlockId == block.BlockId && x.AcademicYear == blockListViewModel.AcademicYear).OrderBy(x => x.PeriodSortOrder).ToList();
-                        
-                        if(blockPeriodDataList != null && blockPeriodDataList.Any())
+
+                        if (blockPeriodDataList != null && blockPeriodDataList.Any())
                         {
                             if (blockListViewModel.IsListView == true)
                             {
