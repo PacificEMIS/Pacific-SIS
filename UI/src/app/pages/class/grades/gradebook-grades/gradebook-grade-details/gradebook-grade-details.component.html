@@ -12,7 +12,7 @@
         <tbody>
             <ng-container *ngFor="let grade of gradesByStudentId">
             <tr class="bg-skyblue-light">
-                <td class="text-primary font-semibold">{{grade?.title}}<span class="ml-2">(Percentage of Grade : {{grade?.weightage}}%)</span></td>
+                <td class="text-primary font-semibold">{{grade?.title}}<span *ngIf="isWeightedSection" class="ml-2">(Percentage of Grade : {{grade?.weightage}}%)</span></td>
                 <td class="text-primary font-bold">{{grade?.assignmentTypeMarks}}/{{grade?.assignmentTypePoint}}</td>
                 <td class="text-primary font-bold">{{grade?.percentage ? grade?.percentage + '%' : ''}} {{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</td>
                 <td></td>
