@@ -269,7 +269,12 @@ namespace opensis.data.Repository
                                     TeacherComment = studentFinalGrade.TeacherComment,
                                     IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
                                     IsExamGrade = studentFinalGradeListModel.IsExamGrade,
-                                    StudentFinalGradeComments = studentFinalGrade!.StudentFinalGradeComments.Select(c => { c.CreatedBy = studentFinalGradeListModel?.CreatedOrUpdatedBy; c.CreatedOn = DateTime.UtcNow; return c; }).ToList(),
+                                    StudentFinalGradeComments = studentFinalGrade!.StudentFinalGradeComments.Select(c =>
+                                    {
+                                        c.CreatedBy = studentFinalGradeListModel?.CreatedOrUpdatedBy;
+                                        c.CreatedOn = DateTime.UtcNow;
+                                        return c;
+                                    }).ToList(),
                                     StudentFinalGradeStandard = studentFinalGrade.StudentFinalGradeStandard.Select(c =>
                                     {
                                         c.CreatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
