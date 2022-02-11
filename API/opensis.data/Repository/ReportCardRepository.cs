@@ -1704,20 +1704,20 @@ namespace opensis.data.Repository
 
                                             //var gradeData = CourseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
 
-                                            var gradeData = CourseSectionData!.GradeScale!.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
+                                            var gradeData = CourseSectionData?.GradeScale?.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
 
                                             if (gradeData != null)
                                             {
-                                                CreditHours = CourseSectionData.CreditHours;
-                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                CreditHours = CourseSectionData?.CreditHours;
+                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData?.CreditHours;
+                                                gPaValue = CourseSectionData?.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
                                             }
 
                                             var comments = reportCard.StudentFinalGradeComments.Select(x => x.CourseCommentId).ToList();
                                             var Comments = string.Join(",", comments.Select(x => x.ToString()).ToArray());
 
-                                            courseSectionGradeDetailsForDefaultTemplate.CourseSectionName = CourseSectionData.CourseSectionName;
-                                            courseSectionGradeDetailsForDefaultTemplate.StaffName = CourseSectionData.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
+                                            courseSectionGradeDetailsForDefaultTemplate.CourseSectionName = CourseSectionData?.CourseSectionName;
+                                            courseSectionGradeDetailsForDefaultTemplate.StaffName = CourseSectionData?.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
                                             courseSectionGradeDetailsForDefaultTemplate.GradeObtained = reportCard.GradeObtained;
                                             courseSectionGradeDetailsForDefaultTemplate.PercentMarks = reportCard.PercentMarks;
                                             courseSectionGradeDetailsForDefaultTemplate.GPA = gPaValue;
@@ -1954,24 +1954,22 @@ namespace opensis.data.Repository
 
                                             var CourseSectionData = this.context?.CourseSection.Include(s => s.GradeScale).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.CourseId == reportCard.CourseId);
 
-                                            var gradeData = CourseSectionData!.GradeScale!.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
+                                            var gradeData = CourseSectionData?.GradeScale?.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
 
                                             if (gradeData != null)
                                             {
-                                                CreditHours = CourseSectionData.CreditHours;
-                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                CreditHours = CourseSectionData?.CreditHours;
+                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData?.CreditHours;
+                                                gPaValue = CourseSectionData?.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
                                                 SumofGPaValue = SumofGPaValue + gPaValue;
 
                                             }
 
                                             courseSectionGradeDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
-                                            courseSectionGradeDetailsForOtherTemplate.CourseSectionName = CourseSectionData.CourseSectionName;
+                                            courseSectionGradeDetailsForOtherTemplate.CourseSectionName = CourseSectionData?.CourseSectionName;
                                             courseSectionGradeDetailsForOtherTemplate.Grade = reportCard.GradeObtained;
                                             courseSectionGradeDetailsForOtherTemplate.Percentage = reportCard.PercentMarks.ToString();
-
                                             markingPeriodDetailsForOtherTemplate.courseSectionGradeDetailsForOtherTemplates.Add(courseSectionGradeDetailsForOtherTemplate);
-
                                         }
 
                                         if (SumofGPaValue > 0 && CourseCount > 0)

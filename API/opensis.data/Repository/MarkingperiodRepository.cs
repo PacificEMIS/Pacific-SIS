@@ -1537,10 +1537,10 @@ namespace opensis.data.Repository
                                 var schoolYearExam = new GetMarkingPeriodView
                                 {
                                     Value = "0" + "_" + markingPeriod.MarkingPeriodId + "_" + "E",
-                                    Text = markingPeriod.ShortName + " " + "EXAM",
+                                    Text = markingPeriod.ShortName,
                                     StartDate = markingPeriod.StartDate,
                                     EndDate = markingPeriod.EndDate,
-                                    FullName = markingPeriod.Title,
+                                    FullName = markingPeriod.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
                                 markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYearExam);
@@ -1565,10 +1565,10 @@ namespace opensis.data.Repository
                                 var semExam = new GetMarkingPeriodView
                                 {
                                     Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
-                                    Text = semester.ShortName + " " + "EXAM",
+                                    Text = semester.ShortName,
                                     StartDate = semester.StartDate,
                                     EndDate = semester.EndDate,
-                                    FullName = semester.Title,
+                                    FullName = semester.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
                                 markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
@@ -1592,10 +1592,10 @@ namespace opensis.data.Repository
                                 var qtrExam = new GetMarkingPeriodView
                                 {
                                     Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
-                                    Text = quater.ShortName + " " + "EXAM",
+                                    Text = quater.ShortName,
                                     StartDate = quater.StartDate,
                                     EndDate = quater.EndDate,
-                                    FullName = quater.Title,
+                                    FullName = quater.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
                                 markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
@@ -1619,10 +1619,10 @@ namespace opensis.data.Repository
                                 var prgrsPrdExam = new GetMarkingPeriodView
                                 {
                                     Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
-                                    Text = progressPeriods.ShortName + " " + "EXAM",
+                                    Text = progressPeriods.ShortName,
                                     StartDate = progressPeriods.StartDate,
                                     EndDate = progressPeriods.EndDate,
-                                    FullName = progressPeriods.Title,
+                                    FullName = progressPeriods.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
                                 markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
