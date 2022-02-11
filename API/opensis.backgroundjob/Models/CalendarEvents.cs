@@ -25,46 +25,41 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
-//using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Text;
 
 namespace opensis.backgroundjob.Models
 {
-    public partial class Membership
+  public partial  class CalendarEvents
     {
         
-        public Membership()
-        {
-            //RolePermission = new HashSet<RolePermission>();
-            //StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
-            StudentAttendance = new HashSet<StudentAttendance>();
-            UserMaster = new HashSet<UserMaster>();
-        }
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        /// <summary>
-        /// can be considered as profileid of Opensis1
-        /// </summary>
-        public int MembershipId { get; set; }
-        /// <summary>
-        /// E.g. admin,student,teacher
-        /// </summary>
-        public string Profile { get; set; } = null!;
-        public bool IsActive { get; set; }
-        public bool? IsSystem { get; set; }
-        public bool IsSuperadmin { get; set; }
-        public string? ProfileType { get; set; }
+        public int CalendarId { get; set; }
+        public int EventId { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? SchoolDate { get; set; }
+        public string? Title { get; set; }
         public string? Description { get; set; }
+        /// <summary>
+        /// membershipids separated by comma
+        /// </summary>
+        public string? VisibleToMembershipId { get; set; }
+        /// <summary>
+        /// Event color in HEX code
+        /// </summary>
+        public string? EventColor { get; set; }
+        public bool? IsHoliday { get; set; }
+        public bool? ApplicableToAllSchool { get; set; }
+        /// <summary>
+        /// event applicable to all calenders within academic year
+        /// </summary>
+        public bool? SystemWideEvent { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
-        //[ValidateNever]
-        //public virtual SchoolMaster SchoolMaster { get; set; } = null!;
-        //public virtual ICollection<RolePermission> RolePermission { get; set; }
-        //public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
-        public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
-        public virtual ICollection<UserMaster> UserMaster { get; set; }
     }
 }

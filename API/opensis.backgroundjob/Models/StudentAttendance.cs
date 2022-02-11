@@ -23,48 +23,50 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+//using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
-//using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.backgroundjob.Models
 {
-    public partial class Membership
+
+    public partial class StudentAttendance
     {
-        
-        public Membership()
-        {
-            //RolePermission = new HashSet<RolePermission>();
-            //StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
-            StudentAttendance = new HashSet<StudentAttendance>();
-            UserMaster = new HashSet<UserMaster>();
-        }
+
+
+        //public StudentAttendance()
+        //{
+        //    StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
+        //}
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        /// <summary>
-        /// can be considered as profileid of Opensis1
-        /// </summary>
-        public int MembershipId { get; set; }
-        /// <summary>
-        /// E.g. admin,student,teacher
-        /// </summary>
-        public string Profile { get; set; } = null!;
-        public bool IsActive { get; set; }
-        public bool? IsSystem { get; set; }
-        public bool IsSuperadmin { get; set; }
-        public string? ProfileType { get; set; }
-        public string? Description { get; set; }
+        public int StudentId { get; set; }
+        public int StaffId { get; set; }
+        public int CourseId { get; set; }
+        public int CourseSectionId { get; set; }
+        public DateTime AttendanceDate { get; set; }
+        public int AttendanceCategoryId { get; set; }
+        public int AttendanceCode { get; set; }
+        public int BlockId { get; set; }
+        public int PeriodId { get; set; }
+        public long StudentAttendanceId { get; set; }
+        public int? MembershipId { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
         //[ValidateNever]
-        //public virtual SchoolMaster SchoolMaster { get; set; } = null!;
-        //public virtual ICollection<RolePermission> RolePermission { get; set; }
+        //public virtual AttendanceCode AttendanceCodeNavigation { get; set; } = null!;
+        //[ValidateNever]
+        public virtual BlockPeriod BlockPeriod { get; set; } = null!;
+
+        public virtual Membership? Membership { get; set; }
+        //[ValidateNever]
+        public virtual StaffCoursesectionSchedule StaffCoursesectionSchedule { get; set; } = null!;
+        //[ValidateNever]
+        public virtual StudentCoursesectionSchedule StudentCoursesectionSchedule { get; set; } = null!;
         //public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
-        public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
-        public virtual ICollection<UserMaster> UserMaster { get; set; }
+
     }
 }
