@@ -33,7 +33,7 @@
       </button>
 
       <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-        <button mat-menu-item>
+        <button mat-menu-item *ngIf="membershipName=='Super Administrator' || membershipName=='School Administrator'" (click)="showPreference()">
           <span>Preferences</span>
         </button>
 

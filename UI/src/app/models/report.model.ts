@@ -155,3 +155,12 @@ export class GetSchoolReportModel extends CommonField {
         this.isCustomCategory = false;
     }
 }
+
+export class GetStudentListByCourseSectionModel extends CommonField {
+    courseIds: any[];
+
+    constructor() {
+        super();
+        this.courseIds = [];
+    }
+}
