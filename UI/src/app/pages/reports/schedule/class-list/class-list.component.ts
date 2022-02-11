@@ -531,9 +531,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.generateCourseSectionList?.length) {
       let object = {};
       let object1 = {};
-      let blankRow = {};
       let studentList = [];
-      let isFirstRow = true;
       this.generateCourseSectionList.map((item) => {
         Object.assign(object, {
           [this.defaultValuesService.translateKey('courseSection')]: item.courseSectionName,
@@ -545,17 +543,10 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedFieldsArray.map((fields) => {
               Object.assign(object1, { [this.defaultValuesService.translateKey(fields.property)]: subItem.studentView[fields.property] ? subItem.studentView[fields.property] : '-' });
             });
-            if (isFirstRow) {
-              Object.assign(object, object1);
-              studentList.push(JSON.parse(JSON.stringify(object)));
-              isFirstRow = false;
-            } else {
-              studentList.push(JSON.parse(JSON.stringify(object1)));
-            }
+            Object.assign(object, object1);
+            studentList.push(JSON.parse(JSON.stringify(object)));
           });
-          studentList.push(JSON.parse(JSON.stringify(blankRow)));
         }
-        isFirstRow = true;
       });
       this.excelService.exportAsExcelFile(studentList, 'Schedule_Class_Lists Report');
     }
