@@ -70,6 +70,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   selectedCourseSection;
   changeParcentageCalculationValue;
   markingPeriodId;
+  isWeightedSection: boolean;
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog,
@@ -239,6 +240,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
           this.commonService.checkTokenValidOrNot(res._message);
         }else{
           this.changeParcentageCalculationValue=res.gradebookConfiguration.scoreRounding;
+          this.isWeightedSection = res?.gradebookConfiguration?.general?.includes('weightGrades') ? true : false;
           this.getGradebookGrade();
         }
       }

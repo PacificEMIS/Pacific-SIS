@@ -188,6 +188,8 @@ export class GetMarkingPeriodByCourseSectionModel extends CommonField{
     courseSectionId: number;
     markingPeriodStartDate: string;
     markingPeriodEndDate: string;
+    isReportCard: boolean;
+
     constructor() {
         super();
     }
