@@ -1600,5 +1600,7 @@
     "mailingAddressState":"Etat / Province / Localité (Envoi)",
     "includeOnlyCoursesActiveAsOf": "N'inclure que les cours actifs au",
     "contact": "Contact",
-    "wash": "LAVAGE"
+    "wash": "LAVAGE",
+    "noTeacherScheduled": "Aucun enseignant prévu",
+    "courseSectionAnd": "Section de cours et"
 }
