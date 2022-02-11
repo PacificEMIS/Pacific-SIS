@@ -53,7 +53,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public ScheduledCourseSectionViewModel MissingAttendanceListForCourseSection_old(PageResult pageResult)
         {
-            
+
             ScheduledCourseSectionViewModel scheduledCourseSectionView = new ScheduledCourseSectionViewModel();
             IQueryable<CourseSectionViewList>? transactionIQ = null;
             List<CourseSectionViewList> staffCoursesectionSchedule = new List<CourseSectionViewList>();
@@ -81,17 +81,17 @@ namespace opensis.data.Repository
 
                     BlockPeriodList = this.context?.BlockPeriod.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
 
-                    if (allCourseSectionVewList!=null&& allCourseSectionVewList.Any())
+                    if (allCourseSectionVewList != null && allCourseSectionVewList.Any())
                     {
                         var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewList.FirstOrDefault()!.CalendarId && (e.StartDate >= staffCourseSectionScheduleData.DurationStartDate && e.StartDate <= staffCourseSectionScheduleData.DurationEndDate || e.EndDate >= staffCourseSectionScheduleData.DurationStartDate && e.EndDate <= staffCourseSectionScheduleData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
-                        if (CalendarEventsData!=null&& CalendarEventsData.Any())
+                        if (CalendarEventsData != null && CalendarEventsData.Any())
                         {
                             foreach (var calender in CalendarEventsData)
                             {
                                 if (calender.EndDate!.Value.Date > calender.StartDate!.Value.Date)
                                 {
-                                    var date = Enumerable.Range(0, 1+ (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
+                                    var date = Enumerable.Range(0, 1 + (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
                                        .Select(i => calender.StartDate.Value.Date.AddDays(i))
                                        .ToList();
                                     holidayList.AddRange(date);
@@ -106,13 +106,13 @@ namespace opensis.data.Repository
                             {
                                 var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == allCourseSectionVew.BlockId && v.BellScheduleDate >= staffCourseSectionScheduleData.DurationStartDate && v.BellScheduleDate <= staffCourseSectionScheduleData.DurationEndDate && v.BellScheduleDate <= DateTime.Today.Date && (!holidayList.Contains(v.BellScheduleDate))).ToList();
 
-                                if (bellScheduleList!=null && bellScheduleList.Any())
+                                if (bellScheduleList != null && bellScheduleList.Any())
                                 {
                                     foreach (var bellSchedule in bellScheduleList)
                                     {
                                         var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == pageResult.SchoolId && b.TenantId == pageResult.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == pageResult.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
-                                        if (StudentCoursesectionScheduleData!=null && StudentCoursesectionScheduleData.Any())
+                                        if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
                                         {
                                             CourseSectionViewList courseSectionBlock = new CourseSectionViewList();
 
@@ -181,7 +181,7 @@ namespace opensis.data.Repository
                             {
                                 var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == pageResult.SchoolId && b.TenantId == pageResult.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == staffCourseSectionScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
-                                if (StudentCoursesectionScheduleData!=null&& StudentCoursesectionScheduleData.Any())
+                                if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
                                 {
                                     if (staffCourseSectionScheduleData.CourseSection.ScheduleType == "Fixed Schedule (1)")
                                     {
@@ -250,7 +250,7 @@ namespace opensis.data.Repository
                                 {
                                     var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == pageResult.SchoolId && b.TenantId == pageResult.TenantId && b.EffectiveStartDate!.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
-                                    if (StudentCoursesectionScheduleData!=null && StudentCoursesectionScheduleData.Any())
+                                    if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
                                     {
                                         CourseSectionViewList CourseSectioncalender = new CourseSectionViewList();
 
@@ -299,7 +299,7 @@ namespace opensis.data.Repository
                 }
 
                 //int totalCount = transactionIQ.Count();
-                int totalCount = transactionIQ!=null ? transactionIQ.Count():0;
+                int totalCount = transactionIQ != null ? transactionIQ.Count() : 0;
                 if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                 {
                     transactionIQ = transactionIQ?.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
