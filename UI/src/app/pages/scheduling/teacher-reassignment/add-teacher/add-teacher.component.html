@@ -94,6 +94,9 @@
         </li>
     </ul>
 
+<div fxLayout="row" fxLayoutAlign="start center" class="py-0 mb-2">
+    <mat-checkbox (change)="includeInactiveStaff($event.checked)">Inactive Staff</mat-checkbox>
+</div>
 <div fxLayout="row" fxLayoutAlign="end center" class="py-0 mb-2">
     <button color="primary" mat-raised-button type="submit" (click)="submit()">Search</button>
 </div>

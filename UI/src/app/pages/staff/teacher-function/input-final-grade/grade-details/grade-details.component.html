@@ -24,7 +24,7 @@
         <li>
             <mat-form-field class="w-full mb-0 align-top" appearance="outline" color="primary">
                 <mat-label>{{ "courseSection" | translate }}</mat-label>
-                <mat-select (selectionChange)="selectedCourseSection($event.value)" name="courseSection"
+                <mat-select (selectionChange)="changeCourseSection($event.value)" name="courseSection"
                     [(ngModel)]="addUpdateStudentFinalGradeModel.courseSectionId">
                     <mat-option></mat-option>
                     <mat-option
@@ -38,7 +38,7 @@
         <li>
             <mat-form-field class="w-full align-top" appearance="outline" color="primary">
                 <mat-label>{{ "markingPeriod" | translate }}</mat-label>
-                <mat-select name="markingPeriod" (selectionChange)="selectedMarkingPeriod($event.value)">
+                <mat-select name="markingPeriod" [(ngModel)]="selectedMarkingPeriod" (selectionChange)="changeMarkingPeriod($event.value)">
                     <mat-option></mat-option>
                     <mat-option *ngFor="let period of markingPeriodList" [value]="period.text">
                         {{period.text}}
@@ -104,20 +104,29 @@
                             </ng-container>
                             <ng-container
                                 *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale'">
-                                <td>{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
+                                <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
                                     addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%" :
                                     ""}}</td>
-                                <td>
-                                    <!-- <label>{{'selectGrade'|translate}}</label>    -->
+                                    <td *ngIf="!isPercent">
+                                        <!-- <label>{{'selectGrade'|translate}}</label>    -->
                                     <div class="select-dropdown" >
                                         <select (change)="selectedGrade($event.target.value ,i)" name="gradeObtained"
                                             [ngModel]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i]?.gradeObtained" (ngModelChange)="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained = $event" 
                                             [disabled]="!this.defaultValuesService.checkAcademicYear()">
                                             <option value=null disabled selected>{{'select'|translate}}</option>
-                                            <option *ngFor="let report of gradeScaleList" value={{report.title}}>
+                                            <option *ngFor="let report of student?.gradeScaleList" value={{report.title}}>
                                                 {{report.title}}</option>
                                         </select>
                                     </div>
+                                </td>
+                                <td *ngIf="isPercent">
+                                    <input
+                                        class="border border-gray-light rounded p-2 w-24"
+                                        (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" min="0" (ngModelChange)="gradeFromPercent($event ,i, student?.gradeScaleList)"
+                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()">
+                                </td>
+                                <td *ngIf="isPercent">
+                                    {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
                                 </td>
                             </ng-container>
                         </tr>

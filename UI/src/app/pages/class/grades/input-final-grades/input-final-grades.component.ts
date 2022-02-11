@@ -83,7 +83,6 @@ export class InputFinalGradesComponent implements OnInit {
   gradeScaleStandardList = [];
   gradeScaleList = [];
   loading: boolean = false;
-  isPercentChecked: boolean = false;
   reportCardGrade = [
     { id: 1, value: 'A' },
     { id: 2, value: 'B' },
@@ -112,6 +111,7 @@ export class InputFinalGradesComponent implements OnInit {
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   courseSection: any;
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
+  selectedMarkingPeriod: any;
 
   constructor(
     public translateService: TranslateService,
@@ -167,6 +167,7 @@ export class InputFinalGradesComponent implements OnInit {
   }
 
   changeMarkingPeriod(event) {
+    if(event.value) {
     // this.addUpdateStudentFinalGradeModel.markingPeriodId = event.value;
     const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);    
     
@@ -193,7 +194,6 @@ export class InputFinalGradesComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
               this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
             });
@@ -208,7 +208,6 @@ export class InputFinalGradesComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
               this.searchScheduledStudentForGroupDropAPI(this.courseSectionData.courseSectionId);
             });
@@ -253,6 +252,12 @@ export class InputFinalGradesComponent implements OnInit {
         });
       }
     });
+  } else {
+    this.studentMasterList = [];
+    this.totalCount = 0;
+    this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+    this.selectedMarkingPeriod = undefined;
+  }
   }
 
   getGradeScaleList(grade) {
@@ -521,16 +526,12 @@ export class InputFinalGradesComponent implements OnInit {
   onCheckboxChange(value) {
     if (value.currentTarget.checked) {
       this.addUpdateStudentFinalGradeModel.isPercent = false;
-      this.isPercentChecked = true;
       this.isPercent = false;
     }
     else {
       this.addUpdateStudentFinalGradeModel.isPercent = true;
-      this.isPercentChecked = false;
       this.isPercent = true;
     }
-
-
   }
 
 
