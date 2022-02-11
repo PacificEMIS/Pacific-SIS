@@ -145,7 +145,7 @@ namespace opensis.data.Repository
                                 gcqId = GradebookConfigurationQuarterData.Id + 1;
                             }
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow;});
                             this.context?.GradebookConfigurationQuarter.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter);
 
                             int? gcppId = 1;
