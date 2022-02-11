@@ -288,7 +288,7 @@ namespace opensis.data.Repository
                             ReturnModel.MembershipType = user?.Membership.ProfileType;
                             ReturnModel.MembershipId = user?.Membership.MembershipId;
                             ReturnModel._failure = true;
-                            ReturnModel._message = "You are not longer member please contact to Administrator";
+                            ReturnModel._message = "Your account is inactive, please contact to Administrator";
                             return ReturnModel;
                         }
                     }
