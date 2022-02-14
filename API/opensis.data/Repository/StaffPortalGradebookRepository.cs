@@ -696,7 +696,7 @@ namespace opensis.data.Repository
                                 AssignmentTypeData = AssignmentTypeData.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).ToList();
                             }
                         }
-                        if (AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                        else if (AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId != null)
                         {
                             var quartersData = this.context?.Quarters.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
 
@@ -705,7 +705,7 @@ namespace opensis.data.Repository
                                 AssignmentTypeData = AssignmentTypeData.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).ToList();
                             }
                         }
-                        if (AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                        else if (AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId != null)
                         {
                             var semestersData = this.context?.Semesters.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
 
@@ -714,7 +714,7 @@ namespace opensis.data.Repository
                                 AssignmentTypeData = AssignmentTypeData.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).ToList();
                             }
                         }
-                        if (AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId != null)
+                        else if (AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId != null)
                         {
                             var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == gradebookGradeListViewModel.SchoolId && x.TenantId == gradebookGradeListViewModel.TenantId && x.StartDate == gradebookGradeListViewModel.MarkingPeriodStartDate && x.EndDate == gradebookGradeListViewModel.MarkingPeriodEndDate && x.AcademicYear == gradebookGradeListViewModel.AcademicYear).FirstOrDefault();
 
@@ -724,87 +724,95 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        foreach (var AssignmentType in AssignmentTypeData)
+                        if (AssignmentTypeData?.Any() == true)
                         {
-                            foreach (var Assignment in AssignmentType.Assignment)
+                            foreach (var AssignmentType in AssignmentTypeData)
                             {
-                                var assignmentsListView = new AssignmentsListViewModel();
-
-                                if (studentCoursesectionScheduleData.Count > 0)
+                                foreach (var Assignment in AssignmentType.Assignment)
                                 {
-                                    foreach (var studentCoursesectionSchedule in studentCoursesectionScheduleData)
+                                    var assignmentsListView = new AssignmentsListViewModel();
+
+                                    if (studentCoursesectionScheduleData.Count > 0)
                                     {
-                                        StudentsListViewModel studentsListViewModel = new StudentsListViewModel();
-
-                                        var GradebookGradeData = studentCoursesectionSchedule.StudentMaster.GradebookGrades.FirstOrDefault(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == AssignmentType.AcademicYear && x.AssignmentTypeId == Assignment.AssignmentTypeId && x.AssignmentId == Assignment.AssignmentId && x.StudentId == studentCoursesectionSchedule.StudentId);
-
-                                        if (GradebookGradeData != null)
+                                        foreach (var studentCoursesectionSchedule in studentCoursesectionScheduleData)
                                         {
-                                            studentsListViewModel.AllowedMarks = GradebookGradeData.AllowedMarks;
-                                            studentsListViewModel.Comment = GradebookGradeData.Comment;
-                                            studentsListViewModel.Percentage = GradebookGradeData.Percentage;
-                                            studentsListViewModel.LetterGrade = GradebookGradeData.LetterGrade;
-                                        }
+                                            StudentsListViewModel studentsListViewModel = new StudentsListViewModel();
 
-                                        studentsListViewModel.StudentInternalId = studentCoursesectionSchedule.StudentInternalId;
-                                        studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
-                                        studentsListViewModel.FirstGivenName = studentCoursesectionSchedule.StudentMaster.FirstGivenName;
-                                        studentsListViewModel.MiddleName = studentCoursesectionSchedule.StudentMaster.MiddleName;
-                                        studentsListViewModel.LastFamilyName = studentCoursesectionSchedule.StudentMaster.LastFamilyName;
-                                        studentsListViewModel.RunningAvg = GradebookGradeData != null ? GradebookGradeData.RunningAvg : null;
-                                        studentsListViewModel.RunningAvgGrade = GradebookGradeData != null ? GradebookGradeData.RunningAvgGrade : null;
-                                        studentsListViewModel.StudentId = studentCoursesectionSchedule.StudentId;
-                                        studentsListViewModel.Points = Assignment.Points;
-                                        assignmentsListView.studentsListViewModels.Add(studentsListViewModel);
+                                            var GradebookGradeData = studentCoursesectionSchedule.StudentMaster.GradebookGrades.FirstOrDefault(x => x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId && x.CourseSectionId == gradebookGradeListViewModel.CourseSectionId && x.AcademicYear == AssignmentType.AcademicYear && x.AssignmentTypeId == Assignment.AssignmentTypeId && x.AssignmentId == Assignment.AssignmentId && x.StudentId == studentCoursesectionSchedule.StudentId);
+
+                                            if (GradebookGradeData != null)
+                                            {
+                                                studentsListViewModel.AllowedMarks = GradebookGradeData.AllowedMarks;
+                                                studentsListViewModel.Comment = GradebookGradeData.Comment;
+                                                studentsListViewModel.Percentage = GradebookGradeData.Percentage;
+                                                studentsListViewModel.LetterGrade = GradebookGradeData.LetterGrade;
+                                            }
+
+                                            studentsListViewModel.StudentInternalId = studentCoursesectionSchedule.StudentInternalId;
+                                            studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                                            studentsListViewModel.FirstGivenName = studentCoursesectionSchedule.StudentMaster.FirstGivenName;
+                                            studentsListViewModel.MiddleName = studentCoursesectionSchedule.StudentMaster.MiddleName;
+                                            studentsListViewModel.LastFamilyName = studentCoursesectionSchedule.StudentMaster.LastFamilyName;
+                                            studentsListViewModel.RunningAvg = GradebookGradeData != null ? GradebookGradeData.RunningAvg : null;
+                                            studentsListViewModel.RunningAvgGrade = GradebookGradeData != null ? GradebookGradeData.RunningAvgGrade : null;
+                                            studentsListViewModel.StudentId = studentCoursesectionSchedule.StudentId;
+                                            studentsListViewModel.Points = Assignment.Points;
+                                            assignmentsListView.studentsListViewModels.Add(studentsListViewModel);
+                                        }
+                                    }
+                                    assignmentsListView.AssignmentTypeId = AssignmentType.AssignmentTypeId;
+                                    assignmentsListView.AssignmentId = Assignment.AssignmentId;
+                                    assignmentsListView.Title = AssignmentType.Title;
+                                    assignmentsListView.Weightage = AssignmentType.Weightage;
+                                    assignmentsListView.AssignmentTitle = Assignment.AssignmentTitle;
+                                    assignmentsListView.AssignmentDate = Assignment.AssignmentDate;
+                                    assignmentsListView.DueDate = Assignment.DueDate;
+                                    gradebookGradeList.assignmentsListViewModels.Add(assignmentsListView);
+
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(gradebookGradeListViewModel.SearchValue))
+                            {
+                                var searchValue = Regex.Replace(gradebookGradeListViewModel.SearchValue, @"\s+", "");
+                                //var studentData = gradebookGradeList.assignmentsListViewModels.FirstOrDefault().studentsListViewModels;
+                                var studentData = gradebookGradeList.assignmentsListViewModels.FirstOrDefault()!.studentsListViewModels;
+                                var SearchData = studentData.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(searchValue.ToLower()) ||
+                                 x.MiddleName != null && x.MiddleName.ToLower().Contains(searchValue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(searchValue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(searchValue.ToLower())).ToList();
+
+                                if (SearchData.Count > 0)
+                                {
+                                    var searchStudentIds = SearchData.Select(s => s.StudentId).ToList();
+                                    foreach (var assignmentsListViewModel in gradebookGradeList.assignmentsListViewModels)
+                                    {
+                                        assignmentsListViewModel.studentsListViewModels = assignmentsListViewModel.studentsListViewModels.Where(x => searchStudentIds.Contains(x.StudentId)).ToList();
                                     }
                                 }
-                                assignmentsListView.AssignmentTypeId = AssignmentType.AssignmentTypeId;
-                                assignmentsListView.AssignmentId = Assignment.AssignmentId;
-                                assignmentsListView.Title = AssignmentType.Title;
-                                assignmentsListView.Weightage = AssignmentType.Weightage;
-                                assignmentsListView.AssignmentTitle = Assignment.AssignmentTitle;
-                                assignmentsListView.AssignmentDate = Assignment.AssignmentDate;
-                                assignmentsListView.DueDate = Assignment.DueDate;
-                                gradebookGradeList.assignmentsListViewModels.Add(assignmentsListView);
-
+                                else
+                                {
+                                    gradebookGradeList._failure = true;
+                                    gradebookGradeList._message = NORECORDFOUND;
+                                    gradebookGradeList.assignmentsListViewModels = new List<AssignmentsListViewModel>();
+                                    return gradebookGradeList;
+                                }
                             }
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(gradebookGradeListViewModel.SearchValue))
-                    {
-                        var searchValue = Regex.Replace(gradebookGradeListViewModel.SearchValue, @"\s+", "");
-                        //var studentData = gradebookGradeList.assignmentsListViewModels.FirstOrDefault().studentsListViewModels;
-                        var studentData = gradebookGradeList.assignmentsListViewModels.FirstOrDefault()!.studentsListViewModels;
-                        var SearchData = studentData.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(searchValue.ToLower()) ||
-                         x.MiddleName != null && x.MiddleName.ToLower().Contains(searchValue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(searchValue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(searchValue.ToLower())).ToList();
-
-                        if (SearchData.Count > 0)
-                        {
-                            var searchStudentIds = SearchData.Select(s => s.StudentId).ToList();
+                            gradebookGradeList.assignmentsListViewModels = gradebookGradeList.assignmentsListViewModels.OrderBy(x => x.DueDate).ToList();
+                            int count = 0;
                             foreach (var assignmentsListViewModel in gradebookGradeList.assignmentsListViewModels)
                             {
-                                assignmentsListViewModel.studentsListViewModels = assignmentsListViewModel.studentsListViewModels.Where(x => searchStudentIds.Contains(x.StudentId)).ToList();
+                                if (count == 0)
+                                {
+                                    count++;
+                                    continue;
+                                }
+                                assignmentsListViewModel.studentsListViewModels.ForEach(x => x.StudentPhoto = null);
                             }
                         }
                         else
                         {
                             gradebookGradeList._failure = true;
                             gradebookGradeList._message = NORECORDFOUND;
-                            gradebookGradeList.assignmentsListViewModels = new List<AssignmentsListViewModel>();
-                            return gradebookGradeList;
                         }
-                    }
-                    gradebookGradeList.assignmentsListViewModels = gradebookGradeList.assignmentsListViewModels.OrderBy(x => x.DueDate).ToList();
-                    int count = 0;
-                    foreach (var assignmentsListViewModel in gradebookGradeList.assignmentsListViewModels)
-                    {
-                        if (count == 0)
-                        {
-                            count++;
-                            continue;
-                        }
-                        assignmentsListViewModel.studentsListViewModels.ForEach(x => x.StudentPhoto = null);
                     }
                 }
                 else
@@ -856,7 +864,7 @@ namespace opensis.data.Repository
                             AssignmentTypeData = AssignmentTypeData.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).ToList();
                         }
                     }
-                    if (AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                    else if (AssignmentTypeData.FirstOrDefault()!.QtrMarkingPeriodId != null)
                     {
                         var quartersData = this.context?.Quarters.Where(x => x.SchoolId == assignmentForStudentViewModel.SchoolId && x.TenantId == assignmentForStudentViewModel.TenantId && x.StartDate == assignmentForStudentViewModel.MarkingPeriodStartDate && x.EndDate == assignmentForStudentViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentForStudentViewModel.AcademicYear).FirstOrDefault();
 
@@ -865,7 +873,7 @@ namespace opensis.data.Repository
                             AssignmentTypeData = AssignmentTypeData.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).ToList();
                         }
                     }
-                    if (AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                    else if (AssignmentTypeData.FirstOrDefault()!.SmstrMarkingPeriodId != null)
                     {
                         var semestersData = this.context?.Semesters.Where(x => x.SchoolId == assignmentForStudentViewModel.SchoolId && x.TenantId == assignmentForStudentViewModel.TenantId && x.StartDate == assignmentForStudentViewModel.MarkingPeriodStartDate && x.EndDate == assignmentForStudentViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentForStudentViewModel.AcademicYear).FirstOrDefault();
 
@@ -874,7 +882,7 @@ namespace opensis.data.Repository
                             AssignmentTypeData = AssignmentTypeData.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).ToList();
                         }
                     }
-                    if (AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId != null)
+                    else if (AssignmentTypeData.FirstOrDefault()!.YrMarkingPeriodId != null)
                     {
                         var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == assignmentForStudentViewModel.SchoolId && x.TenantId == assignmentForStudentViewModel.TenantId && x.StartDate == assignmentForStudentViewModel.MarkingPeriodStartDate && x.EndDate == assignmentForStudentViewModel.MarkingPeriodEndDate && x.AcademicYear == assignmentForStudentViewModel.AcademicYear).FirstOrDefault();
 
@@ -884,65 +892,73 @@ namespace opensis.data.Repository
                         }
                     }
 
-                    foreach (var assignmentType in AssignmentTypeData)
+                    if (AssignmentTypeData?.Any() == true)
                     {
-                        string? assignmentGrade = null;
-                        int? allowedMarks = 0;
-                        int? totalPoint = 0;
-                        int count = 0;
-                        AssignmentTypeViewModel assignmentTypeListViewModel = new AssignmentTypeViewModel();
-                        foreach (var assignment in assignmentType.Assignment)
+                        foreach (var assignmentType in AssignmentTypeData)
                         {
-                            count++;
-                            AssignmentViewModel assignmentViewModel = new AssignmentViewModel();
-
-                            var gradebookGrade = assignment.GradebookGrades.FirstOrDefault(x => x.StudentId == assignmentForStudentViewModel.StudentId && x.AcademicYear == assignmentForStudentViewModel.AcademicYear /*&& x.MarkingPeriodId == assignmentForStudentViewModel.MarkingPeriodId*/);
-                            if (gradebookGrade != null)
+                            string? assignmentGrade = null;
+                            int? allowedMarks = 0;
+                            int? totalPoint = 0;
+                            int count = 0;
+                            AssignmentTypeViewModel assignmentTypeListViewModel = new AssignmentTypeViewModel();
+                            foreach (var assignment in assignmentType.Assignment)
                             {
-                                assignmentViewModel.AllowedMarks = gradebookGrade.AllowedMarks;
-                                assignmentViewModel.Percentage = gradebookGrade.Percentage;
-                                assignmentViewModel.LetterGrade = gradebookGrade.LetterGrade;
-                                assignmentViewModel.Comment = gradebookGrade.Comment;
-                                allowedMarks += Convert.ToInt32(gradebookGrade.AllowedMarks);
+                                count++;
+                                AssignmentViewModel assignmentViewModel = new AssignmentViewModel();
+
+                                var gradebookGrade = assignment.GradebookGrades.FirstOrDefault(x => x.StudentId == assignmentForStudentViewModel.StudentId && x.AcademicYear == assignmentForStudentViewModel.AcademicYear /*&& x.MarkingPeriodId == assignmentForStudentViewModel.MarkingPeriodId*/);
+                                if (gradebookGrade != null)
+                                {
+                                    assignmentViewModel.AllowedMarks = gradebookGrade.AllowedMarks;
+                                    assignmentViewModel.Percentage = gradebookGrade.Percentage;
+                                    assignmentViewModel.LetterGrade = gradebookGrade.LetterGrade;
+                                    assignmentViewModel.Comment = gradebookGrade.Comment;
+                                    allowedMarks += Convert.ToInt32(gradebookGrade.AllowedMarks);
+
+                                }
+                                assignmentViewModel.TenantId = assignment.TenantId;
+                                assignmentViewModel.SchoolId = assignment.SchoolId;
+                                assignmentViewModel.CourseSectionId = assignment.CourseSectionId;
+                                assignmentViewModel.AssignmentId = assignment.AssignmentId;
+                                assignmentViewModel.AssignmentTypeId = assignment.AssignmentTypeId;
+                                assignmentViewModel.Points = assignment.Points;
+                                assignmentViewModel.AssignmentTitle = assignment.AssignmentTitle;
+                                assignmentViewModel.Points = assignment.Points;
+                                totalPoint += assignment.Points;
+                                assignmentTypeListViewModel.assignmentViewModelList.Add(assignmentViewModel);
 
                             }
-                            assignmentViewModel.TenantId = assignment.TenantId;
-                            assignmentViewModel.SchoolId = assignment.SchoolId;
-                            assignmentViewModel.CourseSectionId = assignment.CourseSectionId;
-                            assignmentViewModel.AssignmentId = assignment.AssignmentId;
-                            assignmentViewModel.AssignmentTypeId = assignment.AssignmentTypeId;
-                            assignmentViewModel.Points = assignment.Points;
-                            assignmentViewModel.AssignmentTitle = assignment.AssignmentTitle;
-                            assignmentViewModel.Points = assignment.Points;
-                            totalPoint += assignment.Points;
-                            assignmentTypeListViewModel.assignmentViewModelList.Add(assignmentViewModel);
-
-                        }
-                        var Percentage = Math.Round((Convert.ToDecimal(allowedMarks) / Convert.ToDecimal(totalPoint) * 100), 2);
-                        if (Percentage > 0.0m)
-                        {
-                            if (courseSectionData?.GradeScale?.Grade != null)
+                            var Percentage = Math.Round((Convert.ToDecimal(allowedMarks) / Convert.ToDecimal(totalPoint) * 100), 2);
+                            if (Percentage > 0.0m)
                             {
-                                if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                if (courseSectionData?.GradeScale?.Grade != null)
                                 {
-                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(Percentage));
-                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title;
-                                }
-                                else
-                                {
-                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= Percentage)?.Title;
+                                    if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                    {
+                                        var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(Percentage));
+                                        assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title;
+                                    }
+                                    else
+                                    {
+                                        assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= Percentage)?.Title;
+                                    }
                                 }
                             }
+                            assignmentTypeListViewModel.AssignmentTypeId = assignmentType.AssignmentTypeId;
+                            assignmentTypeListViewModel.CourseSectionId = assignmentType.CourseSectionId;
+                            assignmentTypeListViewModel.Title = assignmentType.Title;
+                            assignmentTypeListViewModel.Weightage = assignmentType.Weightage;
+                            assignmentTypeListViewModel.AssignmentTypePoint = totalPoint.ToString();
+                            assignmentTypeListViewModel.AssignmentTypeMarks = allowedMarks.ToString();
+                            assignmentTypeListViewModel.AssignmentTypeLetterGrade = assignmentGrade;
+                            assignmentTypeListViewModel.AssignmentTypePercentage = Percentage;
+                            assignmentForStudent.assignmentTypeViewModelList.Add(assignmentTypeListViewModel);
                         }
-                        assignmentTypeListViewModel.AssignmentTypeId = assignmentType.AssignmentTypeId;
-                        assignmentTypeListViewModel.CourseSectionId = assignmentType.CourseSectionId;
-                        assignmentTypeListViewModel.Title = assignmentType.Title;
-                        assignmentTypeListViewModel.Weightage = assignmentType.Weightage;
-                        assignmentTypeListViewModel.AssignmentTypePoint = totalPoint.ToString();
-                        assignmentTypeListViewModel.AssignmentTypeMarks = allowedMarks.ToString();
-                        assignmentTypeListViewModel.AssignmentTypeLetterGrade = assignmentGrade;
-                        assignmentTypeListViewModel.AssignmentTypePercentage = Percentage;
-                        assignmentForStudent.assignmentTypeViewModelList.Add(assignmentTypeListViewModel);
+                    }
+                    else
+                    {
+                        assignmentForStudent._failure = true;
+                        assignmentForStudent._message = NORECORDFOUND;
                     }
                 }
                 else
