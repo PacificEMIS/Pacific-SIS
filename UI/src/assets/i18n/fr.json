@@ -1602,5 +1602,6 @@
     "contact": "Contact",
     "wash": "LAVAGE",
     "noTeacherScheduled": "Aucun enseignant prévu",
-    "courseSectionAnd": "Section de cours et"
+    "courseSectionAnd": "Section de cours et",
+    "courseType": "Type de cours"
 }

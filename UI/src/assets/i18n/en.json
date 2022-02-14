@@ -1603,5 +1603,6 @@
     "wash": "WASH",
     "others":"Others",
     "noTeacherScheduled": "No Teacher Scheduled",
-    "courseSectionAnd": "Course Section and"
+    "courseSectionAnd": "Course Section and",
+    "courseType":"Course Type"
 }
