@@ -1602,5 +1602,6 @@
     "contact": "Contacto",
     "wash": "LAVAR",
     "noTeacherScheduled": "Ningún maestro programado",
-    "courseSectionAnd": "Sección del curso y"
+    "courseSectionAnd": "Sección del curso y",
+    "courseType": "Tipo de curso"
 }
