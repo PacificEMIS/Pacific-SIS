@@ -29,42 +29,50 @@ using System.Collections.Generic;
 
 namespace opensis.backgroundjob.Models
 {
-    public partial class Membership
+    public partial class StaffCoursesectionSchedule
     {
         
-        public Membership()
+        public StaffCoursesectionSchedule()
         {
-            //RolePermission = new HashSet<RolePermission>();
-            //StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
             StudentAttendance = new HashSet<StudentAttendance>();
-            UserMaster = new HashSet<UserMaster>();
+            StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
         }
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
+        public int StaffId { get; set; }
+        public Guid StaffGuid { get; set; }
+        public int CourseId { get; set; }
+        public int CourseSectionId { get; set; }
+        public string? CourseSectionName { get; set; }
+        public int? YrMarkingPeriodId { get; set; }
+        public int? SmstrMarkingPeriodId { get; set; }
+        public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public DateTime? DurationStartDate { get; set; }
+        public DateTime? DurationEndDate { get; set; }
         /// <summary>
-        /// can be considered as profileid of Opensis1
+        /// Starting Sunday as 0, 0|1|2|3|4|5|6
         /// </summary>
-        public int MembershipId { get; set; }
-        /// <summary>
-        /// E.g. admin,student,teacher
-        /// </summary>
-        public string Profile { get; set; } = null!;
-        public bool IsActive { get; set; }
-        public bool? IsSystem { get; set; }
-        public bool IsSuperadmin { get; set; }
-        public string? ProfileType { get; set; }
-        public string? Description { get; set; }
+        public string? MeetingDays { get; set; }
+        public bool? IsDropped { get; set; }
+        public DateTime? EffectiveDropDate { get; set; }
+        public bool? IsAssigned { get; set; }
         public string? CreatedBy { get; set; }
-        public DateTime? CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
 
+       // [ValidateNever]
+        public virtual CourseSection CourseSection { get; set; } = null!;
+        //public virtual ProgressPeriods? ProgressPeriod { get; set; }
+        //public virtual Quarters? Quarter { get; set; }
+        //public virtual SchoolYears? SchoolYear { get; set; }
+        //public virtual Semesters? Semester { get; set; }
         //[ValidateNever]
-        //public virtual SchoolMaster SchoolMaster { get; set; } = null!;
-        //public virtual ICollection<RolePermission> RolePermission { get; set; }
-        //public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
+        //public virtual StaffMaster StaffMaster { get; set; } = null!;
         public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
-        public virtual ICollection<UserMaster> UserMaster { get; set; }
+        public virtual ICollection<StudentMissingAttendance> StudentMissingAttendances { get; set; }
     }
 }

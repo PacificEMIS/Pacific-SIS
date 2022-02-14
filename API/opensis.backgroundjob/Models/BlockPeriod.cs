@@ -29,42 +29,42 @@ using System.Collections.Generic;
 
 namespace opensis.backgroundjob.Models
 {
-    public partial class Membership
+    public partial class BlockPeriod
     {
         
-        public Membership()
+        public BlockPeriod()
         {
-            //RolePermission = new HashSet<RolePermission>();
-            //StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
+            //CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+            //CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+            //CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+            //CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
             StudentAttendance = new HashSet<StudentAttendance>();
-            UserMaster = new HashSet<UserMaster>();
+            StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
         }
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
-        /// <summary>
-        /// can be considered as profileid of Opensis1
-        /// </summary>
-        public int MembershipId { get; set; }
-        /// <summary>
-        /// E.g. admin,student,teacher
-        /// </summary>
-        public string Profile { get; set; } = null!;
-        public bool IsActive { get; set; }
-        public bool? IsSystem { get; set; }
-        public bool IsSuperadmin { get; set; }
-        public string? ProfileType { get; set; }
-        public string? Description { get; set; }
+        public int BlockId { get; set; }
+        public int PeriodId { get; set; }
+        public string? PeriodTitle { get; set; }
+        public string? PeriodShortName { get; set; }
+        public string? PeriodStartTime { get; set; }
+        public string? PeriodEndTime { get; set; }
+        public int? PeriodSortOrder { get; set; }
+        public bool? CalculateAttendance { get; set; }
+        public decimal? AcademicYear { get; set; }
+        public int? RolloverId { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
         //[ValidateNever]
         //public virtual SchoolMaster SchoolMaster { get; set; } = null!;
-        //public virtual ICollection<RolePermission> RolePermission { get; set; }
-        //public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
+        //public virtual ICollection<CourseBlockSchedule> CourseBlockSchedule { get; set; }
+        //public virtual ICollection<CourseCalendarSchedule> CourseCalendarSchedule { get; set; }
+        //public virtual ICollection<CourseFixedSchedule> CourseFixedSchedule { get; set; }
+        //public virtual ICollection<CourseVariableSchedule> CourseVariableSchedule { get; set; }
         public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
-        public virtual ICollection<UserMaster> UserMaster { get; set; }
+        public virtual ICollection<StudentMissingAttendance> StudentMissingAttendances { get; set; }
     }
 }
