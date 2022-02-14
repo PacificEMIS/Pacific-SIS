@@ -358,7 +358,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
         if (!isIdIncludesInSelectedList) {
-          this.staffAndCourseCheck.push(item);
+          if(item.scheduledStudentCount !== 0) this.staffAndCourseCheck.push(item);
         }
       } else {
         for (let selectedUser of this.staffAndCourseCheck) {
@@ -411,6 +411,14 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
    }
 
   generateClassLists() {
+    if (this.selectedFieldsArray.length) {
+      this.selectedFieldsArray.map(fields => {
+        if (fields.property === 'studentName') {
+          fields.property = 'fullName';
+        }
+      });
+    }
+
     let selectedCourseSection = this.staffAndCourseCheck.filter(item => item.scheduledStudentCount !== 0);
     if (selectedCourseSection?.length === 0) {
       this.snackbar.open('Please select any course section to generate report.', '', {
@@ -436,6 +444,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
                 item.studentLists?.map(subItem => {
                   const middleName = subItem.studentView?.middleName ? ' ' + subItem.studentView?.middleName + ' ' : ' ';
                   subItem.studentView.fullName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
+                  subItem.studentView.studentName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
 
                   subItem.studentView.studentId = subItem.studentView?.studentInternalId;
 
@@ -473,8 +482,20 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   changeTab(status) {
     if (status === 'selectFields' && this.generateCourseSectionList?.length > 0 && this.staffAndCourseCheck.length > 0) {
+      if (this.selectedFieldsArray.length) {
+        this.selectedFieldsArray.map(fields => {
+          if (fields.property === 'studentName') {
+            fields.property = 'fullName';
+          }
+        });
+      }
       this.currentTab = status;
     } else if (status === 'generateReport' && this.selectedFieldsArray.length > 0) {
+      this.selectedFieldsArray.map(fields => {
+        if (fields.property === 'fullName') {
+          fields.property = 'studentName';
+        }
+      });
       this.currentTab = status;
     } else if (status === 'selectSTeacher') {
       this.currentTab = status;
