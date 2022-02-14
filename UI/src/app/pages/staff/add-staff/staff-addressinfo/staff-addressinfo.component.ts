@@ -195,6 +195,7 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   editAddressContactInfo() {
+    if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
     this.isReadOnly = res.isReadOnly;
     this.staffCreateMode = this.staffCreate.EDIT;
@@ -203,6 +204,13 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
     this.staffAddModel.staffMaster.mailingAddressCountry =+this.staffAddModel.staffMaster.mailingAddressCountry ;
     this.staffAddModel.staffMaster.homeAddressCountry = +this.staffAddModel.staffMaster.homeAddressCountry;
     })
+  } else {
+    this.staffCreateMode = this.staffCreate.EDIT;
+    this.staffService.changePageMode(this.staffCreateMode);
+    this.actionButton = 'update';
+    this.staffAddModel.staffMaster.mailingAddressCountry =+this.staffAddModel.staffMaster.mailingAddressCountry ;
+    this.staffAddModel.staffMaster.homeAddressCountry = +this.staffAddModel.staffMaster.homeAddressCountry;
+  }
   }
 
   cancelEdit() {
