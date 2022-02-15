@@ -26,6 +26,7 @@ All rights reserved.
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { DefaultValuesService } from "src/app/common/default-values.service";
 
 @Component({
   selector: "vex-grades",
@@ -36,11 +37,16 @@ export class GradesComponent implements OnInit {
   currentTab: string;
   // @Output() gradeSelTab: EventEmitter<string> = new EventEmitter();
 
+  isConfigUpdateFlag: boolean
   constructor(
     public translateService: TranslateService,
+    public defaultValuesService: DefaultValuesService,
     private dialog: MatDialog
   ) {
     // translateService.use("en");
+    defaultValuesService.isConfigUpdateFlag.subscribe((res)=>{
+      this.isConfigUpdateFlag = res
+    })
   }
 
   ngOnInit(): void {

@@ -24,6 +24,8 @@ export class DefaultValuesService {
   public sendAllSchoolFlagSubject = new Subject<boolean>();
   public sendIncludeFlagSubject = new Subject<boolean>();
   public setReportCompoentTitle = new Subject<String>()
+  private configUpdateFlag = new Subject<boolean>();
+  isConfigUpdateFlag = this.configUpdateFlag.asObservable();
   constructor(
     public translateService: TranslateService,
     private cryptoService: CryptoService,
@@ -405,6 +407,9 @@ export class DefaultValuesService {
   }
   sendPhoto(data: string) {
     this.photoChange.next(data);
+  }
+  setConfigUpdateFlag(data:boolean) {
+    this.configUpdateFlag.next(data);
   }
 
 

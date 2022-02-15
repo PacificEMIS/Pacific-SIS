@@ -224,6 +224,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
               }
           })
         })
+        this.defaultValuesService.setConfigUpdateFlag(res?.configUpdateFlag)
         this.addGradebookGradeModel = res;
         this.createDataSetForExcel();
         };
