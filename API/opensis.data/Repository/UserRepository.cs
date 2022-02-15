@@ -266,14 +266,20 @@ namespace opensis.data.Repository
                             var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
                             {
                                 StaffPhoto = x.StaffPhoto,
+                                Suffix = x.Suffix,
                                 FirstGivenName = x.FirstGivenName,
+                                MiddleName = x.MiddleName,
+                                LastFamilyName = x.LastFamilyName,
                                 StaffGuid = x.StaffGuid,
                             }).FirstOrDefault();
 
                             if (userData != null)
                             {
                                 ReturnModel.UserPhoto = userData.StaffPhoto;
+                                ReturnModel.Suffix = userData.Suffix;
                                 ReturnModel.FirstGivenName = userData.FirstGivenName;
+                                ReturnModel.MiddleName = userData.MiddleName;
+                                ReturnModel.LastFamilyName = userData.LastFamilyName;
                                 ReturnModel.UserGuid = userData.StaffGuid.ToString();
                             }
                         }
