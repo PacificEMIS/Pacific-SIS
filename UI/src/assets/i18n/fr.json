@@ -1603,5 +1603,6 @@
     "wash": "LAVAGE",
     "noTeacherScheduled": "Aucun enseignant prévu",
     "courseSectionAnd": "Section de cours et",
-    "courseType": "Type de cours"
+    "courseType": "Type de cours",
+    "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début"
 }

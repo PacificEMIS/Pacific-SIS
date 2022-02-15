@@ -1604,5 +1604,6 @@
     "others":"Others",
     "noTeacherScheduled": "No Teacher Scheduled",
     "courseSectionAnd": "Course Section and",
-    "courseType":"Course Type"
+    "courseType":"Course Type",
+    "endDateCannotBeEarlierOrSameAsStartDate": "End Date cannot be earlier or same as Start Date"
 }
