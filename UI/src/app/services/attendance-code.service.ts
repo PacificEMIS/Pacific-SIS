@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { AttendanceCodeCategoryModel, AttendanceCodeModel, AttendanceCodeDragDropModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel,AverageDailyAttendanceReportModel } from '../models/attendance-code.model';
+import { AttendanceCodeCategoryModel, AttendanceCodeModel, AttendanceCodeDragDropModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel,AverageDailyAttendanceReportModel , GetStudentAttendanceReport } from '../models/attendance-code.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -104,6 +104,18 @@ export class AttendanceCodeService {
     AverageDailyAttendanceReport.academicYear=this.defaultValuesService.getAcademicYear();
     let apiurl = this.apiUrl + AverageDailyAttendanceReport._tenantName + "/Report/getAverageDailyAttendanceReport";
     return this.http.post<AverageDailyAttendanceReportModel>(apiurl, AverageDailyAttendanceReport, this.httpOptions);
+  }
+
+  getStudentAttendanceReport(StudentAttendanceReport: GetStudentAttendanceReport) {
+    StudentAttendanceReport = this.defaultValuesService.getAllMandatoryVariable(StudentAttendanceReport);
+    let apiurl = this.apiUrl + StudentAttendanceReport._tenantName + "/Report/getStudentAttendanceReport";
+    return this.http.post<GetStudentAttendanceReport>(apiurl, StudentAttendanceReport, this.httpOptions);
+  }
+
+  getStudentAttendanceExcelReport(StudentAttendanceReport: GetStudentAttendanceReport) {
+    StudentAttendanceReport = this.defaultValuesService.getAllMandatoryVariable(StudentAttendanceReport);
+    let apiurl = this.apiUrl + StudentAttendanceReport._tenantName + "/Report/getStudentAttendanceExcelReport";
+    return this.http.post<GetStudentAttendanceReport>(apiurl, StudentAttendanceReport, this.httpOptions);
   }
 
 }

@@ -48,7 +48,8 @@ export class SidenavComponent implements OnInit {
   tenantLogoIcon: any;
   tenantName: any;
   tenantSidenavLogo: any;
-
+  pageId: string;
+  permittedSubmenuList:any;
   constructor(private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,
@@ -141,6 +142,11 @@ export class SidenavComponent implements OnInit {
       width: "500px",
     });
   }
+
+  showPreference() {
+    this.defaultValuesService.setPageId('Preference');
+    this.router.navigateByUrl('/school/settings/school-settings');
+}
 
   ngOnDestroy() {
     this.navigationService.changeMenuItemsStatus(false);

@@ -1600,5 +1600,8 @@
     "mailingAddressState":"Estado / provincia / localidad (correo)",
     "includeOnlyCoursesActiveAsOf": "Incluir solo cursos activos a partir de",
     "contact": "Contacto",
-    "wash": "LAVAR"
+    "wash": "LAVAR",
+    "noTeacherScheduled": "Ningún maestro programado",
+    "courseSectionAnd": "Sección del curso y",
+    "courseType": "Tipo de curso"
 }
