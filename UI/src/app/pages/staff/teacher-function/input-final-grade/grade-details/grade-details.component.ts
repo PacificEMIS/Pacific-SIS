@@ -72,7 +72,7 @@ export class GradeDetailsComponent implements OnInit {
   fruits: string[] = ['Lemon'];
   allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
-
+  defaultGradeScaleList=[]
   pageStatus = "Grade Details";
   showComment: boolean = false;
   staffDetails;
@@ -178,7 +178,7 @@ export class GradeDetailsComponent implements OnInit {
   }
 
   selectedGrade(grade, index) {
-    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = this.gradeScaleList.filter(x => x.title === grade)[0].breakoff;
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = this.gradeScaleList[0].grade.filter(x => x.title === grade)[0].breakoff;
   }
 
   onCheckboxChange(value) {
@@ -517,6 +517,7 @@ if(courseSection) {
         } else {
           this.gradeScaleStandardList = data.gradeScaleList.filter(x => x.gradeScaleId === +standardGradeScaleId)[0]?.grade;
           this.gradeScaleList = data.gradeScaleList.filter(x => x.useAsStandardGradeScale === false);
+          this.defaultGradeScaleList=this.gradeScaleList[0].grade;
           resolve('');
         }
       });
@@ -542,6 +543,7 @@ if(courseSection) {
           }
           this.addUpdateStudentFinalGradeModel.studentFinalGradeList = [new StudentFinalGrade()];
           this.studentMasterList.map((item: any, i) => {
+            item.gradeScaleList=this.defaultGradeScaleList;
             this.initializeDefaultValues(item, i);
             this.addUpdateStudentFinalGradeModel.studentFinalGradeList.push(new StudentFinalGrade());
           });
