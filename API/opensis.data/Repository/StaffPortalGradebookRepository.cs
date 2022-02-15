@@ -578,14 +578,14 @@ namespace opensis.data.Repository
 
                                             if (courseSectionData?.GradeScale?.Grade != null)
                                             {
-                                                if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                                assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title ?? "";
+                                            }
+                                            else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                            {
+                                                var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
+                                                if (ConfigurationGrade != null)
                                                 {
-                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
-                                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title ?? "";
-                                                }
-                                                else
-                                                {
-                                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title ?? "";
+                                                    assignmentGrade = this.context?.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId && x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId)?.Title ?? "";
                                                 }
                                             }
                                         }
@@ -623,16 +623,16 @@ namespace opensis.data.Repository
                         string? runningGrade = null;
                         if (courseSectionData?.GradeScale?.Grade != null)
                         {
-                            if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
-                            {
-
-                                var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runningAvg));
-                                if (ConfigurationGrade != null)
-                                {
-                                    runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title ?? "";
-                                }
-                            }
                             runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= runningAvg)?.Title ?? "";
+                        }
+                        else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                        {
+
+                            var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runningAvg));
+                            if (ConfigurationGrade != null)
+                            {
+                                runningGrade = this.context?.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId && x.TenantId == gradebookGradeListViewModel.TenantId && x.SchoolId == gradebookGradeListViewModel.SchoolId)?.Title ?? "";
+                            }
                         }
 
                         GradebookGradeList.ForEach(x => { x.RunningAvg = runningAvg.ToString(); x.RunningAvgGrade = runningGrade; });
@@ -1065,14 +1065,15 @@ namespace opensis.data.Repository
                                     {
                                         if (courseSectionData?.GradeScale?.Grade != null)
                                         {
-                                            if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                            assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title;
+                                        }
+                                        else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                        {
+                                            var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
+
+                                            if (ConfigurationGrade != null)
                                             {
-                                                var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
-                                                assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title;
-                                            }
-                                            else
-                                            {
-                                                assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title;
+                                                assignmentGrade = this.context?.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId && x.TenantId == assignmentForStudentViewModel.TenantId && x.SchoolId == assignmentForStudentViewModel.SchoolId)?.Title;
                                             }
                                         }
                                     }
@@ -1113,13 +1114,18 @@ namespace opensis.data.Repository
                     string? runningGrade = null;
                     if (courseSectionData?.GradeScale?.Grade != null)
                     {
-                        if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
-                        {
-                            var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runingAvgSum));
-                            runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title;
-                        }
                         runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= runingAvgSum)?.Title;
                     }
+                    else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                    {
+                        var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runingAvgSum));
+
+                        if (ConfigurationGrade != null)
+                        {
+                            runningGrade = this.context?.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId && x.TenantId == assignmentForStudentViewModel.TenantId && x.SchoolId == assignmentForStudentViewModel.SchoolId)?.Title;
+                        }
+                    }
+
                     GradebookGradeList.ForEach(x => { x.RunningAvg = (Math.Round((decimal)runingAvgSum, 2).ToString()); x.RunningAvgGrade = runningGrade; });
                     this.context?.GradebookGrades.AddRange(GradebookGradeList);
                     this.context?.SaveChanges();
@@ -1370,14 +1376,15 @@ namespace opensis.data.Repository
                                             var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == studentListByAssignmentTpyeViewModel.TenantId && x.SchoolId == studentListByAssignmentTpyeViewModel.SchoolId && x.CourseSectionId == studentListByAssignmentTpyeViewModel.CourseSectionId && x.AcademicYear == studentListByAssignmentTpyeViewModel.AcademicYear && x.BreakoffPoints > 0).ToList();
                                             if (courseSectionData?.GradeScale?.Grade != null)
                                             {
-                                                if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                                assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title;
+                                            }
+                                            else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
+                                            {
+                                                var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
+
+                                                if (ConfigurationGrade != null)
                                                 {
-                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(assignmentPercentage));
-                                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId)?.Title;
-                                                }
-                                                else
-                                                {
-                                                    assignmentGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= assignmentPercentage)?.Title;
+                                                    assignmentGrade = this.context?.Grade.FirstOrDefault(x => x.GradeId == ConfigurationGrade.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId && x.TenantId == studentListByAssignmentTpyeViewModel.TenantId && x.SchoolId == studentListByAssignmentTpyeViewModel.SchoolId)?.Title;
                                                 }
                                             }
                                         }
