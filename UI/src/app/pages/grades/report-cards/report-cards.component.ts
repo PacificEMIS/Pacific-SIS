@@ -760,6 +760,8 @@ export class ReportCardsComponent implements OnInit {
           .comments h4 { margin-bottom: 10px; }
          
           .comments p { margin-bottom: 3px; padding-right: 20px; }
+
+          .inline-block {display: inline-block}
     </style>
         </head>
     <body onload="window.print()">${printContents}</body>
