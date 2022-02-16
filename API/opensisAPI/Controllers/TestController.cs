@@ -1734,7 +1734,6 @@ namespace opensisAPI.Controllers
                             }
                             var permissionSubcategoryData2 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Class Lists".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 58);
 
-
                             if (permissionSubcategoryData2 != null)
                             {
                                 RolePermission permissionRole5 = new RolePermission
