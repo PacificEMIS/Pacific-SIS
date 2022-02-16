@@ -38,7 +38,7 @@ namespace opensis.data.ViewModels.CalendarEvents
         public List<opensis.data.Models.CalendarEvents> CalendarEventList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
-        public int? CalendarId { get; set; }
+        public int[]? CalendarId { get; set; }
         public int? MembershipId { get; set; }
         public int? AcademicYear { get; set; }
     }
