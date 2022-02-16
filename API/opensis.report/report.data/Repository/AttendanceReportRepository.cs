@@ -226,7 +226,7 @@ namespace opensis.report.report.data.Repository
                         StudentInternalId = x.ms.scs.StudentInternalId,
                         StudentName = x.ms.scs.FirstGivenName + " " + (x.ms.scs.MiddleName != null ? x.ms.scs.MiddleName + " " : null) + x.ms.scs.LastFamilyName,
                         PeriodName = x.bp.PeriodTitle,
-                        AttendanceCode = null,
+                        AttendanceCode = "Not Taken",
                         GradeLevelTitle = x.ms.scs.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
                     }).ToList();
 
