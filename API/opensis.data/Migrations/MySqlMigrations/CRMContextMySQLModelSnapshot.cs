@@ -3965,6 +3965,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("assignment_sorting");
 
+                    b.Property<bool?>("ConfigUpdateFlag")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("config_update_flag");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)")
@@ -5007,6 +5011,11 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("varchar(150)")
                         .HasColumnName("course_name");
 
+                    b.Property<string>("CourseType")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("course_type");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)")
@@ -5052,10 +5061,6 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasPrecision(0)
                         .HasColumnType("datetime(0)")
                         .HasColumnName("updated_on");
-
-                    b.Property<bool?>("WeightedGp")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("weighted_gp");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "HistGradeId", "HistMarkingPeriodId", "CreditTransferId")
                         .HasName("PK_historical_credit_transfer_tenant_id");

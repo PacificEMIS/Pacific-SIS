@@ -16,7 +16,7 @@ namespace opensis.report.report.data.ViewModels.StaffReport
         public int? SchoolId { get; set; }
         public string? Module { get; set; }
         public decimal? AcademicYear { get; set; }
-        public Guid[]? StaffGuids { get; set; }
+        public List<int> StaffIds { get; set; }
     }
 
     public class StaffSchoolReport

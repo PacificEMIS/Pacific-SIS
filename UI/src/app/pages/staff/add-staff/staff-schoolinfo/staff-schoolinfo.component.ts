@@ -96,6 +96,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   categoryId = 1;
   defaultSchoolId: number=0;
   destroySubject$: Subject<void> = new Subject();
+  today : Date
   
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
@@ -112,6 +113,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     ) {
     //translateService.use('en');
+    this.today = new Date()
   }
 
   ngOnInit(): void {
@@ -403,6 +405,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   editSchoolInfo() {
+    if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, 1).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
     this.divCount.length= this.staffCloneModel?.staffSchoolInfoList?.length;
@@ -420,6 +423,22 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.EDIT;
     this.staffService.changePageMode(this.staffCreateMode);
   })
+  } else {
+    this.divCount.length = this.staffCloneModel?.staffSchoolInfoList?.length;
+    if (this.staffCloneModel.staffSchoolInfoList != null) {
+      for (let i = 0; i < this.staffCloneModel.staffSchoolInfoList?.length; i++) {
+        this.divCount[i] = 2;
+      }
+    } else {
+      this.staffSchoolInfoModel = new StaffSchoolInfoModel();
+    }
+    this.getAllGradeLevel();
+    this.callAllSchool();
+    this.getAllMembership();
+    this.getAllSubjectList();
+    this.staffCreateMode = this.staffCreate.EDIT;
+    this.staffService.changePageMode(this.staffCreateMode);
+  }
   }
   cancelEdit() {
     if (this.staffSchoolInfoModel.staffSchoolInfoList != null) {

@@ -13,6 +13,7 @@ namespace opensis.report.report.data.Interface
         public StudentAttendanceReport GetStudentAttendanceReport(PageResult pageResult);
         public AverageDailyAttendanceViewModel GetAverageDailyAttendanceReport(PageResult pageResult);
         public AverageDailyAttendanceViewModel GetAverageAttendancebyDayReport(PageResult pageResult);
+        public StudentAttendanceReport GetStudentAttendanceExcelReport(PageResult pageResult);
 
     }
 }

@@ -14,6 +14,7 @@ import { GradeBookConfigurationService } from 'src/app/services/gradebook-config
 export class GradebookGradeDetailsComponent implements OnInit {
   icEdiit = icEdiit;
   @Input() studentId;
+  @Input() isWeightedSection;
   viewGradebookGradeByStudentModel: ViewGradebookGradeByStudentModel = new ViewGradebookGradeByStudentModel();
   gradesByStudentId;
   addGradebookGradeByStudentModel: AddGradebookGradeByStudentModel =  new AddGradebookGradeByStudentModel();

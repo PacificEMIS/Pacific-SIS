@@ -42,6 +42,8 @@ export class GradebookConfigurationComponent implements OnInit {
 
 
   populateFinalGrading() {
+    this.finalGradingMarkingPeriodList.courseSectionId=+this.selectedCourseSection.courseSectionId;
+    this.finalGradingMarkingPeriodList.isConfiguration=true;
     this.gradeBookConfigurationService.populateFinalGrading(this.finalGradingMarkingPeriodList).subscribe(
       (res: FinalGradingMarkingPeriodList) => {
         if (res) {

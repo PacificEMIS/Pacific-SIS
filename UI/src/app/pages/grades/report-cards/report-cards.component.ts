@@ -54,6 +54,7 @@ import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { reportCardType } from "../../../common/static-data";
 import * as html2pdf from 'html2pdf.js';
+import { GetMarkingPeriodByCourseSectionModel } from "../../../models/marking-period.model";
 
 @Component({
   selector: "vex-report-cards",
@@ -100,6 +101,7 @@ export class ReportCardsComponent implements OnInit {
   reportCardType = reportCardType;
   @ViewChild('printSectionId') printEl: ElementRef;
   generatedReportCardData;
+  getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
 
   constructor(
     private router: Router,
@@ -479,10 +481,10 @@ export class ReportCardsComponent implements OnInit {
   }
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
+    // this.getMarkingPeriodByCourseSectionModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.addReportCardPdf.academicYear = this.defaultValuesService.getAcademicYear();
-
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe((res) => {
+    this.getMarkingPeriodByCourseSectionModel.isReportCard = true;
+    this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe((res) => {
       if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);
         this.markingPeriodList = [];
@@ -659,7 +661,6 @@ export class ReportCardsComponent implements OnInit {
     // return new Promise((resolve, reject) => {
     //   const element = document.getElementById('pdfData');
     //   element.style.display = 'block';
-    //   console.log(element.innerHTML);
     //   const opt = {
     //     margin: 1,
     //     image: { type: 'png', quality: 0.98 },
@@ -674,7 +675,6 @@ export class ReportCardsComponent implements OnInit {
     //       // order_id: this.orderDetails.order_id,
     //       // ticket_pdf: new File([this.dataURItoBlob(res)], `Ticket_${this.orderDetails.order_id}.pdf`, { type: 'application/pdf' })
     //     };
-    //     // console.log(dataWithTicket);
     //     resolve(dataWithTicket);
     //   });
     // });

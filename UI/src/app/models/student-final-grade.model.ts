@@ -86,6 +86,16 @@ export class GetAllStudentListForFinalGradeModel extends CommonField {
     }
 }
 
+export class GetGradebookGradeinFinalGradeModel extends CommonField {
+    public courseSectionId: number;
+    public markingPeriodId: string;
+    public academicYear: number;
+
+    constructor() {
+        super();
+    }
+}
+
 export class filterParams {
     columnName: string;
     filterValue: string;

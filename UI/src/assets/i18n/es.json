@@ -1597,5 +1597,13 @@
     "adminOfficeComment": "Comentario de administración y oficina",
     "instituteReport" : "Informe del Instituto",
     "homeAddressState":"Estado / Provincia / Localidad (Inicio)",
-    "mailingAddressState":"Estado / provincia / localidad (correo)"
+    "mailingAddressState":"Estado / provincia / localidad (correo)",
+    "includeOnlyCoursesActiveAsOf": "Incluir solo cursos activos a partir de",
+    "contact": "Contacto",
+    "wash": "LAVAR",
+    "noTeacherScheduled": "Ningún maestro programado",
+    "courseSectionAnd": "Sección del curso y",
+    "courseType": "Tipo de curso",
+    "youHaveChangedTheGradebookConfiguration":"Ha cambiado la configuración del libro de calificaciones",
+    "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones"
 }

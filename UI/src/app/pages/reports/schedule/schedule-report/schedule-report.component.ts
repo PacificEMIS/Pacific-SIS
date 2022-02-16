@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icMenuBook from '@iconify/icons-ic/twotone-menu-book';
-import icPrint from '@iconify/icons-ic/twotone-print';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'vex-schedule-report',
@@ -11,11 +11,14 @@ import icPrint from '@iconify/icons-ic/twotone-print';
 export class ScheduleReportComponent implements OnInit {
 
   icMenuBook = icMenuBook;
-  icPrint = icPrint;
 
-  constructor(public translateService: TranslateService) { }
+  constructor(public translateService: TranslateService, private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  viewDetails() {
+    this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report', 'schedule-report-details']);
   }
 
 }

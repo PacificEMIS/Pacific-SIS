@@ -9,6 +9,8 @@ export class ViewGradebookGradeModel extends CommonField{
     includeInactive: boolean
     showUngraded;
     SearchValue;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
 
     constructor() {
         super();
@@ -39,6 +41,8 @@ export class ViewGradebookGradeByStudentModel extends CommonField{
     studentId: number;
     showUngraded;
     SearchValue;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
 
     constructor() {
         super();

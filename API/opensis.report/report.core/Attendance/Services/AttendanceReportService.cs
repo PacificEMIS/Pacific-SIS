@@ -59,6 +59,39 @@ namespace opensis.report.report.core.Attendance.Services
         }
 
         /// <summary>
+        /// Get Student Attendance Excel Report
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentAttendanceReport GetStudentAttendanceExcelReport(PageResult pageResult)
+        {
+            StudentAttendanceReport studentListModel = new();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+
+                    studentListModel = this.attendanceReportRepository.GetStudentAttendanceExcelReport(pageResult);
+                    return studentListModel;
+
+                }
+                else
+                {
+                    studentListModel._failure = true;
+                    studentListModel._message = TOKENINVALID;
+                    return studentListModel;
+                }
+            }
+            catch (Exception es)
+            {
+                studentListModel._failure = true;
+                studentListModel._message = es.Message;
+            }
+            return studentListModel;
+
+        }
+
+        /// <summary>
         /// GetAverageDailyAttendanceReport
         /// </summary>
         /// <param name="pageResult"></param>

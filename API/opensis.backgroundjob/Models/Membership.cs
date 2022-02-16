@@ -36,7 +36,7 @@ namespace opensis.backgroundjob.Models
         {
             //RolePermission = new HashSet<RolePermission>();
             //StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
-            //StudentAttendance = new HashSet<StudentAttendance>();
+            StudentAttendance = new HashSet<StudentAttendance>();
             UserMaster = new HashSet<UserMaster>();
         }
 
@@ -64,7 +64,7 @@ namespace opensis.backgroundjob.Models
         //public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         //public virtual ICollection<RolePermission> RolePermission { get; set; }
         //public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
-        //public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
+        public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
         public virtual ICollection<UserMaster> UserMaster { get; set; }
     }
 }

@@ -32,10 +32,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PrintSchedulesComponent } from './print-schedules/print-schedules.component';
 import { ScheduleReportComponent } from './schedule-report/schedule-report.component';
+import { ScheduleReportDetailsComponent } from './schedule-report/schedule-report-details/schedule-report-details.component';
 
 
 @NgModule({
-  declarations: [ScheduleComponent, AddDropReportComponent, ClassListComponent, PrintSchedulesComponent, ScheduleReportComponent],
+  declarations: [ScheduleComponent, AddDropReportComponent, ClassListComponent, PrintSchedulesComponent, ScheduleReportComponent, ScheduleReportDetailsComponent],
   imports: [
     CommonModule,
     ScheduleRoutingModule,

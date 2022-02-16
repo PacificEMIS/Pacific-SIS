@@ -21,5 +21,8 @@ namespace opensis.data.ViewModels.StaffPortalGradebook
         public bool? ShowUngraded { get; set; }
         public string? SearchValue { get; set; }
         public string? MarkingPeriodId { get; set; }
+        public DateTime? MarkingPeriodStartDate { get; set; }
+        public DateTime? MarkingPeriodEndDate { get; set; }
+        public bool? ConfigUpdateFlag { get; set; }
     }
 }

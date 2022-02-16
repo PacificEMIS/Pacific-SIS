@@ -2270,6 +2270,7 @@ namespace opensis.data.Models
                 entity.Property(e => e.AssignmentSorting)
                     .HasMaxLength(100)
                     .HasColumnName("assignment_sorting");
+                entity.Property(e => e.ConfigUpdateFlag).HasColumnName("config_update_flag");
 
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(150)
@@ -2834,6 +2835,10 @@ namespace opensis.data.Models
                     .HasMaxLength(150)
                     .HasColumnName("course_name");
 
+                entity.Property(e => e.CourseType)
+                    .HasMaxLength(150)
+                    .HasColumnName("course_type");
+
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(150)
                     .HasColumnName("created_by");
@@ -2874,8 +2879,6 @@ namespace opensis.data.Models
                 entity.Property(e => e.UpdatedOn)
                     .HasPrecision(0)
                     .HasColumnName("updated_on");
-
-                entity.Property(e => e.WeightedGp).HasColumnName("weighted_gp");
 
                 entity.HasOne(d => d.HistoricalGrade)
                     .WithMany(p => p.HistoricalCreditTransfer)

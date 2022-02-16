@@ -1660,6 +1660,26 @@ namespace opensis.data.Repository
                                     //This block for update existing enrollment details only
                                     var studentEnrollmentCode = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentList.TenantId && x.SchoolId == studentEnrollmentList.SchoolId && x.EnrollmentCode.ToString() == studentEnrollmentList.EnrollmentCode);
 
+                                    //Update grade of associated tables when grade update in student enrollment
+                                    if (studentEnrollmentUpdate.GradeId != studentEnrollmentList.GradeId)
+                                    {
+                                        var academicYear = Utility.GetCurrentAcademicYear(this.context!, studentEnrollmentListModel.TenantId, studentEnrollmentListModel.SchoolId);
+
+                                        var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == studentEnrollmentListModel.TenantId && x.SchoolId == studentEnrollmentListModel.SchoolId && x.StudentId == studentEnrollmentListModel.StudentId && x.AcademicYear == academicYear).ToList();
+
+                                        if (studentCourseSectionScheduleData?.Any() != null)
+                                        {
+                                            studentCourseSectionScheduleData.ForEach(x => x.GradeId = studentEnrollmentList.GradeId);
+                                        }
+
+                                        var studentInputFinalGradeData = this.context?.StudentFinalGrade.Where(x => x.TenantId == studentEnrollmentListModel.TenantId && x.SchoolId == studentEnrollmentListModel.SchoolId && x.StudentId == studentEnrollmentListModel.StudentId && x.AcademicYear == academicYear).ToList();
+
+                                        if (studentInputFinalGradeData?.Any() != null)
+                                        {
+                                            studentInputFinalGradeData.ForEach(x => x.GradeId = studentEnrollmentList.GradeId);
+                                        }
+                                    }
+
                                     studentEnrollmentUpdate.EnrollmentCode = studentEnrollmentCode!=null? studentEnrollmentCode.Title:null;
                                     studentEnrollmentUpdate.EnrollmentDate = studentEnrollmentList.EnrollmentDate;
                                     studentEnrollmentUpdate.GradeLevelTitle = studentEnrollmentList.GradeLevelTitle;

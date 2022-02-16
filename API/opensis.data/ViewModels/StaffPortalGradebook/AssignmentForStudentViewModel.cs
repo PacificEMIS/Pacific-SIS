@@ -19,5 +19,7 @@ namespace opensis.data.ViewModels.StaffPortalGradebook
         public int StudentId { get; set; }
         public string? CreatedBy { get; set; }
         public string? MarkingPeriodId { get; set; }
+        public DateTime? MarkingPeriodStartDate { get; set; }
+        public DateTime? MarkingPeriodEndDate { get; set; }
     }
 }

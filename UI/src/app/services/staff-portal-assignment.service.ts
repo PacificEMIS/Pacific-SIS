@@ -28,6 +28,8 @@ export class StaffPortalAssignmentService {
     obj.assignmentType.createdBy= this.defaultValuesService.getUserGuidId();
     obj.assignmentType.schoolId= this.defaultValuesService.getSchoolID();
     obj.assignmentType.tenantId= this.defaultValuesService.getTenantID();
+    obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/addAssignmentType';
     return this.http.post<AddAssignmentTypeModel>(apiurl, obj,this.httpOptions);
 }
@@ -35,6 +37,8 @@ export class StaffPortalAssignmentService {
 getAllAssignmentType(obj: GetAllAssignmentsModel){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.academicYear = this.defaultValuesService.getAcademicYear();
+    obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
     const apiurl = this.apiUrl + obj._tenantName + '/StaffPortalAssignment/getAllAssignmentType';
     return this.http.post<GetAllAssignmentsModel>(apiurl, obj,this.httpOptions);
 }

@@ -129,11 +129,11 @@ export class GetStudentAdvancedReportModel extends CommonField{
 }
 
 export class GetStaffAdvancedReportModel extends CommonField{
-    staffGuids: any[]
+    staffIds: any[]
 
     constructor() {
         super();
-        this.staffGuids = [];
+        this.staffIds = [];
     }
 }
 
@@ -153,5 +153,14 @@ export class GetSchoolReportModel extends CommonField {
         this.isContactInfo = false;
         this.isWashInfo = false;
         this.isCustomCategory = false;
+    }
+}
+
+export class GetStudentListByCourseSectionModel extends CommonField {
+    courseIds: any[];
+
+    constructor() {
+        super();
+        this.courseIds = [];
     }
 }

@@ -74,7 +74,7 @@
                         <div class="flex">
                             <div class="gradebook-right-col" *ngFor="let assignment of addGradebookGradeModel?.assignmentsListViewModels">
                                 <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                    <p>Due : {{ assignment?.assignmentDate | date }}</p>
+                                    <p>Due : {{ assignment?.dueDate | date }}</p>
                                     <div class="flex justify-between h-12">
                                         <p class="multi-line-text font-semibold mt-1">{{assignment?.assignmentTitle}}</p>
                                         <div *ngIf="defaultValuesService.checkAcademicYear()">
@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="">
                                         <p class="text-blue cursor-pointer truncate" (click)="showCategoryList(assignment)"><a>{{assignment?.title}}</a></p>
-                                        <p>{{ 'weightage' | translate }} : {{assignment?.weightage}}%</p>
+                                        <p *ngIf="isWeightedSection">{{ 'weightage' | translate }} : {{assignment?.weightage}}%</p>
                                     </div>
                                 </div>
                                 <ng-container *ngFor="let grade of assignment?.studentsListViewModels">
@@ -144,7 +144,7 @@
                         <mat-icon class="mr-4 align-middle">west</mat-icon>
                     </span>
                     <span class="font-semibold text-lg text-primary">{{assignmentTypeDetails?.assignmentTitle}}</span>
-                    <p class="pl-10">{{ 'weightage' | translate }} : {{assignmentTypeDetails?.weightage}}%</p>
+                    <p *ngIf="isWeightedSection" class="pl-10">{{ 'weightage' | translate }} : {{assignmentTypeDetails?.weightage}}%</p>
                 </h4>
                 <div class="my-2 md:my-0">
                     <p class="text-primary">{{ 'putAsterixAsPointsValueToExemptAstudentFromAnAssignment' | translate }}</p>
@@ -211,7 +211,7 @@
 
                         <div class="gradebook-right-col" *ngFor="let assignment of addGradebookGradeByAssignmentTypeModel?.assignmentsListViewModels">
                             <div class="bg-skyblue-light px-4 py-2 h-32 border-b border-r">
-                                <p>Due : {{ assignment?.assignmentDate | date }}</p>
+                                <p>Due : {{ assignment?.dueDate | date }}</p>
                                 <div class="flex justify-between h-12">
                                     <p class="multi-line-text font-semibold mt-1">{{ assignment?.assignmentTitle}}</p>
                                     <div>
@@ -228,7 +228,7 @@
                                 </div>
                                 <div class="">
                                     <p class="text-blue truncate"><a>{{ assignment?.title}}</a></p>
-                                    <p>{{ 'weightage' | translate }} : {{ assignment?.weightage}}%</p>
+                                    <p *ngIf="isWeightedSection">{{ 'weightage' | translate }} : {{ assignment?.weightage}}%</p>
                                 </div>
                             </div>
                             <ng-container *ngFor="let grade of assignment?.studentsListViewModels">
@@ -289,7 +289,7 @@
             </div>
         </div>
         <mat-divider></mat-divider>
-        <vex-gradebook-grade-details [studentId]="gradeData?.studentId"></vex-gradebook-grade-details>
+        <vex-gradebook-grade-details [isWeightedSection]="isWeightedSection" [studentId]="gradeData?.studentId"></vex-gradebook-grade-details>
     </div>
 </div>
 

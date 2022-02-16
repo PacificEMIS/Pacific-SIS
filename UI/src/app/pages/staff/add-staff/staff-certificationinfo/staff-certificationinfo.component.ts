@@ -137,6 +137,7 @@ export class StaffCertificationinfoComponent implements OnInit {
     this.staffCertificateList.filter = this.searchKey.trim().toLowerCase()
   }
   openAddNew() {
+    if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
     this.dialog.open(AddCertificateComponent, {
@@ -148,8 +149,19 @@ export class StaffCertificationinfoComponent implements OnInit {
       }
     });
   });
+  } else { 
+    this.dialog.open(AddCertificateComponent, {
+      data: null,
+      width: '600px'
+    }).afterClosed().subscribe((data) => {
+      if (data === 'submited') {
+        this.getAllStaffCertificateInfo();
+      }
+    });
+  }
   }
   openEditdata(element) {
+    if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
     this.dialog.open(AddCertificateComponent, {
@@ -161,6 +173,16 @@ export class StaffCertificationinfoComponent implements OnInit {
       }
     });
   });
+  } else {
+    this.dialog.open(AddCertificateComponent, {
+      data: element,
+      width: '600px'
+    }).afterClosed().subscribe((data) => {
+      if (data === 'submited') {
+        this.getAllStaffCertificateInfo();
+      }
+    });
+  }
   }
   openViewDetails(element) {
     this.dialog.open(CertificateDetailsComponent, {

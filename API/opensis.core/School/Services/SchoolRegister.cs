@@ -108,9 +108,18 @@ namespace opensis.core.School.Services
                 if (tokenManager.CheckToken(pageResult._tenantName+pageResult._userName, pageResult._token))
                 {
                     schoolList = this.schoolRepository.GetAllSchoolList(pageResult);
-                    schoolList._message = SUCCESS;
-                    schoolList._failure = false;
-                    logger.Info("Method getAllSchoolList end with success.");
+                    if (schoolList.schoolMaster.Any())
+                    {
+                        schoolList._message = SUCCESS;
+                        schoolList._failure = false;
+                        logger.Info("Method getAllSchoolList end with success.");
+                    }
+                    else
+                    {
+                        schoolList._message = "No Record Found";
+                        schoolList._failure = true;
+                    }
+
                 }
 
                 else
