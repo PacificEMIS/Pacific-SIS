@@ -814,7 +814,7 @@ namespace opensis.data.Repository
 
                             school.schoolMaster.Block = new List<Block>()
                 {
-                     new Block(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy }
+                     new Block(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy }
                 };
 
                             ReleaseNumber releaseNumber = new();
