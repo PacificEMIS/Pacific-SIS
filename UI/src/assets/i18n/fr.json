@@ -1604,5 +1604,7 @@
     "noTeacherScheduled": "Aucun enseignant prévu",
     "courseSectionAnd": "Section de cours et",
     "courseType": "Type de cours",
-    "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début"
+    "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début",
+    "youHaveChangedTheGradebookConfiguration":"Vous avez modifié la configuration du carnet de notes",
+    "pleaseRecalculateTheGrades":"merci de recalculer les notes"
 }
