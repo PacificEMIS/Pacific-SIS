@@ -1400,7 +1400,7 @@ namespace opensisAPI.Controllers
             {
                 try
                 {
-                    var allSchoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Where(x => x.TenantId == tenantId && x.SchoolId == 1).ToList();
+                    var allSchoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
 
                     if (allSchoolData.Count > 0)
                     {
@@ -1475,7 +1475,7 @@ namespace opensisAPI.Controllers
             {
                 try
                 {
-                    var allSchoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Where(x => x.TenantId == tenantId && x.SchoolId == 1).ToList();
+                    var allSchoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
 
                     if (allSchoolData.Count > 0)
                     {
@@ -1542,7 +1542,7 @@ namespace opensisAPI.Controllers
             {
                 try
                 {
-                    var allSchoolData = this.context?.SchoolMaster.Include(s => s.SchoolDetail).Where(x => x.TenantId == tenantId && x.SchoolId == 1).ToList();
+                    var allSchoolData = this.context?.SchoolMaster.Include(s => s.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
 
                     if (allSchoolData.Count > 0)
                     {
