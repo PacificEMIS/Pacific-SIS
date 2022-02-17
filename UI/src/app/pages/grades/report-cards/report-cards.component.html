@@ -84,6 +84,10 @@
                                     <input class="py-3 border-0 outline-none w-full bg-transparent table-search"
                                         appearance="outline" color="primary" [formControl]="searchCtrl"
                                         placeholder="Search..." type="search">
+                                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                                        <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                            <mat-icon>search</mat-icon>
+                                        </button>
                                     <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
                                         <mat-icon [icIcon]="icSearch"></mat-icon>
                                     </button>

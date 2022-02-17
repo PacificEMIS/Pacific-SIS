@@ -50,6 +50,10 @@
                                     (click)="onSearchClear()">
                                     <mat-icon>close</mat-icon>
                                 </button>
+                                <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                                <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                    <mat-icon>search</mat-icon>
+                                </button>
                             </div>
                         </div>
                         <hr class="-mx-6 block md:hidden" />
