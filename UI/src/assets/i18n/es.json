@@ -1604,6 +1604,7 @@
     "noTeacherScheduled": "Ningún maestro programado",
     "courseSectionAnd": "Sección del curso y",
     "courseType": "Tipo de curso",
+    "endDateCannotBeEarlierOrSameAsStartDate": "La fecha de finalización no puede ser anterior ni igual a la fecha de inicio",
     "youHaveChangedTheGradebookConfiguration":"Ha cambiado la configuración del libro de calificaciones",
     "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones"
 }
