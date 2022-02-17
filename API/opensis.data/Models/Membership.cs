@@ -35,6 +35,7 @@ namespace opensis.data.Models
         public Membership()
         {
             RolePermission = new HashSet<RolePermission>();
+            StaffSchoolInfos = new HashSet<StaffSchoolInfo>();
             StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
             StudentAttendance = new HashSet<StudentAttendance>();
             UserMaster = new HashSet<UserMaster>();
@@ -63,6 +64,7 @@ namespace opensis.data.Models
         [ValidateNever]
         public virtual SchoolMaster SchoolMaster { get; set; } = null!;
         public virtual ICollection<RolePermission> RolePermission { get; set; }
+        public virtual ICollection<StaffSchoolInfo> StaffSchoolInfos { get; set; }
         public virtual ICollection<StudentAttendanceComments> StudentAttendanceComments { get; set; }
         public virtual ICollection<StudentAttendance> StudentAttendance { get; set; }
         public virtual ICollection<UserMaster> UserMaster { get; set; }

@@ -492,7 +492,7 @@
     "attendanceCodes": "Codes de présence",
     "grades": "Notes",
     "reportCardGrades": "Notes des bulletins scolaires",
-    "Report Card Comments": "reportCardComments",
+    "Report Card Comments": "Commentaires sur la fiche de rapport",
     "honorRollSetup": "Configuration du tableau d'honneur",
     "honorRoll": "Tableau d'honneur",
     "addNewHonorRoll": "Ajouter un nouveau tableau d'honneur",
@@ -1597,5 +1597,14 @@
     "adminOfficeComment": "Commentaire de l'administrateur et du bureau",
     "instituteReport" : "Rapport de l'Institut",
     "homeAddressState":"Etat / Province / Localité (Accueil)",
-    "mailingAddressState":"Etat / Province / Localité (Envoi)"
+    "mailingAddressState":"Etat / Province / Localité (Envoi)",
+    "includeOnlyCoursesActiveAsOf": "N'inclure que les cours actifs au",
+    "contact": "Contact",
+    "wash": "LAVAGE",
+    "noTeacherScheduled": "Aucun enseignant prévu",
+    "courseSectionAnd": "Section de cours et",
+    "courseType": "Type de cours",
+    "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début",
+    "youHaveChangedTheGradebookConfiguration":"Vous avez modifié la configuration du carnet de notes",
+    "pleaseRecalculateTheGrades":"merci de recalculer les notes"
 }

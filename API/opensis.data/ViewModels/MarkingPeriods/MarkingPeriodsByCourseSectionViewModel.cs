@@ -44,6 +44,7 @@ namespace opensis.data.ViewModels.MarkingPeriods
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
         public List<GetMarkingPeriodView> getMarkingPeriodView { get; set; }
+        public bool? IsReportCard { get; set; }
 
     }
 }

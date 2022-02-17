@@ -492,7 +492,7 @@
     "attendanceCodes": "Códigos de asistencia",
     "grades": "Los grados",
     "reportCardGrades": "Calificaciones de la boleta de calificaciones",
-    "Report Card Comments": "reportCardComments",
+    "Report Card Comments": "Comentarios de la boleta de calificaciones",
     "honorRollSetup": "Configuración del cuadro de honor",
     "honorRoll": "Cuadro de honor",
     "addNewHonorRoll": "Agregar nuevo cuadro de honor",
@@ -1597,5 +1597,14 @@
     "adminOfficeComment": "Comentario de administración y oficina",
     "instituteReport" : "Informe del Instituto",
     "homeAddressState":"Estado / Provincia / Localidad (Inicio)",
-    "mailingAddressState":"Estado / provincia / localidad (correo)"
+    "mailingAddressState":"Estado / provincia / localidad (correo)",
+    "includeOnlyCoursesActiveAsOf": "Incluir solo cursos activos a partir de",
+    "contact": "Contacto",
+    "wash": "LAVAR",
+    "noTeacherScheduled": "Ningún maestro programado",
+    "courseSectionAnd": "Sección del curso y",
+    "courseType": "Tipo de curso",
+    "endDateCannotBeEarlierOrSameAsStartDate": "La fecha de finalización no puede ser anterior ni igual a la fecha de inicio",
+    "youHaveChangedTheGradebookConfiguration":"Ha cambiado la configuración del libro de calificaciones",
+    "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones"
 }

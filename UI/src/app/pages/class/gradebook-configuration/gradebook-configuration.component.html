@@ -154,7 +154,13 @@
                     </li>
                 </ng-container>
         
-        
+                <li *ngIf="quater.doesGrades && !quater?.isProgressPeriodExists">
+                    <mat-form-field appearance="outline" color="primary" class="w-full">
+                        <mat-label>{{ quater.title }}</mat-label>
+                        <input [(ngModel)]="quater.gradingPercentage" matInput type="number">
+                    </mat-form-field>
+                </li>
+
                 <li *ngIf="quater.doesExam">
                     <mat-form-field appearance="outline" color="primary" class="w-full">
                         <mat-label>{{ quater.title + ' Exam' }}</mat-label>
@@ -183,6 +189,12 @@
                     </li>
                 </ng-container>
 
+                <li *ngIf="semester.doesGrades && !semester?.isQuarterExists">
+                    <mat-form-field appearance="outline" color="primary" class="w-full">
+                        <mat-label>{{ semester.title}}</mat-label>
+                        <input [(ngModel)]="semester.gradingPercentage" type="number" matInput>
+                    </mat-form-field>
+                </li>
 
                 <li *ngIf="semester.doesExam">
                     <mat-form-field appearance="outline" color="primary" class="w-full">
@@ -212,6 +224,13 @@
                     </li>
                 </ng-container>
 
+                <li *ngIf="year.doesGrades && !year?.isSemesterExists">
+                    <mat-form-field appearance="outline" color="primary" class="w-full">
+                        <mat-label>{{ year.title }}</mat-label>
+                        <input matInput [(ngModel)]="year.gradingPercentage" type="number">
+                    </mat-form-field>
+                </li>
+                
                 <li *ngIf="year.doesExam">
                     <mat-form-field appearance="outline" color="primary" class="w-full">
                         <mat-label>{{ year.title + ' Exam' }}</mat-label>

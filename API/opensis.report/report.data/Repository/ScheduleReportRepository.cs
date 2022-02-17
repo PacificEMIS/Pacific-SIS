@@ -166,55 +166,101 @@ namespace opensis.report.report.data.Repository
             scheduleClass.SchoolId = courseSectionList.SchoolId;
             scheduleClass._token = courseSectionList._token;
             scheduleClass._tenantName = courseSectionList._tenantName;
-
-            var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == courseSectionList.TenantId && x.SchoolId == courseSectionList.SchoolId && (courseSectionList.CourseId == null || x.CourseId == courseSectionList.CourseId) && (courseSectionList.CourseSubject == null || x.CourseSubject == courseSectionList.CourseSubject));
-
-            if (coursedata != null && coursedata.Any())
+            try
             {
-                List<AllCourseSectionView> filteredPeriodCourseData = new();
-                var distinctCourseData = coursedata.Select(s => new AllCourseSectionView { TenantId = s.TenantId, SchoolId = s.SchoolId, CourseId = s.CourseId, CourseTitle = s.CourseTitle, CourseProgram = s.CourseProgram, CourseSubject = s.CourseSubject, AcademicYear = s.AcademicYear, CourseSectionId = s.CourseSectionId, CourseSectionName = s.CourseSectionName, YrMarkingPeriodId = s.YrMarkingPeriodId, SmstrMarkingPeriodId = s.SmstrMarkingPeriodId, QtrMarkingPeriodId = s.QtrMarkingPeriodId, PrgrsprdMarkingPeriodId = s.PrgrsprdMarkingPeriodId, IsActive = s.IsActive, DurationStartDate = s.DurationStartDate, DurationEndDate = s.DurationEndDate, Seats = s.Seats, CourseGradeLevel = s.CourseGradeLevel, FixedPeriodId = s.FixedPeriodId, VarPeriodId = s.VarPeriodId, CalPeriodId = s.CalPeriodId, BlockPeriodId = s.BlockPeriodId, GradeScaleId = s.GradeScaleId, AllowStudentConflict = s.AllowStudentConflict, AllowTeacherConflict = s.AllowTeacherConflict, ScheduleType = s.ScheduleType }).Distinct().ToList();
+                var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == courseSectionList.TenantId && x.SchoolId == courseSectionList.SchoolId && (courseSectionList.CourseId == null || x.CourseId == courseSectionList.CourseId) && (courseSectionList.CourseSubject == null || x.CourseSubject == courseSectionList.CourseSubject));
 
-                if (courseSectionList.BlockPeriodId != null)
+                if (coursedata != null && coursedata.Any())
                 {
-                    filteredPeriodCourseData = distinctCourseData.Where(x => x.FixedPeriodId == courseSectionList.BlockPeriodId || x.VarPeriodId == courseSectionList.BlockPeriodId || x.CalPeriodId == courseSectionList.BlockPeriodId || x.BlockPeriodId == courseSectionList.BlockPeriodId).ToList();
+                    List<AllCourseSectionView> filteredPeriodCourseData = new();
+                    var distinctCourseData = coursedata.Select(s => new AllCourseSectionView { TenantId = s.TenantId, SchoolId = s.SchoolId, CourseId = s.CourseId, CourseTitle = s.CourseTitle, CourseProgram = s.CourseProgram, CourseSubject = s.CourseSubject, AcademicYear = s.AcademicYear, CourseSectionId = s.CourseSectionId, CourseSectionName = s.CourseSectionName, YrMarkingPeriodId = s.YrMarkingPeriodId, SmstrMarkingPeriodId = s.SmstrMarkingPeriodId, QtrMarkingPeriodId = s.QtrMarkingPeriodId, PrgrsprdMarkingPeriodId = s.PrgrsprdMarkingPeriodId, IsActive = s.IsActive, DurationStartDate = s.DurationStartDate, DurationEndDate = s.DurationEndDate, Seats = s.Seats, CourseGradeLevel = s.CourseGradeLevel, FixedPeriodId = s.FixedPeriodId, VarPeriodId = s.VarPeriodId, CalPeriodId = s.CalPeriodId, BlockPeriodId = s.BlockPeriodId, GradeScaleId = s.GradeScaleId, AllowStudentConflict = s.AllowStudentConflict, AllowTeacherConflict = s.AllowTeacherConflict, ScheduleType = s.ScheduleType }).Distinct().ToList();
+
+                    if (courseSectionList.BlockPeriodId != null)
+                    {
+                        filteredPeriodCourseData = distinctCourseData.Where(x => x.FixedPeriodId == courseSectionList.BlockPeriodId || x.VarPeriodId == courseSectionList.BlockPeriodId || x.CalPeriodId == courseSectionList.BlockPeriodId || x.BlockPeriodId == courseSectionList.BlockPeriodId).ToList();
+                    }
+                    else
+                    {
+                        filteredPeriodCourseData = distinctCourseData;
+                    }
+
+
+                    if (filteredPeriodCourseData.Any() == true)
+                    {
+                        List<CourseSectionForStaff> sectionList = new();
+                        foreach (var CourseData in filteredPeriodCourseData)
+                        {
+                            List<string> staffName = new();
+                            var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == courseSectionList.TenantId && x.SchoolId == courseSectionList.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.CourseId == CourseData.CourseId && (courseSectionList.StaffId == null || x.StaffId == courseSectionList.StaffId) && x.IsDropped != false).ToList();
+                            CourseSectionForStaff section = new();
+
+                            if (staffSchedule.Any() == true && courseSectionList.StaffId != null)
+                            {
+                                foreach (var scheduleList in staffSchedule)
+                                {
+                                    staffName.Add($"{scheduleList.StaffMaster.FirstGivenName} { (scheduleList.StaffMaster.MiddleName == null ? "" : $"{scheduleList.StaffMaster.MiddleName} ")}{scheduleList.StaffMaster.LastFamilyName}");
+
+                                    var totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == CourseData.TenantId && x.SchoolId == CourseData.SchoolId && x.CourseId == CourseData.CourseId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true && x.StudentMaster.IsActive == true).ToList().Count;
+
+                                    section.CourseSectionName = CourseData.CourseSectionName;
+                                    section.SchoolId = CourseData.SchoolId;
+                                    section.TenantId = CourseData.TenantId;
+                                    section.ScheduledStudentCount = totalStudent;
+                                    section.CourseSectionId = CourseData.CourseSectionId;
+                                    section.CourseSubject = CourseData.CourseSubject;
+                                    section.CourseTitle = CourseData.CourseTitle;
+                                    section.CourseSubject = CourseData.CourseSubject;
+                                    section.CourseId = CourseData.CourseId;
+                                    section.StaffName = string.Join(", ", staffName);
+                                    sectionList.Add(section);
+                                }
+                            }
+                            if(courseSectionList.StaffId == null)
+                            {
+                                foreach (var scheduleList in staffSchedule)
+                                {
+                                    staffName.Add($"{scheduleList.StaffMaster.FirstGivenName} { (scheduleList.StaffMaster.MiddleName == null ? "" : $"{scheduleList.StaffMaster.MiddleName} ")}{scheduleList.StaffMaster.LastFamilyName}");
+                                }
+
+                                var totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == CourseData.TenantId && x.SchoolId == CourseData.SchoolId && x.CourseId == CourseData.CourseId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true && x.StudentMaster.IsActive == true).ToList().Count;
+
+                                section.CourseSectionName = CourseData.CourseSectionName;
+                                section.SchoolId = CourseData.SchoolId;
+                                section.TenantId = CourseData.TenantId;
+                                section.ScheduledStudentCount = totalStudent;
+                                section.CourseSectionId = CourseData.CourseSectionId;
+                                section.CourseSubject = CourseData.CourseSubject;
+                                section.CourseTitle = CourseData.CourseTitle;
+                                section.CourseSubject = CourseData.CourseSubject;
+                                section.CourseId = CourseData.CourseId;
+                                section.StaffName = string.Join(", ", staffName);
+                                sectionList.Add(section);
+                            }
+                        }
+                        scheduleClass.CourseSectionViewList = sectionList;
+
+                        if (scheduleClass.CourseSectionViewList.Count==0)
+                        {
+                            scheduleClass._failure = true;
+                            scheduleClass._message = NORECORDFOUND;
+                        }
+                    }
+                    else
+                    {
+                        scheduleClass._failure = true;
+                        scheduleClass._message = NORECORDFOUND;
+                    }
                 }
                 else
                 {
-                    filteredPeriodCourseData = distinctCourseData;
+                    scheduleClass._failure = true;
+                    scheduleClass._message = NORECORDFOUND;
                 }
-
-
-                if (filteredPeriodCourseData.Any() == true)
-                {
-                    List<CourseSectionForStaff> sectionList = new();
-                    foreach (var CourseData in filteredPeriodCourseData)
-                    {
-                        List<string> staffName = new();
-                        var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == courseSectionList.TenantId && x.SchoolId == courseSectionList.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.CourseId == CourseData.CourseId && (courseSectionList.StaffId == null || x.StaffId == courseSectionList.StaffId) && x.IsDropped != false).ToList();
-                        CourseSectionForStaff section = new();
-                        foreach (var scheduleList in staffSchedule)
-                        {
-                            staffName.Add($"{scheduleList.StaffMaster.FirstGivenName} { (scheduleList.StaffMaster.MiddleName == null ? "" : $"{scheduleList.StaffMaster.MiddleName} ")}{scheduleList.StaffMaster.LastFamilyName}");
-                        }
-
-                        var totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == CourseData.TenantId && x.SchoolId == CourseData.SchoolId && x.CourseId == CourseData.CourseId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true && x.StudentMaster.IsActive == true).ToList().Count;
-
-                        section.CourseSectionName = CourseData.CourseSectionName;
-                        section.SchoolId = CourseData.SchoolId;
-                        section.TenantId = CourseData.TenantId;
-                        section.ScheduledStudentCount = totalStudent;
-                        section.CourseSectionId = CourseData.CourseSectionId;
-                        section.CourseSubject = CourseData.CourseSubject;
-                        section.CourseTitle = CourseData.CourseTitle;
-                        section.CourseSubject = CourseData.CourseSubject;
-                        section.CourseId = CourseData.CourseId;
-                        section.StaffName = string.Join(",", staffName);
-
-                        sectionList.Add(section);
-
-                    }
-                    scheduleClass.CourseSectionViewList = sectionList;
-                }
+            }
+            catch (Exception ex)
+            {
+                scheduleClass._failure = true;
+                scheduleClass._message = ex.Message;
             }
 
             return scheduleClass;
@@ -236,6 +282,7 @@ namespace opensis.report.report.data.Repository
             studentScheduledListModel._token = studentList._token;
             studentScheduledListModel._tokenExpiry = studentList._tokenExpiry;
             List<CourseSectionForStaff> sectionList = new();
+            int? studentCount = 0;
             foreach (var ids in studentList.courseIds)
             {
                 var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == studentList.TenantId && x.SchoolId == studentList.SchoolId && x.CourseId == ids.CourseId && x.CourseSectionId == ids.CourseSectionId);
@@ -288,7 +335,7 @@ namespace opensis.report.report.data.Repository
                                     Race = e.StudentMaster.Race,
                                     Ethnicity = e.StudentMaster.Ethnicity,
                                     MaritalStatus = e.StudentMaster.MaritalStatus,
-                                    CountryOfBirth = e.StudentMaster.CountryOfBirth != null? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(e.StudentMaster.CountryOfBirth))!.Name : null,
+                                    CountryOfBirth = e.StudentMaster.CountryOfBirth != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(e.StudentMaster.CountryOfBirth))!.Name : null,
                                     Nationality = e.StudentMaster.Nationality != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(e.StudentMaster.Nationality))!.Name : null,
                                     FirstLanguage = e.FirstLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(e.FirstLanguageId))!.Locale : null,
                                     SectionId = e.StudentMaster.SectionId,
@@ -365,6 +412,7 @@ namespace opensis.report.report.data.Repository
                             int? seduleStudentCount = seduleStudents != null ? seduleStudents.Count() : null;
                             var availableSeat = CourseData.Seats - seduleStudentCount;
                             section.StudentLists = studentListForCourseSectionReport;
+                            studentCount = studentCount + studentListForCourseSectionReport.Count;
                             section.CourseSectionName = CourseData.CourseSectionName;
                             section.SchoolId = CourseData.SchoolId;
                             section.TenantId = CourseData.TenantId;
@@ -374,7 +422,7 @@ namespace opensis.report.report.data.Repository
                             section.CourseTitle = CourseData.CourseTitle;
                             section.CourseSubject = CourseData.CourseSubject;
                             section.CourseId = CourseData.CourseId;
-                            section.StaffName = string.Join(",", staffName);
+                            section.StaffName = string.Join(", ", staffName);
                             section.AvailableSeat = availableSeat;
                             section.TotalSeats = CourseData.Seats;
 
@@ -384,6 +432,7 @@ namespace opensis.report.report.data.Repository
                 }
             }
             studentScheduledListModel.courseSectionForStaffs = sectionList;
+            studentScheduledListModel.TotalStudents = studentCount;
 
             return studentScheduledListModel;
         }

@@ -30,7 +30,7 @@ import { AddCommentsComponent } from './add-comments/add-comments.component';
 import { AddTeacherCommentsComponent } from './add-teacher-comments/add-teacher-comments.component';
 import icPrint from '@iconify/icons-ic/twotone-print';
 import { AddReportCardPdf } from 'src/app/models/report-card.model';
-import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
+import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StudentService } from 'src/app/services/student.service';
@@ -51,7 +51,7 @@ export class StudentReportCardComponent implements OnInit {
 
   icPrint = icPrint;
   addReportCardPdf: AddReportCardPdf =  new AddReportCardPdf();
-  getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
+  getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   markingPeriodList = [];
   markingPeriodError: boolean;
   markingPeriods = [];
@@ -100,10 +100,10 @@ export class StudentReportCardComponent implements OnInit {
   }
 
   getAllMarkingPeriodList() {
-    
-    this.getMarkingPeriodTitleListModel.academicYear=this.defaultValuesService.getAcademicYear();
     this.addReportCardPdf.academicYear=this.defaultValuesService.getAcademicYear();
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe((res)=>{
+    this.getMarkingPeriodByCourseSectionModel.isReportCard = true;
+
+    this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe((res)=>{
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
           this.markingPeriodList = [];

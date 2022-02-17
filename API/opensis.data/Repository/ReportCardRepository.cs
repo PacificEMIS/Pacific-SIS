@@ -1596,6 +1596,7 @@ namespace opensis.data.Repository
                                 int? SmstrMarkingPeriodId = null;
                                 int? YrMarkingPeriodId = null;
                                 int? PrgrsprdMarkingPeriodId = null;
+                                bool? Exam = null;
 
                                 if (markingPeriod != null)
                                 {
@@ -1610,6 +1611,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = ppData!.Title;
                                         startDate = ppData.StartDate;
                                         endDate = ppData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = ppData!.Title + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "2")
@@ -1621,6 +1628,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = qtrData!.Title;
                                         startDate = qtrData.StartDate;
                                         endDate = qtrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = qtrData!.Title + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "1")
@@ -1632,6 +1645,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = smstrData!.Title;
                                         startDate = smstrData.StartDate;
                                         endDate = smstrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = smstrData!.Title + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "0")
@@ -1643,6 +1662,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = yrData!.Title;
                                         startDate = yrData.StartDate;
                                         endDate = yrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = yrData!.Title + " Exam";
+                                        }
                                     }
                                     markingPeriodDetailsForDefaultTemplates.MarkingPeriodTitle = MarkingPeriodTitle;
 
@@ -1654,8 +1679,16 @@ namespace opensis.data.Repository
                                         ExcusedAbsences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "excusedabsent").Count();
                                         absencesInDays += Absences + ExcusedAbsences;
                                     }
+                                    var reportCardData = new List<StudentFinalGrade>();
 
-                                    var reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId))).ToList();
+                                    if (Exam == true)
+                                    {
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                    }
+                                    else
+                                    {
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                    }
 
                                     decimal? gPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
@@ -1671,20 +1704,20 @@ namespace opensis.data.Repository
 
                                             //var gradeData = CourseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
 
-                                            var gradeData = CourseSectionData!.GradeScale!.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
+                                            var gradeData = CourseSectionData?.GradeScale?.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
 
                                             if (gradeData != null)
                                             {
-                                                CreditHours = CourseSectionData.CreditHours;
-                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                CreditHours = CourseSectionData?.CreditHours;
+                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData?.CreditHours;
+                                                gPaValue = CourseSectionData?.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
                                             }
 
                                             var comments = reportCard.StudentFinalGradeComments.Select(x => x.CourseCommentId).ToList();
                                             var Comments = string.Join(",", comments.Select(x => x.ToString()).ToArray());
 
-                                            courseSectionGradeDetailsForDefaultTemplate.CourseSectionName = CourseSectionData.CourseSectionName;
-                                            courseSectionGradeDetailsForDefaultTemplate.StaffName = CourseSectionData.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
+                                            courseSectionGradeDetailsForDefaultTemplate.CourseSectionName = CourseSectionData?.CourseSectionName;
+                                            courseSectionGradeDetailsForDefaultTemplate.StaffName = CourseSectionData?.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
                                             courseSectionGradeDetailsForDefaultTemplate.GradeObtained = reportCard.GradeObtained;
                                             courseSectionGradeDetailsForDefaultTemplate.PercentMarks = reportCard.PercentMarks;
                                             courseSectionGradeDetailsForDefaultTemplate.GPA = gPaValue;
@@ -1694,7 +1727,8 @@ namespace opensis.data.Repository
                                             {
                                                 courseSectionGradeDetailsForDefaultTemplate.TeacherComments = teacherCommentsNo++.ToString();
                                                 teacherComments.Add(reportCard.TeacherComment);
-                                            }                                      markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Add(courseSectionGradeDetailsForDefaultTemplate);
+                                            }
+                                            markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Add(courseSectionGradeDetailsForDefaultTemplate);
                                         }
                                     }
 
@@ -1807,7 +1841,7 @@ namespace opensis.data.Repository
                                 schoolData.GradeScale.FirstOrDefault()!.Grade.ToList().ForEach(x => x.GradeScale = new());
                                 studentsReportCardViewModel.gradeList = schoolData.GradeScale.FirstOrDefault()!.Grade.ToList();
                             }
-                          
+
 
                             var markingPeriodsData = reportCardViewModel.MarkingPeriods!.Split(",");
                             DateTime? startDate = null;
@@ -1821,6 +1855,7 @@ namespace opensis.data.Repository
                                 int? SmstrMarkingPeriodId = null;
                                 int? YrMarkingPeriodId = null;
                                 int? PrgrsprdMarkingPeriodId = null;
+                                bool? Exam = null;
 
                                 if (markingPeriod != null)
                                 {
@@ -1835,6 +1870,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = ppData!.ShortName;
                                         startDate = ppData.StartDate;
                                         endDate = ppData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = ppData!.ShortName + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "2")
@@ -1846,6 +1887,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = qtrData!.ShortName;
                                         startDate = qtrData.StartDate;
                                         endDate = qtrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = qtrData!.ShortName + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "1")
@@ -1857,6 +1904,12 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = smstrData!.ShortName;
                                         startDate = smstrData.StartDate;
                                         endDate = smstrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = smstrData!.ShortName + " Exam";
+                                        }
                                     }
 
                                     if (markingPeriodid.First() == "0")
@@ -1868,11 +1921,24 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = yrData!.ShortName;
                                         startDate = yrData.StartDate;
                                         endDate = yrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            Exam = true;
+                                            MarkingPeriodTitle = yrData!.ShortName + " Exam";
+                                        }
                                     }
 
                                     markingPeriodDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
-
-                                    var reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId))).ToList();
+                                    var reportCardData = new List<StudentFinalGrade>();
+                                    if (Exam == true)
+                                    {
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                    }
+                                    else
+                                    {
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                    }
 
                                     decimal? SumofGPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
@@ -1886,26 +1952,24 @@ namespace opensis.data.Repository
                                             CourseCount++;
                                             CourseSectionGradeDetailsForOtherTemplate courseSectionGradeDetailsForOtherTemplate = new CourseSectionGradeDetailsForOtherTemplate();
 
-                                            var CourseSectionData = this.context?.CourseSection.Include(s=>s.GradeScale).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.CourseId == reportCard.CourseId);
+                                            var CourseSectionData = this.context?.CourseSection.Include(s => s.GradeScale).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.CourseId == reportCard.CourseId);
 
-                                            var gradeData = CourseSectionData!.GradeScale!.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
+                                            var gradeData = CourseSectionData?.GradeScale?.Grade.AsEnumerable().Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId).FirstOrDefault();
 
                                             if (gradeData != null)
                                             {
-                                                CreditHours = CourseSectionData.CreditHours;
-                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                CreditHours = CourseSectionData?.CreditHours;
+                                                CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData?.CreditHours;
+                                                gPaValue = CourseSectionData?.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
                                                 SumofGPaValue = SumofGPaValue + gPaValue;
 
                                             }
 
                                             courseSectionGradeDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
-                                            courseSectionGradeDetailsForOtherTemplate.CourseSectionName = CourseSectionData.CourseSectionName;
+                                            courseSectionGradeDetailsForOtherTemplate.CourseSectionName = CourseSectionData?.CourseSectionName;
                                             courseSectionGradeDetailsForOtherTemplate.Grade = reportCard.GradeObtained;
                                             courseSectionGradeDetailsForOtherTemplate.Percentage = reportCard.PercentMarks.ToString();
-
                                             markingPeriodDetailsForOtherTemplate.courseSectionGradeDetailsForOtherTemplates.Add(courseSectionGradeDetailsForOtherTemplate);
-
                                         }
 
                                         if (SumofGPaValue > 0 && CourseCount > 0)

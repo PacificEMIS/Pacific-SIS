@@ -440,13 +440,16 @@ export class AdvanceReportComponent implements OnInit {
       return;
     }
 
-    this.getStaffAdvancedReportModel.staffGuids = this.selectedStaff.map((item) => {
-      return item.staffGuid
+    this.getStaffAdvancedReportModel.staffIds = this.selectedStaff.map((item) => {
+      return item.staffId
     })
 
     this.reportService.getStaffAdvancedReport(this.getStaffAdvancedReportModel).subscribe((data: any) => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
+        this.snackbar.open(data._message, "", {
+          duration: 10000
+        });
       } else {
         this.generateStaffList = data.schoolListForReport;
         if (this.generateStaffList) {
@@ -471,7 +474,7 @@ export class AdvanceReportComponent implements OnInit {
       let staffList = [];
       this.generateStaffList[0].staffListForReport.map((item) => {
         this.selectedFieldsArray.map((fields) => {
-          Object.assign(object, { [this.defaultValuesService.translateKey(fields.property)]: item.staffMaster[fields.property] });
+          Object.assign(object, { [this.defaultValuesService.translateKey(fields.property)]: item.staffMaster[fields.property] ? item.staffMaster[fields.property] : '-'});
         })
         staffList.push(JSON.parse(JSON.stringify(object)));
       })

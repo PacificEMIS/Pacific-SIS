@@ -3972,6 +3972,10 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("assignment_sorting");
 
+                    b.Property<bool?>("ConfigUpdateFlag")
+                        .HasColumnType("bit")
+                        .HasColumnName("config_update_flag");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
@@ -5014,6 +5018,11 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(150)")
                         .HasColumnName("course_name");
 
+                    b.Property<string>("CourseType")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("course_type");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
@@ -5059,10 +5068,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
-
-                    b.Property<bool?>("WeightedGp")
-                        .HasColumnType("bit")
-                        .HasColumnName("weighted_gp");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "HistGradeId", "HistMarkingPeriodId", "CreditTransferId")
                         .HasName("PK_historical_credit_transfer_tenant_id");
@@ -5239,8 +5244,8 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnName("created_on");
 
                     b.Property<string>("HonorRoll")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("honor_roll");
 
                     b.Property<int?>("RolloverId")
@@ -9685,6 +9690,10 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
+                    b.Property<int?>("MembershipId")
+                        .HasColumnType("int")
+                        .HasColumnName("membership_id");
+
                     b.Property<string>("Profile")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
@@ -9728,6 +9737,8 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "SchoolId", "MembershipId");
 
                     b.HasIndex(new[] { "TenantId", "StaffId" }, "IX_staff_school_info_tenant_id_staff_id");
 
@@ -13807,6 +13818,13 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasForeignKey("TenantId", "StaffId")
                         .HasConstraintName("staff_school_info$FK_master");
 
+                    b.HasOne("opensis.data.Models.Membership", "Membership")
+                        .WithMany("StaffSchoolInfos")
+                        .HasForeignKey("TenantId", "SchoolId", "MembershipId")
+                        .HasConstraintName("staff_school_info$FK_membership");
+
+                    b.Navigation("Membership");
+
                     b.Navigation("StaffMaster");
                 });
 
@@ -14469,6 +14487,8 @@ namespace opensis.data.Migrations.SqlServerMigrations
             modelBuilder.Entity("opensis.data.Models.Membership", b =>
                 {
                     b.Navigation("RolePermission");
+
+                    b.Navigation("StaffSchoolInfos");
 
                     b.Navigation("StudentAttendance");
 

@@ -37,7 +37,7 @@ import { CourseStandardForCourseViewModel } from 'src/app/models/course-manager.
 import { GradeScaleListView } from 'src/app/models/grades.model';
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { GetAllCourseCommentCategoryModel } from 'src/app/models/report-card.model';
-import { AddUpdateStudentFinalGradeModel, StudentFinalGrade } from 'src/app/models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetGradebookGradeinFinalGradeModel, StudentFinalGrade } from 'src/app/models/student-final-grade.model';
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { AllScheduledCourseSectionForStaffModel } from 'src/app/models/teacher-schedule.model';
 import { CommonService } from 'src/app/services/common.service';
@@ -83,7 +83,6 @@ export class InputFinalGradesComponent implements OnInit {
   gradeScaleStandardList = [];
   gradeScaleList = [];
   loading: boolean = false;
-  isPercentChecked: boolean = false;
   reportCardGrade = [
     { id: 1, value: 'A' },
     { id: 2, value: 'B' },
@@ -111,8 +110,8 @@ export class InputFinalGradesComponent implements OnInit {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   courseSection: any;
-
-  
+  getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
+  selectedMarkingPeriod: any;
 
   constructor(
     public translateService: TranslateService,
@@ -146,8 +145,7 @@ export class InputFinalGradesComponent implements OnInit {
 
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodByCourseSectionModel.courseSectionId =  this.courseSectionId;
-console.log(123);
+    this.getMarkingPeriodByCourseSectionModel.courseSectionId =  this.courseSection.courseSectionId;
 
     this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe(data => {
       if (data._failure) {
@@ -169,10 +167,9 @@ console.log(123);
   }
 
   changeMarkingPeriod(event) {
+    if(event.value) {
     // this.addUpdateStudentFinalGradeModel.markingPeriodId = event.value;
-
-    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);
-    console.log(markingPeriodDetails);
+    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);    
     
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
@@ -181,8 +178,6 @@ console.log(123);
     this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
     }
     this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-    console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
-
     this.addUpdateStudentFinalGradeModel.schoolId = this.defaultValuesService.getSchoolID();
     this.addUpdateStudentFinalGradeModel.tenantId = this.defaultValuesService.getTenantID();
     this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionData.courseId;
@@ -199,7 +194,6 @@ console.log(123);
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
               this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
             });
@@ -214,7 +208,6 @@ console.log(123);
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
               this.searchScheduledStudentForGroupDropAPI(this.courseSectionData.courseSectionId);
             });
@@ -229,8 +222,6 @@ console.log(123);
           this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
           }
           this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-          console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
-
           this.addUpdateStudentFinalGradeModel = res;
           this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
             let commentArray = [];
@@ -261,6 +252,12 @@ console.log(123);
         });
       }
     });
+  } else {
+    this.studentMasterList = [];
+    this.totalCount = 0;
+    this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+    this.selectedMarkingPeriod = undefined;
+  }
   }
 
   getGradeScaleList(grade) {
@@ -529,16 +526,12 @@ console.log(123);
   onCheckboxChange(value) {
     if (value.currentTarget.checked) {
       this.addUpdateStudentFinalGradeModel.isPercent = false;
-      this.isPercentChecked = true;
       this.isPercent = false;
     }
     else {
       this.addUpdateStudentFinalGradeModel.isPercent = true;
-      this.isPercentChecked = false;
       this.isPercent = true;
     }
-
-
   }
 
 
@@ -556,6 +549,36 @@ console.log(123);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+        }
+      }
+      else {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+  
+  getGradeBookGrades() {
+    this.getGradebookGradeinFinalGradeModel.courseSectionId = this.addUpdateStudentFinalGradeModel.courseSectionId;
+    this.getGradebookGradeinFinalGradeModel.markingPeriodId = this.addUpdateStudentFinalGradeModel.markingPeriodId;
+
+    this.finalGradeService.getGradebookGradeinFinalGrade(this.getGradebookGradeinFinalGradeModel).subscribe((res: any) => {
+      if (res) {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open(res._message, '', {
+          duration: 10000
+        });      
+        } else {
+          res.studentWithGradeBookViewModelList.map((item)=>{
+            this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((subItem)=>{
+              if(subItem.studentId === item.studentId) {
+                subItem.percentMarks = item.percentage;
+                subItem.gradeObtained = item?.grade?.trim()?.length > 0 ? item.grade : null;
+              }
+            })
+          })
         }
       }
       else {

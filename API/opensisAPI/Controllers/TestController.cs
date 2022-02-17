@@ -1404,7 +1404,7 @@ namespace opensisAPI.Controllers
 
                     if (allSchoolData.Count > 0)
                     {
-                        //allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
+                        allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
 
                         List<PermissionCategory> permissionCategories = new List<PermissionCategory>();
                         List<RolePermission> rolePermissions = new List<RolePermission>();
@@ -1417,7 +1417,7 @@ namespace opensisAPI.Controllers
 
                             var maxCid = this.context?.PermissionCategory.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.PermissionCategoryId).Select(s => s.PermissionCategoryId).FirstOrDefault();
 
-                            var maxRPid = this.context?.RolePermission.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.RolePermissionId).Select(s => s.RolePermissionId).FirstOrDefault();
+                            objCat = objCat.Where(x => x.PermissionCategoryId >= 68).ToList();
 
                             foreach (PermissionCategory permissionCategory in objCat)
                             {
@@ -1432,96 +1432,61 @@ namespace opensisAPI.Controllers
                                     permissionCategory.CreatedBy = school.CreatedBy;
                                     permissionCategory.CreatedOn = DateTime.UtcNow;
                                     permissionCategories.Add(permissionCategory);
-
-                                    if (permissionCategory.PermissionCategoryName == "Missing Attendance")
-                                    {
-                                        RolePermission permissionRole1 = new RolePermission
-                                        {
-                                            TenantId = school.TenantId,
-                                            SchoolId = school.SchoolId,
-                                            RolePermissionId = (int)++maxRPid,
-                                            PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                            CanAdd = true,
-                                            CanDelete = true,
-                                            CanView = true,
-                                            CanEdit = true,
-                                            MembershipId = 4,
-                                            CreatedBy = school.CreatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        rolePermissions.Add(permissionRole1);
-
-                                        RolePermission permissionRole2 = new RolePermission
-                                        {
-                                            TenantId = school.TenantId,
-                                            SchoolId = school.SchoolId,
-                                            RolePermissionId = (int)++maxRPid,
-                                            PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                            CanAdd = true,
-                                            CanDelete = true,
-                                            CanView = true,
-                                            CanEdit = true,
-                                            MembershipId = 5,
-                                            CreatedBy = school.CreatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        rolePermissions.Add(permissionRole2);
-                                    }
-                                    else
-                                    {
-                                        RolePermission permissionRole1 = new RolePermission
-                                        {
-                                            TenantId = school.TenantId,
-                                            SchoolId = school.SchoolId,
-                                            RolePermissionId = (int)++maxRPid,
-                                            PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                            CanAdd = true,
-                                            CanDelete = true,
-                                            CanView = true,
-                                            CanEdit = true,
-                                            MembershipId = 1,
-                                            CreatedBy = school.CreatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        rolePermissions.Add(permissionRole1);
-
-                                        RolePermission permissionRole2 = new RolePermission
-                                        {
-                                            TenantId = school.TenantId,
-                                            SchoolId = school.SchoolId,
-                                            RolePermissionId = (int)++maxRPid,
-                                            PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                            CanAdd = true,
-                                            CanDelete = true,
-                                            CanView = true,
-                                            CanEdit = true,
-                                            MembershipId = 2,
-                                            CreatedBy = school.CreatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        rolePermissions.Add(permissionRole2);
-
-                                        //RolePermission permissionRole3 = new RolePermission
-                                        //{
-                                        //    TenantId = school.TenantId,
-                                        //    SchoolId = school.SchoolId,
-                                        //    RolePermissionId = (int)++maxRPid,
-                                        //    PermissionCategoryId = permissionCategory.PermissionCategoryId,
-                                        //    CanAdd = false,
-                                        //    CanDelete = false,
-                                        //    CanView = false,
-                                        //    CanEdit = false,
-                                        //    MembershipId = 3,
-                                        //    CreatedBy = school.CreatedBy,
-                                        //    CreatedOn = DateTime.UtcNow
-                                        //};
-                                        //rolePermissions.Add(permissionRole3);
-                                    }
                                 }
                             }
                         }
                         this.context?.PermissionCategory.AddRange(permissionCategories);
-                        this.context?.RolePermission.AddRange(rolePermissions);
+                        this.context?.SaveChanges();
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception es)
+                {
+                    transaction.Rollback();
+                    return Ok(es.Message);
+                }
+            }
+            return Ok();
+        }
+
+        [HttpPost("addNewGroup")]
+        public IActionResult AddNewGroup(Guid? tenantId)
+        {
+            using (var transaction = this.context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var allSchoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
+
+                    if (allSchoolData.Count > 0)
+                    {
+                        allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
+
+                        List<PermissionGroup> permissionGroups = new List<PermissionGroup>();
+                        List<RolePermission> rolePermissions = new List<RolePermission>();
+                        foreach (var school in allSchoolData)
+                        {
+                            //insert into permission group
+                            var dataCategory = System.IO.File.ReadAllText(@"Group.json");
+                            JsonSerializerSettings settingCat = new JsonSerializerSettings();
+                            List<PermissionGroup> objCat = JsonConvert.DeserializeObject<List<PermissionGroup>>(dataCategory, settingCat);
+
+                            var maxRPid = this.context?.RolePermission.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.RolePermissionId).Select(s => s.RolePermissionId).FirstOrDefault();
+
+                            objCat = objCat.Where(x => x.PermissionGroupId >= 18).ToList();
+
+                            foreach (PermissionGroup permissionGroup in objCat)
+                            {
+                                permissionGroup.TenantId = school.TenantId;
+                                permissionGroup.SchoolId = school.SchoolId;
+                                permissionGroup.RolePermission = null;
+                                permissionGroup.CreatedBy = school.CreatedBy;
+                                permissionGroup.CreatedOn = DateTime.UtcNow;
+                                permissionGroups.Add(permissionGroup);
+
+                            }
+                        }
+                        this.context?.PermissionGroup.AddRange(permissionGroups);
                         this.context?.SaveChanges();
                         transaction.Commit();
                     }
@@ -1542,112 +1507,420 @@ namespace opensisAPI.Controllers
             {
                 try
                 {
-                    var allSchoolData = this.context?.SchoolMaster.Where(x => x.TenantId == tenantId).ToList();
+                    var allSchoolData = this.context?.SchoolMaster.Include(s => s.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
 
                     if (allSchoolData.Count > 0)
                     {
+                        allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
 
                         List<RolePermission> rolePermissions = new List<RolePermission>();
                         foreach (var school in allSchoolData)
                         {
                             var maxRPid = this.context?.RolePermission.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.RolePermissionId).Select(s => s.RolePermissionId).FirstOrDefault();
 
-                            RolePermission permissionRole1 = new RolePermission
+                            //cate
+                            var permissionCategoryData = this.context?.PermissionCategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionCategoryId == 56);
+                            if (permissionCategoryData != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 55,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole1);
+                                RolePermission permissionRole21 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 56,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole21);
 
-                            RolePermission permissionRole2 = new RolePermission
+                                RolePermission permissionRole22 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 56,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole22);
+                            }
+
+                            var permissionCategoryData1 = this.context?.PermissionCategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionCategoryId == 58);
+                            if (permissionCategoryData1 != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 56,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole2);
+                                RolePermission permissionRole23 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 58,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole23);
 
-                            RolePermission permissionRole3 = new RolePermission
+                                RolePermission permissionRole24 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 58,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole24);
+                            }
+
+                            var permissionCategoryData2 = this.context?.PermissionCategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionCategoryId == 59);
+                            if (permissionCategoryData2 != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 57,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole3);
+                                RolePermission permissionRole25 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 59,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole25);
 
-                            RolePermission permissionRole4 = new RolePermission
+                                RolePermission permissionRole26 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 59,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole26);
+                            }
+                            var permissionCategoryData3 = this.context?.PermissionCategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionCategoryId == 60);
+                            if (permissionCategoryData3 != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 58,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole4);
+                                RolePermission permissionRole27 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 60,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole27);
 
-                            RolePermission permissionRole5 = new RolePermission
+                                RolePermission permissionRole28 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionCategoryId = 60,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole28);
+                            }
+                            //sub
+                            var permissionSubcategoryData = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Advance Report".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 56);
+                            if (permissionSubcategoryData != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 59,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole5);
+                                RolePermission permissionRole1 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole1);
 
-                            RolePermission permissionRole6 = new RolePermission
+                                RolePermission permissionRole2 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole2);
+                            }
+                            var permissionSubcategoryData1 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Schedules".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 58);
+                            if (permissionSubcategoryData1 != null)
                             {
-                                TenantId = school.TenantId,
-                                SchoolId = school.SchoolId,
-                                RolePermissionId = (int)++maxRPid,
-                                PermissionCategoryId = 60,
-                                CanAdd = true,
-                                CanDelete = true,
-                                CanView = true,
-                                CanEdit = true,
-                                MembershipId = 3,
-                                CreatedBy = school.CreatedBy,
-                                CreatedOn = DateTime.UtcNow
-                            };
-                            rolePermissions.Add(permissionRole6);
+                                RolePermission permissionRole3 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData1.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole3);
 
+                                RolePermission permissionRole4 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData1.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole4);
+                            }
+                            var permissionSubcategoryData2 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Class Lists".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 58);
+
+                            if (permissionSubcategoryData2 != null)
+                            {
+                                RolePermission permissionRole5 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData2.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole5);
+
+                                RolePermission permissionRole6 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData2.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole6);
+                            }
+                            var permissionSubcategoryData3 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Student Final Grades".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 59);
+                            if (permissionSubcategoryData3 != null)
+                            {
+                                RolePermission permissionRole7 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData3.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole7);
+
+                                RolePermission permissionRole8 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData3.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole8);
+                            }
+                            var permissionSubcategoryData4 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Attendance Chart".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 60);
+                            if (permissionSubcategoryData4 != null)
+                            {
+                                RolePermission permissionRole9 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData4.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole9);
+
+                                RolePermission permissionRole10 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData4.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole10);
+                            }
+                            var permissionSubcategoryData5 = this.context?.PermissionSubcategory.FirstOrDefault(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId && x.PermissionSubcategoryName.ToLower() == "Absence Summary".ToLower() && x.PermissionGroupId == 11 && x.PermissionCategoryId == 60);
+                            if (permissionSubcategoryData5 != null)
+                            {
+                                RolePermission permissionRole11 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData5.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 4,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole11);
+
+                                RolePermission permissionRole12 = new RolePermission
+                                {
+                                    TenantId = school.TenantId,
+                                    SchoolId = school.SchoolId,
+                                    RolePermissionId = (int)++maxRPid,
+                                    PermissionSubcategoryId = permissionSubcategoryData5.PermissionSubcategoryId,
+                                    CanAdd = null,
+                                    CanDelete = null,
+                                    CanView = true,
+                                    CanEdit = null,
+                                    MembershipId = 5,
+                                    CreatedBy = school.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                rolePermissions.Add(permissionRole12);
+                            }
+                        }
+                        this.context?.RolePermission.AddRange(rolePermissions);
+                        this.context?.SaveChanges();
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception es)
+                {
+                    transaction.Rollback();
+                    return Ok(es.Message);
+                }
+            }
+            return Ok();
+        }
+        [HttpPost("addNewRolePermissionForStudent")]
+        public IActionResult AddNewRolePermissionForStudent(Guid? tenantId)
+        {
+            using (var transaction = this.context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var allSchoolData = this.context?.SchoolMaster.Include(s => s.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
+
+                    if (allSchoolData.Count > 0)
+                    {
+                        allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
+
+                        List<RolePermission> rolePermissions = new List<RolePermission>();
+                        foreach (var school in allSchoolData)
+                        {
+                            // insert into role permission
+                            var dataCategory = System.IO.File.ReadAllText(@"RolePermission.json");
+                            JsonSerializerSettings settingCat = new JsonSerializerSettings();
+                            List<RolePermission> objCat = JsonConvert.DeserializeObject<List<RolePermission>>(dataCategory, settingCat);
+
+                            var maxRPid = this.context?.RolePermission.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.RolePermissionId).Select(s => s.RolePermissionId).FirstOrDefault();
+
+                            objCat = objCat.Where(x => x.RolePermissionId >= 612).ToList();
+
+                            foreach (RolePermission rolePermission in objCat)
+                            {
+                                rolePermission.TenantId = school.TenantId;
+                                rolePermission.SchoolId = school.SchoolId;
+                                rolePermission.RolePermissionId = (int)++maxRPid;
+                                rolePermission.CreatedBy = school.CreatedBy;
+                                rolePermission.CreatedOn = DateTime.UtcNow;
+                                rolePermissions.Add(rolePermission);
+                            }
                         }
                         this.context?.RolePermission.AddRange(rolePermissions);
                         this.context?.SaveChanges();

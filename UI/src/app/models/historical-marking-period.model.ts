@@ -99,8 +99,10 @@ export class HistoricalCreditTransfer {
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+    courseType: string;
     constructor(){
         this.creditAddMode= true;
+        this.courseType='Regular';
     }
 
 }

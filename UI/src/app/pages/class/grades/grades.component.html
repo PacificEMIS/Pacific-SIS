@@ -12,6 +12,7 @@
             </li>
         </ul>
     </div>
+    <p class="flex md:justify-center items-center mb-5 font-medium text-red" *ngIf="currentTab === 'gradebook' && isConfigUpdateFlag == true">{{'youHaveChangedTheGradebookConfiguration' | translate}}{{', '}}{{'pleaseRecalculateTheGrades' | translate}}</p>
 </div>
-<vex-gradebook-grades [currentTab]="currentTab"></vex-gradebook-grades>
+<vex-gradebook-grades [currentTab]="currentTab" (isConfigUpdateFlag)="configUpdateflagCheck($event)"></vex-gradebook-grades>
 <vex-input-final-grades [currentTab]="currentTab"></vex-input-final-grades>

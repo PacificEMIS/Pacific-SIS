@@ -1512,339 +1512,466 @@ namespace opensis.data.Repository
                 markingPeriodsByCourse._token = markingPeriodsByCourseSectionViewModel._token;
                 markingPeriodsByCourse._tenantName = markingPeriodsByCourseSectionViewModel._tenantName;
 
-                var courseSectionData = this.context?.CourseSection.Where(x => x.TenantId == markingPeriodsByCourseSectionViewModel.TenantId && x.SchoolId == markingPeriodsByCourseSectionViewModel.SchoolId && x.CourseSectionId == markingPeriodsByCourseSectionViewModel.CourseSectionId && x.AcademicYear == markingPeriodsByCourseSectionViewModel.AcademicYear).FirstOrDefault();
-                if (courseSectionData != null)
+                if (markingPeriodsByCourseSectionViewModel.IsReportCard == true)
                 {
-                    if (courseSectionData.YrMarkingPeriodId != null)
+                    //this block for when this api call from report card ui.
+                    var markingPeriodData = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(s => s.Quarters).ThenInclude(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear).ToList();
+
+
+                    if (markingPeriodData != null && markingPeriodData.Any())
                     {
-                        var markingPeriodData = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(s => s.Quarters).ThenInclude(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.YrMarkingPeriodId).ToList();
-
-                        if (markingPeriodData != null)
+                        foreach (var markingPeriod in markingPeriodData)
                         {
-                            if (markingPeriodData != null && markingPeriodData.Any())
+                            var schoolYear = new GetMarkingPeriodView
                             {
-                                foreach (var markingPeriod in markingPeriodData)
+                                Value = "0" + "_" + markingPeriod.MarkingPeriodId,
+                                Text = markingPeriod.ShortName,
+                                StartDate = markingPeriod.StartDate,
+                                EndDate = markingPeriod.EndDate,
+                                FullName = markingPeriod.Title
+                            };
+                            markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
+
+                            if (markingPeriod.DoesExam == true)
+                            {
+                                var schoolYearExam = new GetMarkingPeriodView
                                 {
-                                    var schoolYear = new GetMarkingPeriodView
-                                    {
-                                        Value = "0" + "_" + markingPeriod.MarkingPeriodId,
-                                        Text = markingPeriod.ShortName,
-                                        StartDate = markingPeriod.StartDate,
-                                        EndDate = markingPeriod.EndDate,
-                                        FullName = markingPeriod.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
-
-                                    if (markingPeriod.DoesExam == true)
-                                    {
-                                        var schoolYearExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "0" + "_" + markingPeriod.MarkingPeriodId,
-                                            Text = markingPeriod.ShortName + " " + "EXAM",
-                                            StartDate = markingPeriod.StartDate,
-                                            EndDate = markingPeriod.EndDate,
-                                            FullName = markingPeriod.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYearExam);
-                                    }
-                                }
-
-                                var semesterData = markingPeriodData.SelectMany(x => x.Semesters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var semester in semesterData)
-                                {
-                                    var sem = new GetMarkingPeriodView
-                                    {
-                                        Value = "1" + "_" + semester.MarkingPeriodId,
-                                        Text = semester.ShortName,
-                                        StartDate = semester.StartDate,
-                                        EndDate = semester.EndDate,
-                                        FullName = semester.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
-
-                                    if (semester.DoesExam == true)
-                                    {
-                                        var semExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "1" + "_" + semester.MarkingPeriodId,
-                                            Text = semester.ShortName + " " + "EXAM",
-                                            StartDate = semester.StartDate,
-                                            EndDate = semester.EndDate,
-                                            FullName = semester.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
-                                    }
-                                }
-                                var quaterData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var quater in quaterData)
-                                {
-                                    var qtr = new GetMarkingPeriodView
-                                    {
-                                        Value = "2" + "_" + quater.MarkingPeriodId,
-                                        Text = quater.ShortName,
-                                        StartDate = quater.StartDate,
-                                        EndDate = quater.EndDate,
-                                        FullName = quater.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
-
-                                    if (quater.DoesExam == true)
-                                    {
-                                        var qtrExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName + " " + "EXAM",
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
-                                    }
-                                }
-                                var progressPeriodData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var progressPeriods in progressPeriodData)
-                                {
-                                    var prgrsPrd = new GetMarkingPeriodView
-                                    {
-                                        Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                        Text = progressPeriods.ShortName,
-                                        StartDate = progressPeriods.StartDate,
-                                        EndDate = progressPeriods.EndDate,
-                                        FullName = progressPeriods.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
-
-                                    if (progressPeriods.DoesExam == true)
-                                    {
-                                        var prgrsPrdExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName + " " + "EXAM",
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
-                                    }
-                                }
+                                    Value = "0" + "_" + markingPeriod.MarkingPeriodId + "_" + "E",
+                                    Text = markingPeriod.ShortName,
+                                    StartDate = markingPeriod.StartDate,
+                                    EndDate = markingPeriod.EndDate,
+                                    FullName = markingPeriod.Title + " " + "EXAM",
+                                    DoesExam = true
+                                };
+                                markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYearExam);
                             }
                         }
-                    }
-                    else if (courseSectionData.SmstrMarkingPeriodId != null)
-                    {
-                        var markingPeriodData = this.context?.Semesters.Include(s => s.Quarters).ThenInclude(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.SmstrMarkingPeriodId).ToList();
 
-                        if (markingPeriodData != null)
+                        var semesterData = markingPeriodData.SelectMany(x => x.Semesters).ToList();
+                        foreach (var semester in semesterData)
                         {
-                            if (markingPeriodData != null && markingPeriodData.Any())
+                            var sem = new GetMarkingPeriodView
                             {
-                                var semesterData = markingPeriodData.ToList();
-                                foreach (var semester in semesterData)
-                                {
-                                    var sem = new GetMarkingPeriodView
-                                    {
-                                        Value = "1" + "_" + semester.MarkingPeriodId,
-                                        Text = semester.ShortName,
-                                        StartDate = semester.StartDate,
-                                        EndDate = semester.EndDate,
-                                        FullName = semester.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+                                Value = "1" + "_" + semester.MarkingPeriodId,
+                                Text = semester.ShortName,
+                                StartDate = semester.StartDate,
+                                EndDate = semester.EndDate,
+                                FullName = semester.Title
+                            };
+                            markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
 
-                                    if (semester.DoesExam == true)
-                                    {
-                                        var semExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "1" + "_" + semester.MarkingPeriodId,
-                                            Text = semester.ShortName + " " + "EXAM",
-                                            StartDate = semester.StartDate,
-                                            EndDate = semester.EndDate,
-                                            FullName = semester.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
-                                    }
-                                }
-                                var quaterData = markingPeriodData.SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var quater in quaterData)
+                            if (semester.DoesExam == true)
+                            {
+                                var semExam = new GetMarkingPeriodView
                                 {
-                                    var qtr = new GetMarkingPeriodView
-                                    {
-                                        Value = "2" + "_" + quater.MarkingPeriodId,
-                                        Text = quater.ShortName,
-                                        StartDate = quater.StartDate,
-                                        EndDate = quater.EndDate,
-                                        FullName = quater.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
-                                    if (quater.DoesExam == true)
-                                    {
-                                        var qtrExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName + " " + "EXAM",
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
-                                    }
-                                }
-
-                                var progressPeriodData = markingPeriodData.SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var progressPeriods in progressPeriodData)
-                                {
-                                    var prgrsPrd = new GetMarkingPeriodView
-                                    {
-                                        Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                        Text = progressPeriods.ShortName,
-                                        StartDate = progressPeriods.StartDate,
-                                        EndDate = progressPeriods.EndDate,
-                                        FullName = progressPeriods.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
-
-                                    if (progressPeriods.DoesExam == true)
-                                    {
-                                        var prgrsPrdExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName + " " + "EXAM",
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
-                                    }
-                                }
+                                    Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
+                                    Text = semester.ShortName,
+                                    StartDate = semester.StartDate,
+                                    EndDate = semester.EndDate,
+                                    FullName = semester.Title + " " + "EXAM",
+                                    DoesExam = true
+                                };
+                                markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
                             }
                         }
-                    }
-                    else if (courseSectionData.QtrMarkingPeriodId != null)
-                    {
-                        var markingPeriodData = this.context?.Quarters.Include(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.QtrMarkingPeriodId).ToList();
-
-                        if (markingPeriodData != null)
+                        var quaterData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).ToList();
+                        foreach (var quater in quaterData)
                         {
-                            if (markingPeriodData != null && markingPeriodData.Any())
+                            var qtr = new GetMarkingPeriodView
                             {
-                                var quaterData = markingPeriodData.ToList();
-                                foreach (var quater in quaterData)
-                                {
-                                    var qtr = new GetMarkingPeriodView
-                                    {
-                                        Value = "2" + "_" + quater.MarkingPeriodId,
-                                        Text = quater.ShortName,
-                                        StartDate = quater.StartDate,
-                                        EndDate = quater.EndDate,
-                                        FullName = quater.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
-                                    if (quater.DoesExam == true)
-                                    {
-                                        var qtrExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName + " " + "EXAM",
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
-                                    }
-                                }
+                                Value = "2" + "_" + quater.MarkingPeriodId,
+                                Text = quater.ShortName,
+                                StartDate = quater.StartDate,
+                                EndDate = quater.EndDate,
+                                FullName = quater.Title
+                            };
+                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
 
-                                var progressPeriodData = markingPeriodData.SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
-                                foreach (var progressPeriods in progressPeriodData)
+                            if (quater.DoesExam == true)
+                            {
+                                var qtrExam = new GetMarkingPeriodView
                                 {
-                                    var prgrsPrd = new GetMarkingPeriodView
-                                    {
-                                        Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                        Text = progressPeriods.ShortName,
-                                        StartDate = progressPeriods.StartDate,
-                                        EndDate = progressPeriods.EndDate,
-                                        FullName = progressPeriods.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
-
-                                    if (progressPeriods.DoesExam == true)
-                                    {
-                                        var prgrsPrdExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName + " " + "EXAM",
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            DoesExam = true
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
-                                    }
-                                }
+                                    Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
+                                    Text = quater.ShortName,
+                                    StartDate = quater.StartDate,
+                                    EndDate = quater.EndDate,
+                                    FullName = quater.Title + " " + "EXAM",
+                                    DoesExam = true
+                                };
+                                markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
                             }
                         }
-                    }
-                    else if (courseSectionData.PrgrsprdMarkingPeriodId != null)
-                    {
-                        var markingPeriodData = this.context?.ProgressPeriods.Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.PrgrsprdMarkingPeriodId).ToList();
-
-                        if (markingPeriodData != null)
+                        var progressPeriodData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).ToList();
+                        foreach (var progressPeriods in progressPeriodData)
                         {
-                            if (markingPeriodData != null && markingPeriodData.Any())
+                            var prgrsPrd = new GetMarkingPeriodView
                             {
-                                var progressPeriodData = markingPeriodData.ToList();
-                                foreach (var progressPeriods in progressPeriodData)
-                                {
-                                    var prgrsPrd = new GetMarkingPeriodView
-                                    {
-                                        Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                        Text = progressPeriods.ShortName,
-                                        StartDate = progressPeriods.StartDate,
-                                        EndDate = progressPeriods.EndDate,
-                                        FullName = progressPeriods.Title
-                                    };
-                                    markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                Text = progressPeriods.ShortName,
+                                StartDate = progressPeriods.StartDate,
+                                EndDate = progressPeriods.EndDate,
+                                FullName = progressPeriods.Title
+                            };
+                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
 
-                                    if (progressPeriods.DoesExam == true)
-                                    {
-                                        var prgrsPrdExam = new GetMarkingPeriodView
-                                        {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName + " " + "EXAM",
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
-                                    }
-                                }
+                            if (progressPeriods.DoesExam == true)
+                            {
+                                var prgrsPrdExam = new GetMarkingPeriodView
+                                {
+                                    Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
+                                    Text = progressPeriods.ShortName,
+                                    StartDate = progressPeriods.StartDate,
+                                    EndDate = progressPeriods.EndDate,
+                                    FullName = progressPeriods.Title + " " + "EXAM",
+                                    DoesExam = true
+                                };
+                                markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
                             }
                         }
+                        markingPeriodsByCourse._failure = false;
                     }
                     else
                     {
-                        var customDateRange = new GetMarkingPeriodView
-                        {
-                            Value = "Custom",
-                            Text = "Custom Date Range",
-                            StartDate = courseSectionData.DurationStartDate,
-                            EndDate = courseSectionData.DurationEndDate,
-                            FullName = "Custom Date Range"
-                        };
-                        markingPeriodsByCourse.getMarkingPeriodView.Add(customDateRange);
+                        markingPeriodsByCourse._failure = true;
+                        markingPeriodsByCourse._message = NORECORDFOUND;
                     }
                 }
                 else
                 {
-                    markingPeriodsByCourse._failure = true;
-                    markingPeriodsByCourse._message = NORECORDFOUND;
+                    var courseSectionData = this.context?.CourseSection.Where(x => x.TenantId == markingPeriodsByCourseSectionViewModel.TenantId && x.SchoolId == markingPeriodsByCourseSectionViewModel.SchoolId && x.CourseSectionId == markingPeriodsByCourseSectionViewModel.CourseSectionId && x.AcademicYear == markingPeriodsByCourseSectionViewModel.AcademicYear).FirstOrDefault();
+                    if (courseSectionData != null)
+                    {
+                        if (courseSectionData.YrMarkingPeriodId != null)
+                        {
+                            var markingPeriodData = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(s => s.Quarters).ThenInclude(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.YrMarkingPeriodId).ToList();
+
+                            if (markingPeriodData != null)
+                            {
+                                if (markingPeriodData != null && markingPeriodData.Any())
+                                {
+                                    foreach (var markingPeriod in markingPeriodData)
+                                    {
+                                        var schoolYear = new GetMarkingPeriodView
+                                        {
+                                            Value = "0" + "_" + markingPeriod.MarkingPeriodId,
+                                            Text = markingPeriod.ShortName,
+                                            StartDate = markingPeriod.StartDate,
+                                            EndDate = markingPeriod.EndDate,
+                                            FullName = markingPeriod.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
+
+                                        if (markingPeriod.DoesExam == true)
+                                        {
+                                            var schoolYearExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "0" + "_" + markingPeriod.MarkingPeriodId + "_" + "E",
+                                                Text = markingPeriod.ShortName + " " + "EXAM",
+                                                StartDate = markingPeriod.StartDate,
+                                                EndDate = markingPeriod.EndDate,
+                                                FullName = markingPeriod.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYearExam);
+                                        }
+                                    }
+
+                                    var semesterData = markingPeriodData.SelectMany(x => x.Semesters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var semester in semesterData)
+                                    {
+                                        var sem = new GetMarkingPeriodView
+                                        {
+                                            Value = "1" + "_" + semester.MarkingPeriodId,
+                                            Text = semester.ShortName,
+                                            StartDate = semester.StartDate,
+                                            EndDate = semester.EndDate,
+                                            FullName = semester.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+
+                                        if (semester.DoesExam == true)
+                                        {
+                                            var semExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
+                                                Text = semester.ShortName + " " + "EXAM",
+                                                StartDate = semester.StartDate,
+                                                EndDate = semester.EndDate,
+                                                FullName = semester.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
+                                        }
+                                    }
+                                    var quaterData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var quater in quaterData)
+                                    {
+                                        var qtr = new GetMarkingPeriodView
+                                        {
+                                            Value = "2" + "_" + quater.MarkingPeriodId,
+                                            Text = quater.ShortName,
+                                            StartDate = quater.StartDate,
+                                            EndDate = quater.EndDate,
+                                            FullName = quater.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+
+                                        if (quater.DoesExam == true)
+                                        {
+                                            var qtrExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
+                                                Text = quater.ShortName + " " + "EXAM",
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
+                                        }
+                                    }
+                                    var progressPeriodData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var progressPeriods in progressPeriodData)
+                                    {
+                                        var prgrsPrd = new GetMarkingPeriodView
+                                        {
+                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                            Text = progressPeriods.ShortName,
+                                            StartDate = progressPeriods.StartDate,
+                                            EndDate = progressPeriods.EndDate,
+                                            FullName = progressPeriods.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+
+                                        if (progressPeriods.DoesExam == true)
+                                        {
+                                            var prgrsPrdExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
+                                                Text = progressPeriods.ShortName + " " + "EXAM",
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (courseSectionData.SmstrMarkingPeriodId != null)
+                        {
+                            var markingPeriodData = this.context?.Semesters.Include(s => s.Quarters).ThenInclude(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.SmstrMarkingPeriodId).ToList();
+
+                            if (markingPeriodData != null)
+                            {
+                                if (markingPeriodData != null && markingPeriodData.Any())
+                                {
+                                    var semesterData = markingPeriodData.ToList();
+                                    foreach (var semester in semesterData)
+                                    {
+                                        var sem = new GetMarkingPeriodView
+                                        {
+                                            Value = "1" + "_" + semester.MarkingPeriodId,
+                                            Text = semester.ShortName,
+                                            StartDate = semester.StartDate,
+                                            EndDate = semester.EndDate,
+                                            FullName = semester.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+
+                                        if (semester.DoesExam == true)
+                                        {
+                                            var semExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
+                                                Text = semester.ShortName + " " + "EXAM",
+                                                StartDate = semester.StartDate,
+                                                EndDate = semester.EndDate,
+                                                FullName = semester.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
+                                        }
+                                    }
+                                    var quaterData = markingPeriodData.SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var quater in quaterData)
+                                    {
+                                        var qtr = new GetMarkingPeriodView
+                                        {
+                                            Value = "2" + "_" + quater.MarkingPeriodId,
+                                            Text = quater.ShortName,
+                                            StartDate = quater.StartDate,
+                                            EndDate = quater.EndDate,
+                                            FullName = quater.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                        if (quater.DoesExam == true)
+                                        {
+                                            var qtrExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
+                                                Text = quater.ShortName + " " + "EXAM",
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
+                                        }
+                                    }
+
+                                    var progressPeriodData = markingPeriodData.SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var progressPeriods in progressPeriodData)
+                                    {
+                                        var prgrsPrd = new GetMarkingPeriodView
+                                        {
+                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                            Text = progressPeriods.ShortName,
+                                            StartDate = progressPeriods.StartDate,
+                                            EndDate = progressPeriods.EndDate,
+                                            FullName = progressPeriods.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+
+                                        if (progressPeriods.DoesExam == true)
+                                        {
+                                            var prgrsPrdExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
+                                                Text = progressPeriods.ShortName + " " + "EXAM",
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (courseSectionData.QtrMarkingPeriodId != null)
+                        {
+                            var markingPeriodData = this.context?.Quarters.Include(x => x.ProgressPeriods).Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.QtrMarkingPeriodId).ToList();
+
+                            if (markingPeriodData != null)
+                            {
+                                if (markingPeriodData != null && markingPeriodData.Any())
+                                {
+                                    var quaterData = markingPeriodData.ToList();
+                                    foreach (var quater in quaterData)
+                                    {
+                                        var qtr = new GetMarkingPeriodView
+                                        {
+                                            Value = "2" + "_" + quater.MarkingPeriodId,
+                                            Text = quater.ShortName,
+                                            StartDate = quater.StartDate,
+                                            EndDate = quater.EndDate,
+                                            FullName = quater.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                        if (quater.DoesExam == true)
+                                        {
+                                            var qtrExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
+                                                Text = quater.ShortName + " " + "EXAM",
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
+                                        }
+                                    }
+
+                                    var progressPeriodData = markingPeriodData.SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+                                    foreach (var progressPeriods in progressPeriodData)
+                                    {
+                                        var prgrsPrd = new GetMarkingPeriodView
+                                        {
+                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                            Text = progressPeriods.ShortName,
+                                            StartDate = progressPeriods.StartDate,
+                                            EndDate = progressPeriods.EndDate,
+                                            FullName = progressPeriods.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+
+                                        if (progressPeriods.DoesExam == true)
+                                        {
+                                            var prgrsPrdExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
+                                                Text = progressPeriods.ShortName + " " + "EXAM",
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                DoesExam = true
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (courseSectionData.PrgrsprdMarkingPeriodId != null)
+                        {
+                            var markingPeriodData = this.context?.ProgressPeriods.Where(x => x.TenantId == markingPeriodsByCourse.TenantId && x.SchoolId == markingPeriodsByCourse.SchoolId && x.AcademicYear == markingPeriodsByCourse.AcademicYear && x.MarkingPeriodId == courseSectionData.PrgrsprdMarkingPeriodId).ToList();
+
+                            if (markingPeriodData != null)
+                            {
+                                if (markingPeriodData != null && markingPeriodData.Any())
+                                {
+                                    var progressPeriodData = markingPeriodData.ToList();
+                                    foreach (var progressPeriods in progressPeriodData)
+                                    {
+                                        var prgrsPrd = new GetMarkingPeriodView
+                                        {
+                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                            Text = progressPeriods.ShortName,
+                                            StartDate = progressPeriods.StartDate,
+                                            EndDate = progressPeriods.EndDate,
+                                            FullName = progressPeriods.Title
+                                        };
+                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+
+                                        if (progressPeriods.DoesExam == true)
+                                        {
+                                            var prgrsPrdExam = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
+                                                Text = progressPeriods.ShortName + " " + "EXAM",
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var customDateRange = new GetMarkingPeriodView
+                            {
+                                Value = "Custom",
+                                Text = "Custom Date Range",
+                                StartDate = courseSectionData.DurationStartDate,
+                                EndDate = courseSectionData.DurationEndDate,
+                                FullName = "Custom Date Range"
+                            };
+                            markingPeriodsByCourse.getMarkingPeriodView.Add(customDateRange);
+                        }
+                    }
+                    else
+                    {
+                        markingPeriodsByCourse._failure = true;
+                        markingPeriodsByCourse._message = NORECORDFOUND;
+                    }
                 }
             }
             catch (Exception es)

@@ -57,6 +57,7 @@ export class GradebookGradeListComponent implements OnInit {
   getCourseSectionId=[]
   changeParcentageCalculationValue
   markingPeriodId;
+  isWeightedSection: boolean;
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog,
@@ -251,6 +252,7 @@ export class GradebookGradeListComponent implements OnInit {
               this.commonService.checkTokenValidOrNot(data._message);
             }else{
               this.changeParcentageCalculationValue=data.gradebookConfiguration.scoreRounding;
+              this.isWeightedSection = data?.gradebookConfiguration?.general?.includes('weightGrades') ? true : false;
 
               res.assignmentsListViewModels?.map( value1 => {
                 value1.studentsListViewModels.map( value => {

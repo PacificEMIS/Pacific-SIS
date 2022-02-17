@@ -40,6 +40,7 @@ export class GradebookConfigurationQuarter{
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+    isProgressPeriodExists?: boolean;
 }
 
 export class GradebookConfigurationSemester{
@@ -61,6 +62,7 @@ export class GradebookConfigurationSemester{
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+    isQuarterExists?: boolean;
 }
 
 
@@ -83,6 +85,7 @@ export class GradebookConfigurationYear{
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+    isSemesterExists?: boolean;
 }
 
 export class GradebookConfigurationGradescale{
@@ -127,10 +130,10 @@ export class GradebookConfiguration {
     constructor(){
         this.scoreRounding = 'up';
         this.assignmentSorting = 'newestFirst';
-        this.gradebookConfigurationProgressPeriods = [new GradebookConfigurationProgressPeriods()];
-        this.gradebookConfigurationQuarter= [new GradebookConfigurationQuarter()];
-        this.gradebookConfigurationSemester= [new GradebookConfigurationSemester()];
-        this.gradebookConfigurationYear= [new GradebookConfigurationYear()];
+        this.gradebookConfigurationProgressPeriods = [];
+        this.gradebookConfigurationQuarter= [];
+        this.gradebookConfigurationSemester= [];
+        this.gradebookConfigurationYear= [];
     }
 }
 
@@ -150,4 +153,6 @@ export class FinalGradingMarkingPeriodList extends CommonField{
     quarters: TableQuarter[];
     semesters: TableSchoolSemester[];
     schoolYears: TableSchoolYear;
+    courseSectionId: number;
+    isConfiguration: boolean;
 }

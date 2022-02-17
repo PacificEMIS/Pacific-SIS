@@ -46,7 +46,7 @@ import { MembershipService } from '../../../services/membership.service';
 import { CalendarEventService } from '../../../services/calendar-event.service';
 import { CalendarEventAddViewModel, CalendarEventListViewModel, CalendarEventModel } from '../../../models/calendar-event.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { find, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
@@ -124,6 +124,11 @@ export class CalendarComponent implements OnInit {
   weekHeader;
   valueSetCount: number;
   userType : string
+  calendarStartDate: string;
+  calendarEndDate: string;
+  // currentdate: any;
+  // oneJan: any;
+    // selectedBlockTitle : string
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -158,7 +163,7 @@ export class CalendarComponent implements OnInit {
       }
     )
     // getting membershipType from session storage
-    const userType = sessionStorage.getItem('membershipType');
+    this.userType = this.defaultValuesService.getUserMembershipType()
   }
 
   ngOnInit(): void {
@@ -175,6 +180,8 @@ export class CalendarComponent implements OnInit {
   }
 
   changeCalendar(event) {
+    this.calendarStartDate = event.startDate;
+    this.calendarEndDate = event.endDate;
     this.getDays(event.days);
     this.calendarService.setCalendarId(event.calenderId);
     this.getAllCalendarEvent();
@@ -294,6 +301,8 @@ export class CalendarComponent implements OnInit {
         const defaultCalender = this.calendars.find(element => element.defaultCalender === true);
         if (defaultCalender != null) {
           this.selectedCalendar = defaultCalender;
+          this.calendarStartDate = this.selectedCalendar.startDate;
+          this.calendarEndDate = this.selectedCalendar.endDate;
           this.calendarService.setCalendarId(this.selectedCalendar.calenderId);
           this.getDays(this.selectedCalendar.days);
           this.getAllCalendarEvent();
@@ -308,7 +317,8 @@ export class CalendarComponent implements OnInit {
 
   // Rendar all events in calendar
   getAllCalendarEvent() {
-    this.getAllCalendarEventList.calendarId = this.calendarService.getCalendarId();
+    this.getAllCalendarEventList.calendarId = [];
+    this.getAllCalendarEventList.calendarId.push(this.calendarService.getCalendarId());
     this.events$ = this.calendarEventService.getAllCalendarEvent(this.getAllCalendarEventList).pipe(
       map(({ calendarEventList }: { calendarEventList: CalendarEventModel[] }) => {
         return calendarEventList.map((calendar: CalendarEventModel) => {
@@ -351,9 +361,11 @@ export class CalendarComponent implements OnInit {
         this.bellScheduleList.map((item) => {
           if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
             day.blockId = item.blockId;
+            this.findDayBlockTitle(day, item.blockId)
           } else {
             if (!day.blockId) {
               day.blockId = "";
+              day.blockTitle = "All Day"
             }
           }
         });
@@ -368,9 +380,11 @@ export class CalendarComponent implements OnInit {
         this.bellScheduleList.map((item) => {
           if (this.commonFunction.formatDateSaveWithoutTime(item.bellScheduleDate) === this.commonFunction.formatDateSaveWithoutTime(day.date)) {
             day.blockId = item.blockId;
+            this.findWeekBlockTitle(day, item.blockId)
           } else {
             if (!day.blockId) {
               day.blockId = "";
+              day.blockTitle = "All Day"
             }
           }
         });
@@ -378,7 +392,21 @@ export class CalendarComponent implements OnInit {
     })
   }
 
-
+  findDayBlockTitle(day: any, blockId : number) {
+    this.periodList.forEach(item=>{
+      if (blockId == item.blockId) {
+        day.blockTitle = item.blockTitle
+      }
+    }) 
+  }
+  
+  findWeekBlockTitle(day: any, blockId : number) {
+    this.periodList.forEach(item=>{
+      if (blockId == item.blockId) {
+        day.blockTitle = item.blockTitle
+      }
+    }) 
+  }
 
   // open event modal for view
   viewEvent(eventData) {    
@@ -491,6 +519,7 @@ export class CalendarComponent implements OnInit {
   // Open add new event by clicking calendar day
   openAddNewEvent(event) {
     if (this.permissions?.add && this.defaultValuesService.checkAcademicYear()) {
+      if (!moment(event.date).isBetween(this.calendarStartDate, this.calendarEndDate, undefined, '[]')) return;
       if (event.inMonth) {
         this.dialog.open(AddEventComponent, {
           data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, day: event },
@@ -520,6 +549,54 @@ export class CalendarComponent implements OnInit {
       });
     }
 
+  }
+
+  // getWeekNumber(viewDate) {
+  //   console.log(viewDate);
+  //   this.currentdate = new Date(viewDate);
+  //   this.oneJan = new Date(this.currentdate.getFullYear(), 0, 1);
+  //   let numberOfDays = Math.floor((this.currentdate - this.oneJan) / (24 * 60 * 60 * 1000));
+  //   let result = Math.ceil((this.currentdate.getDay() + 1 + numberOfDays) / 7);
+  //   console.log(result);
+  //   return result;
+  // }
+
+  isBeforeCalendar(viewDate) {
+    let calendarStartDate = this.commonFunction.formatDateSaveWithoutTime(this.calendarStartDate);
+    let currentViewDate = this.commonFunction.formatDateSaveWithoutTime(viewDate);
+    let calStartMonth = new Date(this.calendarStartDate).getMonth() + 1;
+    let calStartYear = new Date(this.calendarStartDate).getFullYear();
+    let currentViewMonth = new Date(viewDate).getMonth() + 1;
+    let currentViewYear = new Date(viewDate).getFullYear();
+
+    if (this.view === CalendarView.Month) {
+      return currentViewMonth <= calStartMonth && currentViewYear <= calStartYear ? true : false;
+    } else if (this.view === CalendarView.Week) {
+
+    } else if (this.view === CalendarView.Day) {
+      return currentViewDate <= calendarStartDate ? true : false;
+    }
+  }
+
+  isAfterCalendar(viewDate) {
+    let calendarEndDate = this.commonFunction.formatDateSaveWithoutTime(this.calendarEndDate);
+    let currentViewDate = this.commonFunction.formatDateSaveWithoutTime(viewDate);
+    let calEndMonth = new Date(this.calendarEndDate).getMonth() + 1;
+    let calEndYear = new Date(this.calendarEndDate).getFullYear();
+    let currentViewMonth = new Date(viewDate).getMonth() + 1;
+    let currentViewYear = new Date(viewDate).getFullYear();
+
+    if (this.view === CalendarView.Month) {
+      return currentViewMonth >= calEndMonth && currentViewYear >= calEndYear ? true : false;
+    } else if (this.view === CalendarView.Week) {
+
+    } else if (this.view === CalendarView.Day) {
+      return currentViewDate >= calendarEndDate ? true : false;
+    }
+  }
+
+  isBetweenCalendar(date) {
+    return moment(date).isBetween(this.calendarStartDate, this.calendarEndDate, undefined, '[]');
   }
 
 }

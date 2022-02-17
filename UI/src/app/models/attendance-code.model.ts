@@ -57,6 +57,42 @@ export class AttendanceCodeDragDropModel extends CommonField{
 
 }
 
+export class GetStudentAttendanceReport {
+    schoolId:number;
+    pageSize: number;
+    pageNumber: number;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    gradeLevel: string;
+    _tenantName: string;
+    _userName: string;
+    _token: string;
+    filterParams: filterParams[];
+    constructor() {
+        this.pageNumber = 1;
+        this.pageSize = 10;
+    }
+}
+
+export class AverageDailyAttendanceReportModel extends CommonField{
+    tenantId:string;
+    schoolId:number;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    academicYear: number;
+    filterParams: filterParams[];
+}
+
+export class filterParams {
+    columnName: string;
+    filterValue: string;
+    filterOption: number;
+    constructor() {
+        this.columnName = null;
+        this.filterOption = 3;
+        this.filterValue = null;
+    }
+}
 
 export class AttendanceCodeCategories {
     public tenantId: string;

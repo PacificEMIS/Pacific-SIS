@@ -26,7 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatExpansionModule } from '@angular/material/expansion';
-
+import { MatMenuModule } from "@angular/material/menu";
 import { AttendanceRoutingModule } from './attendance-routing.module';
 import { AttendanceComponent } from './attendance.component';
 import { AttendanceReportComponent } from './attendance-report/attendance-report.component';
@@ -71,7 +71,8 @@ import { AttendanceChartDetailsComponent } from './attendance-chart/attendance-c
     FormsModule,
     NgxMatSelectSearchModule,
     MatExpansionModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule
   ]
 })
 export class AttendanceModule { }

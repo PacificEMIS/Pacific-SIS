@@ -481,9 +481,9 @@
         </mat-card-content>
         <mat-card-actions class="mb-0">
             <div class="text-right">
-                <button mat-button type="button" *ngIf="schoolCreateMode == schoolCreate.EDIT" (click)="cancelEdit()">{{'cancel'|translate}}</button>
+                <button mat-button type="button" *ngIf="schoolCreateMode == schoolCreate.EDIT" (click)="cancelEdit()">{{'Cancel'|translate}}</button>
                 <!-- <button mat-raised-button (click)="openCaptureDate()" class="text-primary">Capture Date Link</button> -->
-                <button color="primary" mat-raised-button>{{schoolCreateMode === this.schoolCreate.EDIT ? 'update' : 'submit'|translate}}</button>
+                <button color="primary" mat-raised-button>{{schoolCreateMode === this.schoolCreate.EDIT ? 'Update' : 'Submit'|translate}}</button>
             </div>
         </mat-card-actions>
     </form>

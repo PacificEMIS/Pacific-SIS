@@ -36,6 +36,7 @@ namespace opensis.data.Models
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
+        public int? MembershipId { get; set; }
         public int? SchoolAttachedId { get; set; }
         public string? SchoolAttachedName { get; set; }
         public string? Profile { get; set; }
@@ -47,5 +48,6 @@ namespace opensis.data.Models
         public DateTime? UpdatedOn { get; set; }
 
         public virtual StaffMaster? StaffMaster { get; set; }
+        public virtual Membership? Membership { get; set; }
     }
 }

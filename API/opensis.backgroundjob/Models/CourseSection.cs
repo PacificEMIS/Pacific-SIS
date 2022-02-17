@@ -87,12 +87,12 @@ namespace opensis.backgroundjob.Models
         //public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; }
         //public virtual ICollection<StudentCoursesectionSchedule> StudentCoursesectionSchedule { get; set; }
 
-        //public CourseSection()
-        //{
-        //    GradebookConfiguration = new HashSet<GradebookConfiguration>();
-        //    StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
-        //    StudentCoursesectionSchedule = new HashSet<StudentCoursesectionSchedule>();
-        //}
+        public CourseSection()
+        {
+            //GradebookConfiguration = new HashSet<GradebookConfiguration>();
+            StaffCoursesectionSchedule = new HashSet<StaffCoursesectionSchedule>();
+            StudentCoursesectionSchedule = new HashSet<StudentCoursesectionSchedule>();
+        }
 
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
@@ -151,8 +151,8 @@ namespace opensis.backgroundjob.Models
         //public virtual SchoolYears? SchoolYears { get; set; }
         //public virtual Semesters? Semesters { get; set; }
         //public virtual ICollection<GradebookConfiguration> GradebookConfiguration { get; set; }
-        //public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; }
-        public virtual ICollection<StudentCoursesectionSchedule> StudentCoursesectionSchedule { get; set; }
+        public virtual ICollection<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; } = null!;
+        public virtual ICollection<StudentCoursesectionSchedule> StudentCoursesectionSchedule { get; set; } = null!;
 
     }
 }

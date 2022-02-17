@@ -34,7 +34,7 @@ import { StudentService } from "../../../../app/services/student.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MarkingPeriodService } from "../../../../app/services/marking-period.service";
-import { GetMarkingPeriodTitleListModel } from "src/app/models/marking-period.model";
+import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from "src/app/models/marking-period.model";
 import { AddReportCardPdf } from "../../../../app/models/report-card.model";
 import { ReportCardService } from "../../../../app/services/report-card.service";
 import { MatCheckbox } from "@angular/material/checkbox";
@@ -100,6 +100,7 @@ export class ReportCardsComponent implements OnInit {
   reportCardType = reportCardType;
   @ViewChild('printSectionId') printEl: ElementRef;
   generatedReportCardData;
+  getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
 
   constructor(
     private router: Router,
@@ -479,10 +480,9 @@ export class ReportCardsComponent implements OnInit {
   }
 
   getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.addReportCardPdf.academicYear = this.defaultValuesService.getAcademicYear();
-
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe((res) => {
+    this.getMarkingPeriodByCourseSectionModel.isReportCard = true;
+    this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe((res) => {
       if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);
         this.markingPeriodList = [];
@@ -659,7 +659,6 @@ export class ReportCardsComponent implements OnInit {
     // return new Promise((resolve, reject) => {
     //   const element = document.getElementById('pdfData');
     //   element.style.display = 'block';
-    //   console.log(element.innerHTML);
     //   const opt = {
     //     margin: 1,
     //     image: { type: 'png', quality: 0.98 },
@@ -674,7 +673,6 @@ export class ReportCardsComponent implements OnInit {
     //       // order_id: this.orderDetails.order_id,
     //       // ticket_pdf: new File([this.dataURItoBlob(res)], `Ticket_${this.orderDetails.order_id}.pdf`, { type: 'application/pdf' })
     //     };
-    //     // console.log(dataWithTicket);
     //     resolve(dataWithTicket);
     //   });
     // });
@@ -760,6 +758,8 @@ export class ReportCardsComponent implements OnInit {
           .comments h4 { margin-bottom: 10px; }
          
           .comments p { margin-bottom: 3px; padding-right: 20px; }
+
+          .inline-block {display: inline-block}
     </style>
         </head>
     <body onload="window.print()">${printContents}</body>

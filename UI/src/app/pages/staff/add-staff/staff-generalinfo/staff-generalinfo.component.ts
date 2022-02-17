@@ -652,6 +652,7 @@ export class StaffGeneralinfoComponent implements OnInit {
   }
 
   editGeneralInfo() {
+    if (this.staffAddModel.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, this.categoryId).then((res: any)=>{
     this.isReadOnly = res.isReadOnly;
     this.isReadOnly ? this.internalId.disable() : this.internalId.enable();
@@ -669,6 +670,19 @@ export class StaffGeneralinfoComponent implements OnInit {
     }
     this.callLOVs();
   });
+  } else {
+    this.staffCreateMode = this.staffCreate.EDIT
+    this.staffService.changePageMode(this.staffCreateMode);
+    this.saveAndNext = 'update';
+    if (this.staffAddModel.staffMaster.loginEmailAddress !== null) {
+      this.hideAccess = true;
+      this.fieldDisabled = true;
+    }
+    if (this.staffAddModel.staffMaster.physicalDisability) {
+      this.showDisabilityDescription = true;
+    }
+    this.callLOVs();
+  }
   }
 
   cancelEdit() {

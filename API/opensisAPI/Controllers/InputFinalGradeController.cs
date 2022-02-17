@@ -157,5 +157,21 @@ namespace opensisAPI.Controllers
             }
             return studentList;
         }
+
+        [HttpPost("getGradebookGradeinFinalGrade")]
+        public ActionResult<GardeBookGradeViewModel> GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel)
+        {
+            GardeBookGradeViewModel gardeBookGrade = new GardeBookGradeViewModel();
+            try
+            {
+                gardeBookGrade = _inputFinalGradeService.GetGradebookGradeinFinalGrade(gardeBookGradeViewModel);
+            }
+            catch (Exception ex)
+            {
+                gardeBookGrade._message = ex.Message;
+                gardeBookGrade._failure = true;
+            }
+            return gardeBookGrade;
+        }
     }
 }

@@ -260,7 +260,7 @@
                                 <div class="flex justify-between mt-4">
                                     <ul
                                         class="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 col-gap-8 row-gap-4 w-full">
-                                        <li>
+                                        <!-- <li>
                                             <label class="text-sm leading-5 text-gray">
                                                 {{ 'weightedGpa' | translate }}
                                             </label>
@@ -271,12 +271,11 @@
                                                 {{ 'unweightedGpa' | translate }}
                                             </label>
                                             <p class="text-sm">0.00</p>
-                                        </li>
+                                        </li> -->
                                         <li>
-                                            <label class="text-sm leading-5 text-gray">
-                                                {{ 'studentId' | translate }}
+                                            <label class="text-m leading-5 text-black font-bold">
+                                                {{ 'studentID' | translate }}{{' : '}}{{histStudentDetails?.studentInternalId}}
                                             </label>
-                                            <p class="text-sm">{{histStudentDetails?.studentInternalId}}</p>
                                         </li>
                                     </ul>
                                 </div>
