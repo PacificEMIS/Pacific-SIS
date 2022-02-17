@@ -46,10 +46,10 @@
 
           <div class="actions flex flex-col sm:flex-row justify-end items-center">
             <div class="chevrons">
-              <button [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarPreviousView>
+              <button [disabled]="isBeforeCalendar(viewDate)" [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarPreviousView>
                 <mat-icon [icIcon]="icChevronLeft"></mat-icon>
               </button>
-              <button [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarNextView>
+              <button [disabled]="isAfterCalendar(viewDate)" [(viewDate)]="viewDate" [view]="view" mat-icon-button mwlCalendarNextView>
                 <mat-icon [icIcon]="icChevronRight"></mat-icon>
               </button>
             </div>
@@ -67,10 +67,14 @@
             <div class="cal-cell-top">
               <div class="flex justify-between items-center mx-3 mt-2">
                 <!-- <span class="cal-day-badge hidden md:inline-block" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
-                <div *ngIf="periodList.length > 1 && !day.isWeekend && this.defaultValuesService.checkAcademicYear()"
+                <div *ngIf="periodList.length > 1 && !day.isWeekend && isBetweenCalendar(day.date) && (userType === 'Teacher' || userType === 'Homeroom Teacher')"
                   class="select-container bg-white border  rounded p-2">
-                  <p *ngIf="userType =='Teacher' || userType =='Homeroom Teacher'">{{day.blockTitle}}</p>
-                  <mat-select *ngIf=" userType !='Teacher' && userType !='Homeroom Teacher'" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
+                  <p>{{day.blockTitle}}</p>
+                </div>
+                <div *ngIf="periodList.length > 1 && !day.isWeekend && isBetweenCalendar(day.date) && userType !== 'Teacher' && userType !== 'Homeroom Teacher'"
+                  class="select-container bg-white border  rounded p-2">
+                  <p *ngIf="!permissions?.edit">{{day.blockTitle}}</p>
+                  <mat-select *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, day)"
                     [value]="day.blockId ? day.blockId : 1">
                     <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
                   </mat-select>
@@ -110,10 +114,14 @@
                 <b>{{header?.date | date : 'EEEE'}}</b>
                 <span>{{header?.date | date : 'MMMM d'}}</span>
               </div>
-              <div *ngIf="periodList.length > 1 && !header.isWeekend"
+              <div *ngIf="periodList.length > 1 && !header.isWeekend && isBetweenCalendar(header.date) && (userType === 'Teacher' || userType === 'Homeroom Teacher')"
                 class="bg-white border border-gray-light rounded px-2 py-1">
-                <p *ngIf="userType =='Teacher' || userType =='Homeroom Teacher'">{{header.blockTitle}}</p>
-                <mat-select *ngIf=" userType !='Teacher' && userType !='Homeroom Teacher'" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, header)"
+                <p>{{header.blockTitle}}</p>
+              </div>
+              <div *ngIf="periodList.length > 1 && !header.isWeekend && isBetweenCalendar(header.date) && userType !== 'Teacher' && userType !== 'Homeroom Teacher'"
+                class="bg-white border border-gray-light rounded px-2 py-1">
+                <p *ngIf="!permissions?.edit">{{header.blockTitle}}</p>
+                <mat-select *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="$event.stopPropagation()" (selectionChange)="changeBlockPeriod($event, header)"
                   [value]="header.blockId ? header.blockId : 1">
                   <mat-option *ngFor="let item of periodList" [value]="item?.blockId">{{item?.blockTitle}}</mat-option>
                 </mat-select>

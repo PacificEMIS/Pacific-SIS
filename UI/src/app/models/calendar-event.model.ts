@@ -40,12 +40,13 @@ export class CalendarEventListViewModel extends CommonField {
     public calendarEventList: CalendarEventModel[];
     public tenantId: string;
     public schoolId: number;
-    public calendarId: number;
+    public calendarId: number[];
     public membershipId: number;
     public academicYear: number;
     constructor() {
         super();
         this.calendarEventList = [];
+        this.calendarId = [];
     }
 }
 
