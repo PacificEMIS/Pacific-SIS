@@ -76,7 +76,7 @@ namespace opensis.data.Repository
                 ReturnModel._tenantName = objModel._tenantName;
                 //var encryptedPassword = EncodePassword(objModel.Password);
 
-                var user = this.context?.UserMaster.Include(x => x.Membership).Where(x => x.EmailAddress == objModel.Email && x.PasswordHash == passwordHash && (x.Membership.ProfileType != "Student" || x.Membership.ProfileType != "Parent")).FirstOrDefault();
+                var user = this.context?.UserMaster.Include(x => x.Membership).Where(x => x.EmailAddress == objModel.Email && x.PasswordHash == passwordHash && x.Membership.ProfileType != "Student" && x.Membership.ProfileType != "Parent").FirstOrDefault();
 
                 if (user!=null)
                 {
