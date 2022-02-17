@@ -308,9 +308,14 @@ namespace opensis.data.Repository
 
                             if (quarterData != null || semesterUpdate.CourseSection.Any() == true)
                             {
-                                semester._failure = true;
-                                semester._message = "Semester cannot be changed because it has its association.";
-
+                                semesterUpdate.Title = semester.tableSemesters.Title;
+                                semesterUpdate.ShortName = semester.tableSemesters.ShortName;
+                                semesterUpdate.DoesGrades = semester.tableSemesters.DoesGrades;
+                                semesterUpdate.DoesExam = semester.tableSemesters.DoesExam;
+                                semesterUpdate.DoesComments = semester.tableSemesters.DoesComments;
+                                this.context?.SaveChanges();
+                                semester._failure = false;
+                                semester._message = "Semester Updated Successfully Except Semester StartDate and EndDate";
                             }
                             else
                             {
@@ -804,8 +809,14 @@ namespace opensis.data.Repository
 
                             if (semesterData != null || schoolYearsMaster.CourseSection.Any() == true)
                             {
-                                schoolYears._failure = true;
-                                schoolYears._message = "School year cannot be changed because it has its association.";
+                                schoolYearsMaster.Title = schoolYears.tableSchoolYears.Title;
+                                schoolYearsMaster.ShortName = schoolYears.tableSchoolYears.ShortName;
+                                schoolYearsMaster.DoesGrades = schoolYears.tableSchoolYears.DoesGrades;
+                                schoolYearsMaster.DoesExam = schoolYears.tableSchoolYears.DoesExam;
+                                schoolYearsMaster.DoesComments = schoolYears.tableSchoolYears.DoesComments;
+                                this.context?.SaveChanges();
+                                schoolYears._failure = false;
+                                schoolYears._message = "School Year Updated Successfully Except StartDate and EndDate";
 
                             }
                             else
