@@ -1037,7 +1037,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    var quarteMaster = this.context?.Quarters.Include(x => x.ProgressPeriods).FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.MarkingPeriodId);
+                    var quarteMaster = this.context?.Quarters.Include(x => x.CourseSection).FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.MarkingPeriodId);
 
                     var semester = this.context?.Semesters.FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.SemesterId);
 
@@ -1049,8 +1049,14 @@ namespace opensis.data.Repository
 
                             if (progressPeriodsData != null || quarteMaster.CourseSection.Any() == true)
                             {
-                                quarters._failure = true;
-                                quarters._message = "Quarter cannot be changed because it has its association.";
+                                quarteMaster.Title = quarters.tableQuarter.Title;
+                                quarteMaster.ShortName = quarters.tableQuarter.ShortName;
+                                quarteMaster.DoesGrades = quarters.tableQuarter.DoesGrades;
+                                quarteMaster.DoesExam = quarters.tableQuarter.DoesExam;
+                                quarteMaster.DoesComments = quarters.tableQuarter.DoesComments;
+                                this.context?.SaveChanges();
+                                quarters._failure = false;
+                                quarters._message = "Quarter Updated Successfully Except StartDate and EndDate";
 
                             }
                             else
