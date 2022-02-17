@@ -34,7 +34,7 @@ import { StudentService } from "../../../../app/services/student.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MarkingPeriodService } from "../../../../app/services/marking-period.service";
-import { GetMarkingPeriodTitleListModel } from "src/app/models/marking-period.model";
+import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from "src/app/models/marking-period.model";
 import { AddReportCardPdf } from "../../../../app/models/report-card.model";
 import { ReportCardService } from "../../../../app/services/report-card.service";
 import { MatCheckbox } from "@angular/material/checkbox";
@@ -54,7 +54,6 @@ import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { reportCardType } from "../../../common/static-data";
 import * as html2pdf from 'html2pdf.js';
-import { GetMarkingPeriodByCourseSectionModel } from "../../../models/marking-period.model";
 
 @Component({
   selector: "vex-report-cards",
@@ -481,7 +480,6 @@ export class ReportCardsComponent implements OnInit {
   }
 
   getAllMarkingPeriodList() {
-    // this.getMarkingPeriodByCourseSectionModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.addReportCardPdf.academicYear = this.defaultValuesService.getAcademicYear();
     this.getMarkingPeriodByCourseSectionModel.isReportCard = true;
     this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe((res) => {
