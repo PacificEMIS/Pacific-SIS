@@ -289,10 +289,10 @@ export class DefaultValuesService {
     return JSON.parse(sessionStorage.getItem("courseSectionForAttendance"));
   }
   getFullYearStartDate() {
-    return JSON.parse(sessionStorage.getItem("fullYearStartDate"));
+    return JSON.parse(sessionStorage.getItem("schoolYearStartDate"));
   }
   getFullYearEndDate() {
-    return JSON.parse(sessionStorage.getItem("fullYearEndDate"));
+    return JSON.parse(sessionStorage.getItem("schoolYearEndDate"));
   }
   getSchoolOpened() {
     return JSON.parse(sessionStorage.getItem('schoolOpened'));
@@ -320,10 +320,10 @@ export class DefaultValuesService {
     sessionStorage.setItem("schoolClosed", JSON.stringify(schoolClosed));
   }
   setFullYearStartDate(fullYearStartDate: string) {
-    sessionStorage.setItem("fullYearStartDate", JSON.stringify(fullYearStartDate));
+    sessionStorage.setItem("schoolYearStartDate", JSON.stringify(fullYearStartDate));
   }
   setFullYearEndDate(fullYearEndDate: string) {
-    sessionStorage.setItem("fullYearEndDate", JSON.stringify(fullYearEndDate));
+    sessionStorage.setItem("schoolYearEndDate", JSON.stringify(fullYearEndDate));
   }
   setTenantIdVal(tenant: string) { //find out the uses
     sessionStorage.setItem("tenantId", JSON.stringify(tenant));
