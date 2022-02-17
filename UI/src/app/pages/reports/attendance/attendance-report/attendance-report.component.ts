@@ -1,3 +1,28 @@
+/***********************************************************************************
+openSIS is a free student information system for public and non-public
+schools from Open Solutions for Education, Inc.Website: www.os4ed.com.
+
+Visit the openSIS product website at https://opensis.com to learn more.
+If you have question regarding this software or the license, please contact
+via the website.
+
+The software is released under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, version 3 of the License.
+See https://www.gnu.org/licenses/agpl-3.0.en.html.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Copyright (c) Open Solutions for Education, Inc.
+
+All rights reserved.
+***********************************************************************************/
+
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
@@ -108,7 +133,7 @@ export class AttendanceReportComponent implements OnInit {
 
   getMarkingPeriod() {
     this.markingPeriodService.GetMarkingPeriod(this.markingPeriodListModel).subscribe((data: any) => {
-      if (data._failure) { 
+      if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       } else {
         for (let i = 0; i < data.schoolYearsView.length; i++) {
@@ -186,7 +211,7 @@ export class AttendanceReportComponent implements OnInit {
       this.getStudentAttendanceReportModel.markingPeriodEndDate = this.globalMarkingPeriodEndDate = null;
     }
   }
-  
+
   getgrade(event) {
     this.getStudentAttendanceReportModel.gradeLevel = event.value
     this.tempGradeLevel = event.value; // for store selected value 
@@ -252,9 +277,9 @@ export class AttendanceReportComponent implements OnInit {
         if (res._failure) {
           this.commonService.checkTokenValidOrNot(res._message);
           this.allAttendence = new MatTableDataSource([]);
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
           this.isVisible = false;
         }
         else {
@@ -262,6 +287,21 @@ export class AttendanceReportComponent implements OnInit {
           this.totalCount = res.totalCount;
           this.pageNumber = res.pageNumber;
           this.pageSize = res._pageSize;
+          res.studendAttendanceAdministrationList.map(x => {
+            let List = [];                                              //for blank dataSet array
+
+            x.periodsName.includes(',') ? x.studentAttendanceList = x.periodsName.split(",") : x.studentAttendanceList = x.periodsName;         //for checking the string has ',' or not
+
+            if (Array.isArray(x.studentAttendanceList)) {                //for split by '|'
+              for (let elemnt of x.studentAttendanceList) {
+                List.push(elemnt.split('|'))
+              }
+            } else {
+              List.push(x.studentAttendanceList.split('|'))
+            }
+
+            x.studentAttendanceList = List;                               //for push the custom dataSet
+          })
           this.allAttendence = new MatTableDataSource(res.studendAttendanceAdministrationList);
         }
       }
@@ -293,36 +333,40 @@ export class AttendanceReportComponent implements OnInit {
   exportAccessLogListToExcel() {
     this.getStudentAttendanceReportModel.pageNumber = 0
     this.getStudentAttendanceReportModel.pageSize = 0
-    this.attendanceCodeService.getStudentAttendanceExcelReport(this.getStudentAttendanceReportModel).subscribe((res: any) => {
-      if (res) {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-          this.snackbar.open(res._message, '', {
+    if (this.totalCount > 0) {
+      this.attendanceCodeService.getStudentAttendanceExcelReport(this.getStudentAttendanceReportModel).subscribe((res: any) => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+          else {
+            if (res.studentAttendanceReportForExcel.length > 0) {
+              let object = {}, studentList = [];
+              res.studentAttendanceReportForExcel.map(item => {
+                for (let objectVal in item) {
+                  Object.assign(object, {
+                    [this.defaultValuesService.translateKey(objectVal)]: objectVal === "attendanceDate" ?
+                      this.commonFunction.formatDateYearAtLast(item[objectVal]) : item[objectVal] ? item[objectVal] : objectVal === "attendanceDate" ||
+                        objectVal === "studentName" || objectVal === "studentInternalId" || objectVal === "gradeLevelTitle" ? '-' : 'X'
+                  });
+                }
+                studentList.push(JSON.parse(JSON.stringify(object)));
+
+              })
+              this.excelService.exportAsExcelFile(studentList, 'Student_Attendance_Report');
+            }
+          }
+        }
+        else {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
         }
-        else {
-          if (res.studentAttendanceReportForExcel.length > 0) {
-            let object = {}, studentList = [];
-            res.studentAttendanceReportForExcel.map(item => {
-              for (let objectVal in item) {
-                Object.assign(object, { [this.defaultValuesService.translateKey(objectVal)]: objectVal === "attendanceDate" ? 
-                this.commonFunction.formatDateYearAtLast(item[objectVal]) : item[objectVal] ? item[objectVal] : objectVal === "attendanceDate" || 
-                objectVal === "studentName" || objectVal === "studentInternalId" || objectVal === "gradeLevelTitle" ? '-' : 'X' });
-              }
-              studentList.push(JSON.parse(JSON.stringify(object)));
-
-            })
-            this.excelService.exportAsExcelFile(studentList, 'Student_Attendance_Report');
-          }
-        }
-      }
-      else {
-        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-    })
+      })
+    }
   }
 
   ngOnDestroy() {
