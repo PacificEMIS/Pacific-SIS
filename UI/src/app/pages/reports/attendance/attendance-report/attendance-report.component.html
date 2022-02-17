@@ -5,35 +5,39 @@
             <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                 <mat-label>{{ "showReportBy" | translate }}</mat-label>
                 <mat-select [(ngModel)]="selectedReportBy" (selectionChange)="getReportBy($event)">
-                    <mat-option *ngFor="let reportBy of selectOptions" [value]="reportBy?.title">{{reportBy?.title}}</mat-option>
+                    <mat-option *ngFor="let reportBy of selectOptions" [value]="reportBy?.title">{{reportBy?.title}}
+                    </mat-option>
                     <mat-option value="">{{'customDateRange' |translate}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </li>
         <ng-container *ngIf="!selectedReportBy">
-        <li>
-            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                <mat-label>{{ "fromDate" | translate }}</mat-label>
-                <input matInput [matDatepicker]="fromDate" #fromDateValue [(ngModel)]="getStudentAttendanceReportModel.markingPeriodStartDate" required>
-                <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
-                <mat-datepicker #fromDate></mat-datepicker>
-            </mat-form-field>
-        </li>
-        <li>
-            <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                <mat-label>{{ "toDate" | translate }}</mat-label>
-                <input matInput [matDatepicker]="toDate" required #toDateValue [(ngModel)]="getStudentAttendanceReportModel.markingPeriodEndDate"required>
-                <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
-                <mat-datepicker #toDate></mat-datepicker>
-            </mat-form-field>
-        </li>
-        </ng-container> 
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "fromDate" | translate }}</mat-label>
+                    <input matInput [matDatepicker]="fromDate" #fromDateValue
+                        [(ngModel)]="getStudentAttendanceReportModel.markingPeriodStartDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                    <mat-datepicker #fromDate></mat-datepicker>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "toDate" | translate }}</mat-label>
+                    <input matInput [matDatepicker]="toDate" required #toDateValue
+                        [(ngModel)]="getStudentAttendanceReportModel.markingPeriodEndDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                    <mat-datepicker #toDate></mat-datepicker>
+                </mat-form-field>
+            </li>
+        </ng-container>
         <li>
             <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                 <mat-label>{{ "gradeLevel" | translate }}</mat-label>
                 <mat-select (selectionChange)="getgrade($event)">
-                    <mat-option *ngFor="let gradeLevels of gradeLevelList" [value]="gradeLevels?.title">{{gradeLevels?.title}}</mat-option>
-                    <mat-option value=''>None</mat-option>
+                    <mat-option *ngFor="let gradeLevels of gradeLevelList" [value]="gradeLevels?.title">
+                        {{gradeLevels?.title}}</mat-option>
+                    <mat-option>None</mat-option>
                 </mat-select>
             </mat-form-field>
         </li>
@@ -92,24 +96,33 @@
                     <th mat-header-cell *matHeaderCellDef>{{'periodAttendanceStatus' | translate }}</th>
                     <td mat-cell *matCellDef="let element">
                         <div *ngFor="let data of element.studentAttendanceList" class="inline-block">
-                            <div class="inline-block"
-                                [matTooltip]="data.blockPeriod.periodTitle+ ' - '+data.attendanceCodeNavigation.stateCode"
+                            <div class="inline-block" matTooltip="{{data[0]}} {{' - '}} {{data[1]?data[1]:'Not Taken'}}"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
                                 [matTooltipPosition]="'above'">
                                 <span class="inline-block bg-green w-5 h-5 mr-2 rounded-full"
-                                    *ngIf="data.attendanceCodeNavigation.stateCode === 'Present'"></span>
+                                    *ngIf="data[1] === 'Present'"></span>
                                 <span class="inline-block bg-red w-5 h-5 mr-2 rounded-full"
-                                    *ngIf="data.attendanceCodeNavigation.stateCode ==='Absent' "></span>
+                                    *ngIf="data[1] ==='Absent' "></span>
                                 <span class="inline-block bg-orange w-5 h-5 mr-2 rounded-full"
-                                    *ngIf="data.attendanceCodeNavigation.stateCode ==='Half Day' "></span>
+                                    *ngIf="data[1] ==='Half Day' "></span>
+                                <span class="inline-block bg-gray w-5 h-5 mr-2 rounded-full"
+                                    *ngIf="data[1] ==='' "></span>
                             </div>
                         </div>
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="7">
+                        {{allAttendence?.filteredData.length == 0 ?('noData' | translate):'' }}
+                    </td>
+                </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null && totalCount != 0">
+                </tr>
+
             </table>
         </div>
         <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]"
