@@ -1601,5 +1601,10 @@
     "includeOnlyCoursesActiveAsOf": "Include only courses active as of",
     "contact": "Contact",
     "wash": "WASH",
-    "others":"Others"
+    "others":"Others",
+    "noTeacherScheduled": "No Teacher Scheduled",
+    "courseSectionAnd": "Course Section and",
+    "courseType":"Course Type",
+    "youHaveChangedTheGradebookConfiguration":"You have changed the gradebook configuration",
+    "pleaseRecalculateTheGrades":"please recalculate the grades"
 }

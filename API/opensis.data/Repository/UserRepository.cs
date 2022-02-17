@@ -266,14 +266,20 @@ namespace opensis.data.Repository
                             var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
                             {
                                 StaffPhoto = x.StaffPhoto,
+                                Suffix = x.Suffix,
                                 FirstGivenName = x.FirstGivenName,
+                                MiddleName = x.MiddleName,
+                                LastFamilyName = x.LastFamilyName,
                                 StaffGuid = x.StaffGuid,
                             }).FirstOrDefault();
 
                             if (userData != null)
                             {
                                 ReturnModel.UserPhoto = userData.StaffPhoto;
+                                ReturnModel.Suffix = userData.Suffix;
                                 ReturnModel.FirstGivenName = userData.FirstGivenName;
+                                ReturnModel.MiddleName = userData.MiddleName;
+                                ReturnModel.LastFamilyName = userData.LastFamilyName;
                                 ReturnModel.UserGuid = userData.StaffGuid.ToString();
                             }
                         }
@@ -288,7 +294,7 @@ namespace opensis.data.Repository
                             ReturnModel.MembershipType = user?.Membership.ProfileType;
                             ReturnModel.MembershipId = user?.Membership.MembershipId;
                             ReturnModel._failure = true;
-                            ReturnModel._message = "You are not longer member please contact to Administrator";
+                            ReturnModel._message = "Your account is inactive, please contact to Administrator";
                             return ReturnModel;
                         }
                     }

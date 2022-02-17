@@ -36,6 +36,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   historicalMarkingPeriodList: HistoricalMarkingPeriodListModel = new HistoricalMarkingPeriodListModel();
   historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
   historicalGrade: HistoricalGrade = new HistoricalGrade();
+  allCourseTypes = []
 
   constructor(private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
     private commonService: CommonService,
@@ -49,6 +50,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       this.loading = val;
     });
     this.histStudentDetails = this.historicalMarkingPeriodService.getHistStudentDetails();
+    this.allCourseTypes = ['Regular','Honors','AP','IB','College']
   }
 
   ngOnInit(): void {
