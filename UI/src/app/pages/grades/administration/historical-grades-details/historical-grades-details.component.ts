@@ -179,9 +179,9 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
         if (res) {
           if (res._failure) {
             this.commonService.checkTokenValidOrNot(res._message);
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
+            // this.snackbar.open(res._message, '', {
+            //   duration: 10000
+            // });
           }
           else {
             this.historicalGradeAddViewModel = res;
@@ -198,9 +198,9 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
           }
         }
         else {
-          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
-            duration: 10000
-          });
+          // this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          //   duration: 10000
+          // });
         }
       }
     );
