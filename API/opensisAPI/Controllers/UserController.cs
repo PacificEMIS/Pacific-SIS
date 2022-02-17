@@ -325,7 +325,7 @@ namespace opensisAPI.Controllers
                     },
                     Block=new List<Block>()
                     {
-                        new Block(){TenantId=tenantId, SchoolId=(int)schoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, CreatedOn=DateTime.UtcNow,  }
+                        new Block(){TenantId=tenantId, SchoolId=(int)schoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, AcademicYear=Convert.ToDecimal(registrationViewModel.SchoolBeginDate.Value.Year), CreatedOn=DateTime.UtcNow,  }
                     }
                 },
                     }.ToList();

@@ -1604,5 +1604,7 @@
     "others":"Others",
     "noTeacherScheduled": "No Teacher Scheduled",
     "courseSectionAnd": "Course Section and",
-    "courseType":"Course Type"
+    "courseType":"Course Type",
+    "youHaveChangedTheGradebookConfiguration":"You have changed the gradebook configuration",
+    "pleaseRecalculateTheGrades":"please recalculate the grades"
 }

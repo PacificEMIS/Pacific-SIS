@@ -1603,5 +1603,7 @@
     "wash": "LAVAR",
     "noTeacherScheduled": "Ningún maestro programado",
     "courseSectionAnd": "Sección del curso y",
-    "courseType": "Tipo de curso"
+    "courseType": "Tipo de curso",
+    "youHaveChangedTheGradebookConfiguration":"Ha cambiado la configuración del libro de calificaciones",
+    "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones"
 }

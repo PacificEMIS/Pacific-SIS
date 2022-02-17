@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -32,10 +32,11 @@ import { TranslateService } from "@ngx-translate/core";
   templateUrl: "./grades.component.html",
   styleUrls: ["./grades.component.scss"],
 })
-export class GradesComponent implements OnInit {
+export class GradesComponent implements OnInit, AfterViewInit {
   currentTab: string;
   // @Output() gradeSelTab: EventEmitter<string> = new EventEmitter();
 
+  isConfigUpdateFlag: boolean
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog
@@ -47,8 +48,17 @@ export class GradesComponent implements OnInit {
     this.currentTab = "gradebook";
   }
 
+  ngAfterViewInit(): void {
+    this.isConfigUpdateFlag
+  }
+
   changeTab(status) {
     this.currentTab = status;
     // this.gradeSelTab.emit(status);
+  }
+
+  configUpdateflagCheck(event:boolean){
+    this.isConfigUpdateFlag = event
+    this.ngAfterViewInit()
   }
 }
