@@ -275,7 +275,7 @@ export class GradeDetailsComponent implements OnInit {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
           this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionDetails[0].courseId;
-          this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionDetails[0].calendarId;          
+          this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionDetails[0].calendarId;
           this.getAllReportCardCommentsWithCategory(this.addUpdateStudentFinalGradeModel.courseId);
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale') {
@@ -308,7 +308,7 @@ export class GradeDetailsComponent implements OnInit {
                 this.studentMasterList = res.scheduleStudentForView;
                 this.studentMasterList.map((item: any) => {
                   item.gradeScaleList = this.getGradeScaleList(item);
-                });               
+                });
                 this.totalCount = this.studentMasterList.length;
                 this.showCommentDetails(this.studentMasterList.length > 0 ? 0 : null);
 
