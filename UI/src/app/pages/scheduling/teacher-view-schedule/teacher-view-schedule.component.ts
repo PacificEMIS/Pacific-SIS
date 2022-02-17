@@ -62,7 +62,7 @@ export class TeacherViewScheduleComponent implements OnInit {
 
   displayedColumns = [
     "courseSection",
-    "markingPeriod",
+    "markingPeriod", 
     "period",
     "time",
     "room",
