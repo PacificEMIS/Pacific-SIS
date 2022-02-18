@@ -199,6 +199,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
         }
       }
     );
+    
   }
 
   ngOnDestroy() {
