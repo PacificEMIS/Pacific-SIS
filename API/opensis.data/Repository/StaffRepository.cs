@@ -118,7 +118,7 @@ namespace opensis.data.Repository
 
                         if (loginInfo == null)
                         {
-                            var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.Profile == "Teacher");
+                            var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId && x.ProfileType == "Teacher");
 
                             userMaster.SchoolId = staffAddViewModel.staffMaster.SchoolId;
                             userMaster.TenantId = staffAddViewModel.staffMaster.TenantId;
@@ -150,7 +150,7 @@ namespace opensis.data.Repository
                     //Insert data into StaffSchoolInfo table            
                     int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
                     var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
-                    var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId, Id = (int)Id!, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher" };
+                    var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId, Id = (int)Id!, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher", MembershipId = 4 };
                     this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
                     this.context?.SaveChanges();
 

@@ -34,10 +34,10 @@ namespace opensis.data.ViewModels.School
     {
         public SchoolListModel()
         {
-            GetSchoolForView = new List<GetSchoolForView>();
+            getSchoolForView = new List<GetSchoolForView>();
             schoolMaster = new List<SchoolMaster>();
         }
-        public List<GetSchoolForView> GetSchoolForView { get; set; }
+        public List<GetSchoolForView> getSchoolForView { get; set; }
         public List<SchoolMaster> schoolMaster { get; set; }
         public Guid? TenantId { get; set; }
         public string? EmailAddress { get; set; }
