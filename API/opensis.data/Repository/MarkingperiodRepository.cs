@@ -308,9 +308,14 @@ namespace opensis.data.Repository
 
                             if (quarterData != null || semesterUpdate.CourseSection.Any() == true)
                             {
-                                semester._failure = true;
-                                semester._message = "Semester cannot be changed because it has its association.";
-
+                                semesterUpdate.Title = semester.tableSemesters.Title;
+                                semesterUpdate.ShortName = semester.tableSemesters.ShortName;
+                                semesterUpdate.DoesGrades = semester.tableSemesters.DoesGrades;
+                                semesterUpdate.DoesExam = semester.tableSemesters.DoesExam;
+                                semesterUpdate.DoesComments = semester.tableSemesters.DoesComments;
+                                this.context?.SaveChanges();
+                                semester._failure = false;
+                                semester._message = "Semester Updated Successfully Except Semester StartDate and EndDate";
                             }
                             else
                             {
@@ -804,8 +809,14 @@ namespace opensis.data.Repository
 
                             if (semesterData != null || schoolYearsMaster.CourseSection.Any() == true)
                             {
-                                schoolYears._failure = true;
-                                schoolYears._message = "School year cannot be changed because it has its association.";
+                                schoolYearsMaster.Title = schoolYears.tableSchoolYears.Title;
+                                schoolYearsMaster.ShortName = schoolYears.tableSchoolYears.ShortName;
+                                schoolYearsMaster.DoesGrades = schoolYears.tableSchoolYears.DoesGrades;
+                                schoolYearsMaster.DoesExam = schoolYears.tableSchoolYears.DoesExam;
+                                schoolYearsMaster.DoesComments = schoolYears.tableSchoolYears.DoesComments;
+                                this.context?.SaveChanges();
+                                schoolYears._failure = false;
+                                schoolYears._message = "School Year Updated Successfully Except StartDate and EndDate";
 
                             }
                             else
@@ -1026,7 +1037,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    var quarteMaster = this.context?.Quarters.Include(x => x.ProgressPeriods).FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.MarkingPeriodId);
+                    var quarteMaster = this.context?.Quarters.Include(x => x.CourseSection).FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.MarkingPeriodId);
 
                     var semester = this.context?.Semesters.FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.SemesterId);
 
@@ -1038,8 +1049,14 @@ namespace opensis.data.Repository
 
                             if (progressPeriodsData != null || quarteMaster.CourseSection.Any() == true)
                             {
-                                quarters._failure = true;
-                                quarters._message = "Quarter cannot be changed because it has its association.";
+                                quarteMaster.Title = quarters.tableQuarter.Title;
+                                quarteMaster.ShortName = quarters.tableQuarter.ShortName;
+                                quarteMaster.DoesGrades = quarters.tableQuarter.DoesGrades;
+                                quarteMaster.DoesExam = quarters.tableQuarter.DoesExam;
+                                quarteMaster.DoesComments = quarters.tableQuarter.DoesComments;
+                                this.context?.SaveChanges();
+                                quarters._failure = false;
+                                quarters._message = "Quarter Updated Successfully Except StartDate and EndDate";
 
                             }
                             else
