@@ -172,11 +172,16 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
         if (res) {
           if (res._failure) {
             this.commonService.checkTokenValidOrNot(res._message);
-            // this.snackbar.open(res._message, '', {
-            //   duration: 10000
-            // });
-            this.markingPeriodList = new MatTableDataSource([]);
-            this.totalCount = null;
+            if (res.historicalMarkingPeriodList === null) {
+              this.totalCount = null;
+              this.markingPeriodList = new MatTableDataSource([]);
+              this.snackbar.open(res._message, '', {
+                duration: 10000
+              });
+            } else {
+              this.markingPeriodList = new MatTableDataSource([]);
+              this.totalCount = null;
+            }
           }
           else {
             this.markingPeriodList = new MatTableDataSource(res.historicalMarkingPeriodList);
