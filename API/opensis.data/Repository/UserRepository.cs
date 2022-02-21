@@ -94,7 +94,19 @@ namespace opensis.data.Repository
                     objModel.MembershipId = correctEmailList!.FirstOrDefault()!.MembershipId;
                     objModel.MembershipName = this.context?.Membership.Where(x => x.SchoolId== correctEmailList.FirstOrDefault()!.SchoolId && x.TenantId== correctEmailList.FirstOrDefault()!.TenantId && x.MembershipId==correctEmailList!.FirstOrDefault()!.MembershipId).FirstOrDefault()?.Profile;
                     objModel.Name = correctEmailList!.FirstOrDefault()!.Name;
-                    objModel.SchoolId = correctEmailList.FirstOrDefault()!.SchoolId;
+                    //objModel.SchoolId = correctEmailList.FirstOrDefault()!.SchoolId;
+
+                    var schoolDetails = this.context?.SchoolDetail.FirstOrDefault(x => x.SchoolId == correctEmailList.FirstOrDefault()!.LastUsedSchoolId);
+
+                    //if (schoolDetails.Status != true)
+                    if (schoolDetails?.Status != true)
+                    {
+                        objModel.SchoolId = correctEmailList.FirstOrDefault()!.SchoolId;
+                    }
+                    else
+                    {
+                        objModel.SchoolId = correctEmailList.FirstOrDefault()!.LastUsedSchoolId;
+                    }
 
                     var userAccessLogData = this.context?.UserAccessLog.Where(x => x.Emailaddress == objModel.Email && x.Ipaddress == objModel.userAccessLog!.Ipaddress && x.LoginAttemptDate.Date == DateTime.UtcNow.Date).OrderByDescending(x => x.Id).FirstOrDefault();
 
