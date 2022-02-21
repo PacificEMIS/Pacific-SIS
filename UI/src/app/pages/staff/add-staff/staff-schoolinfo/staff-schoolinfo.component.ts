@@ -184,17 +184,17 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
       }
-      this.getSchoolList.schoolMaster = data.schoolMaster;
+      this.getSchoolList.getSchoolForView = data.getSchoolForView;
     });
   }
 
   onSchoolChange(schoolId, indexOfDynamicRow) {
     if (this.staffSchoolInfoModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolId === +this.staffCloneModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolAttachedId) {
       this.defaultSchoolId= +schoolId;
-      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+      let index = this.getSchoolList.getSchoolForView.findIndex((x) => {
         return x.schoolId === +schoolId;
       });
-      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.getSchoolForView[index].schoolName;
       this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
 
       for (let i = 0; i < this.staffSchoolInfoModel.staffSchoolInfoList?.length; i++) {
@@ -203,10 +203,10 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       
     }
     else {
-      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+      let index = this.getSchoolList.getSchoolForView.findIndex((x) => {
         return x.schoolId === +schoolId;
       });
-      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.getSchoolForView[index].schoolName;
       this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
     }
   }
