@@ -46,6 +46,11 @@ import { BulkDataImportExcelHeader } from '../../../models/common.model';
 import { Permissions } from '../../../models/roll-based-access.model';
 import {PageRolesPermission} from '../../../common/page-roles-permissions.service'
 import * as moment from 'moment';
+import { SchoolService } from 'src/app/services/school.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { GetAcademicYearListModel } from 'src/app/models/marking-period.model';
+import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 
 @Component({
   selector: 'vex-staff-data-import',
@@ -81,6 +86,10 @@ export class StaffDataImportComponent implements OnInit {
   exportExcel: BulkDataImportExcelHeader = new BulkDataImportExcelHeader();
   isNewHeaderFilled= false;
   permissions: Permissions;
+  showRollOver: boolean = false;
+  showUploadBtn: boolean
+  destroySubject$: Subject<void> = new Subject();
+  getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
     private excelService: ExcelService,
@@ -88,9 +97,15 @@ export class StaffDataImportComponent implements OnInit {
     private staffService: StaffService,
     private defaultValueService:DefaultValuesService,
     private loginService:LoginService,
-    private commonService:CommonService) {
+    private commonService:CommonService,
+    private schoolService: SchoolService,
+    private markingPeriodService: MarkingPeriodService,) {
     //translateService.use('en');
-
+    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      if (res.academicYearChanged || res.academicYearLoaded) {
+        this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValueService.getAcademicYear())
+      }
+    })
    
   }
 
@@ -99,6 +114,31 @@ export class StaffDataImportComponent implements OnInit {
     this.getExcelHeader();
     this.getAllLanguage();
     this.getAllCountry();
+  }
+
+  checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
+    let result = false
+    let maxArr = []
+    this.getAcademicYears.schoolId = this.defaultValueService.getSchoolID();
+    this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res:any) => {
+      if(res._failure) {
+
+      } else {
+        res.academicYears.forEach(element => {
+          maxArr.push(element.academyYear)
+        });
+      }
+      let maxYear = Math.max(...maxArr)
+      if(selectedYear = maxYear || selectedYear < maxYear) {
+        res.academicYears.forEach(value => {
+          if(maxYear==value.academyYear) {
+            result = moment(new Date()).isBetween(value.startDate, value.endDate)
+            this.showRollOver = !result;
+            this.showUploadBtn = this.showRollOver
+          }
+        })
+      }
+    })
   }
 
   generateExcel() {

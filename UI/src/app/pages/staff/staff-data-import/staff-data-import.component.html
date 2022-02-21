@@ -63,70 +63,75 @@
                 <div [ngSwitch]="currentTab">
                     <!-- Start Upload your file -->
                     <div class="upload_file" *ngSwitchCase="bulkDataImport.UPLOAD">
-                        <div class="card px-6 py-4">
-                            <p class="text-center text-base"><a class="text-primary cursor-pointer"
-                                    (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{
-                                'toDownloadTheSampleExcelSheetTemplate' | translate }}</p>
-                            <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
-                            <ngx-dropzone (change)="onUpload($event)" class="mb-4 p-4 overflow-hidden"
-                                [accept]="acceptedFileTypes" [disableClick]="files.length==1" multiple="false">
-                                <ngx-dropzone-label class="sm:flex">
-                                    <img src="assets/img/icons/upload.svg" alt="Uplaod file icon" width="60px"
-                                        class="m-auto flex-shrink-0 cursor-pointer">
-                                    <p class="ml-4 align-middle sm:text-left mt-4 sm:mt-0">
-                                        <span class="text-lg font-medium mb-2 inline-block text-black">{{
-                                            'uploadFileFromYourLocalDrive' | translate }}</span>
-                                        <br>
-                                        <a class="text-gray text-base">{{ 'clickHereToSelectaFileOrDropTheFileHere' |
-                                            translate }}</a>
-                                    </p>
-                                </ngx-dropzone-label>
-                                <ngx-dropzone-preview *ngFor="let f of files" [removable]="true"
-                                    (removed)="onRemove(f)">
-                                    <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
-                                </ngx-dropzone-preview>
-                            </ngx-dropzone>
-                            <div class="text-right" *ngIf="permissions?.add">
-                                <button color="primary" (click)="uploadFile()" [disabled]="!files.length"
-                                    mat-flat-button type="submit">{{ 'uploadFile' | translate }}</button>
-                            </div>
-                            <!-- <mat-divider class="mt-12 mb-6 -mx-8"></mat-divider>
-            <div class="text-center -mt-12">
-                <div class="w-12 h-12 bg-black rounded-full m-auto text-white font-medium align-middle pt-3 text-lg">
-                    OR</div>
-            </div>
-            <div class="text-center mt-8 mb-6">
-                <img src="assets/img/icons/world-wide-web.svg" alt="Web icon" width="60px" class="inline-block mr-4 flex-shrink-0">
-                <div class="sm:w-9/12 lg:w-2/4 inline-block align-middle text-left">
-                    <p class="text-lg font-medium mb-2 inline-block">Upload file via web link
-                        <i class="icon icon-sphere ml-2"></i>
-                        <i class="icon icon-google-drive ml-2"></i>
-                        <i class="icon icon-dropbox ml-2"></i>
-                    </p>
-                    <div>
-                        <div class="sm:w-7/12 lg:w-2/3 inline-block px-2 py-1 border border-gray-light rounded mr-4">
-                            <input name="web_link" type="text"  (keyup)="url=url.trim()" placeholder="Enter the web link URL of the sheet"
-                                class="w-full text-base" [(ngModel)]="url" />
-                        </div>
-    
-                        <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
-                            <button color="primary" [disabled]="urlFetchLoader || !url" mat-raised-button type="submit" class="py-0" (click)="fetchData()">
-                                <mat-icon class="ml-2" *ngIf="urlFetchLoader">
-                                    <mat-spinner color="primary" diameter="20">
-                                    </mat-spinner>
-                                  </mat-icon>
-                                {{
-                                "fetchUploadfile" |
-                                translate }}
-                                
-                            </button>
-
-                                
-                        </mat-dialog-actions>
-                    </div>
+                        <ng-container *ngIf="showRollOver; else ViewMode1">
+                            <div class="card px-6 py-4">
+                                <p class="text-center text-base"><a class="text-primary cursor-pointer"
+                                        (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{
+                                    'toDownloadTheSampleExcelSheetTemplate' | translate }}</p>
+                                <mat-divider class="mt-4 mb-6 -mx-6"></mat-divider>
+                                <ngx-dropzone (change)="onUpload($event)" class="mb-4 p-4 overflow-hidden"
+                                    [accept]="acceptedFileTypes" [disableClick]="files.length==1" multiple="false">
+                                    <ngx-dropzone-label class="sm:flex">
+                                        <img src="assets/img/icons/upload.svg" alt="Uplaod file icon" width="60px"
+                                            class="m-auto flex-shrink-0 cursor-pointer">
+                                        <p class="ml-4 align-middle sm:text-left mt-4 sm:mt-0">
+                                            <span class="text-lg font-medium mb-2 inline-block text-black">{{
+                                                'uploadFileFromYourLocalDrive' | translate }}</span>
+                                            <br>
+                                            <a class="text-gray text-base">{{ 'clickHereToSelectaFileOrDropTheFileHere' |
+                                                translate }}</a>
+                                        </p>
+                                    </ngx-dropzone-label>
+                                    <ngx-dropzone-preview *ngFor="let f of files" [removable]="true"
+                                        (removed)="onRemove(f)">
+                                        <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+                                    </ngx-dropzone-preview>
+                                </ngx-dropzone>
+                                <div class="text-right" *ngIf="permissions?.add">
+                                    <button color="primary" (click)="uploadFile()" [disabled]="!files.length"
+                                        mat-flat-button type="submit">{{ 'uploadFile' | translate }}</button>
+                                </div>
+                                <!-- <mat-divider class="mt-12 mb-6 -mx-8"></mat-divider>
+                <div class="text-center -mt-12">
+                    <div class="w-12 h-12 bg-black rounded-full m-auto text-white font-medium align-middle pt-3 text-lg">
+                        OR</div>
                 </div>
-            </div> -->
+                <div class="text-center mt-8 mb-6">
+                    <img src="assets/img/icons/world-wide-web.svg" alt="Web icon" width="60px" class="inline-block mr-4 flex-shrink-0">
+                    <div class="sm:w-9/12 lg:w-2/4 inline-block align-middle text-left">
+                        <p class="text-lg font-medium mb-2 inline-block">Upload file via web link
+                            <i class="icon icon-sphere ml-2"></i>
+                            <i class="icon icon-google-drive ml-2"></i>
+                            <i class="icon icon-dropbox ml-2"></i>
+                        </p>
+                        <div>
+                            <div class="sm:w-7/12 lg:w-2/3 inline-block px-2 py-1 border border-gray-light rounded mr-4">
+                                <input name="web_link" type="text"  (keyup)="url=url.trim()" placeholder="Enter the web link URL of the sheet"
+                                    class="w-full text-base" [(ngModel)]="url" />
+                            </div>
+        
+                            <mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+                                <button color="primary" [disabled]="urlFetchLoader || !url" mat-raised-button type="submit" class="py-0" (click)="fetchData()">
+                                    <mat-icon class="ml-2" *ngIf="urlFetchLoader">
+                                        <mat-spinner color="primary" diameter="20">
+                                        </mat-spinner>
+                                      </mat-icon>
+                                    {{
+                                    "fetchUploadfile" |
+                                    translate }}
+                                    
+                                </button>
+    
+                                    
+                            </mat-dialog-actions>
                         </div>
+                    </div>
+                </div> -->
+                            </div>
+                        </ng-container>
+                        <ng-template #ViewMode1>
+                            <div class="text-center card p-4"><p class="text-red text-sm text-base"><mat-icon class="text-xl mr-2 align-middle">info</mat-icon>{{'rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear' | translate }}</p></div>
+                        </ng-template>
                     </div>
                     <!-- End Upload your file -->
 

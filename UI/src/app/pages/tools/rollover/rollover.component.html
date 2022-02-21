@@ -7,140 +7,145 @@
     </vex-page-layout-header>
     <vex-page-layout-content>
         <form (ngSubmit)="rollOver()" #f="ngForm" appInvalidControlScroll>
-        <div  class="md:w-9/12 m-auto card px-6 py-4">
-            <h4 class="text-lg font-semibold text-center py-4">{{ "areYouSureYouWantToRollTheDataFor" | translate }} <span class="mx-1">2020-2021</span> {{ "toTheNextSchoolYear" | translate }}
-            </h4>
-            <div class="bg-red-light px-6 py-4 rounded">
-                <div class="text-center leading-none">
-                    <span class="text-red font-semibold">
-                        <mat-icon [icIcon]="icWarning" class="align-middle"></mat-icon><span class=""> {{ 'caution' | translate }}</span>
-                    </span><span class="mx-1">:</span><span>{{ 'rolloverIsAnIrreversibleProcessIfYouAreSureYouWantToProceedTypeInTheEffectiveRollOverDateBelowYouCanUseTheNextSchoolYearsAttendanceStartDate' | translate }}</span>
-                 </div>
-            </div>
-            <mat-divider class="-mx-6 my-4"></mat-divider>
-            <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
-                <li>
-                    <mat-form-field class="w-full" appearance="outline" color="primary">
-                        <mat-label>{{ "studentReEnrollmentDate" | translate }}</mat-label>
-                        <input matInput #studentReEnrollmentDate="ngModel" [min]="rolloverViewModel.schoolRollover.schoolBeginDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate" [matDatepicker]="reEnrollmentDate" name="studentReEnrollmentDate" [(ngModel)]="rolloverViewModel.schoolRollover.reenrollmentDate" required>
-                        <mat-datepicker-toggle matSuffix [for]="reEnrollmentDate" ></mat-datepicker-toggle>
-                        <mat-datepicker #reEnrollmentDate ></mat-datepicker>
-                        <mat-error *ngIf="studentReEnrollmentDate.errors?.required">
-                            {{'studentReEnrollmentDateIsRequired' | translate}}</mat-error>
-                    </mat-form-field>
-                </li>
-            </ul>
-            <mat-divider class="-mx-6 mb-4"></mat-divider>
-            <p class="text-blue text-base">{{ 'enterNextSchoolYearsBeginAndEndDates' | translate }}</p>
-            <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
-                <li>
-                    <mat-form-field class="w-full" appearance="outline" color="primary">
-                        <mat-label>{{ "schoolBeginDate" | translate }}</mat-label>
-                        <input matInput #school_Begin_Date="ngModel" [min]="minSchoolBeginDateVal" [matDatepicker]="beginDate" name="schoolBeginDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolBeginDate" required>
-                        <mat-datepicker-toggle matSuffix [for]="beginDate" ></mat-datepicker-toggle>
-                        <mat-datepicker #beginDate ></mat-datepicker>
-                        <mat-error *ngIf="school_Begin_Date.errors?.required">
-                            {{'schoolBeginDateIsRequired' | translate}}</mat-error>
-                    </mat-form-field>
-                </li>
-                <li>
-                    <mat-form-field class="w-full" appearance="outline" color="primary">
-                        <mat-label>{{ "schoolEndDate" | translate }}</mat-label>
-                        <input matInput #school_End_Date="ngModel" [min]="getMinDateValue()" [matDatepicker]="endDate" name="schoolEndDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolEndDate" required>
-                        <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
-                        <mat-datepicker #endDate ></mat-datepicker>
-                        <mat-error *ngIf="school_End_Date.errors?.required">
-                            {{'schoolEndDateIsRequired'|translate}}</mat-error>
-                    </mat-form-field>
-                </li>
-
-                <ng-container *ngFor="let semester of rolloverViewModel.semesters; let i=index">
+        <ng-container *ngIf="showRollOver; else ViewMode1">
+            <div  class="md:w-9/12 m-auto card px-6 py-4">
+                <h4 class="text-lg font-semibold text-center py-4">{{ "areYouSureYouWantToRollTheDataFor" | translate }} <span class="mx-1">2020-2021</span> {{ "toTheNextSchoolYear" | translate }}
+                </h4>
+                <div class="bg-red-light px-6 py-4 rounded">
+                    <div class="text-center leading-none">
+                        <span class="text-red font-semibold">
+                            <mat-icon [icIcon]="icWarning" class="align-middle"></mat-icon><span class=""> {{ 'caution' | translate }}</span>
+                        </span><span class="mx-1">:</span><span>{{ 'rolloverIsAnIrreversibleProcessIfYouAreSureYouWantToProceedTypeInTheEffectiveRollOverDateBelowYouCanUseTheNextSchoolYearsAttendanceStartDate' | translate }}</span>
+                     </div>
+                </div>
+                <mat-divider class="-mx-6 my-4"></mat-divider>
+                <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
-                            <mat-label>{{semester.title +" Start Date"}}</mat-label>
-                            <input matInput #semester_sname="ngModel" [matDatepicker]="beginDate" name="{{semester.title +'s'+i}}" [min]="rolloverViewModel.schoolRollover.schoolBeginDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate" 
-                            [(ngModel)]="rolloverViewModel.semesters[i].startDate" 
-                            [required]="rolloverViewModel.semesters[i].endDate ? true : false ">
+                            <mat-label>{{ "studentReEnrollmentDate" | translate }}</mat-label>
+                            <input matInput #studentReEnrollmentDate="ngModel" [min]="rolloverViewModel.schoolRollover.schoolBeginDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate" [matDatepicker]="reEnrollmentDate" name="studentReEnrollmentDate" [(ngModel)]="rolloverViewModel.schoolRollover.reenrollmentDate" required>
+                            <mat-datepicker-toggle matSuffix [for]="reEnrollmentDate" ></mat-datepicker-toggle>
+                            <mat-datepicker #reEnrollmentDate ></mat-datepicker>
+                            <mat-error *ngIf="studentReEnrollmentDate.errors?.required">
+                                {{'studentReEnrollmentDateIsRequired' | translate}}</mat-error>
+                        </mat-form-field>
+                    </li>
+                </ul>
+                <mat-divider class="-mx-6 mb-4"></mat-divider>
+                <p class="text-blue text-base">{{ 'enterNextSchoolYearsBeginAndEndDates' | translate }}</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{ "schoolBeginDate" | translate }}</mat-label>
+                            <input matInput #school_Begin_Date="ngModel" [min]="minSchoolBeginDateVal" [matDatepicker]="beginDate" name="schoolBeginDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolBeginDate" required>
                             <mat-datepicker-toggle matSuffix [for]="beginDate" ></mat-datepicker-toggle>
                             <mat-datepicker #beginDate ></mat-datepicker>
-                            <mat-error *ngIf="semester_sname.errors?.required">
-                                {{'School End Date is required'}}</mat-error>
+                            <mat-error *ngIf="school_Begin_Date.errors?.required">
+                                {{'schoolBeginDateIsRequired' | translate}}</mat-error>
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field class="w-full" appearance="outline" color="primary">
-                            <mat-label>{{semester.title +" End Date"}}</mat-label>
-                            <input matInput #semester_ename="ngModel" [matDatepicker]="endDate" name="{{semester.title +'e'+i}}" [min]="rolloverViewModel.semesters[i].startDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate"
-                             [(ngModel)]="rolloverViewModel.semesters[i].endDate" 
-                            [required]="rolloverViewModel.semesters[i].startDate ? true : false ">
+                            <mat-label>{{ "schoolEndDate" | translate }}</mat-label>
+                            <input matInput #school_End_Date="ngModel" [min]="getMinDateValue()" [matDatepicker]="endDate" name="schoolEndDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolEndDate" required>
                             <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
                             <mat-datepicker #endDate ></mat-datepicker>
-                            <mat-error *ngIf="semester_ename.errors?.required">
-                                {{semester.title +' End Date is required'}}</mat-error>
+                            <mat-error *ngIf="school_End_Date.errors?.required">
+                                {{'schoolEndDateIsRequired'|translate}}</mat-error>
                         </mat-form-field>
                     </li>
-                    <ng-container *ngFor="let quater of semester.quarters; let j=index">
+    
+                    <ng-container *ngFor="let semester of rolloverViewModel.semesters; let i=index">
                         <li>
                             <mat-form-field class="w-full" appearance="outline" color="primary">
-                                <mat-label>{{quater.title +" Start Date"}}</mat-label>
-                                <input matInput #quater_sname="ngModel" [matDatepicker]="startDate" name="{{quater.title +'s'+j}}" [min]="rolloverViewModel.semesters[i].startDate" [max]="rolloverViewModel.semesters[i].endDate"
-                                 [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].startDate">
-                                <mat-datepicker-toggle matSuffix [for]="startDate" ></mat-datepicker-toggle>
-                                <mat-datepicker #startDate ></mat-datepicker>
-                                <mat-error *ngIf="quater_sname.errors?.required">
-                                    {{quater.title +' Start Date is required'}}</mat-error>
+                                <mat-label>{{semester.title +" Start Date"}}</mat-label>
+                                <input matInput #semester_sname="ngModel" [matDatepicker]="beginDate" name="{{semester.title +'s'+i}}" [min]="rolloverViewModel.schoolRollover.schoolBeginDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate" 
+                                [(ngModel)]="rolloverViewModel.semesters[i].startDate" 
+                                [required]="rolloverViewModel.semesters[i].endDate ? true : false ">
+                                <mat-datepicker-toggle matSuffix [for]="beginDate" ></mat-datepicker-toggle>
+                                <mat-datepicker #beginDate ></mat-datepicker>
+                                <mat-error *ngIf="semester_sname.errors?.required">
+                                    {{'School End Date is required'}}</mat-error>
                             </mat-form-field>
                         </li>
                         <li>
                             <mat-form-field class="w-full" appearance="outline" color="primary">
-                                <mat-label>{{quater.title +" End Date"}}</mat-label>
-                                <input #quater_ename="ngModel" matInput [matDatepicker]="endDate" name="{{quater.title +'e'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].startDate" [max]="rolloverViewModel.semesters[i].endDate"
-                                 [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].endDate" 
-                                [required]="rolloverViewModel.semesters[i].quarters[j].startDate ? true : false ">
+                                <mat-label>{{semester.title +" End Date"}}</mat-label>
+                                <input matInput #semester_ename="ngModel" [matDatepicker]="endDate" name="{{semester.title +'e'+i}}" [min]="rolloverViewModel.semesters[i].startDate" [max]="rolloverViewModel.schoolRollover.schoolEndDate"
+                                 [(ngModel)]="rolloverViewModel.semesters[i].endDate" 
+                                [required]="rolloverViewModel.semesters[i].startDate ? true : false ">
                                 <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
                                 <mat-datepicker #endDate ></mat-datepicker>
-                                <mat-error *ngIf="quater_ename.errors?.required">
-                                    {{quater.title +' End Date is required'}}</mat-error>
+                                <mat-error *ngIf="semester_ename.errors?.required">
+                                    {{semester.title +' End Date is required'}}</mat-error>
                             </mat-form-field>
                         </li>
-
-                        <ng-container *ngFor="let period of quater.progressPeriods; let k=index">
+                        <ng-container *ngFor="let quater of semester.quarters; let j=index">
                             <li>
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
-                                    <mat-label>{{period.title +" Start Date"}}</mat-label>
-                                    <input matInput #period_sname="ngModel" [matDatepicker]="startDate" name="{{period.title +'s'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].startDate" [max]="rolloverViewModel.semesters[i].quarters[j].endDate" 
-                                    [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate">
+                                    <mat-label>{{quater.title +" Start Date"}}</mat-label>
+                                    <input matInput #quater_sname="ngModel" [matDatepicker]="startDate" name="{{quater.title +'s'+j}}" [min]="rolloverViewModel.semesters[i].startDate" [max]="rolloverViewModel.semesters[i].endDate"
+                                     [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].startDate">
                                     <mat-datepicker-toggle matSuffix [for]="startDate" ></mat-datepicker-toggle>
                                     <mat-datepicker #startDate ></mat-datepicker>
-                                    <mat-error *ngIf="period_sname.errors?.required">
-                                        {{period.title +' Start Date is required'}}</mat-error>
+                                    <mat-error *ngIf="quater_sname.errors?.required">
+                                        {{quater.title +' Start Date is required'}}</mat-error>
                                 </mat-form-field>
                             </li>
                             <li>
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
-                                    <mat-label>{{period.title +" End Date"}}</mat-label>
-                                    <input #period_ename="ngModel" matInput [matDatepicker]="endDate" name="{{period.title +'e'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate" [max]="rolloverViewModel.semesters[i].quarters[j].endDate" 
-                                    [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].endDate" 
-                                    [required]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate ? true : null ">
+                                    <mat-label>{{quater.title +" End Date"}}</mat-label>
+                                    <input #quater_ename="ngModel" matInput [matDatepicker]="endDate" name="{{quater.title +'e'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].startDate" [max]="rolloverViewModel.semesters[i].endDate"
+                                     [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].endDate" 
+                                    [required]="rolloverViewModel.semesters[i].quarters[j].startDate ? true : false ">
                                     <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
                                     <mat-datepicker #endDate ></mat-datepicker>
-                                    <mat-error *ngIf="period_ename.errors?.required">
-                                        {{period.title +' End Date is required'}}</mat-error>
+                                    <mat-error *ngIf="quater_ename.errors?.required">
+                                        {{quater.title +' End Date is required'}}</mat-error>
                                 </mat-form-field>
                             </li>
+    
+                            <ng-container *ngFor="let period of quater.progressPeriods; let k=index">
+                                <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{period.title +" Start Date"}}</mat-label>
+                                        <input matInput #period_sname="ngModel" [matDatepicker]="startDate" name="{{period.title +'s'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].startDate" [max]="rolloverViewModel.semesters[i].quarters[j].endDate" 
+                                        [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate">
+                                        <mat-datepicker-toggle matSuffix [for]="startDate" ></mat-datepicker-toggle>
+                                        <mat-datepicker #startDate ></mat-datepicker>
+                                        <mat-error *ngIf="period_sname.errors?.required">
+                                            {{period.title +' Start Date is required'}}</mat-error>
+                                    </mat-form-field>
+                                </li>
+                                <li>
+                                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                                        <mat-label>{{period.title +" End Date"}}</mat-label>
+                                        <input #period_ename="ngModel" matInput [matDatepicker]="endDate" name="{{period.title +'e'+j}}" [min]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate" [max]="rolloverViewModel.semesters[i].quarters[j].endDate" 
+                                        [(ngModel)]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].endDate" 
+                                        [required]="rolloverViewModel.semesters[i].quarters[j].progressPeriods[k].startDate ? true : null ">
+                                        <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
+                                        <mat-datepicker #endDate ></mat-datepicker>
+                                        <mat-error *ngIf="period_ename.errors?.required">
+                                            {{period.title +' End Date is required'}}</mat-error>
+                                    </mat-form-field>
+                                </li>
+                            </ng-container>
                         </ng-container>
                     </ng-container>
-                </ng-container>
-                
-            </ul>
-            <mat-divider class="-mx-6 mb-4"></mat-divider>
-            <p class="flex text-red text-sm pb-6"><mat-icon class="text-xl mr-2">info</mat-icon><span>{{ 'allSetupItemsOfTheSchoolWillBeRolledOverSoThatYouCanUseThemInTheNextSchoolYearIfYouNeedAnythingChangedYouCanEditOrDeleteTheItemInTheSettingsMenu' | translate }}</span></p>
-            <div class="text-right">
-                <button type="button" >{{ 'cancel' | translate }}</button>
-                <button color="primary" mat-flat-button class="ml-4"><mat-icon class="mr-2">published_with_changes</mat-icon>{{ 'rollover' | translate }}
-                </button>
+                    
+                </ul>
+                <mat-divider class="-mx-6 mb-4"></mat-divider>
+                <p class="flex text-red text-sm pb-6"><mat-icon class="text-xl mr-2">info</mat-icon><span>{{ 'allSetupItemsOfTheSchoolWillBeRolledOverSoThatYouCanUseThemInTheNextSchoolYearIfYouNeedAnythingChangedYouCanEditOrDeleteTheItemInTheSettingsMenu' | translate }}</span></p>
+                <div class="text-right">
+                    <button type="button" >{{ 'cancel' | translate }}</button>
+                    <button color="primary" mat-flat-button class="ml-4"><mat-icon class="mr-2">published_with_changes</mat-icon>{{ 'rollover' | translate }}
+                    </button>
+                </div>
             </div>
-        </div>
+        </ng-container>
+        <ng-template #ViewMode1>
+            <div class="text-center card p-4"><p class="text-red text-sm text-base"><mat-icon class="text-xl mr-2 align-middle">info</mat-icon>{{'rolloverCompletedForThisAcademicYear' | translate }}</p></div>
+        </ng-template>
     </form>
     </vex-page-layout-content>
 </vex-page-layout>

@@ -1607,5 +1607,8 @@
     "courseType":"Course Type",
     "endDateCannotBeEarlierOrSameAsStartDate": "End Date cannot be earlier or same as Start Date",
     "youHaveChangedTheGradebookConfiguration":"You have changed the gradebook configuration",
-    "pleaseRecalculateTheGrades":"please recalculate the grades"
+    "pleaseRecalculateTheGrades":"please recalculate the grades",
+    "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Student data import cannot be done for this School Year.",
+    "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Staff data import cannot be done for this School Year.",
+    "rolloverCompletedForThisAcademicYear":"Rollover Completed For This Academic Year"
 }
