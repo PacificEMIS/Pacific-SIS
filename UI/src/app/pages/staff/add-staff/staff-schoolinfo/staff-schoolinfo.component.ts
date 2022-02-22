@@ -342,6 +342,13 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     })
   }
 
+  setMembershipId(item){
+    let value;
+    this.getAllMembersList.getAllMemberList.map(val=>{
+      if(item.profile === val.profile)    value= val.membershipId;
+    })
+    return value
+  }
   updateSchoolInfo() {
     this.staffSchoolInfoModel.staffSchoolInfoList.map((item)=>{
       item.updatedBy = this.defaultValuesService.getUserGuidId();
@@ -371,6 +378,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       item.staffId = this.staffService.getStaffId();
       item.startDate = this.commonFunction.formatDateSaveWithoutTime(item.startDate);
       item.endDate = this.commonFunction.formatDateSaveWithoutTime(item.endDate)
+      item.membershipId=this.setMembershipId(item);
     });
     this.staffService.updateStaffSchoolInfo(this.staffSchoolInfoModel).subscribe((res) => {
       if (typeof (res) == 'undefined') {
