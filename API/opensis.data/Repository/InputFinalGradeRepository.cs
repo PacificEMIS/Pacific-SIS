@@ -210,6 +210,8 @@ namespace opensis.data.Repository
                                     TeacherComment = studentFinalGrade.TeacherComment,
                                     IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
                                     IsExamGrade = studentFinalGradeListModel.IsExamGrade,
+                                    CreditAttempted = studentFinalGradeListModel.CreditHours,
+                                    CreditEarned = studentFinalGradeListModel.CreditHours,
                                     StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments.Select(c =>
                                     {
                                         c.UpdatedOn = DateTime.UtcNow;
@@ -269,6 +271,8 @@ namespace opensis.data.Repository
                                     TeacherComment = studentFinalGrade.TeacherComment,
                                     IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
                                     IsExamGrade = studentFinalGradeListModel.IsExamGrade,
+                                    CreditAttempted = studentFinalGradeListModel.CreditHours,
+                                    CreditEarned = studentFinalGradeListModel.CreditHours,
                                     StudentFinalGradeComments = studentFinalGrade!.StudentFinalGradeComments.Select(c =>
                                     {
                                         c.CreatedBy = studentFinalGradeListModel?.CreatedOrUpdatedBy;

@@ -334,8 +334,8 @@
     "Icon": "icusers",
     "IconType": "class",
     "SortOrder": "3",
-    "Type": "sub",
-    "Path": "",
+    "Type": "link",
+    "Path": "/school/students",
     "BadgeType": "",
     "BadgeValue": "",
     "Active": true

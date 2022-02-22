@@ -3483,9 +3483,176 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="transcriptViewModel"></param>
         /// <returns></returns>
+        //public TranscriptViewModel GetTranscriptForStudents(TranscriptViewModel transcriptViewModel)
+        //{
+        //    TranscriptViewModel transcriptView = new TranscriptViewModel();
+        //    try
+        //    {
+        //        transcriptView.TenantId = transcriptViewModel.TenantId;
+        //        transcriptView.SchoolId = transcriptViewModel.SchoolId;
+        //        transcriptView._tenantName = transcriptViewModel._tenantName;
+        //        transcriptView._token = transcriptViewModel._token;
+        //        transcriptView._userName = transcriptViewModel._userName;
+
+        //        if (transcriptViewModel.studentsDetailsForTranscripts?.Any()==true)
+        //        {
+        //            var schoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).FirstOrDefault(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId);
+
+        //            foreach (var student in transcriptViewModel.studentsDetailsForTranscripts)
+        //            {
+        //                decimal? totalCreditAttempeted = 0.0m;
+        //                decimal? totalCreditEarned = 0.0m;
+        //                decimal? cumulativeGPValue = 0.0m;
+        //                decimal? cumulativeCreditHours = 0.0m;
+
+        //                var studentsDetailsForTranscript = new StudentsDetailsForTranscript();
+
+        //                var studentMasterData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).FirstOrDefault(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId && x.StudentId == student.StudentId);
+
+        //                if (studentMasterData != null)
+        //                {
+        //                    if (schoolData != null)
+        //                    {
+        //                        studentsDetailsForTranscript.SchoolName = schoolData.SchoolName;
+        //                        studentsDetailsForTranscript.StreetAddress1 = schoolData.StreetAddress1;
+        //                        studentsDetailsForTranscript.StreetAddress2 = schoolData.StreetAddress2;
+        //                        studentsDetailsForTranscript.State = schoolData.State;
+        //                        studentsDetailsForTranscript.City = schoolData.City;
+        //                        studentsDetailsForTranscript.District = schoolData.District;
+        //                        studentsDetailsForTranscript.Zip = schoolData.Zip;
+        //                        studentsDetailsForTranscript.SchoolPicture = transcriptViewModel.SchoolLogo == true ? schoolData.SchoolDetail.FirstOrDefault()!.SchoolLogo : null;
+        //                        studentsDetailsForTranscript.PrincipalName = schoolData.SchoolDetail.FirstOrDefault()!.NameOfPrincipal;
+        //                    }
+
+        //                    if (transcriptViewModel.GradeLagend == true)
+        //                    {
+        //                        var gradeDataList = this.context?.Grade.Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
+        //                        if (gradeDataList?.Any()==true)
+        //                        {
+        //                            studentsDetailsForTranscript.gradeList = gradeDataList;
+        //                        }
+        //                    }
+
+        //                    studentsDetailsForTranscript.StudentGuid = studentMasterData.StudentGuid;
+        //                    studentsDetailsForTranscript.StudentId = studentMasterData.StudentId;
+        //                    studentsDetailsForTranscript.StudentInternalId = studentMasterData.StudentInternalId;
+        //                    studentsDetailsForTranscript.FirstGivenName = studentMasterData.FirstGivenName;
+        //                    studentsDetailsForTranscript.MiddleName = studentMasterData.MiddleName;
+        //                    studentsDetailsForTranscript.LastFamilyName = studentMasterData.LastFamilyName;
+        //                    studentsDetailsForTranscript.StudentPhoto = transcriptViewModel.StudentPhoto == true ? studentMasterData.StudentPhoto : null;
+        //                    studentsDetailsForTranscript.HomeAddressLineOne = studentMasterData.HomeAddressLineOne;
+        //                    studentsDetailsForTranscript.HomeAddressLineTwo = studentMasterData.HomeAddressLineTwo;
+        //                    studentsDetailsForTranscript.HomeAddressState = studentMasterData.HomeAddressState;
+        //                    studentsDetailsForTranscript.HomeAddressCity = studentMasterData.HomeAddressCity;
+        //                    studentsDetailsForTranscript.HomeAddressCountry = studentMasterData.HomeAddressCountry;
+        //                    studentsDetailsForTranscript.HomeAddressZip = studentMasterData.HomeAddressZip;
+
+        //                    if (!string.IsNullOrEmpty(transcriptViewModel.GradeLavels))
+        //                    {
+        //                        var gradeIds = transcriptViewModel.GradeLavels.Split(",");
+
+        //                        foreach (var grade in gradeIds.ToList())
+        //                        {
+        //                            var gradeLevelDetailsForTranscript = new GradeLevelDetailsForTranscript();
+
+        //                            var studentDataWithCurrentGrade = studentMasterData.StudentEnrollment.Where(x => x.GradeId == Convert.ToInt32(grade)).FirstOrDefault();
+
+        //                            if (studentDataWithCurrentGrade != null)
+        //                            {
+        //                                var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == studentDataWithCurrentGrade.SchoolId && x.CalenderId == studentDataWithCurrentGrade.CalenderId);
+
+        //                                if (calenderData != null)
+        //                                {
+        //                                    gradeLevelDetailsForTranscript.SchoolYear = calenderData.StartDate!.Value.Date.Year + "-" + calenderData.EndDate!.Value.Date.Year;
+        //                                }
+
+        //                                gradeLevelDetailsForTranscript.GradeId = studentDataWithCurrentGrade.GradeId;
+        //                                gradeLevelDetailsForTranscript.GradeLevelTitle = studentDataWithCurrentGrade.GradeLevelTitle;
+        //                                gradeLevelDetailsForTranscript.SchoolName = studentDataWithCurrentGrade.SchoolName;
+
+        //                                decimal? gPValue = 0.0m;
+        //                                decimal? gPAValue = 0.0m;
+        //                                decimal? creditAttemped = 0.0m;
+        //                                decimal? creditEarned = 0.0m;
+
+        //                                var reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == transcriptViewModel.TenantId && x.StudentId == student.StudentId && x.GradeId == Convert.ToInt32(grade)).ToList();
+        //                                if (reportCardData?.Any()==true)
+        //                                {
+        //                                    foreach (var reportCard in reportCardData)
+        //                                    {
+        //                                        var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
+
+        //                                        var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
+
+        //                                        if (courseSectionData != null)
+        //                                        {
+        //                                            reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
+        //                                            reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
+        //                                            reportCardDetailsForTranscript.CreditHours = courseSectionData.CreditHours;
+        //                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
+        //                                            if (courseSectionData.GradeScale != null)
+        //                                            {
+        //                                                //var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
+        //                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+
+        //                                                if (gradeData != null)
+        //                                                {
+        //                                                    reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : courseSectionData.CreditHours;
+
+        //                                                    gPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+        //                                                }
+        //                                            }
+
+        //                                            reportCardDetailsForTranscript.GPValue = gPValue; //gpValue=CreditEarned*(WeightedGpValue or UnweightedGpValue)
+        //                                            creditAttemped += reportCardDetailsForTranscript.CreditHours;
+        //                                            creditEarned += reportCardDetailsForTranscript.CreditEarned;
+        //                                            gPAValue += reportCardDetailsForTranscript.GPValue; gradeLevelDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                gradeLevelDetailsForTranscript.CreditAttemped = creditAttemped; // Σ CreditHours of course sections
+        //                                gradeLevelDetailsForTranscript.CreditEarned = creditEarned; // Σ CreditEarned of course sections
+        //                                if (gPAValue > 0 && creditEarned > 0)
+        //                                {
+        //                                    gradeLevelDetailsForTranscript.GPA = gPAValue / creditEarned; // Σ gpValue of course sections / Σ CreditEarned of course sections
+        //                                }                                       
+        //                                totalCreditEarned += creditEarned;
+        //                                totalCreditAttempeted += creditAttemped;
+        //                                cumulativeGPValue += gPAValue;
+        //                                cumulativeCreditHours += creditAttemped;
+        //                                studentsDetailsForTranscript.gradeLevelDetailsForTranscripts.Add(gradeLevelDetailsForTranscript);
+        //                            }
+        //                        }
+        //                    }
+        //                    if (cumulativeGPValue > 0 && cumulativeCreditHours > 0)
+        //                    {
+        //                        studentsDetailsForTranscript.CumulativeGPA = cumulativeGPValue / cumulativeCreditHours;  // Σ gpValue of all course sections / Σ CreditHours of all course sections
+        //                    }
+        //                    studentsDetailsForTranscript.TotalCreditAttempeted = totalCreditAttempeted; //Σ CreditAttemped 
+        //                    studentsDetailsForTranscript.TotalCreditEarned = totalCreditEarned;  //Σ CreditEarned
+
+        //                    transcriptView.studentsDetailsForTranscripts.Add(studentsDetailsForTranscript);
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            transcriptView._failure = true;
+        //            transcriptView._message = "Select Student Please";
+        //        }
+        //    }
+        //    catch (Exception es)
+        //    {
+        //        transcriptView._failure = false;
+        //        transcriptView._message = es.Message;
+        //    }
+        //    return transcriptView;
+        //}
+
         public TranscriptViewModel GetTranscriptForStudents(TranscriptViewModel transcriptViewModel)
         {
             TranscriptViewModel transcriptView = new TranscriptViewModel();
+            var gradeDataList = new List<Grade>();
             try
             {
                 transcriptView.TenantId = transcriptViewModel.TenantId;
@@ -3494,8 +3661,14 @@ namespace opensis.data.Repository
                 transcriptView._token = transcriptViewModel._token;
                 transcriptView._userName = transcriptViewModel._userName;
 
-                if (transcriptViewModel.studentsDetailsForTranscripts?.Any()==true)
+                if (transcriptViewModel.studentsDetailsForTranscripts?.Any() == true)
                 {
+                    if (transcriptViewModel.GradeLagend == true)
+                    {
+                        //this block for grade details
+                        gradeDataList = this.context?.Grade.Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
+                    }
+
                     var schoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).FirstOrDefault(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId);
 
                     foreach (var student in transcriptViewModel.studentsDetailsForTranscripts)
@@ -3513,6 +3686,7 @@ namespace opensis.data.Repository
                         {
                             if (schoolData != null)
                             {
+                                //this block for school details data
                                 studentsDetailsForTranscript.SchoolName = schoolData.SchoolName;
                                 studentsDetailsForTranscript.StreetAddress1 = schoolData.StreetAddress1;
                                 studentsDetailsForTranscript.StreetAddress2 = schoolData.StreetAddress2;
@@ -3526,13 +3700,13 @@ namespace opensis.data.Repository
 
                             if (transcriptViewModel.GradeLagend == true)
                             {
-                                var gradeDataList = this.context?.Grade.Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
-                                if (gradeDataList?.Any()==true)
+                                if (gradeDataList?.Any() == true)
                                 {
                                     studentsDetailsForTranscript.gradeList = gradeDataList;
                                 }
                             }
 
+                            //this are student details
                             studentsDetailsForTranscript.StudentGuid = studentMasterData.StudentGuid;
                             studentsDetailsForTranscript.StudentId = studentMasterData.StudentId;
                             studentsDetailsForTranscript.StudentInternalId = studentMasterData.StudentInternalId;
@@ -3551,11 +3725,13 @@ namespace opensis.data.Repository
                             {
                                 var gradeIds = transcriptViewModel.GradeLavels.Split(",");
 
+                                //this loop for multiple grade.
                                 foreach (var grade in gradeIds.ToList())
                                 {
                                     var gradeLevelDetailsForTranscript = new GradeLevelDetailsForTranscript();
+                                    var gradeLevelId = Convert.ToInt32(grade);
 
-                                    var studentDataWithCurrentGrade = studentMasterData.StudentEnrollment.Where(x => x.GradeId == Convert.ToInt32(grade)).FirstOrDefault();
+                                    var studentDataWithCurrentGrade = studentMasterData.StudentEnrollment.Where(x => x.GradeId == gradeLevelId).FirstOrDefault();
 
                                     if (studentDataWithCurrentGrade != null)
                                     {
@@ -3570,68 +3746,273 @@ namespace opensis.data.Repository
                                         gradeLevelDetailsForTranscript.GradeLevelTitle = studentDataWithCurrentGrade.GradeLevelTitle;
                                         gradeLevelDetailsForTranscript.SchoolName = studentDataWithCurrentGrade.SchoolName;
 
-                                        decimal? gPValue = 0.0m;
                                         decimal? gPAValue = 0.0m;
                                         decimal? creditAttemped = 0.0m;
                                         decimal? creditEarned = 0.0m;
 
-                                        var reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == transcriptViewModel.TenantId && x.StudentId == student.StudentId && x.GradeId == Convert.ToInt32(grade)).ToList();
-                                        if (reportCardData?.Any()==true)
+                                        var reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeStandard).Include(s => s.SchoolYears).Include(s => s.Semesters).Include(s => s.Quarters).Include(s => s.ProgressPeriod).Where(x => x.TenantId == transcriptViewModel.TenantId && x.StudentId == student.StudentId && x.GradeId == gradeLevelId && x.IsExamGrade != true).ToList();
+
+                                        if (reportCardData?.Any() == true)
                                         {
-                                            foreach (var reportCard in reportCardData)
+                                            //for pp marking period
+                                            var prgsReportCardData = reportCardData.Where(x => x.PrgrsprdMarkingPeriodId != null);
+
+                                            if (prgsReportCardData.Any() == true)
                                             {
-                                                var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
-
-                                                var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
-
-                                                if (courseSectionData != null)
+                                                var distinctPrgsIds = prgsReportCardData.Select(x => x.PrgrsprdMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
+                                                foreach (var prgsId in distinctPrgsIds)
                                                 {
-                                                    reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
-                                                    reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
-                                                    reportCardDetailsForTranscript.CreditHours = courseSectionData.CreditHours;
-                                                    reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
-                                                    if (courseSectionData.GradeScale != null)
+                                                    var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
+                                                    decimal? prgsGPValue = 0.0m;
+                                                    decimal? prgsGPAValue = 0.0m;
+                                                    decimal? prgsCreditAttemped = 0.0m;
+                                                    decimal? prgsCreditEarned = 0.0m;
+
+                                                    var MPWiseReportCardData = prgsReportCardData.Where(s => s.PrgrsprdMarkingPeriodId == prgsId);//fetch data marking period wise
+
+                                                    foreach (var reportCard in MPWiseReportCardData)
                                                     {
-                                                        //var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
-                                                        var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+                                                        var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
 
-                                                        if (gradeData != null)
+                                                        var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
+
+                                                        if (courseSectionData != null)
                                                         {
-                                                            reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : courseSectionData.CreditHours;
+                                                            reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
+                                                            reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
+                                                            reportCardDetailsForTranscript.CreditHours = reportCard.CreditAttempted != null ? reportCard.CreditAttempted : 0.0m;
+                                                            reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0.0m;
+                                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
+                                                            if (courseSectionData.GradeScale != null)
+                                                            {
+                                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+                                                                if (gradeData != null)
+                                                                {
+                                                                    prgsGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
 
-                                                            gPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                            reportCardDetailsForTranscript.GPValue = prgsGPValue;
+                                                            prgsCreditAttemped += reportCardDetailsForTranscript.CreditHours;
+                                                            prgsCreditEarned += reportCardDetailsForTranscript.CreditEarned;
+                                                            prgsGPAValue += reportCardDetailsForTranscript.GPValue;
+                                                            markingPeriodDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
                                                         }
                                                     }
+                                                    creditAttemped += prgsCreditAttemped;
+                                                    creditEarned += prgsCreditEarned;
+                                                    gPAValue += prgsGPAValue;
 
-                                                    reportCardDetailsForTranscript.GPValue = gPValue; //gpValue=CreditEarned*(WeightedGpValue or UnweightedGpValue)
-                                                    creditAttemped += reportCardDetailsForTranscript.CreditHours;
-                                                    creditEarned += reportCardDetailsForTranscript.CreditEarned;
-                                                    gPAValue += reportCardDetailsForTranscript.GPValue; gradeLevelDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
+                                                    markingPeriodDetailsForTranscript.MarkingPeriodTitle = MPWiseReportCardData.FirstOrDefault()!.ProgressPeriod?.Title;
+                                                    markingPeriodDetailsForTranscript.CreditAttemped = prgsCreditAttemped;
+                                                    markingPeriodDetailsForTranscript.CreditEarned = prgsCreditEarned;
+                                                    if (prgsGPAValue > 0 && prgsCreditEarned > 0)
+                                                    {
+                                                        markingPeriodDetailsForTranscript.GPA = Math.Round((decimal)(prgsGPAValue / prgsCreditEarned), 3);
+                                                    }
+                                                    gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
                                                 }
                                             }
+
+                                            //for quater marking period
+                                            var qrtReportCardData = reportCardData.Where(x => x.QtrMarkingPeriodId != null);
+
+                                            if (qrtReportCardData.Any() == true)
+                                            {
+                                                var distinctQrtIds = qrtReportCardData.Select(x => x.QtrMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
+                                                foreach (var qtrId in distinctQrtIds)
+                                                {
+                                                    var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
+                                                    decimal? qtrGPValue = 0.0m;
+                                                    decimal? qtrGPAValue = 0.0m;
+                                                    decimal? qtrCreditAttemped = 0.0m;
+                                                    decimal? qtrCreditEarned = 0.0m;
+
+                                                    var MPWiseReportCardData = qrtReportCardData.Where(s => s.QtrMarkingPeriodId == qtrId);//fetch data marking period wise
+
+                                                    foreach (var reportCard in MPWiseReportCardData)
+                                                    {
+                                                        var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
+
+                                                        var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
+
+                                                        if (courseSectionData != null)
+                                                        {
+                                                            reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
+                                                            reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
+                                                            reportCardDetailsForTranscript.CreditHours = reportCard.CreditAttempted != null ? reportCard.CreditAttempted : 0.0m;
+                                                            reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0.0m;
+                                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
+                                                            if (courseSectionData.GradeScale != null)
+                                                            {
+                                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+                                                                if (gradeData != null)
+                                                                {
+                                                                    qtrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+
+                                                            reportCardDetailsForTranscript.GPValue = qtrGPValue;
+                                                            qtrCreditAttemped += reportCardDetailsForTranscript.CreditHours;
+                                                            qtrCreditEarned += reportCardDetailsForTranscript.CreditEarned;
+                                                            qtrGPAValue += reportCardDetailsForTranscript.GPValue;
+                                                            markingPeriodDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
+                                                        }
+                                                    }
+                                                    creditAttemped += qtrCreditAttemped;
+                                                    creditEarned += qtrCreditEarned;
+                                                    gPAValue += qtrGPAValue;
+
+                                                    markingPeriodDetailsForTranscript.MarkingPeriodTitle = MPWiseReportCardData.FirstOrDefault()!.Quarters?.Title;
+                                                    markingPeriodDetailsForTranscript.CreditAttemped = qtrCreditAttemped;
+                                                    markingPeriodDetailsForTranscript.CreditEarned = qtrCreditEarned;
+                                                    if (qtrGPAValue > 0 && qtrCreditEarned > 0)
+                                                    {
+                                                        markingPeriodDetailsForTranscript.GPA = Math.Round((decimal)(qtrGPAValue / qtrCreditEarned), 3);
+                                                    }
+                                                    gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
+                                                }
+                                            }
+
+                                            //for semester marking period
+                                            var smstrReportCardData = reportCardData.Where(x => x.SmstrMarkingPeriodId != null);
+
+                                            if (smstrReportCardData.Any() == true)
+                                            {
+                                                var distinctSmstrIds = smstrReportCardData.Select(x => x.SmstrMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
+
+                                                foreach (var smstrId in distinctSmstrIds)
+                                                {
+                                                    var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
+                                                    decimal? smstrGPValue = 0.0m;
+                                                    decimal? smstrGPAValue = 0.0m;
+                                                    decimal? smstrCreditAttemped = 0.0m;
+                                                    decimal? smstrCreditEarned = 0.0m;
+
+                                                    var MPWiseReportCardData = smstrReportCardData.Where(s => s.SmstrMarkingPeriodId == smstrId);//fetch data marking period wise
+
+                                                    foreach (var reportCard in MPWiseReportCardData)
+                                                    {
+                                                        var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
+
+                                                        var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
+
+                                                        if (courseSectionData != null)
+                                                        {
+                                                            reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
+                                                            reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
+                                                            reportCardDetailsForTranscript.CreditHours = reportCard.CreditAttempted != null ? reportCard.CreditAttempted : 0.0m;
+                                                            reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0.0m;
+                                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
+                                                            if (courseSectionData.GradeScale != null)
+                                                            {
+                                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+                                                                if (gradeData != null)
+                                                                {
+                                                                    smstrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+
+                                                            reportCardDetailsForTranscript.GPValue = smstrGPValue;
+                                                            smstrCreditAttemped += reportCardDetailsForTranscript.CreditHours;
+                                                            smstrCreditEarned += reportCardDetailsForTranscript.CreditEarned;
+                                                            smstrGPAValue += reportCardDetailsForTranscript.GPValue;
+                                                            markingPeriodDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
+                                                        }
+                                                    }
+                                                    creditAttemped += smstrCreditAttemped;
+                                                    creditEarned += smstrCreditEarned;
+                                                    gPAValue += smstrGPAValue;
+
+                                                    markingPeriodDetailsForTranscript.MarkingPeriodTitle = MPWiseReportCardData.FirstOrDefault()!.Semesters?.Title;
+                                                    markingPeriodDetailsForTranscript.CreditAttemped = smstrCreditAttemped;
+                                                    markingPeriodDetailsForTranscript.CreditEarned = smstrCreditEarned;
+                                                    if (smstrGPAValue > 0 && smstrCreditEarned > 0)
+                                                    {
+                                                        markingPeriodDetailsForTranscript.GPA = Math.Round((decimal)(smstrGPAValue / smstrCreditEarned), 3);
+                                                    }
+                                                    gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
+                                                }
+                                            }
+
+                                            //for year marking period
+                                            var yrReportCardData = reportCardData.Where(x => x.YrMarkingPeriodId != null);
+
+                                            if (yrReportCardData.Any() == true)
+                                            {
+                                                var distinctYrIds = yrReportCardData.Select(x => x.YrMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
+
+                                                foreach (var yrId in distinctYrIds)
+                                                {
+                                                    var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
+                                                    decimal? yrGPValue = 0.0m;
+                                                    decimal? yrGPAValue = 0.0m;
+                                                    decimal? yrCreditAttemped = 0.0m;
+                                                    decimal? yrCreditEarned = 0.0m;
+
+                                                    var MPWiseReportCardData = yrReportCardData.Where(s => s.YrMarkingPeriodId == yrId);//fetch data marking period wise
+
+                                                    foreach (var reportCard in MPWiseReportCardData)
+                                                    {
+                                                        var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
+
+                                                        var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
+
+                                                        if (courseSectionData != null)
+                                                        {
+                                                            reportCardDetailsForTranscript.CourseCode = courseSectionData.Course.CourseShortName;
+                                                            reportCardDetailsForTranscript.CourseSectionName = courseSectionData.CourseSectionName;
+                                                            reportCardDetailsForTranscript.CreditHours = reportCard.CreditAttempted != null ? reportCard.CreditAttempted : 0.0m;
+                                                            reportCardDetailsForTranscript.CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0.0m;
+                                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
+                                                            if (courseSectionData.GradeScale != null)
+                                                            {
+                                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
+                                                                if (gradeData != null)
+                                                                {
+                                                                    yrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+
+                                                            reportCardDetailsForTranscript.GPValue = yrGPValue;
+                                                            yrCreditAttemped += reportCardDetailsForTranscript.CreditHours;
+                                                            yrCreditEarned += reportCardDetailsForTranscript.CreditEarned;
+                                                            yrGPAValue += reportCardDetailsForTranscript.GPValue;
+                                                            markingPeriodDetailsForTranscript.reportCardDetailsForTranscripts.Add(reportCardDetailsForTranscript);
+                                                        }
+                                                    }
+                                                    creditAttemped += yrCreditAttemped;
+                                                    creditEarned += yrCreditEarned;
+                                                    gPAValue += yrGPAValue;
+
+                                                    markingPeriodDetailsForTranscript.MarkingPeriodTitle = MPWiseReportCardData.FirstOrDefault()!.SchoolYears?.Title;
+                                                    markingPeriodDetailsForTranscript.CreditAttemped = yrCreditAttemped;
+                                                    markingPeriodDetailsForTranscript.CreditEarned = yrCreditEarned;
+                                                    if (yrGPAValue > 0 && yrCreditEarned > 0)
+                                                    {
+                                                        markingPeriodDetailsForTranscript.GPA = Math.Round((decimal)(yrGPAValue / yrCreditEarned), 3);
+                                                    }
+                                                    gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
+                                                }
+                                            }
+
+                                            totalCreditEarned += creditEarned;
+                                            totalCreditAttempeted += creditAttemped;
+                                            cumulativeGPValue += gPAValue;
+                                            cumulativeCreditHours += creditAttemped;
+                                            studentsDetailsForTranscript.gradeLevelDetailsForTranscripts.Add(gradeLevelDetailsForTranscript);
                                         }
-                                        gradeLevelDetailsForTranscript.CreditAttemped = creditAttemped; // Σ CreditHours of course sections
-                                        gradeLevelDetailsForTranscript.CreditEarned = creditEarned; // Σ CreditEarned of course sections
-                                        if (gPAValue > 0 && creditEarned > 0)
-                                        {
-                                            gradeLevelDetailsForTranscript.GPA = gPAValue / creditEarned; // Σ gpValue of course sections / Σ CreditEarned of course sections
-                                        }                                       
-                                        totalCreditEarned += creditEarned;
-                                        totalCreditAttempeted += creditAttemped;
-                                        cumulativeGPValue += gPAValue;
-                                        cumulativeCreditHours += creditAttemped;
-                                        studentsDetailsForTranscript.gradeLevelDetailsForTranscripts.Add(gradeLevelDetailsForTranscript);
                                     }
                                 }
-                            }
-                            if (cumulativeGPValue > 0 && cumulativeCreditHours > 0)
-                            {
-                                studentsDetailsForTranscript.CumulativeGPA = cumulativeGPValue / cumulativeCreditHours;  // Σ gpValue of all course sections / Σ CreditHours of all course sections
-                            }
-                            studentsDetailsForTranscript.TotalCreditAttempeted = totalCreditAttempeted; //Σ CreditAttemped 
-                            studentsDetailsForTranscript.TotalCreditEarned = totalCreditEarned;  //Σ CreditEarned
+                                if (cumulativeGPValue > 0 && cumulativeCreditHours > 0)
+                                {
+                                    studentsDetailsForTranscript.CumulativeGPA = Math.Round((decimal)(cumulativeGPValue / cumulativeCreditHours), 3);  // Σ gpValue of all course sections / Σ CreditHours of all course sections
+                                }
+                                studentsDetailsForTranscript.TotalCreditAttempeted = totalCreditAttempeted; //Σ CreditAttemped 
+                                studentsDetailsForTranscript.TotalCreditEarned = totalCreditEarned;  //Σ CreditEarned
 
-                            transcriptView.studentsDetailsForTranscripts.Add(studentsDetailsForTranscript);
+                                transcriptView.studentsDetailsForTranscripts.Add(studentsDetailsForTranscript);
+                            }
                         }
                     }
                 }
