@@ -3759,7 +3759,7 @@ namespace opensis.data.Repository
 
                                             if (prgsReportCardData.Any() == true)
                                             {
-                                                var distinctPrgsIds = prgsReportCardData.Select(x => x.PrgrsprdMarkingPeriodId).Distinct().ToList();
+                                                var distinctPrgsIds = prgsReportCardData.Select(x => x.PrgrsprdMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
                                                 foreach (var prgsId in distinctPrgsIds)
                                                 {
                                                     var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
@@ -3879,7 +3879,7 @@ namespace opensis.data.Repository
 
                                             if (smstrReportCardData.Any() == true)
                                             {
-                                                var distinctSmstrIds = smstrReportCardData.Select(x => x.SmstrMarkingPeriodId).Distinct().ToList();
+                                                var distinctSmstrIds = smstrReportCardData.Select(x => x.SmstrMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
 
                                                 foreach (var smstrId in distinctSmstrIds)
                                                 {
@@ -3940,7 +3940,7 @@ namespace opensis.data.Repository
 
                                             if (yrReportCardData.Any() == true)
                                             {
-                                                var distinctYrIds = yrReportCardData.Select(x => x.YrMarkingPeriodId).Distinct().ToList();
+                                                var distinctYrIds = yrReportCardData.Select(x => x.YrMarkingPeriodId).Distinct().ToList().OrderBy(s => s!.Value);
 
                                                 foreach (var yrId in distinctYrIds)
                                                 {
