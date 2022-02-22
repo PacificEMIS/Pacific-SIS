@@ -1674,7 +1674,8 @@ namespace opensis.data.Repository
                                             Text = markingPeriod.ShortName,
                                             StartDate = markingPeriod.StartDate,
                                             EndDate = markingPeriod.EndDate,
-                                            FullName = markingPeriod.Title
+                                            FullName = markingPeriod.Title,
+                                            CreditHours = courseSectionData.CreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
 
@@ -1687,13 +1688,22 @@ namespace opensis.data.Repository
                                                 StartDate = markingPeriod.StartDate,
                                                 EndDate = markingPeriod.EndDate,
                                                 FullName = markingPeriod.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = courseSectionData.CreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYearExam);
                                         }
                                     }
 
                                     var semesterData = markingPeriodData.SelectMany(x => x.Semesters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int semCount = markingPeriodData.SelectMany(x => x.Semesters).Count();
+                                    decimal? semCreditHours = null;
+                                    if (semCount > 0)
+                                    {
+                                        semCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(semCount);
+                                    }
+
                                     foreach (var semester in semesterData)
                                     {
                                         var sem = new GetMarkingPeriodView
@@ -1702,7 +1712,8 @@ namespace opensis.data.Repository
                                             Text = semester.ShortName,
                                             StartDate = semester.StartDate,
                                             EndDate = semester.EndDate,
-                                            FullName = semester.Title
+                                            FullName = semester.Title,
+                                            CreditHours = semCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
 
@@ -1715,12 +1726,21 @@ namespace opensis.data.Repository
                                                 StartDate = semester.StartDate,
                                                 EndDate = semester.EndDate,
                                                 FullName = semester.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = semCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
                                         }
                                     }
                                     var quaterData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int qtrCount = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).Count();
+                                    decimal? qtrCreditHours = null;
+                                    if (qtrCount > 0)
+                                    {
+                                        qtrCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(qtrCount);
+                                    }
+
                                     foreach (var quater in quaterData)
                                     {
                                         var qtr = new GetMarkingPeriodView
@@ -1729,7 +1749,8 @@ namespace opensis.data.Repository
                                             Text = quater.ShortName,
                                             StartDate = quater.StartDate,
                                             EndDate = quater.EndDate,
-                                            FullName = quater.Title
+                                            FullName = quater.Title,
+                                            CreditHours = qtrCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
 
@@ -1742,12 +1763,21 @@ namespace opensis.data.Repository
                                                 StartDate = quater.StartDate,
                                                 EndDate = quater.EndDate,
                                                 FullName = quater.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = qtrCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
                                         }
                                     }
                                     var progressPeriodData = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int prgsCount = markingPeriodData.SelectMany(x => x.Semesters).SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Count();
+                                    decimal? prgsCreditHours = null;
+                                    if (prgsCount > 0)
+                                    {
+                                        prgsCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(prgsCount);
+                                    }
+
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
                                         var prgrsPrd = new GetMarkingPeriodView
@@ -1756,7 +1786,8 @@ namespace opensis.data.Repository
                                             Text = progressPeriods.ShortName,
                                             StartDate = progressPeriods.StartDate,
                                             EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title
+                                            FullName = progressPeriods.Title,
+                                            CreditHours = prgsCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
 
@@ -1769,7 +1800,8 @@ namespace opensis.data.Repository
                                                 StartDate = progressPeriods.StartDate,
                                                 EndDate = progressPeriods.EndDate,
                                                 FullName = progressPeriods.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = prgsCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
                                         }
@@ -1794,7 +1826,8 @@ namespace opensis.data.Repository
                                             Text = semester.ShortName,
                                             StartDate = semester.StartDate,
                                             EndDate = semester.EndDate,
-                                            FullName = semester.Title
+                                            FullName = semester.Title,
+                                            CreditHours = courseSectionData.CreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
 
@@ -1807,12 +1840,21 @@ namespace opensis.data.Repository
                                                 StartDate = semester.StartDate,
                                                 EndDate = semester.EndDate,
                                                 FullName = semester.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = courseSectionData.CreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(semExam);
                                         }
                                     }
                                     var quaterData = markingPeriodData.SelectMany(x => x.Quarters).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int qtrCount = markingPeriodData.SelectMany(x => x.Quarters).Count();
+                                    decimal? qtrCreditHours = null;
+                                    if (qtrCount > 0)
+                                    {
+                                        qtrCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(qtrCount);
+                                    }
+
                                     foreach (var quater in quaterData)
                                     {
                                         var qtr = new GetMarkingPeriodView
@@ -1821,9 +1863,11 @@ namespace opensis.data.Repository
                                             Text = quater.ShortName,
                                             StartDate = quater.StartDate,
                                             EndDate = quater.EndDate,
-                                            FullName = quater.Title
+                                            FullName = quater.Title,
+                                            CreditHours = qtrCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+
                                         if (quater.DoesExam == true)
                                         {
                                             var qtrExam = new GetMarkingPeriodView
@@ -1833,13 +1877,22 @@ namespace opensis.data.Repository
                                                 StartDate = quater.StartDate,
                                                 EndDate = quater.EndDate,
                                                 FullName = quater.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = qtrCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
                                         }
                                     }
 
                                     var progressPeriodData = markingPeriodData.SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int prgsCount = markingPeriodData.SelectMany(x => x.Quarters).SelectMany(x => x.ProgressPeriods).Count();
+                                    decimal? prgsCreditHours = null;
+                                    if (prgsCount > 0)
+                                    {
+                                        prgsCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(prgsCount);
+                                    }
+
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
                                         var prgrsPrd = new GetMarkingPeriodView
@@ -1848,7 +1901,8 @@ namespace opensis.data.Repository
                                             Text = progressPeriods.ShortName,
                                             StartDate = progressPeriods.StartDate,
                                             EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title
+                                            FullName = progressPeriods.Title,
+                                            CreditHours = prgsCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
 
@@ -1861,7 +1915,8 @@ namespace opensis.data.Repository
                                                 StartDate = progressPeriods.StartDate,
                                                 EndDate = progressPeriods.EndDate,
                                                 FullName = progressPeriods.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = prgsCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
                                         }
@@ -1886,9 +1941,11 @@ namespace opensis.data.Repository
                                             Text = quater.ShortName,
                                             StartDate = quater.StartDate,
                                             EndDate = quater.EndDate,
-                                            FullName = quater.Title
+                                            FullName = quater.Title,
+                                            CreditHours = courseSectionData.CreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+
                                         if (quater.DoesExam == true)
                                         {
                                             var qtrExam = new GetMarkingPeriodView
@@ -1898,13 +1955,22 @@ namespace opensis.data.Repository
                                                 StartDate = quater.StartDate,
                                                 EndDate = quater.EndDate,
                                                 FullName = quater.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = courseSectionData.CreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(qtrExam);
                                         }
                                     }
 
                                     var progressPeriodData = markingPeriodData.SelectMany(x => x.ProgressPeriods).Where(x => (markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodStartDate <= x.EndDate) && (markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate >= x.StartDate && markingPeriodsByCourseSectionViewModel.MarkingPeriodEndDate <= x.EndDate)).ToList();
+
+                                    int prgsCount = markingPeriodData.SelectMany(x => x.ProgressPeriods).Count();
+                                    decimal? prgsCreditHours = null;
+                                    if (prgsCount > 0)
+                                    {
+                                        prgsCreditHours = courseSectionData.CreditHours / Convert.ToDecimal(prgsCount);
+                                    }
+
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
                                         var prgrsPrd = new GetMarkingPeriodView
@@ -1913,7 +1979,8 @@ namespace opensis.data.Repository
                                             Text = progressPeriods.ShortName,
                                             StartDate = progressPeriods.StartDate,
                                             EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title
+                                            FullName = progressPeriods.Title,
+                                            CreditHours = prgsCreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
 
@@ -1926,7 +1993,8 @@ namespace opensis.data.Repository
                                                 StartDate = progressPeriods.StartDate,
                                                 EndDate = progressPeriods.EndDate,
                                                 FullName = progressPeriods.Title,
-                                                DoesExam = true
+                                                DoesExam = true,
+                                                CreditHours = prgsCreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
                                         }
@@ -1951,7 +2019,8 @@ namespace opensis.data.Repository
                                             Text = progressPeriods.ShortName,
                                             StartDate = progressPeriods.StartDate,
                                             EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title
+                                            FullName = progressPeriods.Title,
+                                            CreditHours = courseSectionData.CreditHours
                                         };
                                         markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
 
@@ -1963,7 +2032,8 @@ namespace opensis.data.Repository
                                                 Text = progressPeriods.ShortName + " " + "EXAM",
                                                 StartDate = progressPeriods.StartDate,
                                                 EndDate = progressPeriods.EndDate,
-                                                FullName = progressPeriods.Title
+                                                FullName = progressPeriods.Title,
+                                                CreditHours = courseSectionData.CreditHours
                                             };
                                             markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrdExam);
                                         }
@@ -1979,7 +2049,8 @@ namespace opensis.data.Repository
                                 Text = "Custom Date Range",
                                 StartDate = courseSectionData.DurationStartDate,
                                 EndDate = courseSectionData.DurationEndDate,
-                                FullName = "Custom Date Range"
+                                FullName = "Custom Date Range",
+                                CreditHours = courseSectionData.CreditHours
                             };
                             markingPeriodsByCourse.getMarkingPeriodView.Add(customDateRange);
                         }

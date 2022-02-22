@@ -23,34 +23,24 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-using opensis.data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace opensis.data.ViewModels.InputFinalGrade
+namespace opensis.data.ViewModels.Student
 {
-    public class StudentFinalGradeListModel : CommonFields
+    public class MarkingPeriodDetailsForTranscript
     {
-        public StudentFinalGradeListModel()
+        public MarkingPeriodDetailsForTranscript()
         {
-            StudentFinalGradeList = new List<StudentFinalGrade>();
+            reportCardDetailsForTranscripts = new List<ReportCardDetailsForTranscript>();
         }
-        public List<StudentFinalGrade> StudentFinalGradeList { get; set; }
-        //public List<CourseStandard> courseStandardList { get; set; }
-        //public List<StudentFinalGradeStandard> studentFinalGradeStandardList { get; set; }
-        public Guid TenantId { get; set; }
-        public int SchoolId { get; set; }
-        public int? CalendarId { get; set; }
-        public int CourseSectionId { get; set; }
-        public int? StandardGradeScaleId { get; set; }
-        public int CourseId { get; set; }
-        public bool? IsPercent { get; set; }
-        public string? MarkingPeriodId { get; set; }
-        public decimal? AcademicYear { get; set; }
-        public string? CreatedOrUpdatedBy { get; set; }
-        public bool? IsCustomMarkingPeriod { get; set; }
-        public bool? IsExamGrade { get; set; }
-        public decimal? CreditHours { get; set; }
+        public List<ReportCardDetailsForTranscript> reportCardDetailsForTranscripts { get; set; }
+        public string? MarkingPeriodTitle { get; set; }
+        public decimal? CreditAttemped { get; set; }
+        public decimal? CreditEarned { get; set; }
+        public decimal? GPA { get; set; }
     }
 }
