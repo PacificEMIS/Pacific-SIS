@@ -239,6 +239,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
+                    ReturnModel.MembershipId = user?.Membership.MembershipId;
                     //if (user.Membership.ProfileType.ToLower() == "Student".ToLower())
                     if (user?.Membership?.ProfileType == "Student")
                     {
@@ -293,6 +294,16 @@ namespace opensis.data.Repository
                                 ReturnModel.MiddleName = userData.MiddleName;
                                 ReturnModel.LastFamilyName = userData.LastFamilyName;
                                 ReturnModel.UserGuid = userData.StaffGuid.ToString();
+
+                                if (user?.LastUsedSchoolId != null)
+                                {
+                                    var lastSchoolMembershipId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == (int)user.LastUsedSchoolId && x.StaffId == staffDefaultData!.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).Select(x => x.MembershipId).FirstOrDefault();
+
+                                    if (lastSchoolMembershipId != null)
+                                    {
+                                        ReturnModel.MembershipId = lastSchoolMembershipId;
+                                    }
+                                }
                             }
                         }
                         else
@@ -304,7 +315,7 @@ namespace opensis.data.Repository
                             ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
                             ReturnModel.MembershipName = user?.Membership.Profile;
                             ReturnModel.MembershipType = user?.Membership.ProfileType;
-                            ReturnModel.MembershipId = user?.Membership.MembershipId;
+                            //ReturnModel.MembershipId = user?.Membership.MembershipId;
                             ReturnModel._failure = true;
                             ReturnModel._message = "Your account is inactive, please contact to Administrator";
                             return ReturnModel;
@@ -326,7 +337,7 @@ namespace opensis.data.Repository
                     ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
                     ReturnModel.MembershipName = user?.Membership.Profile;
                     ReturnModel.MembershipType = user?.Membership.ProfileType;
-                    ReturnModel.MembershipId = user?.Membership.MembershipId;
+                    //ReturnModel.MembershipId = user?.Membership.MembershipId;
                     ReturnModel._failure = false;
                     ReturnModel._message = "";
 
