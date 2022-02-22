@@ -33,15 +33,12 @@ namespace opensis.data.ViewModels.Student
     {
         public GradeLevelDetailsForTranscript()
         {
-            reportCardDetailsForTranscripts = new List<ReportCardDetailsForTranscript>();
+            markingPeriodDetailsForTranscripts = new List<MarkingPeriodDetailsForTranscript>();
         }
-        public List<ReportCardDetailsForTranscript> reportCardDetailsForTranscripts { get; set; }
+        public List<MarkingPeriodDetailsForTranscript> markingPeriodDetailsForTranscripts { get; set; }
         public int? GradeId { get; set; }
         public string? GradeLevelTitle { get; set; }
         public string? SchoolName { get; set; }
         public string? SchoolYear { get; set; }
-        public decimal? CreditAttemped { get; set; }
-        public decimal? CreditEarned { get; set; }
-        public decimal? GPA { get; set; }
     }
 }
