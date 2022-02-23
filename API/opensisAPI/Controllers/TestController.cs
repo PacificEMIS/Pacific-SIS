@@ -2020,5 +2020,54 @@ namespace opensisAPI.Controllers
 
             return Ok();
         }
+
+        [HttpPost("addNewRolePermissionForParent")]
+        public IActionResult AddNewRolePermissionForParent(Guid? tenantId)
+        {
+            using (var transaction = this.context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var allSchoolData = this.context?.SchoolMaster.Include(s => s.SchoolDetail).Where(x => x.TenantId == tenantId).ToList();
+
+                    if (allSchoolData.Count > 0)
+                    {
+                        allSchoolData = allSchoolData.Where(x => x.SchoolDetail.FirstOrDefault().Status == true).ToList();
+
+                        List<RolePermission> rolePermissions = new List<RolePermission>();
+                        foreach (var school in allSchoolData)
+                        {
+                            // insert into role permission
+                            var dataCategory = System.IO.File.ReadAllText(@"RolePermission.json");
+                            JsonSerializerSettings settingCat = new JsonSerializerSettings();
+                            List<RolePermission> objCat = JsonConvert.DeserializeObject<List<RolePermission>>(dataCategory, settingCat);
+
+                            var maxRPid = this.context?.RolePermission.Where(x => x.SchoolId == school.SchoolId && x.TenantId == tenantId).OrderByDescending(s => s.RolePermissionId).Select(s => s.RolePermissionId).FirstOrDefault();
+
+                            objCat = objCat.Where(x => x.RolePermissionId >= 651).ToList();
+
+                            foreach (RolePermission rolePermission in objCat)
+                            {
+                                rolePermission.TenantId = school.TenantId;
+                                rolePermission.SchoolId = school.SchoolId;
+                                rolePermission.RolePermissionId = (int)++maxRPid;
+                                rolePermission.CreatedBy = school.CreatedBy;
+                                rolePermission.CreatedOn = DateTime.UtcNow;
+                                rolePermissions.Add(rolePermission);
+                            }
+                        }
+                        this.context?.RolePermission.AddRange(rolePermissions);
+                        this.context?.SaveChanges();
+                        transaction.Commit();
+                    }
+                }
+                catch (Exception es)
+                {
+                    transaction.Rollback();
+                    return Ok(es.Message);
+                }
+            }
+            return Ok();
+        }
     }
 }
