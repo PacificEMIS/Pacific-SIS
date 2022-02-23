@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
   tenantName: any;
   tenantFooter: string;
   favIcon: HTMLLinkElement = document.querySelector('#appFavicon');
-
+  userType=["Super Administrator","School Administrator","Admin Assistant","Teacher","Homeroom Teacher","Parent","Student"];
   constructor(
     private router: Router,
     private Activeroute: ActivatedRoute,
@@ -217,8 +217,13 @@ export class LoginComponent implements OnInit {
              }
              this.defaultValuesService.setToken(data._token)
             this.defaultValuesService.setFirstGivenName(data.firstGivenName);
-            this.defaultValuesService.setUserMembershipType(data.membershipType);
-
+            // this.defaultValuesService.setUserMembershipType(data.membershipType);
+             this.userType.map((val,i)=>{
+               if (data.membershipId == i+1) {
+                 this.defaultValuesService.setUserMembershipType(val)
+                 this.defaultValuesService.setuserMembershipName(val)
+               }
+             })
             this.defaultValuesService.setTenantIdVal(data.tenantId);
             this.defaultValuesService.setEmailId(data.email);
             this.defaultValuesService.setUserGuidId(data.userGuid);
@@ -227,7 +232,7 @@ export class LoginComponent implements OnInit {
             this.defaultValuesService.setUserId(data.userId.toString());
             this.defaultValuesService.setUserPhoto(data.userPhoto);
             this.defaultValuesService.setUserMembershipID(data.membershipId.toString());
-            this.defaultValuesService.setuserMembershipName(data.membershipName);
+            // this.defaultValuesService.setuserMembershipName(data.membershipName);
             this.callRolePermissions();
             
           }

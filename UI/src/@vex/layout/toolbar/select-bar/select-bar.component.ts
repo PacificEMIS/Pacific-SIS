@@ -155,6 +155,7 @@ export class SelectBarComponent implements OnInit {
     this.defaultValuesService.setSchoolClosed(details.dateSchoolClosed);
     this.defaultValuesService.setuserMembershipName(details.membershipType)
     this.defaultValuesService.setUserMembershipType(details.membershipType)
+    this.defaultValuesService.setUserMembershipID(details.membershipId)
     this.callAcademicYearsOnSchoolSelect();
     if(this.defaultValuesService.getuserMembershipName() === 'Teacher' || this.defaultValuesService.getuserMembershipName() === 'Homeroom Teacher'){
       this.router.navigateByUrl("/school/teacher/dashboards");
