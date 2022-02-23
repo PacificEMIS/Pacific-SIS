@@ -241,6 +241,7 @@ namespace opensis.data.Repository
                 {
                     ReturnModel.MembershipId = user?.Membership.MembershipId;
                     ReturnModel.MembershipType = user?.Membership.ProfileType;
+                    ReturnModel.MembershipName = user?.Membership.Profile;
 
                     //if (user.Membership.ProfileType.ToLower() == "Student".ToLower())
                     if (user?.Membership?.ProfileType == "Student")
@@ -305,6 +306,7 @@ namespace opensis.data.Repository
                                     {
                                         ReturnModel.MembershipId = lastSchoolMembershipId.MembershipId;
                                         ReturnModel.MembershipType = lastSchoolMembershipId.Profile;
+                                        ReturnModel.MembershipName = this.context?.Membership.FirstOrDefault(x => x.TenantId == objModel.TenantId && x.SchoolId == (int)user.LastUsedSchoolId && x.MembershipId == lastSchoolMembershipId.MembershipId)?.Profile;
                                     }
                                 }
                             }
@@ -316,7 +318,7 @@ namespace opensis.data.Repository
                             ReturnModel.Email = user?.EmailAddress;
                             ReturnModel.Name = user?.Name;
                             ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
-                            ReturnModel.MembershipName = user?.Membership.Profile;
+                            //ReturnModel.MembershipName = user?.Membership.Profile;
                             //ReturnModel.MembershipType = user?.Membership.ProfileType;
                             //ReturnModel.MembershipId = user?.Membership.MembershipId;
                             ReturnModel._failure = true;
@@ -338,8 +340,8 @@ namespace opensis.data.Repository
                     ReturnModel.Email = user?.EmailAddress;
                     ReturnModel.Name = user?.Name;
                     ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
-                    ReturnModel.MembershipName = user?.Membership.Profile;
-                    ReturnModel.MembershipType = user?.Membership.ProfileType;
+                    //ReturnModel.MembershipName = user?.Membership.Profile;
+                    //ReturnModel.MembershipType = user?.Membership.ProfileType;
                     //ReturnModel.MembershipId = user?.Membership.MembershipId;
                     ReturnModel._failure = false;
                     ReturnModel._message = "";
