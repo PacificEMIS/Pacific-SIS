@@ -5,7 +5,7 @@ import { DefaultValuesService } from '../common/default-values.service';
 import { CourseStandardForCourseViewModel, GetAllCourseListModel } from '../models/course-manager.model';
 import { ResponseStudentReportCardGradesModel, StudentReportCardGradesModel } from '../models/report-card.model';
 import { GetAllStaffModel } from '../models/staff.model';
-import { AddUpdateStudentFinalGradeModel, GetAllStudentListForFinalGradeModel } from '../models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetAllStudentListForFinalGradeModel, GetGradebookGradeinFinalGradeModel } from '../models/student-final-grade.model';
 import { AddUpdateStudentAttendanceModel, GetAllStudentAttendanceListModel, SearchCourseSectionForStudentAttendance, StaffDetailsModel } from '../models/take-attendance-list.model';
 
 @Injectable({
@@ -54,6 +54,13 @@ export class FinalGradeService {
         obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/getAllStudentListForFinalGrade";
         return this.http.post<GetAllStudentListForFinalGradeModel>(apiurl, obj, this.httpOptions)
+    }
+
+    getGradebookGradeinFinalGrade(obj: GetGradebookGradeinFinalGradeModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        let apiurl = this.apiUrl + obj._tenantName + "/InputFinalGrade/getGradebookGradeinFinalGrade";
+        return this.http.post<GetGradebookGradeinFinalGradeModel>(apiurl, obj, this.httpOptions)
     }
 
     getStudentReportCardGrades(obj: StudentReportCardGradesModel) {

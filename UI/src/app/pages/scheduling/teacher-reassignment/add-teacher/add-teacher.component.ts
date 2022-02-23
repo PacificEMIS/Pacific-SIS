@@ -78,6 +78,7 @@ export class AddTeacherComponent implements OnInit {
   listOfStaff=[];
   selectedStaff=[]
   selectedTeacher:StaffListModel;
+  isActive:boolean
   constructor(private dialogRef: MatDialogRef<AddTeacherComponent>, 
     public translateService:TranslateService,
     private gradeLevelService: GradeLevelService,
@@ -139,6 +140,7 @@ export class AddTeacherComponent implements OnInit {
     this.getAllStaff.sortingModel = null;
     this.getAllStaff.fullName = this.staffFullName;
     this.getAllStaff.profilePhoto=true;
+    this.defaultValuesService.sendIncludeInactiveFlag(this.isActive)
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
      if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -157,7 +159,7 @@ export class AddTeacherComponent implements OnInit {
         this.pageSize = res._pageSize;
         res.staffMaster=this.findLanguageNameByLanguageId(res.staffMaster);
         this.staffList = new MatTableDataSource(res.staffMaster);
-
+      
         this.getAllStaff=new GetAllStaffModel();     
       }
     });
@@ -185,7 +187,9 @@ export class AddTeacherComponent implements OnInit {
       this.dialogRef.close(element);
   }
 
- 
+  includeInactiveStaff(event) {
+    this.isActive = event
+  }
   
 
   ngOnDestroy() {

@@ -75,8 +75,8 @@ export class SelectBarComponent implements OnInit {
         if(data._failure){
           this.commonService.checkTokenValidOrNot(data._message);
         }
-        this.schools = data.schoolMaster;
-        this.defaultValuesService.setSchoolCount((data?.schoolMaster?.length)?.toString());
+        this.schools = data.getSchoolForView;
+        this.defaultValuesService.setSchoolCount((data?.getSchoolForView?.length)?.toString());
         /** control for the selected School */
         this.schoolCtrl = new FormControl();
         this.schoolFilterCtrl = new FormControl();
@@ -113,8 +113,8 @@ export class SelectBarComponent implements OnInit {
       });
       // this.schoolCtrl.setValue(this.schools[index === -1 ? 0 : index]);
       this.defaultValuesService.setSchoolID(this.schools[index === -1 ? 0 : index].schoolId);
-      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolOpened);
-      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolClosed);
+      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].dateSchoolClosed);
       this.callAcademicYearsOnSchoolSelect();
     } else {
       this.setSchool();
@@ -132,8 +132,8 @@ export class SelectBarComponent implements OnInit {
     });
     if (index != -1) {
       this.schoolCtrl.setValue(this.schools[index]);
-      this.defaultValuesService.setSchoolOpened(this.schools[index].schoolDetail[0].dateSchoolOpened);
-      this.defaultValuesService.setSchoolClosed(this.schools[index].schoolDetail[0].dateSchoolClosed);
+      this.defaultValuesService.setSchoolOpened(this.schools[index].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index].dateSchoolClosed);
     } else {
       const index = this.schools.findIndex((x) => {
         return x.schoolId === +this.defaultValuesService.getSchoolID()
@@ -141,8 +141,8 @@ export class SelectBarComponent implements OnInit {
       this.schoolCtrl.setValue(this.schools[index === -1 ? 0 : index]);
       this.defaultValuesService.setSchoolID(this.schools[index === -1 ? 0 : index].schoolId);
       // this.schoolCtrl.setValue(+this.defaultValuesService.getSchoolID() ? +this.defaultValuesService.getSchoolID() : this.schools[0]);
-      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolOpened);
-      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].schoolDetail[0].dateSchoolClosed);
+      this.defaultValuesService.setSchoolOpened(this.schools[index === -1 ? 0 : index].dateSchoolOpened);
+      this.defaultValuesService.setSchoolClosed(this.schools[index === -1 ? 0 : index].dateSchoolClosed);
     }
     if(!this.checkForAnyNewSchool){
       this.callAcademicYearsOnSchoolSelect();
@@ -151,10 +151,13 @@ export class SelectBarComponent implements OnInit {
 
   changeSchool(details) {
     this.defaultValuesService.setSchoolID(details.schoolId);
-    this.defaultValuesService.setSchoolOpened(details.schoolDetail[0].dateSchoolOpened);
-    this.defaultValuesService.setSchoolClosed(details.schoolDetail[0].dateSchoolClosed);
+    this.defaultValuesService.setSchoolOpened(details.dateSchoolOpened);
+    this.defaultValuesService.setSchoolClosed(details.dateSchoolClosed);
+    this.defaultValuesService.setuserMembershipName(details.membershipType)
+    this.defaultValuesService.setUserMembershipType(details.membershipType)
+    this.defaultValuesService.setUserMembershipID(details.membershipId)
     this.callAcademicYearsOnSchoolSelect();
-    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
+    if(this.defaultValuesService.getuserMembershipName() === 'Teacher' || this.defaultValuesService.getuserMembershipName() === 'Homeroom Teacher'){
       this.router.navigateByUrl("/school/teacher/dashboards");
     }
     else{

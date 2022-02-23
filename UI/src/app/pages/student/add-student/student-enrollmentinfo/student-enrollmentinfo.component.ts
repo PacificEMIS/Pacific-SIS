@@ -89,7 +89,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
   icTrasnferIn = icTrasnferIn;
   icTrasnferOut = icTrasnferOut;
   icDrop = icDrop;
-  isTeacherLogin = false;
+  membershipType;
   studentCreate = SchoolCreate;
   studentCreateMode: SchoolCreate;
   studentDetailsForViewAndEdit;
@@ -171,7 +171,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
       this.getAllStudentEnrollments();
       // this.studentService.changePageMode(this.studentCreateMode);
     }
-    this.checkTeacherLogin();
+    this.membershipType = this.defaultValueService.getUserMembershipType();
   }
 
   cmpare(index) {
@@ -423,7 +423,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
           for (let i = 0; i < this.studentEnrollmentViewModel.studentEnrollmentListForView?.length; i++) {
 
             //if(this.studentEnrollmentViewModel.studentEnrollmentListForView?.length -1 <= (i+1)){
-              if (this.studentEnrollmentViewModel.studentEnrollmentListForView[i].enrollmentCode === this.studentEnrollmentViewModel.studentEnrollmentListForView[i + 1]?.exitCode 
+              if (this.studentEnrollmentViewModel.studentEnrollmentListForView[i].enrollmentCode === "Dropped Out" && this.studentEnrollmentViewModel.studentEnrollmentListForView[i + 1]?.exitCode === "Dropped Out" 
                 && this.studentEnrollmentViewModel.studentEnrollmentListForView[i].enrollmentDate ===this.studentEnrollmentViewModel.studentEnrollmentListForView[i + 1]?.exitDate) {
                 this.studentEnrollmentViewModel.studentEnrollmentListForView.splice((i+1),1);
               }
@@ -437,7 +437,9 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
           // for (let i = 0; i < this.cloneStudentEnrollment.studentEnrollments?.length; i++) {
           //   this.divCount[i] = i;
           // }
-          this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
+          if (this.studentCreateMode === this.studentCreate.ADD) {
+            this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
+          }
           this.getAllCalendar();
         }
       }
@@ -620,15 +622,6 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  checkTeacherLogin() {
-    let membershipType = this.defaultValueService.getUserMembershipType();
-    if (membershipType === 'Teacher') {
-      this.isTeacherLogin = true;
-    } else {
-      this.isTeacherLogin = false;
-    }
   }
 
   getAllSection() {

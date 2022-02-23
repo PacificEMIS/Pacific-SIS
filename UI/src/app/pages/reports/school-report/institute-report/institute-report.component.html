@@ -23,9 +23,10 @@
                 <div class="flex w-full items-center">
                     <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" mat-icon-button type="button">
-                        <mat-icon>search</mat-icon>
-                    </button>
+                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                        <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                            <mat-icon>search</mat-icon>
+                        </button>
                 </div>
             </div>
         </div>
@@ -93,6 +94,7 @@
 
 <div class="hidden" id="printReportCardId">
     <div class="student-information-report">
+        <ng-container *ngFor="let schoolDetail of generatedReportCardData?.schoolViewForReports">
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <td>
@@ -111,14 +113,13 @@
                 </td>
             </tr>
 
-            <ng-container *ngFor="let schoolDetail of generatedReportCardData?.schoolViewForReports">
                 <tr>
                     <td>
                         <table>
                             <tr>
                                 <td class="student-logo width-140">
-                                    <div>
-                                        <img *ngIf="schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" [src]="'data:image/jpeg;base64,' + schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" alt="School Logo">
+                                    <div *ngIf="schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo">
+                                        <img [src]="'data:image/jpeg;base64,' + schoolDetail?.schoolMaster?.schoolDetail[0]?.schoolLogo" alt="School Logo">
                                     </div>
                                 </td>
                                 <td class="school-details">
@@ -173,7 +174,7 @@
                         <table>
                             <tr>
                                 <td class="p-20 width-140">
-                                    <h4 class="f-s-18"><strong>General<br>Information</strong></h4>
+                                    <h4 class="f-s-18"><strong>{{'general' | translate}}<br>{{'information' | translate}}</strong></h4>
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
@@ -231,7 +232,7 @@
                                                 </td>
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5">{{'dateSchoolOpened' | translate}} :</p>
-                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.dateSchoolOpened | EmtyValueCheckPipe}}</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.dateSchoolOpened | date:'mediumDate' | EmtyValueCheckPipe}}</p>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -265,6 +266,33 @@
                                         </tbody>
                                     </table>
 
+                                    <table class="border-table" *ngIf="schoolDetail?.schoolMaster?.fieldsCategory[0]?.customFields?.length">
+                                        <tbody>
+                                            <ng-container
+                                                *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[0]?.customFields; let i = index;">
+                                                <tr *ngIf="i === 0 || i%3 === 0">
+                                                    <ng-container
+                                                        *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[0]?.customFields; let j = index;">
+                                                        <td *ngIf="j >= i && j <= i+2">
+                                                            <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
+                                                            <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
+                                                            <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
+                                                                <mat-icon
+                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                                                                    class="inline-block align-middle mr-1">
+                                                                </mat-icon>
+                                                            </p>
+                                                            <p *ngIf="customField?.type === 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
+                                                            </p>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+                                        </tbody>
+                                    </table>
+
                                 </td>
                             </tr>
                         </table>
@@ -276,7 +304,7 @@
                         <table>
                             <tr>
                                 <td class="p-20 width-140">
-                                    <h4 class="f-s-18"><strong>Address<br>Information</strong></h4>
+                                    <h4 class="f-s-18"><strong>{{'address' | translate}}<br>{{'information' | translate}}</strong></h4>
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
@@ -326,7 +354,7 @@
                                             <tr>
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5">{{'latitude' | translate}}, {{'longitude' | translate}} :</p>
-                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.latitude | EmtyValueCheckPipe}},{{schoolDetail?.schoolMaster?.longitude | EmtyValueCheckPipe}}</p>
+                                                    <p class="f-s-16">{{schoolDetail?.schoolMaster?.latitude | EmtyNumberCheckPipe}}, {{schoolDetail?.schoolMaster?.longitude | EmtyNumberCheckPipe}}</p>
                                                 </td>
                                                 <td>
                                                     <p class="f-s-16 font-bold m-b-5"></p>
@@ -351,7 +379,7 @@
                         <table>
                             <tr>
                                 <td class="p-20 width-140">
-                                    <h4 class="f-s-18"><strong>Contact<br>Information</strong></h4>
+                                    <h4 class="f-s-18"><strong>{{'contact' | translate}}<br>{{'information' | translate}}</strong></h4>
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
@@ -398,7 +426,7 @@
                         <table>
                             <tr>
                                 <td class="p-20 width-140">
-                                    <h4 class="f-s-18"><strong>WASH<br>Information</strong></h4>
+                                    <h4 class="f-s-18"><strong>{{'wash' | translate}}<br>{{'information' | translate}}</strong></h4>
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
@@ -432,6 +460,33 @@
                                                     <p class="f-s-16">{{schoolDetail?.schoolMaster?.schoolDetail[0]?.hygeneEducation | EmtyValueCheckPipe}}</p>
                                                 </td>
                                             </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="border-table" *ngIf="schoolDetail?.schoolMaster?.fieldsCategory[1]?.customFields?.length">
+                                        <tbody>
+                                            <ng-container
+                                                *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[1]?.customFields; let i = index;">
+                                                <tr *ngIf="i === 0 || i%3 === 0">
+                                                    <ng-container
+                                                        *ngFor="let customField of schoolDetail?.schoolMaster?.fieldsCategory[1]?.customFields; let j = index;">
+                                                        <td *ngIf="j >= i && j <= i+2">
+                                                            <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
+                                                            <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
+                                                            <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
+                                                                <mat-icon
+                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                                                                    class="inline-block align-middle mr-1">
+                                                                </mat-icon>
+                                                            </p>
+                                                            <p *ngIf="customField?.type === 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
+                                                            </p>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
                                         </tbody>
                                     </table>
 
@@ -546,41 +601,33 @@
                 <tr *ngIf="getSchoolReportModel.isCustomCategory">
                     <td class="p-t-15">
                         <table>
-                            <tr>
+                            <tr *ngFor="let customCategory of schoolDetail?.schoolMaster?.fieldsCategoryForPDF">
                                 <td class="p-20 width-140">
-                                    <h4 class="f-s-18"><strong>Custom<br>Category</strong></h4>
+                                    <h4 class="f-s-18"><strong>{{customCategory?.title}}</strong></h4>
                                 </td>
                                 <td class="student-details">
                                     <table class="border-table">
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                                <td>
-                                                    <p class="f-s-16 font-bold m-b-5">Custom Field Type :</p>
-                                                    <p class="f-s-16">Custom Field Value</p>
-                                                </td>
-                                            </tr>
+                                            <ng-container *ngFor="let customField of customCategory?.customFields; let i = index;">
+                                                <tr *ngIf="i === 0 || i%3 === 0">
+                                                    <ng-container *ngFor="let customField of customCategory?.customFields; let j = index;">
+                                                        <td *ngIf="j >= i && j <= i+2">
+                                                            <p class="f-s-16 font-bold m-b-5">{{customField?.title}} :</p>
+                                                            <p *ngIf="customField?.type !== 'Checkbox' && customField.type !== 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | EmtyValueCheckPipe}}</p>
+                                                            <p *ngIf="customField?.type === 'Checkbox'" class="f-s-16">
+                                                                <mat-icon
+                                                                    [icIcon]="customField?.customFieldsValueForPDF === 'true'?icCheckboxChecked:icCheckboxUnchecked"
+                                                                    class="inline-block align-middle mr-1">
+                                                                </mat-icon>
+                                                            </p>
+                                                            <p *ngIf="customField?.type === 'Date'" class="f-s-16">
+                                                                {{customField?.customFieldsValueForPDF | date:'mediumDate' | EmtyValueCheckPipe}}
+                                                            </p>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
                                         </tbody>
                                     </table>
 
@@ -589,8 +636,9 @@
                         </table>
                     </td>
                 </tr>
-            </ng-container>
-        </table>
+            </table>
+            <div style="page-break-before:always">&nbsp;</div>
+        </ng-container>
     </div>
 </div>
 

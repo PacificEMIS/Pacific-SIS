@@ -56,6 +56,7 @@ export class AddCalendarComponent implements OnInit {
   calendarTitle: string;
   maxEndDate:string;
   minStartDate:string;
+  maxStartDate: Date;
   calendarActionButtonTitle = "submit";
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
   calendarAddViewModel = new CalendarAddViewModel();
@@ -85,8 +86,10 @@ export class AddCalendarComponent implements OnInit {
     private commonService: CommonService,
     public defaultValuesService: DefaultValuesService
   ) {
-      this.maxEndDate= this.defaultValuesService.getSchoolClosed();
-      this.minStartDate= this.defaultValuesService.getSchoolOpened();
+      this.calendarAddViewModel.schoolCalendar.startDate = this.defaultValuesService.getFullYearStartDate();
+      this.maxEndDate = this.defaultValuesService.getFullYearEndDate();
+      this.minStartDate = this.defaultValuesService.getFullYearStartDate();
+      this.maxStartDate = moment(this.defaultValuesService.getFullYearEndDate()).subtract(1, 'days').toDate();
   }
 
   ngOnInit(): void {
@@ -130,6 +133,10 @@ export class AddCalendarComponent implements OnInit {
 
     }
 
+  }
+
+  getMinEndDateVal() {
+    return moment(this.form.value.startDate).add(1, 'days').toDate();
   }
 
   checkDate(){

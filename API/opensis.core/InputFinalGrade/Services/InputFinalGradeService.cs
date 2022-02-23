@@ -212,5 +212,33 @@ namespace opensis.core.InputFinalGrade.Services
             }
             return studentList;
         }
+
+        /// <summary>
+        /// GetGradebookGradeinFinalGrade
+        /// </summary>
+        /// <param name="gardeBookGradeViewModel"></param>
+        /// <returns></returns>
+        public GardeBookGradeViewModel GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel)
+        {
+            GardeBookGradeViewModel gardeBookGrade = new GardeBookGradeViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(gardeBookGradeViewModel._tenantName + gardeBookGradeViewModel._userName, gardeBookGradeViewModel._token))
+                {
+                    gardeBookGrade = this.inputFinalGradeRepository.GetGradebookGradeinFinalGrade(gardeBookGradeViewModel);
+                }
+                else
+                {
+                    gardeBookGrade._failure = true;
+                    gardeBookGrade._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                gardeBookGrade._failure = true;
+                gardeBookGrade._message = es.Message;
+            }
+            return gardeBookGrade;
+        }
     }
 }

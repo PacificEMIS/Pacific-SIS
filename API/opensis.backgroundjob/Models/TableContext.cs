@@ -29,6 +29,13 @@ namespace opensis.backgroundjob.Models
         public virtual DbSet<Membership> Membership { get; set; } = null!;
         public virtual DbSet<ParentAssociationship> ParentAssociationship { get; set; } = null!;
         public virtual DbSet<UserMaster> UserMaster { get; set; } = null!;
+        public virtual DbSet<StaffCoursesectionSchedule> StaffCoursesectionSchedule { get; set; } = null!;
+        public virtual DbSet<StudentAttendance> StudentAttendance { get; set; } = null!;
+        public virtual DbSet<StudentMissingAttendance> StudentMissingAttendances { get; set; } = null!;
+        public virtual DbSet<AllCourseSectionView> AllCourseSectionView { get; set; } = null!;
+        public virtual DbSet<CalendarEvents> CalendarEvents { get; set; } = null!;
+        public virtual DbSet<BlockPeriod> BlockPeriod { get; set; } = null!;
+        public virtual DbSet<BellSchedule> BellSchedule { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci");
@@ -1011,6 +1018,601 @@ namespace opensis.backgroundjob.Models
                     .HasConstraintName("user_master$FK_user_master_membership");
             });
 
+            modelBuilder.Entity<StaffCoursesectionSchedule>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.StaffId, e.CourseId, e.CourseSectionId })
+                    .HasName("PK_staff_coursesection_schedule_tenant_id");
+
+                entity.ToTable("staff_coursesection_schedule");
+
+                entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.CourseId, e.CourseSectionId }, "IX_staff_coursesection_schedule_tenant_id_school_i");
+
+                entity.HasIndex(e => new { e.TenantId, e.StaffId }, "IX_staff_coursesection_schedule_tenant_id_staff_id");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.QtrMarkingPeriodId }, "staff_coursesection_schedule_tenant_id_1");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.SmstrMarkingPeriodId }, "staff_coursesection_schedule_tenant_id_2");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.YrMarkingPeriodId }, "staff_coursesection_schedule_tenant_id_3");
+
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.StaffId).HasColumnName("staff_id");
+
+                entity.Property(e => e.CourseId).HasColumnName("course_id");
+
+                entity.Property(e => e.CourseSectionId).HasColumnName("course_section_id");
+
+                entity.Property(e => e.AcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("academic_year");
+
+                entity.Property(e => e.CourseSectionName)
+                    .HasMaxLength(200)
+                    .HasColumnName("course_section_name");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.DurationEndDate)
+                    .HasColumnType("date")
+                    .HasColumnName("duration_end_date");
+
+                entity.Property(e => e.DurationStartDate)
+                    .HasColumnType("date")
+                    .HasColumnName("duration_start_date");
+
+                entity.Property(e => e.EffectiveDropDate)
+                    .HasPrecision(0)
+                    .HasColumnName("effective_drop_date");
+
+                entity.Property(e => e.IsAssigned).HasColumnName("is_assigned");
+
+                entity.Property(e => e.IsDropped).HasColumnName("is_dropped");
+
+                entity.Property(e => e.MeetingDays)
+                    .HasMaxLength(100)
+                    .HasColumnName("meeting_days");
+
+                entity.Property(e => e.PrgrsprdMarkingPeriodId).HasColumnName("prgrsprd_marking_period_id");
+
+                entity.Property(e => e.QtrMarkingPeriodId).HasColumnName("qtr_marking_period_id");
+
+                entity.Property(e => e.SmstrMarkingPeriodId).HasColumnName("smstr_marking_period_id");
+
+                entity.Property(e => e.StaffGuid)
+                    .HasMaxLength(36)
+                    .HasColumnName("staff_guid")
+                    .IsFixedLength();
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                entity.Property(e => e.YrMarkingPeriodId).HasColumnName("yr_marking_period_id");
+
+                //entity.HasOne(d => d.StaffMaster)
+                //    .WithMany(p => p.StaffCoursesectionSchedule)
+                //    .HasForeignKey(d => new { d.TenantId, d.StaffId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("staff_coursesection_schedule$FK_staff_master");
+
+                //entity.HasOne(d => d.Quarter)
+                //    .WithMany(p => p.StaffCoursesectionSchedule)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.QtrMarkingPeriodId })
+                //    .HasConstraintName("staff_coursesection_schedule$FK_quarters");
+
+                //entity.HasOne(d => d.Semester)
+                //    .WithMany(p => p.StaffCoursesectionSchedule)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.SmstrMarkingPeriodId })
+                //   .HasConstraintName("staff_coursesection_schedule$FK_semesters");
+
+                //entity.HasOne(d => d.SchoolYear)
+                //    .WithMany(p => p.StaffCoursesectionSchedule)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.YrMarkingPeriodId })
+                //    .HasConstraintName("staff_coursesection_schedule$FK_years");
+
+                //entity.HasOne(d => d.CourseSection)
+                //    .WithMany(p => p.StaffCoursesectionSchedule)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.CourseId, d.CourseSectionId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("staff_coursesection_schedule$FK_section");
+
+                //entity.HasOne(d => d.ProgressPeriod)
+                //         .WithMany(p => p.StaffCoursesectionSchedules)
+                //         .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.PrgrsprdMarkingPeriodId })
+                //         .HasConstraintName("FK_staff_cs_sch_progress_periods");
+            });
+
+            modelBuilder.Entity<StudentAttendance>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.StudentId, e.StaffId, e.CourseId, e.CourseSectionId, e.AttendanceDate, e.BlockId, e.PeriodId })
+                    .HasName("PK_student_attendance_tenant_id");
+
+                entity.ToTable("student_attendance");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId }, "IX_student_attendance");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.CourseSectionId }, "IX_student_attendance_1");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StaffId }, "IX_student_attendance_2");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId, e.AttendanceDate }, "IX_student_attendance_3");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.AttendanceCategoryId, e.AttendanceCode }, "IX_student_attendance_tenant_id_school_id_attendan");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.BlockId, e.PeriodId }, "IX_student_attendance_tenant_id_school_id_block_id");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.MembershipId }, "IX_student_attendance_tenant_id_school_id_membersh");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StaffId, e.CourseId, e.CourseSectionId }, "IX_student_attendance_tenant_id_school_id_staff_id");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId, e.CourseId, e.CourseSectionId }, "IX_student_attendance_tenant_id_school_id_student_");
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId, e.StudentAttendanceId }, "student_attendance$AK_student_attendance_tenant_id")
+                //    .IsUnique();
+
+                //entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId, e.StudentAttendanceId }, "student_attendance$student_attendance_id_idx")
+                //    .IsUnique();
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.StudentId).HasColumnName("student_id");
+
+                entity.Property(e => e.StaffId).HasColumnName("staff_id");
+
+                entity.Property(e => e.CourseId).HasColumnName("course_id");
+
+                entity.Property(e => e.CourseSectionId).HasColumnName("course_section_id");
+
+                entity.Property(e => e.AttendanceDate)
+                    .HasColumnType("date")
+                    .HasColumnName("attendance_date");
+
+                entity.Property(e => e.BlockId).HasColumnName("block_id");
+
+                entity.Property(e => e.PeriodId).HasColumnName("period_id");
+
+                entity.Property(e => e.AttendanceCategoryId).HasColumnName("attendance_category_id");
+
+                entity.Property(e => e.AttendanceCode).HasColumnName("attendance_code");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.MembershipId).HasColumnName("membership_id");
+
+                entity.Property(e => e.StudentAttendanceId).HasColumnName("student_attendance_id");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                entity.HasOne(d => d.Membership)
+                    .WithMany(p => p.StudentAttendance)
+                    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.MembershipId })
+                    .HasConstraintName("student_attendance$FK_membership");
+
+                //entity.HasOne(d => d.AttendanceCodeNavigation)
+                //    .WithMany(p => p.StudentAttendance)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.AttendanceCategoryId, d.AttendanceCode })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("student_attendance$FK_code");
+
+                //entity.HasOne(d => d.BlockPeriod)
+                //    .WithMany(p => p.StudentAttendance)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.BlockId, d.PeriodId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("student_attendance$FKperiod");
+
+                entity.HasOne(d => d.StaffCoursesectionSchedule)
+                    .WithMany(p => p.StudentAttendance)
+                    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.StaffId, d.CourseId, d.CourseSectionId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("student_attendance$FK_staff_cs_sch");
+
+                //entity.HasOne(d => d.StudentCoursesectionSchedule)
+                //    .WithMany(p => p.StudentAttendance)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.StudentId, d.CourseId, d.CourseSectionId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("student_attd_coursesec_sch");
+            });
+
+            modelBuilder.Entity<StudentMissingAttendance>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.MissingAttendanceId })
+                    .HasName("PK_student_missing_attendance_1");
+
+                entity.ToTable("student_missing_attendance");
+
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.MissingAttendanceId).HasColumnName("missing_attendance_id");
+
+                entity.Property(e => e.AttendanceCategoryId).HasColumnName("attendance_category_id");
+
+                entity.Property(e => e.AttendanceCode).HasColumnName("attendance_code");
+
+                entity.Property(e => e.BlockId)
+                    .HasColumnName("block_id")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CourseId)
+                    .HasColumnName("course_id")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CourseSectionId)
+                    .HasColumnName("course_section_id")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.MissingAttendanceDate)
+                    .HasColumnType("date")
+                    .HasColumnName("missing_attendance_date")
+                    .HasDefaultValueSql("('0001-01-01')");
+
+                entity.Property(e => e.PeriodId)
+                    .HasColumnName("period_id")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.StaffId).HasColumnName("staff_id");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                //entity.HasOne(d => d.StaffMaster)
+                //    .WithMany(p => p.StudentMissingAttendances)
+                //    .HasForeignKey(d => new { d.TenantId, d.StaffId })
+                //    .HasConstraintName("FK_missing_attendance_staff");
+
+                entity.HasOne(d => d.BlockPeriod)
+                    .WithMany(p => p.StudentMissingAttendances)
+                    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.BlockId, d.PeriodId })
+                    .HasConstraintName("FK_missing_attendance_block_period");
+
+                entity.HasOne(d => d.StaffCoursesectionSchedule)
+                    .WithMany(p => p.StudentMissingAttendances)
+                    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.StaffId, d.CourseId, d.CourseSectionId })
+                    .HasConstraintName("FK_missing_attendance_cs");
+            });
+     
+            modelBuilder.Entity<AllCourseSectionView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("all_course_section_view");
+
+                entity.Property(e => e.AcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("academic_year");
+
+                entity.Property(e => e.AllowStudentConflict).HasColumnName("allow_student_conflict");
+
+                entity.Property(e => e.AllowTeacherConflict).HasColumnName("allow_teacher_conflict");
+
+                entity.Property(e => e.AttendanceCategoryId).HasColumnName("attendance_category_id");
+
+                entity.Property(e => e.AttendanceTaken).HasColumnName("attendance_taken");
+
+                entity.Property(e => e.BlockId).HasColumnName("block_id");
+
+                entity.Property(e => e.BlockPeriodId).HasColumnName("block_period_id");
+
+                entity.Property(e => e.BlockRoomId).HasColumnName("block_room_id");
+
+                entity.Property(e => e.CalDate)
+                    .HasColumnType("date")
+                    .HasColumnName("cal_date");
+
+                entity.Property(e => e.CalDay)
+                    .HasMaxLength(30)
+                    .HasColumnName("cal_day");
+
+                entity.Property(e => e.CalPeriodId).HasColumnName("cal_period_id");
+
+                entity.Property(e => e.CalRoomId).HasColumnName("cal_room_id");
+
+                entity.Property(e => e.CalendarId).HasColumnName("calendar_id");
+
+                entity.Property(e => e.CourseGradeLevel)
+                    .HasMaxLength(50)
+                    .HasColumnName("course_grade_level");
+
+                entity.Property(e => e.CourseId).HasColumnName("course_id");
+
+                entity.Property(e => e.CourseProgram)
+                    .HasMaxLength(100)
+                    .HasColumnName("course_program");
+
+                entity.Property(e => e.CourseSectionId).HasColumnName("course_section_id");
+
+                entity.Property(e => e.CourseSectionName)
+                    .HasMaxLength(200)
+                    .HasColumnName("course_section_name");
+
+                entity.Property(e => e.CourseSubject)
+                    .HasMaxLength(100)
+                    .HasColumnName("course_subject");
+
+                entity.Property(e => e.CourseTitle).HasColumnName("course_title");
+
+                entity.Property(e => e.DurationEndDate)
+                    .HasColumnType("date")
+                    .HasColumnName("duration_end_date");
+
+                entity.Property(e => e.DurationStartDate)
+                    .HasColumnType("date")
+                    .HasColumnName("duration_start_date");
+
+                entity.Property(e => e.FixedDays)
+                    .HasMaxLength(100)
+                    .HasColumnName("fixed_days");
+
+                entity.Property(e => e.FixedPeriodId).HasColumnName("fixed_period_id");
+
+                entity.Property(e => e.FixedRoomId).HasColumnName("fixed_room_id");
+
+                entity.Property(e => e.GradeScaleId).HasColumnName("grade_scale_id");
+
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
+
+                entity.Property(e => e.QtrMarkingPeriodId).HasColumnName("qtr_marking_period_id");
+
+                entity.Property(e => e.ScheduleType)
+                    .HasMaxLength(25)
+                    .HasColumnName("schedule_type");
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.Seats).HasColumnName("seats");
+
+                entity.Property(e => e.SmstrMarkingPeriodId).HasColumnName("smstr_marking_period_id");
+
+                entity.Property(e => e.TakeAttendanceBlock).HasColumnName("take_attendance_block");
+
+                entity.Property(e => e.TakeAttendanceCalendar).HasColumnName("take_attendance_calendar");
+
+                entity.Property(e => e.TakeAttendanceVariable).HasColumnName("take_attendance_variable");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.VarDay)
+                    .HasMaxLength(15)
+                    .HasColumnName("var_day");
+
+                entity.Property(e => e.VarPeriodId).HasColumnName("var_period_id");
+
+                entity.Property(e => e.VarRoomId).HasColumnName("var_room_id");
+
+                entity.Property(e => e.YrMarkingPeriodId).HasColumnName("yr_marking_period_id");
+
+                entity.Property(e => e.PrgrsprdMarkingPeriodId).HasColumnName("prgrsprd_marking_period_id");
+            });
+
+            modelBuilder.Entity<CalendarEvents>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.CalendarId, e.EventId })
+                    .HasName("PK_calendar_events_tenant_id");
+
+                entity.ToTable("calendar_events");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.CalendarId).HasColumnName("calendar_id");
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.Property(e => e.AcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("academic_year");
+
+                entity.Property(e => e.ApplicableToAllSchool).HasColumnName("applicable_to_all_school");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("date")
+                    .HasColumnName("end_date");
+
+                entity.Property(e => e.EventColor)
+                    .HasMaxLength(7)
+                    .HasColumnName("event_color");
+
+                entity.Property(e => e.IsHoliday).HasColumnName("is_holiday");
+
+                entity.Property(e => e.SchoolDate)
+                    .HasColumnType("date")
+                    .HasColumnName("school_date");
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnType("date")
+                    .HasColumnName("start_date");
+
+                entity.Property(e => e.SystemWideEvent).HasColumnName("system_wide_event");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(50)
+                    .HasColumnName("title");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                entity.Property(e => e.VisibleToMembershipId)
+                    .HasMaxLength(30)
+                    .HasColumnName("visible_to_membership_id");
+            });
+
+            modelBuilder.Entity<BlockPeriod>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.BlockId, e.PeriodId })
+                    .HasName("PK_block_period_tenant_id");
+
+                entity.ToTable("block_period");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.BlockId).HasColumnName("block_id");
+
+                entity.Property(e => e.PeriodId).HasColumnName("period_id");
+                entity.Property(e => e.AcademicYear)
+                   .HasColumnType("decimal(4, 0)")
+                   .HasColumnName("academic_year");
+
+                entity.Property(e => e.CalculateAttendance).HasColumnName("calculate_attendance");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.PeriodEndTime)
+                    .HasMaxLength(8)
+                    .HasColumnName("period_end_time")
+                    .IsFixedLength();
+
+                entity.Property(e => e.PeriodShortName)
+                    .HasMaxLength(50)
+                    .HasColumnName("period_short_name");
+
+                entity.Property(e => e.PeriodSortOrder).HasColumnName("period_sort_order");
+
+                entity.Property(e => e.PeriodStartTime)
+                    .HasMaxLength(8)
+                    .HasColumnName("period_start_time")
+                    .IsFixedLength();
+
+                entity.Property(e => e.PeriodTitle)
+                    .HasMaxLength(200)
+                    .HasColumnName("period_title");
+                entity.Property(e => e.RolloverId).HasColumnName("rollover_id");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                //entity.HasOne(d => d.SchoolMaster)
+                //    .WithMany(p => p.BlockPeriod)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("block_period$FK_block_period_school_master");
+            });
+
+            modelBuilder.Entity<BellSchedule>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.AcademicYear, e.BellScheduleDate })
+                    .HasName("PK_bell_schedule_tenant_id");
+
+                entity.ToTable("bell_schedule");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.AcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("academic_year");
+
+                entity.Property(e => e.BellScheduleDate)
+                    .HasColumnType("date")
+                    .HasColumnName("bell_schedule_date");
+
+                entity.Property(e => e.BlockId).HasColumnName("block_id");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+            });
         }
     }
 }

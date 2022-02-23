@@ -60,6 +60,7 @@ namespace opensis.data.Models
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public bool? ConfigUpdateFlag { get; set; }
         [ValidateNever]
         public virtual CourseSection CourseSection { get; set; } = null!;
         public virtual ICollection<GradebookConfigurationGradescale> GradebookConfigurationGradescale { get; set; }

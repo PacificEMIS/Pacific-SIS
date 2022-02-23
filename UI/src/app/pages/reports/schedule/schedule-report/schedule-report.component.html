@@ -1,4 +1,4 @@
-<!-- <div class="md:flex">
+<div class="md:flex">
     <div class="card w-full md:w-6/12 md:mr-2">
         <div class="">
             <h4 class="flex text-primary p-4 items-center">
@@ -13,7 +13,7 @@
                         <span>Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>89/100</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(5)</span></p>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                         <span>Science</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>47/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                         <span>Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>42/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                         <span>Science</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>46/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                         <span>Language & Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>23/30</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(2)</span></p>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                         <span>Language & Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>42/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                         <span>Language & Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>42/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
@@ -96,161 +96,12 @@
                         <span>Language & Arts</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>42/50</span>
                     </div>
                 </div>
-                <div class="cursor-pointer">
+                <div class="cursor-pointer" (click)="viewDetails()">
                     <p class="text-primary">{{'sections' | translate }} <span>(3)</span></p>
                 </div>
             </div>
 
         </div>
     </div>
-</div> -->
+</div>
 
-<!-- Schedule reports Details -->
-<!-- <div class="md:flex mt-6">
-    <div class="card w-full md:w-6/12 md:mr-2">
-            <div class="flex p-4">
-                <span class="text-primary"><mat-icon class="align-middle">west</mat-icon></span>
-                <div class="ml-4">
-                    <h4 class="text-primary font-medium text-base">English Language Arts</h4>
-                    <p>5 Course Section Found</p>
-                </div>
-            </div>
-            <mat-divider></mat-divider>
-            <div class="flex justify-between items-center px-4 py-2 border-b cursor-pointer bg-green-light border-green border-l-3">
-                <div>
-                    <p class="font-semibold">ELA001</p>
-                    <div class="flex items-center">
-                        <span>Full Year</span><span class="dot-separator bg-black"></span><span>Harper Cadwell</span>
-                    </div>
-                </div>
-                <div>
-                    <p><span class="text-green font-semibold">11</span> / <span class="text-gray">20</span></p>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center px-4 py-2 border-b cursor-pointer">
-                <div>
-                    <p class="font-semibold">ELA002</p>
-                    <div class="flex items-center">
-                        <span>Quarter 1</span><span class="dot-separator bg-black"></span><span>Harper Cadwell</span>
-                    </div>
-                </div>
-                <div>
-                    <p><span class="text-green font-semibold">0</span> / <span class="text-gray">20</span></p>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center px-4 py-2 border-b cursor-pointer">
-                <div>
-                    <p class="font-semibold">ELA003</p>
-                    <div class="flex items-center">
-                        <span>Quarter 1</span><span class="dot-separator bg-black"></span><span>Elizabeth Rollo</span>
-                    </div>
-                </div>
-                <div>
-                    <p><span class="text-green font-semibold">5</span> / <span class="text-gray">20</span></p>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center px-4 py-2 border-b cursor-pointer">
-                <div>
-                    <p class="font-semibold">ELA004</p>
-                    <div class="flex items-center">
-                        <span>Quarter 4</span><span class="dot-separator bg-black"></span><span>Elizabeth Rollo</span>
-                    </div>
-                </div>
-                <div>
-                    <p><span class="text-green font-semibold">3</span> / <span class="text-gray">20</span></p>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center px-4 py-2 border-b cursor-pointer">
-                <div>
-                    <p class="font-semibold">ELA005</p>
-                    <div class="flex items-center">
-                        <span>Quarter 4</span><span class="dot-separator bg-black"></span><span>Elizabeth Rollo</span>
-                    </div>
-                </div>
-                <div>
-                    <p><span class="text-green font-semibold">10</span> / <span class="text-gray">20</span></p>
-                </div>
-            </div>
-
-    </div>
-    <div class="card w-full md:w-6/12 md:ml-2">
-            <div class="flex justify-between p-4">
-                <div>
-                    <h4 class="font-semibold">ELA001</h4>
-                    <p>9 Students Found</p>
-                </div>
-                <div>
-                    <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print">
-                        <mat-icon [icIcon]="icPrint"></mat-icon>
-                    </a>
-                    <a class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel">
-                        <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
-                    </a>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto overflow-y-hidden">
-                <table class="table">
-                    <thead class="text-left">
-                        <tr>
-                            <th>{{'studentName' | translate }}</th>
-                            <th>{{'studentId' | translate }}</th>
-                            <th>{{'gradeLevel' | translate }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Arthur Boucher</td>
-                            <td>STD0012</td>
-                            <td>Grade 11</td>
-                        </tr>
-                        <tr>
-                            <td>Sophia Brown</td>
-                            <td>STD0015</td>
-                            <td>Grade 10</td>
-                        </tr>
-                        <tr>
-                            <td>Wang Fang</td>
-                            <td>STD0035</td>
-                            <td>Grade 11</td>
-                        </tr>
-                        <tr>
-                            <td>Clare Garcia</td>
-                            <td>STD0102</td>
-                            <td>Grade 11</td>
-                        </tr>
-                        <tr>
-                            <td>Amelia Jones</td>
-                            <td>STD0067</td>
-                            <td>Grade 9</td>
-                        </tr>
-                        <tr>
-                            <td>Audre Keita</td>
-                            <td>STD0052</td>
-                            <td>Grade 9</td>
-                        </tr>
-                        <tr>
-                            <td>Kwame Kimathi</td>
-                            <td>STD0013</td>
-                            <td>Grade 10</td>
-                        </tr>
-                        <tr>
-                            <td>James Miller</td>
-                            <td>STD0097</td>
-                            <td>Grade 9</td>
-                        </tr>
-                        <tr>
-                            <td>Oliver Smith</td>
-                            <td>STD0103</td>
-                            <td>Grade 9</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-    </div>
-</div> -->

@@ -96,6 +96,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   categoryId = 1;
   defaultSchoolId: number=0;
   destroySubject$: Subject<void> = new Subject();
+  today : Date
   
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
@@ -112,6 +113,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     ) {
     //translateService.use('en');
+    this.today = new Date()
   }
 
   ngOnInit(): void {
@@ -182,17 +184,17 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
       }
-      this.getSchoolList.schoolMaster = data.schoolMaster;
+      this.getSchoolList.getSchoolForView = data.getSchoolForView;
     });
   }
 
   onSchoolChange(schoolId, indexOfDynamicRow) {
     if (this.staffSchoolInfoModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolId === +this.staffCloneModel?.staffSchoolInfoList[indexOfDynamicRow]?.schoolAttachedId) {
       this.defaultSchoolId= +schoolId;
-      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+      let index = this.getSchoolList.getSchoolForView.findIndex((x) => {
         return x.schoolId === +schoolId;
       });
-      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.getSchoolForView[index].schoolName;
       this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
 
       for (let i = 0; i < this.staffSchoolInfoModel.staffSchoolInfoList?.length; i++) {
@@ -201,10 +203,10 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       
     }
     else {
-      let index = this.getSchoolList.schoolMaster.findIndex((x) => {
+      let index = this.getSchoolList.getSchoolForView.findIndex((x) => {
         return x.schoolId === +schoolId;
       });
-      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.schoolMaster[index].schoolName;
+      this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.getSchoolForView[index].schoolName;
       this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
     }
   }
@@ -340,6 +342,13 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     })
   }
 
+  setMembershipId(item){
+    let value;
+    this.getAllMembersList.getAllMemberList.map(val=>{
+      if(item.profile === val.profile)    value= val.membershipId;
+    })
+    return value
+  }
   updateSchoolInfo() {
     this.staffSchoolInfoModel.staffSchoolInfoList.map((item)=>{
       item.updatedBy = this.defaultValuesService.getUserGuidId();
@@ -369,6 +378,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       item.staffId = this.staffService.getStaffId();
       item.startDate = this.commonFunction.formatDateSaveWithoutTime(item.startDate);
       item.endDate = this.commonFunction.formatDateSaveWithoutTime(item.endDate)
+      item.membershipId=this.setMembershipId(item);
     });
     this.staffService.updateStaffSchoolInfo(this.staffSchoolInfoModel).subscribe((res) => {
       if (typeof (res) == 'undefined') {
@@ -403,6 +413,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   editSchoolInfo() {
+    if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, 1).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
     this.divCount.length= this.staffCloneModel?.staffSchoolInfoList?.length;
@@ -420,6 +431,22 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.EDIT;
     this.staffService.changePageMode(this.staffCreateMode);
   })
+  } else {
+    this.divCount.length = this.staffCloneModel?.staffSchoolInfoList?.length;
+    if (this.staffCloneModel.staffSchoolInfoList != null) {
+      for (let i = 0; i < this.staffCloneModel.staffSchoolInfoList?.length; i++) {
+        this.divCount[i] = 2;
+      }
+    } else {
+      this.staffSchoolInfoModel = new StaffSchoolInfoModel();
+    }
+    this.getAllGradeLevel();
+    this.callAllSchool();
+    this.getAllMembership();
+    this.getAllSubjectList();
+    this.staffCreateMode = this.staffCreate.EDIT;
+    this.staffService.changePageMode(this.staffCreateMode);
+  }
   }
   cancelEdit() {
     if (this.staffSchoolInfoModel.staffSchoolInfoList != null) {

@@ -1441,7 +1441,7 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="scheduledCourseSectionViewModel"></param>
         /// <returns></returns>
-        public ScheduledCourseSectionViewModel GetDashboardViewForStaff(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
+        public ScheduledCourseSectionViewModel GetDashboardViewForStaff_old(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
         {
             ScheduledCourseSectionViewModel scheduledCourseSectionView = new();
             List<StaffCoursesectionSchedule> staffCoursesectionScheduleList = new();
@@ -1474,7 +1474,17 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData;
+
+                        if(scheduledCourseSectionViewModel.MarkingPeriodStartDate != null && scheduledCourseSectionViewModel.MarkingPeriodEndDate != null)
+                        {
+                            staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.CourseSection.DurationBasedOnPeriod == false || ((scheduledCourseSectionViewModel.MarkingPeriodStartDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodStartDate <= x.DurationEndDate) && (scheduledCourseSectionViewModel.MarkingPeriodEndDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodEndDate <= x.DurationEndDate))).ToList();
+                        }
+                        else
+                        {
+                            scheduledCourseSectionView._failure = true;
+                            scheduledCourseSectionView._message = "Please send Marking Period Start Date and Marking Period End Date";
+                            return scheduledCourseSectionView;
+                        }
                     }
                 }
                 else
@@ -1987,6 +1997,422 @@ namespace opensis.data.Repository
                         }
                     }
                 }
+            }
+            catch (Exception es)
+            {
+                // scheduledCourseSectionView.courseSectionViewList = null;
+                scheduledCourseSectionView._failure = true;
+                scheduledCourseSectionView._message = es.Message;
+            }
+            return scheduledCourseSectionView;
+        }
+
+        public ScheduledCourseSectionViewModel GetDashboardViewForStaff(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
+        {
+            ScheduledCourseSectionViewModel scheduledCourseSectionView = new();
+            List<StaffCoursesectionSchedule> staffCoursesectionScheduleList = new();
+            List<AllCourseSectionView>? allCourseSectionVewList = new();
+
+            //CourseFixedSchedule fixedData = new();
+            List<CourseVariableSchedule>? variableData = new();
+            List<CourseCalendarSchedule>? calenderData = new();
+            List<CourseBlockSchedule>? blockData = new();
+
+            try
+            {
+                int count = 0;
+                var todayDate = DateTime.Today;
+
+                scheduledCourseSectionView.TenantId = scheduledCourseSectionViewModel.TenantId;
+                scheduledCourseSectionView._tenantName = scheduledCourseSectionViewModel._tenantName;
+                scheduledCourseSectionView.SchoolId = scheduledCourseSectionViewModel.SchoolId;
+                scheduledCourseSectionView.StaffId = scheduledCourseSectionViewModel.StaffId;
+                scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
+                scheduledCourseSectionView._userName = scheduledCourseSectionViewModel._userName;
+                scheduledCourseSectionView.AllCourse = scheduledCourseSectionViewModel.AllCourse;
+
+                var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Include(x => x.CourseSection.Course).Include(x => x.CourseSection.SchoolCalendars).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
+
+                if (scheduledCourseSectionData != null && scheduledCourseSectionData.Any())
+                {
+                    if (scheduledCourseSectionViewModel.AllCourse != true)
+                    {
+                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+                    }
+                    else
+                    {
+
+                        if (scheduledCourseSectionViewModel.MarkingPeriodStartDate != null && scheduledCourseSectionViewModel.MarkingPeriodEndDate != null)
+                        {
+                            staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.CourseSection.DurationBasedOnPeriod == false || ((scheduledCourseSectionViewModel.MarkingPeriodStartDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodStartDate <= x.DurationEndDate) && (scheduledCourseSectionViewModel.MarkingPeriodEndDate >= x.DurationStartDate && scheduledCourseSectionViewModel.MarkingPeriodEndDate <= x.DurationEndDate))).ToList();
+                        }
+                        else
+                        {
+                            scheduledCourseSectionView._failure = true;
+                            scheduledCourseSectionView._message = "Please send Marking Period Start Date and Marking Period End Date";
+                            return scheduledCourseSectionView;
+                        }
+                    }
+                }
+                else
+                {
+                    scheduledCourseSectionView._failure = true;
+                    scheduledCourseSectionView._message = NORECORDFOUND;
+                    return scheduledCourseSectionView;
+                }
+
+                if (staffCoursesectionScheduleList.Any())
+                {
+                    foreach (var scheduledCourseSection in staffCoursesectionScheduleList)
+                    {
+                        List<DateTime> holidayList = new();
+                        //Calculate Holiday
+                        var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == scheduledCourseSectionViewModel.TenantId && e.CalendarId == scheduledCourseSection.CourseSection.CalendarId && (e.StartDate >= scheduledCourseSection.DurationStartDate && e.StartDate <= scheduledCourseSection.DurationEndDate || e.EndDate >= scheduledCourseSection.DurationStartDate && e.EndDate <= scheduledCourseSection.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == scheduledCourseSectionViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+
+                        if (CalendarEventsData != null && CalendarEventsData.Any())
+                        {
+                            foreach (var calender in CalendarEventsData)
+                            {
+                                if (calender.EndDate != null && calender.StartDate != null)
+                                {
+                                    if (calender.EndDate.Value.Date > calender.StartDate.Value.Date)
+                                    {
+                                        var date = Enumerable.Range(0, 1 + (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
+                                           .Select(i => calender.StartDate.Value.Date.AddDays(i))
+                                           .ToList();
+                                        holidayList.AddRange(date);
+                                    }
+                                    holidayList.Add(calender.StartDate.Value.Date);
+                                }
+
+                            }
+                        }
+
+                        if (scheduledCourseSection.CourseSection.ScheduleType == "Fixed Schedule (1)" || scheduledCourseSection.CourseSection.ScheduleType == "Variable Schedule (2)" || scheduledCourseSection.CourseSection.ScheduleType == "Block Schedule (4)")
+                        {
+                            CourseSectionViewList CourseSections = new CourseSectionViewList
+                            {
+                                CourseTitle = scheduledCourseSection.CourseSection.Course.CourseTitle
+                            };
+
+                            if (scheduledCourseSection.CourseSection.ScheduleType == "Fixed Schedule (1)")
+                            {
+                                CourseSections.ScheduleType = "Fixed Schedule";
+
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+
+                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
+                                {
+                                    {
+                                        count += studentMissingAttendanceData.Count;
+                                    }
+                                }
+
+                                var fixedData = context?.CourseFixedSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).FirstOrDefault(c => c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId);
+
+                                if (fixedData != null)
+                                {
+                                    fixedData.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    fixedData.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    fixedData.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    fixedData.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    fixedData.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                    fixedData.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>();
+                                    fixedData.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    fixedData.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    fixedData.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    fixedData.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    CourseSections.courseFixedSchedule = fixedData;
+                                    CourseSections.HolidayList = holidayList;
+                                }
+                            }
+
+                            if (scheduledCourseSection.CourseSection.ScheduleType == "Variable Schedule (2)")
+                            {
+                                CourseSections.ScheduleType = "Variable Schedule";
+
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+
+                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
+                                {
+                                    {
+                                        count += studentMissingAttendanceData.Count;
+                                    }
+                                }
+
+                                variableData = this.context?.CourseVariableSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+
+                                if (variableData?.Any() == true)
+                                {
+                                    variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+
+                                    CourseSections.courseVariableSchedule = variableData;
+                                    CourseSections.HolidayList = holidayList;
+                                }
+                            }
+
+                            if (scheduledCourseSection.CourseSection.ScheduleType == "Block Schedule (4)")
+                            {
+                                CourseSections.ScheduleType = "Block Schedule";
+
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+
+                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
+                                {
+                                    {
+                                        count += studentMissingAttendanceData.Count;
+                                    }
+                                }
+
+                                blockData = this.context?.CourseBlockSchedule.Include(v => v.Block).Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+
+                                if (blockData?.Any() == true)
+                                {
+                                    blockData.ForEach(x =>
+                                    {
+                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                        x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                        x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
+                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    });
+
+                                    CourseSections.courseBlockSchedule = blockData;
+                                    CourseSections.HolidayList = holidayList;
+
+                                    var bellScheduleList = new List<BellSchedule>();
+                                    foreach (var block in blockData)
+                                    {
+                                        var bellScheduleData = this.context?.BellSchedule.Where(c => c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= scheduledCourseSection.DurationStartDate && c.BellScheduleDate <= scheduledCourseSection.DurationEndDate).ToList();
+                                        if (bellScheduleData?.Any() == true)
+                                            bellScheduleList.AddRange(bellScheduleData);
+                                    }
+                                    CourseSections.bellScheduleList = bellScheduleList;
+                                }
+                            }
+
+                            CourseSections.CalendarId = scheduledCourseSection.CourseSection.CalendarId;
+                            CourseSections.CourseId = scheduledCourseSection.CourseId;
+                            CourseSections.CourseGradeLevel = scheduledCourseSection.CourseSection.Course.CourseGradeLevel;
+                            CourseSections.CourseSectionId = scheduledCourseSection.CourseSectionId;
+                            CourseSections.GradeScaleType = scheduledCourseSection.CourseSection.GradeScaleType;
+                            CourseSections.AttendanceCategoryId = scheduledCourseSection.CourseSection.AttendanceCategoryId;
+                            CourseSections.GradeScaleId = scheduledCourseSection.CourseSection.GradeScaleId;
+                            CourseSections.StandardGradeScaleId = scheduledCourseSection.CourseSection.StandardGradeScaleId;
+                            CourseSections.CourseSectionName = scheduledCourseSection.CourseSectionName;
+                            CourseSections.YrMarkingPeriodId = scheduledCourseSection.YrMarkingPeriodId;
+                            CourseSections.SmstrMarkingPeriodId = scheduledCourseSection.SmstrMarkingPeriodId;
+                            CourseSections.QtrMarkingPeriodId = scheduledCourseSection.QtrMarkingPeriodId;
+                            CourseSections.PrgrsprdMarkingPeriodId = scheduledCourseSection.PrgrsprdMarkingPeriodId;
+                            CourseSections.DurationStartDate = scheduledCourseSection.DurationStartDate;
+                            CourseSections.DurationEndDate = scheduledCourseSection.DurationEndDate;
+                            CourseSections.MeetingDays = scheduledCourseSection.MeetingDays;
+                            CourseSections.AttendanceTaken = scheduledCourseSection.CourseSection.AttendanceTaken;
+                            CourseSections.WeekDays = scheduledCourseSection.CourseSection.SchoolCalendars!.Days;
+
+                            scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
+
+                            //for assigmnent grade due date notification
+                            var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
+                            if (assignmentData?.Any() == true)
+                            {
+                                DateTime? GradePostingEndDate = null;
+                                var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
+
+                                if (CourseSections.YrMarkingPeriodId != null)
+                                {
+                                    var yrData = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSections.YrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                    if (yrData != null)
+                                    {
+                                        GradePostingEndDate = yrData.PostEndDate;
+                                    }
+                                }
+
+                                if (CourseSections.SmstrMarkingPeriodId != null)
+                                {
+                                    var smstrData = this.context?.Semesters.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSections.SmstrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                    if (smstrData != null)
+                                    {
+                                        GradePostingEndDate = smstrData.PostEndDate;
+                                    }
+                                }
+
+                                if (CourseSections.QtrMarkingPeriodId != null)
+                                {
+                                    var qtrData = this.context?.Quarters.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSections.QtrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                    if (qtrData != null)
+                                    {
+                                        GradePostingEndDate = qtrData.PostEndDate;
+                                    }
+                                }
+
+                                if (CourseSections.PrgrsprdMarkingPeriodId != null)
+                                {
+                                    var ppData = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSections.PrgrsprdMarkingPeriodId && x.PostStartDate <= todayDate);
+                                    if (ppData != null)
+                                    {
+                                        GradePostingEndDate = ppData.PostEndDate;
+                                    }
+                                }
+
+                                if (GradePostingEndDate != null)
+                                {
+                                    foreach (var assignment in assignmentData)
+                                    {
+                                        if (assignment.GradebookGrades.Count == 0)
+                                        {
+                                            var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                            scheduledCourseSectionView.NotificationList!.Add(notification);
+                                        }
+
+                                    }
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (scheduledCourseSection.CourseSection.ScheduleType == "Calendar Schedule (3)")
+                            {
+                                CourseSectionViewList CourseSection = new CourseSectionViewList
+                                {
+                                    ScheduleType = "Calendar Schedule"
+                                };
+
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+
+                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
+                                {
+                                    {
+                                        count += studentMissingAttendanceData.Count;
+                                    }
+                                }
+
+                                calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+
+                                if (calenderData != null && calenderData.Any())
+                                {
+                                    calenderData.ForEach(x =>
+                                    {
+                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                        x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                        x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
+                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                        x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                        x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    });
+
+                                    CourseSection.courseCalendarSchedule = calenderData;
+                                    CourseSection.HolidayList = holidayList;
+
+                                    CourseSection.CourseTitle = scheduledCourseSection.CourseSection.Course.CourseTitle;
+                                    CourseSection.CalendarId = scheduledCourseSection.CourseSection.CalendarId;
+                                    CourseSection.CourseId = scheduledCourseSection.CourseId;
+                                    CourseSection.CourseGradeLevel = scheduledCourseSection.CourseSection.Course.CourseGradeLevel;
+                                    CourseSection.CourseSectionId = scheduledCourseSection.CourseSectionId;
+                                    CourseSection.GradeScaleType = scheduledCourseSection.CourseSection.GradeScaleType;
+                                    CourseSection.AttendanceCategoryId = scheduledCourseSection.CourseSection.AttendanceCategoryId;
+                                    CourseSection.GradeScaleId = scheduledCourseSection.CourseSection.GradeScaleId;
+                                    CourseSection.StandardGradeScaleId = scheduledCourseSection.CourseSection.StandardGradeScaleId;
+                                    CourseSection.CourseSectionName = scheduledCourseSection.CourseSectionName;
+                                    CourseSection.YrMarkingPeriodId = scheduledCourseSection.YrMarkingPeriodId;
+                                    CourseSection.SmstrMarkingPeriodId = scheduledCourseSection.SmstrMarkingPeriodId;
+                                    CourseSection.PrgrsprdMarkingPeriodId = scheduledCourseSection.PrgrsprdMarkingPeriodId;
+                                    CourseSection.DurationStartDate = scheduledCourseSection.DurationStartDate;
+                                    CourseSection.DurationEndDate = scheduledCourseSection.DurationEndDate;
+                                    CourseSection.MeetingDays = scheduledCourseSection.MeetingDays;
+                                    CourseSection.AttendanceTaken = scheduledCourseSection.CourseSection.AttendanceTaken;
+                                    CourseSection.WeekDays = scheduledCourseSection.CourseSection.SchoolCalendars!.Days;
+
+                                    scheduledCourseSectionView.courseSectionViewList.Add(CourseSection);
+
+                                    //for assigmnent grade due date notification
+                                    var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSection.CourseSectionId).ToList();
+                                    if (assignmentData?.Any() == true)
+                                    {
+                                        DateTime? GradePostingEndDate = null;
+                                        var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
+
+                                        if (CourseSection.YrMarkingPeriodId != null)
+                                        {
+                                            var yrData = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSection.YrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                            if (yrData != null)
+                                            {
+                                                GradePostingEndDate = yrData.PostEndDate;
+                                            }
+                                        }
+
+                                        if (CourseSection.SmstrMarkingPeriodId != null)
+                                        {
+                                            var smstrData = this.context?.Semesters.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSection.SmstrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                            if (smstrData != null)
+                                            {
+                                                GradePostingEndDate = smstrData.PostEndDate;
+                                            }
+                                        }
+
+                                        if (CourseSection.QtrMarkingPeriodId != null)
+                                        {
+                                            var qtrData = this.context?.Quarters.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSection.QtrMarkingPeriodId && x.PostStartDate <= todayDate);
+                                            if (qtrData != null)
+                                            {
+                                                GradePostingEndDate = qtrData.PostEndDate;
+                                            }
+                                        }
+
+                                        if (CourseSection.PrgrsprdMarkingPeriodId != null)
+                                        {
+                                            var ppData = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseSection.PrgrsprdMarkingPeriodId && x.PostStartDate <= todayDate);
+                                            if (ppData != null)
+                                            {
+                                                GradePostingEndDate = ppData.PostEndDate;
+                                            }
+                                        }
+
+                                        if (GradePostingEndDate != null)
+                                        {
+                                            foreach (var assignment in assignmentData)
+                                            {
+                                                if (assignment.GradebookGrades.Count == 0)
+                                                {
+                                                    var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                                    scheduledCourseSectionView.NotificationList!.Add(notification);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    scheduledCourseSectionView.MissingAttendanceCount = count;
+                }
+                else
+                {
+                    scheduledCourseSectionView._failure = true;
+                    scheduledCourseSectionView._message = NORECORDFOUND;
+                    return scheduledCourseSectionView;
+                }
+
+                if (scheduledCourseSectionViewModel.MembershipId != null)
+                {
+                    var noticeList = this.context?.Notice.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.Isactive == true && x.TargetMembershipIds.Contains((scheduledCourseSectionViewModel.MembershipId ?? 0).ToString()) && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
+
+                    if (noticeList?.Any() == true)
+                    {
+                        scheduledCourseSectionView.NoticeList = noticeList;
+                    }
+                }
+
             }
             catch (Exception es)
             {
@@ -2697,7 +3123,7 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="scheduledCourseSectionViewModel"></param>
         /// <returns></returns>
-        public ScheduledCourseSectionViewModel GetMissingAttendanceCountForDashboardView(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
+        public ScheduledCourseSectionViewModel GetMissingAttendanceCountForDashboardView_old(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
         {
             List<AllCourseSectionView>? AllCourseSectionViewList = new ();
             ScheduledCourseSectionViewModel scheduledCourseSectionView = new ();
@@ -2852,6 +3278,57 @@ namespace opensis.data.Repository
                             }
                             ID.Add(scheduledCourseSection.CourseSectionId);
                         }                        
+                    }
+                    scheduledCourseSectionView.MissingAttendanceCount = count;
+                    scheduledCourseSectionView._failure = false;
+                    scheduledCourseSectionView.SchoolId = scheduledCourseSectionViewModel.SchoolId;
+                    scheduledCourseSectionView.TenantId = scheduledCourseSectionViewModel.TenantId;
+                    scheduledCourseSectionView._tenantName = scheduledCourseSectionViewModel._tenantName;
+                    scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
+                }
+            }
+            catch (Exception es)
+            {
+                scheduledCourseSectionView._failure = true;
+                scheduledCourseSectionView._message = es.Message;
+            }
+            return scheduledCourseSectionView;
+        }
+
+        public ScheduledCourseSectionViewModel GetMissingAttendanceCountForDashboardView(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
+        {
+            List<AllCourseSectionView>? AllCourseSectionViewList = new();
+            ScheduledCourseSectionViewModel scheduledCourseSectionView = new();
+            List<DateTime> holidayList = new List<DateTime>();
+            try
+            {
+                var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.IsDropped != true).ToList();
+
+                if (scheduledCourseSectionData != null && scheduledCourseSectionData.Any())
+                {
+                    int count = 0;
+                    List<int> ID = new List<int>();
+
+                    AllCourseSectionViewList = this.context?.AllCourseSectionView.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.AcademicYear == scheduledCourseSectionViewModel.AcademicYear).ToList();
+
+                    foreach (var scheduledCourseSection in scheduledCourseSectionData)
+                    {
+                        if (!ID.Contains(scheduledCourseSection.CourseSectionId))
+                        {
+                            var AllCourseSectionViewData = AllCourseSectionViewList!.Where(v => v.SchoolId == scheduledCourseSectionViewModel.SchoolId && v.TenantId == scheduledCourseSectionViewModel.TenantId && v.CourseId == scheduledCourseSection.CourseId && v.CourseSectionId == scheduledCourseSection.CourseSectionId && (v.AttendanceTaken == true || v.TakeAttendanceCalendar == true || v.TakeAttendanceVariable == true || v.TakeAttendanceBlock == true)).ToList();
+
+                            if (AllCourseSectionViewData.Any())
+                            {
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
+
+                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
+                                {
+                                    count += studentMissingAttendanceData.Count;
+                                }
+
+                                ID.Add(scheduledCourseSection.CourseSectionId);
+                            }
+                        }
                     }
                     scheduledCourseSectionView.MissingAttendanceCount = count;
                     scheduledCourseSectionView._failure = false;

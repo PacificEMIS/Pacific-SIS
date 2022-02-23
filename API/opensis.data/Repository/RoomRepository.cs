@@ -199,7 +199,7 @@ namespace opensis.data.Repository
                                 this.context?.Entry(roomMaster).CurrentValues.SetValues(room.tableRoom);
                                 this.context?.SaveChanges();
                                 room._failure = false;
-                                room._message = "Room Updated Successfully,but Room Capacity not Updated";
+                                room._message = "Room capacity could not be updated as it has association";
                             }
                             else
                             {

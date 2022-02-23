@@ -39,7 +39,7 @@ import { StudentScheduleService } from '../../../../../services/student-schedule
 import { GetMarkingPeriodByCourseSectionModel, GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
 import { MarkingPeriodService } from '../../../../../services/marking-period.service';
 import { Router } from '@angular/router';
-import { AddUpdateStudentFinalGradeModel, StudentFinalGrade, StudentFinalGradeStandard } from '../../../../../models/student-final-grade.model';
+import { AddUpdateStudentFinalGradeModel, GetGradebookGradeinFinalGradeModel, StudentFinalGrade, StudentFinalGradeStandard } from '../../../../../models/student-final-grade.model';
 import { ReportCardService } from '../../../../../services/report-card.service';
 import { GetAllCourseCommentCategoryModel } from '../../../../../models/report-card.model';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
@@ -72,7 +72,7 @@ export class GradeDetailsComponent implements OnInit {
   fruits: string[] = ['Lemon'];
   allFruits: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
-
+  defaultGradeScaleList=[];
   pageStatus = "Grade Details";
   showComment: boolean = false;
   staffDetails;
@@ -86,7 +86,6 @@ export class GradeDetailsComponent implements OnInit {
   gradeScaleStandardList = [];
   gradeScaleList = [];
   loading: boolean = false;
-  isPercentChecked: boolean = false;
   reportCardGrade = [
     { id: 1, value: 'A' },
     { id: 2, value: 'B' },
@@ -111,6 +110,8 @@ export class GradeDetailsComponent implements OnInit {
   isPercent: boolean = false;
   studentMasterList: ScheduleStudentForView[];
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
+  getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();
+  selectedMarkingPeriod;
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -135,7 +136,6 @@ export class GradeDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.addUpdateStudentFinalGradeModel.isPercent = true;
-    this.isPercentChecked = true;
     this.allScheduledCourseSectionBasedOnTeacher.staffId = this.staffDetails.staffId;
     if (this.allScheduledCourseSectionBasedOnTeacher.staffId) {
 
@@ -178,20 +178,18 @@ export class GradeDetailsComponent implements OnInit {
   }
 
   selectedGrade(grade, index) {
-    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = this.gradeScaleList.filter(x => x.title === grade)[0].breakoff;
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = this.gradeScaleList[0].grade.filter(x => x.title === grade)[0].breakoff; 
   }
 
   onCheckboxChange(value) {
     if (value.currentTarget.checked) {
       this.addUpdateStudentFinalGradeModel.isPercent = false;
-      this.isPercentChecked = true;
+      this.isPercent = false;
     }
     else {
       this.addUpdateStudentFinalGradeModel.isPercent = true;
-      this.isPercentChecked = false;
+      this.isPercent = true;
     }
-
-
   }
 
   getAllMarkingPeriodByCourseSection(courseSectionId) {
@@ -206,7 +204,7 @@ export class GradeDetailsComponent implements OnInit {
               duration: 1000
             }); 
           }
-          reject();
+          reject({});
         } else {
           this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
           this.markingPeriodList = this.getMarkingPeriodTitleListModel.getMarkingPeriodView;
@@ -251,19 +249,16 @@ export class GradeDetailsComponent implements OnInit {
     })
   }
 
-  selectedMarkingPeriod(markingPerioTitle) {
+  changeMarkingPeriod(markingPerioTitle) {
+    if(markingPerioTitle) {
     const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === markingPerioTitle);
-    console.log(markingPeriodDetails);
-    
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
       this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
     } else {
     this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
     }
-    this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-    console.log(this.addUpdateStudentFinalGradeModel.isExamGrade);
-    
+    this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;    
     // return;
     this.courseSectionDetails = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.courseSectionId === +this.courseSectionId);
     // this.courseSectionData = this.findMarkingPeriodTitleById(this.courseSectionDetails[0]);
@@ -274,9 +269,7 @@ export class GradeDetailsComponent implements OnInit {
     this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionDetails[0].courseId;
     this.addUpdateStudentFinalGradeModel.courseSectionId = this.courseSectionDetails[0].courseSectionId;
     this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionDetails[0].calendarId;
-    //this.addUpdateStudentFinalGradeModel.studentFinalGradeList= [];
-    console.log(this.addUpdateStudentFinalGradeModel);
-    
+    //this.addUpdateStudentFinalGradeModel.studentFinalGradeList= [];    
     this.finalGradeService.getAllStudentFinalGradeList(this.addUpdateStudentFinalGradeModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -287,7 +280,6 @@ export class GradeDetailsComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId).then(() => {
               this.searchScheduledStudentForGroupDrop(this.courseSectionDetails[0].courseSectionId);
             });
@@ -302,7 +294,6 @@ export class GradeDetailsComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionDetails[0].gradeScaleType !== 'Numeric' || this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.isPercentChecked = true;
             this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId);
           }
           this.scheduleStudentListViewModel.courseSectionId = this.courseSectionDetails[0].courseSectionId;
@@ -315,6 +306,9 @@ export class GradeDetailsComponent implements OnInit {
                 this.showMessage = 'noRecordFound';
               } else {
                 this.studentMasterList = res.scheduleStudentForView;
+                this.studentMasterList.map((item: any) => {
+                  item.gradeScaleList = this.getGradeScaleList(item);
+                });
                 this.totalCount = this.studentMasterList.length;
                 this.showCommentDetails(this.studentMasterList.length > 0 ? 0 : null);
 
@@ -365,16 +359,56 @@ export class GradeDetailsComponent implements OnInit {
 
 
     });
+  } else {
+    this.studentMasterList = [];
+    this.totalCount = 0;
+    this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+    this.selectedMarkingPeriod = undefined;
+  }
   }
 
   inActiveStudent(value) {
   }
 
-  selectedCourseSection(courseSection) {
+  getGradeBookGrades() {
+    this.getGradebookGradeinFinalGradeModel.courseSectionId = this.addUpdateStudentFinalGradeModel.courseSectionId;
+    this.getGradebookGradeinFinalGradeModel.markingPeriodId = this.addUpdateStudentFinalGradeModel.markingPeriodId;
 
-    this.getAllMarkingPeriodByCourseSection(courseSection)
+    this.finalGradeService.getGradebookGradeinFinalGrade(this.getGradebookGradeinFinalGradeModel).subscribe((res: any) => {
+      if (res) {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+        this.snackbar.open(res._message, '', {
+          duration: 10000
+        });      
+        } else {
+          res.studentWithGradeBookViewModelList.map((item)=>{
+            this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((subItem)=>{
+              if(subItem.studentId === item.studentId) {
+                subItem.percentMarks = item.percentage;
+                subItem.gradeObtained = item?.grade?.trim()?.length > 0 ? item.grade : null;
+              }
+            })
+          })
+        }
+      }
+      else {
+        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+
+  changeCourseSection(courseSection) {
+    this.studentMasterList = [];
+    this.totalCount = 0;
+    this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+    this.selectedMarkingPeriod = undefined;
+if(courseSection) {
+  this.getAllMarkingPeriodByCourseSection(courseSection)
+}
     this.courseSectionId = courseSection;
-    
   }
 
   findMarkingPeriodTitleById(courseDetails) {
@@ -482,7 +516,8 @@ export class GradeDetailsComponent implements OnInit {
           }
         } else {
           this.gradeScaleStandardList = data.gradeScaleList.filter(x => x.gradeScaleId === +standardGradeScaleId)[0]?.grade;
-          this.gradeScaleList = data.gradeScaleList.filter(x => x.useAsStandardGradeScale === false)[0]?.grade;
+          this.gradeScaleList = data.gradeScaleList.filter(x => x.useAsStandardGradeScale === false);
+          this.defaultGradeScaleList=this.gradeScaleList[0].grade; 
           resolve('');
         }
       });
@@ -507,7 +542,8 @@ export class GradeDetailsComponent implements OnInit {
             this.showMessage = 'noRecordFound';
           }
           this.addUpdateStudentFinalGradeModel.studentFinalGradeList = [new StudentFinalGrade()];
-          this.studentMasterList.map((item, i) => {
+          this.studentMasterList.map((item: any, i) => {
+            item.gradeScaleList=this.defaultGradeScaleList; 
             this.initializeDefaultValues(item, i);
             this.addUpdateStudentFinalGradeModel.studentFinalGradeList.push(new StudentFinalGrade());
           });
@@ -567,4 +603,36 @@ export class GradeDetailsComponent implements OnInit {
     });
   }
 
+  gradeFromPercent(percent, index, student) {
+    let sortedData = [];
+    sortedData = student.sort((a, b) => b.breakoff - a.breakoff);    
+    sortedData.map((item, i) => {
+      if (i === 0) {
+        if (percent >= item.breakoff) {
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].gradeObtained = item.title;
+        }
+      } else {
+        if (percent >= item.breakoff && percent < sortedData[i - 1].breakoff) {
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].gradeObtained = item.title;
+        }
+      }
+    });    
+  }
+
+  omitSpecialChar(event) {
+    let k = event.charCode;
+    return ((k >= 48 && k <= 57) || k === 8 || k === 46);
+  }
+
+  getGradeScaleList(grade) {
+    let gradeDataSet = [];    
+    if (this.gradeScaleList) {
+      this.gradeScaleList.map(item => {
+        if (item.gradeScaleId === grade.gradeScaleId) {
+          gradeDataSet = item.grade;
+        }
+      });
+    }    
+    return gradeDataSet;
+  }
 }

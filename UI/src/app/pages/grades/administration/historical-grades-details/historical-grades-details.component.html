@@ -83,7 +83,7 @@
                         <th>{{ "letterGrade" | translate }}</th>
                         <th>{{ "gpValue" | translate }}</th>
                         <th>{{ "calculateGpa" | translate }}</th>
-                        <th>{{ "weightedGp" | translate }}</th>
+                        <th>{{ "courseType" | translate }}</th>
                         <th>{{ "gradeScale" | translate }}</th>
                         <th>{{ "creditAttempted" | translate }}</th>
                         <th>{{ "creditEarned" | translate }}</th>
@@ -160,12 +160,28 @@
                         </td>
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode7">
-                                <mat-slide-toggle color="primary" name="{{'wgp' + j}}" [(ngModel)]="history.weightedGp">
-                                </mat-slide-toggle>
+                                                                <!-- <mat-form-field style="width: 100px;" appearance="outline" color="primary">
+                                    <mat-select [(ngModel)]="history.courseType">
+                                        <mat-option></mat-option>
+                                        <mat-option
+                                            *ngFor="let courseType of allCourseTypes"
+                                            [value]="courseType">
+                                            {{courseType}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field> -->
+                                <div class="border border-gray-light rounded p-2 w-24">
+                                    <select [(ngModel)]="history.courseType">
+                                        <option
+                                            *ngFor="let courseType of allCourseTypes"
+                                            [value]="courseType">
+                                            {{courseType}}
+                                        </option>
+                                    </select>
+                            </div>
                             </ng-container>
                             <ng-template #viewMode7>
-                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}" [(ngModel)]="history.weightedGp"
-                                    disabled></mat-slide-toggle>
+                                <label>{{history.courseType}}</label>
                             </ng-template>
                         </td>
                         <td>

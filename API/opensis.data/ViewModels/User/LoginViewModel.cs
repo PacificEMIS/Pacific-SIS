@@ -54,7 +54,10 @@ namespace opensis.data.ViewModels.User
         public string? CreatedBy { get; set; }
         public int? MembershipId { get; set; }
         public byte[]? UserPhoto { get; set; }
+        public string? Suffix { get; set; }
         public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
         public int? LastUsedSchoolId { get; set; }
         public List<RolePermissionViewModel>? PermissionList { get; set; }
         public UserAccessLog? userAccessLog { get; set; }

@@ -49,6 +49,9 @@ export class GradeBookConfigurationService {
     viewGradebookGrade(obj: ViewGradebookGradeModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
         obj.academicYear = this.defaultValuesService.getAcademicYear();
+        obj.markingPeriodStartDate =  this.defaultValuesService.getMarkingPeriodStartDate();
+        obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
+        
         let apiurl = this.apiUrl + obj._tenantName + "/StaffPortalGradebook/getGradebookGrade";
         return this.http.post<ViewGradebookGradeModel>(apiurl, obj,this.httpOptions)
     }
@@ -64,6 +67,9 @@ export class GradeBookConfigurationService {
     viewGradebookGradeByStudent(obj: ViewGradebookGradeByStudentModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
         obj.academicYear = this.defaultValuesService.getAcademicYear();
+        obj.markingPeriodStartDate =  this.defaultValuesService.getMarkingPeriodStartDate();
+        obj.markingPeriodEndDate =  this.defaultValuesService.getMarkingPeriodEndDate();
+
         let apiurl = this.apiUrl + obj._tenantName + "/StaffPortalGradebook/gradebookGradeByStudent";
         return this.http.post<ViewGradebookGradeByStudentModel>(apiurl, obj,this.httpOptions)
     }

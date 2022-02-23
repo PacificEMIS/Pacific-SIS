@@ -36,4 +36,6 @@ export class ScheduledCourseSectionViewModel extends CommonField{
     noticeList:NoticeModel[];
     notificationList:any;
     academicYear:any;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
 }

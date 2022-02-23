@@ -157,6 +157,12 @@ export class EditNoticeComponent implements OnInit {
     }
   }
   submitNotice() {
+    if (!this.form.value.Body) {
+      this.snackbar.open('Please add notice body to continue.', '', {
+        duration: 10000
+      });
+      return;
+    }
     this.noticeAddViewModel.notice.body = this.form.value.Body;
     this.noticeAddViewModel.notice.title = this.form.value.Title;
     this.noticeAddViewModel.notice.validFrom = this.commonFunction.formatDateSaveWithoutTime(this.form.value.validFrom);

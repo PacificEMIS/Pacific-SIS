@@ -22,8 +22,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-
-import { ChangeDetectorRef, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import icGroup from '@iconify/icons-ic/twotone-group';
 import icPageView from '@iconify/icons-ic/twotone-pageview';
 import icCloudOff from '@iconify/icons-ic/twotone-cloud-off';
@@ -58,6 +57,8 @@ import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 const moment = _rollupMoment || _moment;
 import { TranslateService } from '@ngx-translate/core';
+import { GetAcademicYearListModel } from 'src/app/models/marking-period.model';
+import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 
 
 @Component({
@@ -80,7 +81,7 @@ import { TranslateService } from '@ngx-translate/core';
     },
   ],
 })
-export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
+export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   isActive: boolean;
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
@@ -183,8 +184,7 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
   cssClass = 'bg-aqua';
   showCalendarView: boolean = false;
   noticeHide: boolean = true;
-
-
+  getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
   // @HostListener('window:popstate', ['$event'])
   // onPopState(event) {
   //   history.pushState(null, null, location.href);
@@ -200,13 +200,12 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     private pageRolePermission: PageRolesPermission,
     private defaultValuesService: DefaultValuesService,
     public translateService: TranslateService,
+    private markingPeriodService: MarkingPeriodService,
   ) {
     // translateService.use('en');
-
   }
 
   ngOnInit() {
-
     // this.router.events
     // .subscribe((event: NavigationStart) => {
     //   if (event.navigationTrigger === 'popstate') {
@@ -214,23 +213,6 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     //     history.pushState(null, null, location.href);
     //   }
     // });
-
-    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-
-      if (res.academicYearChanged || res.academicYearLoaded) {
-        // let endDate = this.defaultValuesService.getFullYearEndDate();
-        // let rollOverDate = moment(endDate).subtract(15, "days").format("YYYY-MM-DD");
-        if (!this.defaultValuesService.checkAcademicYear()) {
-          this.showRollOver = true;
-        }
-        else{
-          this.showRollOver = false;
-        }
-        this.getDashboardView();
-        this.getDashboardViewForCalendarView();
-        this.getMissingAttendanceCountForDashboardView();
-      }
-    })
     setTimeout(() => {
       const temp = [
         {
@@ -244,6 +226,40 @@ export class DashboardAnalyticsComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
+  ngAfterViewInit(): void {
+    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      if (res.academicYearChanged || res.academicYearLoaded) {
+        this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
+        this.getDashboardView();
+        this.getDashboardViewForCalendarView();
+        this.getMissingAttendanceCountForDashboardView();
+      }
+    })
+  }
+
+  checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
+    let result = false
+    let maxArr = []
+    this.getAcademicYears.schoolId = this.defaultValuesService.getSchoolID();
+    this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res:any) => {
+      if(res._failure) {
+
+      } else {
+        res.academicYears.forEach(element => {
+          maxArr.push(element.academyYear)
+        });
+      }
+      let maxYear = Math.max(...maxArr)
+      if(selectedYear = maxYear || selectedYear < maxYear) {
+        res.academicYears.forEach(value => {
+          if(maxYear==value.academyYear) {
+            result = moment(new Date()).isBetween(value.startDate, value.endDate)
+            this.showRollOver = !result;
+          }
+        })
+      }
+    })
+  }
 
   //for rendar weekends
   beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {

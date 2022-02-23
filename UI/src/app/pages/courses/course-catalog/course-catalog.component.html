@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="px-4 pb-4">
-                <mat-accordion *ngFor="let courseDetails of courseWithCourseSectionDetails">
+                <mat-accordion *ngFor="let courseDetails of courseWithCourseSectionDetails,let outerIndex=index">
                     <mat-expansion-panel class="bg-base border-gray-light border mb-2">
                         <mat-expansion-panel-header class="px-4">
                             <mat-panel-title>
@@ -115,7 +115,7 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <div class="bg-skyblue-light -mx-6 p-4 -mb-4">
-                            <ng-container *ngFor="let courseSection of courseSectionDetailsList; let i=index;">
+                            <ng-container *ngFor="let courseSection of newCourseDataSet[outerIndex]; let i=index;">
                                 <ng-container
                                     *ngIf="courseSection?.scheduleType?.includes('Fixed Schedule') && courseSection?.courseId===courseDetails.courseId;else otherSchedule">
                                     <h4 class="text-primary font-semibold text-lg mb-2">
@@ -156,7 +156,7 @@
                                             <p class="text-sm whitespace-pre-wrap">{{courseSection?.markingPeriod}}</p>
                                         </li>
                                     </ul>
-                                    <mat-divider *ngIf="i < courseSectionDetailsList?.length -1;" class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
+                                    <mat-divider *ngIf="i < newCourseDataSet[outerIndex].length -1;" class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
                                 </ng-container>
                                 <ng-template #otherSchedule>
                                     <ng-container
@@ -187,7 +187,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <mat-divider *ngIf="i < courseSectionDetailsList?.length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
+                                        <mat-divider *ngIf="i < newCourseDataSet[outerIndex].length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
                                     </ng-container>
                                     <ng-container
                                         *ngIf="courseSection?.scheduleType?.includes('Block Schedule') && courseSection?.courseId===courseDetails.courseId">
@@ -220,7 +220,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <mat-divider *ngIf="i < courseSectionDetailsList?.length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
+                                        <mat-divider *ngIf="i < newCourseDataSet[outerIndex].length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
                                     </ng-container>
                                     <ng-container
                                         *ngIf="courseSection?.scheduleType?.includes('Calendar Schedule') && courseSection?.courseId===courseDetails.courseId">
@@ -253,7 +253,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <mat-divider *ngIf="i < courseSectionDetailsList?.length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
+                                        <mat-divider *ngIf="i < newCourseDataSet[outerIndex].length -1;"  class="mt-4 mb-8 -mx-4 border-gray-light"></mat-divider>
                                     </ng-container>
                                 </ng-template>
 

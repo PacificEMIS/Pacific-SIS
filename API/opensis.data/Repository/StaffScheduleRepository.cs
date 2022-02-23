@@ -62,7 +62,7 @@ namespace opensis.data.Repository
                     {
                         StaffScheduleViewList teacherSchedules = new StaffScheduleViewList();
 
-                        var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.StaffId == teacherScheduleView.StaffId);
+                        var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId /*&& x.SchoolId == staffScheduleViewModel.SchoolId*/ && x.StaffId == teacherScheduleView.StaffId);
 
                         if (staffData != null)
                         {

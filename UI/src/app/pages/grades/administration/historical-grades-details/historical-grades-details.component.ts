@@ -36,6 +36,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   historicalMarkingPeriodList: HistoricalMarkingPeriodListModel = new HistoricalMarkingPeriodListModel();
   historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
   historicalGrade: HistoricalGrade = new HistoricalGrade();
+  allCourseTypes = []
 
   constructor(private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
     private commonService: CommonService,
@@ -49,6 +50,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       this.loading = val;
     });
     this.histStudentDetails = this.historicalMarkingPeriodService.getHistStudentDetails();
+    this.allCourseTypes = ['Regular','Honors','AP','IB','College']
   }
 
   ngOnInit(): void {
@@ -174,31 +176,26 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.historicalGradeAddViewModel.studentId = this.histStudentDetails.studentId;
     this.historicalMarkingPeriodService.getAllHistoricalGradeList(this.historicalGradeAddViewModel).subscribe(
       (res) => {
-        if (res) {
-          if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          if (res.historicalGradeList === null) {
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
-          }
-          else {
-            this.historicalGradeAddViewModel = res;
-            this.divCount.length = this.historicalGradeAddViewModel?.historicalGradeList?.length;
-            for (let i = 0; i < this.historicalGradeAddViewModel.historicalGradeList?.length; i++) {
-              for (let j = 0; j < this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length; j++) {
-                Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j], { creditAddMode: false });
-              }
-              Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i], { gradeAddMode: false, gradeViewMode: true });
-              this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
-            }
+          } else {
 
-            
           }
         }
         else {
-          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
-            duration: 10000
-          });
+          this.historicalGradeAddViewModel = res;
+          this.divCount.length = this.historicalGradeAddViewModel?.historicalGradeList?.length;
+          for (let i = 0; i < this.historicalGradeAddViewModel.historicalGradeList?.length; i++) {
+            for (let j = 0; j < this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length; j++) {
+              Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j], { creditAddMode: false });
+            }
+            Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i], { gradeAddMode: false, gradeViewMode: true });
+            this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
+          }
         }
       }
     );

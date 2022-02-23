@@ -96,7 +96,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
-      this.getAllStaffModel.dobEndDate =this.getAllStaffModel.dobStartDate= this.commonFunction.formatDateSaveWithoutTime(new Date());
+      this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
     });
   }
   ngOnInit(): void {

@@ -70,7 +70,7 @@ export class TakeAttendanceComponent implements OnInit {
   actionButtonTitle: string = 'submit';
   currentComponent: string;
   isAttendanceDateToday = true;
-  isAnyMissingAttendance = false;
+  // isAnyMissingAttendance = false;
   showShortName: boolean = false;
   getDataFromParents: any;
   loading: boolean;
@@ -122,7 +122,7 @@ export class TakeAttendanceComponent implements OnInit {
       return (!this.myHolidayDates.find(x => x.getTime() == time) && disabledDates.includes(day));
     }
     this.generateClassForCourseSection(this.courseSection);
-    this.missingAttendanceListForCourseSection();
+    // this.missingAttendanceListForCourseSection();
     this.currentComponent = 'takeAttendance';
     this.isToday();
 
@@ -138,32 +138,32 @@ export class TakeAttendanceComponent implements OnInit {
     }
   }
 
-  missingAttendanceListForCourseSection() {
-    let getAllStaffModel: GetAllStaffModel = new GetAllStaffModel();
-    getAllStaffModel.sortingModel = null;
-    getAllStaffModel.staffId = this.defaultValuesService.getUserId();
-    getAllStaffModel.courseSectionId = this.courseSection.courseSectionId;
-    this.staffPortalService.missingAttendanceListForCourseSection(getAllStaffModel).subscribe((res: ScheduledCourseSectionViewModel) => {
-      if (res) {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-          if (!res.courseSectionViewList) {
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else {
-          this.isAnyMissingAttendance = !!res.missingAttendanceCount
-        }
-      }
-      else {
-        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
+  // missingAttendanceListForCourseSection() {
+  //   let getAllStaffModel: GetAllStaffModel = new GetAllStaffModel();
+  //   getAllStaffModel.sortingModel = null;
+  //   getAllStaffModel.staffId = this.defaultValuesService.getUserId();
+  //   getAllStaffModel.courseSectionId = this.courseSection.courseSectionId;
+  //   this.staffPortalService.missingAttendanceListForCourseSection(getAllStaffModel).subscribe((res: ScheduledCourseSectionViewModel) => {
+  //     if (res) {
+  //       if (res._failure) {
+  //         this.commonService.checkTokenValidOrNot(res._message);
+  //         if (!res.courseSectionViewList) {
+  //           this.snackbar.open(res._message, '', {
+  //             duration: 10000
+  //           });
+  //         }
+  //       }
+  //       else {
+  //         this.isAnyMissingAttendance = !!res.missingAttendanceCount
+  //       }
+  //     }
+  //     else {
+  //       this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+  //         duration: 10000
+  //       });
+  //     }
+  //   });
+  // }
 
   generateClassForCourseSection(courseSection) {
     const formatedDate = new Date(this.attendanceDate);
@@ -375,7 +375,7 @@ export class TakeAttendanceComponent implements OnInit {
         this.snackbar.open(res._message, '', {
           duration: 10000
         });
-        this.missingAttendanceListForCourseSection();
+        // this.missingAttendanceListForCourseSection();
         this.scheduleStudentListViewModel.scheduleStudentForView = [];
         this.getAllAttendanceCodeModel.attendanceCodeList = [];
         this.studentAttendanceList.studentAttendance = [];

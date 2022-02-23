@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using opensis.data.ViewModels.CourseManager;
+using opensis.data.Helper;
 
 namespace opensis.report.report.data.Repository
 {
@@ -30,14 +31,227 @@ namespace opensis.report.report.data.Repository
         /// <returns></returns>
         public StudentAttendanceReport GetStudentAttendanceReport(PageResult pageResult)
         {
-            //IQueryable<StudentMaster>? transactionIQ = null;
-            //IQueryable<StudentMaster>? studentDataList = null;
-            int? totalCount = 0;
-            StudentAttendanceReport studentAttendanceReport = new();
+            StudentAttendanceReport studentAttendanceList = new StudentAttendanceReport();
+            studentAttendanceList.TenantId = pageResult.TenantId;
+            studentAttendanceList.SchoolId = pageResult.SchoolId;
+            studentAttendanceList._userName = pageResult._userName;
+            studentAttendanceList.MarkingPeriodStartDate = pageResult.MarkingPeriodStartDate;
+            studentAttendanceList.MarkingPeriodEndDate = pageResult.MarkingPeriodEndDate;
+            studentAttendanceList._tenantName = pageResult._tenantName;
+            studentAttendanceList._userName = pageResult._userName;
+            IQueryable<StudendAttendanceViewModelForReport>? transactionIQ = null;
+            List<StudentAttendanceViewForReport> studentAttendanceViewForReportList = new();
+            List<StudendAttendanceViewModelForReport> attendanceData = new List<StudendAttendanceViewModelForReport>();
+            try
+            {
+                var studentAttendanceData = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x => new StudentAttendanceViewForReport()
+                {
 
-            //var studentDataList = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true)).ToList();
-            //studentAttendanceReport.studentMasters = studentDataList ?? null;
-            return studentAttendanceReport;
+                    TenantId = x.TenantId,
+                    SchoolId = x.SchoolId,
+                    StudentId = x.StudentCoursesectionSchedule.StudentId,
+
+                    StudentInternalId = x.StudentCoursesectionSchedule.StudentInternalId,
+                    FirstGivenName = x.StudentCoursesectionSchedule.FirstGivenName,
+                    MiddleName = x.StudentCoursesectionSchedule.MiddleName,
+                    LastFamilyName = x.StudentCoursesectionSchedule.LastFamilyName,
+                    GradeLevelTitle = x.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault(),
+                    AttendanceDate = x.AttendanceDate,
+                    AttendanceCategoryId = x.AttendanceCategoryId,
+                    AttendanceCode = x.AttendanceCode,
+                    AttendanceCodeTitle = x.AttendanceCodeNavigation.StateCode,
+                    BlockId = x.BlockId,
+                    PeriodName = x.BlockPeriod.PeriodTitle,
+                    PeriodId = x.PeriodId,
+                    PeriodSortOrder = x.BlockPeriod.PeriodSortOrder,
+                    CourseId = x.CourseId,
+                    CourseSectionId = x.CourseSectionId
+                }).ToList();
+
+                var studentCourseSectionIds = this.context?.StudentMissingAttendances.Include(s => s.BlockPeriod).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x => x.CourseSectionId).ToList();
+
+
+
+                var studentMissingAttendanceList = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Join(this.context?.StudentMissingAttendances, scs => scs.CourseSectionId, sma => sma.CourseSectionId, (scs, sma) => new { scs, sma }).Join(this.context?.BlockPeriod, ms => ms.sma.PeriodId, bp => bp.PeriodId, (ms, bp) => new { ms, bp })
+                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId)
+                    .Select(x => new StudentAttendanceViewForReport()
+                    {
+
+                        TenantId = x.ms.sma.TenantId,
+                        SchoolId = x.ms.sma.SchoolId,
+                        StudentId = x.ms.scs.StudentId,
+                        StudentInternalId = x.ms.scs.StudentInternalId,
+                        FirstGivenName = x.ms.scs.FirstGivenName,
+                        MiddleName = x.ms.scs.MiddleName,
+                        LastFamilyName = x.ms.scs.LastFamilyName,
+                        GradeLevelTitle = x.ms.scs.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault(),
+                        AttendanceDate = x.ms.sma.MissingAttendanceDate,
+                        BlockId = x.ms.sma.BlockId,
+                        PeriodId = x.ms.sma.PeriodId,
+                        PeriodSortOrder = x.bp.PeriodSortOrder,
+                        PeriodName = x.bp.PeriodTitle,
+                        CourseId = x.ms.sma.CourseId,
+                        CourseSectionId = x.ms.sma.CourseSectionId
+
+                    }).ToList();
+
+                var attendanceMissingData = studentAttendanceData.Concat(studentMissingAttendanceList);
+
+                attendanceData = attendanceMissingData.GroupBy(c => new
+                {
+                    c.StudentId,
+                    c.AttendanceDate
+                }).Select(eg => new StudendAttendanceViewModelForReport()
+                {
+                    TenantId = eg.First().TenantId,
+                    SchoolId = eg.First().SchoolId,
+                    StudentId = eg.First().StudentId,
+                    AttendanceDate = eg.First().AttendanceDate,
+                    FirstGivenName = eg.First().FirstGivenName,
+                    MiddleName = eg.First().MiddleName,
+                    LastFamilyName = eg.First().LastFamilyName,
+                    GradeLevelTitle = eg.First().GradeLevelTitle,
+                    StudentInternalId = eg.First().StudentInternalId,
+                    PeriodsName = string.Join(",", eg.Select(i => i.PeriodName + "|" + i.AttendanceCodeTitle))
+
+                }).ToList();
+
+                if (attendanceData.Count() > 0)
+                {
+                    if (pageResult.GradeLevel != null)
+                    {
+                        attendanceData = attendanceData.Where(x => x.GradeLevelTitle == pageResult.GradeLevel).ToList();
+                    }
+                    attendanceData = attendanceData.OrderBy(x => x.AttendanceDate).ToList();
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                    {
+                        transactionIQ = attendanceData.AsQueryable();
+                    }
+                    else
+                    {
+                        string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                        {
+                            transactionIQ = attendanceData.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
+                            x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
+                        }
+                        else
+                        {
+                            transactionIQ = Utility.FilteredData(pageResult.FilterParams!, attendanceData).AsQueryable();
+                        }
+                    }
+
+                    if (pageResult.SortingModel != null)
+                    {
+                        switch (pageResult.SortingModel.SortColumn!.ToLower())
+                        {
+                            default:
+                                transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection!.ToLower());
+                                break;
+                        }
+                    }
+
+                    if (transactionIQ != null)
+                    {
+                        int? totalCount = transactionIQ.Count();
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                            studentAttendanceList.PageNumber = pageResult.PageNumber;
+                            studentAttendanceList._pageSize = pageResult.PageSize;
+                        }
+                        studentAttendanceList.studendAttendanceAdministrationList = transactionIQ.ToList();
+                        studentAttendanceList.TotalCount = totalCount;
+                    }
+                    else
+                    {
+                        studentAttendanceList.TotalCount = 0;
+                        studentAttendanceList._failure = true;
+                        studentAttendanceList._message = NORECORDFOUND;
+                    }
+                }
+                else
+                {
+                    studentAttendanceList._failure = true;
+                    studentAttendanceList._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                studentAttendanceList._failure = true;
+                studentAttendanceList._message = es.Message;
+            }
+            return studentAttendanceList;
+
+        }
+
+        /// <summary>
+        /// Get Student Attendanced Excel Report
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentAttendanceReport GetStudentAttendanceExcelReport(PageResult pageResult)
+        {
+            StudentAttendanceReport studentAttendanceList = new StudentAttendanceReport();
+            studentAttendanceList.TenantId = pageResult.TenantId;
+            studentAttendanceList.SchoolId = pageResult.SchoolId;
+            studentAttendanceList._userName = pageResult._userName;
+            studentAttendanceList.MarkingPeriodStartDate = pageResult.MarkingPeriodStartDate;
+            studentAttendanceList.MarkingPeriodEndDate = pageResult.MarkingPeriodEndDate;
+            studentAttendanceList._tenantName = pageResult._tenantName;
+            studentAttendanceList._userName = pageResult._userName;
+            List<StudendAttendanceViewModelForReport> attendanceData = new List<StudendAttendanceViewModelForReport>();
+            try
+            {
+                var studentAttendanceData = this.context?.StudentAttendance.Include(x => x.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(x => x.StudentCoursesectionSchedule).ThenInclude(x => x.StudentMaster).ThenInclude(x => x.StudentEnrollment).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x => new AttendanceExcelReport()
+                {
+                    StudentId = x.StudentId,
+                    AttendanceDate = x.AttendanceDate,
+                    StudentInternalId = x.StudentCoursesectionSchedule.StudentInternalId,
+                    StudentName = x.StudentCoursesectionSchedule.StudentMaster.FirstGivenName + " " + (x.StudentCoursesectionSchedule.StudentMaster.MiddleName != null ? x.StudentCoursesectionSchedule.StudentMaster.MiddleName + " " : null) + x.StudentCoursesectionSchedule.StudentMaster.LastFamilyName,
+                    PeriodName = x.BlockPeriod.PeriodTitle,
+                    AttendanceCode = x.AttendanceCodeNavigation.Title,
+                    GradeLevelTitle = x.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
+                }).ToList();
+
+                var studentCourseSectionIds = this.context?.StudentMissingAttendances.Include(s => s.BlockPeriod).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x => x.CourseSectionId).ToList();
+
+                var studentMissingAttendanceList = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Join(this.context?.StudentMissingAttendances, scs => scs.CourseSectionId, sma => sma.CourseSectionId, (scs, sma) => new { scs, sma }).Join(this.context?.BlockPeriod, ms => ms.sma.PeriodId, bp => bp.PeriodId, (ms, bp) => new { ms, bp })
+                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId)
+                    .Select(x => new AttendanceExcelReport()
+                    {
+                        StudentId = x.ms.scs.StudentId,
+                        AttendanceDate = x.ms.sma.MissingAttendanceDate,
+                        StudentInternalId = x.ms.scs.StudentInternalId,
+                        StudentName = x.ms.scs.FirstGivenName + " " + (x.ms.scs.MiddleName != null ? x.ms.scs.MiddleName + " " : null) + x.ms.scs.LastFamilyName,
+                        PeriodName = x.bp.PeriodTitle,
+                        AttendanceCode = "Not Taken",
+                        GradeLevelTitle = x.ms.scs.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
+                    }).ToList();
+
+                var studentAllAttendance = studentAttendanceData.Concat(studentMissingAttendanceList);
+
+                if (studentAllAttendance != null && studentAllAttendance.Any())
+                {
+                    if (pageResult.GradeLevel != null)
+                    {
+                        studentAllAttendance = studentAllAttendance.Where(x => x.GradeLevelTitle == pageResult.GradeLevel);
+                    }
+                    studentAllAttendance = studentAllAttendance.OrderBy(x => x.AttendanceDate);
+                    var attendancedExcelData = studentAllAttendance.ToPivotTable(
+                item => item.PeriodName,
+                item => new { item.AttendanceDate, item.StudentName, item.StudentInternalId, item.GradeLevelTitle },
+                items => items.Any() ? items.First().AttendanceCode : null);
+                    studentAttendanceList.StudentAttendanceReportForExcel = attendancedExcelData;
+                }
+            }
+            catch (Exception es)
+            {
+                studentAttendanceList._failure = true;
+                studentAttendanceList._message = es.Message;
+            }
+            return studentAttendanceList;
 
         }
 

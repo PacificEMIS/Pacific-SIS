@@ -91,6 +91,7 @@ export class PageRolesPermission {
         }
         else if (item.permissionGroup.permissionCategory.length > 0) {
           for (let cat of item.permissionGroup.permissionCategory) {
+            if (pathToFind === "/school/staff" && (this.defaultValueService.getUserMembershipType() === "Teacher" || this.defaultValueService.getUserMembershipType() === "Homeroom Teacher")) {
             if(cat.path.includes(pathToFind) && ( this.defaultValueService.getUserMembershipType() === "Teacher" ||this.defaultValueService.getUserMembershipType() === "Homeroom Teacher" )){
               if(cat.rolePermission[0].canView){
                 permittedTabDetails.push({
@@ -99,6 +100,7 @@ export class PageRolesPermission {
                 })
               }
             }
+          }
            else if (cat.path === pathToFind) {
                 if(cat.permissionSubcategory.length>0){
                   for(let subCat of cat.permissionSubcategory){

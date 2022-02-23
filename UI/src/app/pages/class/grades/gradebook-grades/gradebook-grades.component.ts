@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import icSearch from "@iconify/icons-ic/search";
 import { MatDialog } from "@angular/material/dialog";
@@ -70,6 +70,8 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   selectedCourseSection;
   changeParcentageCalculationValue;
   markingPeriodId;
+  isWeightedSection: boolean;
+  @Output() isConfigUpdateFlag = new EventEmitter<boolean>()
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog,
@@ -223,6 +225,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
               }
           })
         })
+        this.isConfigUpdateFlag.emit(res?.configUpdateFlag)
         this.addGradebookGradeModel = res;
         this.createDataSetForExcel();
         };
@@ -239,6 +242,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
           this.commonService.checkTokenValidOrNot(res._message);
         }else{
           this.changeParcentageCalculationValue=res.gradebookConfiguration.scoreRounding;
+          this.isWeightedSection = res?.gradebookConfiguration?.general?.includes('weightGrades') ? true : false;
           this.getGradebookGrade();
         }
       }

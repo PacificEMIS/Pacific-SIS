@@ -362,7 +362,7 @@ export class StudentCourseScheduleComponent implements OnInit {
           )
         );
         for (
-          let dt = new Date(item.enrolledDate);
+          let dt = new Date(item.effectiveStartDate);
           dt <= effectiveDropDate;
           dt.setDate(dt.getDate() + 1)
         ) {

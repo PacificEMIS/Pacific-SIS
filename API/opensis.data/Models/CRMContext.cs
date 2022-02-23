@@ -2270,6 +2270,7 @@ namespace opensis.data.Models
                 entity.Property(e => e.AssignmentSorting)
                     .HasMaxLength(100)
                     .HasColumnName("assignment_sorting");
+                entity.Property(e => e.ConfigUpdateFlag).HasColumnName("config_update_flag");
 
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(150)
@@ -2834,6 +2835,10 @@ namespace opensis.data.Models
                     .HasMaxLength(150)
                     .HasColumnName("course_name");
 
+                entity.Property(e => e.CourseType)
+                    .HasMaxLength(150)
+                    .HasColumnName("course_type");
+
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(150)
                     .HasColumnName("created_by");
@@ -2874,8 +2879,6 @@ namespace opensis.data.Models
                 entity.Property(e => e.UpdatedOn)
                     .HasPrecision(0)
                     .HasColumnName("updated_on");
-
-                entity.Property(e => e.WeightedGp).HasColumnName("weighted_gp");
 
                 entity.HasOne(d => d.HistoricalGrade)
                     .WithMany(p => p.HistoricalCreditTransfer)
@@ -3016,7 +3019,7 @@ namespace opensis.data.Models
                     .HasColumnName("created_on");
 
                 entity.Property(e => e.HonorRoll)
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .HasColumnName("honor_roll");
 
                 
@@ -5681,6 +5684,7 @@ namespace opensis.data.Models
                 entity.Property(e => e.EndDate)
                     .HasColumnType("date")
                     .HasColumnName("end_date");
+                entity.Property(e => e.MembershipId).HasColumnName("membership_id");
 
                 entity.Property(e => e.Profile)
                     .HasMaxLength(50)
@@ -5717,6 +5721,10 @@ namespace opensis.data.Models
                     .WithMany(p => p.StaffSchoolInfo)
                     .HasForeignKey(d => new { d.TenantId, d.StaffId })
                     .HasConstraintName("staff_school_info$FK_master");
+                entity.HasOne(d => d.Membership)
+                   .WithMany(p => p.StaffSchoolInfos)
+                   .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.MembershipId })
+                   .HasConstraintName("staff_school_info$FK_membership");
             });
 
             modelBuilder.Entity<State>(entity =>
