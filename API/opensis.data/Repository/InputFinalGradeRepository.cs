@@ -823,6 +823,14 @@ namespace opensis.data.Repository
         public GardeBookGradeViewModel GetGradebookGradeinFinalGrade(GardeBookGradeViewModel gardeBookGradeViewModel)
         {
             GardeBookGradeViewModel gardeBookGrade = new();
+            gardeBookGrade.TenantId = gardeBookGradeViewModel.TenantId;
+            gardeBookGrade.SchoolId = gardeBookGradeViewModel.SchoolId;
+            gardeBookGrade.CourseSectionId = gardeBookGradeViewModel.CourseSectionId;
+            gardeBookGrade.AcademicYear = gardeBookGradeViewModel.AcademicYear;
+            gardeBookGrade.MarkingPeriodId = gardeBookGradeViewModel.MarkingPeriodId;
+            gardeBookGrade._tenantName = gardeBookGradeViewModel._tenantName;
+            gardeBookGrade._token = gardeBookGradeViewModel._token;
+
             try
             {
                 int? YrMarkingPeriodId = 0;
@@ -862,6 +870,12 @@ namespace opensis.data.Repository
 
                 if (StudentCoursesectionScheduleData?.Count > 0)
                 {
+                    string? scoreRounding = null;
+                    if (GradebookConfigurationData?.Any() == true)
+                    {
+                        scoreRounding = GradebookConfigurationData.FirstOrDefault()!.ScoreRounding ?? "".ToLower();
+                    }
+
                     if (PrgrsprdMarkingPeriodId > 0)
                     {
                         //this block for if progress period is last level of marking period.
@@ -882,7 +896,28 @@ namespace opensis.data.Repository
                                 {
                                     if (prgsConfigData.GradingPercentage > 0)
                                     {
+                                        if (scoreRounding == "up")
+                                        {
+                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                            runningAvg = Math.Ceiling(runningAvg);
+                                            gradebookGrades.RunningAvg = runningAvg.ToString();
+                                        }
+                                        else if (scoreRounding == "down")
+                                        {
+                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                            runningAvg = Math.Floor(runningAvg);
+                                            gradebookGrades.RunningAvg = runningAvg.ToString();
+                                        }
+                                        else if (scoreRounding == "normal")
+                                        {
+                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                            runningAvg = Math.Round(runningAvg);
+                                            gradebookGrades.RunningAvg = runningAvg.ToString();
+                                        }
+
+                                        //this for none also
                                         prgsGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(prgsConfigData.GradingPercentage) / 100);
+
                                     }
                                 }
                                 //fetch student Exam grade from input final grade
@@ -911,6 +946,7 @@ namespace opensis.data.Repository
                             gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
                         }
                     }
+
                     else if (QtrMarkingPeriodId > 0)
                     {
                         var configurationQuartersData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationQuarter).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList();
@@ -969,6 +1005,26 @@ namespace opensis.data.Repository
                                         {
                                             if (qtrConfigData.GradingPercentage > 0)
                                             {
+                                                if (scoreRounding == "up")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Ceiling(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "down")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Floor(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "normal")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Round(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+
+                                                //this for none also
                                                 qtrGrade = (Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(qtrConfigData.GradingPercentage) / 100));
                                             }
                                         }
@@ -1001,6 +1057,7 @@ namespace opensis.data.Repository
                             }
                         }
                     }
+
                     else if (SmstrMarkingPeriodId > 0)
                     {
                         var configurationSemesterData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationSemester).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch congigration data for this semester.
@@ -1059,6 +1116,25 @@ namespace opensis.data.Repository
                                         {
                                             if (smstrConfigData.GradingPercentage > 0)
                                             {
+                                                if (scoreRounding == "up")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Ceiling(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "down")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Floor(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "normal")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Round(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+
                                                 smstrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(smstrConfigData.GradingPercentage) / 100);
                                             }
                                         }
@@ -1091,6 +1167,7 @@ namespace opensis.data.Repository
                             }
                         }
                     }
+
                     else if (YrMarkingPeriodId > 0)
                     {
                         var configurationYrData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationYear).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch full year congigration data.
@@ -1149,6 +1226,25 @@ namespace opensis.data.Repository
                                         {
                                             if (yrConfigData.GradingPercentage > 0)
                                             {
+                                                if (scoreRounding == "up")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Ceiling(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "down")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Floor(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+                                                else if (scoreRounding == "normal")
+                                                {
+                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                    runningAvg = Math.Round(runningAvg);
+                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                }
+
                                                 yrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(yrConfigData.GradingPercentage) / 100);
                                             }
                                         }
