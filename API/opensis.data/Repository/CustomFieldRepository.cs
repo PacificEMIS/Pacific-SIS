@@ -215,7 +215,7 @@ namespace opensis.data.Repository
 
                     if (!string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Type) && !string.IsNullOrWhiteSpace(customFieldAddViewModel.CustomFields.Module))
                     {
-                        var checkCustomFieldTitle = this.context?.CustomFields.AsEnumerable().Where(x => x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && x.TenantId == customFieldAddViewModel.CustomFields.TenantId && String.Compare(x.Title , customFieldAddViewModel.CustomFields.Title,true)==0 && x.FieldId != customFieldAddViewModel.CustomFields.FieldId).FirstOrDefault();
+                        var checkCustomFieldTitle = this.context?.CustomFields.AsEnumerable().Where(x => x.SchoolId == customFieldAddViewModel.CustomFields.SchoolId && x.TenantId == customFieldAddViewModel.CustomFields.TenantId && String.Compare(x.Title , customFieldAddViewModel.CustomFields.Title,true)==0 && x.FieldId != customFieldAddViewModel.CustomFields.FieldId && x.Module == customFieldAddViewModel.CustomFields.Module).FirstOrDefault();
 
                         if (checkCustomFieldTitle != null)
                         {
