@@ -202,15 +202,15 @@
 
 
 <div class="container">
-    <div class="pdf-class" id="printSectionId">
-        <div class="report-card" *ngFor="let transcript of generatedTranscriptDataForPDF?.studentsDetailsForTranscripts">
+    <div class="hidden" id="printSectionId">
+        <div class="report-card" *ngFor="let transcript of generatedTranscriptData?.studentsDetailsForTranscripts">
             <table cellpadding="0" cellspacing="0">
                 <tr>
                     <td>
                         <table class="report-card-header" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td class="header-left">
-                                    <div class="logo float-left">
+                                    <div *ngIf="transcript?.schoolPicture" class="logo float-left">
                                         <img
                                             [src]=" transcript?.schoolPicture ? 'data:image/jpeg;base64,' + transcript?.schoolPicture : ''">
                                     </div>
@@ -233,7 +233,7 @@
                         <table cellpadding="0" cellspacing="0">
                             <tr>
                                 <td width="65%">
-                                    <div class="student-photo float-left">
+                                    <div *ngIf="transcript?.studentPhoto" class="student-photo float-left">
                                         <img
                                             [src]="transcript?.studentPhoto ? 'data:image/jpeg;base64,' + transcript?.studentPhoto : ''">
                                     </div>
