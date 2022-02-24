@@ -1,11 +1,11 @@
 <form [formGroup]="form" (ngSubmit)="checkForSubmit()">
-<div fxLayout="row" mat-dialog-title class="justify-between items-center">
-    <div class="flex flex-wrap">
-        <h2 class="headline m-0 mr-4 text-xl md:text-2xl" fxFlex="auto">
+<div mat-dialog-title class="flex justify-between items-center">
+    <div class="flex justify-between flex-wrap w-full">
+        <h2 class="headline m-0 mr-4 text-xl md:text-2xl">
             <span class="text-green">{{data.courseDetails.courseTitle}}</span> -
             {{courseSectionModalTitle|translate}}
         </h2>
-        <mat-slide-toggle class="mt-1 text-sm md:text-lg" color="primary" [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isActive" name="isActive">{{'active' | translate}}</mat-slide-toggle>
+        <mat-slide-toggle class="mt-1 text-sm md:text-lg mr-4" color="primary" [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isActive" name="isActive">{{'active' | translate}}</mat-slide-toggle>
     </div>
     <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
         <mat-icon [icIcon]="icClose"></mat-icon>

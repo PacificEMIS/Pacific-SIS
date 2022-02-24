@@ -14,7 +14,7 @@
                 <img src="assets/img/database-backup.jpeg" alt="Database backup icon" width="250" class="inline-block mb-8">
                 <p class="mb-8 px-4"><span class="text-warn font-bold">{{ 'pleaseNote' | translate }}</span><span class="text-warn font-bold mx-1">:</span>{{'thisBackupUtilityWillCreateaBackupOfTheDatabaseAlongWithTheDatabaseStructureYouWillBeAbleToUseThisBackupFileToRestoreTheDatabaseHoweverInOrderToRestoreYouWillNeedToHaveAccessToMysqlAdministrationApplicationLikePhpMyadminAndTheRootUserIdAndPasswordToMysql' | translate }}</p>
                 <mat-divider class="-mx-4"></mat-divider>
-                <div class="sm:flex justify-between items-center py-3 sm:py-2">
+                <div class="sm:flex justify-between items-center pt-3 sm:pt-4">
                     <p class="mb-2 sm:mb-0"></p>
                     <!-- <p class="mb-2 sm:mb-0">10 {{ 'backupFound' | translate }}</p> -->
                     <button mat-raised-button color="primary" (click)="crateDatabaseBackup()">{{ 'createDatabaseBackup' | translate }}</button>

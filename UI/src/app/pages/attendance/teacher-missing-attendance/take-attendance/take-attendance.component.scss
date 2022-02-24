@@ -10,6 +10,7 @@
     th {
       @apply px-6;
       @apply py-1;
+      white-space: nowrap;
     }
 
     th:first-child,
@@ -18,7 +19,7 @@
     }
 
     th:last-child,
-    td.mat-table-sticky:last-child {
+    td.mat-cell:last-child {
       border-left: 1px solid #e0e0e0;
     }
     th:last-child {
@@ -26,6 +27,10 @@
     }
     td.mat-table-sticky:last-child {
       text-align: center;
+    }
+    td.mat-table-sticky {
+      box-shadow: inset 0 1px 0 var(--foreground-divider);
+      white-space: nowrap;
     }
   }
 }
