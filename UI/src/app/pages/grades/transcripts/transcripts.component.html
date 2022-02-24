@@ -202,25 +202,25 @@
 
 
 <div class="container">
-    <div class="pdf-class" id="printSectionId">
-        <div class="report-card" *ngFor="let transcript of generatedTranscriptDataForPDF?.studentsDetailsForTranscripts">
+    <div class="hidden" id="printSectionId">
+        <div class="report-card" *ngFor="let transcript of generatedTranscriptData?.studentsDetailsForTranscripts">
             <table cellpadding="0" cellspacing="0">
                 <tr>
                     <td>
                         <table class="report-card-header" cellpadding="0" cellspacing="0">
                             <tr>
-                                <td>
-                                    <div class="logo float-left">
+                                <td class="header-left">
+                                    <div *ngIf="transcript?.schoolPicture" class="logo float-left">
                                         <img
                                             [src]=" transcript?.schoolPicture ? 'data:image/jpeg;base64,' + transcript?.schoolPicture : ''">
                                     </div>
-                                    <div class="header-left float-left">
+                                    <div class="information float-left">
                                         <h2>{{transcript?.schoolName}}</h2>
                                         <p>{{transcript?.streetAddress1 ? transcript?.streetAddress1 : ''}}{{transcript?.streetAddress2 ? ', '+transcript?.streetAddress2 : ''}}{{transcript?.city ? ', '+transcript?.city : ''}}{{transcript?.district ? ', '+transcript?.district : ''}}{{transcript?.state ? ', '+transcript?.state : ''}}{{transcript?.zip ? ', '+transcript?.zip : ''}}</p>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="header-right">
+                                <td class="text-right">
+                                    <div class="header-right text-center inline-block">
                                         <h3>{{'transcript' |translate}}</h3>
                                     </div>
                                 </td>
@@ -233,7 +233,7 @@
                         <table cellpadding="0" cellspacing="0">
                             <tr>
                                 <td width="65%">
-                                    <div class="student-photo float-left">
+                                    <div *ngIf="transcript?.studentPhoto" class="student-photo float-left">
                                         <img
                                             [src]="transcript?.studentPhoto ? 'data:image/jpeg;base64,' + transcript?.studentPhoto : ''">
                                     </div>
@@ -267,47 +267,49 @@
                     </td>
                 </tr>
                 <tr *ngFor="let gradeLevelDetails of transcript?.gradeLevelDetailsForTranscripts">
-                    <td>
-                        <caption>
-                            <h2 class="float-left">
-                                <b>{{gradeLevelDetails?.gradeLevelTitle}}</b>&nbsp;<span>({{gradeLevelDetails?.schoolName}})</span>
-                            </h2>
-                            <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
-                        </caption>
-                        <div class="semester-table" *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                    <td class="semester-table">
                         <table>
                             <caption>
-                                <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
+                                <h2 class="float-left">
+                                    <b>{{gradeLevelDetails?.gradeLevelTitle}}</b>&nbsp;<span>({{gradeLevelDetails?.schoolName}})</span>
+                                </h2>
+                                <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
                             </caption>
-                            <thead>
-                                <tr>
-                                    <th>{{'courseCode' |translate}}</th>
-                                    <th>{{'course' |translate}}</th>
-                                    <th>{{'creditHours' |translate}}</th>
-                                    <th>{{'creditsEarned' |translate}}</th>
-                                    <th>{{'grade' |translate}}</th>
-                                    <th>{{'gpValue'|translate}}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    *ngFor="let reportCardDetails of markingPeriod?.reportCardDetailsForTranscripts">
-                                    <td>{{reportCardDetails?.courseCode}}</td>
-                                    <td>{{reportCardDetails?.courseSectionName}}</td>
-                                    <td>{{reportCardDetails?.creditHours}}</td>
-                                    <td>{{reportCardDetails?.creditEarned}}</td>
-                                    <td>{{reportCardDetails?.grade}}</td>
-                                    <td>{{reportCardDetails?.gpValue}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / Credit
-                                            Earned: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
-                                            {{markingPeriod?.gpa}}</b>
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <div class="semester-subtable" *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                            <table>
+                                <caption>
+                                    <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th>{{'courseCode' |translate}}</th>
+                                        <th>{{'course' |translate}}</th>
+                                        <th>{{'creditHours' |translate}}</th>
+                                        <th>{{'creditsEarned' |translate}}</th>
+                                        <th>{{'grade' |translate}}</th>
+                                        <th>{{'gpValue'|translate}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let reportCardDetails of markingPeriod?.reportCardDetailsForTranscripts">
+                                        <td>{{reportCardDetails?.courseCode}}</td>
+                                        <td>{{reportCardDetails?.courseSectionName}}</td>
+                                        <td>{{reportCardDetails?.creditHours}}</td>
+                                        <td>{{reportCardDetails?.creditEarned}}</td>
+                                        <td>{{reportCardDetails?.grade}}</td>
+                                        <td>{{reportCardDetails?.gpValue}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / Credit
+                                                Earned: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
+                                                {{markingPeriod?.gpa}}</b>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
                         </table>
-                        </div>
                     </td>
                 </tr>
             </table>
