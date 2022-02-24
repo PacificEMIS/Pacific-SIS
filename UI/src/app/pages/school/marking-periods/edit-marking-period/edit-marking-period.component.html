@@ -28,19 +28,19 @@
         <div class="flex flex-1 mx-6 md:w-1/2">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'begins' | translate}}</mat-label>
-                <input  formControlName="startDate" (dateInput)="checkStartDate()" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.startDate"  name="startDate" [matDatepicker]="begins" [min]="checkStartDate()" [max]="markingPeriodAddModel.tableSchoolYears.endDate" matInput required>
+                <input  formControlName="startDate" (dateChange)="startDateCompare()" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.startDate"  name="startDate" [matDatepicker]="begins" [min]="schoolYearStartDate" [max]="schoolYearEndDate" matInput required>
                 <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #begins></mat-datepicker>
                 <mat-error *ngIf="form.get('startDate').hasError('required')">{{'startDateIsRequired'|translate}}</mat-error>   
                  
-                <mat-error *ngIf="form.get('startDate').hasError('matDatepickerMax')">{{'startDateCannotExceedEndDate'|translate}}</mat-error>   
+                <mat-error *ngIf="form.get('startDate').hasError('compareDateError')">{{'startDateCannotExceedEndDate'|translate}}</mat-error>   
 
             </mat-form-field>
         </div>
         <div class="flex flex-1 mx-6 md:w-1/2">
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'ends' | translate}}</mat-label>
-                <input formControlName="endDate" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.endDate" [max]="checkEndDate()" name="endDate" [matDatepicker]="ends" matInput required>
+                <input formControlName="endDate" (dateChange)="startDateCompare()" [(ngModel)]="markingPeriodAddModel.tableSchoolYears.endDate" [min]="schoolYearStartDate" [max]="schoolYearEndDate" name="endDate" [matDatepicker]="ends" matInput required>
                 <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                 <mat-datepicker #ends></mat-datepicker>
                 <mat-error *ngIf="form.get('endDate').hasError('required')">{{'endDateIsRequired'|translate}}</mat-error>
