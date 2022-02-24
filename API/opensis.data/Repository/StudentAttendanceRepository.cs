@@ -1133,7 +1133,31 @@ namespace opensis.data.Repository
                         Profile = v.StaffMaster.Profile,
                         JobTitle = v.StaffMaster.JobTitle,
                         SchoolEmail = v.StaffMaster.SchoolEmail,
-                        MobilePhone = v.StaffMaster.MobilePhone
+                        MobilePhone = v.StaffMaster.MobilePhone,
+                        AlternateId = v.StaffMaster.AlternateId,
+                        SocialSecurityNumber = v.StaffMaster.SocialSecurityNumber,
+                        LoginEmailAddress = v.StaffMaster.LoginEmailAddress,
+                        Dob = v.StaffMaster.Dob,
+                        Race = v.StaffMaster.Race,
+                        Ethnicity = v.StaffMaster.Ethnicity,
+                        Gender = v.StaffMaster.Gender,
+                        CountryOfBirth = v.StaffMaster.CountryOfBirth,
+                        MaritalStatus = v.StaffMaster.MaritalStatus,
+                        Nationality = v.StaffMaster.Nationality,
+                        FirstLanguage = v.StaffMaster.FirstLanguage,
+                        SecondLanguage = v.StaffMaster.SecondLanguage,
+                        ThirdLanguage = v.StaffMaster.ThirdLanguage,
+                        HomePhone = v.StaffMaster.HomePhone,
+                        JoiningDate = v.StaffMaster.JoiningDate,
+                        EndDate = v.StaffMaster.EndDate,
+                        HomeAddressLineOne = v.StaffMaster.HomeAddressLineOne,
+                        HomeAddressLineTwo = v.StaffMaster.HomeAddressLineTwo,
+                        HomeAddressCity = v.StaffMaster.HomeAddressCity,
+                        HomeAddressCountry = v.StaffMaster.HomeAddressCountry,
+                        HomeAddressState = v.StaffMaster.HomeAddressState,
+                        HomeAddressZip = v.StaffMaster.HomeAddressZip,
+                        BusNo = v.StaffMaster.BusNo,
+                        PersonalEmail = v.StaffMaster.PersonalEmail
                     }
                 });
 
@@ -1210,6 +1234,10 @@ namespace opensis.data.Repository
                                 string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
 
                                 transactionIQ = staffCoursesectionSchedule.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffInternalId != null && x.StaffInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.Profile != null && x.Profile.ToLower().Contains(Columnvalue.ToLower()) || x.JobTitle != null && x.JobTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SchoolEmail != null && x.SchoolEmail.ToLower().Contains(Columnvalue.ToLower()) || x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue)).AsQueryable();
+                            }
+                            else
+                            {
+                                transactionIQ = Utility.FilteredData(pageResult.FilterParams!, staffCoursesectionSchedule!).AsQueryable();
                             }
                         }
                         //transactionIQ = transactionIQ.Distinct();
