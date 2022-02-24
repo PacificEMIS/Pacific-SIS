@@ -3,7 +3,9 @@
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'comments' | translate}}</h3>
         <div>
-            <a (click)="exportCommentsToExcel()" class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Export as Excel"><i class="icon icon-file-excel text-lg"></i></a>
+            <a (click)="exportCommentsToExcel()" class="cursor-pointer mr-3 inline-block align-middle" matTooltip="Export as Excel">
+                <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+            </a>
             <a class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Print"><mat-icon [icIcon]="icPrint"></mat-icon></a>
             <button *ngIf="(membershipType === 'Teacher' || membershipType === 'Homeroom Teacher') && this.defaultValuesService.checkAcademicYear() && permissions?.add" mat-raised-button color="primary" class="align-middle" (click)='openAddNew()'>
                 <mat-icon [icIcon]="icAdd"></mat-icon><span class="ml-2 hidden md:inline-block">{{'addComment' |translate}}</span>
@@ -15,7 +17,7 @@
     </div>
     <mat-card-content>
         <div @stagger fxLayout="column">
-            <div class="mt-6 mx-4" *ngIf="listCount > 0">
+            <div class="mt-6" *ngIf="listCount > 0">
                 <div class="mb-4" *ngFor="let studentComment of studentCommentsListViewModel.studentCommentsList">
                     <mat-accordion class="w-full">
                         <mat-expansion-panel>

@@ -26,7 +26,9 @@
 
             <hr class="-mx-6 block md:hidden"/>
             <div fxFlex="200px" class="pt-3">
-                <a (click)="exportCommonToiletTypeListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel"><i class="icon icon-file-excel text-lg"></i></a>
+                <a (click)="exportCommonToiletTypeListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
+                </a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                     matTooltip="Filter Columns" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>

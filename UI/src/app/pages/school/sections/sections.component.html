@@ -17,8 +17,8 @@
       </div>
       <hr class="-mx-4 block md:hidden" />
       <div fxFlex="200px" class="pt-2 pb-2 md:pb-0">
-        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel" type="button">
-          <span class="icon icon-file-excel text-lg"></span>
+        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel" type="button" class="inline-block align-middle">
+          <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
         </button>
 
         <button [matMenuTriggerFor]="columnFilterMenu" fxFlex="none" mat-icon-button matTooltip="Filter Columns"
