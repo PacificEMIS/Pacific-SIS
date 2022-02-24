@@ -6,6 +6,7 @@
         </vex-secondary-toolbar>
     </vex-page-layout-header>
     <vex-page-layout-content>
+        <ng-container *ngIf="showRollOver; else ViewMode1">
         <form (ngSubmit)="rollOver()" #f="ngForm" appInvalidControlScroll>
         <div  class="md:w-9/12 m-auto card px-6 py-4">
             <h4 class="text-lg font-semibold text-center py-4">{{ "areYouSureYouWantToRollTheDataFor" | translate }} <span class="mx-1">2020-2021</span> {{ "toTheNextSchoolYear" | translate }}
@@ -142,5 +143,9 @@
             </div>
         </div>
     </form>
+    </ng-container>
+    <ng-template #ViewMode1>
+        <div class="text-center card p-4"><p class="text-red text-sm text-base"><mat-icon class="text-xl mr-2 align-middle">info</mat-icon>{{'rolloverCompletedForThisAcademicYear' | translate }}</p></div>
+    </ng-template>
     </vex-page-layout-content>
 </vex-page-layout>

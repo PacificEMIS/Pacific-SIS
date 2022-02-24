@@ -81,6 +81,7 @@ export class StudentDataImportComponent implements OnInit {
   headerObject: {};
   isNewHeaderFilled= false;
   permissions: Permissions;
+  showRollOver: boolean;
   constructor(public translateService:TranslateService,
     private snackbar: MatSnackBar,
     private excelService:ExcelService,
@@ -91,6 +92,11 @@ export class StudentDataImportComponent implements OnInit {
     private commonService:CommonService,
     private sectionService:SectionService) { 
     //translateService.use('en');
+    if(defaultValueService.checkAcademicYear()){
+      this.showRollOver = true
+    } else {
+      this.showRollOver = false
+    }
   }
 
   ngOnInit(): void {

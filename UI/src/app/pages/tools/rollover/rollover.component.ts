@@ -28,6 +28,7 @@ export class RolloverComponent implements OnInit {
   minSchoolBeginDateVal: Date;
   finalGradingMarkingPeriodList: FinalGradingMarkingPeriodList = new FinalGradingMarkingPeriodList();
   rolloverViewModel: RolloverViewModel = new RolloverViewModel();
+  showRollOver: boolean;
   constructor(public translateService: TranslateService,
     private gradeBookConfigurationService: GradeBookConfigurationService,
     private snackbar: MatSnackBar,
@@ -39,6 +40,11 @@ export class RolloverComponent implements OnInit {
     this.loaderService.isLoading.subscribe((v) => {
       this.loading = v;
     });
+    if(defaultValuesService.checkAcademicYear()){
+      this.showRollOver = true
+    } else {
+      this.showRollOver = false
+    }
   }
 
   ngOnInit(): void {
