@@ -260,6 +260,10 @@ export class InputFinalGradesComponent implements OnInit {
   }
   }
 
+  selectMarkingPeriod(data) {
+    this.addUpdateStudentFinalGradeModel.creditHours = data.creditHours;
+  }
+  
   getGradeScaleList(grade) {
     let gradeDataSet = [];
     if (this.gradeScaleList) {

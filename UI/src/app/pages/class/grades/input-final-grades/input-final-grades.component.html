@@ -12,7 +12,7 @@
                     <mat-label>{{ "markingPeriod" | translate }}</mat-label>
                     <mat-select [(value)]="courseSectionData.markingPeriodId" [(ngModel)]="selectedMarkingPeriod" (selectionChange)="changeMarkingPeriod($event)" name="markingPeriod">
                         <mat-option></mat-option>
-                        <mat-option *ngFor="let period of markingPeriodList" [value]="period.text">
+                        <mat-option *ngFor="let period of markingPeriodList" [value]="period.text" (click)="selectMarkingPeriod(period)">
                             {{period.text}}</mat-option>
                     </mat-select>
                 </mat-form-field>
