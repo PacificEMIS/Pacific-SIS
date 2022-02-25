@@ -81,21 +81,15 @@ export class StaffDataImportComponent implements OnInit {
   exportExcel: BulkDataImportExcelHeader = new BulkDataImportExcelHeader();
   isNewHeaderFilled= false;
   permissions: Permissions;
-  showRollOver: boolean;
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private staffService: StaffService,
-    private defaultValueService:DefaultValuesService,
+    public defaultValueService:DefaultValuesService,
     private loginService:LoginService,
     private commonService:CommonService) {
     //translateService.use('en');
-    if(defaultValueService.checkAcademicYear()){
-      this.showRollOver = true
-    } else {
-      this.showRollOver = false
-    }
    
   }
 

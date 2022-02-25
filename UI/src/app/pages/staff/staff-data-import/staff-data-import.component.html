@@ -63,7 +63,7 @@
                 <div [ngSwitch]="currentTab">
                     <!-- Start Upload your file -->
                     <div class="upload_file" *ngSwitchCase="bulkDataImport.UPLOAD">
-                        <ng-container *ngIf="showRollOver; else ViewMode1">
+                        <ng-container *ngIf="defaultValueService.checkAcademicYear(); else ViewMode1">
                         <div class="card px-6 py-4">
                             <p class="text-center text-base"><a class="text-primary cursor-pointer"
                                     (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{
