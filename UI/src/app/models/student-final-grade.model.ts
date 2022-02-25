@@ -54,6 +54,7 @@ export class AddUpdateStudentFinalGradeModel extends CommonField {
     courseId: number;
     isPercent: boolean;
     markingPeriodId: string;
+    creditHours: number;
     academicYear: number;
     isExamGrade: boolean;
     isCustomMarkingPeriod: boolean;

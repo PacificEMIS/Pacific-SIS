@@ -225,7 +225,7 @@ export class GradebookGradeListComponent implements OnInit {
   }
 
   getGradebookGrade(SearchValue?, includeInactive?, courseSection?) {    
-    this.defaultValuesService.setSelectedCourseSection(courseSection?.value);
+    if(courseSection) this.defaultValuesService.setSelectedCourseSection(courseSection?.value);
     this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
     this.markingPeriodId = this.findMarkingPeriodTitleById(this.selectedCourseSection);
 

@@ -42,7 +42,7 @@
                     <li>
                         <mat-form-field appearance="outline" color="primary" class="w-full mb-4">
                             <mat-label>{{ 'assignedDate' | translate }}</mat-label>
-                            <input [min]="courseSectionStartDate" [max]="courseSectionEndDate" formControlName="assignmentDate" matInput [matDatepicker]="assignedDate" required>
+                            <input [min]="markingPeriodStartDate" [max]="markingPeriodEndDate" formControlName="assignmentDate" matInput [matDatepicker]="assignedDate" required>
                             <mat-datepicker-toggle matSuffix [for]="assignedDate"></mat-datepicker-toggle>
                             <mat-datepicker #assignedDate></mat-datepicker>
                             <mat-error *ngIf="form.get('assignmentDate').hasError('required')">{{'assignmentDateIsRequired'|translate}}</mat-error>
@@ -51,7 +51,7 @@
                     <li>
                         <mat-form-field appearance="outline" color="primary" class="w-full mb-4">
                             <mat-label>{{ 'dueDate' | translate }}</mat-label>
-                            <input [min]="courseSectionStartDate" [max]="courseSectionEndDate" formControlName="dueDate" matInput [matDatepicker]="dueDate" required>
+                            <input [min]="markingPeriodStartDate" [max]="markingPeriodEndDate" formControlName="dueDate" matInput [matDatepicker]="dueDate" required>
                             <mat-datepicker-toggle matSuffix [for]="dueDate"></mat-datepicker-toggle>
                             <mat-datepicker #dueDate></mat-datepicker>
                             <mat-error *ngIf="form.get('dueDate').hasError('required')">{{'dueDateIsRequired'|translate}}</mat-error>

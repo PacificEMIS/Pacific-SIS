@@ -367,6 +367,10 @@ export class GradeDetailsComponent implements OnInit {
   }
   }
 
+  selectMarkingPeriod(data) {
+    this.addUpdateStudentFinalGradeModel.creditHours = data.creditHours;
+  }
+
   inActiveStudent(value) {
   }
 

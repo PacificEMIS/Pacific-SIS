@@ -44,7 +44,7 @@
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'endDate' | translate}}</mat-label>
                         <input formControlName="endDate" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.endDate"
-                            name="endDate" [min]="getMinEndDateVal()" [matDatepicker]="ends" [max]="maxEndDate" matInput required>
+                            name="endDate" [min]="getMinEndDateVal()" [matDatepicker]="ends" matInput required>
                         <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                         <mat-datepicker #ends></mat-datepicker>
                         <mat-error *ngIf="form.get('endDate').hasError('required')">
