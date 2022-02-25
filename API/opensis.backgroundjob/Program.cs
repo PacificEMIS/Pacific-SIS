@@ -222,7 +222,18 @@ namespace opensis.backgroundjob
                                                     if (studentOldSchool?.Any() == true)
                                                     {
                                                         studentOldSchool.ForEach(x => x.IsActive = false);
+
+                                                        //this foreach for drop student from his scheduled course section
+                                                        foreach (var studentSchool in studentOldSchool)
+                                                        {
+                                                            var studentCourseSection = context?.StudentCoursesectionSchedule.Where(x => x.SchoolId == studentSchool.SchoolId && x.TenantId == studentSchool.TenantId && x.StudentId == studentSchool.StudentId && x.IsDropped != true).ToList();
+                                                            if (studentCourseSection?.Any() == true)
+                                                            {
+                                                                studentCourseSection.ForEach(s => { s.IsDropped = true; s.EffectiveDropDate = studentEnrollmentList.ExitDate; });
+                                                            }
+                                                        }
                                                     }
+
                                                     context?.SaveChanges();
                                                 }
                                             }
@@ -232,6 +243,11 @@ namespace opensis.backgroundjob
                                                 {
                                                     context?.StudentMaster.Where(x => x.StudentGuid == studentEnrollmentList.StudentGuid && x.SchoolId == studentEnrollmentList.SchoolId).ToList().ForEach(x => x.IsActive = false);
 
+                                                    var studentCourseSection = context?.StudentCoursesectionSchedule.Where(x => x.SchoolId == studentEnrollmentList.SchoolId && x.TenantId == studentEnrollmentList.TenantId && x.StudentGuid == studentEnrollmentList.StudentGuid && x.IsDropped != true).ToList();
+                                                    if (studentCourseSection?.Any() == true)
+                                                    {
+                                                        studentCourseSection.ForEach(s => { s.IsDropped = true; s.EffectiveDropDate = studentEnrollmentList.ExitDate; });
+                                                    }
 
                                                     context?.SaveChanges();
                                                 }
