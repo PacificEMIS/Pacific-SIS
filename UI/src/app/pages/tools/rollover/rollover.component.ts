@@ -32,7 +32,7 @@ export class RolloverComponent implements OnInit {
     private gradeBookConfigurationService: GradeBookConfigurationService,
     private snackbar: MatSnackBar,
     private commonFunction: SharedFunction,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private rollOverService: RollOverService,
     private loaderService: LoaderService,
     private commonService: CommonService) {

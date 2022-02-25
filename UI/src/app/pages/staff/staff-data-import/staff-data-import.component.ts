@@ -86,11 +86,10 @@ export class StaffDataImportComponent implements OnInit {
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private staffService: StaffService,
-    private defaultValueService:DefaultValuesService,
+    public defaultValueService:DefaultValuesService,
     private loginService:LoginService,
     private commonService:CommonService) {
     //translateService.use('en');
-
    
   }
 
