@@ -1608,6 +1608,7 @@
     "endDateCannotBeEarlierOrSameAsStartDate": "End Date cannot be earlier or same as Start Date",
     "youHaveChangedTheGradebookConfiguration":"You have changed the gradebook configuration",
     "pleaseRecalculateTheGrades":"please recalculate the grades",
+    "selectCourseSectionInClassList": "Select Course Sections",
     "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Student data import cannot be done for this School Year.",
     "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Staff data import cannot be done for this School Year.",
     "rolloverCompletedForThisAcademicYear":"Rollover completed for this academic year"

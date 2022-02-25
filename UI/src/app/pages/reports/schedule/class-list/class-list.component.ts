@@ -136,6 +136,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedFieldsArray = [];
   generateCourseSectionList: any;
   totalStudentCount: number;
+  membershipType;
 
   fieldsDetailsArray = {
     identificationInformation: [
@@ -221,6 +222,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
+    this.membershipType = this.defaultValuesService.getUserMembershipType();
     this.getAllStaff.pageSize =  0;
     this.getAllStaff.filterParams = null;
     this.getAllStaff.pageNumber = 1;
@@ -239,6 +241,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(){
+    if(this.membershipType === 'Teacher' || this.membershipType === 'Homeroom Teacher') this.scheduleReportFilterModel.staffId = this.defaultValuesService.getUserId();
     this.scheduleService.scheduledCourseSectionListForReport(this.scheduleReportFilterModel).subscribe(res=>{
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -400,6 +403,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.scheduleReportFilterModel.courseId=filter.courseId=='all'?null:filter.courseId;
       this.scheduleReportFilterModel.staffId=filter.staffId=='all'?null:filter.staffId;
       this.scheduleReportFilterModel.blockPeriodId=filter.periodId=='all'?null:filter.periodId;
+      if(this.membershipType === 'Teacher' || this.membershipType === 'Homeroom Teacher') this.scheduleReportFilterModel.staffId = this.defaultValuesService.getUserId();
 
        this.scheduleService.scheduledCourseSectionListForReport(this.scheduleReportFilterModel).subscribe(res=>{
         this.classListsClone = res?.courseSectionViewList

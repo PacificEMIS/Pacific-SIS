@@ -4,7 +4,8 @@
         <div class="report-box bg-white rounded text-center py-4 px-6 relative cursor-pointer flex items-center" (click)="changeTab('selectSTeacher')" [class.active]="currentTab === 'selectSTeacher'" [ngClass]="currentTab === 'selectSTeacher' ? 'bg-primary text-white arrow-bottom' : ''">
             <img src="assets/img/students.svg" alt="Select Students icon" width="65"
                 class="inline-block mr-4">
-            <h4 class="text-lg font-medium text-left">{{ 'selectTeacherCourseSections' | translate }}</h4>
+            <h4 *ngIf="membershipType !== 'Teacher' && membershipType !== 'Homeroom Teacher'" class="text-lg font-medium text-left">{{ 'selectTeacherCourseSections' | translate }}</h4>
+            <h4 *ngIf="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" class="text-lg font-medium text-left">{{ 'selectCourseSectionInClassList' | translate }}</h4>
             <i class="hidden md:block icon icon-arrow-right8 absolute text-3xl text-black"></i>
         </div>
         <div class="report-box bg-white rounded text-center py-4 px-6 relative cursor-pointer flex items-center" (click)="changeTab('selectFields')" [class.active]="currentTab === 'selectFields'" [ngClass]="currentTab === 'selectFields' ? 'bg-primary text-white arrow-bottom' : ''">
@@ -28,7 +29,7 @@
             <form [formGroup]="form">
 
             <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 px-6 py-4">
-                <li>
+                <li *ngIf="membershipType !== 'Teacher' && membershipType !== 'Homeroom Teacher'">
                     <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                         <mat-label>{{ "teacher" | translate }}</mat-label>
                             <mat-select name="staff" formControlName="staff" (selectionChange)="onStaffChange($event.value)">
