@@ -269,15 +269,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        var staffDefaultData = this.context?.StaffMaster.Where(x => x.TenantId == objModel.TenantId && x.LoginEmailAddress == objModel.Email).Select(g => new StaffMaster()
-                        {
-                            StaffId = g.StaffId,
-                            SchoolId = g.SchoolId,
-                        }).FirstOrDefault();
-
-                        var userEndDate = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == staffDefaultData!.SchoolId && x.StaffId == staffDefaultData.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).Select(x => x.EndDate).FirstOrDefault();
-
-                        if (userEndDate == null)
+                        if (user?.Membership?.ProfileType == "Super Administrator")
                         {
                             var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
                             {
@@ -297,33 +289,89 @@ namespace opensis.data.Repository
                                 ReturnModel.MiddleName = userData.MiddleName;
                                 ReturnModel.LastFamilyName = userData.LastFamilyName;
                                 ReturnModel.UserGuid = userData.StaffGuid.ToString();
-
-                                if (user?.LastUsedSchoolId != null)
-                                {
-                                    var lastSchoolMembershipId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == (int)user.LastUsedSchoolId && x.StaffId == staffDefaultData!.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).FirstOrDefault();
-
-                                    if (lastSchoolMembershipId != null)
-                                    {
-                                        ReturnModel.MembershipId = lastSchoolMembershipId.MembershipId;
-                                        ReturnModel.MembershipType = lastSchoolMembershipId.Profile;
-                                        ReturnModel.MembershipName = this.context?.Membership.FirstOrDefault(x => x.TenantId == objModel.TenantId && x.SchoolId == (int)user.LastUsedSchoolId && x.MembershipId == lastSchoolMembershipId.MembershipId)?.Profile;
-                                    }
-                                }
                             }
                         }
                         else
                         {
-                            ReturnModel.UserId = user?.UserId;
-                            ReturnModel.TenantId = user?.TenantId;
-                            ReturnModel.Email = user?.EmailAddress;
-                            ReturnModel.Name = user?.Name;
-                            ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
-                            //ReturnModel.MembershipName = user?.Membership.Profile;
-                            //ReturnModel.MembershipType = user?.Membership.ProfileType;
-                            //ReturnModel.MembershipId = user?.Membership.MembershipId;
-                            ReturnModel._failure = true;
-                            ReturnModel._message = "Your account is inactive, please contact to Administrator";
-                            return ReturnModel;
+
+                            var staffDefaultData = this.context?.StaffMaster.Where(x => x.TenantId == objModel.TenantId && x.LoginEmailAddress == objModel.Email).Select(g => new StaffMaster()
+                            {
+                                StaffId = g.StaffId,
+                                SchoolId = g.SchoolId,
+                            }).FirstOrDefault();
+
+                            if (staffDefaultData != null)
+                            {
+                                var activeSchool = this.context?.SchoolDetail.Where(x => x.SchoolId == staffDefaultData.SchoolId).Select(y => y.Status).FirstOrDefault();
+
+                                if (activeSchool == false)
+                                {
+                                    ReturnModel.UserId = user?.UserId;
+                                    ReturnModel.TenantId = user?.TenantId;
+                                    ReturnModel.Email = user?.EmailAddress;
+                                    ReturnModel.Name = user?.Name;
+                                    ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
+                                    //ReturnModel.MembershipName = user?.Membership.Profile;
+                                    //ReturnModel.MembershipType = user?.Membership.ProfileType;
+                                    //ReturnModel.MembershipId = user?.Membership.MembershipId;
+                                    ReturnModel._failure = true;
+                                    ReturnModel._message = "Your default school is inactive, please contact to Administrator";
+                                    return ReturnModel;
+                                }
+                                else
+                                {
+                                    var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == staffDefaultData!.SchoolId && x.StaffId == staffDefaultData.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).FirstOrDefault();
+
+                                    if (staffSchoolInfoData != null)
+                                    {
+                                        var userData = this.context?.StaffMaster.Where(x => x.TenantId == user!.TenantId /*&& x.SchoolId == user.SchoolId*/ && x.StaffId == user.UserId).Select(x => new StaffMaster()
+                                        {
+                                            StaffPhoto = x.StaffPhoto,
+                                            Suffix = x.Suffix,
+                                            FirstGivenName = x.FirstGivenName,
+                                            MiddleName = x.MiddleName,
+                                            LastFamilyName = x.LastFamilyName,
+                                            StaffGuid = x.StaffGuid,
+                                        }).FirstOrDefault();
+
+                                        if (userData != null)
+                                        {
+                                            ReturnModel.UserPhoto = userData.StaffPhoto;
+                                            ReturnModel.Suffix = userData.Suffix;
+                                            ReturnModel.FirstGivenName = userData.FirstGivenName;
+                                            ReturnModel.MiddleName = userData.MiddleName;
+                                            ReturnModel.LastFamilyName = userData.LastFamilyName;
+                                            ReturnModel.UserGuid = userData.StaffGuid.ToString();
+
+                                            if (user?.LastUsedSchoolId != null)
+                                            {
+                                                var lastSchoolMembershipId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == (int)user.LastUsedSchoolId && x.StaffId == staffDefaultData!.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).FirstOrDefault();
+
+                                                if (lastSchoolMembershipId != null)
+                                                {
+                                                    ReturnModel.MembershipId = lastSchoolMembershipId.MembershipId;
+                                                    ReturnModel.MembershipType = lastSchoolMembershipId.Profile;
+                                                    ReturnModel.MembershipName = this.context?.Membership.FirstOrDefault(x => x.TenantId == objModel.TenantId && x.SchoolId == (int)user.LastUsedSchoolId && x.MembershipId == lastSchoolMembershipId.MembershipId)?.Profile;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ReturnModel.UserId = user?.UserId;
+                                        ReturnModel.TenantId = user?.TenantId;
+                                        ReturnModel.Email = user?.EmailAddress;
+                                        ReturnModel.Name = user?.Name;
+                                        ReturnModel.LastUsedSchoolId = user?.LastUsedSchoolId;
+                                        //ReturnModel.MembershipName = user?.Membership.Profile;
+                                        //ReturnModel.MembershipType = user?.Membership.ProfileType;
+                                        //ReturnModel.MembershipId = user?.Membership.MembershipId;
+                                        ReturnModel._failure = true;
+                                        ReturnModel._message = "Your account is inactive, please contact to Administrator";
+                                        return ReturnModel;
+                                    }
+                                }
+                            }
                         }
                     }
 
