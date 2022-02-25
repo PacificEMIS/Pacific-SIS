@@ -1607,5 +1607,6 @@
     "courseType":"Course Type",
     "endDateCannotBeEarlierOrSameAsStartDate": "End Date cannot be earlier or same as Start Date",
     "youHaveChangedTheGradebookConfiguration":"You have changed the gradebook configuration",
-    "pleaseRecalculateTheGrades":"please recalculate the grades"
+    "pleaseRecalculateTheGrades":"please recalculate the grades",
+    "selectCourseSectionInClassList": "Select Course Sections"
 }

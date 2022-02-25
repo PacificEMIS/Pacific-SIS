@@ -1606,5 +1606,6 @@
     "courseType": "Type de cours",
     "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début",
     "youHaveChangedTheGradebookConfiguration":"Vous avez modifié la configuration du carnet de notes",
-    "pleaseRecalculateTheGrades":"merci de recalculer les notes"
+    "pleaseRecalculateTheGrades":"merci de recalculer les notes",
+    "selectCourseSectionInClassList": "Sélectionnez les sections de cours"
 }
