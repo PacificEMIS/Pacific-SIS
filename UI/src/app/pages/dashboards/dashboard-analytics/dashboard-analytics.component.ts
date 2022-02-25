@@ -338,6 +338,11 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
               draggable: true
             };
           });
+          let dayBeforeCurrentMonthFirstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 0);
+          let dayAfterCurrentMonthLastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1);
+          eventList = eventList.filter(itemEvent=>
+            moment(itemEvent.start).isBetween(dayBeforeCurrentMonthFirstDay, dayAfterCurrentMonthLastDay) || moment(itemEvent.end).isBetween(dayBeforeCurrentMonthFirstDay, dayAfterCurrentMonthLastDay)
+          )
           return eventList.sort((n1, n2) => {
             if (n1.start > n2.start) {
               return 1;
