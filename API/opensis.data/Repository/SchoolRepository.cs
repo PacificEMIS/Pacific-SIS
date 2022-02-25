@@ -1030,7 +1030,7 @@ namespace opensis.data.Repository
 
                             if (userMasterData?.Any()==true)
                             {
-                                if (String.Compare(userMasterData.FirstOrDefault()!.Membership.ProfileType, "Super Administrator", true) == 0)
+                                if (userMasterData.FirstOrDefault()!.Membership.ProfileType != "Super Administrator")
                                 {
                                     int? Id = 0;
                                     Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
