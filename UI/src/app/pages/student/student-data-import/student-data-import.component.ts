@@ -86,7 +86,7 @@ export class StudentDataImportComponent implements OnInit {
     private excelService:ExcelService,
     private pageRolePermissions:PageRolesPermission,
     private studentService:StudentService,
-    private defaultValueService:DefaultValuesService,
+    public defaultValueService:DefaultValuesService,
     private loginService:LoginService,
     private commonService:CommonService,
     private sectionService:SectionService) { 
