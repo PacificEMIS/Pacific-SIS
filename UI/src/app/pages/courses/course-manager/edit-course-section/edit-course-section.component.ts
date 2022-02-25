@@ -167,7 +167,7 @@ export class EditCourseSectionComponent implements OnInit {
         calendarId: ['', Validators.required],
         isActive: [true],
         gradeScaleId: ['', Validators.required],
-        creditHours: [this.data.courseDetails?.creditHours ? this.data.courseDetails?.creditHours+'' : '', Validators.pattern('[0-9]{1,3}[.][0-9]{1,3}')],
+        creditHours: [this.data.editMode? this.data.courseDetails?.creditHours ? this.data.courseDetails?.creditHours+'' : '' : '', Validators.pattern('[0-9]{1,3}[.][0-9]{1,3}')],
         seats: [''],
         attendanceCategoryId: [''],
         allowStudentConflict:[false],

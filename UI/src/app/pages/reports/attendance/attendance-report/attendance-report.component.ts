@@ -239,6 +239,14 @@ export class AttendanceReportComponent implements OnInit {
         });
       }
     } else {
+      if (!this.getStudentAttendanceReportModel.markingPeriodStartDate && !this.getStudentAttendanceReportModel.markingPeriodEndDate) {
+        this.selectOptions.map(x => {
+          if (x.title === this.selectedReportBy) {
+            this.getStudentAttendanceReportModel.markingPeriodStartDate = x.startDate
+            this.getStudentAttendanceReportModel.markingPeriodEndDate = x.endDate
+          }
+        })
+      }
       this.getStudentAttendanceReport();
     }
   }
