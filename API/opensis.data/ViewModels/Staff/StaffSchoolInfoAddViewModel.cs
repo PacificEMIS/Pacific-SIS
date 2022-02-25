@@ -52,5 +52,6 @@ namespace opensis.data.ViewModels.Staff
         public List<StaffSchoolInfo> staffSchoolInfoList { get; set; }
         public List<FieldsCategory> fieldsCategoryList { get; set; }
         public int? SelectedCategoryId { get; set; }
+        public int? ExternalSchoolId { get; set; }
     }
 }

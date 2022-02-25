@@ -958,10 +958,10 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffSchoolInfoAddViewModel ViewStaffSchoolInfo(StaffSchoolInfoAddViewModel staffSchoolInfoAddViewModel)
         {
-            
+
             StaffSchoolInfoAddViewModel staffSchoolInfoView = new StaffSchoolInfoAddViewModel();
             try
-            {              
+            {
                 var staffMaster = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId);
                 if (staffMaster != null)
                 {
@@ -978,7 +978,7 @@ namespace opensis.data.Repository
                     staffSchoolInfoView.SchoolId = staffMaster.SchoolId;
                     staffSchoolInfoView.StaffId = staffMaster.StaffId;
                     staffSchoolInfoView._failure = false;
-                    
+
                 }
                 else
                 {
@@ -989,6 +989,87 @@ namespace opensis.data.Repository
                 if (staffSchoolInfo != null && staffSchoolInfo.Any())
                 {
                     staffSchoolInfoView.staffSchoolInfoList = staffSchoolInfo;
+                }
+
+                //for fetch custom category details
+                if (staffSchoolInfoAddViewModel.ExternalSchoolId != staffSchoolInfoAddViewModel.SchoolId)
+                {
+                    var externalCustomFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.ExternalSchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                    .Select(y => new FieldsCategory
+                    {
+                        TenantId = y.TenantId,
+                        SchoolId = y.SchoolId,
+                        CategoryId = y.CategoryId,
+                        IsSystemCategory = y.IsSystemCategory,
+                        Search = y.Search,
+                        Title = y.Title,
+                        Module = y.Module,
+                        SortOrder = y.SortOrder,
+                        Required = y.Required,
+                        Hide = y.Hide,
+                        CustomFields = y.CustomFields.Where(x => x.SystemField != true).Select(z => new CustomFields
+                        {
+                            TenantId = z.TenantId,
+                            SchoolId = z.SchoolId,
+                            CategoryId = z.CategoryId,
+                            FieldId = z.FieldId,
+                            Module = z.Module,
+                            Type = z.Type,
+                            Search = z.Search,
+                            Title = z.Title,
+                            SortOrder = z.SortOrder,
+                            SelectOptions = z.SelectOptions,
+                            SystemField = z.SystemField,
+                            Required = z.Required,
+                            Hide = z.Hide,
+                            DefaultSelection = z.DefaultSelection,
+                            CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId).ToList()
+                        }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
+                    }).ToList();
+
+                    if (externalCustomFields?.Any() == true)
+                    {
+                        staffSchoolInfoView.fieldsCategoryList = externalCustomFields;
+                    }
+                }
+                else
+                {
+                    var customFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                    .Select(y => new FieldsCategory
+                    {
+                        TenantId = y.TenantId,
+                        SchoolId = y.SchoolId,
+                        CategoryId = y.CategoryId,
+                        IsSystemCategory = y.IsSystemCategory,
+                        Search = y.Search,
+                        Title = y.Title,
+                        Module = y.Module,
+                        SortOrder = y.SortOrder,
+                        Required = y.Required,
+                        Hide = y.Hide,
+                        CustomFields = y.CustomFields.Where(x => x.SystemField != true).Select(z => new CustomFields
+                        {
+                            TenantId = z.TenantId,
+                            SchoolId = z.SchoolId,
+                            CategoryId = z.CategoryId,
+                            FieldId = z.FieldId,
+                            Module = z.Module,
+                            Type = z.Type,
+                            Search = z.Search,
+                            Title = z.Title,
+                            SortOrder = z.SortOrder,
+                            SelectOptions = z.SelectOptions,
+                            SystemField = z.SystemField,
+                            Required = z.Required,
+                            Hide = z.Hide,
+                            DefaultSelection = z.DefaultSelection,
+                            CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId).ToList()
+                        }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
+                    }).ToList();
+                    if (customFields?.Any() == true)
+                    {
+                        staffSchoolInfoView.fieldsCategoryList = customFields;
+                    }
                 }
             }
             catch (Exception es)
@@ -1186,7 +1267,7 @@ namespace opensis.data.Repository
 
             return staffCertificateInfoAddViewModel;
         }
-        
+
         /// <summary>
         /// Get All Staff Certificate Info
         /// </summary>
@@ -1194,7 +1275,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StaffCertificateInfoListModel GetAllStaffCertificateInfo(StaffCertificateInfoListModel staffCertificateInfoListModel)
         {
-            StaffCertificateInfoListModel staffCertificateInfoListView = new StaffCertificateInfoListModel();          
+            StaffCertificateInfoListModel staffCertificateInfoListView = new StaffCertificateInfoListModel();
             //IQueryable<StaffCertificateInfo> transactionIQ = null;           
 
             try
@@ -1208,10 +1289,91 @@ namespace opensis.data.Repository
                 staffCertificateInfoListView.StaffId = staffCertificateInfoListModel.StaffId;
                 staffCertificateInfoListView._token = staffCertificateInfoListModel._token;
 
-                if (staffCertificateInfoList!=null&& staffCertificateInfoList.Any())
+                if (staffCertificateInfoList != null && staffCertificateInfoList.Any())
                 {
                     staffCertificateInfoListView.staffCertificateInfoList = staffCertificateInfoList;
                     staffCertificateInfoListView._failure = false;
+
+                    //for fetch custom category details
+                    if (staffCertificateInfoListModel.ExternalSchoolId != staffCertificateInfoListModel.SchoolId)
+                    {
+                        var externalCustomFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffCertificateInfoListModel.TenantId && x.SchoolId == staffCertificateInfoListModel.ExternalSchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                        .Select(y => new FieldsCategory
+                        {
+                            TenantId = y.TenantId,
+                            SchoolId = y.SchoolId,
+                            CategoryId = y.CategoryId,
+                            IsSystemCategory = y.IsSystemCategory,
+                            Search = y.Search,
+                            Title = y.Title,
+                            Module = y.Module,
+                            SortOrder = y.SortOrder,
+                            Required = y.Required,
+                            Hide = y.Hide,
+                            CustomFields = y.CustomFields.Where(x => x.SystemField != true).Select(z => new CustomFields
+                            {
+                                TenantId = z.TenantId,
+                                SchoolId = z.SchoolId,
+                                CategoryId = z.CategoryId,
+                                FieldId = z.FieldId,
+                                Module = z.Module,
+                                Type = z.Type,
+                                Search = z.Search,
+                                Title = z.Title,
+                                SortOrder = z.SortOrder,
+                                SelectOptions = z.SelectOptions,
+                                SystemField = z.SystemField,
+                                Required = z.Required,
+                                Hide = z.Hide,
+                                DefaultSelection = z.DefaultSelection,
+                                CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffCertificateInfoListModel.StaffId).ToList()
+                            }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
+                        }).ToList();
+
+                        if (externalCustomFields?.Any() == true)
+                        {
+                            staffCertificateInfoListView.fieldsCategoryList = externalCustomFields;
+                        }
+                    }
+                    else
+                    {
+                        var customFields = this.context?.FieldsCategory.Where(x => x.TenantId == staffCertificateInfoListModel.TenantId && x.SchoolId == staffCertificateInfoListModel.SchoolId && x.Module == "Staff").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                        .Select(y => new FieldsCategory
+                        {
+                            TenantId = y.TenantId,
+                            SchoolId = y.SchoolId,
+                            CategoryId = y.CategoryId,
+                            IsSystemCategory = y.IsSystemCategory,
+                            Search = y.Search,
+                            Title = y.Title,
+                            Module = y.Module,
+                            SortOrder = y.SortOrder,
+                            Required = y.Required,
+                            Hide = y.Hide,
+                            CustomFields = y.CustomFields.Where(x => x.SystemField != true).Select(z => new CustomFields
+                            {
+                                TenantId = z.TenantId,
+                                SchoolId = z.SchoolId,
+                                CategoryId = z.CategoryId,
+                                FieldId = z.FieldId,
+                                Module = z.Module,
+                                Type = z.Type,
+                                Search = z.Search,
+                                Title = z.Title,
+                                SortOrder = z.SortOrder,
+                                SelectOptions = z.SelectOptions,
+                                SystemField = z.SystemField,
+                                Required = z.Required,
+                                Hide = z.Hide,
+                                DefaultSelection = z.DefaultSelection,
+                                CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == staffCertificateInfoListModel.StaffId).ToList()
+                            }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
+                        }).ToList();
+                        if (customFields?.Any() == true)
+                        {
+                            staffCertificateInfoListView.fieldsCategoryList = customFields;
+                        }
+                    }
                 }
                 else
                 {
