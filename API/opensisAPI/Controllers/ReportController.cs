@@ -251,5 +251,21 @@ namespace opensisAPI.Controllers
             }
             return schoolList;
         }
+
+        [HttpPost("getStudentProgressReport")]
+        public ActionResult<StudentProgressReport> GetStudentProgressReport(StudentProgressReport studentProgressReport)
+        {
+            StudentProgressReport studentProgressReportData = new();
+            try
+            {
+                studentProgressReportData = _studentReportService.GetStudentProgressReport(studentProgressReport);
+            }
+            catch (Exception es)
+            {
+                studentProgressReportData._failure = true;
+                studentProgressReportData._message = es.Message;
+            }
+            return studentProgressReportData;
+        }
     }
 }
