@@ -51,5 +51,6 @@ namespace opensis.data.ViewModels.InputFinalGrade
         public string? CreatedOrUpdatedBy { get; set; }
         public bool? IsCustomMarkingPeriod { get; set; }
         public bool? IsExamGrade { get; set; }
+        public decimal? CreditHours { get; set; }
     }
 }

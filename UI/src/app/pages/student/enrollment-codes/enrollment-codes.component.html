@@ -11,8 +11,9 @@
                     (click)="onSearchClear()">
                     <mat-icon>close</mat-icon>
                 </button>
-                <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                    <mat-icon [icIcon]="icSearch"></mat-icon>
+                <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                    <mat-icon>search</mat-icon>
                 </button>
             </div>
         </div>
@@ -20,8 +21,8 @@
 
         <div fxFlex="200px" class="pt-3">
             <button (click)="exportEnrollmentCodesToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel"
-                type="button">
-                <span class="icon icon-file-excel text-lg"></span>
+                type="button" class="inline-block align-middle">
+                <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
             </button>
 
             <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2" fxFlex="none" mat-icon-button

@@ -49,8 +49,8 @@ export class CreateAssignmentComponent implements OnInit {
   editDetails;
   generalConfiguration;
   courseSectionId: number;
-  courseSectionStartDate: string;
-  courseSectionEndDate: string;
+  markingPeriodStartDate: string;
+  markingPeriodEndDate: string;
   constructor(private dialogRef: MatDialogRef<CreateAssignmentComponent>,
     private fb: FormBuilder,
     private snackbar: MatSnackBar,
@@ -63,11 +63,11 @@ export class CreateAssignmentComponent implements OnInit {
     this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
       if (res) {
         this.courseSectionId = +res.courseSectionId;
-        this.courseSectionStartDate = res.durationStartDate;
-        this.courseSectionEndDate = res.durationEndDate;
       }
     });
     this.generalConfiguration = this.data.generalConfiguration;
+    this.markingPeriodStartDate = this.defaultService.getMarkingPeriodStartDate();
+    this.markingPeriodEndDate = this.defaultService.getMarkingPeriodEndDate();
   }
 
   ngOnInit(): void {

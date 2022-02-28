@@ -25,7 +25,9 @@ export class GetAllSchoolModel {
 }
 
 export class AllSchoolListModel {
+    getSchoolForView: [SchoolMasterModel];
     schoolMaster: [SchoolMasterModel];
+
     totalCount: number;
     pageNumber: number;
     _pageSize: number;
@@ -49,6 +51,8 @@ class OnlySchoolList {
 
 export class OnlySchoolListModel {
     schoolMaster: [SchoolMasterModel];
+    getSchoolForView: [SchoolMasterModel];
+
     tenantId: string;
     totalCount: number;
     pageNumber: number;

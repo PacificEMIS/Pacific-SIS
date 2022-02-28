@@ -52,9 +52,10 @@
                     <input [formControl]="searchCtrl" name="search"
                         class="py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                        <mat-icon [icIcon]="icSearch"></mat-icon>
-                    </button>
+                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                        <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                            <mat-icon>search</mat-icon>
+                        </button>
                 </div>
             </div>
 
@@ -65,7 +66,7 @@
                 </a> -->
                 <a class="cursor-pointer p-1 mt-1 ml-4 inline-block align-middle"
                     matTooltip="Export to Excel" (click)="exportSchoolSpecificStandardsListToExcel()" >
-                    <i class="icon icon-file-excel text-lg"></i>
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                     matTooltip="Filter Columns" type="button">

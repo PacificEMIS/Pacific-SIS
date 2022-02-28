@@ -27,7 +27,7 @@
                         <ul class="nav-sub-item">
                             <li *ngFor="let field of fieldsCategory; let index =index"
                                 (click)="changeCategory(field,index)">
-                                <a [ngClass]="currentCategory==field?.categoryId?'text-blue' : ''"
+                                <a [ngClass]="currentCategory==field?.categoryId?'text-blue active' : ''"
                                     @fadeInRight *ngIf="field.customFields!=''||index<7">{{field?.title}}</a>
                             </li>
 
@@ -61,10 +61,10 @@
                     <div>
                         <ul class="nav-sub-item">
                             <li *ngIf="otherTabs?.reportCard">
-                                <a (click)="changeTempCategory('/school/students/student-report-card')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-report-card' ?'text-blue' : ''">{{ 'reportCard' | translate }}</a>
+                                <a (click)="changeTempCategory('/school/students/student-report-card')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-report-card' ?'text-blue active' : ''">{{ 'reportCard' | translate }}</a>
                             </li>
                             <li *ngIf="otherTabs?.transcript">
-                                <a (click)="changeTempCategory('/school/students/student-transcript')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-transcript' ?'text-blue' : ''">{{ 'transcripts' | translate }}</a>
+                                <a (click)="changeTempCategory('/school/students/student-transcript')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-transcript' ?'text-blue active' : ''">{{ 'transcripts' | translate }}</a>
                             </li>
                         </ul>
                     </div>

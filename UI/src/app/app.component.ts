@@ -779,7 +779,7 @@ export class AppComponent implements OnInit, OnDestroy {
         } else if (item.permissionGroup.type === 'sub') {
           const children: MenuModel[] = [];
           let membershipType = this.defaultValueService.getUserMembershipType();
-          if (membershipType !== 'Teacher') {
+          if (membershipType !== 'Teacher' && membershipType !== 'Homeroom Teacher') {
             item.permissionGroup.permissionCategory?.map((child) => {
               if (child.rolePermission[0]?.canView && child.type !== '') {
                 children.push({

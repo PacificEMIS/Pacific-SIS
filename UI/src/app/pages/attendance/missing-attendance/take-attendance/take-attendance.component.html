@@ -7,14 +7,14 @@
     </vex-page-layout-header>
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16">
-            <div class="flex justify-between items-center px-6">
-                <div class="flex items-center py-4">
+            <div class="md:flex justify-between items-center px-6">
+                <div class="flex items-center pt-4 md:py-4">
                     <a [routerLink]="['/school', 'attendance', 'missing-attendance', 'missing-attendance-details']" class="cursor-pointer">
                         <mat-icon class="mr-4 align-middle text-blue">west</mat-icon>
                     </a>
                     <span class="font-medium text-lg">{{staffDetails?.staffFullName}} / {{staffDetails?.courseSectionName}} - {{staffDetails?.periodTitle}}</span>
                 </div>
-                <div>
+                <div class="pb-4 md:pt-0">
                     <h4 class="">{{scheduleStudentListViewModel?.scheduleStudentForView?.length}} {{ 'studentsFound' | translate }}</h4>
                 </div>
             </div>

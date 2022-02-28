@@ -35,11 +35,13 @@ namespace opensis.data.ViewModels.Staff
         public StaffCertificateInfoListModel()
         {
             staffCertificateInfoList = new List<StaffCertificateInfo>();
+            fieldsCategoryList = new List<FieldsCategory>();
         }
         public List<StaffCertificateInfo> staffCertificateInfoList { get; set; }
+        public List<FieldsCategory> fieldsCategoryList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
-
+        public int? ExternalSchoolId { get; set; }
     }
 }

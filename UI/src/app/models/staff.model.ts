@@ -274,7 +274,7 @@ export class StaffSchoolInfoListModel extends CommonField {
     createdBy: string;
     updatedOn: string;
     updatedBy: string;
-
+    membershipId: number;
     constructor() {
         super();
         this._failure = false;

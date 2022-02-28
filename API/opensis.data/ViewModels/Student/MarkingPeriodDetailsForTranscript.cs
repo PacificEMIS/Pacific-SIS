@@ -23,26 +23,24 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-using opensis.data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace opensis.data.ViewModels.School
+namespace opensis.data.ViewModels.Student
 {
-    public class SchoolListModel: CommonFields
+    public class MarkingPeriodDetailsForTranscript
     {
-        public SchoolListModel()
+        public MarkingPeriodDetailsForTranscript()
         {
-            getSchoolForView = new List<GetSchoolForView>();
-            schoolMaster = new List<SchoolMaster>();
+            reportCardDetailsForTranscripts = new List<ReportCardDetailsForTranscript>();
         }
-        public List<GetSchoolForView> getSchoolForView { get; set; }
-        public List<SchoolMaster> schoolMaster { get; set; }
-        public Guid? TenantId { get; set; }
-        public string? EmailAddress { get; set; }
-        public int? TotalCount { get; set; }
-        public int? PageNumber { get; set; }
-        public int? _pageSize { get; set; }
+        public List<ReportCardDetailsForTranscript> reportCardDetailsForTranscripts { get; set; }
+        public string? MarkingPeriodTitle { get; set; }
+        public decimal? CreditAttemped { get; set; }
+        public decimal? CreditEarned { get; set; }
+        public decimal? GPA { get; set; }
     }
 }

@@ -41,15 +41,16 @@
                         <div class="md:flex w-full items-center">
                             <input [formControl]="searchCtrl" class="px-2 py-3 border-0 outline-none w-full bg-transparent table-search"
                                 placeholder="Search..." type="search">
-                            <button class="ml-8 md:ml-4" mat-icon-button type="button">
-                                <mat-icon>search</mat-icon>
-                            </button>
+                                <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                                <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                    <mat-icon>search</mat-icon>
+                                </button>
                         </div>
                     </div>
                     <hr class="-mx-4 block md:hidden" />
                     <div class="py-2 md:pt-2 items-center">
-                        <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel" (click)="exportAccessLogListToExcel()">
-                            <i class="icon icon-file-excel text-lg"></i>
+                        <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel" (click)="exportAccessLogListToExcel()">
+                            <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button matTooltip="Filter Columns" type="button">
                             <mat-icon>filter_list</mat-icon>

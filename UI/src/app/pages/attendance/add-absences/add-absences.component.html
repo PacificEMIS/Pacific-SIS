@@ -85,12 +85,10 @@
                         <input [formControl]="searchCtrl"
                                     class="pr-4 py-3 border-0 outline-none w-full bg-transparent"
                                     placeholder="Search..." type="search">
-                                <img *ngIf="loading" src="assets/img/icons/loading-process.svg"
-                                    class="animate-spin w-5">
-                                <button *ngIf="!loading" class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button
-                                    type="button">
-                                    <mat-icon [icIcon]="icSearch"></mat-icon>
-                                </button>
+                                    <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                                    <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                        <mat-icon>search</mat-icon>
+                                    </button>
                         <a (click)="showAdvanceSearch()" [class.disabled]="!disabledAdvancedSearch" class="lg:w-full text-primary cursor-pointer ml-3">
                             <mat-icon aria-hidden="false" class="mr-0 lg:mr-2 align-middle">tune</mat-icon><span
                                 class="hidden lg:inline-block">{{'advanceSearch' | translate}}</span>

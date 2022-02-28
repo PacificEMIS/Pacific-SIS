@@ -9,12 +9,16 @@
           <button mat-button matSuffix mat-icon-button aria-label="clear" *ngIf="searchKey" (click)="onSearchClear()">
             <mat-icon>close</mat-icon>
           </button>
+          <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+          <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+              <mat-icon>search</mat-icon>
+          </button>
         </div>
       </div>
       <hr class="-mx-4 block md:hidden" />
       <div fxFlex="200px" class="pt-2 pb-2 md:pb-0">
-        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel" type="button">
-          <span class="icon icon-file-excel text-lg"></span>
+        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel" type="button" class="inline-block align-middle">
+          <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
         </button>
 
         <button [matMenuTriggerFor]="columnFilterMenu" fxFlex="none" mat-icon-button matTooltip="Filter Columns"

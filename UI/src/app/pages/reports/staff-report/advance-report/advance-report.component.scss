@@ -32,19 +32,19 @@
         &::before {
             counter-increment: my-sec-counter;
             content: " " counter(my-sec-counter) " ";
-            width: 20px;
-            height: 20px;
+            width: 26px;
+            height: 26px;
             background-color: #000;
             color: #fff;
             border-radius: 50%;
-            font-size: 14px;
+            font-size: 12px;
             padding: 6px;
-            margin-right: 10px;
             margin-right: 10px;
             text-align: center;
             display: inline-block;
-            line-height: 8px;
+            line-height: 15px;
             margin-bottom: 8px;
+            margin-top: 6px;
         }
     }
 }

@@ -321,7 +321,7 @@
                     <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                         {{studentEnrollmentModel?.estimatedGradDate |date:'mediumDate' |EmtyValueCheckPipe}}</p>
                 </li>
-                <li *ngIf="!isTeacherLogin" class="col-span-2 md:col-span-3 xl:col-span-4">
+                <li *ngIf="membershipType !== 'Teacher' && membershipType !== 'Homeroom Teacher'" class="col-span-2 md:col-span-3 xl:col-span-4">
                     <div class="flex items-center flex-wrap">
                         <div class="mr-6" *ngIf="studentEnrollmentModel?.eligibility504; else NOTEligibility">
                             <mat-icon [icIcon]="icCheckbox" class="inline-block align-middle mr-2"></mat-icon>

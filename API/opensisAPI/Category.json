@@ -890,7 +890,7 @@
     "PermissionGroupId": "8",
     "PermissionCategoryName": "Input Effort Grades",
     "ShortCode": "ieg",
-    "Path": "",
+    "Path": "/school/grades/input-effort-grades",
     "Title": "Input Effort Grades",
     "Type": "link",
     "EnableView": true,

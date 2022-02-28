@@ -37,10 +37,12 @@ namespace opensis.data.ViewModels.School
         public string? SchoolName { get; set; }
         public DateTime? DateSchoolOpened { get; set; }
         public DateTime? DateSchoolClosed { get; set; }
-        public string? StreetAddress1 { get; set; }
-        public string? NameOfPrincipal { get; set; }
-        public string? Telephone { get; set; }
-        public bool? Status { get; set; }        
+        public int? MembershipId { get; set; }
+        public string? MembershipType { get; set; }
+        //public string? StreetAddress1 { get; set; }
+        //public string? NameOfPrincipal { get; set; }
+        //public string? Telephone { get; set; }
+        //public bool? Status { get; set; }           
     }
 }
 

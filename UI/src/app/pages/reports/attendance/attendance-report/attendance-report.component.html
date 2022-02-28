@@ -53,9 +53,10 @@
                     <div class="flex w-full items-center">
                         <input class="py-3 border-0 outline-none w-full bg-transparent table-search"
                             placeholder="Search..." type="search" [formControl]="searchCtrl">
-                        <button class="ml-4" mat-icon-button type="button">
-                            <mat-icon>search</mat-icon>
-                        </button>
+                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                            <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                <mat-icon>search</mat-icon>
+                            </button>
                     </div>
                 </div>
                 <hr class="block md:hidden" />

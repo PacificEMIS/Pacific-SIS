@@ -7,9 +7,10 @@
                     <input [formControl]="searchCtrl" name="search"
                         class="pr-4 py-3 border-0 outline-none w-full bg-transparent" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                        <mat-icon [icIcon]="icSearch"></mat-icon>
-                    </button>
+                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                        <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                            <mat-icon>search</mat-icon>
+                        </button>
                 </div>
             </div>
 
@@ -17,8 +18,8 @@
 
             <div fxFlex="200px" class="pt-3">
                 <a (click)="exportEffortGradeScaleListToExcel()"
-                    class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel"><i
-                        class="icon icon-file-excel text-lg"></i></a>
+                    class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
                     matTooltip="Filter Columns" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>

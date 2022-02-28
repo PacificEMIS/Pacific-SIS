@@ -46,8 +46,6 @@
                             <mat-slide-toggle class="mr-4 mb-2" color="primary" [(ngModel)]="addReportCardPdf.gpa">
                                 {{ "gpa" | translate}}
                             </mat-slide-toggle>
-                        </div>
-                        <div class="mb-2">
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
                                 [(ngModel)]="addReportCardPdf.yearToDateDailyAbsences">
                                 {{ "yearToDateDailyAbsences" | translate}}
@@ -56,15 +54,17 @@
                                 [(ngModel)]="addReportCardPdf.dailyAbsencesThisMarkingPeriod">
                                 {{ "dailyAbsencesThisMarkingPeriod" | translate}}
                             </mat-slide-toggle>
-                            <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate">
-                                {{ "otherAttendanceCodeYearToDate" | translate}}
-                            </mat-slide-toggle>
-                            <div class="select-dropdown inline-block">
-                                <select>
-                                    <option value="na" selected>EA(Excused Absence)</option>
-                                </select>
-                            </div>
+                            <span class="inline-block">
+                                <mat-slide-toggle class="mr-4 mb-2" color="primary"
+                                    [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate">
+                                    {{ "otherAttendanceCodeYearToDate" | translate}}
+                                </mat-slide-toggle>
+                                <div class="select-dropdown inline-block">
+                                    <select>
+                                        <option value="na" selected>EA(Excused Absence)</option>
+                                    </select>
+                                </div>
+                            </span>
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "markingPeriods" | translate }}</h4>
                         <div class="mb-4">
@@ -84,6 +84,10 @@
                                     <input class="py-3 border-0 outline-none w-full bg-transparent table-search"
                                         appearance="outline" color="primary" [formControl]="searchCtrl"
                                         placeholder="Search..." type="search">
+                                        <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                                        <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
+                                            <mat-icon>search</mat-icon>
+                                        </button>
                                     <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
                                         <mat-icon [icIcon]="icSearch"></mat-icon>
                                     </button>

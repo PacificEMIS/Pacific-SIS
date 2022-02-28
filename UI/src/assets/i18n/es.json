@@ -1606,5 +1606,9 @@
     "courseType": "Tipo de curso",
     "endDateCannotBeEarlierOrSameAsStartDate": "La fecha de finalización no puede ser anterior ni igual a la fecha de inicio",
     "youHaveChangedTheGradebookConfiguration":"Ha cambiado la configuración del libro de calificaciones",
-    "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones"
+    "pleaseRecalculateTheGrades":"por favor recalcular las calificaciones",
+    "selectCourseSectionInClassList": "Seleccionar secciones del curso",
+    "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Transferencia completada. La importación de datos de estudiantes no se puede realizar para este año escolar.",
+    "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Transferencia completada. La importación de datos del personal no se puede realizar para este año escolar.",
+    "rolloverCompletedForThisAcademicYear":"Rollover completado para este año académico"
 }
