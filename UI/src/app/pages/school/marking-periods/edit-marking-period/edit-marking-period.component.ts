@@ -74,6 +74,8 @@ export class EditMarkingPeriodComponent implements OnInit {
   parentEndDate;
   minDate;
   maxDate;
+  schoolYearStartDate: string;
+  schoolYearEndDate: string;
   list;
   obj = {
     'doesComments': false,
@@ -98,6 +100,8 @@ export class EditMarkingPeriodComponent implements OnInit {
     private commonService: CommonService,
     @Inject(MAT_DIALOG_DATA) public data,
     private defaultValuesService: DefaultValuesService,) {
+    this.schoolYearStartDate = this.defaultValuesService.getFullYearStartDate();
+    this.schoolYearEndDate = this.defaultValuesService.getFullYearEndDate();
 
   }
 
@@ -213,6 +217,16 @@ export class EditMarkingPeriodComponent implements OnInit {
     let gradeClosingDate = this.form.controls.postEndDate.value;
     if (ValidationService.compareValidation(gradeOpeningDate, gradeClosingDate) === false) {
       this.form.controls.postEndDate.setErrors({ compareGradeError: true });
+    }
+  }
+
+  startDateCompare() {
+    let startDate = this.form.controls.startDate.value;
+    let endDate = this.form.controls.endDate.value;
+    if (ValidationService.compareValidation(startDate, endDate) === false) {
+      this.form.controls.startDate.setErrors({ compareDateError: true });
+    } else {
+      this.form.controls.startDate.setErrors(null);
     }
   }
 

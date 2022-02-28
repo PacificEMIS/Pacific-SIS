@@ -73,7 +73,7 @@ namespace opensis.report.report.data.Repository
 
 
                 var studentMissingAttendanceList = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Join(this.context?.StudentMissingAttendances, scs => scs.CourseSectionId, sma => sma.CourseSectionId, (scs, sma) => new { scs, sma }).Join(this.context?.BlockPeriod, ms => ms.sma.PeriodId, bp => bp.PeriodId, (ms, bp) => new { ms, bp })
-                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId)
+                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId && x.ms.sma.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.ms.sma.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate)
                     .Select(x => new StudentAttendanceViewForReport()
                     {
 
@@ -218,7 +218,7 @@ namespace opensis.report.report.data.Repository
                 var studentCourseSectionIds = this.context?.StudentMissingAttendances.Include(s => s.BlockPeriod).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate).Select(x => x.CourseSectionId).ToList();
 
                 var studentMissingAttendanceList = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Join(this.context?.StudentMissingAttendances, scs => scs.CourseSectionId, sma => sma.CourseSectionId, (scs, sma) => new { scs, sma }).Join(this.context?.BlockPeriod, ms => ms.sma.PeriodId, bp => bp.PeriodId, (ms, bp) => new { ms, bp })
-                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId)
+                    .Where(x => x.ms.scs.SchoolId == pageResult.SchoolId && x.ms.scs.TenantId == pageResult.TenantId && studentCourseSectionIds.Contains(x.ms.scs.CourseSectionId) && x.bp.TenantId == pageResult.TenantId && x.bp.SchoolId == pageResult.SchoolId && x.ms.sma.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.ms.sma.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate)
                     .Select(x => new AttendanceExcelReport()
                     {
                         StudentId = x.ms.scs.StudentId,

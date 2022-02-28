@@ -61,6 +61,7 @@
                 <div [ngSwitch]="currentTab">
                     <!-- Start Upload your file -->
                     <div class="upload_file" *ngSwitchCase="bulkDataImport.UPLOAD">
+                        <ng-container *ngIf="defaultValueService.checkAcademicYear(); else ViewMode1">
                         <div class="card px-6 py-4">
                             <p class="text-center text-base"><a class="text-primary cursor-pointer"
                                     (click)="generateExcel()">{{ 'clickHere' | translate }}</a> {{
@@ -126,6 +127,10 @@
                 </div>
             </div> -->
                         </div>
+                        </ng-container>
+                        <ng-template #ViewMode1>
+                            <div class="text-center card p-4"><p class="text-red text-sm text-base"><mat-icon class="text-xl mr-2 align-middle">info</mat-icon>{{'rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear' | translate }}</p></div>
+                        </ng-template>
                     </div>
                     <!-- End Upload your file -->
 

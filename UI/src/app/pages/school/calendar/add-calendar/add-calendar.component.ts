@@ -54,7 +54,6 @@ export class AddCalendarComponent implements OnInit {
   @ViewChild('checkBox') checkBox: MatCheckbox;
   checkAll: boolean;
   calendarTitle: string;
-  maxEndDate:string;
   minStartDate:string;
   maxStartDate: Date;
   calendarActionButtonTitle = "submit";
@@ -87,7 +86,6 @@ export class AddCalendarComponent implements OnInit {
     public defaultValuesService: DefaultValuesService
   ) {
       this.calendarAddViewModel.schoolCalendar.startDate = this.defaultValuesService.getFullYearStartDate();
-      this.maxEndDate = this.defaultValuesService.getFullYearEndDate();
       this.minStartDate = this.defaultValuesService.getFullYearStartDate();
       this.maxStartDate = moment(this.defaultValuesService.getFullYearEndDate()).subtract(1, 'days').toDate();
   }

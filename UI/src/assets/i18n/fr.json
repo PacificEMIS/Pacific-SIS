@@ -1606,5 +1606,9 @@
     "courseType": "Type de cours",
     "endDateCannotBeEarlierOrSameAsStartDate": "La date de fin ne peut pas être antérieure ou identique à la date de début",
     "youHaveChangedTheGradebookConfiguration":"Vous avez modifié la configuration du carnet de notes",
-    "pleaseRecalculateTheGrades":"merci de recalculer les notes"
+    "pleaseRecalculateTheGrades":"merci de recalculer les notes",
+    "selectCourseSectionInClassList": "Sélectionnez les sections de cours",
+    "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Roulement terminé. L'importation des données des élèves ne peut pas être effectuée pour cette année scolaire.",
+    "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Roulement terminé. L'importation des données du personnel ne peut pas être effectuée pour cette année scolaire.",
+    "rolloverCompletedForThisAcademicYear":"Roulement terminé pour cette année universitaire"
 }
