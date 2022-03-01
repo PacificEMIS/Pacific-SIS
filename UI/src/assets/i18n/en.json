@@ -1617,5 +1617,7 @@
     "responsibility": "Responsibility",
     "concernForOthers": "Concern for Others",
     "integrity": "Integrity",
-    "initiative": "Initiative"
+    "initiative": "Initiative",
+    "youHaveTakenAttendanceForThisPeriod": "You have taken attendance for this period.",
+    "attendanceHasNotBeenTakenForThisPeriod": "Attendance has not been taken for this period."
 }

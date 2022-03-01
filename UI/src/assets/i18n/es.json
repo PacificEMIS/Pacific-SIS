@@ -1616,5 +1616,7 @@
     "responsibility": "Responsabilidad",
     "concernForOthers": "Preocupación por los demás",
     "integrity": "Integridad",
-    "initiative": "Iniciativa"
+    "initiative": "Iniciativa",
+    "youHaveTakenAttendanceForThisPeriod": "Has tomado asistencia para este período.",
+    "attendanceHasNotBeenTakenForThisPeriod": "No se ha tomado asistencia para este período."
 }

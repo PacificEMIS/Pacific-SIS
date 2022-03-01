@@ -19,9 +19,15 @@
                 </div>
             </div>
             <mat-divider class="text-border"></mat-divider>
-            <div class="text-center py-4">
-                <h4 class="text-primary font-medium">{{ 'takingAttendanceFor' | translate }} : {{staffDetails?.attendanceDate | date : 'mediumDate'}}</h4>
-                <p class="text-warn" *ngIf="!isAttendanceDateToday"><i class="icon icon-info2 mr-2 align-baseline"></i>{{ 'selectedDateIsNotToday' | translate }}</p>
+            <div class="md:grid grid-cols-3 items-center px-6 py-2 text-center md:text-left">
+                <div class="mb-2 md:mb-0">
+                    <p class="font-base">{{ 'takingAttendanceFor' | translate }}</p>
+                    <h4 class="text-xl text-primary font-medium">{{staffDetails?.attendanceDate | date : 'mediumDate'}}</h4>
+                </div>
+                <div class="col-span-2">
+                    <div class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                    <!-- <div class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div> -->
+                </div> 
             </div>
             <mat-divider class="text-border"></mat-divider>
             <div class="overflow-x-auto overflow-y-hidden">
@@ -74,7 +80,9 @@
                                     matTooltip="{{addUpdateStudentAttendanceModel.studentAttendance[i]?.comments}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over"
                                     [matTooltipPosition]="'left'" (click)="addComments(i)"  [disabled]="element.isDropped">
-                                    <i class="icon icon-bubble text-lg" [ngClass]="addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0]?.comment ? 'text-green':''"></i>
+                                    <img src="assets/img/comment_inactive.svg" *ngIf="!addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0]?.comment" alt="Comment Inactive Icon">
+                                    <img src="assets/img/comment_active.svg" *ngIf="addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0]?.comment" alt="Comment Active Icon">
+                                    <!-- <i class="icon icon-bubble text-lg" [ngClass]="addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0]?.comment ? 'text-green':''"></i> -->
                                 </button>
                             </td>
                         </ng-container>
