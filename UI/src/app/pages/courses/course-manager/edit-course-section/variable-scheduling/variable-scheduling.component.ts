@@ -54,7 +54,7 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
   roomListViewModel: RoomListViewModel = new RoomListViewModel();
   courseSectionAddViewModel: CourseSectionAddViewModel = new CourseSectionAddViewModel();
 
-  selected = null;
+  selected = "";
   selectedBlocks = [];
   selectedPeriod = []
   divCount = [];
@@ -249,7 +249,7 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
     });
     let formValid = true;
     for (let variable of this.courseSectionAddViewModel.courseVariableScheduleList) {
-      if (variable.day == null || variable.periodId == null || variable.roomId == null) {
+      if ((variable.day == null || variable.day == "") || (variable.periodId == null || variable.periodId == "") || (variable.roomId == null || variable.roomId == "")) {
         formValid = false;
         break;
       }
