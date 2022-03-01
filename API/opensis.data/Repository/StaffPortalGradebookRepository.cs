@@ -618,7 +618,15 @@ namespace opensis.data.Repository
                             runingAvgSum = runingAvgSum + sumOfAssignmentTypeAvg;
                         }
 
-                        var runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                        decimal? runningAvg = 0;
+                        if (weightedGrades == true)
+                        {
+                            runningAvg = runingAvgSum;
+                        }
+                        else
+                        {
+                            runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                        }
 
                         string? runningGrade = null;
                         if (courseSectionData?.GradeScale?.Grade != null)
