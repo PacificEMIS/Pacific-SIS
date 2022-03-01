@@ -48,6 +48,7 @@ import { FacebookLinkValidatorDirective } from './user-defined-directives/facebo
 import { SsnMaskPipe } from './user-define-pipe/ssn-mask.pipe';
 import { InputEffortGradesNgForDivFilterPipe } from './user-define-pipe/input-effort-grades-ng-for-div-filter.pipe';
 import { CustomMinDirective } from './user-defined-directives/custom-min.directive';
+import { PasswordMaskPipe } from './user-define-pipe/password-mask.pipe';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { CustomMinDirective } from './user-defined-directives/custom-min.directi
     FacebookLinkValidatorDirective,
     SsnMaskPipe,
     InputEffortGradesNgForDivFilterPipe,
-    CustomMinDirective],
+    CustomMinDirective,
+    PasswordMaskPipe],
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
@@ -84,7 +86,7 @@ import { CustomMinDirective } from './user-defined-directives/custom-min.directi
   ],
   exports:[MatSpinnerOverlayComponent, ProfileImageComponent,PhoneMaskDirective,EmtyBooleanCheckPipe,EmtyValueCheckPipe,EmtyNumberCheckPipe,InvalidControlScrollDirective,
     EmtyBooleanCheckReversePipe,TransformDateTimePipe,TransformTimePipe,EmailvalidatorDirective,PhonevalidatorDirective,SafePipe,AgePipe,EvenOddPipe,WeekDayPipe,NgForFilterPipe,Transform24to12Pipe,CourseNgForFilterPipe,SystemCategoryCheckPipe,
-    youtubeLinkValidatorDirective,TwitterLinkValidatorDirective,WebsiteLinkValidatorDirective,LinkedinLinkValidatorDirective,InstagramLinkValidatorDirective,FacebookLinkValidatorDirective,SsnMaskPipe,InputEffortGradesNgForDivFilterPipe,CustomMinDirective],
+    youtubeLinkValidatorDirective,TwitterLinkValidatorDirective,WebsiteLinkValidatorDirective,LinkedinLinkValidatorDirective,InstagramLinkValidatorDirective,FacebookLinkValidatorDirective,SsnMaskPipe,InputEffortGradesNgForDivFilterPipe,CustomMinDirective, PasswordMaskPipe],
     providers: [NgxImageCompressService]
 })
 export class SharedModuleModule { }
