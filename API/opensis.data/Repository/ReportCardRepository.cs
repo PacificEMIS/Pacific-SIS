@@ -1568,6 +1568,7 @@ namespace opensis.data.Repository
                             List<string> teacherComments = new List<string>();
                             int teacherCommentsNo = 1;
                             int? absencesInDays = 0;
+                            List<DateTime> holidayList = new List<DateTime>();
 
                             var studentData = studentMasterData!.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
@@ -1589,7 +1590,7 @@ namespace opensis.data.Repository
                             foreach (var markingPeriod in markingPeriodsData)
                             {
                                 MarkingPeriodDetailsForDefaultTemplate markingPeriodDetailsForDefaultTemplates = new MarkingPeriodDetailsForDefaultTemplate();
-                                List<DateTime> holidayList = new List<DateTime>();
+                                //List<DateTime> holidayList = new List<DateTime>();
                                 int? Absences = 0;
                                 int? ExcusedAbsences = 0;
                                 int? QtrMarkingPeriodId = null;
@@ -1732,80 +1733,113 @@ namespace opensis.data.Repository
                                         }
                                     }
 
-                                    int workDays = 0;
-                                    double attendencePercent = 0;
-
-                                    var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.DefaultCalender == true && x.AcademicYear == reportCardViewModel.AcademicYear);
-
-                                    var schoolYearData = schoolData.SchoolYears.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
-
-                                    if (calenderData != null && schoolYearData != null)
-                                    {
-                                        DateTime? schoolYearStartDate = schoolYearData.StartDate;
-                                        DateTime? schoolYearEndDate = schoolYearData.EndDate;
-
-                                        // Calculate Holiday
-                                        var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == reportCardViewModel.TenantId && e.AcademicYear == reportCardViewModel.AcademicYear && (e.StartDate >= schoolYearStartDate && e.StartDate <= schoolYearEndDate || e.EndDate >= schoolYearStartDate && e.EndDate <= schoolYearEndDate) && e.IsHoliday == true && (e.SchoolId == reportCardViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
-
-                                        if (CalendarEventsData?.Any() == true)
-                                        {
-                                            foreach (var calender in CalendarEventsData)
-                                            {
-                                                if (calender.EndDate!.Value.Date > calender.StartDate!.Value.Date)
-                                                {
-                                                    var date = Enumerable.Range(0, 1 + (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
-                                                       .Select(i => calender.StartDate.Value.Date.AddDays(i))
-                                                       .ToList();
-                                                    holidayList.AddRange(date);
-                                                }
-                                                holidayList.Add(calender.StartDate.Value.Date);
-                                            }
-                                        }
-
-                                        var daysValue = "0123456";
-                                        var weekdays = calenderData.Days;
-                                        var WeekOffDays = Regex.Split(daysValue, weekdays!);
-                                        var WeekOfflist = new List<string>();
-
-                                        foreach (var WeekOffDay in WeekOffDays)
-                                        {
-                                            Days days = new Days();
-                                            var Day = Enum.GetName(days.GetType(), Convert.ToInt32(WeekOffDay));
-                                            WeekOfflist.Add(Day!);
-                                        }
-
-                                        List<DateTime> allDates = new List<DateTime>();
-                                        for (DateTime date = (DateTime)schoolYearStartDate!; date <= schoolYearEndDate; date = date.AddDays(1))
-                                            allDates.Add(date);
-
-                                        //remove holidays & weekofdays
-                                        foreach (var date in allDates)
-                                        {
-                                            var Day = date.DayOfWeek.ToString();
-                                            if (!WeekOfflist.Contains(Day) && !holidayList.Contains(date))
-                                            {
-                                                workDays++;
-                                            }
-                                        }
-
-                                        var studentDailyAttendanceCount = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceCode.ToLower() == "present" && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList().Count;
-
-                                        if (studentDailyAttendanceCount > 0)
-                                        {
-                                            attendencePercent = (double)((studentDailyAttendanceCount / workDays) * 100);
-                                        }
-                                    }
-
                                     markingPeriodDetailsForDefaultTemplates.Absences = Absences;
                                     markingPeriodDetailsForDefaultTemplates.ExcusedAbsences = ExcusedAbsences;
-                                    studentsReportCard.YearToDateAttendencePercent = Math.Round(attendencePercent, 2).ToString() + "%";
-                                    studentsReportCard.YearToDateAbsencesInDays = absencesInDays;
-                                    studentsReportCard.teacherCommentList = teacherComments;
-                                    studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
+                                    //studentsReportCard.YearToDateAttendencePercent = Math.Round(attendencePercent, 2).ToString() + "%";
+                                    //studentsReportCard.YearToDateAbsencesInDays = absencesInDays;
+                                    //studentsReportCard.teacherCommentList = teacherComments;
+                                    //studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
                                     studentsReportCard.markingPeriodDetailsForDefaultTemplates.Add(markingPeriodDetailsForDefaultTemplates);
 
                                 }
                             }
+
+                            //this code for year to date percentage calculation
+                            int workDays = 0;
+                            decimal attendencePercent = 0;
+
+                            var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.DefaultCalender == true && x.AcademicYear == reportCardViewModel.AcademicYear);
+
+                            var schoolYearData = schoolData.SchoolYears.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
+
+                            if (calenderData != null && schoolYearData != null)
+                            {
+                                DateTime? schoolYearStartDate = schoolYearData.StartDate;
+                                DateTime? schoolYearEndDate = schoolYearData.EndDate;
+
+                                // Calculate Holiday
+                                var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == reportCardViewModel.TenantId && e.AcademicYear == reportCardViewModel.AcademicYear && (e.StartDate >= schoolYearStartDate && e.StartDate <= schoolYearEndDate || e.EndDate >= schoolYearStartDate && e.EndDate <= schoolYearEndDate) && e.IsHoliday == true && (e.SchoolId == reportCardViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+
+                                if (CalendarEventsData?.Any() == true)
+                                {
+                                    foreach (var calender in CalendarEventsData)
+                                    {
+                                        if (calender.EndDate!.Value.Date > calender.StartDate!.Value.Date)
+                                        {
+                                            var date = Enumerable.Range(0, 1 + (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
+                                               .Select(i => calender.StartDate.Value.Date.AddDays(i))
+                                               .ToList();
+                                            holidayList.AddRange(date);
+                                        }
+                                        holidayList.Add(calender.StartDate.Value.Date);
+                                    }
+                                }
+
+                                //var daysValue = "0123456";
+                                //var weekdays = calenderData.Days;
+                                //var WeekOffDays = Regex.Split(daysValue, weekdays!);
+                                //var WeekOfflist = new List<string>();
+
+                                //foreach (var WeekOffDay in WeekOffDays)
+                                //{
+                                //    Days days = new Days();
+                                //    var Day = Enum.GetName(days.GetType(), Convert.ToInt32(WeekOffDay));
+                                //    WeekOfflist.Add(Day!);
+                                //}
+
+                                //List<DateTime> allDates = new List<DateTime>();
+                                //for (DateTime date = (DateTime)schoolYearStartDate!; date <= schoolYearEndDate; date = date.AddDays(1))
+                                //    allDates.Add(date);
+
+                                ////remove holidays & weekofdays
+                                //foreach (var date in allDates)
+                                //{
+                                //    var Day = date.DayOfWeek.ToString();
+                                //    if (!WeekOfflist.Contains(Day) && !holidayList.Contains(date))
+                                //    {
+                                //        workDays++;
+                                //    }
+                                //}
+
+                                //fetch calender days & weekoff days
+                                List<char> daysValue = new List<char> { '0', '1', '2', '3', '4', '5', '6' };
+                                var calenderDays = calenderData.Days!.ToCharArray();
+                                var WeekOffDays = daysValue.Except(calenderDays);
+                                var WeekOfflist = new List<string>();
+                                foreach (var WeekOffDay in WeekOffDays)
+                                {
+                                    Days days = new Days();
+                                    var Day = Enum.GetName(days.GetType(), Convert.ToInt32(WeekOffDay.ToString()));
+                                    WeekOfflist.Add(Day!);
+                                }
+
+                                //fetch all dates in this session calender
+                                var allDates = Enumerable.Range(0, 1 + schoolYearEndDate!.Value.Date.Subtract(schoolYearStartDate!.Value.Date).Days).Select(d => schoolYearStartDate.Value.Date.AddDays(d)).ToList();
+
+                                //remove holidays &weekoffdays
+                                var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString())).ToList();
+
+                                workDays = wrokingDates.Count;
+
+                                var studentAttendance = this.context?.StudentAttendance.Include(s => s.AttendanceCodeNavigation).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= schoolYearStartDate && x.AttendanceDate <= schoolYearEndDate).ToList();
+
+                                if (studentAttendance?.Count > 0 && workDays > 0)
+                                {
+                                    var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present").GroupBy(c => new
+                                    {
+                                        c.StudentId,
+                                        c.AttendanceDate
+                                    }).Count();
+
+                                    attendencePercent = ((Convert.ToDecimal(studentDailyAttendanceCount) / Convert.ToDecimal(workDays)) * 100);
+                                }
+                            }
+
+                            studentsReportCard.YearToDateAttendencePercent = Math.Round(attendencePercent, 2).ToString() + "%";
+                            studentsReportCard.YearToDateAbsencesInDays = absencesInDays;
+                            studentsReportCard.teacherCommentList = teacherComments;
+                            studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
+
                             reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
                         }
                     }
