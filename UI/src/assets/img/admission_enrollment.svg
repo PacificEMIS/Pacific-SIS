@@ -1,0 +1,9 @@
+<svg id="admission_enrollment" xmlns="http://www.w3.org/2000/svg" width="25.211" height="24" viewBox="0 0 25.211 24">
+  <path id="Path_1270" data-name="Path 1270" d="M0,0H24V24H0Z" fill="none"/>
+  <path id="Path_1271" data-name="Path 1271" d="M13,4H6V20H18V9H13ZM11,18H8V16h3Zm3-6v2H8V12Z" fill="#fff" opacity="0.3"/>
+  <path id="Path_1272" data-name="Path 1272" d="M8,16h3v2H8Zm0-4h6v2H8ZM14,2H6A2.006,2.006,0,0,0,4,4V20a2,2,0,0,0,1.99,2H18a2.006,2.006,0,0,0,2-2V8Zm4,18H6V4h7V9h5Z" fill="#fff"/>
+  <g id="edit_black_24dp" transform="translate(13 7)">
+    <path id="Path_1268" data-name="Path 1268" d="M0,0H12.211V12.211H0Z" fill="none"/>
+    <path id="Path_1269" data-name="Path 1269" d="M3,10.249v1.908H4.908L10.535,6.53,8.627,4.622Zm9.011-5.195a.507.507,0,0,0,0-.717L10.82,3.146a.507.507,0,0,0-.717,0l-.931.931L11.08,5.985l.931-.931Z" transform="translate(-1.474 -1.472)" fill="#fff"/>
+  </g>
+</svg>
