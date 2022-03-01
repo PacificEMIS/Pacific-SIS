@@ -221,6 +221,10 @@ export class StudentReportCardComponent implements OnInit {
         <head>
           <title>Print tab</title>
           <style>
+          *{
+            font-family: \"Arial\", \"Helvetica\", \"sans-serif\";
+          }
+          
           body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
           body { -webkit-print-color-adjust: exact; }
@@ -239,7 +243,7 @@ export class StudentReportCardComponent implements OnInit {
           
           .m-auto { margin: auto; }
           
-          .report-card { width: 900px; margin: auto; font-family: \"Roboto\", \"Helvetica Neue\"; }
+          .report-card { width: 900px; margin: auto; font-family: \"Arial\", \"Helvetica\", \"sans-serif\"; }
           
           .report-card-header td { padding: 20px 10px; }
           
@@ -338,6 +342,10 @@ export class StudentReportCardComponent implements OnInit {
         <head>
           <title>Print tab</title>
           <style>
+          *{
+            font-family: \"Arial\", \"Helvetica\", \"sans-serif\";
+          }
+
           body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
           body { -webkit-print-color-adjust: exact; }
@@ -356,7 +364,7 @@ export class StudentReportCardComponent implements OnInit {
          
           .m-auto { margin: auto; }
          
-          .report-card { width: 900px; margin: auto; font-family: "Roboto", "Helvetica Neue"; }
+          .report-card { width: 900px; margin: auto; font-family: \"Arial\", \"Helvetica\", \"sans-serif\"; }
          
           .report-card-header { border-bottom: 2px solid #000; }
          

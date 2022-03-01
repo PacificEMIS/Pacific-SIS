@@ -303,6 +303,9 @@ export class DefaultValuesService {
   getFirstGivenName() {
     return JSON.parse(sessionStorage.getItem('FirstGivenName'));
   }
+  getSelectedCourseSection() {
+    return JSON.parse(sessionStorage.getItem('selectedCourseSection'));
+  }
   //new changes for set---------------------------------
   setFirstGivenName(FirstGivenName: string) {
     sessionStorage.setItem("FirstGivenName", JSON.stringify(FirstGivenName));
@@ -352,13 +355,13 @@ export class DefaultValuesService {
   setLanguage(language: string) {
     sessionStorage.setItem("language", JSON.stringify(language));
   }
+  setSelectedCourseSection(selectedCourseSection: any) {
+    sessionStorage.setItem("selectedCourseSection", JSON.stringify(selectedCourseSection));
+  }
 
   //new changes foe localStorage get
   getPageId() {
     return JSON.parse(localStorage.getItem("pageId"));
-  }
-  getSelectedCourseSection() {
-    return JSON.parse(localStorage.getItem('selectedCourseSection'));
   }
   getCourseSectionId() {
     return JSON.parse(localStorage.getItem('courseSectionId'));
@@ -379,9 +382,6 @@ export class DefaultValuesService {
   }
   setCourseSectionId(courseSectionId: string) {
     localStorage.setItem("courseSectionId", JSON.parse(courseSectionId));
-  }
-  setSelectedCourseSection(selectedCourseSection: any) {
-    localStorage.setItem("selectedCourseSection", JSON.stringify(selectedCourseSection));
   }
   setSchoolCount(schoolCount: any) {
     localStorage.setItem("schoolCount", JSON.stringify(schoolCount));
