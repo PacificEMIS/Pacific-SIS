@@ -43,6 +43,7 @@ namespace opensis.data.ViewModels.Student
         public bool? GradeLagend { get; set; }
         public string? GradeLavels { get; set; }
         public string? HistoricalGradeLavels { get; set; }
+        public decimal? AcademicYear { get; set; }
         public List<StudentsDetailsForTranscript> studentsDetailsForTranscripts { get; set; }
 
     }

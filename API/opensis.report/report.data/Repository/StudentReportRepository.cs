@@ -671,7 +671,7 @@ namespace opensis.report.report.data.Repository
                                                     gradeBookGradeData.AssignmentTitle = assignmentGrade.AssignmentTitle;
                                                     gradeBookGradeData.AssignmentDate = assignmentGrade.AssignmentDate;
                                                     gradeBookGradeData.DueDate = assignmentGrade.DueDate;
-                                                    gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : null + "/" + assignmentGrade.Points;
+                                                    gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : "" + "/" + assignmentGrade.Points;
                                                     gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
                                                     gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
                                                     gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage + "%" : null;
