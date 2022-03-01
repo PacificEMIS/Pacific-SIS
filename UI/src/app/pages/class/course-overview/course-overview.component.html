@@ -109,8 +109,9 @@
                 <label class="text-sm leading-5 text-gray">{{'onlineClassroomPassword' | translate}}</label>
                 <p class="mt-1 text-base leading-5 sm:mt-0 sm:col-span-2 flex">
                     <!-- <span>UJX12345</span>  -->
-                    <span
-                    >{{singleCourseSection?.courseSection?.onlineClassroomPassword|EmtyValueCheckPipe}}</span>
+                    <span *ngIf="singleCourseSection?.courseSection?.onlineClassroomPassword"
+                    >{{singleCourseSection?.courseSection?.onlineClassroomPassword|passwordMask}}</span>
+                    <span *ngIf="!singleCourseSection?.courseSection?.onlineClassroomPassword">-</span>
                     <span class="cursor-pointer" *ngIf="singleCourseSection?.courseSection?.onlineClassroomPassword">
                         <mat-icon class="pl-2 text-blue" (click)="contentCopied()">content_copy</mat-icon>
                     </span>
