@@ -1345,7 +1345,7 @@
     "behavior": "Behavior",
     "departmentBehavior": "Department (Behavior)",
     "respecteForTeachers": "Respecte for Teachers",
-    "respecteForClassmates": "Respecte for Classmates",
+    "respectForClassmates": "Respect for Classmates",
     "completeOfWork": "Complete of work",
     "careOfProperty": "Care of property",
     "cooperation": "Cooperation",
@@ -1611,5 +1611,13 @@
     "selectCourseSectionInClassList": "Select Course Sections",
     "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Student data import cannot be done for this School Year.",
     "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Rollover Completed. Staff data import cannot be done for this School Year.",
-    "rolloverCompletedForThisAcademicYear":"Rollover completed for this academic year"
+    "rolloverCompletedForThisAcademicYear":"Rollover completed for this academic year",
+    "respectForTeachers": "Respect for Teachers",
+    "attendanceAndCitizenship": "Attendance and Citizenship",
+    "responsibility": "Responsibility",
+    "concernForOthers": "Concern for Others",
+    "integrity": "Integrity",
+    "initiative": "Initiative",
+    "youHaveTakenAttendanceForThisPeriod": "You have taken attendance for this period.",
+    "attendanceHasNotBeenTakenForThisPeriod": "Attendance has not been taken for this period."
 }

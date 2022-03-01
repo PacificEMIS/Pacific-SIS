@@ -12,9 +12,15 @@
                 </div>
             </div>
             <mat-divider class="text-border"></mat-divider>
-            <div class="text-center py-4">
-                <h4 class="text-primary font-medium">{{'takingAttendanceFor' | translate}} : {{staffDetails?.attendanceDate | date : 'longDate'}}</h4>
-                <p class="text-warn" *ngIf="!isAttendanceDateToday"><i class="icon icon-info2 mr-2 align-baseline"></i>Selected date is not today</p>
+            <div class="md:grid grid-cols-3 items-center px-6 py-2 text-center md:text-left">
+                <div class="mb-2 md:mb-0">
+                    <p class="font-base">{{ 'takingAttendanceFor' | translate }}</p>
+                    <h4 class="text-xl text-primary font-medium">{{staffDetails?.attendanceDate | date : 'longDate'}}</h4>
+                </div>
+                <div class="col-span-2">
+                    <div class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                    <!-- <div class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div> -->
+                </div> 
             </div>
             <mat-divider class="text-border"></mat-divider>
             <div class="table-sticky mat-elevation-z8 shadow-none">
@@ -39,10 +45,12 @@
                     </ng-container>
                     <ng-container matColumnDef="attendanceCodes">
                         <th mat-header-cell *matHeaderCellDef>
-                            {{ "attendanceCodes" | translate }}
-                            <mat-slide-toggle color="primary" [(ngModel)]="showShortName" [checked]="showShortName" class="ml-3 text-gray font-medium">
-                                {{'showShortName' | translate}}
-                            </mat-slide-toggle>
+                            <div class="flex justify-between items-center">
+                                <span>{{ "attendanceCodes" | translate }}</span>
+                                <mat-slide-toggle color="primary" [(ngModel)]="showShortName" [checked]="showShortName" class="ml-3 text-gray font-medium">
+                                    {{'showShortName' | translate}}
+                                </mat-slide-toggle>
+                            </div>
                         </th>
                         <td mat-cell *matCellDef="let element;let i = index">
                             <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList">
@@ -55,7 +63,7 @@
                             </div>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="comments" stickyEnd>
+                    <ng-container matColumnDef="comments">
                         <th mat-header-cell *matHeaderCellDef>{{ "comments" | translate }}</th>
                         <td mat-cell *matCellDef="let element; let i = index" class="bg-white">
                             <button

@@ -300,7 +300,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="semester-table">
+                <td *ngIf="addReportCardPdf?.templateType === 'chuuk'" class="semester-table">
                     <table>
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
@@ -314,7 +314,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Respecte for Teachers</td>
+                                <td>{{'respectForTeachers' | translate}}</td>
                                 <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 <!-- <td></td>
                                 <td></td>
@@ -325,7 +325,7 @@
                                 </td> -->
                             </tr>
                             <tr>
-                                <td>{{'respecteForClassmates'|translate}}</td>
+                                <td>{{'respectForClassmates'|translate}}</td>
                                 <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                             </tr>
                             <tr>
@@ -353,6 +353,114 @@
                                 <td>
                                     {{'attendance'|translate}}</td>
                                     <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td *ngIf="addReportCardPdf?.templateType === 'kosrae'" class="semester-table">
+                    <table>
+                        <caption>
+                            <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                            </h2>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>{{'attendanceAndCitizenship'|translate}}</th>
+                                <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pihsen Lwen Lutlut - Instructional Days</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Monglac Ke Srihpac Wo - Excused Absents</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Monglac Tia Wo - Unexcused Absents</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Lutlut Tahfuhn Lwen - Present Half Day</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Lwen Pathtlac - Tardy</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Elah - Citizenship</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td *ngIf="addReportCardPdf?.templateType === 'pohnpei'" class="semester-table">
+                    <table>
+                        <caption>
+                            <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                            </h2>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Impahi Oh Insenoh</th>
+                                <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Peik/Kin rong mwahu</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Lemehda/koasoanehdi mwahu</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Kin minimin ong mehtei kan</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Ale/kapawaiada pwukoah</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>Kanaiehng dipwisoun sukuhl</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td *ngIf="addReportCardPdf?.templateType === 'yap'" class="semester-table">
+                    <table>
+                        <caption>
+                            <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                            </h2>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{'responsibility' | translate}}</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>{{'concernForOthers' | translate}}</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>{{'integrity' | translate}}</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                            </tr>
+                            <tr>
+                                <td>{{'initiative' | translate}}</td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                             </tr>
                         </tbody>
                     </table>

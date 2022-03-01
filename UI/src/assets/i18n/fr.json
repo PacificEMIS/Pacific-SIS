@@ -1345,7 +1345,7 @@
     "behavior": "Comportement",
     "departmentBehavior": "Département (comportement)",
     "respecteForTeachers": "Respectif pour les enseignants",
-    "respecteForClassmates": "Respectif pour les camarades de classe",
+    "respectForClassmates": "Respect des camarades de classe",
     "completeOfWork": "Complete de travail",
     "careOfProperty": "Soin de la propriété",
     "cooperation": "La coopération",
@@ -1610,5 +1610,13 @@
     "selectCourseSectionInClassList": "Sélectionnez les sections de cours",
     "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Roulement terminé. L'importation des données des élèves ne peut pas être effectuée pour cette année scolaire.",
     "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Roulement terminé. L'importation des données du personnel ne peut pas être effectuée pour cette année scolaire.",
-    "rolloverCompletedForThisAcademicYear":"Roulement terminé pour cette année universitaire"
+    "rolloverCompletedForThisAcademicYear":"Roulement terminé pour cette année universitaire",
+    "respectForTeachers": "Respect des enseignants",
+    "attendanceAndCitizenship": "Participation et citoyenneté",
+    "responsibility": "Responsabilité",
+    "concernForOthers": "Préoccupation pour les autres",
+    "integrity": "Intégrité",
+    "initiative": "Initiative",
+    "youHaveTakenAttendanceForThisPeriod": "Vous avez pris des présences pour cette période.",
+    "attendanceHasNotBeenTakenForThisPeriod": "Les présences n'ont pas été prises pour cette période."
 }

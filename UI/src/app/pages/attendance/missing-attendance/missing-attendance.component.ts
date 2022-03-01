@@ -44,6 +44,7 @@ import { Router } from "@angular/router";
 import { ExcelService } from "src/app/services/excel.service";
 import { DefaultValuesService } from "src/app/common/default-values.service";
 import { CommonService } from "src/app/services/common.service";
+import { SearchFilter, SearchFilterListViewModel } from "src/app/models/search-filter.model";
 
 @Component({
   selector: "vex-missing-attendance",
@@ -80,7 +81,15 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   searchCtrl: FormControl;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-
+  showAdvanceSearchPanel: boolean = false;
+  filterJsonParams;
+  searchValue: any = null;
+  searchCount: number = null;
+  showSaveFilter:boolean=false;
+  searchFilterListViewModel: SearchFilterListViewModel= new SearchFilterListViewModel();
+  searchFilter: SearchFilter= new SearchFilter();
+  toggleValues: any = null;
+  filterParams;
   constructor(
     public translateService: TranslateService,
     private loaderService: LoaderService,
@@ -97,6 +106,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
       this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
+      this.getAllStaffModel.dobStartDate=this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodStartDate())
     });
   }
   ngOnInit(): void {
@@ -284,12 +294,21 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
         });
     }
   }
+  getFilterParams(event){
+    this.filterParams=event
+  }
 
   exportStaffListToExcel(){
     let getAllStaff: GetAllStaffModel = new GetAllStaffModel();
     getAllStaff.pageNumber=0;
     getAllStaff.pageSize=0;
     getAllStaff.sortingModel=null;
+    if(this.filterParams){
+      getAllStaff.filterParams=this.filterParams;
+    }
+    if(this.toggleValues){
+      getAllStaff.includeInactive=this.toggleValues
+    }
     this.studentAttendanceService.staffListForMissingAttendance(getAllStaff).subscribe(res => {
        if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -319,6 +338,74 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     
   }
 
+  showAdvanceSearch() {
+    this.showAdvanceSearchPanel = true;
+    this.filterJsonParams = null;
+  }
+
+  getSearchResult(res){
+    if (res.totalCount){
+      this.searchCount = res.totalCount;
+      this.totalCount = res.totalCount;
+    }
+    else{
+      this.searchCount = 0;
+      this.totalCount = 0;
+    }
+    this.showSaveFilter = true;
+    this.pageNumber = res.pageNumber;
+    this.pageSize = res._pageSize;
+    this.staffList = new MatTableDataSource(res.staffMaster);
+    this.getAllStaffModel = new GetAllStaffModel();
+    this.showAdvanceSearchPanel = false;
+  }
+
+  hideAdvanceSearch(event){
+    this.showSaveFilter = event.showSaveFilter;
+    this.showAdvanceSearchPanel = false;
+    if(event.showSaveFilter == false){
+      this.getAllSearchFilter();
+    }
+  }
+
+  getAllSearchFilter(){
+    this.searchFilterListViewModel.module='Staff';
+    this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
+      if (typeof (res) === 'undefined') {
+        this.snackbar.open('Filter list failed. ' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+      else {
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+          this.searchFilterListViewModel.searchFilterList=[]
+          if(!res.searchFilterList){
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.searchFilterListViewModel= res;
+          let filterData=this.searchFilterListViewModel.searchFilterList.filter(x=> x.filterId == this.searchFilter.filterId);
+          if(filterData.length >0){
+            this.searchFilter.jsonList= filterData[0].jsonList;
+          }
+          if(this.filterJsonParams == null){
+            this.searchFilter = this.searchFilterListViewModel.searchFilterList[this.searchFilterListViewModel.searchFilterList.length-1];
+          }
+        }
+      }
+    }
+    );
+  }
+  getToggleValues(event){
+    this.toggleValues = event;
+  }
+  getSearchInput(event){
+    this.searchValue = event;
+  }
 
   ngOnDestroy() {
     this.destroySubject$.next();

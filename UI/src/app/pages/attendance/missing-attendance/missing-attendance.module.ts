@@ -33,17 +33,23 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { AddTeacherCommentsComponent } from "./take-attendance/add-teacher-comments/add-teacher-comments.component";
 import { SharedModuleModule } from "../../shared-module/shared-module.module";
+import { SearchStaffComponent } from './search-staff/search-staff.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
     MissingAttendanceComponent,
     MissingAttendanceDetailsComponent,
     TakeAttendanceComponent,
-    AddTeacherCommentsComponent
+    AddTeacherCommentsComponent,
+    SearchStaffComponent
   ],
   imports: [
     CommonModule,
+    MatProgressSpinnerModule,
     MissingAttendanceRoutingModule,
+    MatExpansionModule,
     SecondaryToolbarModule,
     BreadcrumbsModule,
     MatIconModule,

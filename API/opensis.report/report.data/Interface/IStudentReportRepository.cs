@@ -10,5 +10,6 @@ namespace opensis.report.report.data.Interface
         public StudentAddDropViewModel GetstudentAddDropReport(PageResult pageResult);
         public StudentAdvancedReport StudentAdvancedReport(StudentAdvancedReport reportModel);
         public StudentEnrollmentReport GetStudentEnrollmentReport(PageResult pageResult);
+        public StudentProgressReport GetStudentProgressReport(StudentProgressReport studentProgressReport);
     }
 }

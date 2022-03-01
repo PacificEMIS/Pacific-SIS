@@ -1345,7 +1345,7 @@
     "behavior": "Conducta",
     "departmentBehavior": "Departamento (comportamiento)",
     "respecteForTeachers": "Respeto para los maestros",
-    "respecteForClassmates": "Respeto para compañeros de clase",
+    "respectForClassmates": "Respeto a los compañeros de clase",
     "completeOfWork": "Completo de trabajo",
     "careOfProperty": "Cuidado de la propiedad",
     "cooperation": "Cooperación",
@@ -1610,5 +1610,13 @@
     "selectCourseSectionInClassList": "Seleccionar secciones del curso",
     "rolloverCompletedStudentDataImportCannotBeDoneForThisSchoolYear":"Transferencia completada. La importación de datos de estudiantes no se puede realizar para este año escolar.",
     "rolloverCompletedStaffDataImportCannotBeDoneForThisSchoolYear":"Transferencia completada. La importación de datos del personal no se puede realizar para este año escolar.",
-    "rolloverCompletedForThisAcademicYear":"Rollover completado para este año académico"
+    "rolloverCompletedForThisAcademicYear":"Rollover completado para este año académico",
+    "respectForTeachers": "Respeto a los maestros",
+    "attendanceAndCitizenship": "Asistencia y Ciudadanía",
+    "responsibility": "Responsabilidad",
+    "concernForOthers": "Preocupación por los demás",
+    "integrity": "Integridad",
+    "initiative": "Iniciativa",
+    "youHaveTakenAttendanceForThisPeriod": "Has tomado asistencia para este período.",
+    "attendanceHasNotBeenTakenForThisPeriod": "No se ha tomado asistencia para este período."
 }
