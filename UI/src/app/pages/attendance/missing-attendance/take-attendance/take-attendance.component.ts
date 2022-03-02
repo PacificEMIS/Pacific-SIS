@@ -69,7 +69,8 @@ export class TakeAttendanceComponent implements OnInit {
   getTheIndexNumbersForDroppedStudentForCourseSection=[];
   commentsArray=[];
   destroySubject$: Subject<void> = new Subject();
-
+  active;
+  allStudentList=[];
   constructor( private dialog: MatDialog,
     public translateService:TranslateService,
     private studentAttendanceService: StudentAttendanceService,
@@ -125,6 +126,7 @@ export class TakeAttendanceComponent implements OnInit {
         
        } else {
          this.scheduleStudentListViewModel.scheduleStudentForView=res.scheduleStudentForView;
+         this.allStudentList=res.scheduleStudentForView;
          this.getAllAttendanceCode();
          this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
           if(x.isDropped === true){
@@ -163,6 +165,7 @@ export class TakeAttendanceComponent implements OnInit {
      }
  
      getStudentAttendanceList(){
+      this.active=0;
       this.studentAttendanceList = { ...this.setDefaultDataInStudentAttendance(this.studentAttendanceList) }
       this.studentAttendanceService.getAllStudentAttendanceList(this.studentAttendanceList).subscribe((res) => {
         if (typeof (res) == 'undefined') {
@@ -188,6 +191,15 @@ export class TakeAttendanceComponent implements OnInit {
             this.commentsArray = [];
             this.actionButtonTitle = 'submit';
             this.studentAttendanceList.studentAttendance = res.studentAttendance;
+            this.allStudentList.map((withOutAttendence, index) => {
+              res.studentAttendance.map((val) => {
+                if (withOutAttendence.studentId === val.studentId) {
+                  this.allStudentList[index] = val;
+                  this.allStudentList[index].customIndex = index
+                }
+              })
+            })
+            this.active=this.studentAttendanceList.studentAttendance.length
             this.updateStudentAttendanceList();
           }
   
@@ -279,13 +291,32 @@ export class TakeAttendanceComponent implements OnInit {
          } else {
            this.snackbar.open(res._message, '', {
              duration: 10000
-           });   
+           });  
            this.getAllAttendanceCode()       
          }
        })
      
    }
  
+
+  giveClass(value) {
+    if (value.stateCode == 'Present') {
+      return { 'present': true, 'active': false };
+    } else if (value.stateCode == 'Absent') {
+      return { 'absent': true, 'active': false };
+    } else if (value.stateCode == 'Half Day') {
+      return { 'tardy': true, 'active': false };
+    }
+  }
+  giveClassAfterAttendence(value ,index ){
+    if (value.stateCode == 'Present') {
+      return { 'present': true, 'active': value.attendanceCode1 ===  this.allStudentList[index].attendanceCode ? true : false };
+    } else if (value.stateCode == 'Absent') {
+      return { 'absent': true, 'active': value.attendanceCode1 ===  this.allStudentList[index].attendanceCode ? true : false };
+    } else if (value.stateCode == 'Half Day') {
+      return { 'tardy': true, 'active': value.attendanceCode1 ===  this.allStudentList[index].attendanceCode ? true : false };
+    }
+  }
    setDefaultDataInStudentAttendance(attendanceModel){
      attendanceModel.courseId=this.staffDetails.courseId;
      attendanceModel.courseSectionId=this.staffDetails.courseSectionId;

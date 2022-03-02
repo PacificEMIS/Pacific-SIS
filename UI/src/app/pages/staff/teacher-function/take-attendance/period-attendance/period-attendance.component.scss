@@ -85,6 +85,35 @@
       }
 
     }
+    &:not(:checked)+.checkmark-container {
+
+      &.present {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid #4db050;
+          }
+        }
+      }
+
+      &.absent {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid rgb(219, 40, 39);
+          }
+        }
+      }
+
+      &.tardy {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid #fd9800;
+          }
+        }
+      }
+    }
 
   }
 

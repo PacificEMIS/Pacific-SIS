@@ -7,14 +7,14 @@
     </vex-page-layout-header>
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16">
-            <div class="md:flex justify-between items-center px-6">
-                <div class="flex items-center pt-4 md:py-4">
+            <div class="flex justify-between items-center px-6">
+                <div class="flex items-center py-4">
                     <a [routerLink]="['/school', 'attendance', 'missing-attendance', 'missing-attendance-details']" class="cursor-pointer">
                         <mat-icon class="mr-4 align-middle text-blue">west</mat-icon>
                     </a>
                     <span class="font-medium text-lg">{{staffDetails?.staffFullName}} / {{staffDetails?.courseSectionName}} - {{staffDetails?.periodTitle}}</span>
                 </div>
-                <div class="pb-4 md:pt-0">
+                <div>
                     <h4 class="">{{scheduleStudentListViewModel?.scheduleStudentForView?.length}} {{ 'studentsFound' | translate }}</h4>
                 </div>
             </div>
@@ -24,15 +24,15 @@
                     <p class="font-base">{{ 'takingAttendanceFor' | translate }}</p>
                     <h4 class="text-xl text-primary font-medium">{{staffDetails?.attendanceDate | date : 'mediumDate'}}</h4>
                 </div>
-                <div class="col-span-2">
-                    <div class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
-                    <!-- <div class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div> -->
+                <div class="col-span-2" >
+                    <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                    <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
                 </div> 
             </div>
             <mat-divider class="text-border"></mat-divider>
             <div class="overflow-x-auto overflow-y-hidden">
                 <div class="table-sticky mat-elevation-z8 shadow-none">
-                    <table mat-table [dataSource]="scheduleStudentListViewModel.scheduleStudentForView">
+                    <table mat-table [dataSource]="allStudentList">
                         <ng-container matColumnDef="students" sticky>
                             <th mat-header-cell *matHeaderCellDef>{{ "students" | translate }}</th>
                             <td mat-cell *matCellDef="let element" class="bg-white">
@@ -63,10 +63,10 @@
                                 </div>
                             </th>
                             <td mat-cell *matCellDef="let element;let i = index">
-                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList">
+                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList;let innerIndex=index;">
                                     <label for="{{attendance.title+''+i}}">
                                         <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}" [disabled]="element.isDropped" *ngIf="element.isDropped === null">
-                                        <div class="inline-block checkmark-container" [ngClass]="attendance.stateCode=='Present'?'present':attendance.stateCode=='Absent'?'absent':attendance.stateCode=='Half Day'?'tardy':'present'">
+                                        <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
                                             <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
                                         </div>
                                     </label>
