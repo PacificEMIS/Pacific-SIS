@@ -300,15 +300,15 @@ export class DefaultValuesService {
   getSchoolClosed() {
     return JSON.parse(sessionStorage.getItem('schoolClosed'));
   }
-  getFirstGivenName() {
-    return JSON.parse(sessionStorage.getItem('FirstGivenName'));
+  getFullUserName() {
+    return JSON.parse(sessionStorage.getItem('fullUserName'));
   }
   getSelectedCourseSection() {
     return JSON.parse(sessionStorage.getItem('selectedCourseSection'));
   }
   //new changes for set---------------------------------
-  setFirstGivenName(FirstGivenName: string) {
-    sessionStorage.setItem("FirstGivenName", JSON.stringify(FirstGivenName));
+  setFullUserName(fullUserName: string) {
+    sessionStorage.setItem("fullUserName", JSON.stringify(fullUserName));
   }
   setErrorMessage(errorMessage: string) {
     sessionStorage.setItem("httpError", JSON.stringify(errorMessage));

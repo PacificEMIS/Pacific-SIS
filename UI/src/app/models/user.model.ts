@@ -8,6 +8,8 @@ export class UserViewModel extends CommonField {
     public password : string;
     public email: string;
     public name: string;
+    public middleName: string;
+    public lastFamilyName: string;
     public membershipName : string;
     public membershipType: string;
     public membershipId:number;
