@@ -88,9 +88,6 @@
                                         <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                                             <mat-icon>search</mat-icon>
                                         </button>
-                                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                                        <mat-icon [icIcon]="icSearch"></mat-icon>
-                                    </button>
                                     <a class="lg:w-full text-primary cursor-pointer ml-3"
                                         (click)="showAdvanceSearchPanel = true;">
                                         <mat-icon aria-hidden="false" class="mr-0 lg:mr-2 align-middle">tune</mat-icon>
@@ -199,7 +196,7 @@
                 <vex-search-student (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams"
                     [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)"
                     [incomingToggleValues]="toggleValues" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
-                    (searchValue)="getSearchInput($event)"></vex-search-student>
+                    (searchValue)="getSearchInput($event)" (teacherFilterSearchValue)="getTeacherSearchInput($event)"></vex-search-student>
             </div>
             <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>

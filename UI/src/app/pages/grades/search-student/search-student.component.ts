@@ -54,6 +54,7 @@ export class SearchStudentComponent implements OnInit {
   @Output() searchList = new EventEmitter<any>();
   @Output() searchValue = new EventEmitter<any>();
   @Output() toggelValues = new EventEmitter<any>();
+  @Output() teacherFilterSearchValue = new EventEmitter<any>();
   @Input() filterJsonParams;
   @Input() incomingSearchValue;
   @Input() incomingToggleValues;
@@ -82,6 +83,7 @@ export class SearchStudentComponent implements OnInit {
   languageList;
   searchSchoolId: number = this.defaultValuesService.getSchoolID();
   inactiveStudents = false;
+  isAdmin:boolean;
   constructor(
     private studentService: StudentService,
     private commonLOV: CommonLOV,
@@ -91,7 +93,12 @@ export class SearchStudentComponent implements OnInit {
     private defaultValuesService: DefaultValuesService,
     private loginService: LoginService,
     private commonFunction: SharedFunction,
-  ) { }
+  ) {
+    if(this.defaultValuesService.getUserMembershipType() === "Teacher" || this.defaultValuesService.getUserMembershipType() === "Homeroom Teacher")
+      this.isAdmin=false
+    else
+      this.isAdmin=true
+   }
 
   ngOnInit(): void {
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
@@ -276,30 +283,43 @@ submit(){
       }
       );
     }
-    this.getAllStudent.schoolId = this.searchSchoolId;
-    this.getAllStudent.includeInactive = this.inactiveStudents;
-    this.getAllStudent.sortingModel = null;
-    this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
-    this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-    this.commonService.setSearchResult(this.getAllStudent.filterParams);
-    this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        this.searchList.emit([]);
-        this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
-        this.searchValue.emit(this.currentForm.value);
-        this.snackbar.open('' + data._message, '', {
-          duration: 10000
-        });
+    if (!this.isAdmin) {
+      this.teacherFilterSearchValue.emit(this.getAllStudent.filterParams);
+      this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
+      this.searchValue.emit(this.currentForm.value);
+    }
+    else {
+      this.getAllStudent.schoolId = this.searchSchoolId;
+      this.getAllStudent.includeInactive = this.inactiveStudents;
+      this.getAllStudent.sortingModel = null;
+      this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
+      this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
+      this.commonService.setSearchResult(this.getAllStudent.filterParams);
+      this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
+          this.searchList.emit([]);
+          // this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
+          // this.searchValue.emit(this.currentForm.value);
+          this.snackbar.open('' + data._message, '', {
+            duration: 10000
+          });
 
-      } else {
-        this.searchList.emit(data);
-        this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
-        this.searchValue.emit(this.currentForm.value);
-        this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
-        this.checkSearchRecord=0;
-      }
-    });
+        } else {
+          this.searchList.emit(data);
+          // this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
+          // this.searchValue.emit(this.currentForm.value);
+          this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
+          this.checkSearchRecord = 0;
+        }
+      });
+      this.teacherFilterSearchValue.emit(this.getAllStudent.filterParams);
+      this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchSchoolId: this.searchSchoolId });
+      this.searchValue.emit(this.currentForm.value);
+    }
+    
+
+    
   }
 
   resetData() {
