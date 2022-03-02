@@ -1350,7 +1350,7 @@
     "careOfProperty": "Care of property",
     "cooperation": "Cooperation",
     "followInstruction": "Follow Instruction",
-    "neetnessOfWork": "Neetness of work",
+    "neetnessOfWork": "Neetness of Work",
     "behaviorLegend": "Behavior Legend",
     "teachersSignature":"Teacher's Signature",
     "principalsSignature":"Principal's Signature",
@@ -1619,5 +1619,15 @@
     "integrity": "Integrity",
     "initiative": "Initiative",
     "youHaveTakenAttendanceForThisPeriod": "You have taken attendance for this period.",
-    "attendanceHasNotBeenTakenForThisPeriod": "Attendance has not been taken for this period."
+    "attendanceHasNotBeenTakenForThisPeriod": "Attendance has not been taken for this period.",
+    "superior": "Superior",
+    "aboveAverage": "Above Average",
+    "average": "Average",
+    "belowAverage": "Below Average",
+    "failure": "Failure",
+    "excellent": "Excellent",
+    "satisfactory": "Satisfactory",
+    "unsatisfactory": "Unsatisfactory",
+    "good": "Good",
+    "fair": "Fair"
 }

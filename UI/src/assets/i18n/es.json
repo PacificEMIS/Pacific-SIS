@@ -1350,7 +1350,7 @@
     "careOfProperty": "Cuidado de la propiedad",
     "cooperation": "Cooperación",
     "followInstruction": "Seguir instrucciones",
-    "neetnessOfWork": "Neetness de trabajo",
+    "neetnessOfWork": "Necesidad de trabajo",
     "behaviorLegend": "Leyenda del comportamiento",
     "teachersSignature":"Firma del maestro",
     "principalsSignature":"Firma del director",
@@ -1618,5 +1618,15 @@
     "integrity": "Integridad",
     "initiative": "Iniciativa",
     "youHaveTakenAttendanceForThisPeriod": "Has tomado asistencia para este período.",
-    "attendanceHasNotBeenTakenForThisPeriod": "No se ha tomado asistencia para este período."
+    "attendanceHasNotBeenTakenForThisPeriod": "No se ha tomado asistencia para este período.",
+    "superior": "Superior",
+    "aboveAverage": "Por encima del promedio",
+    "average": "Promedio",
+    "belowAverage": "Por debajo del promedio",
+    "failure": "Falla",
+    "excellent": "Excelente",
+    "satisfactory": "Satisfactorio",
+    "unsatisfactory": "Insatisfactorio",
+    "good": "Bueno",
+    "fair": "Justo"
 }
