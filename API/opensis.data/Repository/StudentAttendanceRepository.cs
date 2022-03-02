@@ -2120,110 +2120,571 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public StudentAttendanceAddViewModel AddAbsences(StudentAttendanceAddViewModel studentAttendanceAddViewModel)
         {
-            try
+            using (var transaction = this.context?.Database.BeginTransaction())
             {
-                if (studentAttendanceAddViewModel.studentAttendance?.Any() == true)
+                try
                 {
-                    List<StudentAttendance> studentAttendanceList = new List<StudentAttendance>();
-                    List<StudentAttendanceComments> studentAttendanceCommentsList = new List<StudentAttendanceComments>();
-                    long? StudentAttendanceId = 1;
-
-                    var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
-
-                    if (studentAttendanceData != null)
+                    if (studentAttendanceAddViewModel.studentAttendance?.Any() == true)
                     {
-                        StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
-                    }
+                        List<StudentAttendance> studentAttendanceList = new List<StudentAttendance>();
+                        List<StudentAttendanceComments> studentAttendanceCommentsList = new List<StudentAttendanceComments>();
+                        List<StudentDailyAttendance> studentDailyAttendances = new List<StudentDailyAttendance>();
 
-                    long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+                        long? StudentAttendanceId = 1;
 
-                    var allCsData = this.context?.AllCourseSectionView.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId).ToList();
+                        var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
 
-                    var staffId = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.IsDropped != true)?.StaffId;
-                    if (allCsData?.Any() == true)
-                    {
-                        foreach (var studentAttendance in studentAttendanceAddViewModel.studentAttendance)
+                        if (studentAttendanceData != null)
                         {
-                            int? blockIde = 1;
-                            int? periodIde = null;
-                            CommentId++;
+                            StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
+                        }
 
-                            if (allCsData.FirstOrDefault()!.ScheduleType == "Fixed Schedule (1)")
+                        long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+
+                        var allCsData = this.context?.AllCourseSectionView.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId).ToList();
+
+                        var staffId = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.IsDropped != true)?.StaffId;
+                        if (allCsData?.Any() == true)
+                        {
+                            foreach (var studentAttendance in studentAttendanceAddViewModel.studentAttendance)
                             {
-                                periodIde = allCsData.FirstOrDefault()!.FixedPeriodId;
-                            }
-                            if (allCsData.FirstOrDefault()!.ScheduleType == "Variable Schedule (2)")
-                            {
-                                //var day = studentAttendance.AttendanceDate.DayOfWeek.ToString();
-                                //periodIde = allCsData.Where(x => x.VarDay.ToLower() == day.ToLower()).Select(s => s.VarPeriodId).FirstOrDefault();
-                                var day = studentAttendance.AttendanceDate.DayOfWeek.ToString();
-                                periodIde = allCsData.AsEnumerable().Where(x => String.Compare(x.VarDay, day, true) == 0).Select(s => s.VarPeriodId).FirstOrDefault();
-                            }
-                            if (allCsData.FirstOrDefault()!.ScheduleType == "Calendar Schedule (3)")
-                            {
-                                periodIde = allCsData.Where(x => x.CalDate == studentAttendance.AttendanceDate).Select(s => s.CalPeriodId).FirstOrDefault();
-                            }
-                            if (allCsData.FirstOrDefault()!.ScheduleType == "Block Schedule (4)")
-                            {
-                                var BellScheduleData = this.context?.BellSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.BellScheduleDate == studentAttendance.AttendanceDate);
-                                if (BellScheduleData != null)
+                                int? blockIde = 1;
+                                int? periodIde = null;
+
+                                if (allCsData.FirstOrDefault()!.ScheduleType == "Fixed Schedule (1)")
                                 {
-                                    blockIde = BellScheduleData.BlockId;
-                                    periodIde = allCsData.Where(x => x.BlockId == BellScheduleData.BlockId).Select(s => s.BlockPeriodId).FirstOrDefault();
+                                    periodIde = allCsData.FirstOrDefault()!.FixedPeriodId;
+
+                                    var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1);
+
+                                    if (attendanceDataForStudent != null)
+                                    {
+                                        if (attendanceDataForStudent.StudentAttendanceComments?.Any() == true)
+                                        {
+                                            var attendanceCommentDataForStudent = attendanceDataForStudent.StudentAttendanceComments.FirstOrDefault(x => x.MembershipId == 1);
+
+                                            if (attendanceCommentDataForStudent != null)
+                                            {
+                                                if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                {
+                                                    attendanceCommentDataForStudent.Comment = studentAttendanceAddViewModel.AbsencesReason;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                {
+                                                    var StudentAttendanceComments = new StudentAttendanceComments
+                                                    {
+                                                        TenantId = studentAttendanceAddViewModel.TenantId,
+                                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                        StudentId = studentAttendance.StudentId,
+                                                        StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                        CommentId = (long)CommentId!,
+                                                        Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                        CommentTimestamp = DateTime.UtcNow,
+                                                        CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                    };
+                                                    studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                    CommentId++;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                            {
+                                                var StudentAttendanceComments = new StudentAttendanceComments
+                                                {
+                                                    TenantId = studentAttendanceAddViewModel.TenantId,
+                                                    SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                    StudentId = studentAttendance.StudentId,
+                                                    StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                    CommentId = (long)CommentId!,
+                                                    Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                    CommentTimestamp = DateTime.UtcNow,
+                                                    CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                    CreatedOn = DateTime.UtcNow,
+                                                    MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                };
+                                                studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                CommentId++;
+                                            }
+                                        }
+
+                                        attendanceDataForStudent.AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!;
+                                    }
+                                    else
+                                    {
+                                        if (allCsData.FirstOrDefault()!.AttendanceTaken == true)
+                                        {
+                                            var studentAttendanceAdd = new StudentAttendance()
+                                            {
+                                                TenantId = studentAttendanceAddViewModel.TenantId,
+                                                SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                StudentId = studentAttendance.StudentId,
+                                                StaffId = (int)staffId!,
+                                                CourseId = studentAttendanceAddViewModel.CourseId,
+                                                CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                                AttendanceCategoryId = (int)studentAttendanceAddViewModel.AttendanceCategoryId!,
+                                                AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!,
+                                                AttendanceDate = studentAttendance.AttendanceDate,
+                                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                CreatedOn = DateTime.UtcNow,
+                                                BlockId = (int)blockIde!,
+                                                PeriodId = (int)periodIde!,
+                                                StudentAttendanceId = (int)StudentAttendanceId,
+                                                MembershipId = studentAttendanceAddViewModel.MembershipId
+                                            };
+                                            studentAttendanceList.Add(studentAttendanceAdd);
+
+                                            if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                            {
+                                                var StudentAttendanceComments = new StudentAttendanceComments
+                                                {
+                                                    TenantId = studentAttendanceAddViewModel.TenantId,
+                                                    SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                    StudentId = studentAttendance.StudentId,
+                                                    StudentAttendanceId = (int)StudentAttendanceId,
+                                                    CommentId = (long)CommentId!,
+                                                    Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                    CommentTimestamp = DateTime.UtcNow,
+                                                    CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                    CreatedOn = DateTime.UtcNow,
+                                                    MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                };
+                                                studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                CommentId++;
+                                            }
+
+                                            StudentAttendanceId++;
+                                        }
+                                    }
+                                }
+                                if (allCsData.FirstOrDefault()!.ScheduleType == "Variable Schedule (2)")
+                                {
+                                    //var day = studentAttendance.AttendanceDate.DayOfWeek.ToString();
+                                    //periodIde = allCsData.Where(x => x.VarDay.ToLower() == day.ToLower()).Select(s => s.VarPeriodId).FirstOrDefault();
+                                    var day = studentAttendance.AttendanceDate.DayOfWeek.ToString();
+                                    var periodIds = allCsData.AsEnumerable().Where(x => String.Compare(x.VarDay, day, true) == 0).ToList();
+
+                                    if (periodIds?.Any() == true)
+                                    {
+                                        foreach (var periodId in periodIds)
+                                        {
+                                            var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1 && x.PeriodId == periodId.VarPeriodId);
+
+                                            if (attendanceDataForStudent != null)
+                                            {
+                                                if (attendanceDataForStudent.StudentAttendanceComments?.Any() == true)
+                                                {
+                                                    var attendanceCommentDataForStudent = attendanceDataForStudent.StudentAttendanceComments.FirstOrDefault(x => x.MembershipId == 1);
+
+                                                    if (attendanceCommentDataForStudent != null)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                        {
+                                                            attendanceCommentDataForStudent.Comment = studentAttendanceAddViewModel.AbsencesReason;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                        {
+                                                            var StudentAttendanceComments = new StudentAttendanceComments
+                                                            {
+                                                                TenantId = studentAttendanceAddViewModel.TenantId,
+                                                                SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                                StudentId = studentAttendance.StudentId,
+                                                                StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                                CommentId = (long)CommentId!,
+                                                                Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                                CommentTimestamp = DateTime.UtcNow,
+                                                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                                CreatedOn = DateTime.UtcNow,
+                                                                MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                            };
+                                                            studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                            CommentId++;
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                    {
+                                                        var StudentAttendanceComments = new StudentAttendanceComments
+                                                        {
+                                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                            StudentId = studentAttendance.StudentId,
+                                                            StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                            CommentId = (long)CommentId!,
+                                                            Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                            CommentTimestamp = DateTime.UtcNow,
+                                                            CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                            CreatedOn = DateTime.UtcNow,
+                                                            MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                        };
+                                                        studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                        CommentId++;
+                                                    }
+                                                }
+
+                                                attendanceDataForStudent.AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!;
+                                            }
+                                            else
+                                            {
+                                                if (periodId.TakeAttendanceVariable == true)
+                                                {
+                                                    var studentAttendanceAdd = new StudentAttendance()
+                                                    {
+                                                        TenantId = studentAttendanceAddViewModel.TenantId,
+                                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                        StudentId = studentAttendance.StudentId,
+                                                        StaffId = (int)staffId!,
+                                                        CourseId = studentAttendanceAddViewModel.CourseId,
+                                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                                        AttendanceCategoryId = (int)studentAttendanceAddViewModel.AttendanceCategoryId!,
+                                                        AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!,
+                                                        AttendanceDate = studentAttendance.AttendanceDate,
+                                                        CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        BlockId = (int)blockIde!,
+                                                        PeriodId = (int)periodId.VarPeriodId!,
+                                                        StudentAttendanceId = (int)StudentAttendanceId,
+                                                        MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                    };
+                                                    studentAttendanceList.Add(studentAttendanceAdd);
+
+                                                    if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                    {
+                                                        var StudentAttendanceComments = new StudentAttendanceComments
+                                                        {
+                                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                            StudentId = studentAttendance.StudentId,
+                                                            StudentAttendanceId = (int)StudentAttendanceId,
+                                                            CommentId = (long)CommentId!,
+                                                            Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                            CommentTimestamp = DateTime.UtcNow,
+                                                            CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                            CreatedOn = DateTime.UtcNow,
+                                                            MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                        };
+                                                        studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                        CommentId++;
+                                                    }
+
+                                                    StudentAttendanceId++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (allCsData.FirstOrDefault()!.ScheduleType == "Calendar Schedule (3)")
+                                {
+                                    var periodIds = allCsData.Where(x => x.CalDate == studentAttendance.AttendanceDate).ToList();
+
+                                    if (periodIds?.Any() == true)
+                                    {
+                                        foreach (var periodId in periodIds)
+                                        {
+                                            var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1 && x.PeriodId == periodId.CalPeriodId);
+
+                                            if (attendanceDataForStudent != null)
+                                            {
+                                                if (attendanceDataForStudent.StudentAttendanceComments?.Any() == true)
+                                                {
+                                                    var attendanceCommentDataForStudent = attendanceDataForStudent.StudentAttendanceComments.FirstOrDefault(x => x.MembershipId == 1);
+
+                                                    if (attendanceCommentDataForStudent != null)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                        {
+                                                            attendanceCommentDataForStudent.Comment = studentAttendanceAddViewModel.AbsencesReason;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                        {
+                                                            var StudentAttendanceComments = new StudentAttendanceComments
+                                                            {
+                                                                TenantId = studentAttendanceAddViewModel.TenantId,
+                                                                SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                                StudentId = studentAttendance.StudentId,
+                                                                StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                                CommentId = (long)CommentId!,
+                                                                Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                                CommentTimestamp = DateTime.UtcNow,
+                                                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                                CreatedOn = DateTime.UtcNow,
+                                                                MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                            };
+                                                            studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                            CommentId++;
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                    {
+                                                        var StudentAttendanceComments = new StudentAttendanceComments
+                                                        {
+                                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                            StudentId = studentAttendance.StudentId,
+                                                            StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                            CommentId = (long)CommentId!,
+                                                            Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                            CommentTimestamp = DateTime.UtcNow,
+                                                            CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                            CreatedOn = DateTime.UtcNow,
+                                                            MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                        };
+                                                        studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                        CommentId++;
+                                                    }
+                                                }
+
+                                                attendanceDataForStudent.AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!;
+                                            }
+                                            else
+                                            {
+                                                if (periodId.TakeAttendanceCalendar == true)
+                                                {
+                                                    var studentAttendanceAdd = new StudentAttendance()
+                                                    {
+                                                        TenantId = studentAttendanceAddViewModel.TenantId,
+                                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                        StudentId = studentAttendance.StudentId,
+                                                        StaffId = (int)staffId!,
+                                                        CourseId = studentAttendanceAddViewModel.CourseId,
+                                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                                        AttendanceCategoryId = (int)studentAttendanceAddViewModel.AttendanceCategoryId!,
+                                                        AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!,
+                                                        AttendanceDate = studentAttendance.AttendanceDate,
+                                                        CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        BlockId = (int)blockIde!,
+                                                        PeriodId = (int)periodId.CalPeriodId!,
+                                                        StudentAttendanceId = (int)StudentAttendanceId,
+                                                        MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                    };
+                                                    studentAttendanceList.Add(studentAttendanceAdd);
+
+                                                    if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                    {
+                                                        var StudentAttendanceComments = new StudentAttendanceComments
+                                                        {
+                                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                            StudentId = studentAttendance.StudentId,
+                                                            StudentAttendanceId = (int)StudentAttendanceId,
+                                                            CommentId = (long)CommentId!,
+                                                            Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                            CommentTimestamp = DateTime.UtcNow,
+                                                            CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                            CreatedOn = DateTime.UtcNow,
+                                                            MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                        };
+                                                        studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                        CommentId++;
+                                                    }
+
+                                                    StudentAttendanceId++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (allCsData.FirstOrDefault()!.ScheduleType == "Block Schedule (4)")
+                                {
+                                    var BellScheduleData = this.context?.BellSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.BellScheduleDate == studentAttendance.AttendanceDate);
+                                    if (BellScheduleData != null)
+                                    {
+                                        blockIde = BellScheduleData.BlockId;
+                                        periodIde = allCsData.Where(x => x.BlockId == BellScheduleData.BlockId).Select(s => s.BlockPeriodId).FirstOrDefault();
+                                    }
+
+                                    var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1);
+
+                                    if (attendanceDataForStudent != null)
+                                    {
+                                        if (attendanceDataForStudent.StudentAttendanceComments?.Any() == true)
+                                        {
+                                            var attendanceCommentDataForStudent = attendanceDataForStudent.StudentAttendanceComments.FirstOrDefault(x => x.MembershipId == 1);
+
+                                            if (attendanceCommentDataForStudent != null)
+                                            {
+                                                if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                {
+                                                    attendanceCommentDataForStudent.Comment = studentAttendanceAddViewModel.AbsencesReason;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                                {
+                                                    var StudentAttendanceComments = new StudentAttendanceComments
+                                                    {
+                                                        TenantId = studentAttendanceAddViewModel.TenantId,
+                                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                        StudentId = studentAttendance.StudentId,
+                                                        StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                        CommentId = (long)CommentId!,
+                                                        Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                        CommentTimestamp = DateTime.UtcNow,
+                                                        CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                        CreatedOn = DateTime.UtcNow,
+                                                        MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                    };
+                                                    studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                    CommentId++;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                            {
+                                                var StudentAttendanceComments = new StudentAttendanceComments
+                                                {
+                                                    TenantId = studentAttendanceAddViewModel.TenantId,
+                                                    SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                    StudentId = studentAttendance.StudentId,
+                                                    StudentAttendanceId = attendanceDataForStudent.StudentAttendanceId,
+                                                    CommentId = (long)CommentId!,
+                                                    Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                    CommentTimestamp = DateTime.UtcNow,
+                                                    CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                    CreatedOn = DateTime.UtcNow,
+                                                    MembershipId = studentAttendanceAddViewModel.MembershipId
+                                                };
+                                                studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                                CommentId++;
+                                            }
+                                        }
+
+                                        attendanceDataForStudent.AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!;
+                                    }
+                                    else
+                                    {
+                                        var studentAttendanceAdd = new StudentAttendance()
+                                        {
+                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                            StudentId = studentAttendance.StudentId,
+                                            StaffId = (int)staffId!,
+                                            CourseId = studentAttendanceAddViewModel.CourseId,
+                                            CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                            AttendanceCategoryId = (int)studentAttendanceAddViewModel.AttendanceCategoryId!,
+                                            AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!,
+                                            AttendanceDate = studentAttendance.AttendanceDate,
+                                            CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                            CreatedOn = DateTime.UtcNow,
+                                            BlockId = (int)blockIde!,
+                                            PeriodId = (int)periodIde!,
+                                            StudentAttendanceId = (int)StudentAttendanceId,
+                                            MembershipId = studentAttendanceAddViewModel.MembershipId
+                                        };
+                                        studentAttendanceList.Add(studentAttendanceAdd);
+
+                                        if (!string.IsNullOrEmpty(studentAttendanceAddViewModel.AbsencesReason))
+                                        {
+                                            var StudentAttendanceComments = new StudentAttendanceComments
+                                            {
+                                                TenantId = studentAttendanceAddViewModel.TenantId,
+                                                SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                                StudentId = studentAttendance.StudentId,
+                                                StudentAttendanceId = (int)StudentAttendanceId,
+                                                CommentId = (long)CommentId!,
+                                                Comment = studentAttendanceAddViewModel.AbsencesReason,
+                                                CommentTimestamp = DateTime.UtcNow,
+                                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
+                                                CreatedOn = DateTime.UtcNow,
+                                                MembershipId = studentAttendanceAddViewModel.MembershipId
+                                            };
+                                            studentAttendanceCommentsList.Add(StudentAttendanceComments);
+                                            CommentId++;
+                                        }
+
+                                        StudentAttendanceId++;
+                                    }
                                 }
                             }
-
-                            var studentAttendanceAdd = new StudentAttendance()
-                            {
-                                TenantId = studentAttendanceAddViewModel.TenantId,
-                                SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                StudentId = studentAttendance.StudentId,
-                                StaffId = (int)staffId!,
-                                CourseId = studentAttendanceAddViewModel.CourseId,
-                                CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
-                                AttendanceCategoryId = (int)studentAttendanceAddViewModel.AttendanceCategoryId!,
-                                AttendanceCode = (int)studentAttendanceAddViewModel.AttendanceCode!,
-                                AttendanceDate = studentAttendance.AttendanceDate,
-                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
-                                CreatedOn = DateTime.UtcNow,
-                                BlockId = (int)blockIde!,
-                                PeriodId = (int)periodIde!,
-                                StudentAttendanceId = (int)StudentAttendanceId,
-                                MembershipId = studentAttendanceAddViewModel.MembershipId
-                            };
-                            var StudentAttendanceComments = new StudentAttendanceComments
-                            {
-                                TenantId = studentAttendanceAddViewModel.TenantId,
-                                SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                StudentId = studentAttendance.StudentId,
-                                StudentAttendanceId = (int)StudentAttendanceId,
-                                CommentId = (long)CommentId!,
-                                Comment = studentAttendanceAddViewModel.AbsencesReason,
-                                CommentTimestamp = DateTime.UtcNow,
-                                CreatedBy = studentAttendanceAddViewModel.CreatedBy,
-                                CreatedOn = DateTime.UtcNow,
-                                MembershipId = studentAttendanceAddViewModel.MembershipId
-                            };
-                            studentAttendanceList.Add(studentAttendanceAdd);
-                            studentAttendanceCommentsList.Add(StudentAttendanceComments);
-                            StudentAttendanceId++;
                         }
+
+                        this.context?.StudentAttendance.AddRange(studentAttendanceList);
+                        this.context?.StudentAttendanceComments.AddRange(studentAttendanceCommentsList);
+                        this.context?.SaveChanges();
+
+                        //Insert into daily attendance table
+                        foreach (var studentId in studentAttendanceAddViewModel.studentAttendance)
+                        {
+                            int totalAttendanceMin = 0;
+                            var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId.StudentId && x.AttendanceDate == studentId.AttendanceDate).ToList();
+                            if (attendanceData != null)
+                            {
+                                foreach (var attendance in attendanceData)
+                                {
+                                    var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
+
+                                    if (BlockPeriodData != null)
+                                    {
+                                        var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
+                                        var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
+                                        TimeSpan? periodTime = periodEndTime - periodStartTime;
+                                        var hour = Convert.ToInt32(periodTime.Value.Hours);
+                                        var min = Convert.ToInt32(periodTime.Value.Minutes);
+                                        var classMin = hour > 0 ? (hour * 60 + min) : min;
+
+                                        var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                        if (AttendanceCodeData != null)
+                                        {
+                                            if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                            {
+                                                totalAttendanceMin = totalAttendanceMin + classMin;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId.StudentId && x.AttendanceDate == studentId.AttendanceDate);
+
+                            if (studentDailyAttendanceData != null)
+                            {
+                                studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
+                            }
+                            else
+                            {
+                                var studentDailyAttendance = new StudentDailyAttendance { TenantId = studentAttendanceAddViewModel.TenantId, SchoolId = studentAttendanceAddViewModel.SchoolId, StudentId = studentId.StudentId, AttendanceDate = studentId.AttendanceDate, CreatedBy = studentAttendanceAddViewModel.CreatedBy, AttendanceMinutes = totalAttendanceMin, CreatedOn = DateTime.UtcNow };
+
+                                studentDailyAttendances.Add(studentDailyAttendance);
+                            }
+                        }
+                        this.context?.StudentDailyAttendance.AddRange(studentDailyAttendances);
+                        this.context?.SaveChanges();
+
+                        transaction?.Commit();
+                        studentAttendanceAddViewModel._message = "Add Absences Added Successfully";
                     }
-                    this.context?.StudentAttendance.AddRange(studentAttendanceList);
-                    this.context?.StudentAttendanceComments.AddRange(studentAttendanceCommentsList);
-                    this.context?.SaveChanges();
-                    studentAttendanceAddViewModel._message = "Add Absences Added Successfully";
+                    else
+                    {
+                        studentAttendanceAddViewModel._failure = true;
+                        studentAttendanceAddViewModel._message = "Please Select Student";
+                    }
                 }
-                else
+                catch (Exception es)
                 {
+                    transaction?.Rollback();
                     studentAttendanceAddViewModel._failure = true;
-                    studentAttendanceAddViewModel._message = "Please Select Student";
+                    studentAttendanceAddViewModel._message = es.Message;
                 }
-            }
-            catch (Exception es)
-            {
-                studentAttendanceAddViewModel._failure = true;
-                studentAttendanceAddViewModel._message = es.Message;
             }
             return studentAttendanceAddViewModel;
         }
