@@ -674,9 +674,9 @@ namespace opensis.report.report.data.Repository
                                                     gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : "" + "/" + assignmentGrade.Points;
                                                     gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
                                                     gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
-                                                    gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage + "%" : null;
+                                                    gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage : null;
                                                     //gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) / Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) * 100, 2) + "%" : null;
-                                                    gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) * Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) / 100, 2) + "%" : null;
+                                                    gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) * Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) / 100, 2).ToString() : null;
                                                     gradeBookGradeData.Comment = studentGrades != null ? studentGrades.Comment : null;
 
                                                     GradeBookGradeListData.Add(gradeBookGradeData);
