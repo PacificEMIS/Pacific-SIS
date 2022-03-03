@@ -61,7 +61,7 @@
                                 <h3 >{{totalCourse}} Course Found</h3>
                             </ng-template>
                         </ng-template> -->
-                        <h3>{{courseList?.length}} Course Found</h3>
+                        <h3>{{courseList?.length}} {{'courseFound' | translate}}</h3>
 
                             <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" mat-raised-button color="primary"
                                 (click)="openModalEditCourse()">

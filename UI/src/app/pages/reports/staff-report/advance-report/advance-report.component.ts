@@ -16,7 +16,7 @@ import { FormControl } from '@angular/forms';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import icSearch from '@iconify/icons-ic/search';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
@@ -189,7 +189,9 @@ export class AdvanceReportComponent implements OnInit {
     private reportService: ReportService,
     private commonFunction: SharedFunction,
     private excelService: ExcelService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });

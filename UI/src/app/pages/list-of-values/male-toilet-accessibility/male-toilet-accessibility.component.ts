@@ -41,7 +41,7 @@ import { EditMaleToiletAccessibilityComponent } from './edit-male-toilet-accessi
 import { LovAddView, LovList } from '../../../models/lov.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { ExcelService } from '../../../services/excel.service';
 import { CommonService } from '../../../services/common.service';
 import { SharedFunction } from '../../shared/shared-function';
@@ -64,12 +64,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class MaleToiletAccessibilityComponent implements OnInit {
   columns = [
-    { label: 'Accessibility Name', property: 'lovColumnValue', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Created Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Updated Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'accessibilityName', property: 'lovColumnValue', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createdDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updatedDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
   EffortGradeScaleModelList;
@@ -106,8 +106,10 @@ export class MaleToiletAccessibilityComponent implements OnInit {
     private loaderService:LoaderService,
     public commonfunction:SharedFunction,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

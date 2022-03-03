@@ -61,9 +61,9 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class SectionsComponent implements OnInit {
   columns = [
    
-    { label: 'Title', property: 'name', type: 'text', visible: true },
-    { label: 'Sort Order', property: 'sortOrder', type: 'text', visible: true, cssClasses: ['font-medium'] },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'title', property: 'name', type: 'text', visible: true },
+    { label: 'sortOrder', property: 'sortOrder', type: 'text', visible: true, cssClasses: ['font-medium'] },
+    { label: 'action', property: 'action', type: 'text', visible: true }
     
   ];
   icEdit = icEdit;

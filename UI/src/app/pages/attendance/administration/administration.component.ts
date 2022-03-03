@@ -27,7 +27,7 @@ import { ConstantPool } from "@angular/compiler";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -100,8 +100,11 @@ export class AdministrationComponent implements OnInit {
     private commonFunction: SharedFunction,
     private studentAttendanceService: StudentAttendanceService,
     private attendanceCodeService: AttendanceCodeService,
-    private defaultValueService: DefaultValuesService
+    private defaultValueService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
+    private translateService: TranslateService
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });

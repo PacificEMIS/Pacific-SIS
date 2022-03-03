@@ -79,14 +79,14 @@ export class GradeLevelsComponent implements OnInit {
   searchKey: string;
   deleteGradeLevelData: AddGradeLevelModel = new AddGradeLevelModel();
   columns = [
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Short Name', property: 'shortName', type: 'text', visible: true },
-    { label: 'Sort Order', property: 'sortOrder', type: 'number', visible: true },
-    { label: 'Grade Level Equivalency', property: 'gradeLevelEquivalency', type: 'text', visible: true },
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'shortName', property: 'shortName', type: 'text', visible: true },
+    { label: 'sortOrder', property: 'sortOrder', type: 'number', visible: true },
+    { label: 'gradeLevel Equivalency', property: 'gradeLevelEquivalency', type: 'text', visible: true },
    // { label: 'Age Range', property: 'ageRange', type: 'text', visible: false},
   //  { label: 'Educational Stage', property: 'educationalStage', type: 'text', visible: false},
-    { label: 'Next Grade', property: 'nextGrade', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'nextGrade', property: 'nextGrade', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
   permissions: Permissions
   constructor(private dialog: MatDialog,

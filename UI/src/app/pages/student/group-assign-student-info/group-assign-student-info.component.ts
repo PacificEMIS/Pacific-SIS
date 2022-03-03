@@ -42,7 +42,7 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from '../../shared/format-datepicker';
 import { CustomFieldsValueModel } from '../../../models/custom-fields-value.model';
 import { StudentScheduleService } from '../../../services/student-schedule.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { Module } from 'src/app/enums/module.enum';
 import { ProfilesTypes } from '../../../enums/profiles.enum';
@@ -198,8 +198,10 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
     private pageRolePermission: PageRolesPermission,
     private customFieldservice: CustomFieldService,
     private studentScheduleService: StudentScheduleService,
-    private gradeLevelService: GradeLevelService
+    private gradeLevelService: GradeLevelService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       //translateService.use('en');
       this.getAllStudent.filterParams = null;

@@ -14,7 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { IdentificationInformation } from 'src/app/enums/identificationInformation.enum';
 import { ReportService } from '../../../../services/report.service';
 import { GetStudentAdvancedReportModel } from 'src/app/models/report.model';
@@ -200,7 +200,9 @@ export class AdvanceReportComponent implements OnInit {
     private loaderService: LoaderService,
     private reportService: ReportService,
     private excelService: ExcelService,
+    private paginatorObj: MatPaginatorIntl,
     ) { 
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.selectedStudentListForTable = new MatTableDataSource([]);
 
       this.loaderService.isLoading.subscribe((val) => {

@@ -43,7 +43,7 @@ import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
 import { CommonService } from '../../../services/common.service';
 import { EditCountryComponent } from './edit-country/edit-country.component';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CountryAddModel } from '../../../models/country.model';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { ExcelService } from '../../../services/excel.service';
@@ -67,13 +67,13 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class CountriesComponent implements OnInit, AfterViewInit {
   columns = [
-    { label: 'Title', property: 'name', type: 'text', visible: true },
-    { label: 'Short Name', property: 'countryCode', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Create Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Update Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'title', property: 'name', type: 'text', visible: true },
+    { label: 'shortName', property: 'countryCode', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updateDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];  
   icMoreVert = icMoreVert;
   icAdd = icAdd;
@@ -110,8 +110,10 @@ export class CountriesComponent implements OnInit, AfterViewInit {
     public commonfunction:SharedFunction,
     private cryptoService: CryptoService,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

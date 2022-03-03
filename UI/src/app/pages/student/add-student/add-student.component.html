@@ -28,7 +28,7 @@
                             <li *ngFor="let field of fieldsCategory; let index =index"
                                 (click)="changeCategory(field,index)">
                                 <a [ngClass]="currentCategory==field?.categoryId?'text-blue active' : ''"
-                                    @fadeInRight *ngIf="field.customFields!=''||index<7">{{field?.title}}</a>
+                                    @fadeInRight *ngIf="field.customFields!=''||index<7">{{field?.title | translate}}</a>
                             </li>
 
                             <!-- <vex-custom-field *ngIf="field.categoryId == currentCategory && indexOfCategory > 6"

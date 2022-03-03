@@ -52,7 +52,7 @@ import { GradeLevelService } from '../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../models/grade-level.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ExcelService } from '../../../services/excel.service';
 import { LoaderService } from "src/app/services/loader.service";
@@ -73,13 +73,13 @@ export class UsCommonCoreStandardsComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort
 
   columns = [
-    { label: 'Standard Ref No', property: 'standard_ref_no', type: 'text', visible: true },
-    { label: 'Subject', property: 'subject', type: 'text', visible: true },
-    { label: 'Grade', property: 'grade', type: 'text', visible: true },
-    { label: 'Course', property: 'course', type: 'text', visible: true },
-    { label: 'Domain', property: 'domain', type: 'text', visible: true },
-    { label: 'Topic', property: 'topic', type: 'text', visible: true },
-    { label: 'Standard Details', property: 'standard_details', type: 'text', visible: false }
+    { label: 'standardRefNo', property: 'standard_ref_no', type: 'text', visible: true },
+    { label: 'subject', property: 'subject', type: 'text', visible: true },
+    { label: 'grade', property: 'grade', type: 'text', visible: true },
+    { label: 'course', property: 'course', type: 'text', visible: true },
+    { label: 'domain', property: 'domain', type: 'text', visible: true },
+    { label: 'topic', property: 'topic', type: 'text', visible: true },
+    { label: 'standardDetails', property: 'standard_details', type: 'text', visible: false }
   ];
 
   CommonCoreStandardsModelList;
@@ -126,8 +126,9 @@ export class UsCommonCoreStandardsComponent implements OnInit {
               private defaultValuesService: DefaultValuesService,
               private excelService:ExcelService,
               private loaderService: LoaderService,
-
+              private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading
     .pipe(takeUntil(this.destroySubject$))

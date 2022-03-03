@@ -41,7 +41,7 @@ import { filterParams, GetAllParentModel, GetAllParentResponseModel, ParentAdvan
 import { LoaderService } from '../../../services/loader.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentService } from '../../../services/student.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ExcelService } from '../../../services/excel.service';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
@@ -71,12 +71,12 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ParentinfoComponent implements OnInit, OnDestroy {
   columns = [
-    { label: 'Parent Name', property: 'firstname', type: 'text', visible: true },
-    { label: 'Profile', property: 'userProfile', type: 'text', visible: true },
-    { label: 'Email Address', property: 'workEmail', type: 'text', visible: true },
-    { label: 'Mobile Phone', property: 'mobile', type: 'number', visible: true },
-    { label: 'Associated Students', property: 'students', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'parentName', property: 'firstname', type: 'text', visible: true },
+    { label: 'profile', property: 'userProfile', type: 'text', visible: true },
+    { label: 'emailAddress', property: 'workEmail', type: 'text', visible: true },
+    { label: 'mobilePhone', property: 'mobile', type: 'number', visible: true },
+    { label: 'associatedStudents', property: 'students', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort
@@ -143,8 +143,10 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private commonService:CommonService,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     
     this.getAllParentModel.filterParams=null;

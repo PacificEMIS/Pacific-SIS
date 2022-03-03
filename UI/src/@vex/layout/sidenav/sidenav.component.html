@@ -34,19 +34,19 @@
 
       <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
         <button mat-menu-item *ngIf="membershipName=='Super Administrator' || membershipName=='School Administrator'" (click)="showPreference()">
-          <span>Preferences</span>
+          <span>{{'preferences' | translate}}</span>
         </button>
 
         <button mat-menu-item (click)="showMyAccount()">
-          <span>My Account</span>
+          <span>{{'myAccount' | translate}}</span>
         </button>
 
         <button mat-menu-item (click)="openChangePassword()">
-          <span>Change Password</span>
+          <span>{{'changePassword' | translate}}</span>
         </button>
 
         <button mat-menu-item (click)="logOut()">
-          <span>Logout</span>
+          <span>{{'logout' | translate}}</span>
         </button>
       </mat-menu>
     </div>

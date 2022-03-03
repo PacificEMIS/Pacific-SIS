@@ -12,7 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { GetSchoolReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
@@ -57,7 +57,9 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
     private snackbar: MatSnackBar,
     private loaderService: LoaderService,
     private reportService: ReportService,
-    private domSanitizer: DomSanitizer) {
+    private domSanitizer: DomSanitizer,
+    private paginatorObj: MatPaginatorIntl) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
