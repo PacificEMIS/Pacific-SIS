@@ -169,7 +169,7 @@
                             <tbody>
                                 <tr *ngFor="let staff of courseSection.staffCoursesectionSchedule;let staffIndex=index">
                                     <td>
-                                            <mat-radio-button [checked]="staff.checked" color="primary" (click)="singleSelectionBasedOnCourse($event.checked,courseSectionIndex,staffIndex)" name={{courseSectionIndex}}></mat-radio-button>
+                                        <mat-radio-button color="primary" (click)="singleSelectionBasedOnCourse($event,courseSectionIndex,staffIndex,button)" name={{courseSectionIndex}} #button></mat-radio-button>
                                     </td>
                                     <td [ngClass]="staff.conflict?'text-warn':''">{{staff.staffMaster.firstGivenName+' '+staff.staffMaster.lastFamilyName}}</td>
                                     <td [ngClass]="staff.conflict?'text-warn':''">{{staff.staffMaster.staffInternalId}}</td>
