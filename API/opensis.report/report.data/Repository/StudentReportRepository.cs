@@ -605,6 +605,8 @@ namespace opensis.report.report.data.Repository
                                         courseSection.TeacherFirstName = staffData.FirstGivenName;
                                         courseSection.TeacherMiddleName = staffData.MiddleName;
                                         courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
                                         //Fetch assignment type according to academic year and marking period
                                         var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
@@ -779,6 +781,8 @@ namespace opensis.report.report.data.Repository
                                         courseSection.TeacherFirstName = staffData.FirstGivenName;
                                         courseSection.TeacherMiddleName = staffData.MiddleName;
                                         courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
                                         //Fetch assignment type according to academic year and marking period
                                         var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
