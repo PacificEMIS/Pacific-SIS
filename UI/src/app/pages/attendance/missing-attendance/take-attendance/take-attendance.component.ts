@@ -111,6 +111,7 @@ export class TakeAttendanceComponent implements OnInit {
      this.scheduleStudentListViewModel.pageNumber=0;
      this.scheduleStudentListViewModel.pageSize = 0;
      this.scheduleStudentListViewModel.attendanceDate = this.staffDetails.attendanceDate;
+     this.scheduleStudentListViewModel.includeInactive = true;
      this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res)=>{
      if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);

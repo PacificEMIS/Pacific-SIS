@@ -422,6 +422,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.scheduleStudentListViewModel.pageNumber = 0;
     this.scheduleStudentListViewModel.pageSize = 0;
     this.scheduleStudentListViewModel.sortingModel = null;
+    this.scheduleStudentListViewModel.includeInactive = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
