@@ -51,5 +51,8 @@ namespace opensis.report.report.data.ViewModels.StaffReport
     {
         public StaffMaster staffMaster { get; set; }
         public List<FieldsCategory>? fieldsCategoryList { get; set; }
+        public string? CountryOfBirth { get; set; }
+        public string? HomeAddressCountry { get; set; }
+        public string? MailingAddressCountry { get; set; }
     }
 }
