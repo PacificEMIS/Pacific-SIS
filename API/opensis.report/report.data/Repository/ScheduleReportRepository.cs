@@ -209,7 +209,7 @@ namespace opensis.report.report.data.Repository
                                     section.CourseSectionId = CourseData.CourseSectionId;
                                     section.CourseSubject = CourseData.CourseSubject;
                                     section.CourseTitle = CourseData.CourseTitle;
-                                    section.CourseSubject = CourseData.CourseSubject;
+                                    section.CourseProgram = CourseData.CourseProgram;
                                     section.CourseId = CourseData.CourseId;
                                     section.StaffName = string.Join(", ", staffName);
                                     sectionList.Add(section);
@@ -231,13 +231,21 @@ namespace opensis.report.report.data.Repository
                                 section.CourseSectionId = CourseData.CourseSectionId;
                                 section.CourseSubject = CourseData.CourseSubject;
                                 section.CourseTitle = CourseData.CourseTitle;
-                                section.CourseSubject = CourseData.CourseSubject;
+                                section.CourseProgram = CourseData.CourseProgram;
                                 section.CourseId = CourseData.CourseId;
                                 section.StaffName = string.Join(", ", staffName);
                                 sectionList.Add(section);
                             }
                         }
-                        scheduleClass.CourseSectionViewList = sectionList;
+
+                        foreach (var data in sectionList)
+                        {
+                            if (!scheduleClass.CourseSectionViewList.Any(p => p.SchoolId == data.SchoolId && p.CourseSectionId == data.CourseSectionId))
+                            {
+                                scheduleClass.CourseSectionViewList.Add(data);
+                            }
+                        }
+                        //scheduleClass.CourseSectionViewList = sectionList;
 
                         if (scheduleClass.CourseSectionViewList.Count==0)
                         {
