@@ -20,14 +20,14 @@
                 <h4 class="text-xl text-primary font-medium">{{staffDetails?.attendanceDate | date : 'mediumDate'}}</h4>
             </div>
             <div class="col-span-2">
-                <div class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
-                <!-- <div class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div> -->
+                <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                    <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
             </div> 
         </div>
         <mat-divider class="text-border"></mat-divider>
         <div class="overflow-x-auto overflow-y-hidden">
             <div class="table-sticky mat-elevation-z8 shadow-none">
-                <table mat-table [dataSource]="scheduleStudentListViewModel.scheduleStudentForView">
+                <table mat-table [dataSource]="allStudentList">
                     <ng-container matColumnDef="students" sticky>
                         <th mat-header-cell *matHeaderCellDef>{{ "students" | translate }}</th>
                         <td mat-cell *matCellDef="let element" class="bg-white">
@@ -57,10 +57,10 @@
                         </th>
                         <td mat-cell *matCellDef="let element;let i = index">
                             <ng-container *ngIf="addUpdateStudentAttendanceModel?.studentAttendance[i]?.attendanceCode">
-                            <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList">
+                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList;let innerIndex=index;">
                                 <label for="{{attendance.title+''+i}}">
                                     <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}" [disabled]="element.isDropped" *ngIf="element.isDropped === null">
-                                    <div class="inline-block checkmark-container" [ngClass]="attendance.stateCode=='Present'?'present':attendance.stateCode=='Absent'?'absent':attendance.stateCode=='Half Day'?'tardy':'present'">
+                                    <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
                                         <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
                                     </div>
                                 </label>
