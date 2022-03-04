@@ -13,7 +13,7 @@ import { SharedFunction } from '../../shared/shared-function';
 import { CommonService } from 'src/app/services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoricalMarkingPeriodAddViewModel, HistoricalMarkingPeriodListModel } from 'src/app/models/historical-marking-period.model';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { LoaderService } from 'src/app/services/loader.service';
@@ -41,10 +41,10 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
   historicalMarkingPeriodAddViewModel: HistoricalMarkingPeriodAddViewModel = new HistoricalMarkingPeriodAddViewModel();
   markingPeriodList: MatTableDataSource<any> = new MatTableDataSource<any>();
   columns = [
-    { label: 'Marking Period Name', property: 'markingPeriodName', type: 'text', visible: true },
-    { label: 'Grade Post Date', property: 'gradePostDate', type: 'text', visible: true },
-    { label: 'School Year', property: 'schoolYear', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'markingPeriodName', property: 'markingPeriodName', type: 'text', visible: true },
+    { label: 'gradePostDate', property: 'gradePostDate', type: 'text', visible: true },
+    { label: 'schoolYear', property: 'schoolYear', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
   historicalMarkingPeriodListModel: HistoricalMarkingPeriodListModel = new HistoricalMarkingPeriodListModel();
 
@@ -57,8 +57,10 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
     private loaderService: LoaderService,
     private excelService: ExcelService,
     private snackbar: MatSnackBar,
-    private dialog: MatDialog) {
-
+    private dialog: MatDialog,
+    private paginatorObj: MatPaginatorIntl,
+    ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });

@@ -33,7 +33,7 @@ import { StudentListModel } from '../../../models/student.model';
 import { StudentService } from "../../../services/student.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { FormControl } from "@angular/forms";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
 import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
@@ -110,8 +110,10 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private el: ElementRef,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.getAllStudent.filterParams = null;
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {

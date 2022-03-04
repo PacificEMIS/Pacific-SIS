@@ -46,7 +46,7 @@ import { stagger40ms } from "../../../../@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
 import { FormControl } from "@angular/forms";
 import { MatSort } from "@angular/material/sort";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { LoaderService } from "../../../../app/services/loader.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { DefaultValuesService } from "../../../../app/common/default-values.service";
@@ -119,7 +119,9 @@ export class ReportCardsComponent implements OnInit {
     private pageRolePermissions: PageRolesPermission,
     private studentScheduleService: StudentScheduleService,
     private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.markingPeriods = [];
     this.addReportCardPdf.templateType='default';

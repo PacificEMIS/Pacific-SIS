@@ -61,11 +61,11 @@ import { CommonService } from 'src/app/services/common.service';
 })
 export class EnrollmentCodesComponent implements OnInit {
   columns = [
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Short Name', property: 'shortName', type: 'text', visible: true },
-    { label: 'Sort Order', property: 'sortOrder', type: 'text', visible: true },
-    { label: 'Type', property: 'type', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'shortName', property: 'shortName', type: 'text', visible: true },
+    { label: 'sortOrder', property: 'sortOrder', type: 'text', visible: true },
+    { label: 'type', property: 'type', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
   icMoreVert = icMoreVert;

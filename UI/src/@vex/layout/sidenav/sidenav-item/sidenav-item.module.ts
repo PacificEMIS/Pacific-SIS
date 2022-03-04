@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { IconModule } from '@visurel/iconify-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SidenavItemComponent],
@@ -16,6 +17,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatRippleModule,
     IconModule,
     FlexLayoutModule,
+    TranslateModule
   ],
   exports: [SidenavItemComponent]
 })

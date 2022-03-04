@@ -70,13 +70,13 @@ export class AttendanceCodesComponent implements OnInit {
   selectedAttendanceCategory = 1;
   attedanceStateCode = AttendanceCodeEnum;
   columns = [
-    { label: 'Order', property: 'id', type: 'number', visible: true },
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Short Name', property: 'shortName', type: 'text', visible: true },
-    { label: 'Allow Entry By', property: 'allowEntryBy', type: 'text', visible: true },
-    { label: 'Default for Teacher & Office', property: 'defaultCode', type: 'text', visible: true },
-    { label: 'State Code', property: 'stateCode', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'order', property: 'id', type: 'number', visible: true },
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'shortName', property: 'shortName', type: 'text', visible: true },
+    { label: 'allowEntryBy', property: 'allowEntryBy', type: 'text', visible: true },
+    { label: 'defaultforTeacherAndOffice', property: 'defaultCode', type: 'text', visible: true },
+    { label: 'stateCode', property: 'stateCode', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
   icMoreVert = icMoreVert;

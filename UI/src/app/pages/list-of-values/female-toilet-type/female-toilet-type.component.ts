@@ -44,7 +44,7 @@ import { LoaderService } from './../../../services/loader.service';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { LovList, LovAddView } from '../../../models/lov.model';
 import { CommonService } from './../../../services/common.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { ExcelService } from '../../../services/excel.service';
 import { SharedFunction } from '../../shared/shared-function';
 import { RolePermissionListViewModel, RolePermissionViewModel } from 'src/app/models/roll-based-access.model';
@@ -64,12 +64,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class FemaleToiletTypeComponent implements OnInit {
   columns = [
-    { label: 'Title', property: 'lovColumnValue', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Create Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Update Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'title', property: 'lovColumnValue', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updateDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
 
@@ -106,8 +106,10 @@ export class FemaleToiletTypeComponent implements OnInit {
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

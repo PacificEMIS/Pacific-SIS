@@ -18,7 +18,7 @@
                             <i class="icon icon-plus3 sm:text-xl lg:text-4xl"></i>
                         </div>
                         <div class="md:w-10/12 lg:pl-6 pt-4 md:pt-0 text-center md:text-left">
-                            <h2 class="text-lg md:text-2xl">{{selectedCurrentTeacher?selectedCurrentTeacher.firstGivenName+' '+selectedCurrentTeacher.lastFamilyName:'Select Current Teacher'}}</h2>
+                            <h2 class="text-lg md:text-2xl">{{selectedCurrentTeacher?selectedCurrentTeacher.firstGivenName+' '+selectedCurrentTeacher.lastFamilyName:'selectCurrentTeacher' | translate}}</h2>
                             <p class="md:pr-8">{{'clickHereToSelectTheCurrentTeacherToReassign' | translate}}</p>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                 <div class="md:w-1/2 cursor-pointer bg-primary text-white triangle-right rounded-bl md:rounded-bl-none rounded-br relative pt-10 md:pt-0" (click)="selectCourse()">
                     <div class="md:flex items-center">
                         <div class="md:w-10/12 text-center pb-4 md:pb-0 md:text-right lg:pr-6 order-2 md:order-1">
-                            <h2 class="text-lg md:text-2xl">{{selectedCourse?selectedCourse.courseTitle:'Select Course'}}</h2>
+                            <h2 class="text-lg md:text-2xl">{{selectedCourse?selectedCourse.courseTitle:'selectCourse' | translate}}</h2>
                             <p class="md:pl-8">{{'clickHereToSelectACourseToReassignTeacher' | translate}}</p>
                         </div>
                         <div class="hidden md:block md:w-2/12 text-center py-6 order-1 md:order-2">

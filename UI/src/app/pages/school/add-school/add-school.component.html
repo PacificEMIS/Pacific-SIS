@@ -21,7 +21,7 @@
                         [ngClass]="currentCategory == field?.categoryId?'text-blue active' : ''"
                         (click)="changeCategory(field,index)" *ngIf="field?.customFields!=''||index<2" matRipple>
                         <span *ngIf="field?.categoryId==2" class="w-full"><mat-icon [icIcon]="icCleanHands" class="mr-2">clean_hands_outlined</mat-icon><span class="align-top inline-block mt-1">{{field?.title|translate}}</span></span>
-                        <span *ngIf="field?.categoryId!=2" class="w-full"><mat-icon class="mr-2">info_outlined</mat-icon><span class="align-top inline-block mt-1">{{field?.title}}</span></span>
+                        <span *ngIf="field?.categoryId!=2" class="w-full"><mat-icon class="mr-2">info_outlined</mat-icon><span class="align-top inline-block mt-1">{{field?.title | translate}}</span></span>
                     </a>
                 </p>
                 <p>

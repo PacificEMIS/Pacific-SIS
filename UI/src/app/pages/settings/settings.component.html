@@ -13,7 +13,7 @@
                         <mat-icon [icIcon]="submenu.icon" size="24px" class="mr-4"></mat-icon>
                         <h4 class="font-medium">
                             <a  (click)="setParentId(index)"
-                                [routerLink]="submenu.path">{{submenu.title}}</a>
+                                [routerLink]="submenu.path">{{submenu.title | translate}}</a>
                         </h4>
                     </div>
                     <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:col-gap-8 mt-4">
@@ -24,7 +24,7 @@
                                         <mat-icon class="mr-2">navigate_next</mat-icon>
                                         <a *ngIf="option.rolePermission[0].canView"
                                             (click)="setPageId(option.title,option.path)" [routerLink]="submenu.path"
-                                            class="text-primary">{{option.title}}
+                                            class="text-primary">{{option.title | translate}}
                                         </a>
                                     </div>
                                 </li>               

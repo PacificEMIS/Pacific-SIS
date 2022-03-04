@@ -51,6 +51,7 @@ import { CryptoService } from '../../../services/Crypto.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
   selector: 'vex-school-classification',
@@ -63,12 +64,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class SchoolClassificationComponent implements OnInit {
   columns = [
-    { label: 'Title', property: 'lovColumnValue', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Create Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Update Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'title', property: 'lovColumnValue', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updateDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
   SchoolClassificationModelList;
@@ -105,8 +106,10 @@ export class SchoolClassificationComponent implements OnInit {
     public commonfunction:SharedFunction,
     private cryptoService: CryptoService,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

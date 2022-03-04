@@ -12,7 +12,7 @@ import { Permissions } from "../../../../models/roll-based-access.model";
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
@@ -101,9 +101,10 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     private defaultValuesService: DefaultValuesService,
     private snackbar: MatSnackBar,
     private markingPeriodService: MarkingPeriodService,
-    private studentReportService: StudentReportService
-
+    private studentReportService: StudentReportService,
+    private paginatorObj: MatPaginatorIntl,
     ) { 
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

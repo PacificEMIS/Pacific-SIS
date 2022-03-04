@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface StudentListData {
@@ -36,8 +37,10 @@ export class ClassRankListComponent implements OnInit {
   displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone', 'gpa', 'unweightedGpa', 'weightedGpa', 'classRank'];
   studentList = studentListData;
 
-  constructor(public translateService: TranslateService) { 
-    translateService.use("en");
+  constructor(public translateService: TranslateService,
+    private paginatorObj: MatPaginatorIntl,
+    ) { 
+    // translateService.use("en");
   }
 
 

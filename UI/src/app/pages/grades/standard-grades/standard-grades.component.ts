@@ -52,6 +52,7 @@ import { Subject } from 'rxjs';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Component({
   selector: 'vex-standard-grades',
@@ -66,9 +67,9 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
 
   @Input()
   columns = [
-    { label: 'Order', property: 'id', type: 'number', visible: true },
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Description', property: 'comment', type: 'text', visible: true },
+    { label: 'order', property: 'id', type: 'number', visible: true },
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'description', property: 'comment', type: 'text', visible: true },
     { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
@@ -113,8 +114,10 @@ export class StandardGradesComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private excelService: ExcelService,
     private commonService: CommonService,
-    public defaultValuesService: DefaultValuesService
+    public defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.formInit();
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
