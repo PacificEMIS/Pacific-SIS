@@ -94,6 +94,7 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
     private gradeLevelService: GradeLevelService,
     private markingPeriodService: MarkingPeriodService
   ) {
+    this.defaultValuesService.setReportCompoentTitle.next("Add / Drop Report");
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

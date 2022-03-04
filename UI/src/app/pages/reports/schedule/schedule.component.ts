@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-schedule',
@@ -11,10 +12,19 @@ export class ScheduleComponent implements OnInit {
 
   pages=[];
   studentSettings=true;
-  pageTitle:string = 'Add/Drop Report';
+  pageTitle:any = 'Add/Drop Report';
   pageId: string = 'Add Drop Report';
 
-  constructor(private router: Router, public translateService: TranslateService,) { }
+  constructor(
+    private router: Router, public translateService: TranslateService, 
+    private defaultValuesService:DefaultValuesService
+    ) { 
+    this.defaultValuesService.setReportCompoentTitle.subscribe(x=>{
+      if(x){
+        this.pageTitle = x;
+      }
+    })
+  }
 
 
   ngOnInit(): void {

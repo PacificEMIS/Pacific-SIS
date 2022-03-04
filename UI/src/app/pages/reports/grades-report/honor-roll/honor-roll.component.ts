@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 export interface StudentListsData {
   studentCheck: boolean;
@@ -38,8 +39,10 @@ export class HonorRollComponent implements OnInit {
 
 constructor(public translateService: TranslateService,
   private paginatorObj: MatPaginatorIntl,
+  private defaultValuesService:DefaultValuesService
   ) { 
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+    this.defaultValuesService.setReportCompoentTitle.next("Honor Roll");
   }
 
   ngOnInit(): void {

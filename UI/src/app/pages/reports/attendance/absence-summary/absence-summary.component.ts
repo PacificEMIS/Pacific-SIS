@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 export interface StudentListsData {
   studentName: string;
@@ -40,8 +41,10 @@ export class AbsenceSummaryComponent implements OnInit {
     public translateService: TranslateService, 
     private router: Router,
     private paginatorObj: MatPaginatorIntl,
+    private defaultValuesService:DefaultValuesService
     ) { 
       paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+      this.defaultValuesService.setReportCompoentTitle.next("Absence Summary");
     }
   ngOnInit(): void {
   }
