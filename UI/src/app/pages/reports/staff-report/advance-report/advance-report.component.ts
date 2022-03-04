@@ -454,6 +454,10 @@ export class AdvanceReportComponent implements OnInit {
         this.generateStaffList = data.schoolListForReport;
         if (this.generateStaffList) {
           this.generateStaffList[0].staffListForReport.map((item: any) => {
+            if(item.staffMaster.joiningDate)
+              item.staffMaster.joiningDate=this.commonFunction.formatDateSaveWithoutTime(item.staffMaster.joiningDate);
+            if(item.staffMaster.endDate)
+              item.staffMaster.endDate=this.commonFunction.formatDateSaveWithoutTime(item.staffMaster.endDate);
             const middleName = item.staffMaster.middleName ? ' ' + item.staffMaster?.middleName + ' ' : ' ';
             item.staffMaster.fullName = item.staffMaster.firstGivenName + middleName + item.staffMaster?.lastFamilyName;
             item.fieldsCategoryList[0].customFields.map((subItem) => {
