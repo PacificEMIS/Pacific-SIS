@@ -69,7 +69,7 @@
                             <ng-container *ngIf="period.days.includes(day)">
                                     
                                     <div class="select-dropdown" *ngIf="period.takenAttendanceDays?.includes(day) && !period.dayDate;else checkIfCalendarSchedule">
-                                        <select (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
+                                        <select [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
                                             <option *ngFor="let attendance of period?.attendanceList.attendanceCode" [value]="attendance.attendanceCode1" >{{attendance.title}}</option>
                                         </select>
                                     </div>
@@ -79,7 +79,7 @@
                                                 <div *ngIf="period.dayDate.split('|').includes(currentWeek[day].getDate().toString())">
 
                                                     <div class="select-dropdown" *ngIf="period.takenAttendanceDays?.includes(day);else noAttendanceTakenInCalendar">
-                                                        <select (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
+                                                        <select [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
                                                             <option *ngFor="let attendance of period?.attendanceList.attendanceCode" [value]="attendance.attendanceCode1" >{{attendance.title}}</option>
                                                         </select>
                                                     </div>
@@ -113,7 +113,7 @@
         <div class="cal-events px-2 pb-2 justify-center" *ngIf="day.events.length > 0">
             <!-- {{day|json}} -->
          <ng-container>
-            <div [ngClass]="day.inMonth?'':'opacity-60'" class="text-xs px-2 py-2 rounded-full text-white cursor-pointer mb-1" [class]="day.events[0].meta.bgColor">
+            <div [ngClass]="day.inMonth?'':'opacity-50'" class="text-xs px-2 py-2 rounded-full text-white cursor-pointer mb-1" [class]="day.events[0].meta.bgColor">
             <span class="align-middle"></span>
           </div>
          </ng-container>
