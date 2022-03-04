@@ -39,7 +39,7 @@ namespace opensisAPI.Controllers
             _gradeReportService = gradeReportService;
         }
 
-        [HttpPost("getStudentInfoReport")]
+            [HttpPost("getStudentInfoReport")]
         public ActionResult<StudentInfoListForReport> GetStudentInfoReport(StudentInfoReport studentInfoReport)
         {
             StudentInfoListForReport studentList = new();
