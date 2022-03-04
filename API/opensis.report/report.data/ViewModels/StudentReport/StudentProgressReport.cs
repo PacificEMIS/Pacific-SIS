@@ -94,6 +94,7 @@ namespace opensis.report.report.data.ViewModels.StudentReport
         public CourseSectionListData()
         {
             GradeBookGradeListData = new List<GradeBookGradeListData>();
+            GradeData = new List<GradeData>();
         }
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
@@ -112,6 +113,7 @@ namespace opensis.report.report.data.ViewModels.StudentReport
         public string? TeacherLastName { get; set; }
         public string? Total { get; set; }
         public string? TotalWeightedGrade { get; set; }
+        public List<GradeData>? GradeData { get; set; }
         public List<GradeBookGradeListData>? GradeBookGradeListData { get; set; }
     }
 
@@ -128,5 +130,18 @@ namespace opensis.report.report.data.ViewModels.StudentReport
         public string? Grade { get; set; }
         public string? Comment { get; set; }
         public string? WieghtedGrade { get; set; }
+    }
+
+    public class GradeData
+    {
+        public Guid TenantId { get; set; }
+        public int SchoolId { get; set; }
+        public int GradeScaleId { get; set; }
+        public int GradeId { get; set; }
+        public string? Title { get; set; }
+        public int? Breakoff { get; set; }
+        public decimal? WeightedGpValue { get; set; }
+        public decimal? UnweightedGpValue { get; set; }
+        public string? Comment { get; set; }
     }
 }

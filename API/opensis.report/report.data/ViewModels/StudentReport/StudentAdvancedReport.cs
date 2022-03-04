@@ -51,5 +51,8 @@ namespace opensis.report.report.data.ViewModels.StudentReport
     {
         public StudentMaster studentMaster { get; set; }
         public List<FieldsCategory>? fieldsCategoryList { get; set; }
+        public string? CountryOfBirth { get; set; }
+        public string? HomeAddressCountry { get; set; }
+        public string? MailingAddressCountry { get; set; }
     }
 }
