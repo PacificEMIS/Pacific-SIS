@@ -441,7 +441,7 @@ export class AdvanceReportComponent implements OnInit {
       this.currentTab = status;
     } else if(status === 'generateReport' && this.selectedFieldsArray.length > 0) {
       this.selectedFieldsArray.map((value,index)=>{
-        if(index>5){
+        if(index>6){
           value.visible=false
         }
       })
