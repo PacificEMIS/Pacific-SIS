@@ -18,10 +18,10 @@
                             <i class="icon icon-plus3 sm:text-xl lg:text-4xl"></i>
                         </div>
                         <div class="w-full md:w-10/12 text-center md:text-left text-white md:text-black md:pl-6">
-                            <h2 *ngIf="!showcourseSectionCount">Course Section</h2>
+                            <h2 *ngIf="!showcourseSectionCount">{{'courseSection' | translate}}</h2>
                             <h2 *ngIf="showcourseSectionCount">{{courseSectionData.courseTitle}} -
                                 {{courseSectionData.courseSectionName}}</h2>
-                            <p class="md:text-blue">Select a Course Section</p>
+                            <p class="md:text-blue">{{'selectACourseSection' | translate}}</p>
                         </div>
                     </div>
                     <div class="schedule-icon bg-white">

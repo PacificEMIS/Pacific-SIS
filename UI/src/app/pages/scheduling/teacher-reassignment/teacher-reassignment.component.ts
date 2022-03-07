@@ -796,16 +796,19 @@ export class TeacherReassignmentComponent implements OnInit {
     })
   }
 
-  singleSelectionBasedOnCourse(event, courseSectionIndex, checkedStaffIndex) {
+singleSelectionBasedOnCourse(event, courseSectionIndex, checkedStaffIndex,ref) {
+    event.preventDefault();
     if (!this.allScheduledTeacherBasedOnCourse.courseSectionsList[courseSectionIndex].staffCoursesectionSchedule[checkedStaffIndex].checked) {
       this.isTeacherReassignPossible = false;
+      this.allScheduledTeacherBasedOnCourse.courseSectionsList[courseSectionIndex].staffCoursesectionSchedule[checkedStaffIndex].checked = true;
+      ref.checked=true;
+    }else{
+      this.allScheduledTeacherBasedOnCourse.courseSectionsList[courseSectionIndex].staffCoursesectionSchedule[checkedStaffIndex].checked = false;
+      ref.checked=false
     }
-    this.allScheduledTeacherBasedOnCourse.courseSectionsList[courseSectionIndex].staffCoursesectionSchedule[checkedStaffIndex].checked = true;
-
     for (let [i, staff] of this.allScheduledTeacherBasedOnCourse.courseSectionsList[courseSectionIndex].staffCoursesectionSchedule.entries()) {
-      if (i != checkedStaffIndex) {
-        staff.checked = false
-      }
+      if (i != checkedStaffIndex) 
+        staff.checked = false;
     }
   }
 

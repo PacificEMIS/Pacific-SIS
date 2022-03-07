@@ -266,8 +266,8 @@ export class CourseVariableSchedule {
     public serial: number;
     public day: number | string;
     public blockId: number;
-    public periodId: number;
-    public roomId: number;
+    public periodId: number | string;
+    public roomId: number | string;
     public takeAttendance: boolean;
     public rooms:RoomModel;
     public blockPeriod:BlockPeriod;
@@ -278,9 +278,9 @@ export class CourseVariableSchedule {
     public isActive: boolean; // use for maipulate row
 
     constructor() {
-        this.day=null;
-        this.periodId=null;
-        this.roomId=null;
+        this.day="";
+        this.periodId="";
+        this.roomId="";
         this.serial=0;
         this.isActive= true;
     }

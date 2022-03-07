@@ -36,7 +36,7 @@ import { AttendanceCodeService } from "../../../services/attendance-code.service
 import { AttendanceCodeCategoryModel, AttendanceCodeModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel } from "../../../models/attendance-code.model";
 import { StudentScheduleService } from "../../../services/student-schedule.service";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from "../../../models/student-schedule.model";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatCheckbox } from "@angular/material/checkbox";
@@ -122,7 +122,9 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private commonFunction: SharedFunction,
     private defaultValueService: DefaultValuesService,
-    private snackbar: MatSnackBar) {
+    private snackbar: MatSnackBar,
+    private paginatorObj: MatPaginatorIntl) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });

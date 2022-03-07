@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface StudentListsData {
@@ -38,7 +39,9 @@ export class StudentFinalGradesComponent implements OnInit {
   studentLists = studentListsData;
 
 
-  constructor(public translateService: TranslateService) { 
+  constructor(public translateService: TranslateService,
+    private paginatorObj: MatPaginatorIntl) { 
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
   }
 

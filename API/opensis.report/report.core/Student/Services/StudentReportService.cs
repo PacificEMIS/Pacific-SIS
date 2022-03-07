@@ -152,6 +152,39 @@ namespace opensis.report.report.core.Student.Services
 
         }
 
+        /// <summary>
+        /// Get Student Progress Report
+        /// </summary>
+        /// <param name="studentInfoReport"></param>
+        /// <returns></returns>
+        public StudentProgressReport GetStudentProgressReport(StudentProgressReport studentProgressReport)
+        {
+            StudentProgressReport studentProgressReportData = new();
+            try
+            {
+                if (tokenManager.CheckToken(studentProgressReport._tenantName + studentProgressReport._userName, studentProgressReport._token))
+                {
+
+                    studentProgressReportData = this.studentReportRepository.GetStudentProgressReport(studentProgressReport);
+                    return studentProgressReportData;
+
+                }
+                else
+                {
+                    studentProgressReportData._failure = true;
+                    studentProgressReportData._message = TOKENINVALID;
+                    return studentProgressReportData;
+                }
+            }
+            catch (Exception es)
+            {
+                studentProgressReportData._failure = true;
+                studentProgressReportData._message = es.Message;
+            }
+            return studentProgressReportData;
+
+        }
+
     }
 }
 

@@ -45,9 +45,9 @@
             <hr class="-mx-4 block md:hidden" />
             <div class="py-2 md:pt-2 items-center">
                 <a (click)="exportStaffListToExcel()" class="cursor-pointer inline-block align-middle"
-                    matTooltip="Export to Excel"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
+                    matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                    matTooltip="Filter Columns" type="button">
+                    matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>filter_list</mat-icon>
                 </button>
             </div>
@@ -116,7 +116,7 @@
     <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
         class="checkbox-item mat-menu-item">
         <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
-            {{column.label}}
+            {{column.label | translate}}
         </mat-checkbox>
     </button>
 </mat-menu>

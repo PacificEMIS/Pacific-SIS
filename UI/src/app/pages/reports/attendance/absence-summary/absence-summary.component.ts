@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -35,7 +36,13 @@ export class AbsenceSummaryComponent implements OnInit {
   displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'phone', 'absent', 'halfDay'];
   studentLists = studentListsData;
 
-  constructor(public translateService: TranslateService, private router: Router) { }
+  constructor(
+    public translateService: TranslateService, 
+    private router: Router,
+    private paginatorObj: MatPaginatorIntl,
+    ) { 
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+    }
   ngOnInit(): void {
   }
 

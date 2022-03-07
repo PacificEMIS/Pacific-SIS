@@ -46,7 +46,7 @@ import { stagger40ms } from "../../../../@vex/animations/stagger.animation";
 import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
 import { FormControl } from "@angular/forms";
 import { MatSort } from "@angular/material/sort";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { LoaderService } from "../../../../app/services/loader.service";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { DefaultValuesService } from "../../../../app/common/default-values.service";
@@ -54,6 +54,8 @@ import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { reportCardType } from "../../../common/static-data";
 import * as html2pdf from 'html2pdf.js';
+import { ScheduleStudentListViewModel } from "src/app/models/student-schedule.model";
+import { StudentScheduleService } from "src/app/services/student-schedule.service";
 
 @Component({
   selector: "vex-report-cards",
@@ -101,7 +103,9 @@ export class ReportCardsComponent implements OnInit {
   @ViewChild('printSectionId') printEl: ElementRef;
   generatedReportCardData;
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
-
+  scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  teacherSearchInput:any;
+  isAdmin:boolean;
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -113,11 +117,18 @@ export class ReportCardsComponent implements OnInit {
     private commonService: CommonService,
     private loaderService: LoaderService,
     private pageRolePermissions: PageRolesPermission,
+    private studentScheduleService: StudentScheduleService,
     private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.markingPeriods = [];
     this.addReportCardPdf.templateType='default';
+    if (this.defaultValuesService.getUserMembershipType() === "Teacher" || this.defaultValuesService.getUserMembershipType() === "Homeroom Teacher")
+      this.isAdmin = false
+    else
+      this.isAdmin = true
   }
 
 
@@ -129,7 +140,6 @@ export class ReportCardsComponent implements OnInit {
 
     this.getAllMarkingPeriodList();
     this.getAllStudentList();
-
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
@@ -169,35 +179,74 @@ export class ReportCardsComponent implements OnInit {
 
 
 
-  
+
   getAllStudentList() {
-    if (this.getAllStudent.sortingModel?.sortColumn == "") {
-      this.getAllStudent.sortingModel = null;
-    }
-    this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
-      if (data._failure) {
-        this.commonService.checkTokenValidOrNot(data._message);
-        if (data.studentListViews === null) {
-          this.totalCount = null;
-          this.listOfStudent = [];
-          this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-          this.snackbar.open(data._message, '', {
-            duration: 10000
-          });
-        } else {
-          this.listOfStudent = [];
-          this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-          this.totalCount = null;
-        }
-      } else {
-        this.totalCount = data.totalCount;
-        this.pageNumber = data.pageNumber;
-        this.pageSize = data._pageSize;
-        this.listOfStudent = data.studentListViews;
-        this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-        this.getAllStudent = new StudentListModel();
+    if (this.isAdmin) {
+      if (this.getAllStudent.sortingModel?.sortColumn == "") {
+        this.getAllStudent.sortingModel = null;
       }
-    });
+      if(this.teacherSearchInput){
+        this.getAllStudent.filterParams = this.teacherSearchInput;
+      }
+      this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
+          if (data.studentListViews === null) {
+            this.totalCount = null;
+            this.listOfStudent = [];
+            this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.listOfStudent = [];
+            this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+            this.totalCount = null;
+          }
+        } else {
+          this.totalCount = data.totalCount;
+          this.pageNumber = data.pageNumber;
+          this.pageSize = data._pageSize;
+          this.listOfStudent = data.studentListViews;
+          this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+          this.getAllStudent = new StudentListModel();
+        }
+      });
+    }else{
+      if (this.getAllStudent.sortingModel?.sortColumn == "") {
+        this.getAllStudent.sortingModel = null;
+      }
+      this.scheduleStudentListViewModel.staffId = this.defaultValuesService.getUserId();
+      this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
+      if(this.teacherSearchInput){
+        this.scheduleStudentListViewModel.filterParams = this.teacherSearchInput;
+      }
+      this.scheduleStudentListViewModel.sortingModel = null;
+      this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
+          if (data.scheduleStudentForView === null) {
+            this.totalCount = null;
+            this.listOfStudent = [];
+            this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          } else {
+            this.listOfStudent = [];
+            this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+            this.totalCount = null;
+          }
+        } else {
+          this.totalCount = data.totalCount;
+          this.pageNumber = data.pageNumber;
+          this.pageSize = data._pageSize;
+          this.listOfStudent = data.scheduleStudentForView;
+          this.StudentModelList = new MatTableDataSource(this.listOfStudent);
+          this.getAllStudent = new StudentListModel();
+        }
+      });
+    }
   }
 
   getPageEvent(event) {
@@ -265,7 +314,7 @@ export class ReportCardsComponent implements OnInit {
   resetStudentList() {
     this.searchCount = null;
     this.searchValue = null;
-    this.getAllStudentList();
+    this.getAllStudentList();    
   }
 
   markingPeriodChecked(event, markingPeriod) {
@@ -404,6 +453,11 @@ export class ReportCardsComponent implements OnInit {
         }
       }
     );
+  }
+  getTeacherSearchInput(event){
+    this.teacherSearchInput=event;
+    this.getAllStudentList();    
+    this.showAdvanceSearchPanel = false;
   }
 
   getToggleValues(event) {
@@ -550,6 +604,10 @@ export class ReportCardsComponent implements OnInit {
         <head>
           <title>Print tab</title>
           <style>
+          *{
+            font-family: \"Arial\", \"Helvetica\", \"sans-serif\";
+          }
+
           body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
           body { -webkit-print-color-adjust: exact; }
@@ -568,7 +626,7 @@ export class ReportCardsComponent implements OnInit {
           
           .m-auto { margin: auto; }
           
-          .report-card { width: 900px; margin: auto; font-family: \"Roboto\", \"Helvetica Neue\"; }
+          .report-card { width: 900px; margin: auto; font-family: \"Arial\", \"Helvetica\", \"sans-serif\"; }
           
           .report-card-header td { padding: 20px 10px; }
           
@@ -689,6 +747,10 @@ export class ReportCardsComponent implements OnInit {
         <head>
           <title>Print tab</title>
           <style>
+          *{
+            font-family: \"Arial\", \"Helvetica\", \"sans-serif\";
+          }
+
           body, h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
           body { -webkit-print-color-adjust: exact; }
@@ -707,7 +769,7 @@ export class ReportCardsComponent implements OnInit {
          
           .m-auto { margin: auto; }
          
-          .report-card { width: 900px; margin: auto; font-family: "Roboto", "Helvetica Neue"; }
+          .report-card { width: 900px; margin: auto; font-family: \"Arial\", \"Helvetica\", \"sans-serif\"; }
          
           .report-card-header { border-bottom: 2px solid #000; }
          

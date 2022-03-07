@@ -35,7 +35,7 @@ import icRestore from '@iconify/icons-ic/twotone-restore';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl, NgForm } from '@angular/forms';
@@ -79,15 +79,15 @@ import { ProfilesTypes } from '../../enums/profiles.enum';
 })
 export class StudentComponent implements OnInit, OnDestroy {
   columns = [
-    { label: 'Name', property: 'lastFamilyName', type: 'text', visible: true },
-    { label: 'Student ID', property: 'studentInternalId', type: 'text', visible: true },
-    { label: 'Alternate ID', property: 'alternateId', type: 'text', visible: true },
-    { label: 'Grade Level', property: 'gradeLevelTitle', type: 'text', visible: true },
-    { label: 'Email', property: 'schoolEmail', type: 'text', visible: true },
-    { label: 'Telephone', property: 'homePhone', type: 'text', visible: true },
-    { label: 'School Name', property: 'schoolName', type: 'text', visible: false },
-    { label: 'Status', property: 'status', type: 'text', visible: false },
-    { label: 'Action', property: 'action', type: 'text', visible: true },
+    { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
+    { label: 'studentId', property: 'studentInternalId', type: 'text', visible: true },
+    { label: 'alternateId', property: 'alternateId', type: 'text', visible: true },
+    { label: 'gradeLevel', property: 'gradeLevelTitle', type: 'text', visible: true },
+    { label: 'email', property: 'schoolEmail', type: 'text', visible: true },
+    { label: 'telephone', property: 'homePhone', type: 'text', visible: true },
+    { label: 'schoolName', property: 'schoolName', type: 'text', visible: false },
+    { label: 'status', property: 'status', type: 'text', visible: false },
+    { label: 'action', property: 'action', type: 'text', visible: true },
   ];
   icImpersonate = icImpersonate;
   icRestore = icRestore;
@@ -173,7 +173,8 @@ export class StudentComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private studentScheduleService: StudentScheduleService,
     private pageRolePermission: PageRolesPermission,
-    public defaultValuesService: DefaultValuesService
+    public defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
     this.defaultValuesService.sendAllSchoolFlag(false);
     this.defaultValuesService.sendIncludeInactiveFlag(false);
@@ -190,6 +191,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     else {
       this.callAllStudent();
     }
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     
   }
 

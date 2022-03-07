@@ -39,7 +39,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { CryptoService } from '../../../../services/Crypto.service';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { ExcelService } from '../../../../services/excel.service';
 import { FormControl } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
@@ -75,12 +75,12 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
   showSaveFilter:boolean;
   permissions: Permissions;
   columns = [
-    { label: 'Name', property: 'lastFamilyName', type: 'text', visible: true },
-    { label: 'Staff ID', property: 'staffInternalId', type: 'text', visible: true },
-    { label: 'Profile', property: 'profile', type: 'text', visible: true },
-    { label: 'Job Title', property: 'jobTitle', type: 'text', visible: true },
-    { label: 'School Email', property: 'schoolEmail', type: 'text', visible: true },
-    { label: 'Mobile Phone', property: 'mobilePhone', type: 'number', visible: true },
+    { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
+    { label: 'staffId', property: 'staffInternalId', type: 'text', visible: true },
+    { label: 'profile', property: 'profile', type: 'text', visible: true },
+    { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
+    { label: 'schoolEmail', property: 'schoolEmail', type: 'text', visible: true },
+    { label: 'mobilePhone', property: 'mobilePhone', type: 'number', visible: true },
     // { label: 'Actions', property: 'actions', type: 'text', visible: true }
   ];
   destroySubject$: Subject<boolean> = new Subject();
@@ -106,8 +106,10 @@ export class TakeAttendanceComponent implements OnInit, AfterViewInit {
     private snackbar: MatSnackBar,
     private pageRolePermissions: PageRolesPermission,
     private excelService: ExcelService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) { 
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

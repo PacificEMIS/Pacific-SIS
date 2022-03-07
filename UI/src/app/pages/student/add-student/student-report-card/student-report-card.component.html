@@ -134,7 +134,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Course</th>
+                                    <th>{{'course' | translate}}</th>
                                     <th
                                         *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
                                         {{markingPeriodDetails?.markingPeriodShortName}}</th>
@@ -156,7 +156,7 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Attendance</th>
+                                    <th>{{'attendance'|translate}}</th>
                                     <th
                                         *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
                                         {{markingPeriodDetails?.markingPeriodShortName}}</th>
@@ -173,7 +173,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="semester-table">
+                    <td *ngIf="addReportCardPdf?.templateType === 'chuuk'" class="semester-table">
                         <table>
                             <caption>
                                 <h2><b>{{'behavior' | translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
@@ -189,7 +189,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{'respecteForTeachers' | translate }}</td>
+                                    <td>{{'respectForTeachers' | translate }}</td>
                                     <td
                                         *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
                                     </td>
@@ -202,48 +202,142 @@
                                     </td> -->
                                 </tr>
                                 <tr>
-                                    <td>{{'respecteForClassmates' | translate }}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td>{{'respectForClassmates' | translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
-                                    <td>{{'completeOfWork' | translate }}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td>{{'completeOfWork'|translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
-                                    <td>{{'careOfProperty' | translate}}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td>{{'careOfProperty'|translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
-                                    <td>{{'cooperation' | translate }}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td>{{'cooperation'|translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
-                                    <td>{{'followInstruction' | translate }}
+                                    <td>{{'followInstruction'|translate}}
                                     </td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
-                                    <td>{{'neetnessOfWork' | translate }}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                    <td>{{'neetnessOfWork'|translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        {{'attendance' | translate }}</td>
-                                    <td
-                                        *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
-                                    </td>
+                                        {{'attendance'|translate}}</td>
+                                        <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td *ngIf="addReportCardPdf?.templateType === 'kosrae'" class="semester-table">
+                        <table>
+                            <caption>
+                                <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                                </h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{'attendanceAndCitizenship'|translate}}</th>
+                                    <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pihsen Lwen Lutlut - Instructional Days</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Monglac Ke Srihpac Wo - Excused Absents</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Monglac Tia Wo - Unexcused Absents</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lutlut Tahfuhn Lwen - Present Half Day</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lwen Pathtlac - Tardy</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Elah - Citizenship</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td *ngIf="addReportCardPdf?.templateType === 'pohnpei'" class="semester-table">
+                        <table>
+                            <caption>
+                                <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                                </h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Impahi Oh Insenoh</th>
+                                    <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Peik/Kin rong mwahu</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lemehda/koasoanehdi mwahu</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Kin minimin ong mehtei kan</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ale/kapawaiada pwukoah</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>Kanaiehng dipwisoun sukuhl</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td *ngIf="addReportCardPdf?.templateType === 'yap'" class="semester-table">
+                        <table>
+                            <caption>
+                                <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
+                                </h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{'responsibility' | translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>{{'concernForOthers' | translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>{{'integrity' | translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
+                                </tr>
+                                <tr>
+                                    <td>{{'initiative' | translate}}</td>
+                                    <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -278,10 +372,80 @@
                                                     <caption>
                                                         <h2><b>{{'behaviorLegend' | translate }}</b></h2>
                                                     </caption>
-                                                    <tbody>
-                                                        <tr *ngFor="let gradeDetails of grade?.gradeList">
-                                                            <td>{{gradeDetails?.title}}</td>
-                                                            <td>{{gradeDetails?.comment}}</td>
+                                                    <tbody *ngIf="addReportCardPdf?.templateType === 'chuuk'">
+                                                        <tr>
+                                                            <td><b>A</b></td>
+                                                            <td>{{'superior' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>B</b></td>
+                                                            <td>{{'aboveAverage' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>C</b></td>
+                                                            <td>{{'average' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>D</b></td>
+                                                            <td>{{'belowAverage' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>F</b></td>
+                                                            <td>{{'failure' | translate}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody *ngIf="addReportCardPdf?.templateType === 'kosrae'">
+                                                        <tr>
+                                                            <td><b>E</b></td>
+                                                            <td>{{'excellent' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>S</b></td>
+                                                            <td>{{'satisfactory' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>U</b></td>
+                                                            <td>{{'unsatisfactory' | translate}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody *ngIf="addReportCardPdf?.templateType === 'pohnpei'">
+                                                        <tr>
+                                                            <td><b>1</b></td>
+                                                            <td>Ansou Koroas</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>2</b></td>
+                                                            <td>Kalapw</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>3</b></td>
+                                                            <td>Sohte Kalapw</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>4</b></td>
+                                                            <td>Sohte Kin</td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody *ngIf="addReportCardPdf?.templateType === 'yap'">
+                                                        <tr>
+                                                            <td><b>5</b></td>
+                                                            <td>{{'excellent' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>4</b></td>
+                                                            <td>{{'good' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>3</b></td>
+                                                            <td>{{'average' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>2</b></td>
+                                                            <td>{{'fair' | translate}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><b>1</b></td>
+                                                            <td>{{'unsatisfactory' | translate}}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

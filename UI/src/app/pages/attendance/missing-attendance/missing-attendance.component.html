@@ -42,15 +42,22 @@
                             <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                                 <mat-icon>search</mat-icon>
                             </button>
+                            <a (click)="showAdvanceSearch()" [class.disabled] = "totalCount == null" 
+                                [class.text-gray-light]="totalCount == null" [class.text-primary]="totalCount != null"
+                                class=" cursor-pointer ml-3">
+                                <mat-icon aria-hidden="false" class="md:mr-2 align-middle">tune</mat-icon><span
+                                    class="hidden md:inline-block">{{'advanceSearch'
+                                    | translate}}</span>
+                            </a>
                         </div>
                     </div>
                     <hr class="-mx-4 block md:hidden"/>
                     <div class="py-2 md:pt-2 items-center">
-                        <a (click)="exportStaffListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel">
+                        <a (click)="exportStaffListToExcel()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                          matTooltip="Filter Columns" type="button">
+                          matTooltip="{{'filterColumns' | translate}}" type="button">
                           <mat-icon>filter_list</mat-icon>
                         </button>
                     </div>
@@ -126,7 +133,15 @@
     <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
         class="checkbox-item mat-menu-item">
         <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
-            {{column.label}}
+            {{column.label | translate}}
         </mat-checkbox>
     </button>
 </mat-menu>
+
+<div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+    <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+        <vex-search-staff (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams" (showHideAdvanceSearch)="hideAdvanceSearch($event)" [incomingSearchValue]="searchValue"
+        (searchValue)="getSearchInput($event)" (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" (filterParams)="getFilterParams($event)"></vex-search-staff>
+    </div>
+    <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
+</div>

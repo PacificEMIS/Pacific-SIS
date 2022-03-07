@@ -247,24 +247,32 @@ namespace opensis.data.Repository
                     if (user?.Membership?.ProfileType == "Student")
                     {
                         var userData = this.context?.StudentMaster.Where(x => x.TenantId == user.TenantId && x.SchoolId == user.SchoolId && x.StudentId == user.UserId).Select(x => new StudentMaster()
-                        { StudentPhoto = x.StudentPhoto, StudentGuid = x.StudentGuid }).FirstOrDefault();
+                        { StudentPhoto = x.StudentPhoto, StudentGuid = x.StudentGuid, Suffix = x.Suffix, FirstGivenName = x.FirstGivenName, MiddleName = x.MiddleName, LastFamilyName = x.LastFamilyName }).FirstOrDefault();
 
                         if (userData != null)
                         {
                             ReturnModel.UserPhoto = userData.StudentPhoto;
                             ReturnModel.UserGuid = userData.StudentGuid.ToString();
+                            ReturnModel.Suffix = userData.Suffix;
+                            ReturnModel.FirstGivenName = userData.FirstGivenName;
+                            ReturnModel.MiddleName = userData.MiddleName;
+                            ReturnModel.LastFamilyName = userData.LastFamilyName;
                         }
                     }
                     //else if (user.Membership.ProfileType.ToLower() == "Parent".ToLower())
                     else if (user?.Membership?.ProfileType == "Parent")
                     {
                         var userData = this.context?.ParentInfo.Where(x => x.TenantId == user.TenantId && x.SchoolId == user.SchoolId && x.ParentId == user.UserId).Select(x => new ParentInfo()
-                        { ParentPhoto = x.ParentPhoto, ParentGuid = x.ParentGuid }).FirstOrDefault();
+                        { ParentPhoto = x.ParentPhoto, Suffix = x.Suffix, ParentGuid = x.ParentGuid, Firstname = x.Firstname, Middlename = x.Middlename, Lastname = x.Lastname }).FirstOrDefault();
 
                         if (userData != null)
                         {
                             ReturnModel.UserPhoto = userData.ParentPhoto;
                             ReturnModel.UserGuid = userData.ParentGuid.ToString();
+                            ReturnModel.Suffix = userData.Suffix;
+                            ReturnModel.FirstGivenName = userData.Firstname;
+                            ReturnModel.MiddleName = userData.Middlename;
+                            ReturnModel.LastFamilyName = userData.Lastname;
                         }
                     }
                     else

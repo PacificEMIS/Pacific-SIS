@@ -44,7 +44,7 @@ import { GetAllSchoolSpecificListModel, GradeStandardSubjectCourseListModel, Sch
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { ExcelService } from '../../../services/excel.service';
@@ -76,14 +76,14 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
   @ViewChild(MatSort) sort: MatSort
 
   columns = [
-    { label: 'Standard Ref No', property: 'standardRefNo', type: 'text', visible: true },
-    { label: 'Subject', property: 'subject', type: 'text', visible: true },
-    { label: 'Course', property: 'course', type: 'text', visible: true },
-    { label: 'Grade', property: 'gradeLevel', type: 'text', visible: true },
-    { label: 'Domain', property: 'domain', type: 'text', visible: true },
-    { label: 'Topic', property: 'topic', type: 'text', visible: true },
-    { label: 'Standard Details', property: 'standardDetails', type: 'text', visible: false },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'standardRefNo', property: 'standardRefNo', type: 'text', visible: true },
+    { label: 'subject', property: 'subject', type: 'text', visible: true },
+    { label: 'course', property: 'course', type: 'text', visible: true },
+    { label: 'grade', property: 'gradeLevel', type: 'text', visible: true },
+    { label: 'domain', property: 'domain', type: 'text', visible: true },
+    { label: 'topic', property: 'topic', type: 'text', visible: true },
+    { label: 'standardDetails', property: 'standardDetails', type: 'text', visible: false },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
   subjectLists=[];
   schoolSpecificStandardsList: GetAllSchoolSpecificListModel = new GetAllSchoolSpecificListModel();
@@ -129,7 +129,9 @@ export class SchoolSpecificStandardsComponent implements OnInit,OnDestroy {
     private commonService: CommonService,
     public defaultValuesService: DefaultValuesService,
     private courseManager: CourseManagerService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

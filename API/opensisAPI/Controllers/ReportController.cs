@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using opensis.data.Models;
 using opensis.data.ViewModels.Student;
 using opensis.report.report.core.Attendance.Interfaces;
+using opensis.report.report.core.Grade.Interfaces;
 using opensis.report.report.core.Schedule.Interfaces;
 using opensis.report.report.core.School.Interfaces;
 using opensis.report.report.core.Staff.Interfaces;
 using opensis.report.report.core.Student.Interfaces;
 using opensis.report.report.data.ViewModels.AttendanceReport;
+using opensis.report.report.data.ViewModels.GradeReport;
 using opensis.report.report.data.ViewModels.ScheduleReport;
 using opensis.report.report.data.ViewModels.SchoolReport;
 using opensis.report.report.data.ViewModels.StaffReport;
@@ -26,16 +28,18 @@ namespace opensisAPI.Controllers
         private IAttendanceReportService _attendanceReportService;
         private IStaffReportService _staffReportService;
         private ISchoolReportService _schoolReportService;
-        public ReportController(IStudentReportService studentReportService, IScheduleReportService scheduleReportService, IAttendanceReportService attendanceReportService, IStaffReportService staffReportService, ISchoolReportService schoolReportService)
+        private IGradeReportService _gradeReportService;
+        public ReportController(IStudentReportService studentReportService, IScheduleReportService scheduleReportService, IAttendanceReportService attendanceReportService, IStaffReportService staffReportService, ISchoolReportService schoolReportService, IGradeReportService gradeReportService)
         {
             _studentReportService = studentReportService;
             _scheduleReportService = scheduleReportService;
             _attendanceReportService = attendanceReportService;
             _staffReportService = staffReportService;
             _schoolReportService = schoolReportService;
+            _gradeReportService = gradeReportService;
         }
 
-        [HttpPost("getStudentInfoReport")]
+            [HttpPost("getStudentInfoReport")]
         public ActionResult<StudentInfoListForReport> GetStudentInfoReport(StudentInfoReport studentInfoReport)
         {
             StudentInfoListForReport studentList = new();
@@ -250,6 +254,38 @@ namespace opensisAPI.Controllers
                 schoolList._message = es.Message;
             }
             return schoolList;
+        }
+
+        [HttpPost("getStudentProgressReport")]
+        public ActionResult<StudentProgressReport> GetStudentProgressReport(StudentProgressReport studentProgressReport)
+        {
+            StudentProgressReport studentProgressReportData = new();
+            try
+            {
+                studentProgressReportData = _studentReportService.GetStudentProgressReport(studentProgressReport);
+            }
+            catch (Exception es)
+            {
+                studentProgressReportData._failure = true;
+                studentProgressReportData._message = es.Message;
+            }
+            return studentProgressReportData;
+        }
+
+        [HttpPost("getHonorRollReport")]
+        public ActionResult<HonorRollListForReport> GetHonorRollReport(PageResult pageResult)
+        {
+            HonorRollListForReport honorRollList = new();
+            try
+            {
+                honorRollList = _gradeReportService.GetHonorRollReport(pageResult);
+            }
+            catch (Exception es)
+            {
+                honorRollList._failure = true;
+                honorRollList._message = es.Message;
+            }
+            return honorRollList;
         }
     }
 }

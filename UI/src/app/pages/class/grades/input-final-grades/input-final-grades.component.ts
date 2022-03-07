@@ -112,6 +112,7 @@ export class InputFinalGradesComponent implements OnInit {
   courseSection: any;
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
   selectedMarkingPeriod: any;
+  creditHours;
 
   constructor(
     public translateService: TranslateService,
@@ -261,7 +262,7 @@ export class InputFinalGradesComponent implements OnInit {
   }
 
   selectMarkingPeriod(data) {
-    this.addUpdateStudentFinalGradeModel.creditHours = data.creditHours;
+    this.creditHours = data.creditHours;
   }
   
   getGradeScaleList(grade) {
@@ -542,6 +543,7 @@ export class InputFinalGradesComponent implements OnInit {
   submitFinalGrade() {
     // this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
     delete this.addUpdateStudentFinalGradeModel.academicYear;
+    this.addUpdateStudentFinalGradeModel.creditHours = this.creditHours;
     this.finalGradeService.addUpdateStudentFinalGrade(this.addUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){

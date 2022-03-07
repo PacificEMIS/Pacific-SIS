@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 
 interface Attendance {
@@ -34,8 +35,11 @@ export class AverageAttendanceByDayComponent implements OnInit {
     {date: 'Jan 01, 2021', grade: '12th Grade', students: 317, daysPossible: 99, present: 167, absent: 7, others: 0, notTaken: 2, ada: '89.08%', avgAttendance: 0.86, avgAbsent: 0.04},
   ];
 
-  constructor(public translateService: TranslateService) { 
-    translateService.use("en");
+  constructor(public translateService: TranslateService,
+    private paginatorObj: MatPaginatorIntl,
+    ) { 
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+    // translateService.use("en");
   }
 
   ngOnInit(): void {

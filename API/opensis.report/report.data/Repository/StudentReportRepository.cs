@@ -168,6 +168,7 @@ namespace opensis.report.report.data.Repository
             try
             {
                 var schoolList = this.context?.SchoolMaster.Where(x => x.TenantId == reportModel.TenantId && x.StudentMaster.Any(x => x.SchoolId == reportModel.SchoolId && reportModel.StudentGuids.Contains(x.StudentGuid) && x.TenantId == reportModel.TenantId));
+                var countryLisy = this.context?.Country.ToList();
                 if (schoolList?.Any() == true)
                 {
                     reportList.schoolListForReport = schoolList.Select(x => new SchoolReport()
@@ -261,6 +262,9 @@ namespace opensis.report.report.data.Repository
                         }).ToList();
                             studentReport.fieldsCategoryList = customFields;
                             studentReport.studentMaster = student;
+                            studentReport.CountryOfBirth = student.CountryOfBirth != null ? countryLisy.Where(x => x.Id == student.CountryOfBirth).FirstOrDefault()?.Name : null;
+                            studentReport.HomeAddressCountry = student.HomeAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == student.HomeAddressCountry).FirstOrDefault()?.Name : null;
+                            studentReport.MailingAddressCountry = student.MailingAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == student.MailingAddressCountry).FirstOrDefault()?.Name : null;
                             studentListForReport.Add(studentReport);
                         }
                         schoolReport.studentListForReport = studentListForReport;
@@ -511,6 +515,484 @@ namespace opensis.report.report.data.Repository
                 studentListModel._failure = true;
             }
             return studentListModel;
+        }
+
+        /// <summary>
+        /// Get Student Progress Report
+        /// </summary>
+        /// <param name="studentInfoReport"></param>
+        /// <returns></returns>
+        public StudentProgressReport GetStudentProgressReport(StudentProgressReport studentProgressReport)
+        {
+            StudentProgressReport studentProgressReportData = new();
+
+            try
+            {
+                var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster).ThenInclude(b => b.StudentEnrollment).Include(c => c.StudentCoursesectionSchedule).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
+
+                if (schoolListData?.Any() == true)
+                {
+                    if (studentProgressReport.TotalsOnly != true)
+                    {
+                        List<SchoolMasterListData> SchoolMasterListData = new();
+
+                        foreach (var schoolData in schoolListData)
+                        {
+                            SchoolMasterListData SchoolMasterData = new();
+                            SchoolMasterData.TenantId = schoolData.TenantId;
+                            SchoolMasterData.SchoolId = schoolData.SchoolId;
+                            SchoolMasterData.SchoolGuid = schoolData.SchoolGuid;
+                            SchoolMasterData.SchoolName = schoolData.SchoolName;
+                            SchoolMasterData.SchoolLogo = schoolData.SchoolDetail.FirstOrDefault().SchoolLogo;
+                            SchoolMasterData.SchoolStateId = schoolData.SchoolStateId;
+                            SchoolMasterData.SchoolDistrictId = schoolData.SchoolDistrictId;
+                            SchoolMasterData.City = schoolData.City;
+                            SchoolMasterData.State = schoolData.State;
+                            SchoolMasterData.StreetAddress1 = schoolData.StreetAddress1;
+                            SchoolMasterData.StreetAddress2 = schoolData.StreetAddress2;
+                            SchoolMasterData.Country = schoolData.Country;
+                            SchoolMasterData.Division = schoolData.Division;
+                            SchoolMasterData.District = schoolData.District;
+                            SchoolMasterData.Zip = schoolData.Zip;
+                            SchoolMasterData.Longitude = schoolData.Longitude;
+                            SchoolMasterData.Latitude = schoolData.Latitude;
+
+                            List<StudentMasterListData> StudentMasterListData = new();
+
+                            schoolData.StudentMaster = schoolData.StudentMaster.Where(x => x.SchoolId == studentProgressReport.SchoolId && studentProgressReport.StudentGuids.Contains(x.StudentGuid) && x.TenantId == studentProgressReport.TenantId).ToList();
+
+                            foreach (var studentData in schoolData.StudentMaster)
+                            {
+                                StudentMasterListData studentMasterData = new();
+
+                                studentMasterData.TenantId = studentData.TenantId;
+                                studentMasterData.SchoolId = studentData.SchoolId;
+                                studentMasterData.StudentId = studentData.StudentId;
+                                studentMasterData.StudentGuid = studentData.StudentGuid;
+                                studentMasterData.FirstGivenName = studentData.FirstGivenName;
+                                studentMasterData.MiddleName = studentData.MiddleName;
+                                studentMasterData.LastFamilyName = studentData.LastFamilyName;
+                                studentMasterData.StudentPhoto = studentData.StudentPhoto;
+                                studentMasterData.Dob = studentData.Dob;
+                                studentMasterData.Gender = studentData.Gender;
+                                studentMasterData.AlternateId = studentData.AlternateId;
+                                studentMasterData.StudentInternalId = studentData.StudentInternalId;
+                                studentMasterData.HomeAddressLineOne = studentData.HomeAddressLineOne;
+                                studentMasterData.HomeAddressLineTwo = studentData.HomeAddressLineTwo;
+                                studentMasterData.HomeAddressCountry = studentData.HomeAddressCountry;
+                                studentMasterData.HomeAddressCity = studentData.HomeAddressCity;
+                                studentMasterData.HomeAddressState = studentData.HomeAddressState;
+                                studentMasterData.HomeAddressZip = studentData.HomeAddressZip;
+                                studentMasterData.MarkingPeriodTitle = studentProgressReport.MarkingPeriodTitle;
+                                studentMasterData.GradeLevelTitle = studentData.StudentEnrollment.Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId && x.StudentId == studentData.StudentId && x.IsActive == true).FirstOrDefault().GradeLevelTitle;
+
+                                var courseSectionListData = studentData.StudentCoursesectionSchedule.Select(x => x.CourseSection).Where(x => x.SchoolId == studentData.SchoolId && x.TenantId == studentData.TenantId && x.AcademicYear == studentProgressReport.AcademicYear && x.DurationBasedOnPeriod == false || ((studentProgressReport.MarkingPeriodStartDate >= x.DurationStartDate && studentProgressReport.MarkingPeriodStartDate <= x.DurationEndDate) && (studentProgressReport.MarkingPeriodEndDate >= x.DurationStartDate && studentProgressReport.MarkingPeriodEndDate <= x.DurationEndDate))).ToList();
+
+                                if (courseSectionListData?.Any() == true)
+                                {
+                                    List<CourseSectionListData> CourseSectionListData = new();
+
+                                    foreach (var courseSectionData in courseSectionListData)
+                                    {
+                                        CourseSectionListData courseSection = new();
+
+                                        var staffId = courseSectionData.StaffCoursesectionSchedule.Where(x => x.IsDropped != true).Select(x => x.StaffId).FirstOrDefault();
+
+                                        //var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.StaffId == staffId);
+
+                                        var staffData = courseSectionData.StaffCoursesectionSchedule.Select(x => x.StaffMaster).Where(x => x.StaffId == staffId).FirstOrDefault();
+
+                                        courseSection.CourseSectionId = courseSectionData.CourseSectionId;
+                                        courseSection.CourseSectionName = courseSectionData.CourseSectionName;
+                                        courseSection.CourseId = courseSectionData.CourseId;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
+
+                                        if (staffData != null)
+                                        {
+                                            courseSection.TeacherFirstName = staffData.FirstGivenName;
+                                            courseSection.TeacherMiddleName = staffData.MiddleName;
+                                            courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        }
+
+                                        if (courseSectionData.GradeScaleId != null)
+                                        {
+                                            var grades = this.context?.Grade.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.GradeScaleId == courseSectionData.GradeScaleId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.TenantId,
+                                                SchoolId = y.SchoolId,
+                                                GradeScaleId = y.GradeScaleId,
+                                                GradeId = y.GradeId,
+                                                Title = y.Title,
+                                                Breakoff = y.Breakoff,
+                                                WeightedGpValue = y.WeightedGpValue,
+                                                UnweightedGpValue = y.UnweightedGpValue,
+                                                Comment = y.Comment,
+                                            }).ToList();
+
+                                            if (grades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = grades;
+                                            }
+                                        }
+                                        else if (courseSectionData.GradeScaleId == null && courseSectionData.GradeScaleType == "Teacher_Scale")
+                                        {
+
+                                            var Teachergrades = this.context?.GradebookConfigurationGradescale.Join(this.context?.Grade, gcgs => gcgs.GradeId, g => g.GradeId, (gcgs, g) => new { gcgs, g }).Where(x => x.gcgs.TenantId == studentProgressReport.TenantId && x.gcgs.SchoolId == studentProgressReport.SchoolId && x.g.TenantId == studentProgressReport.TenantId && x.g.SchoolId == studentProgressReport.SchoolId && x.gcgs.CourseSectionId == courseSectionData.CourseSectionId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.gcgs.TenantId,
+                                                SchoolId = y.gcgs.SchoolId,
+                                                GradeScaleId = y.gcgs.GradeScaleId,
+                                                GradeId = y.gcgs.GradeId,
+                                                Title = y.g.Title,
+                                                Breakoff = y.gcgs.BreakoffPoints,
+                                                WeightedGpValue = y.g.WeightedGpValue,
+                                                UnweightedGpValue = y.g.UnweightedGpValue,
+                                                Comment = y.g.Comment,
+                                            }).ToList();
+
+                                            if (Teachergrades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = Teachergrades;
+                                            }
+                                        }
+
+                                        //Fetch assignment type according to academic year and marking period
+                                        var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
+
+                                        var assignmentTypeId = new List<int>();
+
+                                        if (assignmentTypeList != null && assignmentTypeList.Any())
+                                        {
+
+                                            if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
+                                            {
+                                                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (progressPeriodsData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                                            {
+                                                var quartersData = this.context?.Quarters.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (quartersData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                                            {
+                                                var semestersData = this.context?.Semesters.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (semestersData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.YrMarkingPeriodId != null)
+                                            {
+                                                var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (yearsData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.YrMarkingPeriodId == yearsData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                        }
+
+                                        if (assignmentTypeId?.Any() == true)
+                                        {
+                                            var assignmentGrades = this.context?.Assignment.Include(z => z.AssignmentType).Include(y => y.GradebookGrades).Where(x => x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId && x.CourseSectionId == courseSectionData.CourseSectionId && assignmentTypeId.Contains(x.AssignmentTypeId)).ToList();
+
+                                            if (assignmentGrades?.Any() == true)
+                                            {
+                                                List<GradeBookGradeListData> GradeBookGradeListData = new();
+
+                                                foreach (var assignmentGrade in assignmentGrades)
+                                                {
+                                                    GradeBookGradeListData gradeBookGradeData = new();
+
+                                                    var studentGrades = assignmentGrade.GradebookGrades.Where(x => x.StudentId == studentData.StudentId).FirstOrDefault();
+
+                                                    gradeBookGradeData.AssignmentTypeTitle = assignmentGrade.AssignmentType.Title;
+                                                    gradeBookGradeData.Weight = assignmentGrade.AssignmentType.Weightage;
+                                                    gradeBookGradeData.AssignmentTitle = assignmentGrade.AssignmentTitle;
+                                                    gradeBookGradeData.AssignmentDate = assignmentGrade.AssignmentDate;
+                                                    gradeBookGradeData.DueDate = assignmentGrade.DueDate;
+                                                    gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : "" + "/" + assignmentGrade.Points;
+                                                    gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
+                                                    gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
+                                                    gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage : null;
+                                                    //gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) / Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) * 100, 2) + "%" : null;
+                                                    gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) * Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) / 100, 2).ToString() : null;
+                                                    gradeBookGradeData.Comment = studentGrades != null ? studentGrades.Comment : null;
+
+                                                    GradeBookGradeListData.Add(gradeBookGradeData);
+                                                }
+
+                                                courseSection.GradeBookGradeListData.AddRange(GradeBookGradeListData);
+                                            }
+                                        }
+
+                                        CourseSectionListData.Add(courseSection);
+                                    }
+
+                                    //studentMasterData.CourseSectionListData.AddRange(CourseSectionListData);
+                                    studentMasterData.CourseSectionListData = CourseSectionListData;
+                                }
+
+                                StudentMasterListData.Add(studentMasterData);
+                            }
+
+                            SchoolMasterData.StudentMasterListData.AddRange(StudentMasterListData);
+                            SchoolMasterListData.Add(SchoolMasterData);
+                        }
+
+                        studentProgressReportData.SchoolMasterListData.AddRange(SchoolMasterListData);
+                    }
+                    else
+                    {
+                        List<SchoolMasterListData> SchoolMasterListData = new();
+
+                        foreach (var schoolData in schoolListData)
+                        {
+                            SchoolMasterListData SchoolMasterData = new();
+                            SchoolMasterData.TenantId = schoolData.TenantId;
+                            SchoolMasterData.SchoolId = schoolData.SchoolId;
+                            SchoolMasterData.SchoolGuid = schoolData.SchoolGuid;
+                            SchoolMasterData.SchoolName = schoolData.SchoolName;
+                            SchoolMasterData.SchoolLogo = schoolData.SchoolDetail.FirstOrDefault().SchoolLogo;
+                            SchoolMasterData.SchoolStateId = schoolData.SchoolStateId;
+                            SchoolMasterData.SchoolDistrictId = schoolData.SchoolDistrictId;
+                            SchoolMasterData.City = schoolData.City;
+                            SchoolMasterData.State = schoolData.State;
+                            SchoolMasterData.StreetAddress1 = schoolData.StreetAddress1;
+                            SchoolMasterData.StreetAddress2 = schoolData.StreetAddress2;
+                            SchoolMasterData.Country = schoolData.Country;
+                            SchoolMasterData.Division = schoolData.Division;
+                            SchoolMasterData.District = schoolData.District;
+                            SchoolMasterData.Zip = schoolData.Zip;
+                            SchoolMasterData.Longitude = schoolData.Longitude;
+                            SchoolMasterData.Latitude = schoolData.Latitude;
+
+                            List<StudentMasterListData> StudentMasterListData = new();
+
+                            schoolData.StudentMaster = schoolData.StudentMaster.Where(x => x.SchoolId == studentProgressReport.SchoolId && studentProgressReport.StudentGuids.Contains(x.StudentGuid) && x.TenantId == studentProgressReport.TenantId).ToList();
+
+                            foreach (var studentData in schoolData.StudentMaster)
+                            {
+                                StudentMasterListData studentMasterData = new();
+
+                                studentMasterData.TenantId = studentData.TenantId;
+                                studentMasterData.SchoolId = studentData.SchoolId;
+                                studentMasterData.StudentId = studentData.StudentId;
+                                studentMasterData.StudentGuid = studentData.StudentGuid;
+                                studentMasterData.FirstGivenName = studentData.FirstGivenName;
+                                studentMasterData.MiddleName = studentData.MiddleName;
+                                studentMasterData.LastFamilyName = studentData.LastFamilyName;
+                                studentMasterData.StudentPhoto = studentData.StudentPhoto;
+                                studentMasterData.Dob = studentData.Dob;
+                                studentMasterData.Gender = studentData.Gender;
+                                studentMasterData.AlternateId = studentData.AlternateId;
+                                studentMasterData.StudentInternalId = studentData.StudentInternalId;
+                                studentMasterData.HomeAddressLineOne = studentData.HomeAddressLineOne;
+                                studentMasterData.HomeAddressLineTwo = studentData.HomeAddressLineTwo;
+                                studentMasterData.HomeAddressCountry = studentData.HomeAddressCountry;
+                                studentMasterData.HomeAddressCity = studentData.HomeAddressCity;
+                                studentMasterData.HomeAddressState = studentData.HomeAddressState;
+                                studentMasterData.HomeAddressZip = studentData.HomeAddressZip;
+                                studentMasterData.MarkingPeriodTitle = studentProgressReport.MarkingPeriodTitle;
+                                studentMasterData.GradeLevelTitle = studentData.StudentEnrollment.Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId && x.StudentId == studentData.StudentId && x.IsActive == true).FirstOrDefault().GradeLevelTitle;
+
+                                var courseSectionListData = studentData.StudentCoursesectionSchedule.Select(x => x.CourseSection).Where(x => x.SchoolId == studentData.SchoolId && x.TenantId == studentData.TenantId && x.AcademicYear == studentProgressReport.AcademicYear && x.DurationBasedOnPeriod == false || ((studentProgressReport.MarkingPeriodStartDate >= x.DurationStartDate && studentProgressReport.MarkingPeriodStartDate <= x.DurationEndDate) && (studentProgressReport.MarkingPeriodEndDate >= x.DurationStartDate && studentProgressReport.MarkingPeriodEndDate <= x.DurationEndDate))).ToList();
+
+                                if (courseSectionListData?.Any() == true)
+                                {
+                                    List<CourseSectionListData> CourseSectionListData = new();
+
+                                    foreach (var courseSectionData in courseSectionListData)
+                                    {
+                                        CourseSectionListData courseSection = new();
+
+                                        var staffId = courseSectionData.StaffCoursesectionSchedule.Where(x => x.IsDropped != true).Select(x => x.StaffId).FirstOrDefault();
+
+                                        //var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.StaffId == staffId);
+
+                                        var staffData = courseSectionData.StaffCoursesectionSchedule.Select(x => x.StaffMaster).Where(x => x.StaffId == staffId).FirstOrDefault();
+
+                                        courseSection.CourseSectionId = courseSectionData.CourseSectionId;
+                                        courseSection.CourseSectionName = courseSectionData.CourseSectionName;
+                                        courseSection.CourseId = courseSectionData.CourseId;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
+
+                                        if (staffData != null)
+                                        {
+                                            courseSection.TeacherFirstName = staffData.FirstGivenName;
+                                            courseSection.TeacherMiddleName = staffData.MiddleName;
+                                            courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        }
+
+                                        if (courseSectionData.GradeScaleId != null)
+                                        {
+                                            var grades = this.context?.Grade.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.GradeScaleId == courseSectionData.GradeScaleId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.TenantId,
+                                                SchoolId = y.SchoolId,
+                                                GradeScaleId = y.GradeScaleId,
+                                                GradeId = y.GradeId,
+                                                Title = y.Title,
+                                                Breakoff = y.Breakoff,
+                                                WeightedGpValue = y.WeightedGpValue,
+                                                UnweightedGpValue = y.UnweightedGpValue,
+                                                Comment = y.Comment,
+                                            }).ToList();
+
+                                            if (grades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = grades;
+                                            }
+                                        }
+                                        else if (courseSectionData.GradeScaleId == null && courseSectionData.GradeScaleType == "Teacher_Scale")
+                                        {
+
+                                            var Teachergrades = this.context?.GradebookConfigurationGradescale.Join(this.context?.Grade, gcgs => gcgs.GradeId, g => g.GradeId, (gcgs, g) => new { gcgs, g }).Where(x => x.gcgs.TenantId == studentProgressReport.TenantId && x.gcgs.SchoolId == studentProgressReport.SchoolId && x.g.TenantId == studentProgressReport.TenantId && x.g.SchoolId == studentProgressReport.SchoolId && x.gcgs.CourseSectionId == courseSectionData.CourseSectionId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.gcgs.TenantId,
+                                                SchoolId = y.gcgs.SchoolId,
+                                                GradeScaleId = y.gcgs.GradeScaleId,
+                                                GradeId = y.gcgs.GradeId,
+                                                Title = y.g.Title,
+                                                Breakoff = y.gcgs.BreakoffPoints,
+                                                WeightedGpValue = y.g.WeightedGpValue,
+                                                UnweightedGpValue = y.g.UnweightedGpValue,
+                                                Comment = y.g.Comment,
+                                            }).ToList();
+
+                                            if (Teachergrades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = Teachergrades;
+                                            }
+                                        }
+
+                                        //Fetch assignment type according to academic year and marking period
+                                        var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
+
+                                        var assignmentTypeId = new List<int>();
+
+                                        if (assignmentTypeList != null && assignmentTypeList.Any())
+                                        {
+
+                                            if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
+                                            {
+                                                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (progressPeriodsData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                                            {
+                                                var quartersData = this.context?.Quarters.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (quartersData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                                            {
+                                                var semestersData = this.context?.Semesters.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (semestersData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                            else if (assignmentTypeList.FirstOrDefault()!.YrMarkingPeriodId != null)
+                                            {
+                                                var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.StartDate == studentProgressReport.MarkingPeriodStartDate && x.EndDate == studentProgressReport.MarkingPeriodEndDate && x.AcademicYear == studentProgressReport.AcademicYear).FirstOrDefault();
+
+                                                if (yearsData != null)
+                                                {
+                                                    assignmentTypeId = assignmentTypeList.Where(x => x.YrMarkingPeriodId == yearsData.MarkingPeriodId).Select(y => y.AssignmentTypeId).ToList();
+                                                }
+                                            }
+                                        }
+
+                                        if (assignmentTypeId?.Any() == true)
+                                        {
+                                            decimal? totalAllowedMarks = 0;
+                                            decimal? totalAssignmentPoint = 0;
+                                            decimal? totalAvaragePoint = 0;
+
+                                            var assignmentGrades = this.context?.Assignment.Include(z => z.AssignmentType).Include(y => y.GradebookGrades).Where(x => x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId && x.CourseSectionId == courseSectionData.CourseSectionId && assignmentTypeId.Contains(x.AssignmentTypeId)).ToList();
+
+                                            if (assignmentGrades?.Any() == true)
+                                            {
+                                                List<GradeBookGradeListData> GradeBookGradeListData = new();
+
+                                                foreach (var assignmentGrade in assignmentGrades)
+                                                {
+                                                    GradeBookGradeListData gradeBookGradeData = new();
+
+                                                    var studentGrades = assignmentGrade.GradebookGrades.Where(x => x.StudentId == studentData.StudentId).FirstOrDefault(); if (studentGrades != null)
+                                                    {
+                                                        gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
+                                                        gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
+
+                                                        if (gradeBookGradeData.AllowedMarks != null)
+                                                        {
+                                                            totalAllowedMarks = totalAllowedMarks + Convert.ToDecimal(gradeBookGradeData.AllowedMarks);
+                                                        }
+                                                        if (gradeBookGradeData.AssignmentPoint != null)
+                                                        {
+                                                            totalAssignmentPoint = totalAssignmentPoint + Convert.ToDecimal(gradeBookGradeData.AssignmentPoint);
+                                                        }
+                                                        totalAvaragePoint = (totalAllowedMarks / totalAssignmentPoint) * 100;
+
+                                                        courseSection.Total = Math.Round(Convert.ToDecimal(totalAvaragePoint), 2).ToString();
+                                                        courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "%" + studentGrades.RunningAvgGrade : null;
+                                                    }
+
+
+                                                }
+                                            }
+                                        }
+
+                                        CourseSectionListData.Add(courseSection);
+                                    }
+
+                                    studentMasterData.CourseSectionListData.AddRange(CourseSectionListData);
+                                }
+
+                                StudentMasterListData.Add(studentMasterData);
+                            }
+
+                            SchoolMasterData.StudentMasterListData.AddRange(StudentMasterListData);
+                            SchoolMasterListData.Add(SchoolMasterData);
+                        }
+
+                        studentProgressReportData.SchoolMasterListData.AddRange(SchoolMasterListData);
+                    }
+                }
+                else
+                {
+                    studentProgressReportData._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception ex)
+            {
+                studentProgressReportData._failure = true;
+                studentProgressReportData._message = ex.Message;
+            }
+            return studentProgressReportData;
         }
     }
 }

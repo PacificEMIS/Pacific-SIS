@@ -17,11 +17,11 @@
       </div>
       <hr class="-mx-4 block md:hidden" />
       <div fxFlex="200px" class="pt-2 pb-2 md:pb-0">
-        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="Export to Excel" type="button" class="inline-block align-middle">
+        <button (click)="exportToExcel()" fxFlex="none" mat-icon-button matTooltip="{{'exportToExcel' | translate}}" type="button" class="inline-block align-middle">
           <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
         </button>
 
-        <button [matMenuTriggerFor]="columnFilterMenu" fxFlex="none" mat-icon-button matTooltip="Filter Columns"
+        <button [matMenuTriggerFor]="columnFilterMenu" fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}"
           type="button">
           <mat-icon [icIcon]="icFilterList"></mat-icon>
         </button>
@@ -93,7 +93,7 @@
   <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
     class="checkbox-item mat-menu-item">
     <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
-      {{column.label}}
+      {{column.label | translate}}
     </mat-checkbox>
   </button>
 </mat-menu>

@@ -39,7 +39,7 @@
                             <li *ngFor="let field of fieldsCategory; let index =index"
                             (click)="changeCategory(field,index)">
                                 <a [ngClass]="currentCategory === field.categoryId ? 'text-primary active' : ''"
-                                    @fadeInRight *ngIf="field.customFields!=''||index<4">{{field.title}}</a>
+                                    @fadeInRight *ngIf="field.customFields!=''||index<4">{{field.title | translate}}</a>
                             </li>
                         </ul>
                     </div>
