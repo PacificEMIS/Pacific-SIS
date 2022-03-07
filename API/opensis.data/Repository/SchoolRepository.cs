@@ -1223,7 +1223,34 @@ namespace opensis.data.Repository
                 {
                     var academicYear = Utility.GetCurrentAcademicYear(this.context!, copySchoolViewModel.TenantId, copySchoolViewModel.FromSchoolId);
 
-                    var copyFromSchool = this.context?.SchoolMaster.FirstOrDefault(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId);
+                    var copyFromSchool = this.context?.SchoolMaster.Where(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId).Select(e => new SchoolMaster
+                    {
+                        TenantId = e.TenantId,
+                        SchoolAltId = e.SchoolAltId,
+                        SchoolStateId = e.SchoolStateId,
+                        SchoolDistrictId = e.SchoolDistrictId,
+                        SchoolLevel = e.SchoolLevel,
+                        SchoolClassification = e.SchoolClassification,
+                        AlternateName = e.AlternateName,
+                        StreetAddress1 = e.StreetAddress1,
+                        StreetAddress2 = e.StreetAddress2,
+                        City = e.City,
+                        County = e.County,
+                        Division = e.Division,
+                        State = e.State,
+                        District = e.District,
+                        Zip = e.Zip,
+                        Country = e.Country,
+                        CurrentPeriodEnds = e.CurrentPeriodEnds,
+                        MaxApiChecks = e.MaxApiChecks,
+                        Features = e.Features,
+                        PlanId = e.PlanId,
+                        Longitude = e.Longitude,
+                        Latitude = e.Latitude,
+                        CreatedBy = e.CreatedBy,
+                        CreatedOn = DateTime.UtcNow
+                    }).FirstOrDefault();
+
                     string? schoolName = null;
 
                     if (copyFromSchool != null)
@@ -1248,7 +1275,7 @@ namespace opensis.data.Repository
 
                         copySchoolViewModel.schoolMaster.SchoolName = schoolName;
                         copySchoolViewModel.schoolMaster.SchoolGuid = GuidId;
-                        copySchoolViewModel.schoolMaster.SchoolInternalId = null;
+                        copySchoolViewModel.schoolMaster.SchoolInternalId = MasterSchoolId.ToString();
                         this.context?.SchoolMaster.Add(copySchoolViewModel.schoolMaster);
                         this.context?.SaveChanges();
 
