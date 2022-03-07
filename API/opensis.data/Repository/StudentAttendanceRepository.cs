@@ -1991,6 +1991,7 @@ namespace opensis.data.Repository
 
                 if (CourseSectionData?.Any() == true)
                 {
+                    CourseSectionData = CourseSectionData.Where(x => x.StaffCoursesectionSchedule.Count > 0).ToList();
                     foreach (var courseSection in CourseSectionData)
                     {
                         var studentExistInCS = courseSection.StudentCoursesectionSchedule.Where(x => x.IsDropped != true).ToList();
@@ -2050,6 +2051,8 @@ namespace opensis.data.Repository
                                         CourseSections.DurationStartDate = courseSection.DurationStartDate;
                                         CourseSections.DurationEndDate = courseSection.DurationEndDate;
                                         CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                        courseSectionList.courseSectionViewList.Add(CourseSections);
                                     }
                                 }
                             }
@@ -2073,6 +2076,8 @@ namespace opensis.data.Repository
                                     CourseSections.DurationStartDate = courseSection.DurationStartDate;
                                     CourseSections.DurationEndDate = courseSection.DurationEndDate;
                                     CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
 
@@ -2095,6 +2100,8 @@ namespace opensis.data.Repository
                                     CourseSections.DurationStartDate = courseSection.DurationStartDate;
                                     CourseSections.DurationEndDate = courseSection.DurationEndDate;
                                     CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
 
@@ -2117,10 +2124,22 @@ namespace opensis.data.Repository
                                     CourseSections.DurationStartDate = courseSection.DurationStartDate;
                                     CourseSections.DurationEndDate = courseSection.DurationEndDate;
                                     CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    //for bellSchedule list return.
+                                    var bellScheduleList = new List<BellSchedule>();
+                                    foreach (var block in courseBlockScheduleData)
+                                    {
+                                        var bellScheduleData = this.context?.BellSchedule.Where(c => c.SchoolId == courseSection.SchoolId && c.TenantId == courseSection.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= courseSection.DurationStartDate && c.BellScheduleDate <= courseSection.DurationEndDate).ToList();
+                                        if (bellScheduleData?.Any() == true)
+                                        {
+                                            bellScheduleList.AddRange(bellScheduleData);
+                                        }
+                                    }
+
+                                    CourseSections.bellScheduleList = bellScheduleList;
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
-
-                            courseSectionList.courseSectionViewList.Add(CourseSections);
                         }
                     }
                 }
