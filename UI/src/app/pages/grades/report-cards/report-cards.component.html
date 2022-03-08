@@ -164,7 +164,7 @@
                         <mat-paginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
                             [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'>
                         </mat-paginator>
-                        <div class="text-right p-4" *ngIf="permissions?.edit">
+                        <div class="text-right p-4">
                             <button color="primary" mat-raised-button type="submit" (click)="generateReportCard()">
                                 {{ 'generateReportCardForSelectedStudents' | translate }}
                             </button>
