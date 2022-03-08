@@ -34,7 +34,7 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int SchoolId { get; set; }
         public int HistMarkingPeriodId { get; set; }
-        public decimal? AcademicYear { get; set; }
+        public string? AcademicYear { get; set; }
         public string? Title { get; set; }
         public DateTime? GradePostDate { get; set; }
         public bool? DoesGrades { get; set; }
