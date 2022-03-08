@@ -365,7 +365,7 @@ export class ProgressReportComponent implements OnInit {
         this.generatedReportCardData.schoolMasterListData.map((schoolDetails) => {
           schoolDetails.studentMasterListData.map((studentDetails) => {
             studentDetails.courseSectionListData.map((courseSection) => {
-              // courseSection.letterGrade = this.gradeFromPercent(courseSection.total, courseSection.gradeData);
+              courseSection.letterGrade = this.gradeFromPercent(courseSection.total, courseSection.gradeData);
               // courseSection.letterWeightedGrade = this.gradeFromPercent(courseSection.totalWeightedGrade.split('%')[0], courseSection.gradeData);
             })
           })
@@ -425,11 +425,11 @@ export class ProgressReportComponent implements OnInit {
             courseSection.letterGrade = '';
             courseSection.letterWeightedGrade = '';
           } else if (courseSection.gradeScaleType === 'Teacher_Scale') {
-            // courseSection.letterGrade = this.gradeFromPercent(courseSection.totalGrade, courseSection.gradeData);
-            // courseSection.letterWeightedGrade = this.gradeFromPercent(courseSection.totalWeightedGrade, courseSection.gradeData);
+            courseSection.letterGrade = this.gradeFromPercent(courseSection.totalGrade, courseSection.gradeData);
+            courseSection.letterWeightedGrade = this.gradeFromPercent(courseSection.totalWeightedGrade, courseSection.gradeData);
           } else if (!courseSection.gradeScaleType) {
-            // courseSection.letterGrade = this.gradeFromPercent(courseSection.totalGrade, courseSection.gradeData);
-            // courseSection.letterWeightedGrade = this.gradeFromPercent(courseSection.totalWeightedGrade, courseSection.gradeData);
+            courseSection.letterGrade = this.gradeFromPercent(courseSection.totalGrade, courseSection.gradeData);
+            courseSection.letterWeightedGrade = this.gradeFromPercent(courseSection.totalWeightedGrade, courseSection.gradeData);
           }
         })
       })
