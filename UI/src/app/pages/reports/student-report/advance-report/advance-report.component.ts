@@ -202,6 +202,7 @@ export class AdvanceReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+      this.defaultValuesService.setReportCompoentTitle.next(translateService.instant("Advanced Report"));
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.selectedStudentListForTable = new MatTableDataSource([]);
 

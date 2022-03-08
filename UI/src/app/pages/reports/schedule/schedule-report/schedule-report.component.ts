@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icMenuBook from '@iconify/icons-ic/twotone-menu-book';
 import { Router } from '@angular/router';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-schedule-report',
@@ -12,7 +13,13 @@ export class ScheduleReportComponent implements OnInit {
 
   icMenuBook = icMenuBook;
 
-  constructor(public translateService: TranslateService, private router: Router) { }
+  constructor(
+    public translateService: TranslateService, 
+    private router: Router,
+    private defaultValuesService:DefaultValuesService
+    ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("Schedule Report");
+    }
 
   ngOnInit(): void {
   }
