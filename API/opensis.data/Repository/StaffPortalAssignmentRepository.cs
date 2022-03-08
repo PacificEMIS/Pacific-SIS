@@ -379,7 +379,7 @@ namespace opensis.data.Repository
                                 else
                                 {
                                     assignmentAddViewModel._failure = true;
-                                    assignmentAddViewModel._message = "Due Date Should Be Same Or Greater Than Assign Date";
+                                    assignmentAddViewModel._message = "Due Date should be same or greater than Assigned Date";
                                 }
                             }
                             else
@@ -452,7 +452,7 @@ namespace opensis.data.Repository
                             else
                             {
                                 assignmentAddViewModel._failure = true;
-                                assignmentAddViewModel._message = "Due Date Should Be Same Or Greater Than Assign Date";
+                                assignmentAddViewModel._message = "Due Date should be same or greater than Assigned Date";
                             }
                         }
                         else

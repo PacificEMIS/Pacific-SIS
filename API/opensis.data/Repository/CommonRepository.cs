@@ -2099,7 +2099,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Fixed Schedule";
 
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
 
                                 if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                 {
@@ -2112,16 +2112,16 @@ namespace opensis.data.Repository
 
                                 if (fixedData != null)
                                 {
-                                    fixedData.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                    fixedData.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                    fixedData.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                    fixedData.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
-                                    fixedData.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
-                                    fixedData.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>();
-                                    fixedData.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                    fixedData.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                    fixedData.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                    fixedData.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //fixedData.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //fixedData.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //fixedData.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //fixedData.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //fixedData.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                    //fixedData.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>();
+                                    //fixedData.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //fixedData.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //fixedData.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //fixedData.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
                                     CourseSections.courseFixedSchedule = fixedData;
                                     CourseSections.HolidayList = holidayList;
                                 }
@@ -2131,7 +2131,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Variable Schedule";
 
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
 
                                 if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                 {
@@ -2144,7 +2144,7 @@ namespace opensis.data.Repository
 
                                 if (variableData?.Any() == true)
                                 {
-                                    variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    //variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseVariableSchedule = variableData;
                                     CourseSections.HolidayList = holidayList;
@@ -2155,7 +2155,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Block Schedule";
 
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
 
                                 if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                 {
@@ -2168,19 +2168,19 @@ namespace opensis.data.Repository
 
                                 if (blockData?.Any() == true)
                                 {
-                                    blockData.ForEach(x =>
-                                    {
-                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                        x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                        x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                        x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
-                                        x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
-                                        x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
-                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                        x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                        x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                        x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
-                                    });
+                                    //blockData.ForEach(x =>
+                                    //{
+                                    //    x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //    x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //    x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //    x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                    //    x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
+                                    //    x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //    x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //    x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //});
 
                                     CourseSections.courseBlockSchedule = blockData;
                                     CourseSections.HolidayList = holidayList;
@@ -2284,7 +2284,7 @@ namespace opensis.data.Repository
                                     ScheduleType = "Calendar Schedule"
                                 };
 
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList(); ;
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
 
                                 if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                 {
@@ -2297,19 +2297,19 @@ namespace opensis.data.Repository
 
                                 if (calenderData != null && calenderData.Any())
                                 {
-                                    calenderData.ForEach(x =>
-                                    {
-                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                        x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                        x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                        x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
-                                        x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
-                                        x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
-                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
-                                        x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
-                                        x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
-                                        x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
-                                    });
+                                    //calenderData.ForEach(x =>
+                                    //{
+                                    //    x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //    x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //    x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //    x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                    //    x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
+                                    //    x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                                    //    x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                                    //    x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                                    //});
 
                                     CourseSection.courseCalendarSchedule = calenderData;
                                     CourseSection.HolidayList = holidayList;
@@ -2395,6 +2395,35 @@ namespace opensis.data.Repository
                         }
                     }
                     scheduledCourseSectionView.MissingAttendanceCount = count;
+
+                    foreach (var courseSection in scheduledCourseSectionView.courseSectionViewList)
+                    {
+                        if (courseSection.courseFixedSchedule != null)
+                        {
+                            courseSection.courseFixedSchedule.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                            courseSection.courseFixedSchedule.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                            courseSection.courseFixedSchedule.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                            courseSection.courseFixedSchedule.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                            courseSection.courseFixedSchedule.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                            courseSection.courseFixedSchedule.BlockPeriod.StudentMissingAttendances = new List<StudentMissingAttendance>();
+                            courseSection.courseFixedSchedule.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                            courseSection.courseFixedSchedule.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
+                            courseSection.courseFixedSchedule.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
+                            courseSection.courseFixedSchedule.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+                        }
+                        else if (courseSection.courseVariableSchedule?.Any() == true)
+                        {
+                            courseSection.courseVariableSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                        }
+                        else if (courseSection.courseCalendarSchedule?.Any() == true)
+                        {
+                            courseSection.courseCalendarSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                        }
+                        else if (courseSection.courseBlockSchedule?.Any() == true)
+                        {
+                            courseSection.courseBlockSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                        }
+                    }
                 }
                 else
                 {

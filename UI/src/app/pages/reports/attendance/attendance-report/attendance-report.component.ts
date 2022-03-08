@@ -102,6 +102,7 @@ export class AttendanceReportComponent implements OnInit {
     private markingPeriodService: MarkingPeriodService,
     private excelService: ExcelService,
   ) {
+    this.defaultValuesService.setReportCompoentTitle.next("Attendance Report");
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

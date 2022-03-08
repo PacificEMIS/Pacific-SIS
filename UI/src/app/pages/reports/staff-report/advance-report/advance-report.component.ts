@@ -191,6 +191,7 @@ export class AdvanceReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
   ) {
+    this.defaultValuesService.setReportCompoentTitle.next("Staff Report");
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

@@ -3,7 +3,7 @@
     <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 items-center">
         <li>
             <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                <mat-label>{{ "showReportBy" | translate }}</mat-label>
+                <mat-label>{{ "showAttendanceBy" | translate }}</mat-label>
                 <mat-select [(ngModel)]="selectedReportBy" (selectionChange)="getReportBy($event)">
                     <mat-option *ngFor="let option of selectOptions" [value]="option?.subTitle">{{option?.title}}</mat-option>
                     <mat-option value="">{{'customDateRange' |translate}}</mat-option>

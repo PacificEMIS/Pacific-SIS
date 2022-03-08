@@ -920,7 +920,6 @@
     "goToNewSchool": "Aller à la nouvelle école",
     "includeInactiveStaff": "Inclure le personnel inactif",
     "otherInformation": "les autres informations",
-    "sucess": "Succès !",
     "enrollmentCodeFailed": "Échec du code d'inscription. ",
     "pleaseProvideRelationship": "Veuillez fournir une relation",
     "allDataSuccessfullyCopiedToNewSchool": "Toutes les données ont été copiées avec succès dans la nouvelle école.",
@@ -1731,5 +1730,7 @@
     "breakOff":"Rompre",
     "updatedDate":"Date de mise à jour",
     "createdDate":"Date de création",
-    "parentName":"Nom du parent"
+    "parentName":"Nom du parent",
+    "Advanced Report":"Rapport préalable",
+    "Print Student Info":"Imprimer les informations sur l'étudiant"
 }

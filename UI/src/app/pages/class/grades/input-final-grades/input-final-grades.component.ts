@@ -130,7 +130,7 @@ export class InputFinalGradesComponent implements OnInit {
     private loaderService: LoaderService,
     private commonService: CommonService,
   ) {
-    this.courseSection = JSON.parse(localStorage.getItem('selectedCourseSection'));
+    this.courseSection = this.defaultValuesService.getSelectedCourseSection();
   }
 
   ngOnInit(): void {
