@@ -367,6 +367,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.studentAddModel = data;
+      this.studentService.setStudentGuid(this.studentAddModel.studentMaster.studentGuid);
       this.responseImage = this.studentAddModel.studentMaster.studentPhoto;
       this.studentAddModel.fieldsCategoryList = this.checkViewPermission(data.fieldsCategoryList);
       this.fieldsCategory = this.studentAddModel.fieldsCategoryList

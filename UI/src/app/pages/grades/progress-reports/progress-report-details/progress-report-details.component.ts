@@ -150,7 +150,7 @@ export class ProgressReportDetailsComponent implements OnInit {
 
   addAndGenerateProgressReportCard() {
     if(this.defaultValuesService.getUserMembershipType() === this.profile.SuperAdmin || this.defaultValuesService.getUserMembershipType() === this.profile.SchoolAdmin || this.defaultValuesService.getUserMembershipType() === this.profile.AdminAssitant) {
-        this.getStudentProgressReportModel.studentGuids = [this.studentService.getStudentId()]
+        this.getStudentProgressReportModel.studentGuids = [this.studentService.getStudentGuid()]
       } else {
       this.getStudentProgressReportModel.studentGuids = [this.defaultValuesService.getUserGuidId()]
       }

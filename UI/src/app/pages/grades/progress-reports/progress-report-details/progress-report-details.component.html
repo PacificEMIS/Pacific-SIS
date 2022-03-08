@@ -81,7 +81,12 @@
                                 </ng-container>
 
                                     <tr class="bg-base"  *ngIf="courseSection?.gradeBookGradeListData?.length > 0">
-                                        <td colspan="5" class="px-4 text-primary font-semibold">{{ 'total' | translate }}</td>
+                                        <td class="px-4 text-primary font-semibold">{{ 'total' | translate }}</td>
+                                        <td class="px-4 text-primary font-semibold"></td>
+                                        <td class="px-4 text-primary font-semibold"></td>
+                                        <td class="px-4 text-primary font-semibold" *ngIf="toggleMenu?.assignedDate"></td>
+                                        <td class="px-4 text-primary font-semibold" *ngIf="toggleMenu?.dueDate"></td>
+
                                         <td class="p-4 border-l text-primary font-semibold">{{courseSection?.total}}</td>
                                         <td class="p-4 border-l text-primary font-semibold">{{courseSection?.totalGrade ? courseSection?.totalGrade + '%' : '0%'}} <span class="ml-1">{{courseSection?.letterGrade}}</span></td>
                                         <td class="p-4 border-l text-primary font-semibold">{{courseSection?.totalWeightedGrade ? courseSection?.totalWeightedGrade + '%' : '0%'}} <span class="ml-1">{{courseSection?.letterWeightedGrade}}</span></td>
@@ -363,7 +368,12 @@
             
             
                                                     <tr *ngIf="courseSection?.gradeBookGradeListData?.length > 0">
-                                                        <td class="bg-slate" colspan="5"><strong>Total</strong></td>
+                                                        <td class="bg-slate"><strong>Total</strong></td>
+                                                        <td class="bg-slate"></td>
+                                                        <td class="bg-slate"></td>
+                                                        <td class="bg-slate" *ngIf="toggleMenu?.assignedDate"></td>
+                                                        <td class="bg-slate" *ngIf="toggleMenu?.dueDate"></td>
+
                                                         <td class="bg-slate" colspan="4"><strong><span class="m-r-10">{{courseSection?.total}}</span><span class="m-r-10">{{courseSection?.totalGrade ? courseSection?.totalGrade + '%' : '0%'}}</span><span class="m-r-10">{{courseSection?.letterGrade}}</span><span class="m-r-10">{{courseSection?.totalWeightedGrade ? courseSection?.totalWeightedGrade + '%' : '0%'}}</span><span class="m-r-10">{{courseSection?.letterWeightedGrade}}</span></strong></td>
                                                     </tr>
             
