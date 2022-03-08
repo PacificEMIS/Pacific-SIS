@@ -197,6 +197,14 @@ export class StudentService {
     return this.studentId;
   }
 
+  private studentGuid: string;
+  setStudentGuid(id: string) {
+    this.studentGuid = id;
+  }
+  getStudentGuid() {
+    return this.studentGuid;
+  }
+
   private studentMultiselectValue: any;
   setStudentMultiselectValue(value: any) {
     this.studentMultiselectValue = value;

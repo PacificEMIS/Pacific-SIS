@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { ProgressReportsRoutingModule } from './progress-reports-routing.module';
+import { ProgressReportsComponent } from './progress-reports.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,46 +14,23 @@ import { SecondaryToolbarModule } from '../../../../@vex/components/secondary-to
 import { BreadcrumbsModule } from '../../../../@vex/components/breadcrumbs/breadcrumbs.module';
 import { PageLayoutModule } from '../../../../@vex/components/page-layout/page-layout.module';
 import { ContainerModule } from '../../../../@vex/directives/container/container.module';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatExpansionModule } from '@angular/material/expansion';
-
-import { GradesReportRoutingModule } from './grades-report-routing.module';
-import { GradesReportComponent } from './grades-report.component';
-import { GradeBreakdownComponent } from './grade-breakdown/grade-breakdown.component';
 import { MatRadioModule } from '@angular/material/radio';
-import { ClassRankListComponent } from './class-rank-list/class-rank-list.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { StudentFinalGradesComponent } from './student-final-grades/student-final-grades.component';
-import { ProgressReportComponent } from './progress-report/progress-report.component';
-import { HonorRollComponent } from './honor-roll/honor-roll.component';
-import { SearchStudentComponent } from './search-student/search-student.component';
+import { FormsModule } from '@angular/forms';
+import { ProgressReportDetailsComponent } from './progress-report-details/progress-report-details.component';
 
 
 @NgModule({
-  declarations: [
-    GradesReportComponent,
-    GradeBreakdownComponent,
-    ProgressReportComponent,
-    ClassRankListComponent,
-    StudentFinalGradesComponent,
-    HonorRollComponent,
-    SearchStudentComponent
-  ],
+  declarations: [ProgressReportsComponent, ProgressReportDetailsComponent],
   imports: [
     CommonModule,
-    GradesReportRoutingModule,
+    ProgressReportsRoutingModule,
     MatIconModule,
     MatInputModule,
     MatSelectModule,
@@ -62,23 +42,15 @@ import { SearchStudentComponent } from './search-student/search-student.componen
     BreadcrumbsModule,
     PageLayoutModule,
     ContainerModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     TranslateModule,
-    MatTableModule,
-    MatSortModule,
     MatCheckboxModule,
     MatButtonToggleModule,
     MatDividerModule,
     MatSlideToggleModule,
     SharedModuleModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    FormsModule,
-    NgxMatSelectSearchModule,
     MatExpansionModule,
     MatRadioModule,
-    MatPaginatorModule
+    FormsModule,
   ]
 })
-export class GradesReportModule { }
+export class ProgressReportsModule { }

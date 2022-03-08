@@ -164,3 +164,17 @@ export class GetStudentListByCourseSectionModel extends CommonField {
         this.courseIds = [];
     }
 }
+
+export class GetStudentProgressReportModel extends CommonField {
+    studentGuids: any[];
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    TotalsOnly: boolean;
+    AcademicYear: number;
+
+    constructor() {
+        super();
+        this.TotalsOnly = false;
+        this.studentGuids = [];
+    }
+}
