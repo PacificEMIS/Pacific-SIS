@@ -1546,7 +1546,7 @@
     "PermissionGroupId": "3",
     "PermissionSubcategoryName": "Progress Reports",
     "ShortCode": "pr",
-    "Path": "/school/students/progress-reports",
+    "Path": "/school/students/student-progress-report",
     "Title": "Progress Reports",
     "Type": "",
     "EnableView": true,
