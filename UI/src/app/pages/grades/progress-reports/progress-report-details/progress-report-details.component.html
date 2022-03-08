@@ -1,0 +1,380 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+
+        <div class="mb-6">
+            <div class="card p-4 mb-4">
+                <ul class="flex flex-wrap mb-2">
+                    <li><mat-slide-toggle [(ngModel)]="toggleMenu.assignedDate" color="primary" class="mr-6 mb-2">{{'assignedDate' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [(ngModel)]="toggleMenu.excludeUngradedEcAssignments" color="primary" class="mr-6 mb-2">{{'excludeUngradedEcAssignments' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [(ngModel)]="toggleMenu.dueDate" color="primary" class="mr-6 mb-2">{{'dueDate' | translate }}</mat-slide-toggle></li>
+            <li><mat-slide-toggle [(ngModel)]="toggleMenu.excludeUngradedAssignmentsNotDue" color="primary" class="mr-6 mb-2">{{'excludeUngradedAssignmentsNotDue' | translate }}</mat-slide-toggle></li>
+                </ul>
+                <div>
+                    <mat-radio-group aria-label="Select an option" color="primary" (change)="generatedReportCardData = null;" [(ngModel)]="getStudentProgressReportModel.TotalsOnly">
+                        <mat-radio-button [value]="false" class="mr-6 mb-2" [checked]="true">{{'withAssignmentDetails' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="true" class="mr-6 mb-2">{{'totalsOnly' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="text-right pt-4">
+                    <button mat-raised-button color="primary" (click)="generateProgressReport()">{{'showProgressReport' | translate }}</button>
+                </div>
+            </div>
+            <div class="card p-4 mb-4" *ngIf="generatedReportCardData">
+                <div class="flex flex-col-reverse md:flex-row justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 mr-4 w-20 h-20">
+                            <img [src]="generatedReportCardData?.studentPhoto ? 'data:image/jpeg;base64,' + generatedReportCardData?.studentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto" alt="Student Photo" class="rounded-full">
+                        </div>
+                        <div class="pr-2">
+                            <h4 class="text-primary text-lg sm:text-2xl font-semibold sm:mb-4">{{generatedReportCardData?.firstGivenName}}
+                                {{generatedReportCardData?.middleName
+                                ? ''+generatedReportCardData?.middleName+' ':''}}{{generatedReportCardData?.lastFamilyName}}</h4>
+                            <p class="text-gray"><span class="font-semibold text-black">{{ 'studentID' | translate }} : </span>{{generatedReportCardData?.studentInternalId}}<span class="dot-separator"></span><span class="font-semibold text-black">{{ 'grade' | translate}} : </span>{{generatedReportCardData?.gradeLevelTitle}}<span class="dot-separator"></span><span class="font-semibold text-black">{{ 'markingPeriod' | translate }} : </span>{{generatedReportCardData?.markingPeriodTitle}}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="bg-green text-white rounded-l px-4 py-2 text-base font-medium -mr-4 mb-4">{{ 'progressReport' | translate }}</div>
+                        <span class="inline-block text-right cursor-pointer" *ngIf="generatedReportCardData" (click)="generatePdf()"><mat-icon [icIcon]="icPrint"></mat-icon></span>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="!getStudentProgressReportModel?.TotalsOnly && generatedReportCardData">
+            <div class="card mb-4" *ngFor="let courseSection of generatedReportCardData?.courseSectionListData">
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header class="px-4 py-2 mr-1">
+                            <mat-panel-title class="text-base text-primary flex flex-col md:flex-row flex-wrap items-center">
+                                <span class="font-semibold mr-1">{{ 'course' | translate }} : </span> {{courseSection?.courseName}}<span class="dot-separator"></span>
+                                <span class="font-semibold mr-1">{{ 'courseSection' | translate }} : </span> {{courseSection?.courseSectionName}}<span class="dot-separator"></span>
+                                <span class="font-semibold mr-1">{{ 'teacher' | translate }} : </span> {{courseSection?.teacherFirstName}}
+                                {{courseSection?.teacherMiddleName
+                                ? ''+courseSection?.teacherMiddleName+' ':''}}{{courseSection?.teacherLastName}}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <div class="-mx-6 overflow-x-auto">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left border-b px-4">{{ 'assignmentType' | translate }}</th>
+                                        <th class="text-left border-b px-4">{{ 'weight' | translate }} (%)</th>
+                                        <th class="text-left border-b px-4">{{ 'assignment' | translate }}</th>
+                                        <th class="text-left border-b px-4" *ngIf="toggleMenu?.assignedDate">{{ 'assignmentDate' | translate }}</th>
+                                        <th class="text-left border-b px-4" *ngIf="toggleMenu?.dueDate">{{ 'dueDate' | translate }}</th>
+                                        <th class="text-left border-b px-4 border-l">{{ 'points' | translate }}</th>
+                                        <th class="text-left border-b px-4 border-l">{{ 'grade' | translate }}</th>
+                                        <th class="text-left border-b px-4 border-l">{{ 'weightedGrade' | translate }}</th>
+                                        <th class="text-left border-b px-4 border-l">{{ 'Comment' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container *ngFor="let gradeDetails of courseSection?.gradeBookGradeListData">
+                                    <tr *ngIf="!gradeDetails?.hide">
+                                        <td class="px-4">{{gradeDetails?.assignmentTypeTitle}}</td>
+                                        <td class="px-4">{{gradeDetails?.weight ? gradeDetails?.weight + '%' : ''}}</td>
+                                        <td class="px-4">{{gradeDetails?.assignmentTitle}}</td>
+                                        <td class="px-4"  *ngIf="toggleMenu?.assignedDate">{{gradeDetails?.assignmentDate | date : 'mediumDate'}}</td>
+                                        <td class="px-4" *ngIf="toggleMenu?.dueDate">{{gradeDetails?.dueDate | date : 'mediumDate'}}</td>
+                                        <td class="px-4 border-l">{{gradeDetails?.allowedMarks ? gradeDetails?.allowedMarks : 0}}/{{gradeDetails?.assignmentPoint ? gradeDetails?.assignmentPoint : 0}}</td>
+                                        <td class="px-4 border-l">{{gradeDetails?.grade ? gradeDetails?.grade === '*' ? gradeDetails?.grade : gradeDetails?.grade + '%' : '0%'}}</td>
+                                        <td class="px-4 border-l">{{ gradeDetails?.wieghtedGrade ? gradeDetails?.wieghtedGrade + '%' : '0%'}}</td>
+                                        <td class="px-4 border-l">{{gradeDetails?.comment}}</td>
+                                    </tr>
+                                </ng-container>
+
+                                    <tr class="bg-base"  *ngIf="courseSection?.gradeBookGradeListData?.length > 0">
+                                        <td colspan="5" class="px-4 text-primary font-semibold">{{ 'total' | translate }}</td>
+                                        <td class="p-4 border-l text-primary font-semibold">{{courseSection?.total}}</td>
+                                        <td class="p-4 border-l text-primary font-semibold">{{courseSection?.totalGrade ? courseSection?.totalGrade + '%' : '0%'}} <span class="ml-1">{{courseSection?.letterGrade}}</span></td>
+                                        <td class="p-4 border-l text-primary font-semibold">{{courseSection?.totalWeightedGrade ? courseSection?.totalWeightedGrade + '%' : '0%'}} <span class="ml-1">{{courseSection?.letterWeightedGrade}}</span></td>
+                                        <td class="p-4 border-l text-primary font-semibold"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </ng-container>
+
+            <div class="card mb-4" *ngIf="getStudentProgressReportModel?.TotalsOnly && generatedReportCardData">
+                <div class="overflow-x-auto">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-left border-b px-4">{{ 'course' | translate }}</th>
+                                <th class="text-left border-b px-4">{{ 'courseSection' | translate }}</th>
+                                <th class="text-left border-b px-4">{{ 'teacher' | translate }}</th>
+                                <th class="text-left border-b px-4">{{ 'total' | translate }}</th>
+                                <th class="text-left border-b px-4">{{ 'totalWeightedGrade' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let courseSection of generatedReportCardData?.courseSectionListData">
+                            <tr >
+                                <td class="px-4">{{courseSection?.courseName}}</td>
+                                <td class="px-4">{{courseSection?.courseSectionName}}</td>
+                                <td class="px-4">{{courseSection?.teacherFirstName}}
+                                    {{courseSection?.teacherMiddleName
+                                    ? ''+courseSection?.teacherMiddleName+' ':''}}{{courseSection?.teacherLastName}}</td>
+                                <td class="px-4">{{courseSection?.total ? (courseSection?.total) + '%' : 'N/A'}} {{courseSection?.letterGrade}}</td>
+                                <td class="px-4 border-l">{{courseSection?.totalWeightedGrade ? (courseSection?.totalWeightedGrade) : 'N/A'}} {{courseSection?.letterWeightedGrade}}</td>
+                            </tr>
+                        </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden" id="printReportCardIdForTotal">
+            <div class="student-information-report">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <table class="report-header">
+                                <tr>
+                                    <td class="header-left">
+                                        <div class="float-left school-logo">
+                                            <img src="" *ngIf="schoolDetails?.schoolLogo"
+                                            [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                        </div>
+                                        <div class="float-left information">
+                                            <h4>{{schoolDetails?.schoolName}}</h4>
+                                            <p>{{schoolDetails?.streetAddress1}}{{schoolDetails?.streetAddress2 ? ', ' +
+                                                schoolDetails?.streetAddress2 : ''}}{{schoolDetails?.city ? ', ' +
+                                                schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                                ''}}{{schoolDetails?.zip ? ', ' + schoolDetails?.zip :
+                                                ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                        </div>
+                                    </td>
+                                    <td class="header-right text-right">
+                                        <div class="text-center inline-block">Student Progress Report</div>
+                                        <p class="text-right">Powered by <b>openSIS</b></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="generate-date">
+                                        <p class="text-center p-b-8">Report Generated on {{today | date : 'mediumDate'}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="student-logo width-160">
+                                        <div>
+                                            <img [src]="generatedReportCardData?.studentPhoto ? 'data:image/jpeg;base64,' + generatedReportCardData?.studentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto"
+                                            alt="Student Photo">
+                                        </div>
+                                    </td>
+                                    <td class="student-details">
+                                        <h4 class="inline-block">{{generatedReportCardData?.firstGivenName}}
+                                            {{generatedReportCardData?.middleName
+                                            ? ''+generatedReportCardData?.middleName+' ':''}}{{generatedReportCardData?.lastFamilyName}}</h4><span class="inline-block"> | </span><p class="inline-block">{{generatedReportCardData?.homeAddressLineOne}}{{generatedReportCardData?.homeAddressLineTwo
+                                                ? ', ' + generatedReportCardData?.homeAddressLineTwo :
+                                                ''}}{{generatedReportCardData?.homeAddressCity ? ', ' +
+                                                generatedReportCardData?.homeAddressCity :
+                                                ''}}{{generatedReportCardData?.homeAddressState ? ', ' +
+                                                generatedReportCardData?.homeAddressState :
+                                                ''}}{{generatedReportCardData?.homeAddressZip ? ', ' +
+                                                generatedReportCardData?.homeAddressZip :
+                                                ''}}{{generatedReportCardData?.homeAddressCountry ? ', ' +
+                                                generatedReportCardData?.homeAddressCountry : ''}}</p>
+                                        <table class="border-table">
+                                            <tbody>
+                                                <tr>
+                                                    <td><b>Student ID</b> : <span>{{generatedReportCardData?.studentInternalId}}</span></td>
+                                                    <td><b>Alternate ID</b> : <span>{{generatedReportCardData?.alternateId}}</span></td>
+                                                    <td><b>Date of Birth</b> : <span>{{generatedReportCardData?.dob | date :
+                                                        'MMM/dd/y'}}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Grade</b> : <span>{{generatedReportCardData?.gradeLevelTitle}}</span></td>
+                                                    <td><b>Gender</b> : <span>{{generatedReportCardData?.gender}}</span></td>
+                                                    <td><b>Marking Period</b> : <span>{{generatedReportCardData?.markingPeriodTitle}}</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td class="p-y-20 p-x-10">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <table class="information-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-slate"><strong>Course</strong></th>
+                                                    <th class="bg-slate"><strong>Course Section</strong></th>
+                                                    <th class="bg-slate"><strong>Teacher</strong></th>
+                                                    <th class="bg-slate"><strong>Total</strong></th>
+                                                    <th class="bg-slate"><strong>Total Weighted Grade</strong></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let courseSection of generatedReportCardData?.courseSectionListData">
+                                                    <td>{{courseSection?.courseName}}</td>
+                                                    <td>{{courseSection?.courseSectionName}}</td>
+                                                    <td>{{courseSection?.teacherFirstName}}
+                                                        {{courseSection?.teacherMiddleName
+                                                        ? ''+courseSection?.teacherMiddleName+' ':''}}{{courseSection?.teacherLastName}}</td>
+                                                    <td>{{courseSection?.total ? (courseSection?.total) + '%' : 'N/A'}} {{courseSection?.letterGrade}}</td>
+                                                    <td>{{courseSection?.totalWeightedGrade ? (courseSection?.totalWeightedGrade) : 'N/A'}} {{courseSection?.letterWeightedGrade}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+            
+                </table>
+           
+            </div>
+            </div>
+            
+            <div class="hidden" id="printReportCardIdForAssignmentDetails">
+                <div class="student-information-report">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <table class="report-header">
+                                    <tr>
+                                        <td class="header-left">
+                                            <div class="float-left school-logo">
+                                                <img src="" *ngIf="schoolDetails?.schoolLogo"
+                                                [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                            </div>
+                                            <div class="float-left information">
+                                                <h4>{{schoolDetails?.schoolName}}</h4>
+                                                <p>{{schoolDetails?.streetAddress1}}{{schoolDetails?.streetAddress2 ? ', ' +
+                                                    schoolDetails?.streetAddress2 : ''}}{{schoolDetails?.city ? ', ' +
+                                                    schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                                    ''}}{{schoolDetails?.zip ? ', ' + schoolDetails?.zip :
+                                                    ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                            </div>
+                                        </td>
+                                        <td class="header-right text-right">
+                                            <div class="text-center inline-block">Student Progress Report</div>
+                                            <p class="text-right">Powered by <b>openSIS</b></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="generate-date">
+                                            <p class="text-center p-b-8">Report Generated on {{today | date : 'mediumDate'}}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td class="student-logo width-160">
+                                            <div>
+                                                <img [src]="generatedReportCardData?.studentPhoto ? 'data:image/jpeg;base64,' + generatedReportCardData?.studentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto"
+                                                alt="Student Photo">
+                                            </div>
+                                        </td>
+                                        <td class="student-details">
+                                            <h4 class="inline-block">{{generatedReportCardData?.firstGivenName}}
+                                                {{generatedReportCardData?.middleName
+                                                ? ''+generatedReportCardData?.middleName+' ':''}}{{generatedReportCardData?.lastFamilyName}}</h4><span class="inline-block"> | </span><p class="inline-block">{{generatedReportCardData?.homeAddressLineOne}}{{generatedReportCardData?.homeAddressLineTwo
+                                                    ? ', ' + generatedReportCardData?.homeAddressLineTwo :
+                                                    ''}}{{generatedReportCardData?.homeAddressCity ? ', ' +
+                                                    generatedReportCardData?.homeAddressCity :
+                                                    ''}}{{generatedReportCardData?.homeAddressState ? ', ' +
+                                                    generatedReportCardData?.homeAddressState :
+                                                    ''}}{{generatedReportCardData?.homeAddressZip ? ', ' +
+                                                    generatedReportCardData?.homeAddressZip :
+                                                    ''}}{{generatedReportCardData?.homeAddressCountry ? ', ' +
+                                                    generatedReportCardData?.homeAddressCountry : ''}}</p>
+                                            <table class="border-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td><b>Student ID</b> : <span>{{generatedReportCardData?.studentId}}</span></td>
+                                                        <td><b>Alternate ID</b> : <span>{{generatedReportCardData?.alternateId}}</span></td>
+                                                        <td><b>Date of Birth</b> : <span>{{generatedReportCardData?.dob | date :
+                                                            'MMM/dd/y'}}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>Grade</b> : <span>{{generatedReportCardData?.gradeLevelTitle}}</span></td>
+                                                        <td><b>Gender</b> : <span>{{generatedReportCardData?.gender}}</span></td>
+                                                        <td><b>Marking Period</b> : <span>{{generatedReportCardData?.ethnicity}}</span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+            
+                        <ng-container *ngFor="let courseSection of generatedReportCardData?.courseSectionListData">
+                        <tr>
+                            <td class="p-y-20 p-x-10">
+                                <table>
+                                    <caption class="text-left m-b-10">
+                                        <h4 class="inline-block">Course</h4> : <span>{{courseSection?.courseName}}</span><span class="inline-block bullet"></span><h4 class="inline-block">Course Section</h4> : <span>{{courseSection?.courseSectionName}} - {{courseSection?.teacherFirstName}}
+                                            {{courseSection?.teacherMiddleName
+                                            ? ''+courseSection?.teacherMiddleName+' ':''}}{{courseSection?.teacherLastName}}</span><span class="inline-block bullet"></span><h4 class="inline-block">Teacher</h4> : <span>{{courseSection?.teacherFirstName}}
+                                                {{courseSection?.teacherMiddleName
+                                                ? ''+courseSection?.teacherMiddleName+' ':''}}{{courseSection?.teacherLastName}}</span>
+                                    </caption>
+                                    <tr>
+                                        <td>
+                                            <table class="information-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="bg-slate"><strong>Assignment Type</strong></th>
+                                                        <th class="bg-slate"><strong>Weight (%)</strong></th>
+                                                        <th class="bg-slate"><strong>Assignment</strong></th>
+                                                        <th class="bg-slate" *ngIf="toggleMenu?.assignedDate"><strong>Assignment<br/> Date</strong></th>
+                                                        <th class="bg-slate" *ngIf="toggleMenu?.dueDate"><strong>Due Date</strong></th>
+                                                        <th class="bg-slate"><strong>Points</strong></th>
+                                                        <th class="bg-slate"><strong>Grade</strong></th>
+                                                        <th class="bg-slate"><strong>Weighted<br/> Grade</strong></th>
+                                                        <th class="bg-slate"><strong>Comment</strong></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container *ngFor="let gradeDetails of courseSection?.gradeBookGradeListData">
+                                                    <tr *ngIf="!gradeDetails?.hide">
+                                                        <td>{{gradeDetails?.assignmentTypeTitle}}</td>
+                                                        <td>{{gradeDetails?.weight ? gradeDetails?.weight + '%' : ''}}</td>
+                                                        <td>{{gradeDetails?.assignmentTitle}}</td>
+                                                        <td *ngIf="toggleMenu?.assignedDate">{{gradeDetails?.assignmentDate | date : 'mediumDate'}}</td>
+                                                        <td *ngIf="toggleMenu?.dueDate">{{gradeDetails?.dueDate | date : 'mediumDate'}}</td>
+                                                        <td>{{gradeDetails?.allowedMarks ? gradeDetails?.allowedMarks : 0}}/{{gradeDetails?.assignmentPoint ? gradeDetails?.assignmentPoint : 0}}</td>
+                                                        <td>{{gradeDetails?.grade ? gradeDetails?.grade === '*' ? gradeDetails?.grade : gradeDetails?.grade + '%' : '0%'}}</td>
+                                                        <td>{{ gradeDetails?.wieghtedGrade ? gradeDetails?.wieghtedGrade + '%' : '0%'}}</td>
+                                                        <td>{{gradeDetails?.comment}}</td>
+                                                    </tr>
+                                                </ng-container>
+            
+            
+                                                    <tr *ngIf="courseSection?.gradeBookGradeListData?.length > 0">
+                                                        <td class="bg-slate" colspan="5"><strong>Total</strong></td>
+                                                        <td class="bg-slate" colspan="4"><strong><span class="m-r-10">{{courseSection?.total}}</span><span class="m-r-10">{{courseSection?.totalGrade ? courseSection?.totalGrade + '%' : '0%'}}</span><span class="m-r-10">{{courseSection?.letterGrade}}</span><span class="m-r-10">{{courseSection?.totalWeightedGrade ? courseSection?.totalWeightedGrade + '%' : '0%'}}</span><span class="m-r-10">{{courseSection?.letterWeightedGrade}}</span></strong></td>
+                                                    </tr>
+            
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    </table>
+                </div>
+            </div>
