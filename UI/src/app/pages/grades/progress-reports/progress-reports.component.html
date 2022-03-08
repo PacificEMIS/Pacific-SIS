@@ -1,0 +1,10 @@
+<vex-page-layout>
+    <vex-page-layout-header fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'Progress Reports' }}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+    <vex-page-layout-content class="-mt-6">
+        <router-outlet></router-outlet>
+    </vex-page-layout-content>
+</vex-page-layout>

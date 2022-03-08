@@ -202,6 +202,7 @@ export class AdvanceReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+      this.defaultValuesService.setReportCompoentTitle.next(translateService.instant("Advanced Report"));
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.selectedStudentListForTable = new MatTableDataSource([]);
 
@@ -442,6 +443,11 @@ export class AdvanceReportComponent implements OnInit {
     if(status === 'selectFields' && this.selectedStudentListForTable.data.length > 0 && this.selectedStudents.length > 0) {
       this.currentTab = status;
     } else if(status === 'generateReport' && this.selectedFieldsArray.length > 0) {
+      this.selectedFieldsArray.map((value,index)=>{
+        if(index>6){
+          value.visible=false
+        }
+      })
       this.currentTab = status;
     } else if(status === 'selectStudents') {
       this.currentTab = status;
@@ -454,16 +460,15 @@ export class AdvanceReportComponent implements OnInit {
       if(this.fieldsDetailsArray[key][0].checked) {
         this.fieldsDetailsArray[key].map((item, index)=>{
           if(index > 0) {
-            item.checked = true;
+            item.checked = false;
             if(this.selectedFieldsArray.findIndex(x=> x.property === item.property) === -1) {
-              this.selectedFieldsArray.push({property: item.property, visible: this.selectedFieldsArray.length < 7 ? true : false});
+              this.selectedFieldsArray.push({property: item.property, visible: true});
             }
           }
         })
       } else {
         this.fieldsDetailsArray[key].map((item, index)=>{
           if(index > 0) {
-            item.checked = false;
             const index = this.selectedFieldsArray.findIndex(x=> x.property === item.property);
           this.selectedFieldsArray.splice(index, 1);
           }
@@ -472,15 +477,19 @@ export class AdvanceReportComponent implements OnInit {
     } else {
     if(event.checked) {
       if(key) {
-      const [, ...dataWithoutfirstIndex] = this.fieldsDetailsArray[key];
-        if(dataWithoutfirstIndex.every(x=> x.checked)) {
-          this.fieldsDetailsArray[key][0].checked = true;
-          // this.selectedFieldsArray.push(this.fieldsDetailsArray[key][0].property);
+        if(this.fieldsDetailsArray[key][0].checked){
+          this.fieldsDetailsArray[key][0].checked=false;
+          this.fieldsDetailsArray[key].map((item, index) => {
+            if (index > 0) {
+              const index = this.selectedFieldsArray.findIndex(x => x.property === item.property);
+              this.selectedFieldsArray.splice(index, 1);
+            }
+          })
         }
-        this.selectedFieldsArray.push({property: type, visible: this.selectedFieldsArray.length < 7 ? true : false});
+        this.selectedFieldsArray.push({property: type, visible: true});
 
       } else {
-        this.selectedFieldsArray.push({property: type, visible: this.selectedFieldsArray.length < 7 ? true : false});
+        this.selectedFieldsArray.push({property: type, visible: true});
       }
     } else {
       if(key) {

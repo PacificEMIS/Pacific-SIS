@@ -335,7 +335,7 @@
     "IconType": "class",
     "SortOrder": "3",
     "Type": "link",
-    "Path": "/school/students",
+    "Path": "/school/students/student-generalinfo",
     "BadgeType": "",
     "BadgeValue": "",
     "Active": true

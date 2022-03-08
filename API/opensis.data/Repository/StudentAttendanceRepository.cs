@@ -1987,13 +1987,15 @@ namespace opensis.data.Repository
             courseSectionList._token = courseSectionForAttendanceViewModel._token;
             try
             {
-                var CourseSectionData = this.context?.CourseSection.Include(x => x.StudentCoursesectionSchedule).Include(x => x.Course).Include(x => x.SchoolCalendars).Where(x => x.TenantId == courseSectionForAttendanceViewModel.TenantId && x.SchoolId == courseSectionForAttendanceViewModel.SchoolId && x.AcademicYear == courseSectionForAttendanceViewModel.AcademicYear).ToList();
+                var CourseSectionData = this.context?.CourseSection.Include(x => x.StudentCoursesectionSchedule).Include(x => x.Course).Include(x => x.SchoolCalendars).Include(x => x.StaffCoursesectionSchedule).Where(x => x.TenantId == courseSectionForAttendanceViewModel.TenantId && x.SchoolId == courseSectionForAttendanceViewModel.SchoolId && x.AcademicYear == courseSectionForAttendanceViewModel.AcademicYear).ToList();
 
                 if (CourseSectionData?.Any() == true)
                 {
+                    CourseSectionData = CourseSectionData.Where(x => x.StaffCoursesectionSchedule.Count > 0).ToList();
                     foreach (var courseSection in CourseSectionData)
                     {
                         var studentExistInCS = courseSection.StudentCoursesectionSchedule.Where(x => x.IsDropped != true).ToList();
+
                         if (studentExistInCS.Count > 0)
                         {
                             CourseSectionViewList CourseSections = new CourseSectionViewList();
@@ -2038,10 +2040,19 @@ namespace opensis.data.Repository
                                             //courseFixedScheduleData.BlockPeriod.CourseVariableSchedule = null;
                                             //courseFixedScheduleData.BlockPeriod.CourseCalendarSchedule = null;
                                             //courseFixedScheduleData.BlockPeriod.CourseBlockSchedule = null;
-
                                         }
 
                                         CourseSections.courseFixedSchedule = courseFixedScheduleData;
+                                        CourseSections.MeetingDays = courseSection.StaffCoursesectionSchedule.Count > 0 ? courseSection.StaffCoursesectionSchedule.FirstOrDefault()?.MeetingDays : null;
+                                        CourseSections.CourseId = courseSection.CourseId;
+                                        CourseSections.CourseSectionId = courseSection.CourseSectionId;
+                                        CourseSections.CourseTitle = courseSection.Course.CourseTitle;
+                                        CourseSections.CourseSectionName = courseSection.CourseSectionName;
+                                        CourseSections.DurationStartDate = courseSection.DurationStartDate;
+                                        CourseSections.DurationEndDate = courseSection.DurationEndDate;
+                                        CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                        courseSectionList.courseSectionViewList.Add(CourseSections);
                                     }
                                 }
                             }
@@ -2057,6 +2068,16 @@ namespace opensis.data.Repository
                                     courseVariableScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseVariableSchedule = courseVariableScheduleData;
+                                    CourseSections.MeetingDays = courseSection.StaffCoursesectionSchedule.Count > 0 ? courseSection.StaffCoursesectionSchedule.FirstOrDefault()?.MeetingDays : null;
+                                    CourseSections.CourseId = courseSection.CourseId;
+                                    CourseSections.CourseSectionId = courseSection.CourseSectionId;
+                                    CourseSections.CourseTitle = courseSection.Course.CourseTitle;
+                                    CourseSections.CourseSectionName = courseSection.CourseSectionName;
+                                    CourseSections.DurationStartDate = courseSection.DurationStartDate;
+                                    CourseSections.DurationEndDate = courseSection.DurationEndDate;
+                                    CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
 
@@ -2071,6 +2092,16 @@ namespace opensis.data.Repository
                                     courseCalenderScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseCalendarSchedule = courseCalenderScheduleData;
+                                    CourseSections.MeetingDays = courseSection.StaffCoursesectionSchedule.Count > 0 ? courseSection.StaffCoursesectionSchedule.FirstOrDefault()?.MeetingDays : null;
+                                    CourseSections.CourseId = courseSection.CourseId;
+                                    CourseSections.CourseSectionId = courseSection.CourseSectionId;
+                                    CourseSections.CourseTitle = courseSection.Course.CourseTitle;
+                                    CourseSections.CourseSectionName = courseSection.CourseSectionName;
+                                    CourseSections.DurationStartDate = courseSection.DurationStartDate;
+                                    CourseSections.DurationEndDate = courseSection.DurationEndDate;
+                                    CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
 
@@ -2085,17 +2116,30 @@ namespace opensis.data.Repository
                                     courseBlockScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseBlockSchedule = courseBlockScheduleData;
+                                    CourseSections.MeetingDays = courseSection.StaffCoursesectionSchedule.Count > 0 ? courseSection.StaffCoursesectionSchedule.FirstOrDefault()?.MeetingDays : null;
+                                    CourseSections.CourseId = courseSection.CourseId;
+                                    CourseSections.CourseSectionId = courseSection.CourseSectionId;
+                                    CourseSections.CourseTitle = courseSection.Course.CourseTitle;
+                                    CourseSections.CourseSectionName = courseSection.CourseSectionName;
+                                    CourseSections.DurationStartDate = courseSection.DurationStartDate;
+                                    CourseSections.DurationEndDate = courseSection.DurationEndDate;
+                                    CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
+
+                                    //for bellSchedule list return.
+                                    var bellScheduleList = new List<BellSchedule>();
+                                    foreach (var block in courseBlockScheduleData)
+                                    {
+                                        var bellScheduleData = this.context?.BellSchedule.Where(c => c.SchoolId == courseSection.SchoolId && c.TenantId == courseSection.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= courseSection.DurationStartDate && c.BellScheduleDate <= courseSection.DurationEndDate).ToList();
+                                        if (bellScheduleData?.Any() == true)
+                                        {
+                                            bellScheduleList.AddRange(bellScheduleData);
+                                        }
+                                    }
+
+                                    CourseSections.bellScheduleList = bellScheduleList;
+                                    courseSectionList.courseSectionViewList.Add(CourseSections);
                                 }
                             }
-                            CourseSections.CourseId = courseSection.CourseId;
-                            CourseSections.CourseSectionId = courseSection.CourseSectionId;
-                            CourseSections.CourseTitle = courseSection.Course.CourseTitle;
-                            CourseSections.CourseSectionName = courseSection.CourseSectionName;
-                            CourseSections.DurationStartDate = courseSection.DurationStartDate;
-                            CourseSections.DurationEndDate = courseSection.DurationEndDate;
-                            CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
-
-                            courseSectionList.courseSectionViewList.Add(CourseSections);
                         }
                     }
                 }

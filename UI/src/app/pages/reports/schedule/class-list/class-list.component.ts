@@ -218,6 +218,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
        private reportService: ReportService,
        private excelService: ExcelService
     ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("Class Lists");
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

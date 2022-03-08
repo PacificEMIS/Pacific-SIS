@@ -49,6 +49,8 @@ import { Permissions } from "../../../models/roll-based-access.model";
 import { PageRolesPermission } from "../../../common/page-roles-permissions.service";
 import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { HistoricalMarkingPeriodService } from "src/app/services/historical-marking-period.service";
+import { HistoricalGradeAddViewModel } from "src/app/models/historical-marking-period.model";
 
 @Component({
   selector: "vex-transcripts",
@@ -99,7 +101,10 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   pdfGenerateLoader: boolean = false;
   permissions: Permissions;
   generatedTranscriptData;
-
+  historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
+  historicalGradeList;
+  selectedHistoricalGradeList=[];
+  historicalGradeError:boolean;
   constructor(
     public translateService: TranslateService,
     private gradeLevelService: GradeLevelService,
@@ -112,6 +117,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
+    private historicalMarkingPeriodService:HistoricalMarkingPeriodService
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
@@ -127,6 +133,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     this.callAllStudent();
     this.getAllGradeLevel();
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
+    this.getAllHistoricalGradeList()
   }
 
   get visibleColumns() {
@@ -170,6 +177,30 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
         this.callWithoutSearchParams()
       }
     })
+  }
+  getAllHistoricalGradeList() {
+    this.historicalGradeAddViewModel.schoolId=this.defaultValuesService.getSchoolID();
+    this.historicalGradeAddViewModel.historicalGradeList=[];
+    this.historicalMarkingPeriodService.getAllHistoricalGradeList(this.historicalGradeAddViewModel).subscribe((res:any) => {
+        if(res._failure){
+          this.commonService.checkTokenValidOrNot(res._message);
+              this.snackbar.open(res._message, '', {
+                duration: 10000
+            });
+          }
+          else {
+            this.historicalGradeList = res.gradeEquivalencies;
+          }
+      })
+  }
+  onHistoricalGradeLChange(event, equivalencyId) {
+    if (event.checked) {
+      this.selectedHistoricalGradeList.push(equivalencyId);
+    } else {
+      this.selectedHistoricalGradeList = this.selectedHistoricalGradeList.filter(item => item !== equivalencyId);
+    }
+    this.selectedHistoricalGradeList?.length > 0 ? this.historicalGradeError = false : this.historicalGradeError = true;
+
   }
 
   callWithSearchParams(term) {
@@ -438,6 +469,16 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     } else {
       this.gradeLevelError = false;
     }
+    if (!this.selectedHistoricalGradeList?.length) {
+      this.historicalGradeError = true;
+      const invalidGradeLevel: HTMLElement = this.el.nativeElement.querySelector(
+        '.custom-scroll'
+      );
+      invalidGradeLevel.scrollIntoView({ behavior: 'smooth',block: 'center' });
+      return;
+    } else {
+      this.historicalGradeError = false;
+    }
     if (!this.selectedStudents?.length) {
       this.snackbar.open('Select at least one student.', '', {
         duration: 3000
@@ -464,6 +505,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
 
   getTranscriptForStudents() {
     return new Promise((resolve, reject) => {
+      this.getStudentTranscriptModel.HistoricalGradeLavels=this.selectedHistoricalGradeList.toString()
       this.transcriptService.getTranscriptForStudents(this.getStudentTranscriptModel).subscribe(res => {
         if (res._failure) {
           this.commonService.checkTokenValidOrNot(res._message);
@@ -762,7 +804,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     border: 1px solid #000;
     border-radius: 3px;
     width: 120px;
-    height: 12  0px;
+    height: 120px;
   }
 
   .student-photo img {
@@ -776,8 +818,8 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   }
 
   .student-info-header .info-right td:last-child {
-      background-color: #040404;
-      color: #e2e2e2;
+    background-color: #040404;
+    color: #e2e2e2;
   }
 
   .logo img {

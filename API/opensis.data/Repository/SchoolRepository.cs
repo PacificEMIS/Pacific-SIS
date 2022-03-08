@@ -1223,7 +1223,34 @@ namespace opensis.data.Repository
                 {
                     var academicYear = Utility.GetCurrentAcademicYear(this.context!, copySchoolViewModel.TenantId, copySchoolViewModel.FromSchoolId);
 
-                    var copyFromSchool = this.context?.SchoolMaster.FirstOrDefault(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId);
+                    var copyFromSchool = this.context?.SchoolMaster.Where(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId).Select(e => new SchoolMaster
+                    {
+                        TenantId = e.TenantId,
+                        SchoolAltId = e.SchoolAltId,
+                        SchoolStateId = e.SchoolStateId,
+                        SchoolDistrictId = e.SchoolDistrictId,
+                        SchoolLevel = e.SchoolLevel,
+                        SchoolClassification = e.SchoolClassification,
+                        AlternateName = e.AlternateName,
+                        StreetAddress1 = e.StreetAddress1,
+                        StreetAddress2 = e.StreetAddress2,
+                        City = e.City,
+                        County = e.County,
+                        Division = e.Division,
+                        State = e.State,
+                        District = e.District,
+                        Zip = e.Zip,
+                        Country = e.Country,
+                        CurrentPeriodEnds = e.CurrentPeriodEnds,
+                        MaxApiChecks = e.MaxApiChecks,
+                        Features = e.Features,
+                        PlanId = e.PlanId,
+                        Longitude = e.Longitude,
+                        Latitude = e.Latitude,
+                        CreatedBy = e.CreatedBy,
+                        CreatedOn = DateTime.UtcNow
+                    }).FirstOrDefault();
+
                     string? schoolName = null;
 
                     if (copyFromSchool != null)
@@ -1248,7 +1275,7 @@ namespace opensis.data.Repository
 
                         copySchoolViewModel.schoolMaster.SchoolName = schoolName;
                         copySchoolViewModel.schoolMaster.SchoolGuid = GuidId;
-                        copySchoolViewModel.schoolMaster.SchoolInternalId = null;
+                        copySchoolViewModel.schoolMaster.SchoolInternalId = MasterSchoolId.ToString();
                         this.context?.SchoolMaster.Add(copySchoolViewModel.schoolMaster);
                         this.context?.SaveChanges();
 
@@ -1259,7 +1286,7 @@ namespace opensis.data.Repository
 
                         if (schoolDetailsData?.Any() == true)
                         {
-                            schoolDetailsData.ForEach(x => x.SchoolMaster = null);
+                            //schoolDetailsData.ForEach(x => x.SchoolMaster = null);
 
                             var SchoolDetails = new List<SchoolDetail>(){new SchoolDetail()
                             { TenantId =copySchoolViewModel.TenantId, SchoolId = MasterSchoolId, Id = (int)Ide, Affiliation = schoolDetailsData.FirstOrDefault()!.Affiliation,Associations =schoolDetailsData.FirstOrDefault()!.Associations,Locale =schoolDetailsData.FirstOrDefault()!.Locale, LowestGradeLevel = schoolDetailsData.FirstOrDefault()!.LowestGradeLevel, HighestGradeLevel = schoolDetailsData.FirstOrDefault()!.HighestGradeLevel,DateSchoolOpened =schoolDetailsData.FirstOrDefault()!.DateSchoolOpened,DateSchoolClosed =schoolDetailsData.FirstOrDefault()!.DateSchoolClosed, Status = schoolDetailsData.FirstOrDefault()!.Status, Internet = schoolDetailsData.FirstOrDefault()!.Internet, Gender =schoolDetailsData.FirstOrDefault()!.Gender,Electricity =schoolDetailsData.FirstOrDefault()!.Electricity,Telephone =schoolDetailsData.FirstOrDefault()!.Telephone,Fax =schoolDetailsData.FirstOrDefault()!.Fax,Website =schoolDetailsData.FirstOrDefault()!.Website,Email =schoolDetailsData.FirstOrDefault()!.Email,Twitter =schoolDetailsData.FirstOrDefault()!.Twitter,Facebook =schoolDetailsData.FirstOrDefault()!.Facebook,Instagram =schoolDetailsData.FirstOrDefault()!.Instagram,LinkedIn =schoolDetailsData.FirstOrDefault()!.LinkedIn,Youtube =schoolDetailsData.FirstOrDefault()!.Youtube,SchoolLogo =schoolDetailsData.FirstOrDefault()!.SchoolLogo,NameOfPrincipal = schoolDetailsData.FirstOrDefault()!.NameOfPrincipal,NameOfAssistantPrincipal = schoolDetailsData.FirstOrDefault()!.NameOfAssistantPrincipal,RunningWater =schoolDetailsData.FirstOrDefault()!.RunningWater,MainSourceOfDrinkingWater =schoolDetailsData.FirstOrDefault()!.MainSourceOfDrinkingWater,CurrentlyAvailable =schoolDetailsData.FirstOrDefault()!.CurrentlyAvailable,TotalFemaleToilets =schoolDetailsData.FirstOrDefault()!.TotalFemaleToilets,FemaleToiletType =schoolDetailsData.FirstOrDefault()!.FemaleToiletType,FemaleToiletAccessibility =schoolDetailsData.FirstOrDefault()!.FemaleToiletAccessibility,TotalFemaleToiletsUsable =schoolDetailsData.FirstOrDefault()!.TotalFemaleToiletsUsable,MaleToiletType =schoolDetailsData.FirstOrDefault()!.MaleToiletType,TotalMaleToilets =schoolDetailsData.FirstOrDefault()!.TotalMaleToilets,TotalMaleToiletsUsable =schoolDetailsData.FirstOrDefault()!.TotalMaleToiletsUsable,MaleToiletAccessibility =schoolDetailsData.FirstOrDefault()!.MaleToiletAccessibility,ComonToiletType =schoolDetailsData.FirstOrDefault()!.ComonToiletType,TotalCommonToilets =schoolDetailsData.FirstOrDefault()!.TotalCommonToilets,TotalCommonToiletsUsable =schoolDetailsData.FirstOrDefault()!.TotalCommonToiletsUsable,CommonToiletAccessibility =schoolDetailsData.FirstOrDefault()!.CommonToiletAccessibility,HandwashingAvailable =schoolDetailsData.FirstOrDefault()!.HandwashingAvailable,SoapAndWaterAvailable =schoolDetailsData.FirstOrDefault()!.SoapAndWaterAvailable,HygeneEducation =schoolDetailsData.FirstOrDefault()!.HygeneEducation,CreatedBy=schoolDetailsData.FirstOrDefault()!.CreatedBy, CreatedOn=DateTime.UtcNow }
@@ -1270,12 +1297,12 @@ namespace opensis.data.Repository
 
                         var membershipData = this.context?.Membership.Where(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId).ToList();
 
-                        if (membershipData?.Any()==true)
+                        if (membershipData?.Any() == true)
                         {
                             membershipData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                             this.context?.Membership.AddRange(membershipData);
                         }
-                
+
                         long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
 
                         var DpdownValuelist = new List<DpdownValuelist>() {
@@ -1365,10 +1392,10 @@ namespace opensis.data.Repository
                              new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=copySchoolViewModel.schoolMaster.CreatedBy, TenantId= copySchoolViewModel.schoolMaster.TenantId,SchoolId=copySchoolViewModel.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Multiple SelectBox",CreatedBy=copySchoolViewModel.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+65},
                              new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=copySchoolViewModel.schoolMaster.CreatedBy, TenantId= copySchoolViewModel.schoolMaster.TenantId,SchoolId=copySchoolViewModel.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Date",CreatedBy=copySchoolViewModel.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+66},
                              new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=copySchoolViewModel.schoolMaster.CreatedBy, TenantId= copySchoolViewModel.schoolMaster.TenantId,SchoolId=copySchoolViewModel.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Textarea",CreatedBy=copySchoolViewModel.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+67},
-                                                       
+
                         };
                         this.context?.DpdownValuelist.AddRange(DpdownValuelist);
-                        var dpdownValueIde = dpdownValueId+68;
+                        var dpdownValueIde = dpdownValueId + 68;
 
                         var FieldsCategory = new List<FieldsCategory>()
                         {
@@ -1464,18 +1491,18 @@ namespace opensis.data.Repository
                             }
 
                             var FieldsCategoryData = this.context?.FieldsCategory.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId && x.IsSystemCategory != true).ToList();
-                            if(FieldsCategoryData?.Any() == true)
+                            if (FieldsCategoryData?.Any() == true)
                             {
                                 FieldsCategoryData.ForEach(x => { x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId; x.CreatedBy = copySchoolViewModel.schoolMaster.CreatedBy; x.CreatedOn = DateTime.UtcNow; });
                                 this.context?.FieldsCategory.AddRange(FieldsCategoryData);
                             }
 
                             var customField = this.context?.CustomFields.Where(x => x.TenantId == copySchoolViewModel.schoolMaster.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId && x.IsSystemWideField == true && x.SystemField != true).ToList();
-                            if(customField?.Any() == true)
+                            if (customField?.Any() == true)
                             {
                                 customField.ForEach(x => { x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId; x.CreatedBy = copySchoolViewModel.schoolMaster.CreatedBy; x.CreatedOn = DateTime.UtcNow; });
                                 this.context?.CustomFields.AddRange(customField);
-                            }                         
+                            }
                         }
                         else
                         {
@@ -1835,7 +1862,7 @@ namespace opensis.data.Repository
 
                         if (copySchoolViewModel.Periods == true)
                         {
-                            var blockData = this.context?.Block.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId && x.BlockId!=1).ToList();
+                            var blockData = this.context?.Block.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId && x.BlockId != 1).ToList();
 
                             if (blockData?.Any() == true)
                             {
@@ -1932,7 +1959,7 @@ namespace opensis.data.Repository
                             var sectionData = this.context?.Sections.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId).ToList();
 
                             if (sectionData?.Any() == true)
-                            {          
+                            {
                                 sectionData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                                 this.context?.Sections.AddRange(sectionData);
                             }
@@ -1944,7 +1971,7 @@ namespace opensis.data.Repository
 
                             if (roomData?.Any() == true)
                             {
-                                roomData.ToList().ForEach(x =>x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
+                                roomData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                                 this.context?.Rooms.AddRange(roomData);
                             }
                         }
@@ -2228,22 +2255,22 @@ namespace opensis.data.Repository
                             var AttendanceCodeCategoriData = this.context?.AttendanceCodeCategories.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId).ToList();
 
                             if (AttendanceCodeCategoriData?.Any() == true)
-                            {                         
+                            {
                                 AttendanceCodeCategoriData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                                 this.context?.AttendanceCodeCategories.AddRange(AttendanceCodeCategoriData);
                             }
                             var attendanceCodeData = this.context?.AttendanceCode.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId).ToList();
 
                             if (attendanceCodeData?.Any() == true)
-                            {                              
+                            {
                                 attendanceCodeData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                                 this.context?.AttendanceCode.AddRange(attendanceCodeData);
                             }
-                        }                    
+                        }
 
                         if (copySchoolViewModel.ReportCardGrades == true)
                         {
-                            
+
                             var GradeScaleData = this.context?.GradeScale.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId).ToList();
 
                             if (GradeScaleData?.Any() == true)
@@ -2258,7 +2285,7 @@ namespace opensis.data.Repository
                             {
                                 GradeData.ToList().ForEach(x => x.SchoolId = copySchoolViewModel.schoolMaster.SchoolId);
                                 this.context?.Grade.AddRange(GradeData);
-                            } 
+                            }
                         }
 
                         if (copySchoolViewModel.ReportCardComments == true)
@@ -2282,7 +2309,7 @@ namespace opensis.data.Repository
                                 this.context?.GradeUsStandard.AddRange(standardGradesData);
                             }
                         }
-                      
+
                         if (copySchoolViewModel.EffortGrades == true)
                         {
                             var EffortGradeLibraryCategoryData = this.context?.EffortGradeLibraryCategory.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId).ToList();
@@ -2320,7 +2347,7 @@ namespace opensis.data.Repository
                                 this.context?.HonorRolls.AddRange(honorRollSetupData);
                             }
                         }
-                        
+
                         if (copySchoolViewModel.SchoolLevel == true)
                         {
 
@@ -2338,7 +2365,7 @@ namespace opensis.data.Repository
 
                             new DpdownValuelist() { UpdatedOn = DateTime.UtcNow, UpdatedBy = copySchoolViewModel.schoolMaster.CreatedBy, TenantId = copySchoolViewModel.schoolMaster.TenantId, SchoolId = copySchoolViewModel.schoolMaster.SchoolId, LovName = "School Level", LovColumnValue = copySchoolViewModel.schoolMaster.SchoolLevel!, CreatedBy = copySchoolViewModel.schoolMaster.CreatedBy, CreatedOn = DateTime.UtcNow, Id = (long)dpdownValueIde ++ }
                             };
-                             this.context?.DpdownValuelist.AddRange(DpdownValueList);
+                            this.context?.DpdownValuelist.AddRange(DpdownValueList);
                         }
 
                         if (copySchoolViewModel.SchoolClassification == true)

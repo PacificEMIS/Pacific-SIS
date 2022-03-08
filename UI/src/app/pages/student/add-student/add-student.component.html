@@ -60,6 +60,9 @@
                     </mat-expansion-panel-header>
                     <div>
                         <ul class="nav-sub-item">
+                            <li *ngIf="otherTabs?.progressReport">
+                                <a (click)="changeTempCategory('/school/students/student-progress-report')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-progress-report' ?'text-blue active' : ''">{{ 'progressReports' | translate }}</a>
+                            </li>
                             <li *ngIf="otherTabs?.reportCard">
                                 <a (click)="changeTempCategory('/school/students/student-report-card')" @fadeInRight [ngClass]="categoryPath === '/school/students/student-report-card' ?'text-blue active' : ''">{{ 'reportCard' | translate }}</a>
                             </li>

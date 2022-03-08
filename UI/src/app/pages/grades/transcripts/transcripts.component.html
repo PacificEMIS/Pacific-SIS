@@ -39,7 +39,19 @@
                                 <span>{{'pleaseAddGradeLevel'|translate}}</span>
                             </ng-container>
                         </div>
+                        <h4 class="text-green font-medium mb-2">{{ "historicalGradeLevels" | translate }}</h4>
+                        <div class="mb-4 custom-scroll">
+                            <ng-container *ngFor="let checkBox of historicalGradeList">
+                                <mat-checkbox color="primary" class="mr-6"
+                                    (change)="onHistoricalGradeLChange($event,checkBox.equivalencyId)">{{checkBox.gradeLevelEquivalency}}
+                                </mat-checkbox>
+                            </ng-container>
+                            <ng-container *ngIf="!getAllGradeLevels.tableGradelevelList?.length">
+                                <span>{{'pleaseAddGradeLevel'|translate}}</span>
+                            </ng-container>
+                        </div>
                         <mat-error *ngIf="gradeLevelError">{{'pleaseSelectAtLeastOneGradeLevel'|translate}}</mat-error>
+                        <mat-error *ngIf="historicalGradeError">{{'pleaseSelectAtLeastOneHistoricalGradeLevel'|translate}}</mat-error>
                     </div>
                     <div class="card mb-8">
                         <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row"
@@ -158,7 +170,7 @@
                         <mat-paginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
                             [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'>
                         </mat-paginator>
-                        <div class="text-right p-4" *ngIf="permissions?.edit">
+                        <div class="text-right p-4">
                             <button color="primary" mat-raised-button type="submit" (click)="generateTranscript()"
                                 [disabled]="pdfGenerateLoader">
                                 <mat-icon class="ml-2" *ngIf="pdfGenerateLoader">

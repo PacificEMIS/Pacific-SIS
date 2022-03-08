@@ -78,6 +78,7 @@ export class AverageDailyAttendanceComponent implements OnInit {
     private snackbar: MatSnackBar,
     public defaultValuesService: DefaultValuesService,
   ) {
+    this.defaultValuesService.setReportCompoentTitle.next("Average Daily Attendance");
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

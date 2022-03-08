@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 interface Attendance {
   date: string;
@@ -37,8 +38,10 @@ export class AverageAttendanceByDayComponent implements OnInit {
 
   constructor(public translateService: TranslateService,
     private paginatorObj: MatPaginatorIntl,
+    private defaultValuesService:DefaultValuesService
     ) { 
       paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+      this.defaultValuesService.setReportCompoentTitle.next("Average Attendance by Day");
     // translateService.use("en");
   }
 

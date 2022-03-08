@@ -104,6 +104,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     private studentReportService: StudentReportService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+    this.defaultValuesService.setReportCompoentTitle.next("Student Contact Info")
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.loaderService.isLoading.subscribe((val) => {
