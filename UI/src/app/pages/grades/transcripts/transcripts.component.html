@@ -240,7 +240,7 @@
                                     <div class="info-left float-left">
                                         <h2>{{transcript?.firstGivenName+" "+transcript?.lastFamilyName}}</h2>
                                         <p>{{transcript?.homeAddressLineOne ? transcript?.homeAddressLineOne : ''}}{{transcript?.homeAddressLineTwo ? ', '+transcript?.homeAddressLineTwo : ''}}{{transcript?.homeAddressCity ? ', '+transcript?.homeAddressCity : ''}}{{transcript?.homeAddressState ? ', '+transcript?.homeAddressState : ''}}{{transcript?.homeAddressZip ? ', '+transcript?.homeAddressZip : ''}}</p>
-                                        <p>Date of Birth : {{transcript?.dob}}</p>
+                                        <p>Date of Birth : {{transcript?.dob | date:'mediumDate'}}</p>
                                         <p>Student ID : {{transcript?.studentInternalId}}</p>
                                     </div>
                                 </td>
@@ -275,8 +275,8 @@
                                 </h2>
                                 <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
                             </caption>
-                            <div class="semester-subtable" *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
-                            <table>
+                            <div *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                            <table class="semester-subtable">
                                 <caption>
                                     <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
                                 </caption>
@@ -326,7 +326,7 @@
                                     <th>{{'Grade Letter'|translate}}</th>
                                     <th>{{'weightedGradePoints' |translate}}</th>
                                     <th>{{'unweightedGradePoints' |translate}}</th>
-                                    <th>Comments</th>
+                                    <th>{{'comments' |translate}}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -334,7 +334,7 @@
                                     <td>{{gradeDetails?.title}}</td>
                                     <td>{{gradeDetails?.weightedGpValue}}</td>
                                     <td>{{gradeDetails?.unweightedGpValue}}</td>
-                                    <td>{{gradeDetails?.comment}}</td>
+                                    <td><p class="word-break">{{gradeDetails?.comment}}</p></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -31,6 +31,7 @@ namespace opensis.report.report.data.Repository
             try
             {
                 var schoolList = this.context?.SchoolMaster.Where(x => x.TenantId == reportModel.TenantId && x.SchoolId == reportModel.SchoolId);
+                var countryLisy = this.context?.Country.ToList();
                 if (schoolList?.Any() == true)
                 {
                     reportList.schoolListForReport = schoolList.Select(x => new StaffSchoolReport()
@@ -128,6 +129,9 @@ namespace opensis.report.report.data.Repository
                         }).ToList();
                             staffReport.fieldsCategoryList = customFields;
                             staffReport.staffMaster = staff;
+                            staffReport.CountryOfBirth = staff.CountryOfBirth != null ? countryLisy.Where(x => x.Id == staff.CountryOfBirth).FirstOrDefault()?.Name : null;
+                            staffReport.HomeAddressCountry = staff.HomeAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == staff.HomeAddressCountry).FirstOrDefault()?.Name : null;
+                            staffReport.MailingAddressCountry = staff.MailingAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == staff.MailingAddressCountry).FirstOrDefault()?.Name : null;
                             staffListForReport.Add(staffReport);
                         }
                         schoolReport.staffListForReport = staffListForReport;

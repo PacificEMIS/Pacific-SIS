@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 export interface StudentListData {
   studentName: string;
@@ -36,8 +38,13 @@ export class ClassRankListComponent implements OnInit {
   displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone', 'gpa', 'unweightedGpa', 'weightedGpa', 'classRank'];
   studentList = studentListData;
 
-  constructor(public translateService: TranslateService) { 
-    translateService.use("en");
+  constructor(
+    public translateService: TranslateService,
+    private paginatorObj: MatPaginatorIntl,
+    private defaultValuesService:DefaultValuesService
+    ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("GPA / Class Rank List");
+    // translateService.use("en");
   }
 
 

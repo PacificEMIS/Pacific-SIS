@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { fadeInRight400ms } from '../../../../@vex/animations/fade-in-right.animation';
@@ -90,8 +90,10 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
     private commonService: CommonService,
     private loaderService: LoaderService,
     private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

@@ -14,6 +14,7 @@
     th {
       @apply px-6;
       @apply py-2;
+      white-space: nowrap;
     }
 
     th:first-child,
@@ -22,14 +23,18 @@
     }
 
     th:last-child,
-    td.mat-table-sticky:last-child {
+    td.mat-cell:last-child {
       border-left: 1px solid #e0e0e0;
     }
     th:last-child {
       width:24px;
     }
-    td.mat-table-sticky:last-child {
+    td.mat-cell:last-child {
       text-align: center;
+    }
+    td.mat-table-sticky {
+      box-shadow: inset 0 1px 0 var(--foreground-divider);
+      white-space: nowrap;
     }
   }
 }
@@ -37,33 +42,79 @@
   display: inline-block;
 
   input[type="radio"] {
-    display: none;
+    position: absolute;
+    opacity: 0;
     cursor: pointer;
 
-    &:checked + .checkmark-container.present {
-      background-color: #4db050;
-      border: 2px solid #4db050;
-      color: #fff;
+    &:checked + .checkmark-container {
+
+      &.present {
+        background: lighten(#4caf50, 45%);
+
+        &.active {
+          background-color: #4caf50;
+          color: #fff;
+        }
+      }
+
+      &.absent {
+        background: lighten(#db2827, 45%);
+
+        &.active {
+          background-color: #db2827;
+          color: #fff;
+        }
+      }
+
+      &.tardy {
+        background: lighten(#ff9800, 45%);
+
+        &.active {
+          background-color: #ff9800;
+          color: #fff;
+        }
+      }
+
+      .checkmark {
+        display: inline-block;
+        background-color: #fff;
+
+        &::after {
+          display: inline-block;
+        }
+      }
+
     }
-    &:checked + .checkmark-container.absent {
-      background-color: #db2827;
-      border: 2px solid #db2827;
-      color: #fff;
+    &:not(:checked)+.checkmark-container {
+
+      &.present {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid #4db050;
+          }
+        }
+      }
+
+      &.absent {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid rgb(219, 40, 39);
+          }
+        }
+      }
+
+      &.tardy {
+
+        &.active {
+          span.checkmark {
+            border: 2px solid #fd9800;
+          }
+        }
+      }
     }
-    &:checked + .checkmark-container.tardy {
-      background-color: #fd9800;
-      border: 2px solid #fd9800;
-      color: #fff;
-    }
-    &:checked + .checkmark-container .checkmark {
-      display: block;
-      background-color: #fff;
-      border: 2px solid #fff;
-    }
-    &:checked + .checkmark-container,
-    &:checked + .checkmark-container .checkmark:after {
-      display: inline-block;
-    }
+
   }
 
   .checkmark-container {
@@ -73,12 +124,11 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background: #fafafa;
+    background: transparent;
     padding: 6px 10px 6px 35px;
     margin-right: 10px;
     border-radius: 4px;
     font-size: 15px;
-    
 
     span.checkmark {
       position: absolute;
@@ -86,48 +136,67 @@
       left: 7px;
       height: 18px;
       width: 18px;
-      background-color: #eee;
+      background-color: #fff;
       border-radius: 50%;
 
       &:after {
         content: "";
         position: absolute;
         display: none;
-        top: 0px;
+        top: 2px;
         left: 4px;
-        width: 6px;
-        height: 12px;
-        border: solid #000000;
+        width: 5px;
+        height: 9px;
+        border: solid #5c5c5c;
         border-width: 0 2px 2px 0;
         transform: rotate(45deg);
       }
     }
-  }
 
-  .checkmark-container.present {
-    border: 2px solid #4db050;
-    color: #4db050;
+    &.present {
 
-    span.checkmark {
-      border: 2px solid #4db050;
+      span.checkmark {
+        border: 2px solid #4db050;
+      }
+
+      &.active {
+
+        span.checkmark {
+          border: 2px solid #fff;
+        }
+      }
     }
-  }
-  .checkmark-container.absent {
-    border: 2px solid #db2827;
-    color: #db2827;
+    
+    &.absent {
 
-    span.checkmark {
-      border: 2px solid #db2827;
-    }
-  }
-  .checkmark-container.tardy {
-    border: 2px solid #fd9800;
-    color: #fd9800;
+      span.checkmark {
+        border: 2px solid rgb(219, 40, 39);
+      }
 
-    span.checkmark {
-      border: 2px solid #fd9800;
+      &.active {
+
+        span.checkmark {
+          border: 2px solid #fff;
+        }
+      }
     }
+
+    &.tardy {
+
+      span.checkmark {
+        border: 2px solid #fd9800;
+      }
+
+      &.active {
+
+        span.checkmark {
+          border: 2px solid #fff;
+        }
+      }
+    }
+
   }
+  
 }
 ::ng-deep .mat-slide-toggle-bar .mat-slide-toggle-thumb-container {
   z-index: 0;

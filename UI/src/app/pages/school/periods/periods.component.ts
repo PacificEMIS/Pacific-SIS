@@ -81,14 +81,14 @@ export class PeriodsComponent implements OnInit {
   blockPeriodForHalfDayFullDayModel: BlockPeriodForHalfDayFullDayModel = new BlockPeriodForHalfDayFullDayModel();
 
   columns = [
-    { label: 'ID', property: 'periodId', type: 'number', visible: true },
-    { label: 'Title', property: 'periodTitle', type: 'text', visible: true },
-    { label: 'Short Name', property: 'periodShortName', type: 'text', visible: true },
-    { label: 'Start Time', property: 'periodStartTime', type: 'text', visible: true },
-    { label: 'End Time', property: 'periodEndTime', type: 'text', visible: true },
-    { label: 'Length', property: 'length', type: 'number', visible: true },
-    { label: 'Calculate Attendance', property: 'calculateAttendance', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'iD', property: 'periodId', type: 'number', visible: true },
+    { label: 'title', property: 'periodTitle', type: 'text', visible: true },
+    { label: 'shortName', property: 'periodShortName', type: 'text', visible: true },
+    { label: 'startTime', property: 'periodStartTime', type: 'text', visible: true },
+    { label: 'endTime', property: 'periodEndTime', type: 'text', visible: true },
+    { label: 'length', property: 'length', type: 'number', visible: true },
+    { label: 'calculateAttendance', property: 'calculateAttendance', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
   searchKey: string;
   permissions: Permissions;

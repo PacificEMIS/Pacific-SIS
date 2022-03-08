@@ -43,7 +43,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../services/loader.service';
 import { CommonService } from '../../../services/common.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import {LanguageAddModel} from '../../../models/language.model';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
 import { ExcelService } from '../../../services/excel.service';
@@ -67,13 +67,13 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class LanguageComponent implements OnInit, AfterViewInit {
   columns = [
-    { label: 'Title', property: 'locale', type: 'text', visible: true },
-    { label: 'Short Code', property: 'languageCode', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Create Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Update Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'title', property: 'locale', type: 'text', visible: true },
+    { label: 'shortCode', property: 'languageCode', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updateDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
   SchoolClassificationModelList;
@@ -113,8 +113,10 @@ export class LanguageComponent implements OnInit, AfterViewInit {
     private excelService:ExcelService,
     public commonfunction:SharedFunction,
     private pageRolePermissions: PageRolesPermission,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

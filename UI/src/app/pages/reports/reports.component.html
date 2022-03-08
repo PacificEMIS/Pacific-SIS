@@ -11,7 +11,7 @@
                     <div class="flex">
                         <mat-icon [icIcon]="submenu.icon" size="24px" class="mr-4"></mat-icon>
                         <h4 class="font-medium">
-                            <a>{{submenu.title}}</a>
+                            <a>{{submenu.title | translate}}</a>
                         </h4>
                     </div>
                     <ul class="md:grid md:grid-cols-2 lg:grid-cols-3 md:col-gap-8 mt-4">
@@ -22,7 +22,7 @@
                                         <mat-icon class="mr-2">navigate_next</mat-icon>
                                         <a *ngIf="option.rolePermission[0].canView"
                                             (click)="setPageId(option.title)" [routerLink]="(option.path)!==''? option.path : null"
-                                            class="text-primary">{{option.title}}
+                                            class="text-primary">{{option.title | translate}}
                                         </a>
                                     </div>
                                 </li>               

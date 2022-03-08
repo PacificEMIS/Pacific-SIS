@@ -18,3 +18,9 @@
       }
     }
   }
+
+  input, textarea {
+    &:focus-visible {
+        outline: none;
+    }
+  }

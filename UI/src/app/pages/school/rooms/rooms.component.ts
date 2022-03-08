@@ -92,11 +92,11 @@ export class RoomsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   columns = [
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Capacity', property: 'capacity', type: 'text', visible: true, cssClasses: ['font-medium'] },
-    { label: 'Sort Order', property: 'sortOrder', type: 'text', visible: true, cssClasses: ['text-secondary', 'font-medium'] },
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'capacity', property: 'capacity', type: 'text', visible: true, cssClasses: ['font-medium'] },
+    { label: 'sortOrder', property: 'sortOrder', type: 'text', visible: true, cssClasses: ['text-secondary', 'font-medium'] },
     { label: 'isActive', property: 'isActive', type: 'text', visible: true, cssClasses: ['text-secondary', 'font-medium'] },
-    { label: 'Action', property: 'action', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true },
   ];
 
   ngOnInit(): void {

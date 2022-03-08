@@ -216,7 +216,9 @@ export class LoginComponent implements OnInit {
             this.defaultValuesService.setSchoolID(data.schoolId.toString());
              }
              this.defaultValuesService.setToken(data._token)
-            this.defaultValuesService.setFirstGivenName(data.firstGivenName);
+            let middleName = data.middleName ? ' ' + data.middleName + ' ' : ' ';
+            let fullName = data.firstGivenName + middleName + data.lastFamilyName;
+            this.defaultValuesService.setFullUserName(fullName);
             this.defaultValuesService.setUserMembershipType(data.membershipType);
             this.defaultValuesService.setTenantIdVal(data.tenantId);
             this.defaultValuesService.setEmailId(data.email);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 export interface StudentListsData {
   studentCheck: boolean;
@@ -33,7 +34,12 @@ export class PrintSchedulesComponent implements OnInit {
   displayedColumns: string[] = ['studentCheck', 'studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone'];
   studentLists = studentListsData;
 
-  constructor(public translateService: TranslateService) { }
+  constructor(
+    public translateService: TranslateService,
+    private defaultValuesService:DefaultValuesService
+    ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("Print Schedules");
+    }
 
   ngOnInit(): void {
   }

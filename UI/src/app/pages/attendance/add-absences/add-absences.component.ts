@@ -36,7 +36,7 @@ import { AttendanceCodeService } from "../../../services/attendance-code.service
 import { AttendanceCodeCategoryModel, AttendanceCodeModel, GetAllAttendanceCategoriesListModel, GetAllAttendanceCodeModel } from "../../../models/attendance-code.model";
 import { StudentScheduleService } from "../../../services/student-schedule.service";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { ScheduleStudentForView, ScheduleStudentListViewModel } from "../../../models/student-schedule.model";
 import { SelectionModel } from "@angular/cdk/collections";
 import { MatCheckbox } from "@angular/material/checkbox";
@@ -51,6 +51,7 @@ import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.anim
 import { SharedFunction } from "../../shared/shared-function";
 import { StudentAttendanceModel } from "../../../models/take-attendance-list.model";
 import { DefaultValuesService } from "../../../common/default-values.service";
+import { scheduleType } from "../../../enums/takeAttendanceList.enum";
 
 
 export interface StudentList {
@@ -113,6 +114,18 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   toggleValues: any;
   attendance = [new attendance()];
   myHolidayDates = [];
+  calendarDays = [];
+  blockDays = [];
+  disabledDates;
+  weeks = [
+    { name: 'Sunday', id: 0 },
+    { name: 'Monday', id: 1 },
+    { name: 'Tuesday', id: 2 },
+    { name: 'Wednesday', id: 3 },
+    { name: 'Thursday', id: 4 },
+    { name: 'Friday', id: 5 },
+    { name: 'Saturday', id: 6 }
+  ];
 
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentAttendanceService: StudentAttendanceService,
@@ -122,7 +135,9 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private commonFunction: SharedFunction,
     private defaultValueService: DefaultValuesService,
-    private snackbar: MatSnackBar) {
+    private snackbar: MatSnackBar,
+    private paginatorObj: MatPaginatorIntl) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
@@ -342,12 +357,38 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   }
 
   selectCourseSection(event) {
+    this.model = [];
     this.myHolidayDates = event.holidayList.map(x => {
       return new Date(x);
     });
-    this.myHolidayFilter = (d: Date): boolean => {
-      const time = d.getTime();
-      return !this.myHolidayDates.find(x => x.getTime() == time);
+    this.disabledDates = event.attendanceDays;
+    if (event.scheduleType === scheduleType.calendarSchedule) {
+      this.calendarDays = event.attendanceDays.map(x => {
+        return new Date(x);
+      });
+    }
+    if (event.scheduleType === scheduleType.blockSchedule) {
+      this.blockDays = event.attendanceDays.map(x => {
+        return new Date(x);
+      });
+    }
+    if (event.scheduleType === scheduleType.FixedSchedule || event.scheduleType === scheduleType.variableSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        const day = (d || new Date()).getDay();
+        return (!this.myHolidayDates.find(x => x.getTime() == time) && this.disabledDates.includes(day));
+      }
+    } else if (event.scheduleType === scheduleType.calendarSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        return (this.calendarDays.find(x => x.getTime() == time) && !this.myHolidayDates.find(x => x.getTime() == time));
+      }
+    }
+    else if (event.scheduleType === scheduleType.blockSchedule) {
+      this.myHolidayFilter = (d: Date): boolean => {
+        const time = d.getTime();
+        return (this.blockDays.find(x => x.getTime() == time) && !this.myHolidayDates.find(x => x.getTime() == time));
+      }
     }
     this.parentData = { courseSectionId: event.courseSectionId };
     this.courseSectionData = event;
@@ -356,6 +397,35 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     this.durationStartDate = event.durationStartDate;
     this.disabledAdvancedSearch = true;
     this.getStudentListByCourseSection(event.courseSectionId);
+  }
+
+  findMeetingDays(courseSectionList) {
+    courseSectionList = courseSectionList.map((item) => {
+      if (item.scheduleType === scheduleType.FixedSchedule || item.scheduleType === scheduleType.variableSchedule) {
+        let days = item.meetingDays.split('|')
+        days.map((day) => {
+          for (let [i, weekDay] of this.weeks.entries()) {
+            if (weekDay.name == day.trim()) {
+              item.meetingDays = item.meetingDays + weekDay.id;
+              item.attendanceDays = item.attendanceDays ? item.attendanceDays + weekDay.id.toString() : weekDay.id.toString();
+              break;
+            }
+          }
+        })
+      } else if (item.scheduleType === scheduleType.calendarSchedule) {
+        item.attendanceDays = [];
+        item.courseCalendarSchedule.map((calendarSchedule) => {
+          item.attendanceDays.push(calendarSchedule.date);
+        });
+      } else if (item.scheduleType === scheduleType.blockSchedule) {
+        item.attendanceDays = [];
+        item.bellScheduleList.map((blockSchedule) => {
+          item.attendanceDays.push(blockSchedule.bellScheduleDate);
+        });
+      }
+      return item;
+    });
+    return courseSectionList;
   }
 
 
@@ -370,7 +440,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
           this.courseSectionViewList = [];
         }
       } else {
-        this.courseSectionViewList = res.courseSectionViewList;
+        this.courseSectionViewList = this.findMeetingDays(res.courseSectionViewList);
       }
     });
   }

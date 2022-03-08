@@ -2,26 +2,26 @@
   [routerLinkActiveOptions]="item.routerLinkActiveOptions || { exact: false }" [routerLink]="item.route"
   [state]="stateObj" class="item" fxLayout="row" matRipple routerLinkActive="active">
   <mat-icon *ngIf="level === 0" [icIcon]="item.icon" class="item-icon" fxFlex="none"></mat-icon>
-  <span class="item-label" fxFlex="auto">{{ item.label }}</span>
+  <span class="item-label" fxFlex="auto">{{ item.label | translate }}</span>
   <span *ngIf="item.badge" [ngClass]="[item.badge.bgClass, item.badge.textClass]" class="item-badge" fxFlex="none">{{
-    item.badge.value }}</span>
+    item.badge.value | translate }}</span>
 </a>
 
 <div (click)="item.route()" *ngIf="isLink(item) && isFunction(item.route)" class="item" fxLayout="row" matRipple
   routerLinkActive="active">
   <mat-icon *ngIf="level === 0" [icIcon]="item.icon" class="item-icon" fxFlex="none"></mat-icon>
-  <span class="item-label" fxFlex="auto">{{ item.label }}</span>
+  <span class="item-label" fxFlex="auto">{{ item.label | translate }}</span>
   <span *ngIf="item.badge" [ngClass]="[item.badge.bgClass, item.badge.textClass]" class="item-badge" fxFlex="none">{{
-    item.badge.value }}</span>
+    item.badge.value | translate }}</span>
 </div>
 
 <ng-container *ngIf="isDropdown(item)">
   <div (click)="toggleOpen()" [class.active]="isOpen || isActive" [class.open]="isOpen" class="item" fxLayout="row"
     matRipple>
     <mat-icon *ngIf="level === 0" [icIcon]="item.icon" class="item-icon" fxFlex="none"></mat-icon>
-    <span class="item-label" fxFlex="auto">{{ item.label }}</span>
+    <span class="item-label" fxFlex="auto">{{ item.label | translate }}</span>
     <span *ngIf="item.badge" [ngClass]="[item.badge.bgClass, item.badge.textClass]" class="item-badge" fxFlex="none">{{
-      item.badge.value }}</span>
+      item.badge.value | translate }}</span>
     <mat-icon [icIcon]="icKeyboardArrowRight" class="item-dropdown-icon" fxFlex="none"></mat-icon>
   </div>
   <div [@dropdown]="isOpen" class="item-dropdown">
@@ -31,6 +31,6 @@
 
 
 <ng-container *ngIf="isSubheading(item)">
-  <div class="subheading">{{ item.label }}</div>
+  <div class="subheading">{{ item.label | translate }}</div>
   <vex-sidenav-item *ngFor="let subItem of item.children" [item]="subItem" [level]="0"></vex-sidenav-item>
 </ng-container>

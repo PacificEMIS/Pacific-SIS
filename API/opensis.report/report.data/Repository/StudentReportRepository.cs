@@ -168,6 +168,7 @@ namespace opensis.report.report.data.Repository
             try
             {
                 var schoolList = this.context?.SchoolMaster.Where(x => x.TenantId == reportModel.TenantId && x.StudentMaster.Any(x => x.SchoolId == reportModel.SchoolId && reportModel.StudentGuids.Contains(x.StudentGuid) && x.TenantId == reportModel.TenantId));
+                var countryLisy = this.context?.Country.ToList();
                 if (schoolList?.Any() == true)
                 {
                     reportList.schoolListForReport = schoolList.Select(x => new SchoolReport()
@@ -261,6 +262,9 @@ namespace opensis.report.report.data.Repository
                         }).ToList();
                             studentReport.fieldsCategoryList = customFields;
                             studentReport.studentMaster = student;
+                            studentReport.CountryOfBirth = student.CountryOfBirth != null ? countryLisy.Where(x => x.Id == student.CountryOfBirth).FirstOrDefault()?.Name : null;
+                            studentReport.HomeAddressCountry = student.HomeAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == student.HomeAddressCountry).FirstOrDefault()?.Name : null;
+                            studentReport.MailingAddressCountry = student.MailingAddressCountry != null ? countryLisy.Where(x => x.Id.ToString() == student.MailingAddressCountry).FirstOrDefault()?.Name : null;
                             studentListForReport.Add(studentReport);
                         }
                         schoolReport.studentListForReport = studentListForReport;
@@ -602,9 +606,57 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
                                         courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
-                                        courseSection.TeacherFirstName = staffData.FirstGivenName;
-                                        courseSection.TeacherMiddleName = staffData.MiddleName;
-                                        courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
+
+                                        if (staffData != null)
+                                        {
+                                            courseSection.TeacherFirstName = staffData.FirstGivenName;
+                                            courseSection.TeacherMiddleName = staffData.MiddleName;
+                                            courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        }
+
+                                        if (courseSectionData.GradeScaleId != null)
+                                        {
+                                            var grades = this.context?.Grade.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.GradeScaleId == courseSectionData.GradeScaleId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.TenantId,
+                                                SchoolId = y.SchoolId,
+                                                GradeScaleId = y.GradeScaleId,
+                                                GradeId = y.GradeId,
+                                                Title = y.Title,
+                                                Breakoff = y.Breakoff,
+                                                WeightedGpValue = y.WeightedGpValue,
+                                                UnweightedGpValue = y.UnweightedGpValue,
+                                                Comment = y.Comment,
+                                            }).ToList();
+
+                                            if (grades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = grades;
+                                            }
+                                        }
+                                        else if (courseSectionData.GradeScaleId == null && courseSectionData.GradeScaleType == "Teacher_Scale")
+                                        {
+
+                                            var Teachergrades = this.context?.GradebookConfigurationGradescale.Join(this.context?.Grade, gcgs => gcgs.GradeId, g => g.GradeId, (gcgs, g) => new { gcgs, g }).Where(x => x.gcgs.TenantId == studentProgressReport.TenantId && x.gcgs.SchoolId == studentProgressReport.SchoolId && x.g.TenantId == studentProgressReport.TenantId && x.g.SchoolId == studentProgressReport.SchoolId && x.gcgs.CourseSectionId == courseSectionData.CourseSectionId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.gcgs.TenantId,
+                                                SchoolId = y.gcgs.SchoolId,
+                                                GradeScaleId = y.gcgs.GradeScaleId,
+                                                GradeId = y.gcgs.GradeId,
+                                                Title = y.g.Title,
+                                                Breakoff = y.gcgs.BreakoffPoints,
+                                                WeightedGpValue = y.g.WeightedGpValue,
+                                                UnweightedGpValue = y.g.UnweightedGpValue,
+                                                Comment = y.g.Comment,
+                                            }).ToList();
+
+                                            if (Teachergrades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = Teachergrades;
+                                            }
+                                        }
 
                                         //Fetch assignment type according to academic year and marking period
                                         var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
@@ -671,12 +723,12 @@ namespace opensis.report.report.data.Repository
                                                     gradeBookGradeData.AssignmentTitle = assignmentGrade.AssignmentTitle;
                                                     gradeBookGradeData.AssignmentDate = assignmentGrade.AssignmentDate;
                                                     gradeBookGradeData.DueDate = assignmentGrade.DueDate;
-                                                    gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : null + "/" + assignmentGrade.Points;
+                                                    gradeBookGradeData.Points = studentGrades != null ? studentGrades.AllowedMarks : "" + "/" + assignmentGrade.Points;
                                                     gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
                                                     gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
-                                                    gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage + "%" : null;
+                                                    gradeBookGradeData.Grade = studentGrades != null ? studentGrades.Percentage : null;
                                                     //gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) / Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) * 100, 2) + "%" : null;
-                                                    gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) * Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) / 100, 2) + "%" : null;
+                                                    gradeBookGradeData.WieghtedGrade = studentGrades != null ? Math.Round((Convert.ToDecimal(studentGrades.Percentage) * Convert.ToDecimal(assignmentGrade.AssignmentType.Weightage)) / 100, 2).ToString() : null;
                                                     gradeBookGradeData.Comment = studentGrades != null ? studentGrades.Comment : null;
 
                                                     GradeBookGradeListData.Add(gradeBookGradeData);
@@ -776,9 +828,57 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
                                         courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
-                                        courseSection.TeacherFirstName = staffData.FirstGivenName;
-                                        courseSection.TeacherMiddleName = staffData.MiddleName;
-                                        courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        courseSection.GradeScaleType = courseSectionData.GradeScaleType;
+                                        courseSection.GradeScaleId = courseSectionData.GradeScaleId;
+
+                                        if (staffData != null)
+                                        {
+                                            courseSection.TeacherFirstName = staffData.FirstGivenName;
+                                            courseSection.TeacherMiddleName = staffData.MiddleName;
+                                            courseSection.TeacherLastName = staffData.LastFamilyName;
+                                        }
+
+                                        if (courseSectionData.GradeScaleId != null)
+                                        {
+                                            var grades = this.context?.Grade.Where(x => x.SchoolId == studentProgressReport.SchoolId && x.TenantId == studentProgressReport.TenantId && x.GradeScaleId == courseSectionData.GradeScaleId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.TenantId,
+                                                SchoolId = y.SchoolId,
+                                                GradeScaleId = y.GradeScaleId,
+                                                GradeId = y.GradeId,
+                                                Title = y.Title,
+                                                Breakoff = y.Breakoff,
+                                                WeightedGpValue = y.WeightedGpValue,
+                                                UnweightedGpValue = y.UnweightedGpValue,
+                                                Comment = y.Comment,
+                                            }).ToList();
+
+                                            if (grades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = grades;
+                                            }
+                                        }
+                                        else if (courseSectionData.GradeScaleId == null && courseSectionData.GradeScaleType == "Teacher_Scale")
+                                        {
+
+                                            var Teachergrades = this.context?.GradebookConfigurationGradescale.Join(this.context?.Grade, gcgs => gcgs.GradeId, g => g.GradeId, (gcgs, g) => new { gcgs, g }).Where(x => x.gcgs.TenantId == studentProgressReport.TenantId && x.gcgs.SchoolId == studentProgressReport.SchoolId && x.g.TenantId == studentProgressReport.TenantId && x.g.SchoolId == studentProgressReport.SchoolId && x.gcgs.CourseSectionId == courseSectionData.CourseSectionId).Select(y => new GradeData
+                                            {
+                                                TenantId = y.gcgs.TenantId,
+                                                SchoolId = y.gcgs.SchoolId,
+                                                GradeScaleId = y.gcgs.GradeScaleId,
+                                                GradeId = y.gcgs.GradeId,
+                                                Title = y.g.Title,
+                                                Breakoff = y.gcgs.BreakoffPoints,
+                                                WeightedGpValue = y.g.WeightedGpValue,
+                                                UnweightedGpValue = y.g.UnweightedGpValue,
+                                                Comment = y.g.Comment,
+                                            }).ToList();
+
+                                            if (Teachergrades?.Any() == true)
+                                            {
+                                                courseSection.GradeData = Teachergrades;
+                                            }
+                                        }
 
                                         //Fetch assignment type according to academic year and marking period
                                         var assignmentTypeList = this.context?.AssignmentType.Include(b => b.Assignment).Where(c => c.SchoolId == studentProgressReport.SchoolId && c.TenantId == studentProgressReport.TenantId && c.CourseSectionId == courseSectionData.CourseSectionId && c.AcademicYear == studentProgressReport.AcademicYear).ToList();
@@ -857,8 +957,8 @@ namespace opensis.report.report.data.Repository
                                                         }
                                                         totalAvaragePoint = (totalAllowedMarks / totalAssignmentPoint) * 100;
 
-                                                        courseSection.Total = totalAvaragePoint + "%";
-                                                        courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "% " + studentGrades.RunningAvgGrade : null;
+                                                        courseSection.Total = Math.Round(Convert.ToDecimal(totalAvaragePoint), 2).ToString();
+                                                        courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "%" + studentGrades.RunningAvgGrade : null;
                                                     }
 
 

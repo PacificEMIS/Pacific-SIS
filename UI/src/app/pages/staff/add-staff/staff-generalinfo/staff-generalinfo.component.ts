@@ -825,10 +825,12 @@ export class StaffGeneralinfoComponent implements OnInit {
           });
         } else {
 
-          if(this.defaultValuesService.getUserId()==data.staffMaster.staffId.toString()){
-          this.defaultValuesService.sendName(data.staffMaster.firstGivenName);
-          this.defaultValuesService.setFirstGivenName(data.staffMaster.firstGivenName);
-          }
+         if (this.defaultValuesService.getUserId() == data.staffMaster.staffId.toString()) {
+           let middleName = data.staffMaster.middleName ? ' ' + data.staffMaster.middleName + ' ' : ' ';
+           let fullName = data.staffMaster.firstGivenName + middleName + data.staffMaster.lastFamilyName;
+           this.defaultValuesService.sendName(fullName);
+           this.defaultValuesService.setFullUserName(fullName);
+         }
 
           this.snackbar.open( data._message, '', {
             duration: 10000

@@ -38,7 +38,7 @@ import { stagger40ms } from '../../../../@vex/animations/stagger.animation';
 import { TranslateService } from '@ngx-translate/core';
 import { StaffService } from '../../../services/staff.service';
 import { LoaderService } from '../../../services/loader.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
@@ -83,14 +83,14 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
   staffList: MatTableDataSource<any>;
   showAdvanceSearchPanel: boolean = false;
   columns = [
-    { label: 'Name', property: 'lastFamilyName', type: 'text', visible: true },
-    { label: 'Staff ID', property: 'staffInternalId', type: 'text', visible: true },
-    { label: 'Profile', property: 'profile', type: 'text', visible: true },
-    { label: 'Job Title', property: 'jobTitle', type: 'text', visible: true },
-    { label: 'School Email', property: 'schoolEmail', type: 'text', visible: true },
-    { label: 'Mobile Phone', property: 'mobilePhone', type: 'number', visible: true },
-    { label: 'Status', property: 'status', type: 'text', visible: false },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
+    { label: 'staffID', property: 'staffInternalId', type: 'text', visible: true },
+    { label: 'profile', property: 'profile', type: 'text', visible: true },
+    { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
+    { label: 'schoolEmail', property: 'schoolEmail', type: 'text', visible: true },
+    { label: 'mobilePhone', property: 'mobilePhone', type: 'number', visible: true },
+    { label: 'status', property: 'status', type: 'text', visible: false },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
   icMoreVert = icMoreVert;
@@ -151,8 +151,10 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
               private dialog: MatDialog,
               private commonService:CommonService,
               private cryptoService: CryptoService,
-              public defaultValuesService: DefaultValuesService
+              public defaultValuesService: DefaultValuesService,
+              private paginatorObj: MatPaginatorIntl,
               ) {
+                paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
                 this.defaultValuesService.sendAllSchoolFlag(false);
                 this.defaultValuesService.sendIncludeInactiveFlag(false);
     this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;

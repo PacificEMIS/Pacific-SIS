@@ -64,12 +64,12 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class SchoolLevelComponent implements OnInit {
   columns = [
-    { label: 'Title', property: 'lovColumnValue', type: 'text', visible: true },
-    { label: 'Created By', property: 'createdBy', type: 'text', visible: true },
-    { label: 'Create Date', property: 'createdOn', type: 'text', visible: true },
-    { label: 'Updated By', property: 'updatedBy', type: 'text', visible: true },
-    { label: 'Update Date', property: 'updatedOn', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'title', property: 'lovColumnValue', type: 'text', visible: true },
+    { label: 'createdBy', property: 'createdBy', type: 'text', visible: true },
+    { label: 'createDate', property: 'createdOn', type: 'text', visible: true },
+    { label: 'updatedBy', property: 'updatedBy', type: 'text', visible: true },
+    { label: 'updateDate', property: 'updatedOn', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
 

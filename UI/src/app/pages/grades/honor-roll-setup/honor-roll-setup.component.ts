@@ -42,7 +42,7 @@ import { EditHonorRollComponent } from './edit-honor-roll/edit-honor-roll.compon
 import { GetHonorRollModel, HonorRollAddViewModel, HonorRollListModel } from '../../../models/grades.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmDialogComponent } from '../../shared-module/confirm-dialog/confirm-dialog.component';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -70,9 +70,9 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
   @ViewChild(MatSort) sort:MatSort;
   
   columns = [
-    { label: 'Honor Roll', property: 'honorRoll', type: 'text', visible: true },
-    { label: 'Break Off', property: 'breakoff', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'honorRoll', property: 'honorRoll', type: 'text', visible: true },
+    { label: 'breakOff', property: 'breakoff', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
 
   EffortGradeScaleModelList;
@@ -109,8 +109,10 @@ export class HonorRollSetupComponent implements OnInit,AfterViewInit {
     public translateService:TranslateService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
-    public defaultValuesService: DefaultValuesService
+    public defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
     ) {
+      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;

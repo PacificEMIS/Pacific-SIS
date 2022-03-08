@@ -77,10 +77,10 @@ export class EffortGradeScaleComponent implements OnInit,OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort
   columns = [
-    { label: 'Order', property: 'order', type: 'number', visible: true },
-    { label: 'Value', property: 'gradeScaleValue', type: 'text', visible: true },
-    { label: 'Comment', property: 'gradeScaleComment', type: 'text', visible: true },
-    { label: 'Actions', property: 'actions', type: 'text', visible: true }
+    { label: 'order', property: 'order', type: 'number', visible: true },
+    { label: 'value', property: 'gradeScaleValue', type: 'text', visible: true },
+    { label: 'comment', property: 'gradeScaleComment', type: 'text', visible: true },
+    { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
   effortGradeScaleModelList: MatTableDataSource<any>;
   loading: boolean;

@@ -73,11 +73,9 @@ export class SidenavComponent implements OnInit {
   }
 
   ngOnInit() {
-    if( this.defaultValuesService.getFirstGivenName()==null){
-      this.userName = this.defaultValuesService.getUserName();
-    }else{
-      this.userName = this.defaultValuesService.getFirstGivenName();
-    }
+
+    this.userName = this.defaultValuesService.getFullUserName();
+
     this.defaultValuesService.newSubject.subscribe(data=>{
       this.userName=data;
     })

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-attendance-chart',
@@ -8,7 +9,12 @@ import { Router } from '@angular/router';
 })
 export class AttendanceChartComponent implements OnInit {
 
-  constructor(private router: Router,) { }
+  constructor(
+    private router: Router,
+    private defaultValuesService:DefaultValuesService
+    ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("Attendance Chart");
+    }
 
   ngOnInit(): void {
   }

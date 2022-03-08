@@ -347,17 +347,41 @@ namespace opensis.data.Repository
             HistoricalGradeAddViewModel historicalGradeListModel = new HistoricalGradeAddViewModel();
             try
             {
-                var historicalGradeDataList = this.context?.HistoricalGrade.Include(x => x.HistoricalCreditTransfer).Where(x => x.TenantId == historicalGradeList.TenantId && x.StudentId == historicalGradeList.StudentId && x.SchoolId == historicalGradeList.SchoolId).ToList();
-
-                if (historicalGradeDataList?.Any() == true)
+                if (historicalGradeList.StudentId != null && historicalGradeList.StudentId > 0)
                 {
-                    historicalGradeListModel.HistoricalGradeList = historicalGradeDataList;
-                    historicalGradeListModel._failure = false;
+                    var historicalGradeDataList = this.context?.HistoricalGrade.Include(x => x.HistoricalCreditTransfer).Where(x => x.TenantId == historicalGradeList.TenantId && x.StudentId == historicalGradeList.StudentId && x.SchoolId == historicalGradeList.SchoolId).ToList();
+
+                    if (historicalGradeDataList?.Any() == true)
+                    {
+                        historicalGradeListModel.HistoricalGradeList = historicalGradeDataList;
+                        historicalGradeListModel._failure = false;
+                    }
+                    else
+                    {
+                        historicalGradeListModel._failure = true;
+                        historicalGradeListModel._message = NORECORDFOUND;
+                    }
                 }
                 else
                 {
-                    historicalGradeListModel._failure = true;
-                    historicalGradeListModel._message = NORECORDFOUND;
+                    //this blok for only transcript screen
+
+                    var historicalGrade = this.context?.HistoricalGrade.Where(x => x.TenantId == historicalGradeList.TenantId && x.SchoolId == historicalGradeList.SchoolId).Select(s => s.EquivalencyId).Distinct().ToList();
+
+                    if (historicalGrade?.Count > 0)
+                    {
+                        var gradeEquivalencyData = this.context?.GradeEquivalency.Where(x => historicalGrade.Contains(x.EquivalencyId)).ToList();
+                        if (gradeEquivalencyData?.Any() == true)
+                        {
+                            historicalGradeListModel.gradeEquivalencies = gradeEquivalencyData;
+                            historicalGradeListModel._failure = false;
+                        }
+                    }
+                    else
+                    {
+                        historicalGradeListModel._failure = true;
+                        historicalGradeListModel._message = NORECORDFOUND;
+                    }
                 }
             }
             catch (Exception es)

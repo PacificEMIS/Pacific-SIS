@@ -71,9 +71,9 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 })
 export class EffortGradeLibraryComponent implements OnInit {
   columns = [
-    { label: 'Order', property: 'order', type: 'number', visible: true },
-    { label: 'Title', property: 'effortItemTitle', type: 'text', visible: true },
-    { label: 'Action', property: 'action', type: 'text', visible: true }
+    { label: 'order', property: 'order', type: 'number', visible: true },
+    { label: 'title', property: 'effortItemTitle', type: 'text', visible: true },
+    { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 
   PeriodsModelList;

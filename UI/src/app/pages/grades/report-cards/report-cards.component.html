@@ -88,9 +88,6 @@
                                         <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                                             <mat-icon>search</mat-icon>
                                         </button>
-                                    <button class="ml-4" fxFlex="none" fxHide.gt-xs mat-icon-button type="button">
-                                        <mat-icon [icIcon]="icSearch"></mat-icon>
-                                    </button>
                                     <a class="lg:w-full text-primary cursor-pointer ml-3"
                                         (click)="showAdvanceSearchPanel = true;">
                                         <mat-icon aria-hidden="false" class="mr-0 lg:mr-2 align-middle">tune</mat-icon>
@@ -167,7 +164,7 @@
                         <mat-paginator [length]="totalCount" [class.hide]="totalCount==0" [pageSize]="pageSize"
                             [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'>
                         </mat-paginator>
-                        <div class="text-right p-4" *ngIf="permissions?.edit">
+                        <div class="text-right p-4">
                             <button color="primary" mat-raised-button type="submit" (click)="generateReportCard()">
                                 {{ 'generateReportCardForSelectedStudents' | translate }}
                             </button>
@@ -199,7 +196,7 @@
                 <vex-search-student (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams"
                     [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)"
                     [incomingToggleValues]="toggleValues" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
-                    (searchValue)="getSearchInput($event)"></vex-search-student>
+                    (searchValue)="getSearchInput($event)" (teacherFilterSearchValue)="getTeacherSearchInput($event)"></vex-search-student>
             </div>
             <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>
@@ -268,7 +265,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Course</th>
+                                <th>{{'course' | translate}}</th>
                                     <th *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">{{markingPeriodDetails?.markingPeriodShortName}}</th>
                             </tr>
                         </thead>
@@ -496,10 +493,80 @@
                                                 <caption>
                                                     <h2><b>{{'behaviorLegend'|translate}}</b></h2>
                                                 </caption>
-                                                <tbody>
-                                                    <tr *ngFor="let gradeDetails of grade?.gradeList">
-                                                        <td>{{gradeDetails?.title}}</td>
-                                                        <td>{{gradeDetails?.comment}}</td>
+                                                <tbody *ngIf="addReportCardPdf?.templateType === 'chuuk'">
+                                                    <tr>
+                                                        <td><b>A</b></td>
+                                                        <td>{{'superior' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>B</b></td>
+                                                        <td>{{'aboveAverage' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>C</b></td>
+                                                        <td>{{'average' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>D</b></td>
+                                                        <td>{{'belowAverage' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>F</b></td>
+                                                        <td>{{'failure' | translate}}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody *ngIf="addReportCardPdf?.templateType === 'kosrae'">
+                                                    <tr>
+                                                        <td><b>E</b></td>
+                                                        <td>{{'excellent' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>S</b></td>
+                                                        <td>{{'satisfactory' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>U</b></td>
+                                                        <td>{{'unsatisfactory' | translate}}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody *ngIf="addReportCardPdf?.templateType === 'pohnpei'">
+                                                    <tr>
+                                                        <td><b>1</b></td>
+                                                        <td>Ansou Koroas</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>2</b></td>
+                                                        <td>Kalapw</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>3</b></td>
+                                                        <td>Sohte Kalapw</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>4</b></td>
+                                                        <td>Sohte Kin</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody *ngIf="addReportCardPdf?.templateType === 'yap'">
+                                                    <tr>
+                                                        <td><b>5</b></td>
+                                                        <td>{{'excellent' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>4</b></td>
+                                                        <td>{{'good' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>3</b></td>
+                                                        <td>{{'average' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>2</b></td>
+                                                        <td>{{'fair' | translate}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><b>1</b></td>
+                                                        <td>{{'unsatisfactory' | translate}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

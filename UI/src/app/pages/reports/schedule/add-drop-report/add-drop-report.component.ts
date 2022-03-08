@@ -93,6 +93,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
     private excelService: ExcelService,
     private markingPeriodService: MarkingPeriodService
   ) {
+    this.defaultValuesService.setReportCompoentTitle.next("Add / Drop Report");
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
