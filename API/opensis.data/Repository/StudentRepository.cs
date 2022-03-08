@@ -3666,7 +3666,12 @@ namespace opensis.data.Repository
                     if (transcriptViewModel.GradeLagend == true)
                     {
                         //this block for grade details
-                        gradeDataList = this.context?.Grade.Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
+                        var gradeScaleData = this.context?.GradeScale.Include(x => x.Grade).Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId && x.AcademicYear == transcriptViewModel.AcademicYear && x.UseAsStandardGradeScale != true);
+
+                        if (gradeScaleData?.Any() == true)
+                        {
+                            gradeDataList = gradeScaleData.SelectMany(x => x.Grade).Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
+                        }
                     }
 
                     var schoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).FirstOrDefault(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId);
@@ -3714,6 +3719,7 @@ namespace opensis.data.Repository
                             studentsDetailsForTranscript.FirstGivenName = studentMasterData.FirstGivenName;
                             studentsDetailsForTranscript.MiddleName = studentMasterData.MiddleName;
                             studentsDetailsForTranscript.LastFamilyName = studentMasterData.LastFamilyName;
+                            studentsDetailsForTranscript.Dob = studentMasterData.Dob;
                             studentsDetailsForTranscript.StudentPhoto = transcriptViewModel.StudentPhoto == true ? studentMasterData.StudentPhoto : null;
                             studentsDetailsForTranscript.HomeAddressLineOne = studentMasterData.HomeAddressLineOne;
                             studentsDetailsForTranscript.HomeAddressLineTwo = studentMasterData.HomeAddressLineTwo;
@@ -4086,6 +4092,11 @@ namespace opensis.data.Repository
                                                     }
                                                     gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
                                                 }
+
+                                                totalCreditEarned += creditEarned;
+                                                totalCreditAttempeted += creditAttemped;
+                                                cumulativeGPValue += gPAValue;
+                                                cumulativeCreditHours += creditAttemped;
                                                 studentsDetailsForTranscript.gradeLevelDetailsForTranscripts.Add(gradeLevelDetailsForTranscript);
                                             }
                                         }
