@@ -37,7 +37,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
@@ -100,8 +100,10 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     private defaultValuesService: DefaultValuesService,
     private loaderService: LoaderService,
     private studentReportService: StudentReportService,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });

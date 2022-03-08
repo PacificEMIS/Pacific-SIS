@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 
 @Component({
@@ -9,7 +10,10 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class GradeBreakdownComponent implements OnInit {
 
-  constructor(public translateService: TranslateService) { 
+  constructor(public translateService: TranslateService,
+    private defaultValuesService:DefaultValuesService
+    ) { 
+      this.defaultValuesService.setReportCompoentTitle.next("Grade BreakDown");
     // translateService.use("en");
   }
 

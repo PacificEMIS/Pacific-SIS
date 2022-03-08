@@ -37,7 +37,7 @@ import { StudentAttendanceService } from "../../../services/student-attendance.s
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SharedFunction } from "../../shared/shared-function";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginator } from "@angular/material/paginator";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -100,8 +100,9 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     private excelService: ExcelService,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
-
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

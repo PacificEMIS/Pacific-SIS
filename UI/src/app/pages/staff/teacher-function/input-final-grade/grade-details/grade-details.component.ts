@@ -112,6 +112,7 @@ export class GradeDetailsComponent implements OnInit {
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();
   selectedMarkingPeriod;
+  creditHours;
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -368,7 +369,7 @@ export class GradeDetailsComponent implements OnInit {
   }
 
   selectMarkingPeriod(data) {
-    this.addUpdateStudentFinalGradeModel.creditHours = data.creditHours;
+    this.creditHours = data.creditHours;
   }
 
   inActiveStudent(value) {
@@ -586,6 +587,7 @@ if(courseSection) {
   submitFinalGrade() {
     // this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
     delete this.addUpdateStudentFinalGradeModel.academicYear;
+    this.addUpdateStudentFinalGradeModel.creditHours = this.creditHours;
     this.finalGradeService.addUpdateStudentFinalGrade(this.addUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){

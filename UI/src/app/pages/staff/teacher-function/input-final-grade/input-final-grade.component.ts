@@ -26,7 +26,7 @@ All rights reserved.
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
@@ -84,8 +84,10 @@ export class InputFinalGradeComponent implements OnInit {
     private staffService: StaffService,
     private finalGradeService: FinalGradeService,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.subscribe((val) => {

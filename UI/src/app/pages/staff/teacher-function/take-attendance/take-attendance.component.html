@@ -19,17 +19,17 @@
                     </div>
                     <hr class="-mx-6 block md:hidden"/>
                     <div class="pt-3">
-                        <a class="cursor-pointer inline-block align-middle" (click)="exportStaffListToExcel()" matTooltip="Export to Excel">
+                        <a class="cursor-pointer inline-block align-middle" (click)="exportStaffListToExcel()" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 inline-block align-middle"
-                            fxFlex="none" mat-icon-button matTooltip="Filter Columns" type="button">
+                            fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon>filter_list</mat-icon>
                         </button>
                         <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">
                             <button (click)="toggleColumnVisibility(column, $event)" *ngFor="let column of columns"
                                 class="checkbox-item mat-menu-item">
                                 <mat-checkbox (click)="$event.stopPropagation()" [(ngModel)]="column.visible" color="primary">
-                                    {{column.label}}
+                                    {{column.label | translate}}
                                 </mat-checkbox>
                             </button>
                         </mat-menu>

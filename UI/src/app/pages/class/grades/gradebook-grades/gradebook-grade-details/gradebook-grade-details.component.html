@@ -20,18 +20,33 @@
             </tr>
             <tr *ngFor="let assignment of grade?.assignmentViewModelList">
                 <td><p class="pl-4">{{assignment?.assignmentTitle}}</p></td>
-                <td>{{assignment?.allowedMarks ? assignment?.allowedMarks : 0}}/{{assignment?.points}}</td>
+                <td>
+                    <ng-container *ngIf="assignment?.enableComment && defaultValuesService.checkAcademicYear()">
+                        <div class="flex">
+                            <input class="p-1 border border-gray-light rounded w-12 mr-2" [(ngModel)]="assignment.allowedMarks">
+                            <span class="mt-1">/{{assignment.points}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!assignment?.enableComment">
+                        {{assignment?.allowedMarks ? assignment?.allowedMarks : 0}}/{{assignment?.points}}
+                    </ng-container>
+                </td>
                 <td>{{assignment?.percentage ? assignment?.percentage + '%' : ''}} {{assignment?.letterGrade ? '[ ' + assignment?.letterGrade + ' ]' : ''}}</td>
                 <td>
                     <ng-container *ngIf="assignment?.enableComment && defaultValuesService.checkAcademicYear()">
-                        <input [(ngModel)]="assignment.comment" matInput>
+                        <textarea class="p-1 border border-gray-light rounded w-full" [(ngModel)]="assignment.comment"></textarea>
                     </ng-container>
 
                     <ng-container *ngIf="!assignment?.enableComment">
                     {{assignment?.comment}}
                     </ng-container>
                 </td>
-                <td class="cursor-pointer" *ngIf="!assignment?.enableComment && defaultValuesService.checkAcademicYear()" (click)="assignment.enableComment = true;" ><mat-icon [icIcon]="icEdiit"></mat-icon></td>
+                <td>
+                    <div class="cursor-pointer" *ngIf="!assignment?.enableComment && defaultValuesService.checkAcademicYear()"
+                        (click)="assignment.enableComment = true;">
+                        <mat-icon [icIcon]="icEdiit"></mat-icon>
+                    </div>
+                </td>
             </tr>
         </ng-container>
         </tbody>

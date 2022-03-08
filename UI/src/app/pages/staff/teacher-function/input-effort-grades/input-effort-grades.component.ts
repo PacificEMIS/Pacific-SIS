@@ -33,7 +33,7 @@ import { Router } from '@angular/router';
 import { TakeAttendanceComponent } from '../take-attendance/take-attendance.component';
 import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
 import { CryptoService } from 'src/app/services/Crypto.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { GetAllStaffModel, StaffMasterModel } from 'src/app/models/staff.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
@@ -87,8 +87,10 @@ export class InputEffortGradesComponent implements OnInit, AfterViewInit {
     private finalGradeService: FinalGradeService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.getAllStaff.filterParams = null;
     this.loaderService.isLoading.subscribe((val) => {

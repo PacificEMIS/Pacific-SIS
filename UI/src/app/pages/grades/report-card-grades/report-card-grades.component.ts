@@ -66,12 +66,12 @@ export class ReportCardGradesComponent implements OnInit, OnDestroy {
 
   @Input()
   columns = [
-    { label: 'Order', property: 'id', type: 'number', visible: true },
-    { label: 'Title', property: 'title', type: 'text', visible: true },
-    { label: 'Breakoff', property: 'breakoff', type: 'text', visible: true },
-    { label: 'Weighted GP Value', property: 'weightedGpValue', type: 'text', visible: true },
-    { label: 'unweighted GP Value', property: 'unweightedGpValue', type: 'text', visible: true },
-    { label: 'Comment', property: 'comment', type: 'text', visible: false },
+    { label: 'order', property: 'id', type: 'number', visible: true },
+    { label: 'title', property: 'title', type: 'text', visible: true },
+    { label: 'breakoff', property: 'breakoff', type: 'text', visible: true },
+    { label: 'weightedGPValue', property: 'weightedGpValue', type: 'text', visible: true },
+    { label: 'unweightedGPValue', property: 'unweightedGpValue', type: 'text', visible: true },
+    { label: 'comment', property: 'comment', type: 'text', visible: false },
     { label: 'action', property: 'action', type: 'text', visible: true }
   ];
 

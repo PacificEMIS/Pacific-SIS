@@ -36,7 +36,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, NgForm } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { EnrollmentCodeListView } from '../../../models/enrollment-code.model';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { LoaderService } from '../../../services/loader.service';
@@ -104,15 +104,15 @@ export class StudentReEnrollComponent implements OnInit {
   @ViewChild('masterCheckBox') private masterCheckBox: MatCheckbox;
   permissions: Permissions;
   columns = [
-    { label: 'Student Check', property: 'studentCheck', type: 'text', visible: true },
-    { label: 'Name', property: 'studentName', type: 'text', visible: true },
-    { label: 'Student ID', property: 'studentId', type: 'text', visible: true },
-    { label: 'LastGrade Level', property: 'lastGradeLevel', type: 'text', visible: true },
-    { label: 'Mobile Phone', property: 'mobilePhone', type: 'text', visible: true },
-    { label: 'Personal Email', property: 'personalEmail', type: 'text', visible: true },
-    { label: 'Enrollment Date', property: 'enrollmentDate', type: 'text', visible: true },
-    { label: 'Exit Date', property: 'exitDate', type: 'text', visible: true },
-    { label: 'Exit Code', property: 'exitCode', type: 'text', visible: true }
+    { label: 'studentCheck', property: 'studentCheck', type: 'text', visible: true },
+    { label: 'name', property: 'studentName', type: 'text', visible: true },
+    { label: 'studentID', property: 'studentId', type: 'text', visible: true },
+    { label: 'lastGradeLevel', property: 'lastGradeLevel', type: 'text', visible: true },
+    { label: 'mobilePhone', property: 'mobilePhone', type: 'text', visible: true },
+    { label: 'personalEmail', property: 'personalEmail', type: 'text', visible: true },
+    { label: 'enrollmentDate', property: 'enrollmentDate', type: 'text', visible: true },
+    { label: 'exitDate', property: 'exitDate', type: 'text', visible: true },
+    { label: 'exitCode', property: 'exitCode', type: 'text', visible: true }
   ];
 
   constructor(public translateService: TranslateService, private router: Router,
@@ -127,7 +127,9 @@ export class StudentReEnrollComponent implements OnInit {
     private commonService: CommonService,
     private rollBasedAccessService: RollBasedAccessService,
     private imageCropperService: ImageCropperService,
+    private paginatorObj: MatPaginatorIntl,
   ) {
+    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;

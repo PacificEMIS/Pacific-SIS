@@ -80,6 +80,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
   halfDayMinutes: number=0;
   attendanceCode = AttendanceCodeEnum;
   permissions: Permissions;
+  membershipType;
   constructor(
     public translateService: TranslateService,
     private studentScheduledService: StudentScheduleService,
@@ -94,6 +95,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     // translateService.use("en");
     this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
     this.renderAttendanceWeekCalendar();
+    this.membershipType = this.defaultService.getUserMembershipType();
   }
 
   ngOnInit(): void {
