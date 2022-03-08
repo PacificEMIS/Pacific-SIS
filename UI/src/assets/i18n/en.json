@@ -1732,5 +1732,7 @@
     "breakOff":"Break Off",
     "updatedDate":"Updated Date",
     "createdDate":"Created Date",
-    "parentName":"Parent Name"
+    "parentName":"Parent Name",
+    "Advanced Report":"Advanced Report",
+    "Print Student Info":"Print Student Info"
 }
