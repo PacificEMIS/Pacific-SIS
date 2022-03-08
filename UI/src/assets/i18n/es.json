@@ -1732,5 +1732,6 @@
     "createdDate":"Fecha de creación",
     "parentName":"Nombre del padre",
     "Advanced Report":"Informe de avance",
-    "Print Student Info":"Imprimir información del estudiante"
+    "Print Student Info":"Imprimir información del estudiante",
+    "showProgressReport": "Mostrar informe de progreso"
 }

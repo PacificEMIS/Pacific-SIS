@@ -1733,5 +1733,6 @@
     "createdDate":"Created Date",
     "parentName":"Parent Name",
     "Advanced Report":"Advanced Report",
-    "Print Student Info":"Print Student Info"
+    "Print Student Info":"Print Student Info",
+    "showProgressReport": "Show Progress Report"
 }
