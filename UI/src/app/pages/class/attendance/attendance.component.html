@@ -97,8 +97,11 @@
                     </table>
                 </div>
             </div>
-            <div class="text-right p-4" *ngIf="!isSubmitButtonDisabled">
-                <button color="primary" (click)="addUpdateStudentAttendance()" mat-flat-button type="submit" *ngIf="defaultValuesService.checkAcademicYear()">{{ actionButtonTitle |translate }}</button>
+            <div *ngIf="allStudentList.length!==getTheIndexNumbersForDroppedStudentForCourseSection.length">
+                <div class="text-right p-4" *ngIf="!isSubmitButtonDisabled">
+                    <button color="primary" (click)="addUpdateStudentAttendance()" mat-flat-button type="submit"
+                        *ngIf="defaultValuesService.checkAcademicYear()">{{ actionButtonTitle |translate }}</button>
+                </div>
             </div>
         </div>
         <div class="p-10" *ngIf="isDisabledForAttendance">

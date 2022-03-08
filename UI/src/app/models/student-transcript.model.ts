@@ -32,6 +32,7 @@ export class GetStudentTranscriptModel extends CommonField {
   gradeLagend: boolean;
   gradeLavels: string;
   academicYear: number;
+  HistoricalGradeLavels : string;
   studentsDetailsForTranscripts: studentsDetailsForTranscriptsModel[];
 
   constructor() {
