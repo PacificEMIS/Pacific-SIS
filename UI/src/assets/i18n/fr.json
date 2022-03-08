@@ -1750,5 +1750,8 @@
     "anomalousGrade": "Note anormale",
     "assignmentOn":"Affectation activée",
     "historicalGradeLevels":"Niveaux de qualité historique",
-    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Veuillez sélectionner au moins un niveau historique."
+    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Veuillez sélectionner au moins un niveau historique.",
+    "Advanced Report":"Rapport préalable",
+    "Print Student Info":"Imprimer les informations sur l'étudiant",
+    "showProgressReport": "Afficher le rapport de progression"
 }

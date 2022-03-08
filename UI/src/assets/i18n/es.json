@@ -1750,5 +1750,8 @@
     "anomalousGrade": "Grado anómalo",
     "assignmentOn":"Asignación activada",
     "historicalGradeLevels":"Niveles históricos de grado",
-    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Por favor, seleccione al menos un nivel de grado histórico."
+    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Por favor, seleccione al menos un nivel de grado histórico.",
+    "Advanced Report":"Informe de avance",
+    "Print Student Info":"Imprimir información del estudiante",
+    "showProgressReport": "Mostrar informe de progreso"
 }

@@ -1751,6 +1751,8 @@
     "anomalousGrade": "Anomalous Grade",
     "assignmentOn":"Assignment On",
     "historicalGradeLevels":"Historical Grade Levels",
-    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Please select at least one historical grade level."
-
+    "pleaseSelectAtLeastOneHistoricalGradeLevel": "Please select at least one historical grade level.",
+    "Advanced Report":"Advanced Report",
+    "Print Student Info":"Print Student Info",
+    "showProgressReport": "Show Progress Report"
 }

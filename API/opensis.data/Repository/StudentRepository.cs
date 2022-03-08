@@ -4092,6 +4092,11 @@ namespace opensis.data.Repository
                                                     }
                                                     gradeLevelDetailsForTranscript.markingPeriodDetailsForTranscripts.Add(markingPeriodDetailsForTranscript);
                                                 }
+
+                                                totalCreditEarned += creditEarned;
+                                                totalCreditAttempeted += creditAttemped;
+                                                cumulativeGPValue += gPAValue;
+                                                cumulativeCreditHours += creditAttemped;
                                                 studentsDetailsForTranscript.gradeLevelDetailsForTranscripts.Add(gradeLevelDetailsForTranscript);
                                             }
                                         }
