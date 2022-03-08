@@ -5143,8 +5143,9 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("hist_marking_period_id");
 
-                    b.Property<decimal?>("AcademicYear")
-                        .HasColumnType("decimal(4,0)")
+                    b.Property<string>("AcademicYear")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("academic_year");
 
                     b.Property<string>("CreatedBy")

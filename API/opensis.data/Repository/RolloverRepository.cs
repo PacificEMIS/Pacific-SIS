@@ -464,7 +464,7 @@ namespace opensis.data.Repository
                             }
 
                             //Insert HistoricalMarkingPeriod
-                            var historicalMarkingPeriodList = this.context?.HistoricalMarkingPeriod.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.AcademicYear == sessionCalendar!.AcademicYear).ToList();
+                            var historicalMarkingPeriodList = this.context?.HistoricalMarkingPeriod.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).ToList();
 
                             if (historicalMarkingPeriodList?.Any() == true)
                             {
@@ -492,7 +492,7 @@ namespace opensis.data.Repository
                                     historicalMarkingPeriod.DoesExam = historicalMarkingPeriodListData.DoesExam;
                                     historicalMarkingPeriod.DoesComments = historicalMarkingPeriodListData.DoesComments;
                                     historicalMarkingPeriod.RolloverId = rolloverId;
-                                    historicalMarkingPeriod.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    historicalMarkingPeriod.AcademicYear = historicalMarkingPeriodListData.AcademicYear;
                                     historicalMarkingPeriod.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     historicalMarkingPeriod.CreatedOn = DateTime.UtcNow;
 
