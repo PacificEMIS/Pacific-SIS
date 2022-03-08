@@ -80,7 +80,7 @@
                     </ng-container>
                     <ng-container *ngIf="teacherSchedule.staffEmail">
                         <span class="dot-separator"></span>
-                        <span><a href="" class="hover:text-blue">{{teacherSchedule.staffEmail}}</a></span>
+                        <span><a [href]="teacherSchedule?.staffEmail ?  'mailto:' + teacherSchedule?.staffEmail : ''" class="hover:text-blue">{{teacherSchedule?.staffEmail}}</a></span>
                     </ng-container>
 
                 </div>
@@ -155,7 +155,7 @@
                                         <ng-container *ngIf="courseSection.scheduledStaff==null">-</ng-container>
                                     </td>
                                     <td>
-                                        <a href="javascript:void();" class="text-xl"
+                                        <a href="javascript:void();" class="text-xl" matTooltip="View Details"
                                             (click)="viewCorrespondingSchedule(courseSection)"><i
                                                 class="icon icon-info2"></i></a>
                                     </td>
