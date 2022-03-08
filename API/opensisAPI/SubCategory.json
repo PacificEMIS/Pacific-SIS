@@ -224,7 +224,7 @@
     "EnableEdit": true,
     "EnableDelete": true,
     "IsActive": true,
-    "SortOrder": "10",
+    "SortOrder": "11",
     "IsSystem": true
   },
   {
@@ -1022,7 +1022,7 @@
     "EnableEdit": true,
     "EnableDelete": true,
     "IsActive": true,
-    "SortOrder": "11",
+    "SortOrder": "12",
     "IsSystem": true
   },
   {
@@ -1536,6 +1536,25 @@
     "EnableDelete": true,
     "IsActive": true,
     "SortOrder": "5",
+    "IsSystem": true
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "5",
+    "PermissionSubcategoryId": "84",
+    "PermissionGroupId": "3",
+    "PermissionSubcategoryName": "Progress Reports",
+    "ShortCode": "pr",
+    "Path": "/school/students/student-progress-report",
+    "Title": "Progress Reports",
+    "Type": "",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "10",
     "IsSystem": true
   }
 ]
