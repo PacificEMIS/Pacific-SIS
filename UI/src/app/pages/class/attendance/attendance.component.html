@@ -11,8 +11,8 @@
                 </div>
             </div>
             <div>
-                <div class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
-                <!-- <div class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div> -->
+                <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                    <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
             </div> 
             <div *ngIf="isAnyMissingAttendance" class="mt-4 md:pt-0 md:text-right text-warn rounded text-sm font-medium cursor-pointer pl-4"
                 (click)="changeComponent('missingAttendanceList',null)">
@@ -24,7 +24,7 @@
         <div *ngIf="!isDisabledForAttendance">
             <div class="overflow-x-auto overflow-y-hidden">
                 <div class="table-sticky mat-elevation-z8 shadow-none">
-                    <table mat-table [dataSource]="scheduleStudentListViewModel.scheduleStudentForView">
+                    <table mat-table [dataSource]="allStudentList">
                         <ng-container matColumnDef="students" sticky>
                             <th style="width: 220px;" mat-header-cell *matHeaderCellDef>{{ "students" | translate }}</th>
                             <td style="width: 220px;" mat-cell *matCellDef="let element" class="bg-white">
@@ -53,12 +53,12 @@
                                 </div>
                             </th>
                             <td mat-cell *matCellDef="let element;let i = index">
-                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList">
+                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList;let innerIndex=index;">
                                     <label for="{{attendance.title+''+i}}">
                                         <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [ngModel]="addUpdateStudentAttendanceModel.studentAttendance[i]?.attendanceCode" 
                                         (ngModelChange)="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode = $event" 
                                         value="{{attendance.attendanceCode1}}"  [disabled]="element.isDropped || !defaultValuesService.checkAcademicYear()" *ngIf="element.isDropped === null">
-                                        <div class="inline-block checkmark-container" [ngClass]="attendance.stateCode=='Present'?'present':attendance.stateCode=='Absent'?'absent':attendance.stateCode=='Half Day'?'tardy':'present'">
+                                        <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
                                             <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
                                         </div>
                                     </label>
@@ -97,7 +97,7 @@
                     </table>
                 </div>
             </div>
-            <div class="text-right p-4" *ngIf="!isSubmitButtonDisabled">
+            <div class="text-right p-4" *ngIf="!isSubmitButtonDisabled || allStudentList.length===getTheIndexNumbersForDroppedStudentForCourseSection.length">
                 <button color="primary" (click)="addUpdateStudentAttendance()" mat-flat-button type="submit" *ngIf="defaultValuesService.checkAcademicYear()">{{ actionButtonTitle |translate }}</button>
             </div>
         </div>
