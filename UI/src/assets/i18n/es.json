@@ -1744,14 +1744,14 @@
     "unsatisfactory": "Insatisfactorio",
     "good": "Bueno",
     "fair": "Justo",
-    "WeAreBuildingSomeAwesomeFeaturesForThisSectionItsNotReadyYet": "Estamos creando algunas características increíbles para esta sección. Aún no está listo.",
-    "anomalousGrades": "Grados anómalos",
+    "WeAreBuildingSomeAwesomeFeaturesForThisSectionItsNotReadyYet": "Estamos creando algunas características increíbles para esta sección. Aún no está listo.",    "anomalousGrades": "Grados anómalos",
     "showInactiveStudents": "Mostrar estudiantes inactivos",
     "anomalousGrade": "Grado anómalo",
     "assignmentOn":"Asignación activada",
     "historicalGradeLevels":"Niveles históricos de grado",
     "pleaseSelectAtLeastOneHistoricalGradeLevel": "Por favor, seleccione al menos un nivel de grado histórico.",
+    "totalWeightedGrade" : "Calificación ponderada total",
     "Advanced Report":"Informe de avance",
     "Print Student Info":"Imprimir información del estudiante",
-    "showProgressReport": "Mostrar informe de progreso"
+    "pleaseAddHistoricalGradeLevel":"Por favor agregue nivel histórico de grado."
 }
