@@ -1752,7 +1752,8 @@
     "assignmentOn":"Assignment On",
     "historicalGradeLevels":"Historical Grade Levels",
     "pleaseSelectAtLeastOneHistoricalGradeLevel": "Please select at least one historical grade level.",
+    "totalWeightedGrade" : "Total Weighted Grade",
     "Advanced Report":"Advanced Report",
     "Print Student Info":"Print Student Info",
-    "showProgressReport": "Show Progress Report"
+    "pleaseAddHistoricalGradeLevel":"Please add historical grade level."
 }
