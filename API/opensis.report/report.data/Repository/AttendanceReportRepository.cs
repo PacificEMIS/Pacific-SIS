@@ -322,7 +322,7 @@ namespace opensis.report.report.data.Repository
 
                     foreach (var gradeLevel in gradeLevels)
                     {
-                        AverageDailyAttendanceReport averageDailyAttendanceReport = new AverageDailyAttendanceReport();                       
+                        AverageDailyAttendanceReport averageDailyAttendanceReport = new AverageDailyAttendanceReport();
                         List<int> courseSectionIds = new List<int>();
                         int? present = 0;
                         int? absent = 0;
@@ -342,7 +342,7 @@ namespace opensis.report.report.data.Repository
                             foreach (var csId in courseSectionIds)
                             {
                                 var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
-                                
+
                                 if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                 {
                                     List<DateTime> dateList = new List<DateTime>();
@@ -420,9 +420,9 @@ namespace opensis.report.report.data.Repository
                             }
 
                             studentInfo = gradeLevelWiseAttendance.Select(s => new { s.sa.SchoolId, s.sa.StudentId }).Distinct().ToList().Count;
-                            present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "present").Count();
-                            absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "absent").Count();
-                            other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() != "present" && x.sa.AttendanceCodeNavigation.Title.ToLower() != "absent").Count();
+                            present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "present").Count();
+                            absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
+                            other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "present" && x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "absent").Count();
                         }
                         averageDailyAttendanceReport.GradeLevel = gradeLevel;
                         averageDailyAttendanceReport.Students = studentInfo;
@@ -522,46 +522,48 @@ namespace opensis.report.report.data.Repository
                                 if (gradeLevelWiseAttendance.Any())
                                 {
                                     studentInfo = gradeLevelWiseAttendance.Select(s => new { s.sa.SchoolId, s.sa.StudentId }).Distinct().ToList().Count;
-                                    present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "present").Count();
-                                    absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "absent").Count();
-                                    other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() != "present" && x.sa.AttendanceCodeNavigation.Title.ToLower() != "absent").Count();
+                                    present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "present").Count();
+                                    absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
+                                    other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "present" && x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "absent").Count();
 
                                     var courseSectionIds = gradeLevelWiseAttendance.Select(s => s.acsv.CourseSectionId).Distinct().ToList();
 
                                     foreach (var csId in courseSectionIds)
                                     {
                                         var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
-
-                                        if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
+                                        if (courseSectionData?.Any() == true)
                                         {
-                                            totalPeriods += 1;
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
-                                        {
-                                            var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.DayOfWeek.ToString())).ToList();
-                                            if (courseVariableScheduleData.Any())
+                                            if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                             {
-                                                totalPeriods += courseVariableScheduleData.Count;
+                                                totalPeriods += 1;
                                             }
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
-                                        {
-                                            var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
-
-                                            if (calendarDateList.Count > 0)
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
                                             {
-                                                totalPeriods += calendarDateList.Count;
-                                            }
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
-                                        {
-                                            var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
-                                            foreach (var blockId in blockIds)
-                                            {
-                                                var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
-                                                if (bellScheduleList.Count > 0)
+                                                var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.DayOfWeek.ToString())).ToList();
+                                                if (courseVariableScheduleData.Any())
                                                 {
-                                                    totalPeriods += bellScheduleList.Count;
+                                                    totalPeriods += courseVariableScheduleData.Count;
+                                                }
+                                            }
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
+                                            {
+                                                var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
+
+                                                if (calendarDateList.Count > 0)
+                                                {
+                                                    totalPeriods += calendarDateList.Count;
+                                                }
+                                            }
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
+                                            {
+                                                var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
+                                                foreach (var blockId in blockIds)
+                                                {
+                                                    var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
+                                                    if (bellScheduleList.Count > 0)
+                                                    {
+                                                        totalPeriods += bellScheduleList.Count;
+                                                    }
                                                 }
                                             }
                                         }
@@ -615,36 +617,39 @@ namespace opensis.report.report.data.Repository
                                 {
                                     var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
 
-                                    if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
+                                    if (courseSectionData?.Any() == true)
                                     {
-                                        totalPeriods += 1;
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
-                                    {
-                                        var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(missingDate.DayOfWeek.ToString())).ToList();
-                                        if (courseVariableScheduleData.Any())
+                                        if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                         {
-                                            totalPeriods += courseVariableScheduleData.Count;
+                                            totalPeriods += 1;
                                         }
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
-                                    {
-                                        var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == missingDate.Date).ToList();
-
-                                        if (calendarDateList.Count > 0)
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
                                         {
-                                            totalPeriods += calendarDateList.Count;
-                                        }
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
-                                    {
-                                        var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
-                                        foreach (var blockId in blockIds)
-                                        {
-                                            var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == missingDate.Date).ToList();
-                                            if (bellScheduleList.Count > 0)
+                                            var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(missingDate.DayOfWeek.ToString())).ToList();
+                                            if (courseVariableScheduleData.Any())
                                             {
-                                                totalPeriods += bellScheduleList.Count;
+                                                totalPeriods += courseVariableScheduleData.Count;
+                                            }
+                                        }
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
+                                        {
+                                            var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == missingDate.Date).ToList();
+
+                                            if (calendarDateList.Count > 0)
+                                            {
+                                                totalPeriods += calendarDateList.Count;
+                                            }
+                                        }
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
+                                        {
+                                            var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
+                                            foreach (var blockId in blockIds)
+                                            {
+                                                var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == missingDate.Date).ToList();
+                                                if (bellScheduleList.Count > 0)
+                                                {
+                                                    totalPeriods += bellScheduleList.Count;
+                                                }
                                             }
                                         }
                                     }
