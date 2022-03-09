@@ -466,6 +466,9 @@ export class AdvanceReportComponent implements OnInit {
               item.staffMaster.joiningDate=this.commonFunction.formatDateSaveWithoutTime(item.staffMaster.joiningDate);
             if(item.staffMaster.endDate)
               item.staffMaster.endDate=this.commonFunction.formatDateSaveWithoutTime(item.staffMaster.endDate);
+              item.staffMaster.countryOfBirth=item.countryOfBirth;
+              item.staffMaster.homeAddressCountry=item.homeAddressCountry;
+              item.staffMaster.mailingAddressCountry=item.mailingAddressCountry;
             const middleName = item.staffMaster.middleName ? ' ' + item.staffMaster?.middleName + ' ' : ' ';
             item.staffMaster.fullName = item.staffMaster.firstGivenName + middleName + item.staffMaster?.lastFamilyName;
             item.fieldsCategoryList[0].customFields.map((subItem) => {
