@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace opensis.report.report.data.ViewModels.GradeReport
 {
     public class HonorRollListForReport : CommonFields
@@ -15,10 +14,7 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public HonorRollListForReport()
         {
             HonorRollViewForReports = new List<HonorRollViewForReport>();
-
         }
-
-
         public List<HonorRollViewForReport>? HonorRollViewForReports { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
@@ -29,13 +25,9 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
         public int? MarkingPeriodId { get; set; }
-
     }
-
     public class HonorRollViewForReport
     {
-
-
         public string? RollNumber { get; set; }
         public string? Salutation { get; set; }
         public string? FirstGivenName { get; set; }
@@ -65,11 +57,8 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public string? MaritalStatus { get; set; }
         public int? CountryOfBirth { get; set; }
         public int? Nationality { get; set; }
-
         public int? FirstLanguageId { get; set; }
-
         public int? SecondLanguageId { get; set; }
-
         public int? ThirdLanguageId { get; set; }
         public int? SectionId { get; set; }
         public DateTime? EstimatedGradDate { get; set; }
@@ -96,7 +85,6 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public string? BusNo { get; set; }
         public bool? SchoolBusPickUp { get; set; }
         public bool? SchoolBusDropOff { get; set; }
-
         public bool? MailingAddressSameToHome { get; set; }
         public string? MailingAddressLineOne { get; set; }
         public string? MailingAddressLineTwo { get; set; }
@@ -118,8 +106,5 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public string? DentistPhone { get; set; }
         public string? Vision { get; set; }
         public string? VisionPhone { get; set; }
-
-
-
     }
 }
