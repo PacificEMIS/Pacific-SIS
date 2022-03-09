@@ -22,6 +22,7 @@ namespace opensis.report.report.data.Repository
             this.context = dbContextFactory.Create();
         }
 
+
         /// <summary>
         /// Get Grade Report
         /// </summary>
@@ -49,6 +50,7 @@ namespace opensis.report.report.data.Repository
                     if (quartersData != null)
                     {
                         studentDatas = this.context?.StudentFinalGrade.Include(s => s.StudentMaster).ThenInclude(e => e.StudentEnrollment).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.QtrMarkingPeriodId == quartersData.MarkingPeriodId && e.IsExamGrade != true).ToList();
+
                     }
                     else
                     {
