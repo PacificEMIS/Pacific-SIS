@@ -99,6 +99,7 @@ export class StudentUpdateCommentsModel {
         studentId: number;
         tenantId: string;
         schoolId: number;
+        commentTimestamp: string;
     constructor(){
     }
 }

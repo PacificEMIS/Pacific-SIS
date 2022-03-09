@@ -16,6 +16,7 @@ import {
   StudentUpdateAttendanceCommentsModel} from '../models/take-attendance-list.model';
 
   import {StudentRecalculateDailyAttendance} from '../models/student-recalculate-attendance.model'
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,8 @@ export class StudentAttendanceService {
   apiUrl: string = environment.apiURL;
   userName = this.defaultValuesService.getUserName();
   staffDetails: StaffDetailsModel = new StaffDetailsModel();
+  private isSubmit = new Subject();
+  isSubmitted = this.isSubmit.asObservable();
   httpOptions: { headers: any; };
 
   constructor(
@@ -144,5 +147,9 @@ export class StudentAttendanceService {
     let apiurl = this.apiUrl + obj._tenantName + "/StudentAttendance/getStudentAttendanceHistory";
     return this.http.post<StudentAttendanceHistoryViewModel>(apiurl, obj, this.httpOptions);
    }
+
+  afterSubmit(data: boolean) {
+    this.isSubmit.next(data);
+  }
   
 }

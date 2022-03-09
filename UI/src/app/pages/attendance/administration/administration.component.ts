@@ -91,6 +91,7 @@ export class AdministrationComponent implements OnInit {
   searchCount: number;
   disabledAdvancedSearch: boolean = false;
   attendanceNoToString:string;
+  cloneStudentlist;
   constructor(
     private dialog: MatDialog,
     private loaderService: LoaderService,
@@ -113,6 +114,9 @@ export class AdministrationComponent implements OnInit {
   ngOnInit(): void {
     this.searchCtrl = new FormControl();
     this.getAllAttendanceCode();
+    this.studentAttendanceService.isSubmitted.subscribe(res => {
+      if (res) this.getAllStudentAttendanceListForAdministration();
+    });
   }
 
   // Get All Attendance Codes
@@ -152,6 +156,10 @@ export class AdministrationComponent implements OnInit {
     this.dialog.open(StudentAttendanceCommentComponent, {
       width: '900px',
       data: element
+    }).afterClosed().subscribe(res => {
+      if (res === true || res === null || res === undefined) {
+        this.allStudentlist = new MatTableDataSource(JSON.parse(this.cloneStudentlist));
+      }
     })
   }
 
@@ -222,7 +230,8 @@ export class AdministrationComponent implements OnInit {
     this.getAllStudent.studendAttendanceAdministrationList = res.studendAttendanceAdministrationList;
     this.pageNumber = res.pageNumber;
     this.pageSize = res._pageSize;
-    this.allStudentlist = new MatTableDataSource(res.studendAttendanceAdministrationList);
+    this.cloneStudentlist = JSON.stringify(res.studendAttendanceAdministrationList);
+    this.allStudentlist = new MatTableDataSource(JSON.parse(this.cloneStudentlist));
   }
   getToggleValues(event) {
     this.toggleValues = event;
@@ -267,7 +276,8 @@ export class AdministrationComponent implements OnInit {
             this.totalCount = res.totalCount;
             this.pageNumber = res.pageNumber;
             this.pageSize = res._pageSize;
-            this.allStudentlist = new MatTableDataSource(res.studendAttendanceAdministrationList);
+            this.cloneStudentlist = JSON.stringify(res.studendAttendanceAdministrationList);
+            this.allStudentlist = new MatTableDataSource(JSON.parse(this.cloneStudentlist));
 
           }
         }
