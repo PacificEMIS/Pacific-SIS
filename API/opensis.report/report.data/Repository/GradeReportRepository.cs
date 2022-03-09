@@ -22,7 +22,6 @@ namespace opensis.report.report.data.Repository
             this.context = dbContextFactory.Create();
         }
 
-
         /// <summary>
         /// Get Grade Report
         /// </summary>
@@ -50,7 +49,6 @@ namespace opensis.report.report.data.Repository
                     if (quartersData != null)
                     {
                         studentDatas = this.context?.StudentFinalGrade.Include(s => s.StudentMaster).ThenInclude(e => e.StudentEnrollment).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.QtrMarkingPeriodId == quartersData.MarkingPeriodId && e.IsExamGrade != true).ToList();
-
                     }
                     else
                     {
@@ -67,7 +65,6 @@ namespace opensis.report.report.data.Repository
                             if (yearsData != null)
                             {
                                 studentDatas = this.context?.StudentFinalGrade.Include(s => s.StudentMaster).ThenInclude(e => e.StudentEnrollment).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.YrMarkingPeriodId == yearsData.MarkingPeriodId && e.IsExamGrade != true).ToList();
-
                             }
                         }
                     }
@@ -155,7 +152,6 @@ namespace opensis.report.report.data.Repository
                         GradeName = x.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle,
                         SectionName = studentsection.FirstOrDefault(y => y.SectionId == x.StudentMaster.SectionId)?.Name,
                         HonorRoll = honorRollData.FirstOrDefault(h => h.Breakoff <= x.PercentMarks)?.HonorRoll
-
                     }).AsQueryable();
 
                     //Filteration Start.......//
@@ -177,7 +173,6 @@ namespace opensis.report.report.data.Repository
                                                                         x.SectionName != null && x.SectionName.Contains(Columnvalue) ||
                                                                         x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue) ||
                                                                         x.HonorRoll != null && x.HonorRoll.Contains(Columnvalue));
-
                         }
                         else
                         {
@@ -195,16 +190,13 @@ namespace opensis.report.report.data.Repository
 
                     totalCount = transactionIQ.Count();
 
-
                     if (totalCount > 0)
                     {
                         if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                         {
                             transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                         }
-
                         honorRollList.HonorRollViewForReports = transactionIQ.ToList();
-
                         honorRollList.TotalCount = totalCount;
                         honorRollList._message = "success";
                         honorRollList._failure = false;
@@ -215,15 +207,12 @@ namespace opensis.report.report.data.Repository
                         honorRollList._failure = true;
                         honorRollList.HonorRollViewForReports = new();
                     }
-
                 }
-
                 else
                 {
                     honorRollList._failure = true;
                     honorRollList._message = NORECORDFOUND;
                 }
-
                 honorRollList.SchoolId = pageResult.SchoolId;
                 honorRollList.AcademicYear = pageResult.AcademicYear;
                 honorRollList.TenantId = pageResult.TenantId;
