@@ -211,7 +211,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   checkOtherTabs(){
     this.otherTabs.courseSchedule=this.pageRolePermission.checkPageRolePermission("/school/students/student-course-schedule", this.currentRolePermission)?.view;
     this.otherTabs.attendance=this.pageRolePermission.checkPageRolePermission("/school/students/student-attendance", this.currentRolePermission)?.view
-    this.otherTabs.progressReport=this.pageRolePermission.checkPageRolePermission("/school/students/student-progress-report", this.currentRolePermission, true)?.view
+    this.otherTabs.progressReport=this.pageRolePermission.checkPageRolePermission("/school/students/student-progress-report", this.currentRolePermission)?.view
     this.otherTabs.reportCard=this.pageRolePermission.checkPageRolePermission("/school/students/student-report-card", this.currentRolePermission)?.view
     this.otherTabs.transcript=this.pageRolePermission.checkPageRolePermission("/school/students/student-transcript", this.currentRolePermission)?.view
   }
