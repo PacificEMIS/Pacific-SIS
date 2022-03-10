@@ -1318,7 +1318,7 @@
     "PermissionGroupId": "11",
     "PermissionSubcategoryName": "Schedule Report",
     "ShortCode": "sr",
-    "Path": "",
+    "Path": "/school/reports/schedule/schedule-report",
     "Title": "Schedule Report",
     "Type": "",
     "EnableView": true,
