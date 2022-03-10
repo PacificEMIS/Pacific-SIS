@@ -146,6 +146,11 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         this.addGradebookGradeByAssignmentTypeModel = res;
         this.commonService.checkTokenValidOrNot(res._message);
       } else{
+        res.assignmentsListViewModels?.map(item => {
+          item.studentsListViewModels.map(subItem => {
+            subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+          });
+        });
         this.addGradebookGradeByAssignmentTypeModel = res;
         this.assignmentListByAssignmentType = res
       }
@@ -180,6 +185,9 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
     }).afterClosed().subscribe((res)=>{
       if(res) {
         grade.comment = res;
+        grade.isSubmitted = true;
+      } else {
+        grade.isSubmitted = false;
       }
     });
   }
@@ -225,6 +233,11 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
               }
           })
         })
+        res.assignmentsListViewModels?.map(item => {
+          item.studentsListViewModels.map(subItem => {
+            subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+          });
+        });
         this.isConfigUpdateFlag.emit(res?.configUpdateFlag)
         this.addGradebookGradeModel = res;
         this.createDataSetForExcel();

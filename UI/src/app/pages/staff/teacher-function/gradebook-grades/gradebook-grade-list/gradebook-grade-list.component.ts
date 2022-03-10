@@ -170,6 +170,11 @@ export class GradebookGradeListComponent implements OnInit {
         this.addGradebookGradeByAssignmentTypeModel = res;
         this.commonService.checkTokenValidOrNot(res._message);
       } else{
+        res.assignmentsListViewModels?.map(item => {
+          item.studentsListViewModels.map(subItem => {
+            subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+          });
+        });
         this.addGradebookGradeByAssignmentTypeModel = res;
         this.assignmentListByAssignmentType = res
       }
@@ -204,6 +209,9 @@ export class GradebookGradeListComponent implements OnInit {
     }).afterClosed().subscribe((res)=>{
       if(res) {
         grade.comment = res;
+        grade.isSubmitted = true;
+      } else {
+        grade.isSubmitted = false;
       }
     });
   }
@@ -268,6 +276,11 @@ export class GradebookGradeListComponent implements OnInit {
                     }
                 })
               })
+              res.assignmentsListViewModels?.map(item => {
+                item.studentsListViewModels.map(subItem => {
+                  subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+                });
+              });
               this.addGradebookGradeModel = res;
             }
           }

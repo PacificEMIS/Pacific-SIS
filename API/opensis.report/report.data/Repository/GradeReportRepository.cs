@@ -73,113 +73,93 @@ namespace opensis.report.report.data.Repository
                     }
                 }
 
-                var honorRollData = this.context?.HonorRolls.Where(h => h.SchoolId == pageResult.SchoolId && h.TenantId == pageResult.TenantId);
+                var honorRollData = this.context?.HonorRolls.Where(h => h.SchoolId == pageResult.SchoolId && h.TenantId == pageResult.TenantId).ToList();
+
+                var studentsection = this.context?.Sections.Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId).ToList();
 
                 if (studentDatas.Any() == true)
                 {
-                    foreach (var gradedstudentDatas in studentDatas)
+                    var StudentHonorRollData = studentDatas.Select(x => new HonorRollViewForReport
                     {
-                        var honorData = new HonorRollViewForReport();
+                        FirstGivenName = x.StudentMaster.FirstGivenName,
+                        MiddleName = x.StudentMaster.MiddleName,
+                        LastFamilyName = x.StudentMaster.LastFamilyName,
+                        StudentInternalId = x.StudentMaster.StudentInternalId,
+                        AlternateId = x.StudentMaster.AlternateId,
+                        MobilePhone = x.StudentMaster.MobilePhone,
+                        StudentGuid = x.StudentMaster.StudentGuid,
+                        DistrictId = x.StudentMaster.DistrictId,
+                        StateId = x.StudentMaster.StateId,
+                        AdmissionNumber = x.StudentMaster.AdmissionNumber,
+                        RollNumber = x.StudentMaster.RollNumber,
+                        Suffix = x.StudentMaster.Suffix,
+                        PreferredName = x.StudentMaster.PreferredName,
+                        PreviousName = x.StudentMaster.PreviousName,
+                        SocialSecurityNumber = x.StudentMaster.SocialSecurityNumber,
+                        OtherGovtIssuedNumber = x.StudentMaster.OtherGovtIssuedNumber,
+                        StudentPhoto = x.StudentMaster.StudentPhoto,
+                        Dob = x.StudentMaster.Dob,
+                        StudentPortalId = x.StudentMaster.StudentPortalId,
+                        Gender = x.StudentMaster.Gender,
+                        Race = x.StudentMaster.Race,
+                        MaritalStatus = x.StudentMaster.MaritalStatus,
+                        Ethnicity = x.StudentMaster.Ethnicity,
+                        CountryOfBirth = x.StudentMaster.CountryOfBirth,
+                        Nationality = x.StudentMaster.Nationality,
+                        FirstLanguageId = x.StudentMaster.FirstLanguageId,
+                        SecondLanguageId = x.StudentMaster.SecondLanguageId,
+                        ThirdLanguageId = x.StudentMaster.ThirdLanguageId,
+                        EstimatedGradDate = x.StudentMaster.EstimatedGradDate,
+                        Eligibility504 = x.StudentMaster.Eligibility504,
+                        EconomicDisadvantage = x.StudentMaster.EconomicDisadvantage,
+                        FreeLunchEligibility = x.StudentMaster.FreeLunchEligibility,
+                        SpecialEducationIndicator = x.StudentMaster.SpecialEducationIndicator,
+                        LepIndicator = x.StudentMaster.LepIndicator,
+                        HomePhone = x.StudentMaster.HomePhone,
+                        PersonalEmail = x.StudentMaster.PersonalEmail,
+                        SchoolEmail = x.StudentMaster.SchoolEmail,
+                        Twitter = x.StudentMaster.Twitter,
+                        Facebook = x.StudentMaster.Facebook,
+                        Instagram = x.StudentMaster.Instagram,
+                        Youtube = x.StudentMaster.Youtube,
+                        Linkedin = x.StudentMaster.Linkedin,
+                        HomeAddressLineOne = x.StudentMaster.HomeAddressLineOne,
+                        HomeAddressLineTwo = x.StudentMaster.HomeAddressLineTwo,
+                        HomeAddressCity = x.StudentMaster.HomeAddressCity,
+                        HomeAddressState = x.StudentMaster.HomeAddressState,
+                        HomeAddressCountry = x.StudentMaster.HomeAddressCountry,
+                        HomeAddressZip = x.StudentMaster.HomeAddressZip,
+                        BusNo = x.StudentMaster.BusNo,
+                        SchoolBusPickUp = x.StudentMaster.SchoolBusPickUp,
+                        SchoolBusDropOff = x.StudentMaster.SchoolBusDropOff,
+                        MailingAddressSameToHome = x.StudentMaster.MailingAddressSameToHome,
+                        MailingAddressLineOne = x.StudentMaster.MailingAddressLineOne,
+                        MailingAddressLineTwo = x.StudentMaster.MailingAddressLineTwo,
+                        MailingAddressCity = x.StudentMaster.MailingAddressCity,
+                        MailingAddressCountry = x.StudentMaster.MailingAddressCountry,
+                        MailingAddressZip = x.StudentMaster.MailingAddressZip,
+                        CriticalAlert = x.StudentMaster.CriticalAlert,
+                        AlertDescription = x.StudentMaster.AlertDescription,
+                        PrimaryCarePhysician = x.StudentMaster.PrimaryCarePhysician,
+                        PrimaryCarePhysicianPhone = x.StudentMaster.PrimaryCarePhysicianPhone,
+                        MedicalFacility = x.StudentMaster.MedicalFacility,
+                        MedicalFacilityPhone = x.StudentMaster.MedicalFacilityPhone,
+                        InsuranceCompany = x.StudentMaster.InsuranceCompany,
+                        InsuranceCompanyPhone = x.StudentMaster.InsuranceCompanyPhone,
+                        PolicyNumber = x.StudentMaster.PolicyNumber,
+                        PolicyHolder = x.StudentMaster.PolicyHolder,
+                        Dentist = x.StudentMaster.Dentist,
+                        DentistPhone = x.StudentMaster.DentistPhone,
+                        Vision = x.StudentMaster.Vision,
+                        VisionPhone = x.StudentMaster.VisionPhone,
+                        GradeName = x.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle,
+                        SectionName = studentsection.FirstOrDefault(y => y.SectionId == x.StudentMaster.SectionId)?.Name,
+                        HonorRoll = honorRollData.FirstOrDefault(h => h.Breakoff <= x.PercentMarks)?.HonorRoll
 
-                        //var studentData = gradedstudentDatas.StudentMaster.Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.StudentId == gradedstudentDatas.StudentId).FirstOrDefault();
+                    }).AsQueryable();
 
-                        if (gradedstudentDatas.StudentMaster != null)
-                        {
-                            honorData.Salutation = gradedstudentDatas.StudentMaster.Salutation;
-                            honorData.FirstGivenName = gradedstudentDatas.StudentMaster.FirstGivenName;
-                            honorData.MiddleName = gradedstudentDatas.StudentMaster.MiddleName;
-                            honorData.LastFamilyName = gradedstudentDatas.StudentMaster.LastFamilyName;
-                            honorData.StudentId = gradedstudentDatas.StudentMaster.StudentId;
-                            honorData.AlternateId = gradedstudentDatas.StudentMaster.AlternateId;
-                            honorData.MobilePhone = gradedstudentDatas.StudentMaster.MobilePhone;
-                            honorData.StudentGuid = gradedstudentDatas.StudentMaster.StudentGuid;
-                            honorData.StudentInternalId = gradedstudentDatas.StudentMaster.StudentInternalId;
-                            honorData.DistrictId = gradedstudentDatas.StudentMaster.DistrictId;
-                            honorData.StateId = gradedstudentDatas.StudentMaster.StateId;
-                            honorData.AdmissionNumber = gradedstudentDatas.StudentMaster.AdmissionNumber;
-                            honorData.RollNumber = gradedstudentDatas.StudentMaster.RollNumber;
-                            honorData.Suffix = gradedstudentDatas.StudentMaster.Suffix;
-                            honorData.PreferredName = gradedstudentDatas.StudentMaster.PreferredName;
-                            honorData.PreviousName = gradedstudentDatas.StudentMaster.PreviousName;
-                            honorData.SocialSecurityNumber = gradedstudentDatas.StudentMaster.SocialSecurityNumber;
-                            honorData.OtherGovtIssuedNumber = gradedstudentDatas.StudentMaster.OtherGovtIssuedNumber;
-                            honorData.StudentPhoto = gradedstudentDatas.StudentMaster.StudentPhoto;
-                            honorData.Dob = gradedstudentDatas.StudentMaster.Dob;
-                            honorData.StudentPortalId = gradedstudentDatas.StudentMaster.StudentPortalId;
-                            honorData.Gender = gradedstudentDatas.StudentMaster.Gender;
-                            honorData.Race = gradedstudentDatas.StudentMaster.Race;
-                            honorData.MaritalStatus = gradedstudentDatas.StudentMaster.MaritalStatus;
-                            honorData.Ethnicity = gradedstudentDatas.StudentMaster.Ethnicity;
-                            honorData.CountryOfBirth = gradedstudentDatas.StudentMaster.CountryOfBirth;
-                            honorData.Nationality = gradedstudentDatas.StudentMaster.Nationality;
-                            honorData.FirstLanguageId = gradedstudentDatas.StudentMaster.FirstLanguageId;
-                            honorData.SecondLanguageId = gradedstudentDatas.StudentMaster.SecondLanguageId;
-                            honorData.ThirdLanguageId = gradedstudentDatas.StudentMaster.ThirdLanguageId;
-                            honorData.EstimatedGradDate = gradedstudentDatas.StudentMaster.EstimatedGradDate;
-                            honorData.Eligibility504 = gradedstudentDatas.StudentMaster.Eligibility504;
-                            honorData.EconomicDisadvantage = gradedstudentDatas.StudentMaster.EconomicDisadvantage;
-                            honorData.FreeLunchEligibility = gradedstudentDatas.StudentMaster.FreeLunchEligibility;
-                            honorData.SpecialEducationIndicator = gradedstudentDatas.StudentMaster.SpecialEducationIndicator;
-                            honorData.LepIndicator = gradedstudentDatas.StudentMaster.LepIndicator;
-                            honorData.HomePhone = gradedstudentDatas.StudentMaster.HomePhone;
-                            honorData.PersonalEmail = gradedstudentDatas.StudentMaster.PersonalEmail;
-                            honorData.SchoolEmail = gradedstudentDatas.StudentMaster.SchoolEmail;
-                            honorData.Twitter = gradedstudentDatas.StudentMaster.Twitter;
-                            honorData.Facebook = gradedstudentDatas.StudentMaster.Facebook;
-                            honorData.Instagram = gradedstudentDatas.StudentMaster.Instagram;
-                            honorData.Youtube = gradedstudentDatas.StudentMaster.Youtube;
-                            honorData.Linkedin = gradedstudentDatas.StudentMaster.Linkedin;
-                            honorData.HomeAddressLineOne = gradedstudentDatas.StudentMaster.HomeAddressLineOne;
-                            honorData.HomeAddressLineTwo = gradedstudentDatas.StudentMaster.HomeAddressLineTwo;
-                            honorData.HomeAddressCity = gradedstudentDatas.StudentMaster.HomeAddressCity;
-                            honorData.HomeAddressState = gradedstudentDatas.StudentMaster.HomeAddressState;
-                            honorData.HomeAddressCountry = gradedstudentDatas.StudentMaster.HomeAddressCountry;
-                            honorData.HomeAddressZip = gradedstudentDatas.StudentMaster.HomeAddressZip;
-                            honorData.BusNo = gradedstudentDatas.StudentMaster.BusNo;
-                            honorData.SchoolBusPickUp = gradedstudentDatas.StudentMaster.SchoolBusPickUp;
-                            honorData.SchoolBusDropOff = gradedstudentDatas.StudentMaster.SchoolBusDropOff;
-                            honorData.MailingAddressSameToHome = gradedstudentDatas.StudentMaster.MailingAddressSameToHome;
-                            honorData.MailingAddressLineOne = gradedstudentDatas.StudentMaster.MailingAddressLineOne;
-                            honorData.MailingAddressLineTwo = gradedstudentDatas.StudentMaster.MailingAddressLineTwo;
-                            honorData.MailingAddressCity = gradedstudentDatas.StudentMaster.MailingAddressCity;
-                            honorData.MailingAddressCountry = gradedstudentDatas.StudentMaster.MailingAddressCountry;
-                            honorData.MailingAddressZip = gradedstudentDatas.StudentMaster.MailingAddressZip;
-                            honorData.CriticalAlert = gradedstudentDatas.StudentMaster.CriticalAlert;
-                            honorData.AlertDescription = gradedstudentDatas.StudentMaster.AlertDescription;
-                            honorData.PrimaryCarePhysician = gradedstudentDatas.StudentMaster.PrimaryCarePhysician;
-                            honorData.PrimaryCarePhysicianPhone = gradedstudentDatas.StudentMaster.PrimaryCarePhysicianPhone;
-                            honorData.MedicalFacility = gradedstudentDatas.StudentMaster.MedicalFacility;
-                            honorData.MedicalFacilityPhone = gradedstudentDatas.StudentMaster.MedicalFacilityPhone;
-                            honorData.InsuranceCompany = gradedstudentDatas.StudentMaster.InsuranceCompany;
-                            honorData.InsuranceCompanyPhone = gradedstudentDatas.StudentMaster.InsuranceCompanyPhone;
-                            honorData.PolicyNumber = gradedstudentDatas.StudentMaster.PolicyNumber;
-                            honorData.PolicyHolder = gradedstudentDatas.StudentMaster.PolicyHolder;
-                            honorData.Dentist = gradedstudentDatas.StudentMaster.Dentist;
-                            honorData.DentistPhone = gradedstudentDatas.StudentMaster.DentistPhone;
-                            honorData.Vision = gradedstudentDatas.StudentMaster.Vision;
-                            honorData.VisionPhone = gradedstudentDatas.StudentMaster.VisionPhone;
+                    //Filteration Start.......//
 
-                        }
-                        honorData.GradeName = gradedstudentDatas.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle;
-
-                        var studentsection = this.context?.Sections.Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.SectionId == gradedstudentDatas.StudentMaster.SectionId).FirstOrDefault();
-
-                        if (studentsection != null)
-                        {
-                            honorData.SectionId = studentsection.SectionId;
-                            honorData.SectionName = studentsection.Name;
-                        }
-                        var honor = honorRollData.Where(h => h.Breakoff <= gradedstudentDatas.PercentMarks).FirstOrDefault();
-
-                        if (honor != null)
-                        {
-                            honorData.HonorRoll = honor.HonorRoll;
-                        }
-                        honorRollList.HonorRollViewForReports.Add(honorData);
-                    }
-
-                    var StudentHonorRollData = honorRollList.HonorRollViewForReports.AsQueryable();
-                    //Filteration ---------//
                     if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                     {
                         transactionIQ = StudentHonorRollData;
