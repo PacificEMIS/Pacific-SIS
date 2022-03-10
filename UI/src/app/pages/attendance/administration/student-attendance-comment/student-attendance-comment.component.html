@@ -29,7 +29,7 @@
                     </div>
                 </li>
                 <li class="cursor-pointer flex items-center place-content-center text-lg" (click)="openExpandable(1,index)"><i
-                        class="icon icon-bubble"></i></li>
+                        class="icon icon-bubble" [ngClass]="{'text-green': isComment(record?.studentAttendanceComments)}"></i></li>
                 <li class="cursor-pointer flex items-center place-content-center" (click)="openExpandable(2,index)">
                     <mat-icon>history</mat-icon>
                 </li>
