@@ -83,6 +83,22 @@ export class AverageDailyAttendanceReportModel extends CommonField{
     filterParams: filterParams[];
 }
 
+export class AverageAttendanceByDayReportModel extends CommonField{
+    tenantId:string;
+    schoolId:number;
+    pageSize: number;
+    pageNumber: number;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    academicYear: number;
+    filterParams: filterParams[];
+    constructor() {
+        super();
+        this.pageNumber = 1;
+        this.pageSize = 10;
+    }
+}
+
 export class filterParams {
     columnName: string;
     filterValue: string;
