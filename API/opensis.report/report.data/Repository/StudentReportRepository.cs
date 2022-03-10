@@ -667,6 +667,7 @@ namespace opensis.report.report.data.Repository
 
                                         if (assignmentTypeList != null && assignmentTypeList.Any())
                                         {
+                                            assignmentTypeId = assignmentTypeList.Select(y => y.AssignmentTypeId).ToList();
 
                                             if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
                                             {
@@ -889,6 +890,7 @@ namespace opensis.report.report.data.Repository
 
                                         if (assignmentTypeList != null && assignmentTypeList.Any())
                                         {
+                                            assignmentTypeId = assignmentTypeList.Select(y => y.AssignmentTypeId).ToList();
 
                                             if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
                                             {
