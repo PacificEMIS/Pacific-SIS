@@ -528,7 +528,9 @@ namespace opensis.report.report.data.Repository
 
             try
             {
-                var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster).ThenInclude(b => b.StudentEnrollment).Include(c => c.StudentCoursesectionSchedule).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
+                //var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster).ThenInclude(b => b.StudentEnrollment).Include(c => c.StudentCoursesectionSchedule).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
+
+                var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster.Where(y => studentProgressReport.StudentGuids.Contains(y.StudentGuid))).ThenInclude(b => b.StudentEnrollment.Where(z => z.IsActive == true)).Include(c => c.StudentCoursesectionSchedule.Where(y => studentProgressReport.StudentGuids.Contains(y.StudentGuid))).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
 
                 if (schoolListData?.Any() == true)
                 {
