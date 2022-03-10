@@ -15,7 +15,6 @@ export class DefaultValuesService {
   public newSubject = new Subject<string>();
   private photoChange = new Subject<string>();
   photoChanged = this.photoChange.asObservable();
-
   TenantId: string = '';
   schoolID: number;
   academicYear: number;
@@ -365,6 +364,9 @@ export class DefaultValuesService {
   }
   getCourseSectionId() {
     return JSON.parse(localStorage.getItem('courseSectionId'));
+  }  
+  getCourseId() {
+    return JSON.parse(localStorage.getItem('courseId'));
   }
   getCollapseValue() {
     return JSON.parse(localStorage.getItem("collapseValue"));
@@ -382,6 +384,9 @@ export class DefaultValuesService {
   }
   setCourseSectionId(courseSectionId: string) {
     localStorage.setItem("courseSectionId", JSON.parse(courseSectionId));
+  }
+  setCourseId(courseId: string) {
+    localStorage.setItem("courseId", JSON.parse(courseId));
   }
   setSchoolCount(schoolCount: any) {
     localStorage.setItem("schoolCount", JSON.stringify(schoolCount));
@@ -407,7 +412,13 @@ export class DefaultValuesService {
     this.photoChange.next(data);
   }
 
+  setStudentId(id: string) {
+    sessionStorage.setItem("studentId", JSON.stringify(id));
+  }
 
+  getStudentId() {
+    return JSON.parse(sessionStorage.getItem('studentId'));
+  }
   checkAcademicYear() {
     return moment(new Date()).isBetween(this.getFullYearStartDate(), this.getFullYearEndDate());
   }
