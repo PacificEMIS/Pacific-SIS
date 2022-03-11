@@ -1755,5 +1755,7 @@
     "totalWeightedGrade" : "Total Weighted Grade",
     "Advanced Report":"Advanced Report",
     "Print Student Info":"Print Student Info",
-    "pleaseAddHistoricalGradeLevel":"Please add historical grade level."
+    "pleaseAddHistoricalGradeLevel":"Please add historical grade level.",
+    "youCannotAccess": "You cannot access",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set."
 }
