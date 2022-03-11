@@ -1,3 +1,4 @@
+<div *ngIf="!isNotGraded">
 <div class="custom-tab">
     <div class="flex md:justify-center items-center mb-5">
         <ul class="flex flex-row">
@@ -16,3 +17,4 @@
 </div>
 <vex-gradebook-grades [currentTab]="currentTab" (isConfigUpdateFlag)="configUpdateflagCheck($event)"></vex-gradebook-grades>
 <vex-input-final-grades [currentTab]="currentTab"></vex-input-final-grades>
+</div>

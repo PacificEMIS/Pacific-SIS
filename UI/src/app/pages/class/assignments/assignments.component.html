@@ -1,4 +1,4 @@
-<div class="card">
+<div *ngIf="!isNotGraded" class="card">
     <!-- Start Add New Assignment Type -->
     <div class="py-24 px-6 text-center" *ngIf="!assignmentModel?.assignmentTypeList?.length;else showTable">
         <mat-icon class="text-4xl">info</mat-icon>
@@ -99,4 +99,8 @@
     </div>
 </ng-template>
 
+</div>
+
+<div *ngIf="isNotGraded" class="card">
+    <p>Not Graded</p>
 </div>

@@ -1,4 +1,4 @@
-<div class="overview-content md:w-10/12 m-auto card px-4 py-4">
+<div *ngIf="!isNotGraded" class="overview-content md:w-10/12 m-auto card px-4 py-4">
     <h3 class="text-green font-semibold mb-2">{{ 'general' | translate }}</h3>
     <ul class="flex flex-row mb-4 flex-wrap">
         <li class="mr-6 mb-2">
@@ -245,4 +245,8 @@
         <button mat-flat-button (click)="addUpdateGradebookConfiguration()" color="primary" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate
             }}</button>
     </div>
+</div>
+
+<div *ngIf="isNotGraded" class="overview-content md:w-10/12 m-auto card px-4 py-4">
+    <p>Not Graded</p>
 </div>
