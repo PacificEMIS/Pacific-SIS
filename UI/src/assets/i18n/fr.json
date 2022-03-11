@@ -1755,5 +1755,7 @@
     "Print Student Info":"Imprimer les informations sur l'étudiant",
     "showInactiveStudents": "Afficher les étudiants inactifs",
     "anomalousGrade": "Note anormale",
-    "pleaseAddHistoricalGradeLevel":"S'il vous plaît ajouter un niveau historique."
+    "pleaseAddHistoricalGradeLevel":"S'il vous plaît ajouter un niveau historique.",
+    "youCannotAccess": "Vous ne pouvez pas accéder",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "car l'échelle de notation de la section de cours n'est pas définie."
 }

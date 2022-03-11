@@ -247,6 +247,7 @@
     </div>
 </div>
 
-<div *ngIf="isNotGraded" class="overview-content md:w-10/12 m-auto card px-4 py-4">
-    <p>Not Graded</p>
+<div *ngIf="isNotGraded" class="overview-content not-graded md:w-7/12 m-auto card p-10 py- md:p-20 text-center">
+    <img src="assets/img/access_denied.svg" alt="Access Denied Icon" class="inline-block mb-5 md:my-10">
+    <p class="text-lg text-red leading-relaxed mb-5 md:mb-10"><span>{{ 'youCannotAccess' | translate }}</span><span class="font-semibold mx-1">{{ 'gradebookConfiguration' | translate }}</span><span>{{ 'becauseTheGradeScaleForTheCourseSectionIsNotSet' | translate }}</span></p>
 </div>
