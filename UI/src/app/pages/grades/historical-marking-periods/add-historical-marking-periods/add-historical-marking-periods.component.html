@@ -30,8 +30,9 @@
 
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'schoolYear' | translate}}</mat-label>
-        <input formControlName="academicYear" name="academicYear" type="text" mask="0000" matInput required>
+        <input formControlName="academicYear" name="academicYear" type="text" pattern="[0-9]{4}[-][0-9]{4}" matInput required>
         <mat-error *ngIf="form.get('academicYear').hasError('required')">{{'schoolYearIsRequired'|translate}}</mat-error>
+        <mat-error *ngIf="form.get('academicYear').hasError('pattern')">{{'patternInvalid'|translate}}</mat-error>
     </mat-form-field>
 
 </mat-dialog-content>

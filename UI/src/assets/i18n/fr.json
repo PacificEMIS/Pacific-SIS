@@ -1754,5 +1754,6 @@
     "Print Student Info":"Imprimer les informations sur l'étudiant",
     "showInactiveStudents": "Afficher les étudiants inactifs",
     "anomalousGrade": "Note anormale",
-    "pleaseAddHistoricalGradeLevel":"S'il vous plaît ajouter un niveau historique."
+    "pleaseAddHistoricalGradeLevel":"S'il vous plaît ajouter un niveau historique.",
+    "patternInvalid": "Modèle invalide"
 }
