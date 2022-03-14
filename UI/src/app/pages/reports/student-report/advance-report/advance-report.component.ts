@@ -150,7 +150,6 @@ export class AdvanceReportComponent implements OnInit {
     demographicInformation: [
       { label: 'dateOfBirth', property: 'dateOfBirth', checked: false },
       { label: 'gender', property: 'gender', checked: false },
-      { label: 'firstGivenName', property: 'firstGivenName', checked: false },
       { label: 'race', property: 'race', checked: false },
       { label: 'ethnicity', property: 'ethnicity', checked: false },
       { label: 'maritalStatus', property: 'maritalStatus', checked: false },

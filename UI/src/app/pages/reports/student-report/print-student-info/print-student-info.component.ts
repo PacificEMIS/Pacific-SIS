@@ -357,8 +357,8 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
           if(subItem.studentEnrollment) {
             subItem.studentEnrollment?.length > 0 ? subItem.studentEnrollment.reverse() : '';
             subItem.studentEnrollment.map((data, index)=>{
-              if (data.enrollmentCode === subItem.studentEnrollment[index + 1]?.exitCode 
-                    && data.enrollmentDate === subItem.studentEnrollment[index + 1]?.exitDate) {                    
+              if (data.enrollmentCode === "Dropped Out" && subItem.studentEnrollment[index + 1]?.exitCode === "Dropped Out" 
+              && data.enrollmentDate === subItem.studentEnrollment[index + 1]?.exitDate) {                    
                       subItem.studentEnrollment.splice((index+1),1);
                   }
             })
