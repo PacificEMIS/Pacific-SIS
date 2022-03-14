@@ -93,6 +93,7 @@ export class GetStudentEnrollmentReportModel extends CommonField {
         this.pageNumber = 1;
         this.pageSize = 10;
         this.filterParams = [];
+        this.gradeLevel = '';
     }
 }
 
