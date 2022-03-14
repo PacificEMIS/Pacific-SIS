@@ -40,6 +40,16 @@ namespace opensis.data.ViewModels.CourseManager
         public int? CourseCount { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
+        public String? SchoolName { get; set; }
+        public String? SchoolLevel { get; set; }
+        public String? City { get; set; }
+        public String? State { get; set; }
+        public String? Zipcode { get; set; }
+        public String? Website { get; set; }
+        public byte[]? SchoolLogo { get; set; }
+        public String? Address1 { get; set; }
+        public String? Address2 { get; set; }
         public decimal? AcademicYear { get; set; }
+        public bool? ScheduleReport { get; set; }
     }
 }
