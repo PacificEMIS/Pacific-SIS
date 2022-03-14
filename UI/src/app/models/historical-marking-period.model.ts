@@ -29,7 +29,7 @@ export class HistoricalMarkingPeriod {
     tenantId: string;
     schoolId: number;
     histMarkingPeriodId: number;
-    academicYear: number;
+    academicYear: string;
     title: string;
     gradePostDate: string;
     doesGrades: boolean;

@@ -1758,5 +1758,6 @@
     "Print Student Info":"Print Student Info",
     "pleaseAddHistoricalGradeLevel":"Please add historical grade level.",
     "youCannotAccess": "You cannot access",
-    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set."
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set.",
+    "patternInvalid": "Pattern invalid"
 }

@@ -1756,5 +1756,6 @@
     "Print Student Info":"Imprimir información del estudiante",
     "pleaseAddHistoricalGradeLevel":"Por favor agregue nivel histórico de grado.",
     "youCannotAccess": "no puedes acceder",
-    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida."
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida.",
+    "patternInvalid": "Patrón inválido"
 }
