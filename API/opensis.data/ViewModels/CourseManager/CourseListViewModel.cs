@@ -34,7 +34,7 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public CourseListViewModel()
         {
-            CourseViewModelList = new List<CourseViewModel>(); 
+            CourseViewModelList = new List<CourseViewModel>();
         }
         public List<CourseViewModel> CourseViewModelList { get; set; }
         public int? CourseCount { get; set; }
