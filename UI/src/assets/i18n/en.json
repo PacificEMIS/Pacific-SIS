@@ -1014,7 +1014,7 @@
     "missingAttendanceList": "Missing Attendance List",
     "pleaseSelectCourseSectionAndMarkingPeriodForEffortGrade":"Please select course section and marking period for effort grade",
     "assignmentType": "Assignment Type",
-    "found": "found",
+    "found": "Found",
     "addNewAssignmentType": "Add New Assignment Type",
     "createAssignmentType": "Create Assignment Type",
     "weightPercent": "Weight Percent",
@@ -1543,7 +1543,7 @@
     "classRank": "Class Rank",
     "selectTeacherCourseSections": "Select Teacher & Course Sections",
     "coursePeriod": "Course Period",
-    "noOfAssociatedStudent": "No of Associated Student",
+    "noOfAssociatedStudent": "No of Associated Students",
     "schoolEnrollmentInfo": "School & Enrollment Info",
     "Student Fields":"Student Fields",
     "Enrollment Codes":"Enrollment Codes",
@@ -1760,5 +1760,8 @@
     "youCannotAccess": "You cannot access",
     "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set.",
     "patternInvalid": "Pattern invalid",
-    "attendanceTrackingIsNotEnabledForThisCourseSection":"Attendance tracking is not enabled for this course section"
+    "attendanceTrackingIsNotEnabledForThisCourseSection":"Attendance tracking is not enabled for this course section",
+    "courseSectionsAnd": "Course Sections and",
+    "studentFound": "Student Found",
+    "coursePeriods": "Course Periods"
 }
