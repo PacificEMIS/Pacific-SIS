@@ -113,6 +113,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit(): void {
     this.getScheduledAddDropReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCtrl = new FormControl();
+    this.generateReportScheduleList();
   }
 
   ngAfterViewInit(): void {
