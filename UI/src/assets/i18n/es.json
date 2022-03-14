@@ -1641,7 +1641,7 @@
     "School Information":"Informacion de la Escuela",
     "Calendar":"Calendario",
     "Notices":"Avisos",
-    "Admissions & Enrollment":"Admisiónes e Inscripción",
+    "Admissions & Enrollment":"Admisiones e inscripción",
     "Students":"Estudiantes",
     "Student Information":"Información del estudiante",
     "Group Assign Student Info":"Grupo Asignar información del estudiante",
@@ -1661,6 +1661,7 @@
     "Administration":"Administración",
     "Progress Report":"Informe de progreso",
     "Report Card":"Boleta de calificaciones",
+    "Report Cards":"Las boletas de calificaciones",
     "Transcripts":"Transcripciones",
     "Attendance":"Asistencia",
     "Add Absences":"Agregar ausencias",
@@ -1754,5 +1755,7 @@
     "Advanced Report":"Informe de avance",
     "Print Student Info":"Imprimir información del estudiante",
     "pleaseAddHistoricalGradeLevel":"Por favor agregue nivel histórico de grado.",
+    "youCannotAccess": "no puedes acceder",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida.",
     "patternInvalid": "Patrón inválido"
 }
