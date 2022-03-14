@@ -1759,5 +1759,6 @@
     "pleaseAddHistoricalGradeLevel":"Please add historical grade level.",
     "youCannotAccess": "You cannot access",
     "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set.",
-    "patternInvalid": "Pattern invalid"
+    "patternInvalid": "Pattern invalid",
+    "attendanceTrackingIsNotEnabledForThisCourseSection":"Attendance tracking is not enabled for this course section"
 }
