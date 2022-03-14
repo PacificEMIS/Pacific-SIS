@@ -1014,7 +1014,7 @@
     "missingAttendanceList": "Lista de asistencia faltante",
     "pleaseSelectCourseSectionAndMarkingPeriodForEffortGrade": "Seleccione la sección del curso y el período de calificaciones para la calificación de esfuerzo",
     "assignmentType": "Tipo de asignación",
-    "found": "encontró",
+    "found": "Encontró",
     "addNewAssignmentType": "Agregar nuevo tipo de asignación",
     "createAssignmentType": "Crear tipo de asignación",
     "weightPercent": "Porcentaje de peso",
@@ -1543,7 +1543,7 @@
     "classRank": "El rango de clase",
     "selectTeacherCourseSections": "Seleccionar secciones de profesor y curso",
     "coursePeriod": "Período del curso",
-    "noOfAssociatedStudent": "No de estudiante asociado",
+    "noOfAssociatedStudent": "No de estudiantes asociado",
     "schoolEnrollmentInfo": "Información sobre la escuela y la inscripción",
     "Student Fields":"Campos de estudiantes",
     "Enrollment Codes":"Códigos de inscripción",
@@ -1758,5 +1758,8 @@
     "youCannotAccess": "no puedes acceder",
     "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida.",
     "patternInvalid": "Patrón inválido",
-    "attendanceTrackingIsNotEnabledForThisCourseSection":"El seguimiento de asistencia no está habilitado para esta sección del curso"
+    "attendanceTrackingIsNotEnabledForThisCourseSection":"El seguimiento de asistencia no está habilitado para esta sección del curso",
+    "courseSectionsAnd": "Seccións del curso y",
+    "studentFound": "Estudiante encontrados",
+    "coursePeriods": "Períodos del curso"
 }
