@@ -1758,5 +1758,6 @@
     "pleaseAddHistoricalGradeLevel":"S'il vous plaît ajouter un niveau historique.",
     "youCannotAccess": "Vous ne pouvez pas accéder",
     "becauseTheGradeScaleForTheCourseSectionIsNotSet": "car l'échelle de notation de la section de cours n'est pas définie.",
-    "patternInvalid": "Modèle invalide"
+    "patternInvalid": "Modèle invalide",
+    "attendanceTrackingIsNotEnabledForThisCourseSection":"Le suivi de présence n'est pas activé pour cette section de cours"
 }
