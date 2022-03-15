@@ -229,6 +229,8 @@ namespace opensis.report.report.data.Repository
                 honorRollList.TenantId = pageResult.TenantId;
                 honorRollList._tenantName = pageResult._tenantName;
                 honorRollList._userName = pageResult._userName;
+                honorRollList.PageNumber = pageResult.PageNumber;
+                honorRollList.PageSize = pageResult.PageSize;
                 honorRollList._token = pageResult._token;
             }
             catch (Exception ex)
