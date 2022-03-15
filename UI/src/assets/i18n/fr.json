@@ -1762,5 +1762,10 @@
     "attendanceTrackingIsNotEnabledForThisCourseSection":"Le suivi de présence n'est pas activé pour cette section de cours",
     "courseSectionsAnd": "Sections de cours et",
     "studentFound": "Étudiant trouvés",
-    "coursePeriods": "Périodes de cours"
+    "coursePeriods": "Périodes de cours",
+    "termDate": "Date du mandat",
+    "academicAchievement": "Réussite académique",
+    "recognizes": "reconnaît",
+    "whoHasCompletedAllTheAcademicRequirementsAnd": "qui a rempli toutes les exigences académiques et",
+    "hasBeenAwardedWith": "a été récompensé par"
 }
