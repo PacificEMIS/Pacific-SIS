@@ -149,6 +149,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.studentInfoReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCtrl = new FormControl();
+    this.getStudentEnrollmentWithDate();
   }
 
   ngAfterViewInit(): void {
