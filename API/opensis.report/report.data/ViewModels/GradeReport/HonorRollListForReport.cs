@@ -21,6 +21,16 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public decimal? AcademicYear { get; set; }
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
+        public String? SchoolName { get; set; }
+        public byte[]? SchoolLogo { get; set; }
+        public String? Address1 { get; set; }
+        public String? Address2 { get; set; }
+        public String? City { get; set; }
+        public String? Country { get; set; }
+        public String? State { get; set; }
+        public String? Division { get; set; }
+        public String? District { get; set; }
+        public String? Zip { get; set; }
         public int? TotalCount { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
@@ -56,6 +66,7 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public string? Ethnicity { get; set; }
         public string? MaritalStatus { get; set; }
         public int? CountryOfBirth { get; set; }
+        public Boolean? IsActive { get; set; }
         public int? Nationality { get; set; }
         public int? FirstLanguageId { get; set; }
         public int? SecondLanguageId { get; set; }

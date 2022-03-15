@@ -151,6 +151,7 @@ namespace opensis.report.report.data.Repository
                         Dentist = x.StudentMaster.Dentist,
                         DentistPhone = x.StudentMaster.DentistPhone,
                         Vision = x.StudentMaster.Vision,
+                        IsActive = x.StudentMaster.IsActive,
                         VisionPhone = x.StudentMaster.VisionPhone,
                         GradeName = x.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle,
                         SectionName = studentsection.FirstOrDefault(y => y.SectionId == x.StudentMaster.SectionId)?.Name,
@@ -224,6 +225,8 @@ namespace opensis.report.report.data.Repository
                     honorRollList._message = NORECORDFOUND;
                 }
 
+                var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId).FirstOrDefault();
+
                 honorRollList.SchoolId = pageResult.SchoolId;
                 honorRollList.AcademicYear = pageResult.AcademicYear;
                 honorRollList.TenantId = pageResult.TenantId;
@@ -231,6 +234,16 @@ namespace opensis.report.report.data.Repository
                 honorRollList._userName = pageResult._userName;
                 honorRollList.PageNumber = pageResult.PageNumber;
                 honorRollList.PageSize = pageResult.PageSize;
+                honorRollList.SchoolName = SchoolDetails.SchoolName;
+                honorRollList.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                honorRollList.Address1 = SchoolDetails.StreetAddress1;
+                honorRollList.Address2 = SchoolDetails.StreetAddress2;
+                honorRollList.Country = SchoolDetails.Country;
+                honorRollList.State = SchoolDetails.State;
+                honorRollList.City = SchoolDetails.City;
+                honorRollList.District = SchoolDetails.District;
+                honorRollList.Division = SchoolDetails.Division;
+                honorRollList.Zip = SchoolDetails.Zip;
                 honorRollList._token = pageResult._token;
             }
             catch (Exception ex)
