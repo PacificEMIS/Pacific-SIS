@@ -182,16 +182,18 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     this.historicalGradeAddViewModel.schoolId=this.defaultValuesService.getSchoolID();
     this.historicalGradeAddViewModel.historicalGradeList=[];
     this.historicalMarkingPeriodService.getAllHistoricalGradeList(this.historicalGradeAddViewModel).subscribe((res:any) => {
-        if(res._failure){
-          this.commonService.checkTokenValidOrNot(res._message);
-              this.snackbar.open(res._message, '', {
-                duration: 10000
-            });
-          }
-          else {
-            this.historicalGradeList = res.gradeEquivalencies;
-          }
-      })
+      if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
+        if (!res.gradeEquivalencies) {
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
+        }
+      }
+      else {
+        this.historicalGradeList = res.gradeEquivalencies;
+      }
+    })
   }
   onHistoricalGradeLChange(event, equivalencyId) {
     if (event.checked) {

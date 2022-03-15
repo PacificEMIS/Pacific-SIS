@@ -241,6 +241,10 @@ export class ReportCardsComponent implements OnInit {
           this.totalCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
+          data.scheduleStudentForView.map(item => {
+            item.gradeLevelTitle = item.gradeLevel;
+            item.sectionName = item.section;
+          });
           this.listOfStudent = data.scheduleStudentForView;
           this.StudentModelList = new MatTableDataSource(this.listOfStudent);
           this.getAllStudent = new StudentListModel();

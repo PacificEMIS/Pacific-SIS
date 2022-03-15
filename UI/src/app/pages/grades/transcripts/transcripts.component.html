@@ -46,8 +46,8 @@
                                     (change)="onHistoricalGradeLChange($event,checkBox.equivalencyId)">{{checkBox.gradeLevelEquivalency}}
                                 </mat-checkbox>
                             </ng-container>
-                            <ng-container *ngIf="!getAllGradeLevels.tableGradelevelList?.length">
-                                <span>{{'pleaseAddGradeLevel'|translate}}</span>
+                            <ng-container *ngIf="!historicalGradeList?.length">
+                                <span>{{'pleaseAddHistoricalGradeLevel'|translate}}</span>
                             </ng-container>
                         </div>
                         <mat-error *ngIf="gradeLevelError">{{'pleaseSelectAtLeastOneGradeLevel'|translate}}</mat-error>

@@ -693,14 +693,42 @@ namespace opensis.data.Repository
             CourseListViewModel courseListModel = new CourseListViewModel();
             try
             {
+
                 var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
-                
-                if (courseRecords!=null && courseRecords.Any())
+
+                if (courseRecords != null && courseRecords.Any())
                 {
                     foreach (var course in courseRecords)
                     {
-                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count };
+                        int? TotalSeats = 0;
+                        int? Totalschedulestudent = 0;
+                        foreach (var cs in course.CourseSection)
+                        {
+                            var seats = cs.Seats;
+
+                            var scheduleStudents = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.CourseId == cs.CourseId && x.CourseSectionId == cs.CourseSectionId && x.IsDropped != true).ToList().Count;
+                            TotalSeats = TotalSeats + seats;
+                            Totalschedulestudent = Totalschedulestudent + scheduleStudents;
+                        }
+                        var availableSeats = TotalSeats - Totalschedulestudent;
+
+                        course.CourseSection = new HashSet<CourseSection>();
+                        course.CourseStandard = new HashSet<CourseStandard>();
+                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count, Schedulestudent = Totalschedulestudent, Availableseats = availableSeats };
                         courseListModel.CourseViewModelList.Add(courseViewModel);
+                    }
+                    var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
+
+                    if (SchoolDetails != null)
+                    {
+                        courseListModel.SchoolName = SchoolDetails.SchoolName;
+                        courseListModel.SchoolLevel = SchoolDetails.SchoolLevel;
+                        courseListModel.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                        courseListModel.Address1 = SchoolDetails.StreetAddress1;
+                        courseListModel.Address2 = SchoolDetails.StreetAddress2;
+                        courseListModel.City = SchoolDetails.City;
+                        courseListModel.State = SchoolDetails.State;
+                        courseListModel.Zipcode = SchoolDetails.Zip;
                     }
                     courseListModel.CourseCount = courseRecords.Count;
 

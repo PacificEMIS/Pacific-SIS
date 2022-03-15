@@ -154,6 +154,7 @@ export class EffortGradeDetailsComponent implements OnInit {
           }
         } else {
           this.allScheduledCourseSectionBasedOnTeacher = res;
+          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.gradeScaleType !== 'Ungraded');
 
         }
       }

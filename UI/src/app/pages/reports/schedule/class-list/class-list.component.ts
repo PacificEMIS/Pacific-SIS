@@ -451,6 +451,9 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
                   subItem.studentView.fullName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
                   subItem.studentView.studentName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
 
+                  subItem.studentView.section = subItem.studentView?.sectionName;
+                  subItem.studentView.gradeLevel = subItem.studentView?.gradeLevelTitle;
+
                   subItem.studentView.studentId = subItem.studentView?.studentInternalId;
 
                   subItem?.fieldsCategoryList[0]?.customFields?.map(subOfSubItem => {

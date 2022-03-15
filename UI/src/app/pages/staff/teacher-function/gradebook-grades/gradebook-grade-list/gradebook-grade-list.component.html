@@ -129,7 +129,7 @@
                                         <span class="mt-1">/{{grade.points}}</span>
                                     </div>
                                     <button class="ml-4" (click)="addGradeComment(grade)">
-                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
+                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                     </button>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
                                 <button class="" (click)="addGradeComment(grade)">
-                                    <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
+                                    <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                 </button>
                             </div>
                         </div>
@@ -275,7 +275,7 @@
                                         <span class="mt-1">/{{grade.points}}</span>
                                     </div>
                                     <button class="ml-4" (click)="addGradeComment(grade)">
-                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
+                                        <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                     </button>
                                 </div>
                             </div>
@@ -287,7 +287,7 @@
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
                                 <button class="" (click)="addGradeComment(grade)">
-                                    <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0}"></i>
+                                    <i class="icon icon-bubble text-lg text-gray-light" [ngClass]="{'text-green': grade?.comment?.trim()?.length > 0 && !grade?.isSubmitted && grade?.isComment}"></i>
                                 </button>
                             </div>
                         </div>

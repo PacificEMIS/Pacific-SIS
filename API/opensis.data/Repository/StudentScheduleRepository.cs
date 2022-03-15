@@ -701,7 +701,8 @@ namespace opensis.data.Repository
                                         UpdatedOn= ssv.studentcss.scs.UpdatedOn,
                                         UpdatedBy= ssv.studentcss.scs.UpdatedBy,
                                         IsDropped= ssv.studentcss.scs.IsDropped,
-                                        SchoolName = this.context?.SchoolMaster.Where(x => x.SchoolId==ssv.studentcss.sm.SchoolId).Select(x => x.SchoolName).FirstOrDefault()
+                                        SchoolName = this.context?.SchoolMaster.Where(x => x.SchoolId == ssv.studentcss.sm.SchoolId).Select(x => x.SchoolName).FirstOrDefault(),
+                                        Section = this.context?.Sections.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.SectionId == ssv.studentcss.sm.SectionId)?.Name,
                                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                 }
                 else
