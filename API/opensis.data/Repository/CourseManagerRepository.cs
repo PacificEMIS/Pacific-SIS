@@ -711,10 +711,11 @@ namespace opensis.data.Repository
                             Totalschedulestudent = Totalschedulestudent + scheduleStudents;
                         }
                         var availableSeats = TotalSeats - Totalschedulestudent;
+                        var totalCourseSection = course.CourseSection.Count();
 
                         course.CourseSection = new HashSet<CourseSection>();
                         course.CourseStandard = new HashSet<CourseStandard>();
-                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count, Schedulestudent = Totalschedulestudent, Availableseats = availableSeats };
+                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, Schedulestudent = Totalschedulestudent, Availableseats = availableSeats, Totalsheet = TotalSeats };
                         courseListModel.CourseViewModelList.Add(courseViewModel);
                     }
                     var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
