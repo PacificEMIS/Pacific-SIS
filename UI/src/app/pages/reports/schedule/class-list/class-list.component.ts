@@ -511,7 +511,7 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   changeFields(event, type, masterCheck?, key?) {
-    if (masterCheck) {
+    if (masterCheck) { 
       if (this.fieldsDetailsArray[key][0].checked) {
         this.fieldsDetailsArray[key].map((item, index) => {
           if (index > 0) {
