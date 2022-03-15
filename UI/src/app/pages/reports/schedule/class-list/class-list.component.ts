@@ -499,10 +499,13 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.currentTab = status;
     } else if (status === 'generateReport' && this.selectedFieldsArray.length > 0) {
-      this.selectedFieldsArray.map(fields => {
+      this.selectedFieldsArray.map((fields,index) => {
         if (fields.property === 'fullName') {
           fields.property = 'studentName';
         }
+        // if(index>5){
+        //   fields.visible=false
+        // }
       });
       this.currentTab = status;
     } else if (status === 'selectSTeacher') {
@@ -515,16 +518,16 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.fieldsDetailsArray[key][0].checked) {
         this.fieldsDetailsArray[key].map((item, index) => {
           if (index > 0) {
-            item.checked = true;
+            item.checked = false;
             if (this.selectedFieldsArray.findIndex(x => x.property === item.property) === -1) {
-              this.selectedFieldsArray.push({ property: item.property, visible: this.selectedFieldsArray.length < 7 ? true : false });
+              this.selectedFieldsArray.push({ property: item.property });
             }
           }
         })
       } else {
         this.fieldsDetailsArray[key].map((item, index) => {
           if (index > 0) {
-            item.checked = false;
+            // item.checked = false;
             const index = this.selectedFieldsArray.findIndex(x => x.property === item.property);
             this.selectedFieldsArray.splice(index, 1);
           }
@@ -533,19 +536,22 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (event.checked) {
         if (key) {
-          const [, ...dataWithoutfirstIndex] = this.fieldsDetailsArray[key];
-          if (dataWithoutfirstIndex.every(x => x.checked)) {
-            this.fieldsDetailsArray[key][0].checked = true;
-            // this.selectedFieldsArray.push(this.fieldsDetailsArray[key][0].property);
+          if(this.fieldsDetailsArray[key][0].checked){
+            this.fieldsDetailsArray[key][0].checked=false;
+            this.fieldsDetailsArray[key].map((item, index) => {
+              if (index > 0) {
+                const index = this.selectedFieldsArray.findIndex(x => x.property === item.property);
+                this.selectedFieldsArray.splice(index, 1);
+              }
+            })
           }
-          this.selectedFieldsArray.push({ property: type, visible: this.selectedFieldsArray.length < 7 ? true : false });
-
+            this.selectedFieldsArray.push({ property: type});
         } else {
-          this.selectedFieldsArray.push({ property: type, visible: this.selectedFieldsArray.length < 7 ? true : false });
+          this.selectedFieldsArray.push({ property: type});
         }
       } else {
         if (key) {
-          this.fieldsDetailsArray[key][0].checked = false;
+          // this.fieldsDetailsArray[key][0].checked = false;
           const index = this.selectedFieldsArray.findIndex(x => x.property === type);
           this.selectedFieldsArray.splice(index, 1);
         } else {
