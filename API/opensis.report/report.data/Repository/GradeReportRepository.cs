@@ -97,7 +97,7 @@ namespace opensis.report.report.data.Repository
                         PreviousName = x.StudentMaster.PreviousName,
                         SocialSecurityNumber = x.StudentMaster.SocialSecurityNumber,
                         OtherGovtIssuedNumber = x.StudentMaster.OtherGovtIssuedNumber,
-                        StudentPhoto = x.StudentMaster.StudentPhoto,
+                        //StudentPhoto = x.StudentMaster.StudentPhoto,
                         Dob = x.StudentMaster.Dob,
                         StudentPortalId = x.StudentMaster.StudentPortalId,
                         Gender = x.StudentMaster.Gender,
