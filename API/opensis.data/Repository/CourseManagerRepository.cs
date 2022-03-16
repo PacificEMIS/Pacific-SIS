@@ -691,67 +691,109 @@ namespace opensis.data.Repository
         public CourseListViewModel GetAllCourseList(CourseListViewModel courseListViewModel)
         {
             CourseListViewModel courseListModel = new CourseListViewModel();
-            try
+
+            if (courseListViewModel.ScheduleReport != true)
             {
-
-                var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
-
-                if (courseRecords != null && courseRecords.Any())
+                try
                 {
-                    foreach (var course in courseRecords)
+                    var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
+
+                    if (courseRecords != null && courseRecords.Any())
                     {
-                        int? totalSeats = 0;
-                        int? totalScheduleStudent = 0;
-                        foreach (var cs in course.CourseSection)
+                        foreach (var course in courseRecords)
                         {
-                            var seats = cs.Seats;
-
-                            var scheduleStudents = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.CourseId == cs.CourseId && x.CourseSectionId == cs.CourseSectionId && x.IsDropped != true).ToList().Count;
-                            totalSeats = totalSeats + seats;
-                            totalScheduleStudent = totalScheduleStudent + scheduleStudents;
+                            CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count };
+                            courseListModel.CourseViewModelList.Add(courseViewModel);
                         }
-                        var availableSeats = totalSeats - totalScheduleStudent;
-                        var totalCourseSection = course.CourseSection.Count();
+                        courseListModel.CourseCount = courseRecords.Count;
 
-                        course.CourseSection = new HashSet<CourseSection>();
-                        course.CourseStandard = new HashSet<CourseStandard>();
-                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
-                        courseListModel.CourseViewModelList.Add(courseViewModel);
+                        courseListModel._failure = false;
                     }
-                    var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
-
-                    if (SchoolDetails != null)
+                    else
                     {
-                        courseListModel.SchoolName = SchoolDetails.SchoolName;
-                        courseListModel.SchoolLevel = SchoolDetails.SchoolLevel;
-                        courseListModel.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
-                        courseListModel.Address1 = SchoolDetails.StreetAddress1;
-                        courseListModel.Address2 = SchoolDetails.StreetAddress2;
-                        courseListModel.City = SchoolDetails.City;
-                        courseListModel.State = SchoolDetails.State;
-                        courseListModel.Zipcode = SchoolDetails.Zip;
+                        courseListModel.CourseCount = null;
+                        courseListModel._failure = true;
+                        courseListModel._message = NORECORDFOUND;
                     }
-                    courseListModel.CourseCount = courseRecords.Count;
-
-                    courseListModel._failure = false;
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
                 }
-                else
+                catch (Exception es)
                 {
-                    courseListModel.CourseCount = null;
+                    courseListModel.CourseViewModelList = new();
+                    courseListModel._message = es.Message;
                     courseListModel._failure = true;
-                    courseListModel._message = NORECORDFOUND;
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
                 }
-                courseListModel._tenantName = courseListViewModel._tenantName;
-                courseListModel._token = courseListViewModel._token;
             }
-            catch (Exception es)
+            else
             {
-                courseListModel.CourseViewModelList = new();
-                courseListModel._message = es.Message;
-                courseListModel._failure = true;
-                courseListModel._tenantName = courseListViewModel._tenantName;
-                courseListModel._token = courseListViewModel._token;
+                try
+                {
+
+                    var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
+
+                    if (courseRecords != null && courseRecords.Any())
+                    {
+                        foreach (var course in courseRecords)
+                        {
+                            int? totalSeats = 0;
+                            int? totalScheduleStudent = 0;
+
+                            foreach (var cs in course.CourseSection)
+                            {
+                                var seats = cs.Seats;
+
+                                var scheduleStudents = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.CourseId == cs.CourseId && x.CourseSectionId == cs.CourseSectionId && x.IsDropped != true).ToList().Count;
+                                totalSeats = totalSeats + seats;
+                                totalScheduleStudent = totalScheduleStudent + scheduleStudents;
+                            }
+                            var availableSeats = totalSeats - totalScheduleStudent;
+                            var totalCourseSection = course.CourseSection.Count();
+
+                            course.CourseSection = new HashSet<CourseSection>();
+                            course.CourseStandard = new HashSet<CourseStandard>();
+
+                            CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
+                            courseListModel.CourseViewModelList.Add(courseViewModel);
+                        }
+                        var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
+
+                        if (SchoolDetails != null)
+                        {
+                            courseListModel.SchoolName = SchoolDetails.SchoolName;
+                            courseListModel.SchoolLevel = SchoolDetails.SchoolLevel;
+                            courseListModel.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                            courseListModel.Address1 = SchoolDetails.StreetAddress1;
+                            courseListModel.Address2 = SchoolDetails.StreetAddress2;
+                            courseListModel.City = SchoolDetails.City;
+                            courseListModel.State = SchoolDetails.State;
+                            courseListModel.Zipcode = SchoolDetails.Zip;
+                        }
+                        courseListModel.CourseCount = courseRecords.Count;
+
+                        courseListModel._failure = false;
+                    }
+                    else
+                    {
+                        courseListModel.CourseCount = null;
+                        courseListModel._failure = true;
+                        courseListModel._message = NORECORDFOUND;
+                    }
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
+                catch (Exception es)
+                {
+                    courseListModel.CourseViewModelList = new();
+                    courseListModel._message = es.Message;
+                    courseListModel._failure = true;
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
             }
+
             return courseListModel;
         }
 
