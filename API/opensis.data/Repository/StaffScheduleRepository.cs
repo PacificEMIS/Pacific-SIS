@@ -180,6 +180,7 @@ namespace opensis.data.Repository
                                         CourseSections.QtrMarkingPeriodId = courseSection.QtrMarkingPeriodId;
                                         CourseSections.PrgrsprdMarkingPeriodId = courseSection.PrgrsprdMarkingPeriodId;
                                         CourseSections.MeetingDays = concatDay;
+                                        CourseSections.AttendanceTaken = courseSection.AttendanceTaken;
                                         teacherSchedules.courseSectionViewList.Add(CourseSections);
                                     }                                 
                                 }
