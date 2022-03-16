@@ -33,8 +33,9 @@ namespace opensis.data.ViewModels.CourseManager
     public class CourseViewModel
     {
         public Course? Course { get; set; }
-        public int? Schedulestudent { get; set; }
-        public int? Availableseats { get; set; }
-        public int CourseSectionCount { get; set; }
+        public int? ScheduleStudent { get; set; }
+        public int? AvailableSeats { get; set; }
+        public int? CourseSectionCount { get; set; }
+        public int? TotalSeats { get; set; }
     }
 }
