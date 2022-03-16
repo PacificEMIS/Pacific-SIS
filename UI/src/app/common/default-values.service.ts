@@ -407,13 +407,7 @@ export class DefaultValuesService {
     this.photoChange.next(data);
   }
 
-  setStudentId(id: string) {
-    sessionStorage.setItem("studentId", JSON.stringify(id));
-  }
 
-  getStudentId() {
-    return JSON.parse(sessionStorage.getItem('studentId'));
-  }
   checkAcademicYear() {
     return moment(new Date()).isBetween(this.getFullYearStartDate(), this.getFullYearEndDate());
   }
