@@ -365,9 +365,6 @@ export class DefaultValuesService {
   getCourseSectionId() {
     return JSON.parse(localStorage.getItem('courseSectionId'));
   }  
-  getCourseId() {
-    return JSON.parse(localStorage.getItem('courseId'));
-  }
   getCollapseValue() {
     return JSON.parse(localStorage.getItem("collapseValue"));
   }
@@ -385,9 +382,6 @@ export class DefaultValuesService {
   setCourseSectionId(courseSectionId: string) {
     localStorage.setItem("courseSectionId", JSON.parse(courseSectionId));
   }
-  setCourseId(courseId: string) {
-    localStorage.setItem("courseId", JSON.parse(courseId));
-  }
   setSchoolCount(schoolCount: any) {
     localStorage.setItem("schoolCount", JSON.stringify(schoolCount));
   }
@@ -396,12 +390,6 @@ export class DefaultValuesService {
   }
   getPhotoAndFooter() {
     return JSON.parse(sessionStorage.getItem('photoAndFooter'));
-  }
-  getSchoolDetails() {
-    return JSON.parse(sessionStorage.getItem('schoolDetails'));
-  }
-  setSchoolDetails(schoolDetails: object) {
-    sessionStorage.setItem("schoolDetails", JSON.stringify(schoolDetails));
   }
 
   //useing of RxJs

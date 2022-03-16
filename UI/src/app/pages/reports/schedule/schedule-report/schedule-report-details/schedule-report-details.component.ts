@@ -34,10 +34,8 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   studentCount = 0;
   courseListCount = 0;
   today = new Date();
-  selectedCourseTitle;
-  selectedCourseId;
   selectedStaffName;
-  schoolDetails;
+  parentData;
   constructor(public translateService: TranslateService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
@@ -48,20 +46,20 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
     private defaultValuesService: DefaultValuesService,
     private router: Router
   ) {
+    this.parentData=this.router.getCurrentNavigation().extras.state;
+    if(!this.parentData)
+      this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report'])
   }
 
   ngOnInit(): void {
-    this.selectedCourseTitle = this.defaultValuesService.getCourseSectionName();
-    this.selectedCourseId = this.defaultValuesService.getCourseId();
-    this.schoolDetails=this.defaultValuesService.getSchoolDetails();
-    this.selectedCourseId && this.selectedCourseTitle ? this.getAllCourseSection() : this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report']);
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
+    this.getAllCourseSection()
   }
 
   getAllCourseSection() {
-    this.getAllCourseSectionModel.courseId = this.selectedCourseId;
+    this.getAllCourseSectionModel.courseId = this.parentData.courseId;
     this.getAllCourseSectionModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.courseSectionService.getAllCourseSection(this.getAllCourseSectionModel).subscribe(
       (res: GetAllCourseSectionModel) => {
@@ -400,9 +398,6 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    sessionStorage.removeItem('courseId');
-    sessionStorage.removeItem('selectedCourseSectionName')
-    sessionStorage.removeItem('schoolDetails')
     this.destroySubject$.next();
     this.destroySubject$.complete();
   }

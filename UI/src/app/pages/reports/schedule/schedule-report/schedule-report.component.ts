@@ -44,10 +44,8 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
   }
 
   viewDetails(course:any) {
-    this.defaultValuesService.setSchoolDetails(this.schoolDetails)
-    this.defaultValuesService.setCourseId(course.course.courseId);
-    this.defaultValuesService.setCourseSectionName(course.course.courseTitle);
-    this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report', 'schedule-report-details']);
+    this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report', 'schedule-report-details'],
+      {state:{schoolDetails:this.schoolDetails,courseId:course.course.courseId,courseTitle:course.course.courseTitle}});
   }
   getAllCourse(){
     this.getAllCourseListModel.scheduleReport=true;

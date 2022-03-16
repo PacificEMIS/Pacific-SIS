@@ -7,7 +7,7 @@
                 <mat-icon class="align-middle">west</mat-icon>
             </span>
             <div class="ml-4">
-                <h4 class="text-primary font-medium text-base cursor-pointer">{{selectedCourseTitle}}</h4>
+                <h4 class="text-primary font-medium text-base cursor-pointer">{{parentData.courseTitle}}</h4>
                 <p>{{courseListCount}} {{'courseSectionFound' | translate}}</p>
             </div>
         </div>
@@ -88,16 +88,16 @@
                         <tr>
                             <td class="header-left">
                                 <div class="float-left school-logo">
-                                    <img *ngIf="schoolDetails?.schoolLogo"
-                                        [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                    <img *ngIf="parentData.schoolDetails?.schoolLogo"
+                                        [src]="'data:image/jpeg;base64,'+parentData.schoolDetails?.schoolLogo" alt="School Logo">
                                 </div>
                                 <div class="float-left information">
-                                    <h4>{{schoolDetails?.schoolName}}</h4>
-                                    <p>{{schoolDetails?.address1}}{{schoolDetails?.address2 ? ', ' +
-                                        schoolDetails?.address2 : ''}}{{schoolDetails?.city ? ', ' +
-                                        schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
-                                        ''}}{{schoolDetails?.zipcode ? ', ' + schoolDetails?.zipcode :
-                                        ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                    <h4>{{parentData.schoolDetails?.schoolName}}</h4>
+                                    <p>{{parentData.schoolDetails?.address1}}{{parentData.schoolDetails?.address2 ? ', ' +
+                                        parentData.schoolDetails?.address2 : ''}}{{parentData.schoolDetails?.city ? ', ' +
+                                        parentData.schoolDetails?.city : ''}}{{parentData.schoolDetails?.state ? ', ' + parentData.schoolDetails?.state :
+                                        ''}}{{parentData.schoolDetails?.zipcode ? ', ' + parentData.schoolDetails?.zipcode :
+                                        ''}}{{parentData.schoolDetails?.country ? ', ' + parentData.schoolDetails?.country : ''}}</p>
                                 </div>
                             </td>
                             <td class="header-right text-right">
@@ -123,7 +123,7 @@
                             </td>
                             <td>
                                 <label>{{'course'|translate}}</label>
-                                <p>{{selectedCourseTitle}}</p>
+                                <p>{{parentData.courseTitle}}</p>
                             </td>
                             <td>
                                 <label>{{'teacher'|translate}}</label>
