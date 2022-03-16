@@ -264,12 +264,12 @@
                     </span>
                   </td>
                   <td>
-                    <button matTooltip="{{ 'infoItem' | translate }}" [matTooltipPosition]="'left'"
+                    <button matTooltip="{{ 'viewCourse' | translate }}" [matTooltipPosition]="'left'"
                       (click)="scheduleDetails(course)">
                       <mat-icon [icIcon]="icInfo"></mat-icon>
                     </button>
                     <span
-                      [matTooltip]="course.isDropped ? 'Dropped Course' : course.isAssociationship?('deletionDisallowedDueToAssociation'|translate):('deleteItem'|translate)"
+                      [matTooltip]="course.isDropped ? ('droppedCourse'|translate) : course.isAssociationship?('deletionDisallowedDueToAssociation'|translate):('deleteCourse'|translate)"
                       [matTooltipPosition]="'left'" *ngIf="permissions?.delete">
                       <button [disabled]="course.isDropped || course.isAssociationship"
                         [ngClass]="course.isDropped || course.isAssociationship? 'text-gray' : ''"

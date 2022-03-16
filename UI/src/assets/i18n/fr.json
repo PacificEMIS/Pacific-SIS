@@ -1762,5 +1762,7 @@
     "attendanceTrackingIsNotEnabledForThisCourseSection":"Le suivi de présence n'est pas activé pour cette section de cours",
     "courseSectionsAnd": "Sections de cours et",
     "studentFound": "Étudiant trouvés",
-    "coursePeriods": "Périodes de cours"
-}
+    "coursePeriods": "Périodes de cours",
+    "viewCourse": "Voir le cours",
+    "deleteCourse": "Supprimer le cours",
+    "droppedCourse": "Cours abandonné"}

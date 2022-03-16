@@ -24,6 +24,7 @@ export class StaffScheduleView {
 }
 
 export class CourseSectionList {
+    attendanceTaken: boolean;
     courseSectionId: number;
     courseId: number;
     calendarId: number;
