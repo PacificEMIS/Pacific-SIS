@@ -700,22 +700,22 @@ namespace opensis.data.Repository
                 {
                     foreach (var course in courseRecords)
                     {
-                        int? TotalSeats = 0;
-                        int? Totalschedulestudent = 0;
+                        int? totalSeats = 0;
+                        int? totalScheduleStudent = 0;
                         foreach (var cs in course.CourseSection)
                         {
                             var seats = cs.Seats;
 
                             var scheduleStudents = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.CourseId == cs.CourseId && x.CourseSectionId == cs.CourseSectionId && x.IsDropped != true).ToList().Count;
-                            TotalSeats = TotalSeats + seats;
-                            Totalschedulestudent = Totalschedulestudent + scheduleStudents;
+                            totalSeats = totalSeats + seats;
+                            totalScheduleStudent = totalScheduleStudent + scheduleStudents;
                         }
-                        var availableSeats = TotalSeats - Totalschedulestudent;
+                        var availableSeats = totalSeats - totalScheduleStudent;
                         var totalCourseSection = course.CourseSection.Count();
 
                         course.CourseSection = new HashSet<CourseSection>();
                         course.CourseStandard = new HashSet<CourseStandard>();
-                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, Schedulestudent = Totalschedulestudent, Availableseats = availableSeats, Totalsheet = TotalSeats };
+                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
                         courseListModel.CourseViewModelList.Add(courseViewModel);
                     }
                     var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
