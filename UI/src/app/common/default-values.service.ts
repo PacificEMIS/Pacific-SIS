@@ -15,6 +15,7 @@ export class DefaultValuesService {
   public newSubject = new Subject<string>();
   private photoChange = new Subject<string>();
   photoChanged = this.photoChange.asObservable();
+
   TenantId: string = '';
   schoolID: number;
   academicYear: number;
@@ -364,7 +365,7 @@ export class DefaultValuesService {
   }
   getCourseSectionId() {
     return JSON.parse(localStorage.getItem('courseSectionId'));
-  }  
+  }
   getCollapseValue() {
     return JSON.parse(localStorage.getItem("collapseValue"));
   }
