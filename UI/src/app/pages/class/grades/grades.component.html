@@ -1,18 +1,24 @@
-<div class="custom-tab">
-    <div class="flex md:justify-center items-center mb-5">
-        <ul class="flex flex-row">
-            <li class="px-4 py-2 cursor-pointer font-medium" (click)="changeTab('gradebook')"
-                [class.active]="currentTab === 'gradebook'"
-                [ngClass]="currentTab === 'gradebook' ? 'text-white bg-green rounded-full' : 'text-gray'">{{'gradebookGrades'| translate }}
-            </li>
-            <li class="px-4 py-2 cursor-pointer font-medium" (click)="changeTab('inputFinalGrades')"
-                [class.active]="currentTab === 'inputFinalGrades'"
-                [ngClass]="currentTab === 'inputFinalGrades' ? 'text-white bg-green rounded-full' : 'text-gray'">{{
-                'inputFinalGrades' | translate }}
-            </li>
-        </ul>
+<div *ngIf="!isNotGraded">
+    <div class="custom-tab">
+        <div class="flex md:justify-center items-center mb-5">
+            <ul class="flex flex-row">
+                <li class="px-4 py-2 cursor-pointer font-medium" (click)="changeTab('gradebook')"
+                    [class.active]="currentTab === 'gradebook'"
+                    [ngClass]="currentTab === 'gradebook' ? 'text-white bg-green rounded-full' : 'text-gray'">{{'gradebookGrades'| translate }}
+                </li>
+                <li class="px-4 py-2 cursor-pointer font-medium" (click)="changeTab('inputFinalGrades')"
+                    [class.active]="currentTab === 'inputFinalGrades'"
+                    [ngClass]="currentTab === 'inputFinalGrades' ? 'text-white bg-green rounded-full' : 'text-gray'">{{
+                    'inputFinalGrades' | translate }}
+                </li>
+            </ul>
+        </div>
+        <p class="flex md:justify-center items-center mb-5 font-medium text-red" *ngIf="currentTab === 'gradebook' && isConfigUpdateFlag == true">{{'youHaveChangedTheGradebookConfiguration' | translate}}{{', '}}{{'pleaseRecalculateTheGrades' | translate}}</p>
     </div>
-    <p class="flex md:justify-center items-center mb-5 font-medium text-red" *ngIf="currentTab === 'gradebook' && isConfigUpdateFlag == true">{{'youHaveChangedTheGradebookConfiguration' | translate}}{{', '}}{{'pleaseRecalculateTheGrades' | translate}}</p>
+    <vex-gradebook-grades [currentTab]="currentTab" (isConfigUpdateFlag)="configUpdateflagCheck($event)"></vex-gradebook-grades>
+    <vex-input-final-grades [currentTab]="currentTab"></vex-input-final-grades>
 </div>
-<vex-gradebook-grades [currentTab]="currentTab" (isConfigUpdateFlag)="configUpdateflagCheck($event)"></vex-gradebook-grades>
-<vex-input-final-grades [currentTab]="currentTab"></vex-input-final-grades>
+<div *ngIf="isNotGraded" class="overview-content not-graded md:w-7/12 m-auto card p-10 py- md:p-20 text-center">
+    <img src="assets/img/access_denied.svg" alt="Access Denied Icon" class="inline-block mb-5 md:my-10">
+    <p class="text-lg text-red leading-relaxed mb-5 md:mb-10"><span>{{ 'youCannotAccess' | translate }}</span><span class="font-semibold mx-1">{{ 'grades' | translate }}</span><span>{{ 'becauseTheGradeScaleForTheCourseSectionIsNotSet' | translate }}</span></p>
+</div>

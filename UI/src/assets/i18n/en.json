@@ -1764,10 +1764,6 @@
     "dailyAttendance": "Daily Attendance",
     "attendanceByDay": "Attendance by Day",
     "attendanceByPeriod": "Attendance by Period",
-    "attendanceTrackingIsNotEnabledForThisCourseSection":"Attendance tracking is not enabled for this course section",
-    "youCannotAccess": "You cannot access",
-    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set.",
-    "patternInvalid": "Pattern invalid",
     "courseSectionsAnd": "Course Sections and",
     "studentFound": "Student Found",
     "coursePeriods": "Course Periods"

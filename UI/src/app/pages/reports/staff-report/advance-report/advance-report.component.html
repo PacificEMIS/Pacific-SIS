@@ -180,7 +180,7 @@
                         <div class="w-2/3">
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
                                 <li *ngFor="let field of fieldsDetailsArray?.addressAndContactInfo">
-                                    <mat-slide-toggle color="primary" (change)="changeFields($event, field?.property)"
+                                    <mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)"
                                         class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}
                                 </li>
                             </ul>
@@ -260,7 +260,7 @@
                         <div class="w-2/3">
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
                                 <li *ngFor="let field of fieldsDetailsArray?.emergencyContactInformation">
-                                    <mat-slide-toggle color="primary" (change)="changeFields($event, field?.property)"
+                                    <mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)"
                                         class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}
                                 </li>
                             </ul>

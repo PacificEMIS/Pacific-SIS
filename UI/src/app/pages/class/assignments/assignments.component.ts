@@ -66,6 +66,8 @@ export class AssignmentsComponent implements OnInit {
   courseId: number;
   isWeightedSection: boolean;
   selectedAssignmentType: AssignmentList;
+  selectedCourseSection;
+  isNotGraded: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -82,11 +84,17 @@ export class AssignmentsComponent implements OnInit {
         this.courseId = +res.courseId;
       }
     });
+    this.selectedCourseSection = this.defaultValueService.getSelectedCourseSection();
   }
 
   ngOnInit(): void {
-    this.getAllAssignments();
-    this.viewGradebookConfiguration();
+    if (this.selectedCourseSection?.gradeScaleType !== 'Ungraded') {
+      this.isNotGraded = false;
+      this.getAllAssignments();
+      this.viewGradebookConfiguration();
+    } else {
+      this.isNotGraded = true;
+    }
   }
 
   changeAssignmentType(assignmentType) {

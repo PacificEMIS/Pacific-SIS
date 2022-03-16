@@ -1763,10 +1763,6 @@
     "pointsPossible": "Points / Possibles",
     "gradeRange": "Gamme de qualité",
     "letter": "Lettre",
-    "attendanceTrackingIsNotEnabledForThisCourseSection":"Le suivi de présence n'est pas activé pour cette section de cours",
-    "youCannotAccess": "Vous ne pouvez pas accéder",
-    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "car l'échelle de notation de la section de cours n'est pas définie.",
-    "patternInvalid": "Modèle invalide",
     "courseSectionsAnd": "Sections de cours et",
     "studentFound": "Étudiant trouvés",
     "coursePeriods": "Périodes de cours"

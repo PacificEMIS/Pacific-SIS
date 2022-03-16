@@ -78,6 +78,7 @@ export class ScheduleStudentForView {
   public studentInternalId: string;
   public gradeLevel: string;
   public gradeLevelTitle: string;
+  public sectionName: string;
   public section: string;
   public phoneNumber: string;
   public action: string;

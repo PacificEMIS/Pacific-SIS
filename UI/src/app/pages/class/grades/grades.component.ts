@@ -26,6 +26,7 @@ All rights reserved.
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { DefaultValuesService } from "src/app/common/default-values.service";
 
 @Component({
   selector: "vex-grades",
@@ -34,18 +35,27 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class GradesComponent implements OnInit, AfterViewInit {
   currentTab: string;
+  selectedCourseSection;
+  isNotGraded: boolean;
   // @Output() gradeSelTab: EventEmitter<string> = new EventEmitter();
 
   isConfigUpdateFlag: boolean
   constructor(
     public translateService: TranslateService,
+    private defaultValuesService: DefaultValuesService,
     private dialog: MatDialog
   ) {
     // translateService.use("en");
+    this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
   }
 
   ngOnInit(): void {
-    this.currentTab = "gradebook";
+    if (this.selectedCourseSection?.gradeScaleType !== 'Ungraded') {
+      this.isNotGraded = false;
+      this.currentTab = "gradebook";
+    } else {
+      this.isNotGraded = true;
+    }
   }
 
   ngAfterViewInit(): void {
