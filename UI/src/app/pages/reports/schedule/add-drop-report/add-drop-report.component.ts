@@ -231,9 +231,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // For format the date
   formatDate(date) {
-    if (date) {
-      return date ? moment(date).format('MMM DD, YYYY') : null;
-    }
+    return date ? moment(date).format('MMM DD, YYYY') : null;
   }
 
   // For get all data from API
