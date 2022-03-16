@@ -259,7 +259,8 @@ namespace opensis.data.Repository
                                         MeetingDays = CourseSection.MeetingDays,
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
-                                        IsAssigned = true
+                                        IsAssigned = true,
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }
@@ -614,7 +615,8 @@ namespace opensis.data.Repository
                                         MeetingDays = courseSection.MeetingDays,
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
-                                        IsAssigned = true
+                                        IsAssigned = true,
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }      
