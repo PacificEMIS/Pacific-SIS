@@ -1761,5 +1761,7 @@
     "attendanceTrackingIsNotEnabledForThisCourseSection":"El seguimiento de asistencia no está habilitado para esta sección del curso",
     "courseSectionsAnd": "Seccións del curso y",
     "studentFound": "Estudiante encontrados",
-    "coursePeriods": "Períodos del curso"
-}
+    "coursePeriods": "Períodos del curso",
+    "viewCourse": "ver curso",
+    "deleteCourse": "borrar curso",
+    "droppedCourse": "curso abandonado"}
