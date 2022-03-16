@@ -19,7 +19,8 @@
             <div>
                 <p class="font-semibold">{{item.courseSection.courseSectionName}}</p>
                 <div class="flex items-center">
-                    <span>Full Year</span><span class="dot-separator bg-black"></span><span>{{item.staffName?item.staffName:'-'}}</span>
+                    <span>{{item.courseSection.durationBasedOnPeriod?item.courseSection.mpTitle:(item.courseSection.durationStartDate|date)+'
+                        - '+(item.courseSection.durationEndDate|date)}}</span><span class="dot-separator bg-black" *ngIf="item.staffName"></span><span>{{item.staffName?item.staffName:''}}</span>
                 </div>
             </div>
             <div>
@@ -87,11 +88,16 @@
                         <tr>
                             <td class="header-left">
                                 <div class="float-left school-logo">
-                                    <img src="" alt="School Logo">
+                                    <img *ngIf="schoolDetails?.schoolLogo"
+                                        [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
                                 </div>
                                 <div class="float-left information">
-                                    <h4>Peachtree High School</h4>
-                                    <p>1555 Old Peachtree Rd NW, Suwanee, GA 300024, United States</p>
+                                    <h4>{{schoolDetails?.schoolName}}</h4>
+                                    <p>{{schoolDetails?.address1}}{{schoolDetails?.address2 ? ', ' +
+                                        schoolDetails?.address2 : ''}}{{schoolDetails?.city ? ', ' +
+                                        schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                        ''}}{{schoolDetails?.zipcode ? ', ' + schoolDetails?.zipcode :
+                                        ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
                                 </div>
                             </td>
                             <td class="header-right text-right">

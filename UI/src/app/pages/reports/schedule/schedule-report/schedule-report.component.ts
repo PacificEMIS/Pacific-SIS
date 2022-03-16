@@ -20,10 +20,10 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
 
   icMenuBook = icMenuBook;
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel(); 
-  courseList=[];
+  courseList:any;
   loading:boolean = false;
   destroySubject$: Subject<void> = new Subject();
-
+  schoolDetails:object;
   constructor(
     public translateService: TranslateService, 
     private router: Router,
@@ -44,12 +44,14 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
   }
 
   viewDetails(course:any) {
+    this.defaultValuesService.setSchoolDetails(this.schoolDetails)
     this.defaultValuesService.setCourseId(course.course.courseId);
     this.defaultValuesService.setCourseSectionName(course.course.courseTitle);
     this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report', 'schedule-report-details']);
   }
   getAllCourse(){
-    this.courseManager.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
+    this.getAllCourseListModel.scheduleReport=true;
+    this.courseManager.GetAllCourseList(this.getAllCourseListModel).subscribe((data:any) => {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
         if(data.courseViewModelList){
@@ -60,15 +62,17 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
           }); 
         }
       }else{      
-        data.courseViewModelList.map((data:any)=>{
-          let seats=0;
-          data.course.courseSection.map(innerMap=>{
-            seats+=innerMap.seats;
-          })
-          data.seats=seats;
-        })
         this.courseList=data.courseViewModelList;
-        
+        this.schoolDetails={
+          schoolLogo:data.schoolLogo,
+          schoolName:data.schoolName,
+          address1:data.address1,
+          address2:data.address2,
+          city:data.city,
+          state:data.state,
+          zipcode:data.zipcode,
+          country:data.country,
+        }
       }
     });
   }

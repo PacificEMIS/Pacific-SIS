@@ -397,6 +397,12 @@ export class DefaultValuesService {
   getPhotoAndFooter() {
     return JSON.parse(sessionStorage.getItem('photoAndFooter'));
   }
+  getSchoolDetails() {
+    return JSON.parse(sessionStorage.getItem('schoolDetails'));
+  }
+  setSchoolDetails(schoolDetails: object) {
+    sessionStorage.setItem("schoolDetails", JSON.stringify(schoolDetails));
+  }
 
   //useing of RxJs
   sendName(data) {

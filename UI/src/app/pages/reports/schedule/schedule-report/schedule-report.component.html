@@ -12,7 +12,7 @@
                 <div>
                     <p class="font-semibold">{{course.course.courseTitle}}</p>
                     <div class="flex items-center">
-                        <span>{{course.course.courseSubject}}</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>89/{{course.seats}}</span>
+                        <span>{{course.course.courseSubject}}</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>{{course.availableSeats}}/{{course.totalSeats}}</span>
                     </div>
                 </div>
                 <div class="cursor-pointer" (click)="viewDetails(course)">

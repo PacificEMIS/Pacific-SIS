@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 import { LoaderService } from 'src/app/services/loader.service';
 import { Subject } from 'rxjs';
 import { ExcelService } from 'src/app/services/excel.service';
+import { GradeScaleModel } from 'src/app/models/grades.model';
 
 @Component({
   selector: 'vex-schedule-report-details',
@@ -36,6 +37,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   selectedCourseTitle;
   selectedCourseId;
   selectedStaffName;
+  schoolDetails;
   constructor(public translateService: TranslateService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
@@ -51,6 +53,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedCourseTitle = this.defaultValuesService.getCourseSectionName();
     this.selectedCourseId = this.defaultValuesService.getCourseId();
+    this.schoolDetails=this.defaultValuesService.getSchoolDetails();
     this.selectedCourseId && this.selectedCourseTitle ? this.getAllCourseSection() : this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report']);
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -72,7 +75,28 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
               });
             }
           } else {
-            this.courseSectionForView = res.getCourseSectionForView;
+            res.getCourseSectionForView?.map((item)=>{
+              if(item.courseSection.durationBasedOnPeriod){
+                if(item.courseSection.quarters!=null){
+                  item.courseSection.mpTitle=item.courseSection.quarters.title;
+                  item.courseSection.mpStartDate=item.courseSection.quarters.startDate;
+                  item.courseSection.mpEndDate=item.courseSection.quarters.endDate;
+                }else if(item.courseSection.schoolYears!=null){
+                  item.courseSection.mpTitle=item.courseSection.schoolYears.title;
+                  item.courseSection.mpStartDate=item.courseSection.schoolYears.startDate;
+                  item.courseSection.mpEndDate=item.courseSection.schoolYears.endDate;
+                }else if(item.courseSection.progressPeriods!=null){
+                  item.courseSection.mpTitle=item.courseSection.progressPeriods.title;
+                  item.courseSection.mpStartDate=item.courseSection.progressPeriods.startDate;
+                  item.courseSection.mpEndDate=item.courseSection.progressPeriods.endDate;
+                } else{
+                  item.courseSection.mpTitle=item.courseSection.semesters.title;
+                  item.courseSection.mpStartDate=item.courseSection.semesters.startDate;
+                  item.courseSection.mpEndDate=item.courseSection.semesters.endDate;
+                }
+              }
+            })
+            this.courseSectionForView=res.getCourseSectionForView;
             this.courseListCount = res.getCourseSectionForView.length;
             this.getAllStudent.courseSectionId = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionId;
             this.selectedCourseName = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionName;
@@ -376,8 +400,9 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    localStorage.removeItem('courseId');
-    localStorage.removeItem('selectedCourseSectionName')
+    sessionStorage.removeItem('courseId');
+    sessionStorage.removeItem('selectedCourseSectionName')
+    sessionStorage.removeItem('schoolDetails')
     this.destroySubject$.next();
     this.destroySubject$.complete();
   }
