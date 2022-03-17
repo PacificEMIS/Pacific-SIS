@@ -758,19 +758,7 @@ namespace opensis.data.Repository
                             CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
                             courseListModel.CourseViewModelList.Add(courseViewModel);
                         }
-                        var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
-
-                        if (SchoolDetails != null)
-                        {
-                            courseListModel.SchoolName = SchoolDetails.SchoolName;
-                            courseListModel.SchoolLevel = SchoolDetails.SchoolLevel;
-                            courseListModel.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
-                            courseListModel.Address1 = SchoolDetails.StreetAddress1;
-                            courseListModel.Address2 = SchoolDetails.StreetAddress2;
-                            courseListModel.City = SchoolDetails.City;
-                            courseListModel.State = SchoolDetails.State;
-                            courseListModel.Zipcode = SchoolDetails.Zip;
-                        }
+                       
                         courseListModel.CourseCount = courseRecords.Count;
 
                         courseListModel._failure = false;
@@ -1187,6 +1175,26 @@ namespace opensis.data.Repository
                             }
                         }
                     }
+
+                    //this block for fetch school details
+                    if (courseSectionViewModel.schoolDetails == true)
+                    {
+                        var SchoolDetailsData = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseSectionViewModel.TenantId && x.SchoolId == courseSectionViewModel.SchoolId).FirstOrDefault();
+
+                        if (SchoolDetailsData != null)
+                        {
+                            courseSectionView.SchoolName = SchoolDetailsData.SchoolName;
+                            courseSectionView.StreetAddress1 = SchoolDetailsData.StreetAddress1;
+                            courseSectionView.StreetAddress2 = SchoolDetailsData.StreetAddress2;
+                            courseSectionView.Country = SchoolDetailsData.Country;
+                            courseSectionView.City = SchoolDetailsData.City;
+                            courseSectionView.State = SchoolDetailsData.State;
+                            courseSectionView.District = SchoolDetailsData.District;
+                            courseSectionView.Zip = SchoolDetailsData.Zip;
+                            courseSectionView.SchoolLogo = SchoolDetailsData.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                        }
+                    }
+
                     courseSectionView.TenantId = courseSectionViewModel.TenantId;
                     courseSectionView.SchoolId = courseSectionViewModel.SchoolId;
                     courseSectionView.CourseId = courseSectionViewModel.CourseId;
