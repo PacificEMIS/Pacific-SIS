@@ -758,19 +758,7 @@ namespace opensis.data.Repository
                             CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
                             courseListModel.CourseViewModelList.Add(courseViewModel);
                         }
-                        var SchoolDetails = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId).FirstOrDefault();
-
-                        if (SchoolDetails != null)
-                        {
-                            courseListModel.SchoolName = SchoolDetails.SchoolName;
-                            courseListModel.SchoolLevel = SchoolDetails.SchoolLevel;
-                            courseListModel.SchoolLogo = SchoolDetails.SchoolDetail.FirstOrDefault()?.SchoolLogo;
-                            courseListModel.Address1 = SchoolDetails.StreetAddress1;
-                            courseListModel.Address2 = SchoolDetails.StreetAddress2;
-                            courseListModel.City = SchoolDetails.City;
-                            courseListModel.State = SchoolDetails.State;
-                            courseListModel.Zipcode = SchoolDetails.Zip;
-                        }
+                       
                         courseListModel.CourseCount = courseRecords.Count;
 
                         courseListModel._failure = false;
