@@ -1770,4 +1770,8 @@
     "coursePeriods": "Períodos del curso",
     "viewCourse": "ver curso",
     "deleteCourse": "borrar curso",
-    "droppedCourse": "curso abandonado"}
+    "droppedCourse": "curso abandonado",
+    "gradeLevelEquivalencyIsRequiredForHist": "Se requiere equivalencia de nivel de grado",
+    "courseCodeIsRequired": "Se requiere el código del curso",
+    "percentageIsRequired": "Se requiere porcentaje"
+}
