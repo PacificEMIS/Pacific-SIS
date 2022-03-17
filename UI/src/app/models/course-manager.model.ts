@@ -109,6 +109,7 @@ export class GetAllCourseListModel extends CommonField {
     public academicYear: number;
     public tenantId: string;
     public schoolId: number;
+    public scheduleReport: boolean;
 }
 export class CourseStandardModel {
     public tenantId: string;
