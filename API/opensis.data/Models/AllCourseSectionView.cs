@@ -77,6 +77,8 @@ namespace opensis.data.Models
         public string? StaffName { get; set; }
         [NotMapped]
         public int? AvailableSeat { get; set; }
+        [NotMapped]
+        public string? MarkingPeriod { get; set; }
 
     }
 }

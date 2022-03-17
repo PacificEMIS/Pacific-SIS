@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.report.report.data.Interface;
@@ -77,9 +77,9 @@ namespace opensis.report.report.data.Repository
                         schoolReport.Latitude = school.Latitude;
                         List<StaffReport> staffListForReport = new();
 
-                        var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == reportModel.TenantId && reportModel.StaffIds.Contains(x.StaffId.Value) && x.SchoolAttachedId == reportModel.SchoolId).Select(s => s.StaffId).ToList();
+                        //var schoolAttachedStaffId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == reportModel.TenantId && reportModel.StaffIds.Contains(x.StaffId.Value) && x.SchoolAttachedId == reportModel.SchoolId).Select(s => s.StaffId).ToList();
 
-                       var staffData = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == reportModel.TenantId && schoolAttachedStaffId!.Contains(x.StaffId) /*&& (reportModel.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true)*/).ToList();
+                       var staffData = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).Where(x => x.TenantId == reportModel.TenantId && reportModel.StaffIds.Contains(x.StaffId) /*&& (reportModel.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true)*/).ToList();
 
                         //var staffData = this.context?.StaffMaster.Where(x => x.TenantId == school.TenantId && x.SchoolId == school.SchoolId && reportModel!.StaffGuids!.Contains(x.StaffGuid)).ToList();
 
