@@ -1,4 +1,4 @@
-﻿using opensis.data.Models;
+using opensis.data.Models;
 using opensis.report.report.data.ViewModels.AttendanceReport;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,8 @@ namespace opensis.report.report.data.Interface
         public AverageDailyAttendanceViewModel GetAverageDailyAttendanceReport(PageResult pageResult);
         public AverageDailyAttendanceViewModel GetAverageAttendancebyDayReport(PageResult pageResult);
         public StudentAttendanceReport GetStudentAttendanceExcelReport(PageResult pageResult);
+        public StudentListForAbsenceSummary GetAllStudentAbsenceList(PageResult pageResult);
+        public AbsenceListByStudent GetAbsenceListByStudent(PageResult pageResult);
 
-    }
+  }
 }
