@@ -1332,7 +1332,7 @@
     "PermissionGroupId": "9",
     "PermissionCategoryName": "Absence Summary",
     "ShortCode": "as",
-    "Path": "/disable",
+    "Path": "/school/attendance/absence-summary",
     "Title": "Absence Summary",
     "Type": "link",
     "EnableView": true,
