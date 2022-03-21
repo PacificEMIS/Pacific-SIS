@@ -905,7 +905,7 @@ namespace opensis.data.Repository
                         foreach (var assignmentType in AssignmentTypeData)
                         {
                             string? assignmentGrade = null;
-                            int? allowedMarks = 0;
+                            decimal? allowedMarks = 0;
                             int? totalPoint = 0;
                             int count = 0;
                             AssignmentTypeViewModel assignmentTypeListViewModel = new AssignmentTypeViewModel();
@@ -921,7 +921,7 @@ namespace opensis.data.Repository
                                     assignmentViewModel.Percentage = gradebookGrade.Percentage;
                                     assignmentViewModel.LetterGrade = gradebookGrade.LetterGrade;
                                     assignmentViewModel.Comment = gradebookGrade.Comment;
-                                    allowedMarks += Convert.ToInt32(gradebookGrade.AllowedMarks);
+                                    allowedMarks += Convert.ToDecimal(gradebookGrade.AllowedMarks);
 
                                 }
                                 assignmentViewModel.TenantId = assignment.TenantId;
@@ -931,7 +931,7 @@ namespace opensis.data.Repository
                                 assignmentViewModel.AssignmentTypeId = assignment.AssignmentTypeId;
                                 assignmentViewModel.Points = assignment.Points;
                                 assignmentViewModel.AssignmentTitle = assignment.AssignmentTitle;
-                                assignmentViewModel.Points = assignment.Points;
+                                //assignmentViewModel.Points = assignment.Points;
                                 totalPoint += assignment.Points;
                                 assignmentTypeListViewModel.assignmentViewModelList.Add(assignmentViewModel);
 
@@ -1010,6 +1010,7 @@ namespace opensis.data.Repository
                     int? QtrMarkingPeriodId = null;
                     int? PrgrsprdMarkingPeriodId = null;
                     int? totalWeitage = 0;
+                    bool? weightedGrades = null;
 
                     if (AssignmentTypeData?.Any() == true)
                     {
@@ -1019,6 +1020,21 @@ namespace opensis.data.Repository
                         PrgrsprdMarkingPeriodId = AssignmentTypeData.FirstOrDefault()!.PrgrsprdMarkingPeriodId;
 
                         totalWeitage = AssignmentTypeData?.ToList().Sum(x => x.Weightage);
+
+                        var gradebookConfigurationData = this.context?.GradebookConfiguration.Where(x => x.TenantId == assignmentForStudentViewModel.TenantId && x.SchoolId == assignmentForStudentViewModel.SchoolId && x.CourseSectionId == assignmentForStudentViewModel.CourseSectionId && x.AcademicYear == assignmentForStudentViewModel.AcademicYear).FirstOrDefault();
+
+                        //**//
+                        if (gradebookConfigurationData != null)
+                        {
+                            if (gradebookConfigurationData.General != null && gradebookConfigurationData.General.ToLower().Contains("weightgrades"))
+                            {
+                                weightedGrades = true;
+                            }
+                            else
+                            {
+                                weightedGrades = false;
+                            }
+                        }
 
                         if (YrMarkingPeriodId != null || SmstrMarkingPeriodId != null || QtrMarkingPeriodId != null || PrgrsprdMarkingPeriodId != null)
                         {
@@ -1044,10 +1060,12 @@ namespace opensis.data.Repository
 
                     decimal? runingAvgSum = 0.0m;
                     decimal? sumOfAssignmentTypeAvg = 0.0m;
+                    int typeCount = 0;
                     var GradebookGradeList = new List<GradebookGrades>();
                     foreach (var assignmentType in assignmentForStudentViewModel.assignmentTypeViewModelList)
                     {
                         int count = 0;
+                        typeCount++;
                         decimal? assignmentTypeAvg = 0.0m;
                         AssignmentTypeViewModel assignmentTypeListViewModel = new AssignmentTypeViewModel();
                         foreach (var assignment in assignmentType.assignmentViewModelList)
@@ -1058,16 +1076,43 @@ namespace opensis.data.Repository
                                 decimal? weightPersentage = 0.0m;
                                 decimal? assignmentPercentage = 0.0m;
                                 string? assignmentGrade = null;
+                                decimal? runingAvg = 0;
 
                                 if (assignment.AllowedMarks != "*")
                                 {
-                                    weightPersentage = Math.Round((Convert.ToDecimal(assignmentType.Weightage) / Convert.ToDecimal(totalWeitage) * 100), 2);
-
+                                    //weightPersentage = Math.Round((Convert.ToDecimal(assignmentType.Weightage) / Convert.ToDecimal(totalWeitage) * 100), 2);
                                     assignmentPercentage = Math.Round(100 * (Convert.ToDecimal(assignment.AllowedMarks) / Convert.ToDecimal(assignment.Points)), 2);
 
-                                    var runingAvg = Math.Round((decimal)(assignmentPercentage * weightPersentage / 100), 2);
+                                    if (weightedGrades == true)
+                                    {
+                                        //**//
 
-                                    assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+                                        if (totalWeitage > 0)
+                                        {
+                                            weightPersentage = Math.Round((Convert.ToDecimal(assignmentType.Weightage) / Convert.ToDecimal(totalWeitage) * 100), 2);
+
+                                            runingAvg = Math.Round((decimal)(assignmentPercentage * weightPersentage / 100), 2);
+
+                                            assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+                                        }
+                                        else
+                                        {
+                                            assignmentForStudent._message = "Please set correct assignment type weightage percentage to calculate weightage grade";
+                                            assignmentForStudent._failure = true;
+
+                                            return assignmentForStudent;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //**//
+                                        runingAvg = (decimal)assignmentPercentage;
+                                        assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+                                    }
+
+                                    //var runingAvg = Math.Round((decimal)(assignmentPercentage * weightPersentage / 100), 2);
+
+                                    //assignmentTypeAvg = assignmentTypeAvg + runingAvg;
 
                                     if (assignmentPercentage > 0.0m)
                                     {
@@ -1119,14 +1164,25 @@ namespace opensis.data.Repository
                             runingAvgSum = runingAvgSum + sumOfAssignmentTypeAvg;
                         }
                     }
+
+                    decimal? runningAvg = 0;
+                    if (weightedGrades == true)
+                    {
+                        runningAvg = runingAvgSum;
+                    }
+                    else
+                    {
+                        runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                    }
+
                     string? runningGrade = null;
                     if (courseSectionData?.GradeScale?.Grade != null)
                     {
-                        runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= runingAvgSum)?.Title;
+                        runningGrade = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.Breakoff <= runningAvg)?.Title;
                     }
                     else if (GradebookConfigurationGrade != null && GradebookConfigurationGrade.Any())
                     {
-                        var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runingAvgSum));
+                        var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= Convert.ToInt32(runningAvg));
 
                         if (ConfigurationGrade != null)
                         {
@@ -1134,7 +1190,7 @@ namespace opensis.data.Repository
                         }
                     }
 
-                    GradebookGradeList.ForEach(x => { x.RunningAvg = (Math.Round((decimal)runingAvgSum, 2).ToString()); x.RunningAvgGrade = runningGrade; });
+                    GradebookGradeList.ForEach(x => { x.RunningAvg = (Math.Round((decimal)runningAvg, 2).ToString()); x.RunningAvgGrade = runningGrade; });
                     this.context?.GradebookGrades.AddRange(GradebookGradeList);
                     this.context?.SaveChanges();
                     transaction?.Commit();
