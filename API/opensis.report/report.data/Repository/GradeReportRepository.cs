@@ -36,7 +36,6 @@ namespace opensis.report.report.data.Repository
                 var studentDatas = new List<StudentFinalGrade>();
                 IQueryable<HonorRollViewForReport>? transactionIQ = null;
                 int? totalCount = 0;
-                decimal? totalPercent = 0;
                 decimal? avgPercentage = 0;
 
                 var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
@@ -86,6 +85,7 @@ namespace opensis.report.report.data.Repository
                     {
                         HonorRollViewForReport honorRoll = new();
                         var totalCourseSectionCount = 0;
+                        decimal? totalPercent = 0;
                         var studentRecords = studentDatas.Where(y => y.StudentId == studentId).ToList();
 
                         foreach (var students in studentRecords)
@@ -177,7 +177,7 @@ namespace opensis.report.report.data.Repository
                                 honorRoll.DentistPhone = studentData.StudentMaster.DentistPhone;
                                 honorRoll.Vision = studentData.StudentMaster.Vision;
                                 honorRoll.VisionPhone = studentData.StudentMaster.VisionPhone;
-                                honorRoll.HonorRoll = honorRollData.FirstOrDefault(h => h.Breakoff <= (int)avgPercentage)?.HonorRoll;
+                                honorRoll.HonorRoll = honorRollData.FirstOrDefault(h => h.Breakoff <= avgPercentage)?.HonorRoll;
                                 honorRoll.GradeName = studentData.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle;
                                 honorRoll.SectionName = SectionData.FirstOrDefault(y => y.SectionId == studentData.StudentMaster.SectionId)?.Name;
                             }
