@@ -648,13 +648,18 @@ namespace opensis.data.Repository
             var scheduledStudentData = new List<ScheduleStudentForView>();
             try
             {
-
-                var scheduledData = this.context?.StudentCoursesectionSchedule.
+                /*var scheduledData = this.context?.StudentCoursesectionSchedule.
                                     //Join(this.context?.StudentMaster,
                                     Join(this.context.StudentMaster,
                                     scs => scs.StudentId, sm => sm.StudentId,
-                                    (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && (pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate == null || c.scs.EffectiveStartDate!.Value.Date <= pageResult.AttendanceDate.Value.Date) && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true)).ToList();
-  
+                                    (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && (pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate == null || c.scs.EffectiveStartDate!.Value.Date <= pageResult.AttendanceDate.Value.Date) && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true)).ToList();*/
+
+                var scheduledData = this.context?.StudentCoursesectionSchedule.
+                                  //Join(this.context?.StudentMaster,
+                                  Join(this.context.StudentMaster,
+                                  scs => scs.StudentId, sm => sm.StudentId,
+                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
+
                 if (pageResult.StaffId != null)
                 {
                     scheduledStudentData = scheduledData?.Join(this.context!.StaffCoursesectionSchedule,
