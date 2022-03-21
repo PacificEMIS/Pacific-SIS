@@ -41,5 +41,15 @@ namespace opensis.data.ViewModels.CourseManager
         public int? SchoolId { get; set; }
         public int? CourseId { get; set; }
         public decimal? AcademicYear { get; set; }
+        public bool? schoolDetails { get; set; }
+        public string? SchoolName { get; set; }
+        public string? StreetAddress1 { get; set; }
+        public string? StreetAddress2 { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? District { get; set; }
+        public string? Zip { get; set; }
+        public string? Country { get; set; }
+        public byte[]? SchoolLogo { get; set; }
     }
 }

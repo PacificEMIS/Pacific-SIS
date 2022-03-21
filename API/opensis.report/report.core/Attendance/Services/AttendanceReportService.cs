@@ -1,4 +1,4 @@
-﻿using opensis.core.helper.Interfaces;
+using opensis.core.helper.Interfaces;
 using opensis.data.Models;
 using opensis.report.report.core.Attendance.Interfaces;
 using opensis.report.report.data.Interface;
@@ -91,12 +91,79 @@ namespace opensis.report.report.core.Attendance.Services
 
         }
 
-        /// <summary>
-        /// GetAverageDailyAttendanceReport
-        /// </summary>
-        /// <param name="pageResult"></param>
-        /// <returns></returns>
-        public AverageDailyAttendanceViewModel GetAverageDailyAttendanceReport(PageResult pageResult)
+    /// <summary>
+    /// Get Student Absence List
+    /// </summary>
+    /// <param name="pageResult"></param>
+    /// <returns></returns>
+    public StudentListForAbsenceSummary GetAllStudentAbsenceList(PageResult pageResult)
+    {
+      StudentListForAbsenceSummary studentListModel = new();
+      try
+      {
+        if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+        {
+
+          studentListModel = this.attendanceReportRepository.GetAllStudentAbsenceList(pageResult);
+          return studentListModel;
+
+        }
+        else
+        {
+          studentListModel._failure = true;
+          studentListModel._message = TOKENINVALID;
+          return studentListModel;
+        }
+      }
+      catch (Exception es)
+      {
+        studentListModel._failure = true;
+        studentListModel._message = es.Message;
+      }
+      return studentListModel;
+
+    }
+
+
+    /// <summary>
+    /// Get Absence List by Student
+    /// </summary>
+    /// <param name="pageResult"></param>
+    /// <returns></returns>
+    public AbsenceListByStudent GetAbsenceListByStudent(PageResult pageResult)
+    {
+      AbsenceListByStudent absenceListModel = new();
+      try
+      {
+        if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+        {
+
+          absenceListModel = this.attendanceReportRepository.GetAbsenceListByStudent(pageResult);
+          return absenceListModel;
+
+        }
+        else
+        {
+          absenceListModel._failure = true;
+          absenceListModel._message = TOKENINVALID;
+          return absenceListModel;
+        }
+      }
+      catch (Exception es)
+      {
+        absenceListModel._failure = true;
+        absenceListModel._message = es.Message;
+      }
+      return absenceListModel;
+
+    }
+
+    /// <summary>
+    /// GetAverageDailyAttendanceReport
+    /// </summary>
+    /// <param name="pageResult"></param>
+    /// <returns></returns>
+    public AverageDailyAttendanceViewModel GetAverageDailyAttendanceReport(PageResult pageResult)
         {
             AverageDailyAttendanceViewModel averageDailyAttendance = new();
             try
