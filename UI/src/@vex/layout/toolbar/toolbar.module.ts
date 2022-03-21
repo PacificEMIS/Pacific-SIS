@@ -17,7 +17,7 @@ import { MegaMenuModule } from '../../components/mega-menu/mega-menu.module';
 import { ContainerModule } from '../../directives/container/container.module';
 import { SelectBarModule } from './select-bar/select-bar.module';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [ToolbarComponent],
@@ -38,7 +38,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MegaMenuModule,
     ContainerModule,
     SelectBarModule,
-    TranslateModule
+    TranslateModule,
+    MatTooltipModule
       ],
   exports: [ToolbarComponent]
 })
