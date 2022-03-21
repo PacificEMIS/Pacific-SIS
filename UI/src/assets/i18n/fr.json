@@ -1768,4 +1768,8 @@
     "coursePeriods": "Périodes de cours",
     "viewCourse": "Voir le cours",
     "deleteCourse": "Supprimer le cours",
-    "droppedCourse": "Cours abandonné"}
+    "droppedCourse": "Cours abandonné",
+    "gradeLevelEquivalencyIsRequiredForHist": "L'équivalence du niveau scolaire est requise",
+    "courseCodeIsRequired": "Le code du cours est requis",
+    "percentageIsRequired": "Le pourcentage est requis"
+}
