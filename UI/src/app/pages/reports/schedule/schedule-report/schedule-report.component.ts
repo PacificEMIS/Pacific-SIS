@@ -45,7 +45,7 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
 
   viewDetails(course:any) {
     this.router.navigate(['/school', 'reports', 'schedule', 'schedule-report', 'schedule-report-details'],
-      {state:{schoolDetails:this.schoolDetails,courseId:course.course.courseId,courseTitle:course.course.courseTitle}});
+      {state:{courseId:course.course.courseId,courseTitle:course.course.courseTitle}});
   }
   getAllCourse(){
     this.getAllCourseListModel.scheduleReport=true;
@@ -61,16 +61,6 @@ export class ScheduleReportComponent implements OnInit , OnDestroy{
         }
       }else{      
         this.courseList=data.courseViewModelList;
-        this.schoolDetails={
-          schoolLogo:data.schoolLogo,
-          schoolName:data.schoolName,
-          address1:data.address1,
-          address2:data.address2,
-          city:data.city,
-          state:data.state,
-          zipcode:data.zipcode,
-          country:data.country,
-        }
       }
     });
   }
