@@ -517,7 +517,13 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
   findTakenDays(takenDaysList) {
     const takenDays = [null, null, null, null, null, null, null];
     takenDaysList?.map((day) => {
-      takenDays[new Date(day.attendanceDate).getDay()] = day.attendanceCode;
+      if (day.attendanceCode === 1) {
+        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Present' };
+      } else if (day.attendanceCode === 2) {
+        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Half Day' };
+      } else if (day.attendanceCode === 3) {
+        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Absent' };
+      }
     });
     return takenDays;
   }
@@ -631,7 +637,8 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     this.getAllScheduledCourseSectionList();
   }
 
-  onAttendanceChange(attendanceCode, periodDetails, day) {
+  onAttendanceChange(periodDetails, day) {
+    let attendanceCode = periodDetails?.cloneTakenAttendanceDays[day]?.attendanceCode;
     let attendanceCategoryId;
     let staffId;
     let studentAttendanceComments = [];
@@ -760,6 +767,12 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           });
         }
       });
+  }
+
+  compareFn(obj1, obj2) {
+    if (obj1 && obj2) {
+      return obj1.attendanceCode === obj2.attendanceCode && obj1.stateCode === obj2.stateCode;
+    }
   }
 
   ngOnDestroy() {

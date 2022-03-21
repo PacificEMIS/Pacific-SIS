@@ -69,8 +69,8 @@
                             <ng-container *ngIf="period.days.includes(day)">
                                     
                                     <div class="select-dropdown" *ngIf="period.takenAttendanceDays?.includes(day) && !period.dayDate;else checkIfCalendarSchedule">
-                                        <select [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
-                                            <option *ngFor="let attendance of period?.attendanceList.attendanceCode" [value]="attendance.attendanceCode1" >{{attendance.title}}</option>
+                                        <select onchange="this.className=this.options[this.selectedIndex].className" [ngClass]="{'text-green': period.cloneTakenAttendanceDays[day].stateCode === 'Present', 'text-orange' : period.cloneTakenAttendanceDays[day].stateCode === 'Half Day', 'text-red' : period.cloneTakenAttendanceDays[day].stateCode === 'Absent' }" [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" [compareWith]="compareFn" (change)="onAttendanceChange(period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
+                                            <option [ngClass]="{'text-green': attendance.stateCode === 'Present', 'text-orange' : attendance.stateCode === 'Half Day', 'text-red' : attendance.stateCode === 'Absent' }" *ngFor="let attendance of period?.attendanceList.attendanceCode" [ngValue]="{attendanceCode: attendance.attendanceCode1, stateCode: attendance.stateCode}" >{{attendance.title}}</option>
                                         </select>
                                     </div>
 
@@ -79,8 +79,8 @@
                                                 <div *ngIf="period.dayDate.split('|').includes(currentWeek[day].getDate().toString())">
 
                                                     <div class="select-dropdown" *ngIf="period.takenAttendanceDays?.includes(day);else noAttendanceTakenInCalendar">
-                                                        <select [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" (change)="onAttendanceChange($event.target.value,period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
-                                                            <option *ngFor="let attendance of period?.attendanceList.attendanceCode" [value]="attendance.attendanceCode1" >{{attendance.title}}</option>
+                                                        <select onchange="this.className=this.options[this.selectedIndex].className" [ngClass]="{'text-green': period.cloneTakenAttendanceDays[day].stateCode === 'Present', 'text-orange' : period.cloneTakenAttendanceDays[day].stateCode === 'Half Day', 'text-red' : period.cloneTakenAttendanceDays[day].stateCode === 'Absent' }" [disabled]="membershipType === 'Teacher' || membershipType === 'Homeroom Teacher'" [compareWith]="compareFn" (change)="onAttendanceChange(period,day)" [(ngModel)]="period.cloneTakenAttendanceDays[day]">
+                                                            <option [ngClass]="{'text-green': attendance.stateCode === 'Present', 'text-orange' : attendance.stateCode === 'Half Day', 'text-red' : attendance.stateCode === 'Absent' }" *ngFor="let attendance of period?.attendanceList.attendanceCode" [ngValue]="{attendanceCode: attendance.attendanceCode1, stateCode: attendance.stateCode}" >{{attendance.title}}</option>
                                                         </select>
                                                     </div>
                                                     <ng-template #noAttendanceTakenInCalendar>
