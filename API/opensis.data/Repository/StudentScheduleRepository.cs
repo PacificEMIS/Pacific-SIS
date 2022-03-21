@@ -233,8 +233,8 @@ namespace opensis.data.Repository
                                                         CalendarId = courseSection.CalendarId,
                                                         CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
                                                         CreatedOn = DateTime.UtcNow,
-                                                        EffectiveStartDate = DateTime.UtcNow,
-                                                        EffectiveDropDate= courseSection.DurationEndDate
+                                                        EffectiveStartDate = courseSection.DurationStartDate,
+                                                        EffectiveDropDate = courseSection.DurationEndDate
                                                     };
                                                     //this.context.StudentCoursesectionSchedule.Add(studentCourseScheduling);
                                                     this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);
@@ -367,8 +367,8 @@ namespace opensis.data.Repository
                                                                     CalendarId = courseSection.CalendarId,
                                                                     CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
                                                                     CreatedOn = DateTime.UtcNow,
-                                                                    EffectiveStartDate = DateTime.UtcNow,
-                                                                    EffectiveDropDate= courseSection.DurationEndDate
+                                                                    EffectiveStartDate = courseSection.DurationStartDate,
+                                                                    EffectiveDropDate = courseSection.DurationEndDate
 
                                                                 };
                                                                 this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);

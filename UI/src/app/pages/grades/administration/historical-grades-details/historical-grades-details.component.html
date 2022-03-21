@@ -1,9 +1,10 @@
 <div class="pb-4">
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+    <form #f="ngForm" (ngSubmit)="addEditHistGrade()">
     <h4 class="px-6 py-4 text-lg font-semibold">{{ 'historicalGradesTransferOfCreditsEntry' | translate }}</h4>
     <div class="mx-6 border border-gray-light rounded mb-6" *ngFor="let info of divCount;let i=index;">
         <div class="p-4 md:flex justify-between bg-skyblue items-center">
-            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId === 0" class="">
+            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId === null" class="">
                 <h5 class="text-primary text-base font-medium">{{
                     'selectAmarkingPeriodGradeLevelEquivalencyAndEnterTheSchoolName' | translate }}</h5>
                 <p class="text-sm text-gray font-medium">{{ 'ifYouDontFindTheSpecificMarkingPeriodBelow' | translate}}
@@ -41,7 +42,7 @@
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'markingPeriod'|translate}}</mat-label>
                         <mat-select name="{{'markingPeriod'+i}}"
-                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId">
+                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId" #markingPeriod="ngModel" required>
                             <mat-option></mat-option>
                             <mat-option
                                 *ngFor="let histMarkingPeriod of historicalMarkingPeriodList.historicalMarkingPeriodList"
@@ -49,6 +50,7 @@
                                 {{histMarkingPeriod.academicYear}} - {{histMarkingPeriod.title}}</mat-option>
 
                         </mat-select>
+                        <mat-error *ngIf="markingPeriod.errors?.required">{{'markingPeriodIsRequired'|translate}}</mat-error>
                     </mat-form-field>
                 </li>
                 <li>
@@ -62,13 +64,14 @@
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'gradeLevelEquivalency'|translate}}</mat-label>
                         <mat-select name="{{'gradeLevelEquivalency'+i}}"
-                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].equivalencyId">
+                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].equivalencyId" #gradeLevelEquivalency="ngModel" required>
                             <mat-option></mat-option>
                             <mat-option *ngFor="let list of getGradeEquivalencyList.gradeEquivalencyList"
                                 [value]="list.equivalencyId">
                                 {{list.gradeLevelEquivalency}}
                             </mat-option>
                         </mat-select>
+                        <mat-error *ngIf="gradeLevelEquivalency.errors?.required">{{'gradeLevelEquivalencyIsRequiredForHist'|translate}}</mat-error>
                     </mat-form-field>
                 </li>
             </ul>
@@ -97,7 +100,10 @@
                             <ng-container *ngIf="history.creditAddMode;else viewMode1">
                                 <div class="border border-gray-light rounded p-2 w-24">
                                     <input type="text" name="{{'cc' + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
-                                        class="w-full" />
+                                        class="w-full" #courseCode="ngModel" required />
+                                </div>
+                                <div *ngIf="courseCode.errors?.required && courseCode.touched" class="text-red">
+                                    {{'courseCodeIsRequired'|translate}}
                                 </div>
                             </ng-container>
                             <ng-template #viewMode1>
@@ -119,8 +125,11 @@
                             <ng-container *ngIf="history.creditAddMode;else viewMode3">
                                 <div class="border border-gray-light rounded p-2 w-24">
                                     <input type="text" name="{{'cp' + j}}" [(ngModel)]="history.percentage"
-                                        class="w-full" />
-                                </div>
+                                        class="w-full" #percentage="ngModel" required />
+                                    </div>
+                                    <div *ngIf="percentage.errors?.required && percentage.touched" class="text-red">
+                                        {{'percentageIsRequired'|translate}}
+                                    </div>
                             </ng-container>
                             <ng-template #viewMode3>
                                 {{history.percentage| number:'0.2'}}
@@ -150,7 +159,7 @@
                         </td>
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode6">
-                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}"
+                                <mat-slide-toggle class="mt-2" color="primary" name="{{'cgpa' + j}}"
                                     [(ngModel)]="history.calculateGpa"></mat-slide-toggle>
                             </ng-container>
                             <ng-template #viewMode6>
@@ -171,7 +180,7 @@
                                     </mat-select>
                                 </mat-form-field> -->
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <select [(ngModel)]="history.courseType">
+                                    <select name="{{'ct' + j}}" [(ngModel)]="history.courseType">
                                         <option
                                             *ngFor="let courseType of allCourseTypes"
                                             [value]="courseType">
@@ -248,9 +257,10 @@
             </button>
         </div>
         <div class="flex justify-end mt-4 sm:mt-0">
-            <button mat-flat-button type="submit" class="">{{ 'cancel' |translate }}</button>
-            <button color="primary" (click)="addEditHistGrade()" mat-flat-button type="submit"
+            <button mat-flat-button type="button" class="">{{ 'cancel' |translate }}</button>
+            <button color="primary" mat-flat-button type="submit"
                 class="text-white ml-2">{{ 'submit' |translate}}</button>
         </div>
     </div>
+    </form>
 </div>
