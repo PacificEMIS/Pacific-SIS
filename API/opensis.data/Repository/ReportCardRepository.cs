@@ -1872,15 +1872,25 @@ namespace opensis.data.Repository
 
                             if (schoolData.GradeScale.Count > 0)
                             {
-                                schoolData.GradeScale.FirstOrDefault()!.Grade.ToList().ForEach(x => x.GradeScale = new());
-                                studentsReportCardViewModel.gradeList = schoolData.GradeScale.FirstOrDefault()!.Grade.ToList();
-                            }
+                                var gradeScaledata = schoolData.GradeScale.FirstOrDefault(x => x.UseAsStandardGradeScale != true);
 
+                                if (gradeScaledata != null && gradeScaledata?.Grade.Count > 0)
+                                {
+                                    gradeScaledata?.Grade.ToList().ForEach(x => x.GradeScale = new());
+                                    studentsReportCardViewModel.gradeList = gradeScaledata!.Grade.ToList();
+                                }
+                            }
 
                             var markingPeriodsData = reportCardViewModel.MarkingPeriods!.Split(",");
                             DateTime? startDate = null;
                             DateTime? endDate = null;
                             string? MarkingPeriodTitle = null;
+
+                            var StudentDailyAttendanceData = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
+
+                            var AttendanceData = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
+
+                            var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
 
                             foreach (var markingPeriod in markingPeriodsData)
                             {
@@ -2013,17 +2023,59 @@ namespace opensis.data.Repository
                                         }
                                     }
 
+                                    //this block for attendance details
+                                    int PresentCount = 0;
+                                    int AbsentCount = 0;
+                                    int HalfDayCount = 0;
+
                                     var attendanceData = this.context?.AttendanceCodeCategories.Include(x => x.AttendanceCode).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
 
                                     if (attendanceData != null)
                                     {
+                                        var studentDailyAttendanceData = StudentDailyAttendanceData?.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList();
+
+                                        if (studentDailyAttendanceData?.Any() == true)
+                                        {
+                                            foreach (var dailyAttendance in studentDailyAttendanceData)
+                                            {
+                                                var StudentAttendanceData = AttendanceData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate == dailyAttendance.AttendanceDate);
+
+                                                var block = BlockData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.BlockId == StudentAttendanceData!.BlockId
+                                                );
+
+                                                if (dailyAttendance.AttendanceMinutes >= block?.FullDayMinutes)
+                                                {
+                                                    PresentCount++;
+                                                }
+                                                if (dailyAttendance.AttendanceMinutes >= block?.HalfDayMinutes && dailyAttendance.AttendanceMinutes < block?.FullDayMinutes)
+                                                {
+                                                    HalfDayCount++;
+                                                }
+                                                if (dailyAttendance.AttendanceMinutes < block?.HalfDayMinutes)
+                                                {
+                                                    AbsentCount++;
+                                                }
+                                            }
+                                        }
+                                        //this loop for multiple attendance code
                                         foreach (var Attendance in attendanceData.AttendanceCode.ToList())
                                         {
                                             AttendanceDetailsForOtherTemplate attendanceDetailsForOtherTemplate = new AttendanceDetailsForOtherTemplate();
 
-                                            var studentDailyAttendanceCount = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceCode == Attendance.Title && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList().Count;
+                                            if (Attendance.StateCode!.ToLower() == "present")
+                                            {
+                                                attendanceDetailsForOtherTemplate.AttendanceCount = PresentCount;
+                                            }
+                                            if (Attendance.StateCode!.ToLower() == "absent")
+                                            {
+                                                attendanceDetailsForOtherTemplate.AttendanceCount = AbsentCount;
+                                            }
+                                            if (Attendance.StateCode!.ToLower() == "half day")
+                                            {
+                                                attendanceDetailsForOtherTemplate.AttendanceCount = HalfDayCount;
+                                            }
+
                                             attendanceDetailsForOtherTemplate.AttendanceTitle = Attendance.Title;
-                                            attendanceDetailsForOtherTemplate.AttendanceCount = studentDailyAttendanceCount;
                                             attendanceDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
                                             markingPeriodDetailsForOtherTemplate.attendanceDetailsForOtherTemplates.Add(attendanceDetailsForOtherTemplate);
                                         }
