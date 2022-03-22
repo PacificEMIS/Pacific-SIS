@@ -24,6 +24,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { CalendarRoutingModule } from './calendar-routing-module';
 import {SharedModuleModule} from '../../shared-module/shared-module.module';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [CalendarComponent, CalendarEditComponent],
@@ -52,7 +53,8 @@ import {SharedModuleModule} from '../../shared-module/shared-module.module';
     MatMenuModule,
     TranslateModule,
     CalendarRoutingModule,
-    SharedModuleModule
+    SharedModuleModule,
+    MatTableModule
   ],
   entryComponents: [CalendarEditComponent]
 })

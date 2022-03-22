@@ -70,6 +70,7 @@ export class CalendarListModel extends CommonField {
     public calendarList: CalendarModel[];
     public tenantId: string;
     public schoolId: number;
+    public membershipId: number;
     public academicYear :number;
     constructor() {
         super();
