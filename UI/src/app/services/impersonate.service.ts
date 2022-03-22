@@ -71,7 +71,7 @@ export class ImpersonateServices {
     return JSON.parse(sessionStorage.getItem("adminCredentials"));
   }
 
-  callRolePermissions(){
+  callRolePermissions(impersonate?:boolean){
     let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
     rolePermissionListView.permissionList = [];
         this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
@@ -93,9 +93,12 @@ export class ImpersonateServices {
           }else{
               this.commonService.checkTokenValidOrNot(res._message);
           }
-          this.impersonateSubjectForToolBar.next(true);
-          this.impersonateSubjectForSelectBar.next(true);
-          this.impersonateSubjectForsideNav.next(true);
+          if (impersonate) {
+            this.impersonateSubjectForToolBar.next(true);
+            this.impersonateSubjectForSelectBar.next(true);
+            this.impersonateSubjectForsideNav.next(true);
+          }
+
         });
   }
 }
