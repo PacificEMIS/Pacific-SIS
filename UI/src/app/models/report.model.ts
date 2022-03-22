@@ -179,3 +179,22 @@ export class GetStudentProgressReportModel extends CommonField {
         this.studentGuids = [];
     }
 }
+
+export class GetHonorRollReportModel extends CommonField {
+    honorRollViewForReports: any[];
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    academicYear: number;
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+    _pageSize: number;
+    filterParams: filterParams[];
+    includeInactive: boolean;
+    constructor() {
+        super();
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.filterParams = [];
+    }
+}
