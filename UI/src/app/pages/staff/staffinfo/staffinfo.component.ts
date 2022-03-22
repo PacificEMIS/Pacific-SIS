@@ -623,7 +623,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
         this.defaultValuesService.setFullUserName(fullName);
         this.defaultValuesService.setEmailId(res.staffMaster.loginEmailAddress);
         this.defaultValuesService.setuserMembershipName(res.staffMaster.profile);
-        this.impersonateServices.callRolePermissions();
+        this.impersonateServices.callRolePermissions(true);
       }    
     }); 
   }

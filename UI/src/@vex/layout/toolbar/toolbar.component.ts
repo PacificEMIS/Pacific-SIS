@@ -150,7 +150,7 @@ export class ToolbarComponent implements OnInit,OnDestroy {
   }
   backToSuperAdmin() {
     this.impersonateServices.backToSuperAdmin();
-    this.impersonateServices.callRolePermissions();
+    this.impersonateServices.callRolePermissions(true);
   }
   /*openSearch() {
     this.layoutService.openSearch();
