@@ -1,7 +1,7 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="card">
     <div class="px-6 py-4">
-        <mat-slide-toggle [(ngModel)]="getHonorRollReportModel.certificateHeader" color="primary" class="mr-6 mb-2">{{'printCertificateHeader' | translate }}</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="isCertificateHeader" color="primary" class="mr-6 mb-2">{{'printCertificateHeader' | translate }}</mat-slide-toggle>
     </div>
     <mat-divider></mat-divider>
     <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
@@ -10,7 +10,8 @@
                 <div class="flex w-full items-center">
                     <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" mat-icon-button type="button">
+                    <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                    <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                         <mat-icon>search</mat-icon>
                     </button>
                     <a (click)="showAdvanceSearchPanel = true;" [class.disabled]="totalCount == null" class="text-primary cursor-pointer ml-3 md:w-full">
@@ -121,7 +122,7 @@
     <div class="student-information-report">
         <ng-container *ngFor="let honorRollStudentList of selectedStudents">
             <table cellpadding="0" cellspacing="0">
-                <tr *ngIf="getHonorRollReportModel.certificateHeader">
+                <tr *ngIf="isCertificateHeader">
                     <td>
                         <table class="report-header">
                             <tr>
@@ -151,7 +152,7 @@
                     <td class="p-y-40">
                         <table>
                             <tr>
-                                <td class="honor-roll-bg" style="background-image: url('assets/img/guilloche.svg');">
+                                <td class="honor-roll-bg" [ngStyle]="{ 'background-image': 'url(' + backgroundImage + ')'}">
                                     <table>
                                         <tr>
                                             <td class="text-center">

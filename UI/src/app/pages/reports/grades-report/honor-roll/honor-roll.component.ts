@@ -43,6 +43,7 @@ import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { DomSanitizer } from '@angular/platform-browser';
+import { BackGroundImageEnum } from 'src/app/enums/bg-image.enum';
 
 @Component({
   selector: 'vex-honor-roll',
@@ -69,6 +70,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   studentLists: MatTableDataSource<any>;
   getHonorRollReportModel: GetHonorRollReportModel = new GetHonorRollReportModel();
+  isCertificateHeader: boolean = false;
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -114,7 +116,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
     this.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
     this.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
 
-    this.backgroundImage = this.domSanitizer.bypassSecurityTrustUrl("data:image/svg+xml;base64,");
+    this.backgroundImage = BackGroundImageEnum.backgroundImage;
   }
 
   ngOnInit(): void {

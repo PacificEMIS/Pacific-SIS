@@ -191,12 +191,10 @@ export class GetHonorRollReportModel extends CommonField {
     _pageSize: number;
     filterParams: filterParams[];
     includeInactive: boolean;
-    certificateHeader: boolean;
     constructor() {
         super();
         this.pageNumber = 1;
         this.pageSize = 10;
         this.filterParams = [];
-        this.certificateHeader = false;
     }
 }
