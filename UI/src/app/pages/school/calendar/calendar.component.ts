@@ -327,7 +327,6 @@ export class CalendarComponent implements OnInit {
     this.getAllCalendarEventList.calendarId.push(this.calendarService.getCalendarId());
     this.events$ = this.calendarEventService.getAllCalendarEvent(this.getAllCalendarEventList).pipe(
       map(({ calendarEventList }: { calendarEventList: CalendarEventModel[] }) => {
-        console.log(calendarEventList);
         this.eventList = calendarEventList;
         return calendarEventList.map((calendar: CalendarEventModel) => {
           return {
