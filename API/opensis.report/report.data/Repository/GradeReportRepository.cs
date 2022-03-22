@@ -177,6 +177,7 @@ namespace opensis.report.report.data.Repository
                                 honorRoll.DentistPhone = studentData.StudentMaster.DentistPhone;
                                 honorRoll.Vision = studentData.StudentMaster.Vision;
                                 honorRoll.VisionPhone = studentData.StudentMaster.VisionPhone;
+                                honorRoll.IsActive = studentData.StudentMaster.IsActive;
                                 honorRoll.HonorRoll = honorRollData.FirstOrDefault(h => h.Breakoff <= avgPercentage)?.HonorRoll;
                                 honorRoll.GradeName = studentData.StudentMaster.StudentEnrollment.FirstOrDefault(x => x.IsActive == true)?.GradeLevelTitle;
                                 honorRoll.SectionName = SectionData.FirstOrDefault(y => y.SectionId == studentData.StudentMaster.SectionId)?.Name;
