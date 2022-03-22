@@ -51,6 +51,7 @@ export class CalendarService {
 
     getAllCalendar(calendar: CalendarListModel) {
         calendar = this.defaultValuesService.getAllMandatoryVariable(calendar);
+        calendar.membershipId = +this.defaultValuesService.getuserMembershipID();
         calendar.academicYear= this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + calendar._tenantName + "/Calendar/getAllCalendar";
         return this.http.post<CalendarListModel>(apiurl, calendar, this.httpOptions)

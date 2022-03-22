@@ -57,6 +57,7 @@
               <button (click)="view = CalendarView.Month" mat-button>{{'month' | translate}}</button>
               <button (click)="view = CalendarView.Week" mat-button>{{'week' | translate}}</button>
               <button (click)="view = CalendarView.Day" mat-button>{{'day'| translate}}</button>
+              <button (click)="view = undefined" mat-button>{{'event'| translate}}</button>
             </div>
           </div>
         </div>
@@ -140,7 +141,8 @@
 
         <div *ngIf="showCalendarView" class="border-t event-calendar">
           <!-- <vex-scrollbar *ngIf="events$ | async; let events" [ngSwitch]="view" class="px-0 shadow flex-auto relative" vexContainer> -->
-          <div *ngIf="events$ | async; let events" [ngSwitch]="view">
+          <ng-container *ngIf="view != undefined; else ViewMode3">
+          <div *ngIf="allData; let events" [ngSwitch]="view">
             <mwl-calendar-month-view *ngSwitchCase="'month'" [refresh]="refresh"
               (beforeViewRender)="beforeMonthViewRender($event)" [viewDate]="viewDate" [events]="events"
               (dayClicked)="openAddNewEvent($event.day)" [cellTemplate]="customCellTemplate"
@@ -155,6 +157,34 @@
               [refresh]="refresh" [viewDate]="viewDate" [events]="events">
             </mwl-calendar-day-view>
           </div>
+        </ng-container>
+        <ng-template #ViewMode3>
+          <table mat-table [dataSource]="eventList" class="mat-elevation-z8">
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef> {{'title' | translate}} </th>
+              <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+            </ng-container>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> {{'type' | translate}} </th>
+              <td mat-cell *matCellDef="let element"> {{element.isHoliday===true?'Holiday':'Event'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="startDate">
+              <th mat-header-cell *matHeaderCellDef> {{'startDate' | translate}} </th>
+              <td mat-cell *matCellDef="let element"> {{element.startDate | date:'mediumDate'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="endDate">
+              <th mat-header-cell *matHeaderCellDef> {{'endDate' | translate}} </th>
+              <td mat-cell *matCellDef="let element"> {{element.endDate | date:'mediumDate'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="notes">
+              <th mat-header-cell *matHeaderCellDef> {{'notes' | translate}} </th>
+              <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </ng-template>
           <!-- </vex-scrollbar> -->
         </div>
       </mat-card>
