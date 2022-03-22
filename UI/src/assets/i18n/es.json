@@ -1778,5 +1778,7 @@
     "droppedCourse": "curso abandonado",
     "gradeLevelEquivalencyIsRequiredForHist": "Se requiere equivalencia de nivel de grado",
     "courseCodeIsRequired": "Se requiere el código del curso",
-    "percentageIsRequired": "Se requiere porcentaje"
+    "percentageIsRequired": "Se requiere porcentaje",
+    "backtoSuperAdmin":"Volver a Super Admin",
+    "back":"Atrás"
 }
