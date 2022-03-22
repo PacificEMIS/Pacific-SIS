@@ -20,6 +20,7 @@ import { PageRolesPermission } from 'src/app/common/page-roles-permissions.servi
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
   selector: 'vex-sidenav',
@@ -52,6 +53,7 @@ export class SidenavComponent implements OnInit {
   pageId: string;
   permittedSubmenuList:any;
   impersonateSubjectForsideNav:boolean=false;
+  profile = ProfilesTypes;
   constructor(private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,

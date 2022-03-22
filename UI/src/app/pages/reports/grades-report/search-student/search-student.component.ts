@@ -51,6 +51,8 @@ import { GradeLevelService } from '../../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
 import { EnrollmentCodesService } from '../../../../services/enrollment-codes.service';
 import { EnrollmentCodeListView } from '../../../../models/enrollment-code.model';
+import { GetHonorRollReportModel } from 'src/app/models/report.model';
+import { ReportService } from 'src/app/services/report.service';
 
 @Component({
   selector: 'vex-search-student',
@@ -76,6 +78,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   destroySubject$: Subject<void> = new Subject();
   studentMasterSearchModel: StudentMasterSearchModel = new StudentMasterSearchModel();
   getAllStudent: StudentListModel = new StudentListModel();
+  getHonorRollReportModel: GetHonorRollReportModel = new GetHonorRollReportModel();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
   dobEndDate: string;
@@ -115,6 +118,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
 
   constructor(
     private studentService: StudentService,
+    private reportService: ReportService,
     private commonLOV: CommonLOV,
     private snackbar: MatSnackBar,
     private sectionService: SectionService,
@@ -146,6 +150,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit(): void {
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.getHonorRollReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     if (this.incomingSearchValue) { 
       this.inactiveStudents = this.incomingToggleValues.inactiveStudents;
       this.searchAllSchool = this.incomingToggleValues.searchAllSchool;
@@ -506,11 +511,27 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       this.commonService.setSearchResult(this.getAllStudent.filterParams);
       this.defaultValuesService.sendAllSchoolFlag(this.searchAllSchool);
       this.defaultValuesService.sendIncludeInactiveFlag(this.inactiveStudents);
-      if (this.rootSource === "Enrollment_Report") {
-        this.filteredValue.emit({filterParams:this.getAllStudent.filterParams,inactiveStudents:this.inactiveStudents})
-        this.checkSearchRecord = 0;
-        this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
-        this.searchValue.emit(this.currentForm.value);
+      if (this.rootSource === "Honor_Roll_Report") {
+        this.getHonorRollReportModel.filterParams = this.getAllStudent.filterParams;
+        this.getHonorRollReportModel.includeInactive = this.inactiveStudents;
+        this.reportService.getHonorRollReport(this.getHonorRollReportModel).subscribe(data => {
+          if (data._failure) {
+            this.commonService.checkTokenValidOrNot(data._message);
+            this.searchList.emit([]);
+            this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
+            this.searchValue.emit(this.currentForm.value);
+            this.snackbar.open('' + data._message, '', {
+              duration: 10000
+            });
+            this.checkSearchRecord = 0;
+          } else {
+            this.searchList.emit(data);
+            this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
+            this.searchValue.emit(this.currentForm.value);
+            this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
+            this.checkSearchRecord = 0;
+          }
+        });
       } else {
         this.studentService.GetAllStudentList(this.getAllStudent).subscribe(data => {
           if (data._failure) {
