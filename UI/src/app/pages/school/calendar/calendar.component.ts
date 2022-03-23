@@ -129,6 +129,9 @@ export class CalendarComponent implements OnInit {
   // currentdate: any;
   // oneJan: any;
     // selectedBlockTitle : string
+  displayedColumns: string[]
+  eventList = [];
+  allData = [];
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -164,6 +167,8 @@ export class CalendarComponent implements OnInit {
     )
     // getting membershipType from session storage
     this.userType = this.defaultValuesService.getUserMembershipType()
+    this.eventList = [];
+    this.displayedColumns = ['title', 'type', 'startDate', 'endDate', 'notes'];
   }
 
   ngOnInit(): void {
@@ -317,10 +322,12 @@ export class CalendarComponent implements OnInit {
 
   // Rendar all events in calendar
   getAllCalendarEvent() {
+    this.eventList = [];
     this.getAllCalendarEventList.calendarId = [];
     this.getAllCalendarEventList.calendarId.push(this.calendarService.getCalendarId());
     this.events$ = this.calendarEventService.getAllCalendarEvent(this.getAllCalendarEventList).pipe(
       map(({ calendarEventList }: { calendarEventList: CalendarEventModel[] }) => {
+        this.eventList = calendarEventList;
         return calendarEventList.map((calendar: CalendarEventModel) => {
           return {
             id: calendar.eventId,
@@ -328,6 +335,7 @@ export class CalendarComponent implements OnInit {
             start: new Date(calendar.startDate),
             end: new Date(calendar.endDate),
             allDay: true,
+            type: 'calendar',
             meta: {
               calendar,
             },
@@ -336,8 +344,10 @@ export class CalendarComponent implements OnInit {
         });
       })
     );
+    this.events$.subscribe(data => {
+      this.allData = [...data];
+    });
     this.refresh.next();
-
   }
 
   getDays(days: string) {

@@ -36,6 +36,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   today = new Date();
   selectedStaffName;
   parentData;
+  allCourseSectionData;
   constructor(public translateService: TranslateService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
@@ -60,6 +61,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
 
   getAllCourseSection() {
     this.getAllCourseSectionModel.courseId = this.parentData.courseId;
+    this.getAllCourseSectionModel.schoolDetails=true;
     this.getAllCourseSectionModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.courseSectionService.getAllCourseSection(this.getAllCourseSectionModel).subscribe(
       (res: GetAllCourseSectionModel) => {
@@ -73,6 +75,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
               });
             }
           } else {
+            this.allCourseSectionData=res;
             res.getCourseSectionForView?.map((item)=>{
               if(item.courseSection.durationBasedOnPeriod){
                 if(item.courseSection.quarters!=null){

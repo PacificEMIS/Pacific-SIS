@@ -1766,6 +1766,17 @@
     "courseSectionsAnd": "Sections de cours et",
     "studentFound": "Étudiant trouvés",
     "coursePeriods": "Périodes de cours",
+    "termDate": "Date du mandat",
+    "academicAchievement": "Réussite académique",
+    "recognizes": "reconnaît",
+    "whoHasCompletedAllTheAcademicRequirementsAnd": "qui a rempli toutes les exigences académiques et",
+    "hasBeenAwardedWith": "a été récompensé par",
     "viewCourse": "Voir le cours",
     "deleteCourse": "Supprimer le cours",
-    "droppedCourse": "Cours abandonné"}
+    "droppedCourse": "Cours abandonné",
+    "gradeLevelEquivalencyIsRequiredForHist": "L'équivalence du niveau scolaire est requise",
+    "courseCodeIsRequired": "Le code du cours est requis",
+    "percentageIsRequired": "Le pourcentage est requis",
+    "back":"Arrière",
+    "backtoSuperAdmin":"Retour à Super Admin"
+}

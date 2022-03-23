@@ -43,7 +43,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
-import { GetAllStaffModel, StaffListModel, StaffMasterModel, StaffSchoolInfoModel } from '../../../models/staff.model';
+import { GetAllStaffModel, StaffAddModel, StaffListModel, StaffMasterModel, StaffSchoolInfoModel } from '../../../models/staff.model';
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { ExcelService } from '../../../services/excel.service';
 import { Subject } from 'rxjs';
@@ -63,6 +63,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-edit-info.component';
 import icRestore from '@iconify/icons-ic/twotone-restore';
+import { ImpersonateServices } from 'src/app/services/impersonate.service';
 
 
 @Component({
@@ -138,6 +139,13 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
       title:'Certification Info'
     }
   ]
+  staffAddModel: StaffAddModel = new StaffAddModel();
+  profile=[
+    'School Administrator',
+    'Admin Assistant',
+    'Teacher',
+    'Homeroom Teacher'
+  ];
   permissions: Permissions;
   constructor(private snackbar: MatSnackBar,
               private router: Router,
@@ -153,6 +161,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
               private cryptoService: CryptoService,
               public defaultValuesService: DefaultValuesService,
               private paginatorObj: MatPaginatorIntl,
+              private impersonateServices:ImpersonateServices
               ) {
                 paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
                 this.defaultValuesService.sendAllSchoolFlag(false);
@@ -591,6 +600,32 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
         this.getAllStaff = new GetAllStaffModel();
       }
     });
+  }
+
+  impersonateAsStaff(staffId:any){
+    this.impersonateServices.impersonateStoreData();
+    /** call viwe staff api for getting basic staff details */
+    this.staffAddModel.staffMaster.staffId = staffId;
+    this.staffService.viewStaff(this.staffAddModel).subscribe((res:any)=>{
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+      } else {
+        this.defaultValuesService.setUserGuidId(res.staffMaster.staffGuid);
+        this.defaultValuesService.setUserPhoto(res.staffMaster.staffPhoto);
+        this.defaultValuesService.setUserId(res.staffMaster.staffId);
+        this.profile.map((value,index)=>{
+          if(value == res.staffMaster.profile)
+          this.defaultValuesService.setUserMembershipID((index+2).toString());
+        })
+        this.defaultValuesService.setUserMembershipType(res.staffMaster.profile);
+        let middleName = res.staffMaster.middleName ? ' ' + res.staffMaster.middleName + ' ' : ' ';
+        let fullName = res.staffMaster.firstGivenName + middleName + res.staffMaster.lastFamilyName;
+        this.defaultValuesService.setFullUserName(fullName);
+        this.defaultValuesService.setEmailId(res.staffMaster.loginEmailAddress);
+        this.defaultValuesService.setuserMembershipName(res.staffMaster.profile);
+        this.impersonateServices.callRolePermissions(true);
+      }    
+    }); 
   }
 
   ngOnDestroy(){

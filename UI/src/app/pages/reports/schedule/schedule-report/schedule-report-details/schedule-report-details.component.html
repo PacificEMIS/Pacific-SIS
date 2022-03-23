@@ -88,16 +88,17 @@
                         <tr>
                             <td class="header-left">
                                 <div class="float-left school-logo">
-                                    <img *ngIf="parentData.schoolDetails?.schoolLogo"
-                                        [src]="'data:image/jpeg;base64,'+parentData.schoolDetails?.schoolLogo" alt="School Logo">
+                                    <img *ngIf="allCourseSectionData?.schoolLogo"
+                                        [src]="'data:image/jpeg;base64,'+allCourseSectionData?.schoolLogo" alt="School Logo">
                                 </div>
                                 <div class="float-left information">
-                                    <h4>{{parentData.schoolDetails?.schoolName}}</h4>
-                                    <p>{{parentData.schoolDetails?.address1}}{{parentData.schoolDetails?.address2 ? ', ' +
-                                        parentData.schoolDetails?.address2 : ''}}{{parentData.schoolDetails?.city ? ', ' +
-                                        parentData.schoolDetails?.city : ''}}{{parentData.schoolDetails?.state ? ', ' + parentData.schoolDetails?.state :
-                                        ''}}{{parentData.schoolDetails?.zipcode ? ', ' + parentData.schoolDetails?.zipcode :
-                                        ''}}{{parentData.schoolDetails?.country ? ', ' + parentData.schoolDetails?.country : ''}}</p>
+                                    <h4>{{allCourseSectionData?.schoolName}}</h4>
+                                    <p>{{allCourseSectionData?.streetAddress1}}{{allCourseSectionData?.streetAddress2 ? ', ' +
+                                        allCourseSectionData?.streetAddress2 : ''}}{{allCourseSectionData?.city ? ', ' +
+                                        allCourseSectionData?.city : ''}}{{allCourseSectionData?.district ? ', ' +
+                                        allCourseSectionData?.district : ''}}{{allCourseSectionData?.state ? ', ' + allCourseSectionData?.state :
+                                        ''}}{{allCourseSectionData?.zip ? ', ' + allCourseSectionData?.zip :
+                                        ''}}{{allCourseSectionData?.country ? ', ' + allCourseSectionData?.country : ''}}</p>
                                 </div>
                             </td>
                             <td class="header-right text-right">

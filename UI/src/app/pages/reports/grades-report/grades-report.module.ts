@@ -36,6 +36,7 @@ import { StudentFinalGradesComponent } from './student-final-grades/student-fina
 import { ProgressReportComponent } from './progress-report/progress-report.component';
 import { HonorRollComponent } from './honor-roll/honor-roll.component';
 import { SearchStudentComponent } from './search-student/search-student.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { SearchStudentComponent } from './search-student/search-student.componen
     NgxMatSelectSearchModule,
     MatExpansionModule,
     MatRadioModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTooltipModule
   ]
 })
 export class GradesReportModule { }
