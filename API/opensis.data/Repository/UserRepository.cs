@@ -145,51 +145,54 @@ namespace opensis.data.Repository
                         AddUserAccessLog(objModel);
                     }
 
-                    var schoolPreferenceData = this.context?.SchoolPreference.FirstOrDefault(x => x.TenantId == correctEmailList.FirstOrDefault()!.TenantId && x.SchoolId == correctEmailList.FirstOrDefault()!.SchoolId);
-
-                    if (schoolPreferenceData != null)
+                    if (objModel.MembershipId != 1)
                     {
+                        var schoolPreferenceData = this.context?.SchoolPreference.FirstOrDefault(x => x.TenantId == correctEmailList.FirstOrDefault()!.TenantId && x.SchoolId == correctEmailList.FirstOrDefault()!.SchoolId);
 
-                        if (correctEmailList.FirstOrDefault()?.LoginFailureCount!=null && schoolPreferenceData.MaxLoginFailure!=null && correctEmailList.FirstOrDefault()?.LoginFailureCount >= schoolPreferenceData.MaxLoginFailure)
+                        if (schoolPreferenceData != null)
                         {
-                            ReturnModel.UserId = null;
-                            ReturnModel._failure = true;
-                            ReturnModel._message = INCORRECTLOGINATTEMPTMESSAGE;
 
-                            //objModel.SchoolId = correctEmailList.FirstOrDefault()!.SchoolId;
-
-                            //if (ReturnModel._failure == true)
-                            //{
-                            //    objModel.userAccessLog!.LoginStatus = false;
-                            //    objModel.userAccessLog.LoginFailureCount = correctEmailList.FirstOrDefault()?.LoginFailureCount;
-                            //    AddUserAccessLog(objModel);
-                            //}
-
-                            return ReturnModel;
-                        }
-
-                        if (correctEmailList.FirstOrDefault()?.LoginAttemptDate != null && schoolPreferenceData.MaxInactivityDays != null && schoolPreferenceData.MaxInactivityDays != 0)
-                        {
-                            //int numberOfDays = (DateTime.UtcNow - correctEmailList.FirstOrDefault().LoginAttemptDate).Value.Days;
-                            int numberOfDays = (DateTime.UtcNow - correctEmailList.FirstOrDefault()!.LoginAttemptDate)!.Value.Days;
-
-                            if (numberOfDays >= schoolPreferenceData.MaxInactivityDays)
+                            if (correctEmailList.FirstOrDefault()?.LoginFailureCount != null && schoolPreferenceData.MaxLoginFailure != null && correctEmailList.FirstOrDefault()?.LoginFailureCount >= schoolPreferenceData.MaxLoginFailure)
                             {
                                 ReturnModel.UserId = null;
                                 ReturnModel._failure = true;
-                                ReturnModel._message = INACTIVITYDAYSMESSAGE;
+                                ReturnModel._message = INCORRECTLOGINATTEMPTMESSAGE;
 
-                                //this block making staff inactive for MaxInactivityDays
-                                var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == correctEmailList.FirstOrDefault()!.TenantId && x.StaffId == correctEmailList.FirstOrDefault()!.UserId);
-                                if (staffData != null)
-                                {
-                                    staffData.IsActive = false;
-                                }
-                                this.context?.SaveChanges();
+                                //objModel.SchoolId = correctEmailList.FirstOrDefault()!.SchoolId;
+
+                                //if (ReturnModel._failure == true)
+                                //{
+                                //    objModel.userAccessLog!.LoginStatus = false;
+                                //    objModel.userAccessLog.LoginFailureCount = correctEmailList.FirstOrDefault()?.LoginFailureCount;
+                                //    AddUserAccessLog(objModel);
+                                //}
+
                                 return ReturnModel;
                             }
+
+                            if (correctEmailList.FirstOrDefault()?.LoginAttemptDate != null && schoolPreferenceData.MaxInactivityDays != null && schoolPreferenceData.MaxInactivityDays != 0)
+                            {
+                                //int numberOfDays = (DateTime.UtcNow - correctEmailList.FirstOrDefault().LoginAttemptDate).Value.Days;
+                                int numberOfDays = (DateTime.UtcNow - correctEmailList.FirstOrDefault()!.LoginAttemptDate)!.Value.Days;
+
+                                if (numberOfDays >= schoolPreferenceData.MaxInactivityDays)
+                                {
+                                    ReturnModel.UserId = null;
+                                    ReturnModel._failure = true;
+                                    ReturnModel._message = INACTIVITYDAYSMESSAGE;
+
+                                    //this block making staff inactive for MaxInactivityDays
+                                    var staffData = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == correctEmailList.FirstOrDefault()!.TenantId && x.StaffId == correctEmailList.FirstOrDefault()!.UserId);
+                                    if (staffData != null)
+                                    {
+                                        staffData.IsActive = false;
+                                    }
+                                    this.context?.SaveChanges();
+                                    return ReturnModel;
+                                }
+                            }
                         }
-                    } 
+                    }
                 }
 
                 if (user == null && correctEmailList?.Count > 0 && correctPasswordList?.Count == 0)
