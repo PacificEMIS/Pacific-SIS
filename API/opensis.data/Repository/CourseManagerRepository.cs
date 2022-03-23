@@ -2432,7 +2432,6 @@ namespace opensis.data.Repository
 
                             courseSectionAddViewModel._failure = false;
                             courseSectionAddViewModel._message = "Course Section Deleted Successfully";
-                            transaction?.Commit();
                         }
                         else
                         {
@@ -2440,6 +2439,8 @@ namespace opensis.data.Repository
                             courseSectionAddViewModel._message = NORECORDFOUND;
                         }
                     }
+
+                    transaction?.Commit();
                 }
                 catch (Exception es)
                 {
@@ -2594,7 +2595,7 @@ namespace opensis.data.Repository
                     {
                         foreach (var CourseData in distinctCourseData)
                         {
-                            var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != false).ToList();
+                            var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList();
                             if (staffSchedule != null && staffSchedule.Any())
                             {
                                 foreach (var staff in staffSchedule)
@@ -2611,11 +2612,11 @@ namespace opensis.data.Repository
                         foreach (var CourseData in distinctCourseData)
                         {
                             int? studentSchedule = null;
-                            studentSchedule = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != false).ToList().Count;
+                            studentSchedule = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList().Count;
 
                             CourseData.AvailableSeat = CourseData.Seats - studentSchedule;
 
-                            var staffScheduleData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != false).ToList();
+                            var staffScheduleData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList();
                             if (staffScheduleData != null && staffScheduleData.Any())
                             {
                                 foreach (var staff in staffScheduleData)
