@@ -12,14 +12,23 @@
   </a>
 
   <div #megaMenuOriginRef class="rtl:mr-2">
-    <div class="-mx-1 flex items-center">
-     <div *ngIf="profileType!=='Homeroom Teacher' && profileType!=='Teacher'">
+    <div class="-mx-1 ">
+    <button *ngIf="impersonateButton"
+    (click)="backToSuperAdmin() " matTooltip="{{'backtoSuperAdmin'|translate}} "
+    class=" impersonate-back-button"
+    type="button">
+      <mat-icon class="ic-inline text-white" inline="true">undo</mat-icon>
+      <span class="hidden lg:inline ml-2 mb-2">{{'back'|translate}}</span>
+    </button>
+
+     <div *ngIf="profileType!=='Homeroom Teacher' && profileType!=='Teacher'" class="inline-block align-middle">
       <button *ngIf="isHorizontalLayout$ | async"
               (click)="openMegaMenu(megaMenuOriginRef)"
               class="global-add-button"
               type="button"><ic-icon [icon]="icAdd" class="ic-inline" inline="true"></ic-icon><span class="hidden lg:inline-block ml-2">{{'addNew'|translate}}</span>
       </button>
     </div>
+
       <div class="px-1 ml-3">
         <vex-toolbar-notifications></vex-toolbar-notifications>
       </div>

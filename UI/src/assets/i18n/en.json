@@ -1767,10 +1767,17 @@
     "courseSectionsAnd": "Course Sections and",
     "studentFound": "Student Found",
     "coursePeriods": "Course Periods",
+    "termDate": "Term Date",
+    "academicAchievement": "Academic Achievement",
+    "recognizes": "recognizes",
+    "whoHasCompletedAllTheAcademicRequirementsAnd": "who has completed all the academic requirements and",
+    "hasBeenAwardedWith": "has been awarded with",
     "viewCourse": "View Course",
     "deleteCourse": "Delete Course",
     "droppedCourse": "Dropped Course",
     "gradeLevelEquivalencyIsRequiredForHist": "Grade Level Equivalency is required",
     "courseCodeIsRequired": "Course Code is required",
-    "percentageIsRequired": "Percentage is required"
+    "percentageIsRequired": "Percentage is required",
+    "back":"Back",
+    "backtoSuperAdmin":"Back to Super Admin"
 }
