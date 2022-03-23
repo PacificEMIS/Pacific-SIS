@@ -517,13 +517,7 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
   findTakenDays(takenDaysList) {
     const takenDays = [null, null, null, null, null, null, null];
     takenDaysList?.map((day) => {
-      if (day.attendanceCode === 1) {
-        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Present' };
-      } else if (day.attendanceCode === 2) {
-        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Half Day' };
-      } else if (day.attendanceCode === 3) {
-        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: 'Absent' };
-      }
+      takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: day.attendanceCodeNavigation.stateCode };
     });
     return takenDays;
   }

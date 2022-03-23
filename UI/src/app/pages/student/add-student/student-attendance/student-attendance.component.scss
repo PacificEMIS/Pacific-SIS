@@ -19,7 +19,6 @@
 .select-dropdown {
   position: relative;
   background-color: #fff;
-  border: 1px solid rgb(76, 175, 80);
   border-radius: 4px;
   select {
     font-weight: normal;
@@ -30,7 +29,6 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    // color: rgb(76, 175, 80);
     min-width: 120px;
     &:active,
     &:focus {
@@ -53,4 +51,17 @@
     transition: all 0.4s ease-in-out;
     transform-origin: 50% 0;
   }
+}
+
+
+.border-present{
+  @apply border-green border;
+}
+
+.border-halfDay{
+  @apply border-orange border;
+}
+
+.border-absent{
+  @apply border-red border;
 }
