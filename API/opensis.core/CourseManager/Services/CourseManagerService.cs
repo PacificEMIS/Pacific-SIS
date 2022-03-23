@@ -699,6 +699,29 @@ namespace opensis.core.CourseManager.Services
             }
             return courseCatelog;
         }
+
+        public SubjectViewModel GetSubjectCourseCourseSectionbyStaff(SubjectViewModel subjectViewModel)
+        {
+            SubjectViewModel subjectView = new SubjectViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(subjectViewModel._tenantName + subjectViewModel._userName, subjectViewModel._token))
+                {
+                    subjectView = this.courseManagerRepository.GetSubjectCourseCourseSectionbyStaff(subjectViewModel);
+                }
+                else
+                {
+                    subjectView._failure = true;
+                    subjectView._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                subjectView._failure = true;
+                subjectView._message = es.Message;
+            }
+            return subjectView;
+        }
     }
 }
  

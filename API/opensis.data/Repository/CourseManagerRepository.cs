@@ -3143,5 +3143,64 @@ namespace opensis.data.Repository
             }
             return courseCatelog;
         }
+
+        public SubjectViewModel GetSubjectCourseCourseSectionbyStaff(SubjectViewModel subjectViewModel)
+        {
+            SubjectViewModel subjectView = new SubjectViewModel();
+            try
+            {
+                var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.
+                                    Join(this.context.Course,
+                                    scss => scss.CourseId, c => c.CourseId,
+                                    (scss, c) => new { scss, c }).Where(x => x.scss.TenantId == subjectViewModel.TenantId && x.c.TenantId == subjectViewModel.TenantId && x.scss.SchoolId == subjectViewModel.SchoolId && x.c.SchoolId == subjectViewModel.SchoolId && x.scss.StaffId == subjectViewModel.StaffId && x.c.AcademicYear == subjectViewModel.AcademicYear).ToList();
+
+                if (staffCoursesectionScheduleData?.Any()==true)
+                {
+                    var subjectWiseData = staffCoursesectionScheduleData.GroupBy(x => x.c.CourseSubject).ToList();
+
+                    List<SubjectViewModel> subjectList = new();
+
+                    //this loop for subject
+                    foreach (var sub in subjectWiseData)
+                    {
+                        SubjectViewModel subject = new();
+                        subjectView.SubjectName = sub.Key;
+                        var courseForSub = sub.Select(s => s.c).Where(s => s.CourseSubject == sub.Key).Distinct().ToList();
+
+                        //this loop for course
+                        foreach (var course in courseForSub)
+                        {
+                            CoursesViewModel courseView = new();
+                            courseView.CourseName = course.CourseTitle;
+                            courseView.CourseId = course.CourseId;
+
+                            var courseSectionbyCourse = sub.Select(s => s.scss).Where(x => x.CourseId == course.CourseId).ToList();
+
+                            //this loop for courseSection
+                            foreach (var cs in courseSectionbyCourse)
+                            {
+                                CourseSectionsViewModel courseSectionView = new();
+                                courseSectionView.CourseSectionName = cs.CourseSectionName;
+                                courseSectionView.CourseSectionId = cs.CourseSectionId;
+                                courseView.courseSectionsViewModels.Add(courseSectionView);
+                            }
+                            subjectView.coursesViewModels.Add(courseView);
+                        }
+                        subjectList.Add(subjectView);
+                    }
+                }
+                else
+                {
+                    subjectView._failure = true;
+                    subjectView._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                subjectView._failure = true;
+                subjectView._message = es.Message;
+            }
+            return subjectView;
+        }
     }
 }
