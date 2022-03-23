@@ -2432,7 +2432,6 @@ namespace opensis.data.Repository
 
                             courseSectionAddViewModel._failure = false;
                             courseSectionAddViewModel._message = "Course Section Deleted Successfully";
-                            transaction?.Commit();
                         }
                         else
                         {
@@ -2440,6 +2439,8 @@ namespace opensis.data.Repository
                             courseSectionAddViewModel._message = NORECORDFOUND;
                         }
                     }
+
+                    transaction?.Commit();
                 }
                 catch (Exception es)
                 {
