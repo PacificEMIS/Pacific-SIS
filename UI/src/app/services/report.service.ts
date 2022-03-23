@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
+import { AbsenceListByStudent, GetStudentAbsenceReport, StudentListForAbsenceSummary } from '../models/absence-summary.model';
 import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel} from '../models/report.model';
 
 @Injectable({
@@ -87,5 +88,17 @@ export class ReportService {
 
     let apiurl = this.apiUrl + obj._tenantName + "/Report/getHonorRollReport";
     return this.http.post<GetHonorRollReportModel>(apiurl, obj, this.httpOptions)
+  }
+
+  getAllStudentAbsenceList(obj: GetStudentAbsenceReport) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getAllStudentAbsenceList";
+    return this.http.post<StudentListForAbsenceSummary>(apiurl, obj, this.httpOptions)
+  }
+
+  getAbsenceListByStudent(obj: GetStudentAbsenceReport) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getAbsenceListByStudent";
+    return this.http.post<AbsenceListByStudent>(apiurl, obj, this.httpOptions)
   }
 }
