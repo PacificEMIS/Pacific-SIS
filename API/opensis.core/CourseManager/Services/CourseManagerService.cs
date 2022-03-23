@@ -700,14 +700,19 @@ namespace opensis.core.CourseManager.Services
             return courseCatelog;
         }
 
-        public SubjectViewModel GetSubjectCourseCourseSectionbyStaff(SubjectViewModel subjectViewModel)
+        /// <summary>
+        /// Get CourseSection By Staff
+        /// </summary>
+        /// <param name="subjectsViewModel"></param>
+        /// <returns></returns>
+        public SubjectsViewModel GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
         {
-            SubjectViewModel subjectView = new SubjectViewModel();
+            SubjectsViewModel subjectView = new SubjectsViewModel();
             try
             {
-                if (tokenManager.CheckToken(subjectViewModel._tenantName + subjectViewModel._userName, subjectViewModel._token))
+                if (tokenManager.CheckToken(subjectsViewModel._tenantName + subjectsViewModel._userName, subjectsViewModel._token))
                 {
-                    subjectView = this.courseManagerRepository.GetSubjectCourseCourseSectionbyStaff(subjectViewModel);
+                    subjectView = this.courseManagerRepository.GetCourseSectionByStaff(subjectsViewModel);
                 }
                 else
                 {

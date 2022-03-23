@@ -3145,27 +3145,42 @@ namespace opensis.data.Repository
             return courseCatelog;
         }
 
-        public SubjectViewModel GetSubjectCourseCourseSectionbyStaff(SubjectViewModel subjectViewModel)
+        /// <summary>
+        /// Get subjrct,course,CourseSection By Staff
+        /// </summary>
+        /// <param name="subjectsViewModel"></param>
+        /// <returns></returns>
+        public SubjectsViewModel GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
         {
-            SubjectViewModel subjectView = new SubjectViewModel();
+            SubjectsViewModel subjectView = new SubjectsViewModel();
+            subjectView.TenantId = subjectsViewModel.TenantId;
+            subjectView.SchoolId = subjectsViewModel.SchoolId;
+            subjectView.StaffId = subjectsViewModel.StaffId;
+            subjectView.AcademicYear = subjectsViewModel.AcademicYear;
+            subjectView._tenantName = subjectsViewModel._tenantName;
+            subjectView._token = subjectsViewModel._token;
+
             try
             {
                 var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.
                                     Join(this.context.Course,
                                     scss => scss.CourseId, c => c.CourseId,
-                                    (scss, c) => new { scss, c }).Where(x => x.scss.TenantId == subjectViewModel.TenantId && x.c.TenantId == subjectViewModel.TenantId && x.scss.SchoolId == subjectViewModel.SchoolId && x.c.SchoolId == subjectViewModel.SchoolId && x.scss.StaffId == subjectViewModel.StaffId && x.c.AcademicYear == subjectViewModel.AcademicYear).ToList();
+                                    (scss, c) => new { scss, c }).Where(x => x.scss.TenantId == subjectsViewModel.TenantId && x.c.TenantId == subjectsViewModel.TenantId && x.scss.SchoolId == subjectsViewModel.SchoolId && x.c.SchoolId == subjectsViewModel.SchoolId && x.scss.StaffId == subjectsViewModel.StaffId && x.c.AcademicYear == subjectsViewModel.AcademicYear).ToList();
 
                 if (staffCoursesectionScheduleData?.Any()==true)
                 {
                     var subjectWiseData = staffCoursesectionScheduleData.GroupBy(x => x.c.CourseSubject).ToList();
+                    var subjectData = this.context?.Subject.Where(x => x.TenantId == subjectsViewModel.TenantId && x.SchoolId == subjectsViewModel.SchoolId && x.AcademicYear == subjectsViewModel.AcademicYear);
 
-                    List<SubjectViewModel> subjectList = new();
+                    //List<SubjectViewModel> subjectList = new();
 
                     //this loop for subject
                     foreach (var sub in subjectWiseData)
                     {
                         SubjectViewModel subject = new();
-                        subjectView.SubjectName = sub.Key;
+                        subject.SubjectName = sub.Key;
+                        subject.SubjectId = subjectData?.FirstOrDefault(x => (x.SubjectName ?? "").ToLower() == (sub.Key ?? "").ToLower())?.SubjectId;
+
                         var courseForSub = sub.Select(s => s.c).Where(s => s.CourseSubject == sub.Key).Distinct().ToList();
 
                         //this loop for course
@@ -3185,9 +3200,9 @@ namespace opensis.data.Repository
                                 courseSectionView.CourseSectionId = cs.CourseSectionId;
                                 courseView.courseSectionsViewModels.Add(courseSectionView);
                             }
-                            subjectView.coursesViewModels.Add(courseView);
+                            subject.coursesViewModels.Add(courseView);
                         }
-                        subjectList.Add(subjectView);
+                        subjectView.subjectViewModels.Add(subject);
                     }
                 }
                 else

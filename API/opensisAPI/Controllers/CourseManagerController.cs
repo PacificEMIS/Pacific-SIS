@@ -454,12 +454,12 @@ namespace opensisAPI.Controllers
         }
 
         [HttpPost("getCourseSectionByStaff")]
-        public ActionResult<SubjectViewModel> GetSubjectCourseCourseSectionbyStaff(SubjectViewModel subjectViewModel)
+        public ActionResult<SubjectsViewModel> GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
         {
-            SubjectViewModel subjectView = new SubjectViewModel();
+            SubjectsViewModel subjectView = new SubjectsViewModel();
             try
             {
-                subjectView = _courseManagerService.GetSubjectCourseCourseSectionbyStaff(subjectViewModel);
+                subjectView = _courseManagerService.GetCourseSectionByStaff(subjectsViewModel);
             }
             catch (Exception es)
             {
