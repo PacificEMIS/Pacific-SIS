@@ -1637,7 +1637,7 @@ namespace opensis.data.Repository
 
                             if ( Student360ScheduleCourseSection.studentAttendanceList!=null)
                             {
-                                Student360ScheduleCourseSection.studentAttendanceList.ForEach(u => { u.AttendanceCodeNavigation = new(); u.BlockPeriod = new(); u.StudentCoursesectionSchedule = new(); });
+                                Student360ScheduleCourseSection.studentAttendanceList.ForEach(u => { u.AttendanceCodeNavigation.AttendanceCodeCategories = new(); u.BlockPeriod = new(); u.StudentCoursesectionSchedule = new(); });
                             }
                             student360ScheduleCourseSectionForViewList.Add(Student360ScheduleCourseSection);
                         }
