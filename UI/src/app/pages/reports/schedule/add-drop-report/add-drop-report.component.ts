@@ -58,10 +58,9 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
   addDropScheduleListForPDF;
   listOfStudents = [];
   selectedStudents = [];
-  totalCount: number;
+  totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
-  isVisible: boolean = false;
   today: Date = new Date();
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
@@ -113,6 +112,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit(): void {
     this.getScheduledAddDropReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCtrl = new FormControl();
+    this.generateReportScheduleList();
   }
 
   ngAfterViewInit(): void {
@@ -231,9 +231,7 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // For format the date
   formatDate(date) {
-    if (date) {
-      return moment(date).format('MMM DD, YYYY');
-    }
+    return date ? moment(date).format('MMM DD, YYYY') : null;
   }
 
   // For get all data from API
@@ -242,7 +240,6 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
       if (data) {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
-          this.isVisible = true;
           if (data.studentCoursesectionScheduleList === null) {
             this.addDropScheduleList = new MatTableDataSource([]);
             this.totalCount = null;
@@ -254,7 +251,6 @@ export class AddDropReportComponent implements OnInit, AfterViewInit, OnDestroy 
             this.totalCount = null;
           }
         } else {
-          this.isVisible = true;
           this.totalCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;

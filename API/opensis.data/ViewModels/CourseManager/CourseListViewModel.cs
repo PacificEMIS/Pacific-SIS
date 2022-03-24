@@ -34,12 +34,13 @@ namespace opensis.data.ViewModels.CourseManager
     {
         public CourseListViewModel()
         {
-            CourseViewModelList = new List<CourseViewModel>(); 
+            CourseViewModelList = new List<CourseViewModel>();
         }
         public List<CourseViewModel> CourseViewModelList { get; set; }
         public int? CourseCount { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public decimal? AcademicYear { get; set; }
+        public bool? ScheduleReport { get; set; }
     }
 }

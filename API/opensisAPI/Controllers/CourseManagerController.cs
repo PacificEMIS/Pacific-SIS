@@ -453,5 +453,21 @@ namespace opensisAPI.Controllers
             return courseCatelog;
         }
 
+        [HttpPost("getCourseSectionByStaff")]
+        public ActionResult<SubjectsViewModel> GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
+        {
+            SubjectsViewModel subjectView = new SubjectsViewModel();
+            try
+            {
+                subjectView = _courseManagerService.GetCourseSectionByStaff(subjectsViewModel);
+            }
+            catch (Exception es)
+            {
+                subjectView._failure = true;
+                subjectView._message = es.Message;
+            }
+            return subjectView;
+        }
+
     }
 }

@@ -691,38 +691,97 @@ namespace opensis.data.Repository
         public CourseListViewModel GetAllCourseList(CourseListViewModel courseListViewModel)
         {
             CourseListViewModel courseListModel = new CourseListViewModel();
-            try
-            {
-                var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
-                
-                if (courseRecords!=null && courseRecords.Any())
-                {
-                    foreach (var course in courseRecords)
-                    {
-                        CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count };
-                        courseListModel.CourseViewModelList.Add(courseViewModel);
-                    }
-                    courseListModel.CourseCount = courseRecords.Count;
 
-                    courseListModel._failure = false;
-                }
-                else
-                {
-                    courseListModel.CourseCount = null;
-                    courseListModel._failure = true;
-                    courseListModel._message = NORECORDFOUND;
-                }
-                courseListModel._tenantName = courseListViewModel._tenantName;
-                courseListModel._token = courseListViewModel._token;
-            }
-            catch (Exception es)
+            if (courseListViewModel.ScheduleReport != true)
             {
-                courseListModel.CourseViewModelList = new();
-                courseListModel._message = es.Message;
-                courseListModel._failure = true;
-                courseListModel._tenantName = courseListViewModel._tenantName;
-                courseListModel._token = courseListViewModel._token;
+                try
+                {
+                    var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
+
+                    if (courseRecords != null && courseRecords.Any())
+                    {
+                        foreach (var course in courseRecords)
+                        {
+                            CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = course.CourseSection.Count };
+                            courseListModel.CourseViewModelList.Add(courseViewModel);
+                        }
+                        courseListModel.CourseCount = courseRecords.Count;
+
+                        courseListModel._failure = false;
+                    }
+                    else
+                    {
+                        courseListModel.CourseCount = null;
+                        courseListModel._failure = true;
+                        courseListModel._message = NORECORDFOUND;
+                    }
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
+                catch (Exception es)
+                {
+                    courseListModel.CourseViewModelList = new();
+                    courseListModel._message = es.Message;
+                    courseListModel._failure = true;
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
             }
+            else
+            {
+                try
+                {
+
+                    var courseRecords = this.context?.Course.Include(x => x.CourseSection).Include(e => e.CourseStandard).ThenInclude(c => c.GradeUsStandard).Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.AcademicYear == courseListViewModel.AcademicYear).ToList();
+
+                    if (courseRecords != null && courseRecords.Any())
+                    {
+                        foreach (var course in courseRecords)
+                        {
+                            int? totalSeats = 0;
+                            int? totalScheduleStudent = 0;
+
+                            foreach (var cs in course.CourseSection)
+                            {
+                                var seats = cs.Seats;
+
+                                var scheduleStudents = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == courseListViewModel.TenantId && x.SchoolId == courseListViewModel.SchoolId && x.CourseId == cs.CourseId && x.CourseSectionId == cs.CourseSectionId && x.IsDropped != true).ToList().Count;
+                                totalSeats = totalSeats + seats;
+                                totalScheduleStudent = totalScheduleStudent + scheduleStudents;
+                            }
+                            var availableSeats = totalSeats - totalScheduleStudent;
+                            var totalCourseSection = course.CourseSection.Count();
+
+                            course.CourseSection = new HashSet<CourseSection>();
+                            course.CourseStandard = new HashSet<CourseStandard>();
+
+                            CourseViewModel courseViewModel = new CourseViewModel { Course = course, CourseSectionCount = totalCourseSection, ScheduleStudent = totalScheduleStudent, AvailableSeats = availableSeats, TotalSeats = totalSeats };
+                            courseListModel.CourseViewModelList.Add(courseViewModel);
+                        }
+                       
+                        courseListModel.CourseCount = courseRecords.Count;
+
+                        courseListModel._failure = false;
+                    }
+                    else
+                    {
+                        courseListModel.CourseCount = null;
+                        courseListModel._failure = true;
+                        courseListModel._message = NORECORDFOUND;
+                    }
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
+                catch (Exception es)
+                {
+                    courseListModel.CourseViewModelList = new();
+                    courseListModel._message = es.Message;
+                    courseListModel._failure = true;
+                    courseListModel._tenantName = courseListViewModel._tenantName;
+                    courseListModel._token = courseListViewModel._token;
+                }
+            }
+
             return courseListModel;
         }
 
@@ -1116,6 +1175,26 @@ namespace opensis.data.Repository
                             }
                         }
                     }
+
+                    //this block for fetch school details
+                    if (courseSectionViewModel.schoolDetails == true)
+                    {
+                        var SchoolDetailsData = this.context?.SchoolMaster.Include(y => y.SchoolDetail).Where(x => x.TenantId == courseSectionViewModel.TenantId && x.SchoolId == courseSectionViewModel.SchoolId).FirstOrDefault();
+
+                        if (SchoolDetailsData != null)
+                        {
+                            courseSectionView.SchoolName = SchoolDetailsData.SchoolName;
+                            courseSectionView.StreetAddress1 = SchoolDetailsData.StreetAddress1;
+                            courseSectionView.StreetAddress2 = SchoolDetailsData.StreetAddress2;
+                            courseSectionView.Country = SchoolDetailsData.Country;
+                            courseSectionView.City = SchoolDetailsData.City;
+                            courseSectionView.State = SchoolDetailsData.State;
+                            courseSectionView.District = SchoolDetailsData.District;
+                            courseSectionView.Zip = SchoolDetailsData.Zip;
+                            courseSectionView.SchoolLogo = SchoolDetailsData.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                        }
+                    }
+
                     courseSectionView.TenantId = courseSectionViewModel.TenantId;
                     courseSectionView.SchoolId = courseSectionViewModel.SchoolId;
                     courseSectionView.CourseId = courseSectionViewModel.CourseId;
@@ -2233,23 +2312,32 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public CourseSectionAddViewModel DeleteCourseSection(CourseSectionAddViewModel courseSectionAddViewModel)
         {
-
             using var transaction = this.context?.Database.BeginTransaction();
             {
                 try
                 {
                     var studentScheduleData = this.context?.StudentCoursesectionSchedule.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId && (e.IsDropped == null || e.IsDropped == false));
 
-                    var staffScheduleData = this.context?.StaffCoursesectionSchedule.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+                    var staffScheduleData = this.context?.StaffCoursesectionSchedule.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId && (e.IsDropped == null || e.IsDropped == false));
 
-                    if (studentScheduleData != null || staffScheduleData != null)
+                    var gradebookGradeData = this.context?.GradebookGrades.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+
+                    var studentAttendanceData = this.context?.StudentAttendance.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+
+                    var studentFinalGradeData = this.context?.StudentFinalGrade.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+
+                    var studentEffortGradeData = this.context?.StudentEffortGradeMaster.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+
+                    var assignmentTypeDataData = this.context?.AssignmentType.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+
+                    if (studentScheduleData != null || staffScheduleData != null || gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null || assignmentTypeDataData != null)
                     {
                         courseSectionAddViewModel._failure = true;
                         courseSectionAddViewModel._message = "This Course Section could not be deleted. It has association";
                     }
                     else
                     {
-                        var courseSectionDelete = this.context?.CourseSection.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
+                        var courseSectionDelete = this.context?.CourseSection.Include(x => x.StudentCoursesectionSchedule).Include(y => y.StaffCoursesectionSchedule).Include(z => z.GradebookConfiguration).FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.CourseSectionId == courseSectionAddViewModel.CourseSection.CourseSectionId);
 
                         if (courseSectionDelete != null)
                         {
@@ -2292,12 +2380,58 @@ namespace opensis.data.Repository
                                     this.context?.CourseBlockSchedule.RemoveRange(courseBlockScheduleDelete);
                                 }
                             }
+
+                            if (courseSectionDelete.StudentCoursesectionSchedule?.Any() == true)
+                            {
+                                this.context?.StudentCoursesectionSchedule.RemoveRange(courseSectionDelete.StudentCoursesectionSchedule);
+                            }
+
+                            if (courseSectionDelete.StaffCoursesectionSchedule?.Any() == true)
+                            {
+                                this.context?.StaffCoursesectionSchedule.RemoveRange(courseSectionDelete.StaffCoursesectionSchedule);
+                            }
+
+                            if (courseSectionDelete.GradebookConfiguration?.Any() == true)
+                            {
+                                var gradebookConfigurationData = this.context?.GradebookConfiguration.Include(a => a.GradebookConfigurationGradescale).Include(b => b.GradebookConfigurationYear).Include(c => c.GradebookConfigurationSemester).Include(d => d.GradebookConfigurationQuarter).Include(e => e.GradebookConfigurationProgressPeriods).FirstOrDefault(x => x.TenantId == courseSectionDelete.TenantId && x.SchoolId == courseSectionDelete.SchoolId && x.CourseSectionId == courseSectionDelete.CourseSectionId);
+
+                                if (gradebookConfigurationData != null)
+                                {
+                                    if (gradebookConfigurationData.GradebookConfigurationGradescale?.Any() == true)
+                                    {
+                                        this.context?.GradebookConfigurationGradescale.RemoveRange(gradebookConfigurationData.GradebookConfigurationGradescale);
+                                    }
+
+                                    if (gradebookConfigurationData.GradebookConfigurationYear?.Any() == true)
+                                    {
+                                        this.context?.GradebookConfigurationYear.RemoveRange(gradebookConfigurationData.GradebookConfigurationYear);
+                                    }
+
+                                    if (gradebookConfigurationData.GradebookConfigurationSemester?.Any() == true)
+                                    {
+                                        this.context?.GradebookConfigurationSemester.RemoveRange(gradebookConfigurationData.GradebookConfigurationSemester);
+                                    }
+
+                                    if (gradebookConfigurationData.GradebookConfigurationQuarter?.Any() == true)
+                                    {
+                                        this.context?.GradebookConfigurationQuarter.RemoveRange(gradebookConfigurationData.GradebookConfigurationQuarter);
+                                    }
+
+                                    if (gradebookConfigurationData.GradebookConfigurationProgressPeriods.Any() == true)
+                                    {
+                                        this.context?.GradebookConfigurationProgressPeriods.RemoveRange(gradebookConfigurationData.GradebookConfigurationProgressPeriods);
+                                    }
+                                }
+
+                                this.context?.GradebookConfiguration.RemoveRange(courseSectionDelete.GradebookConfiguration);
+                            }
+
+
                             this.context?.CourseSection.Remove(courseSectionDelete);
                             this.context?.SaveChanges();
 
                             courseSectionAddViewModel._failure = false;
                             courseSectionAddViewModel._message = "Course Section Deleted Successfully";
-                            transaction?.Commit();
                         }
                         else
                         {
@@ -2305,6 +2439,8 @@ namespace opensis.data.Repository
                             courseSectionAddViewModel._message = NORECORDFOUND;
                         }
                     }
+
+                    transaction?.Commit();
                 }
                 catch (Exception es)
                 {
@@ -2450,7 +2586,7 @@ namespace opensis.data.Repository
 
                 var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && (searchCourseSectionViewModel.MarkingPeriodStartDate == null || (x.DurationStartDate >= searchCourseSectionViewModel.MarkingPeriodStartDate || x.DurationEndDate >= searchCourseSectionViewModel.MarkingPeriodStartDate)) && (searchCourseSectionViewModel.CourseId == null || x.CourseId == searchCourseSectionViewModel.CourseId) && (searchCourseSectionViewModel.CourseSubject == null || x.CourseSubject == searchCourseSectionViewModel.CourseSubject) && (searchCourseSectionViewModel.CourseProgram == null || x.CourseProgram == searchCourseSectionViewModel.CourseProgram) && (searchCourseSectionViewModel.MarkingPeriodId == null || x.YrMarkingPeriodId == YrmarkingPeriodId || x.SmstrMarkingPeriodId == SmtrmarkingPeriodId || x.QtrMarkingPeriodId == QtrmarkingPeriodId || x.PrgrsprdMarkingPeriodId == PrgrsprdmarkingPeriodId));
 
-                if (coursedata!=null && coursedata.Any())
+                if (coursedata != null && coursedata.Any())
                 {
 
                     var distinctCourseData = coursedata.Select(s => new AllCourseSectionView { TenantId = s.TenantId, SchoolId = s.SchoolId, CourseId = s.CourseId, CourseTitle = s.CourseTitle, CourseProgram = s.CourseProgram, CourseSubject = s.CourseSubject, AcademicYear = s.AcademicYear, CourseSectionId = s.CourseSectionId, CourseSectionName = s.CourseSectionName, YrMarkingPeriodId = s.YrMarkingPeriodId, SmstrMarkingPeriodId = s.SmstrMarkingPeriodId, QtrMarkingPeriodId = s.QtrMarkingPeriodId, PrgrsprdMarkingPeriodId = s.PrgrsprdMarkingPeriodId, IsActive = s.IsActive, DurationStartDate = s.DurationStartDate, DurationEndDate = s.DurationEndDate, Seats = s.Seats, CourseGradeLevel = s.CourseGradeLevel, GradeScaleId = s.GradeScaleId, AllowStudentConflict = s.AllowStudentConflict, AllowTeacherConflict = s.AllowTeacherConflict, ScheduleType = s.ScheduleType }).Distinct().ToList();
@@ -2459,8 +2595,8 @@ namespace opensis.data.Repository
                     {
                         foreach (var CourseData in distinctCourseData)
                         {
-                            var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != false).ToList();
-                            if (staffSchedule!=null && staffSchedule.Any())
+                            var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList();
+                            if (staffSchedule != null && staffSchedule.Any())
                             {
                                 foreach (var staff in staffSchedule)
                                 {
@@ -2476,9 +2612,52 @@ namespace opensis.data.Repository
                         foreach (var CourseData in distinctCourseData)
                         {
                             int? studentSchedule = null;
-                            studentSchedule = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != false).ToList().Count;
+                            studentSchedule = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList().Count;
 
                             CourseData.AvailableSeat = CourseData.Seats - studentSchedule;
+
+                            var staffScheduleData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.CourseSectionId == CourseData.CourseSectionId && x.IsDropped != true).ToList();
+                            if (staffScheduleData != null && staffScheduleData.Any())
+                            {
+                                foreach (var staff in staffScheduleData)
+                                {
+                                    var staffName = staff.StaffMaster.FirstGivenName + " " + staff.StaffMaster.MiddleName + " " + staff.StaffMaster.LastFamilyName;
+                                    CourseData.StaffName = CourseData.StaffName != null ? CourseData.StaffName + ", " + staffName : staffName;
+                                }
+                            }
+
+
+                            if (CourseData.ScheduleType == "Fixed Schedule (1)")
+                            {
+                                CourseData.FixedDays = coursedata.Where(x => x.CourseSectionId == CourseData.CourseSectionId).FirstOrDefault()?.FixedDays;
+                            }
+                            else if (CourseData.ScheduleType == "Variable Schedule (2)")
+                            {
+                                var variabaleScheduleData = coursedata.Where(x => x.CourseSectionId == CourseData.CourseSectionId).ToList();
+
+                                foreach (var variabaleSchedule in variabaleScheduleData)
+                                {
+                                    var varDay = variabaleSchedule.VarDay;
+                                    CourseData.VarDay = CourseData.VarDay != null ? CourseData.VarDay + "|" + varDay : varDay;
+                                }
+                            }
+
+                            if (CourseData.PrgrsprdMarkingPeriodId != null)
+                            {
+                                CourseData.MarkingPeriod = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseData.PrgrsprdMarkingPeriodId)?.Title;
+                            }
+                            else if (CourseData.QtrMarkingPeriodId != null)
+                            {
+                                CourseData.MarkingPeriod = this.context?.Quarters.FirstOrDefault(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseData.QtrMarkingPeriodId)?.Title;
+                            }
+                            else if (CourseData.SmstrMarkingPeriodId != null)
+                            {
+                                CourseData.MarkingPeriod = this.context?.Semesters.FirstOrDefault(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseData.SmstrMarkingPeriodId)?.Title;
+                            }
+                            else if (CourseData.YrMarkingPeriodId != null)
+                            {
+                                CourseData.MarkingPeriod = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && x.MarkingPeriodId == CourseData.YrMarkingPeriodId)?.Title;
+                            }
                         }
                     }
                     searchCourseSection.AllCourseSectionViewList = distinctCourseData;
@@ -2964,6 +3143,80 @@ namespace opensis.data.Repository
                 courseCatelog._failure = true;
             }
             return courseCatelog;
+        }
+
+        /// <summary>
+        /// Get subjrct,course,CourseSection By Staff
+        /// </summary>
+        /// <param name="subjectsViewModel"></param>
+        /// <returns></returns>
+        public SubjectsViewModel GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
+        {
+            SubjectsViewModel subjectView = new SubjectsViewModel();
+            subjectView.TenantId = subjectsViewModel.TenantId;
+            subjectView.SchoolId = subjectsViewModel.SchoolId;
+            subjectView.StaffId = subjectsViewModel.StaffId;
+            subjectView.AcademicYear = subjectsViewModel.AcademicYear;
+            subjectView._tenantName = subjectsViewModel._tenantName;
+            subjectView._token = subjectsViewModel._token;
+
+            try
+            {
+                var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.
+                                    Join(this.context.Course,
+                                    scss => scss.CourseId, c => c.CourseId,
+                                    (scss, c) => new { scss, c }).Where(x => x.scss.TenantId == subjectsViewModel.TenantId && x.c.TenantId == subjectsViewModel.TenantId && x.scss.SchoolId == subjectsViewModel.SchoolId && x.c.SchoolId == subjectsViewModel.SchoolId && x.scss.StaffId == subjectsViewModel.StaffId && x.c.AcademicYear == subjectsViewModel.AcademicYear).ToList();
+
+                if (staffCoursesectionScheduleData?.Any()==true)
+                {
+                    var subjectWiseData = staffCoursesectionScheduleData.GroupBy(x => x.c.CourseSubject).ToList();
+                    var subjectData = this.context?.Subject.Where(x => x.TenantId == subjectsViewModel.TenantId && x.SchoolId == subjectsViewModel.SchoolId && x.AcademicYear == subjectsViewModel.AcademicYear);
+
+                    //List<SubjectViewModel> subjectList = new();
+
+                    //this loop for subject
+                    foreach (var sub in subjectWiseData)
+                    {
+                        SubjectViewModel subject = new();
+                        subject.SubjectName = sub.Key;
+                        subject.SubjectId = subjectData?.FirstOrDefault(x => (x.SubjectName ?? "").ToLower() == (sub.Key ?? "").ToLower())?.SubjectId;
+
+                        var courseForSub = sub.Select(s => s.c).Where(s => s.CourseSubject == sub.Key).Distinct().ToList();
+
+                        //this loop for course
+                        foreach (var course in courseForSub)
+                        {
+                            CoursesViewModel courseView = new();
+                            courseView.CourseName = course.CourseTitle;
+                            courseView.CourseId = course.CourseId;
+
+                            var courseSectionbyCourse = sub.Select(s => s.scss).Where(x => x.CourseId == course.CourseId).ToList();
+
+                            //this loop for courseSection
+                            foreach (var cs in courseSectionbyCourse)
+                            {
+                                CourseSectionsViewModel courseSectionView = new();
+                                courseSectionView.CourseSectionName = cs.CourseSectionName;
+                                courseSectionView.CourseSectionId = cs.CourseSectionId;
+                                courseView.courseSectionsViewModels.Add(courseSectionView);
+                            }
+                            subject.coursesViewModels.Add(courseView);
+                        }
+                        subjectView.subjectViewModels.Add(subject);
+                    }
+                }
+                else
+                {
+                    subjectView._failure = true;
+                    subjectView._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                subjectView._failure = true;
+                subjectView._message = es.Message;
+            }
+            return subjectView;
         }
     }
 }

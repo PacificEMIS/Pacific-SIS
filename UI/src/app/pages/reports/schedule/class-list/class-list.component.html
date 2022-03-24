@@ -68,7 +68,7 @@
             </ul>
             </form>
             <mat-divider></mat-divider>
-            <h4 class="px-6 py-2 text-primary font-semibold">{{'found' | translate}} {{totalCount}} {{'coursePeriod' | translate}}</h4>
+            <h4 class="px-6 py-2 text-primary font-semibold">{{'found' | translate}} {{totalCount}} {{(totalCount>1?'coursePeriods':'coursePeriod') | translate}}</h4>
             <div class="overflow-x-auto overflow-y-hidden border-t">
                 <table mat-table [dataSource]="classLists" class="mat-elevation-z8">
 
@@ -197,7 +197,7 @@
                         </div>
                         <div class="w-2/3">
                             <ul class="grid grid-cols-2 row-gap-3 mb-8">
-                                <li *ngFor="let field of fieldsDetailsArray?.personalContactInformation"><mat-slide-toggle color="primary" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                                <li *ngFor="let field of fieldsDetailsArray?.personalContactInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                             </ul>
                         </div>
                     </div>
@@ -233,7 +233,7 @@
         <div class="card">
             <div class="bg-white px-4 py-2 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
                 <div class="md:flex w-full justify-between items-center">
-                    <h4 class="text-primary font-semibold">{{generateCourseSectionList?.length}} {{'courseSectionAnd' | translate}} {{totalStudentCount}} {{'studentsFound' | translate}}.</h4>
+                    <h4 class="text-primary font-semibold">{{generateCourseSectionList?.length}} {{(generateCourseSectionList?.length>1?'courseSectionsAnd':'courseSectionAnd') | translate}} {{totalStudentCount}} {{(totalStudentCount>1?'studentsFound':'studentFound') | translate}}.</h4>
                     <div class="py-2 md:pt-2 items-center">
                         <a class="cursor-pointer inline-block align-middle" (click)="generateExcel()" matTooltip="Export to Excel">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
@@ -251,7 +251,7 @@
                         </p>
                     </div>
                     <div>
-                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{'seats' | translate }}</div>
+                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.totalSeats - courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{'seats' | translate }}</div>
                     </div>
                 </div>
                 <div class="overflow-x-auto overflow-y-hidden">

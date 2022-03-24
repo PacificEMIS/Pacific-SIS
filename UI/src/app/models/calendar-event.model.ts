@@ -38,6 +38,7 @@ export class CalendarEventAddViewModel extends CommonField {
 
 export class CalendarEventListViewModel extends CommonField {
     public calendarEventList: CalendarEventModel[];
+    public assignmentList : CalendarAssignmentViewModel[]
     public tenantId: string;
     public schoolId: number;
     public calendarId: number[];
@@ -46,8 +47,24 @@ export class CalendarEventListViewModel extends CommonField {
     constructor() {
         super();
         this.calendarEventList = [];
+        this.assignmentList = [];
         this.calendarId = [];
     }
+}
+
+export class CalendarAssignmentViewModel{
+    assignmentTypeId: number;
+    assignmentId: number;
+    assignmentTitle: string;
+    points: number;
+    assignmentDate: string;
+    dueDate: string;
+    assignmentDescription: string;
+    eventColor: string;
+    staffFirstName: string;
+    assignmentTypeName: string;
+    staffLastName: string;
+    courseName: string;
 }
 
 export interface colors {

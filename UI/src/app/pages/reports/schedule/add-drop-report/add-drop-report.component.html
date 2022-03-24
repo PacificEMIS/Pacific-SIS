@@ -3,7 +3,7 @@
     <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 items-center">
         <li>
             <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                <mat-label>{{ "showAttendanceBy" | translate }}</mat-label>
+                <mat-label>{{ "showReportBy" | translate }}</mat-label>
                 <mat-select [(ngModel)]="selectedReportBy" (selectionChange)="getReportBy($event)">
                     <mat-option *ngFor="let option of selectOptions" [value]="option?.subTitle">{{option?.title}}</mat-option>
                     <mat-option value="">{{'customDateRange' |translate}}</mat-option>
@@ -33,7 +33,7 @@
         </li>
     </ul>
 </div>
-<div class="card" [class.hidden]="!isVisible">
+<div class="card">
     <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
         <div class="md:flex w-full justify-between">
             <div class="py-2" fxLayout="row" fxLayoutAlign="start center">

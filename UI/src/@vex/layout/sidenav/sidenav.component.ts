@@ -19,6 +19,8 @@ import { StaffService } from 'src/app/services/staff.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { SchoolCreate } from 'src/app/enums/school-create.enum';
+import { ImpersonateServices } from 'src/app/services/impersonate.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
   selector: 'vex-sidenav',
@@ -50,6 +52,8 @@ export class SidenavComponent implements OnInit {
   tenantSidenavLogo: any;
   pageId: string;
   permittedSubmenuList:any;
+  impersonateSubjectForsideNav:boolean=false;
+  profile = ProfilesTypes;
   constructor(private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,
@@ -59,7 +63,10 @@ export class SidenavComponent implements OnInit {
     public translateService: TranslateService,
     private dialog: MatDialog,
     private commonService: CommonService,
-    private defaultValuesService:DefaultValuesService) {
+    public defaultValuesService:DefaultValuesService,
+    private impersonateServices:ImpersonateServices
+    ) {
+      
       this.tenantSidenavLogo = this.defaultValuesService.getPhotoAndFooter().tenantSidenavLogo;
       this.tenantLogoIcon = this.defaultValuesService.getPhotoAndFooter().tenantLogoIcon;
       this.tenantName = this.defaultValuesService.getTenantName();
@@ -70,14 +77,22 @@ export class SidenavComponent implements OnInit {
         }
       });
       // translateService.use("en");
+      this.impersonateServices.impersonateSubjectForsideNav.subscribe(x=>{
+        if(x) {
+          this.impersonateSubjectForsideNav=true;
+          this.impersonateSideNavOnInit();
+        }
+      })
   }
 
   ngOnInit() {
-
+    this.impersonateSideNavOnInit()
+  }
+  impersonateSideNavOnInit() {
     this.userName = this.defaultValuesService.getFullUserName();
 
-    this.defaultValuesService.newSubject.subscribe(data=>{
-      this.userName=data;
+    this.defaultValuesService.newSubject.subscribe(data => {
+      this.userName = data;
     })
 
     this.membershipName = this.defaultValuesService.getuserMembershipName();

@@ -258,6 +258,6 @@ export class WeeklyAttendanceList {
   dayDate?: number | string;
   attendanceList: {};
   takenAttendanceDays: string;
-  cloneTakenAttendanceDays: number[];
+  cloneTakenAttendanceDays: any[];
   takenAttendanceList:[]
 }

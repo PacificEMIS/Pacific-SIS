@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using opensis.data.Models;
 using opensis.data.ViewModels.Student;
@@ -175,8 +175,40 @@ namespace opensisAPI.Controllers
             return studentAttendanced;
         }
 
+    [HttpPost("getAllStudentAbsenceList")]
+    public ActionResult<StudentListForAbsenceSummary> GetAllStudentAbsenceList(PageResult pageResult)
+    {
+      StudentListForAbsenceSummary studentListForAbsence = new();
+      try
+      {
+        studentListForAbsence = _attendanceReportService.GetAllStudentAbsenceList(pageResult);
+      }
+      catch (Exception es)
+      {
+        studentListForAbsence._failure = true;
+        studentListForAbsence._message = es.Message;
+      }
+      return studentListForAbsence;
+    }
 
-        [HttpPost("scheduledCourseSectionList")]
+    [HttpPost("getAbsenceListByStudent")]
+    public ActionResult<AbsenceListByStudent> GetAbsenceListByStudent(PageResult pageResult)
+    {
+      AbsenceListByStudent absenceList = new();
+      try
+      {
+        absenceList = _attendanceReportService.GetAbsenceListByStudent(pageResult);
+      }
+      catch (Exception es)
+      {
+        absenceList._failure = true;
+        absenceList._message = es.Message;
+      }
+      return absenceList;
+    }
+
+
+    [HttpPost("scheduledCourseSectionList")]
         public ActionResult<ScheduleClassList> ScheduledCourseSectionList(ScheduleClassList courseSectionList)
         {
             ScheduleClassList scheduledCourseSectionList = new();

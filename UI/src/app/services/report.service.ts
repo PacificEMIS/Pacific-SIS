@@ -2,7 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel} from '../models/report.model';
+import { AbsenceListByStudent, GetStudentAbsenceReport, StudentListForAbsenceSummary } from '../models/absence-summary.model';
+import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel} from '../models/report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -77,5 +78,27 @@ export class ReportService {
 
     let apiurl = this.apiUrl + obj._tenantName + "/Report/GetStudentProgressReport";
     return this.http.post<GetStudentProgressReportModel>(apiurl, obj, this.httpOptions)
+  }
+
+  getHonorRollReport(obj: GetHonorRollReportModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+    obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+    obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
+
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getHonorRollReport";
+    return this.http.post<GetHonorRollReportModel>(apiurl, obj, this.httpOptions)
+  }
+
+  getAllStudentAbsenceList(obj: GetStudentAbsenceReport) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getAllStudentAbsenceList";
+    return this.http.post<StudentListForAbsenceSummary>(apiurl, obj, this.httpOptions)
+  }
+
+  getAbsenceListByStudent(obj: GetStudentAbsenceReport) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getAbsenceListByStudent";
+    return this.http.post<AbsenceListByStudent>(apiurl, obj, this.httpOptions)
   }
 }
