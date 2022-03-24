@@ -1780,5 +1780,6 @@
     "courseCodeIsRequired": "Se requiere el código del curso",
     "percentageIsRequired": "Se requiere porcentaje",
     "backtoSuperAdmin":"Volver a Super Admin",
-    "back":"Atrás"
+    "back":"Atrás",
+    "scheduleStudent":"Programar estudiante"
 }

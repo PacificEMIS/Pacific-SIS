@@ -1779,5 +1779,6 @@
     "courseCodeIsRequired": "Course Code is required",
     "percentageIsRequired": "Percentage is required",
     "back":"Back",
-    "backtoSuperAdmin":"Back to Super Admin"
+    "backtoSuperAdmin":"Back to Super Admin",
+    "scheduleStudent":"Schedule Student"
 }

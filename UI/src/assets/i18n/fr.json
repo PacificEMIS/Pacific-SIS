@@ -1778,5 +1778,6 @@
     "courseCodeIsRequired": "Le code du cours est requis",
     "percentageIsRequired": "Le pourcentage est requis",
     "back":"Arrière",
-    "backtoSuperAdmin":"Retour à Super Admin"
+    "backtoSuperAdmin":"Retour à Super Admin",
+    "scheduleStudent":"Horaire étudiant"
 }

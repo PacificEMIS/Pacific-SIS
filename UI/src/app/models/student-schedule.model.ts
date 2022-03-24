@@ -19,6 +19,7 @@ export class StudentCourseSectionScheduleAddViewModel extends CommonField {
   public createdBy: string;
   public updatedBy: string;
   public conflictMessage: string;
+  public durationStartDate:string;
   public _conflictFailure: boolean;
   constructor() {
     super();

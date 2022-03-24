@@ -51,12 +51,41 @@ import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { CourseManagerService } from '../../../services/course-manager.service';
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from '../../../models/course-manager.model';
 import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.model';
+import { weeks } from 'src/app/common/static-data';
+import { uniqueColors } from "../../../common/static-data";
+import {FormControl} from '@angular/forms';
+import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import * as _moment from 'moment';
+import {default as _rollupMoment} from 'moment';
 
+const moment = _rollupMoment || _moment;
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'LL',
+  },
+  display: {
+    dateInput: 'LL',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 @Component({
   selector: 'vex-schedule-student',
   templateUrl: './schedule-student.component.html',
   styleUrls: ['./schedule-student.component.scss'],
-  providers: [TitleCasePipe]
+  providers: [
+    TitleCasePipe,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ]
 })
 export class ScheduleStudentComponent implements OnInit, OnDestroy {
   studentList = [];
@@ -67,7 +96,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   courseList = [];
   markingPeriodList = [];
   gradeLevelList = [];
-  studentText: string;
+  studentText: boolean;
   sectionText: string;
   viewReport: boolean = false;
   failedScheduling: boolean = false
@@ -89,6 +118,8 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   scheduleReport: MatTableDataSource<any>;
   displayedColumns: string[];
   permissions: Permissions;
+  date = new FormControl(moment());
+  weekArray = ['M', 'T', 'W', 'T', 'F'];
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentScheduleService: StudentScheduleService,
     private loaderService: LoaderService,
@@ -299,10 +330,10 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
       this.studentList = data;
       if (this.studentList?.length > 0) {
         if (this.studentList?.length > 1) {
-          this.studentText = 's';
+          this.studentText = true;
         }
         else {
-          this.studentText = '';
+          this.studentText = false;
         }
         this.showStudentCount = true;
       }
@@ -327,7 +358,10 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
         markingPeriodList: this.getMarkingPeriodTitleListModel.getMarkingPeriodView
       }
     }).afterClosed().subscribe((data) => {
-      this.courseSectionList = data;
+      if(data)
+        this.courseSectionList=this.createTableDataset(data);
+      console.log(this.courseSectionList);
+      
       if (this.courseSectionList?.length > 0) {
         if (this.studentList?.length > 1) {
           this.sectionText = 's';
@@ -345,6 +379,63 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
       this.showReportTable = false;
     });
     }
+  }
+
+  changeDateEvent(getValue) {
+    getValue.durationStartDate=moment(getValue.durationStartDate).format('YYYY-MM-DD');
+  }
+
+  createTableDataset(courseSectionList) {
+    courseSectionList.map((courseSection: any) => {
+      courseSection.courseDurationStartDate=courseSection.durationStartDate=moment(courseSection.durationStartDate).format('YYYY-MM-DD');
+
+      if (moment(new Date()).isBetween(courseSection.courseDurationStartDate, courseSection.durationEndDate))  // for checking current date is in between or not  
+        courseSection.durationStartDate = moment(new Date()).format('YYYY-MM-DD');
+
+      if (courseSection?.staffName)                                                                            // splitting all staff names 
+        courseSection.staffNameList = this.cerateTeacherListArray(courseSection?.staffName.split(", "));
+      if (courseSection?.scheduleType.includes('Fixed Schedule'))
+        courseSection.meetingDays = this.findDaysBasedOnName(courseSection?.fixedDays.split("|"));
+      else if (courseSection?.scheduleType.includes('Variable Schedule'))
+        courseSection.meetingDays = this.findDaysBasedOnName(courseSection?.varDay.split("|"));
+      else
+        courseSection.meetingDays = false;
+    })
+    return courseSectionList;
+  }
+
+  findDaysBasedOnName(days: any) {
+    let cloneMeetingDays = "";
+    days.map((day) => {
+      for (const [i, weekDay] of weeks.entries()) {
+        if (weekDay.name.toLowerCase() == day.trim().toLowerCase()) {
+          cloneMeetingDays += weekDay.id;
+          break;
+        }
+      }
+    });
+    return cloneMeetingDays;
+  }
+
+  cerateTeacherListArray(staffName: any) {
+    let fitstAndLastCharArray = []
+    let teachersName = ""
+    staffName?.map((names: any, index: any) => {
+      if (index < 3) {
+        for (var i = 0; i < names.length; i++)
+          if (names?.charAt(i) === " " && names?.charAt(i + 1) !== " ")
+            fitstAndLastCharArray.push({
+              fullName: names,
+              firstNameChar: names?.substring(0, 1).toUpperCase(),
+              lastNameChar: names?.charAt(i + 1).toUpperCase(),
+              bgColor: uniqueColors[Math.floor(Math.random() * 9)].backgroundColor
+            });
+      } else
+        teachersName += `${names} \n`;
+    })
+    if (teachersName)
+      fitstAndLastCharArray.push({ fullName: teachersName });
+    return fitstAndLastCharArray;
   }
 
   translateKey(key) {
