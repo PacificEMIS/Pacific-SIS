@@ -280,5 +280,28 @@ namespace opensis.core.StudentSchedule.Services
             }
             return courseListView;
         }
+
+        public ScheduledStudentDeleteViewModel GroupDeleteForScheduledStudent(ScheduledStudentDeleteViewModel scheduledStudentDeleteViewModel)
+        {
+            ScheduledStudentDeleteViewModel scheduledStudentDelete = new ScheduledStudentDeleteViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(scheduledStudentDeleteViewModel._tenantName + scheduledStudentDeleteViewModel._userName, scheduledStudentDeleteViewModel._token))
+                {
+                    scheduledStudentDelete = this.studentScheduleRepository.GroupDeleteForScheduledStudent(scheduledStudentDeleteViewModel);
+                }
+                else
+                {
+                    scheduledStudentDelete._failure = true;
+                    scheduledStudentDelete._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                scheduledStudentDelete._failure = true;
+                scheduledStudentDelete._message = es.Message;
+            }
+            return scheduledStudentDelete;
+        }
     }
 }

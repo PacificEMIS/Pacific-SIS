@@ -37,10 +37,11 @@ import { AbsenceSummaryComponent } from './absence-summary/absence-summary.compo
 import { AbsenceSummaryDetailsComponent } from './absence-summary/absence-summary-details/absence-summary-details.component';
 import { AttendanceChartComponent } from './attendance-chart/attendance-chart.component';
 import { AttendanceChartDetailsComponent } from './attendance-chart/attendance-chart-details/attendance-chart-details.component';
+import { SearchStudentComponent } from './absence-summary/search-student/search-student.component';
 
 
 @NgModule({
-  declarations: [AttendanceComponent, AttendanceReportComponent, AverageAttendanceByDayComponent, AverageDailyAttendanceComponent, AbsenceSummaryComponent, AbsenceSummaryDetailsComponent,AttendanceChartComponent,AttendanceChartDetailsComponent],
+  declarations: [AttendanceComponent, AttendanceReportComponent, AverageAttendanceByDayComponent, AverageDailyAttendanceComponent, AbsenceSummaryComponent, AbsenceSummaryDetailsComponent,AttendanceChartComponent,AttendanceChartDetailsComponent,SearchStudentComponent],
   imports: [
     CommonModule,
     AttendanceRoutingModule,
