@@ -474,11 +474,15 @@ namespace opensis.data.Helper
             }
             else if (module == "parent")
             {
-                var parentInfoData = cRMContext?.ParentListView.FirstOrDefault(c => c.TenantId == tenantId && (salutation == null || c.Salutation == salutation) && (firstGivenName == null || (c.Firstname ?? "").ToLower() == firstGivenName.ToLower()) && (middleName == null || (c.Middlename ?? "").ToLower() == middleName.ToLower()) && (lastFamilyName == null || (c.Lastname ?? "").ToLower() == lastFamilyName.ToLower()) && (suffix == null || c.Suffix == suffix) && (emailAddress == null || c.PersonalEmail == emailAddress) && (ssn == null || (c.Mobile ?? "").ToLower() == ssn.ToLower()) && (guid == null || c.ParentGuid != guid));
+                var Data = cRMContext?.ParentInfo.Where(c => c.TenantId == tenantId && (salutation == null || c.Salutation == salutation) && (firstGivenName == null || (c.Firstname ?? "").ToLower() == firstGivenName.ToLower()) && (middleName == null || (c.Middlename ?? "").ToLower() == middleName.ToLower()) && (lastFamilyName == null || (c.Lastname ?? "").ToLower() == lastFamilyName.ToLower()) && (suffix == null || c.Suffix == suffix) && (emailAddress == null || c.PersonalEmail == emailAddress) && (ssn == null || (c.Mobile ?? "").ToLower() == ssn.ToLower()) && (guid == null || c.ParentGuid != guid));
 
-                if (parentInfoData != null)
+                if (Data != null)
                 {
-                    check = 0;
+                    int parentInfoData = Data.Select(x => x.ParentId).Distinct().Count();
+                    if (parentInfoData > 0)
+                    {
+                        check = 0;
+                    }
                 }
             }
             return check;
