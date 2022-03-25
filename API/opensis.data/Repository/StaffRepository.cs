@@ -431,7 +431,7 @@ namespace opensis.data.Repository
                         UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
                         IsActive = e.IsActive,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate , SchoolAttachedId = s.SchoolAttachedId, SchoolId = s.SchoolId, SchoolAttachedName = s.SchoolAttachedName }).ToList() : new()
                     }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                 }
                 else
@@ -464,7 +464,7 @@ namespace opensis.data.Repository
                         UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
                         IsActive = e.IsActive,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate , SchoolAttachedId = s.SchoolAttachedId, SchoolId = s.SchoolId, SchoolAttachedName = s.SchoolAttachedName }).ToList() : new()
                     });
                 }
                 if(transactionIQ!=null && transactionIQ.Any())
