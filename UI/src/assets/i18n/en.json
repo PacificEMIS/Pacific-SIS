@@ -1779,5 +1779,13 @@
     "courseCodeIsRequired": "Course Code is required",
     "percentageIsRequired": "Percentage is required",
     "back":"Back",
-    "backtoSuperAdmin":"Back to Super Admin"
+    "backtoSuperAdmin":"Back to Super Admin",
+    "studentsWhoDontHaveAnyAttendanceGradebookGradesOrFinalGradesDataAssociatedWithTheCourseSectionAboveAreShownInTheListBelow": "Students who don't have any Attendance, Gradebook Grades or Final Grades data associated with the course section above are shown in the list below.",
+    "groupDelete": "Group Delete",
+    "selectACourseSectionToDeleteStudentFromIt": "Select a course section to delete student from it.",
+    "selectStudentsToDeleteFromCourseSection": "Select Students to Delete from Course Section",
+    "totalSeats": "Total Seats",
+    "deleteSelectedStudentsFromCourseSection": "Delete Selected Students from Course Section",
+    "studentsSuccessfullyDeletedFrom": "Students successfully deleted from",
+    "completed": "Completed"
 }
