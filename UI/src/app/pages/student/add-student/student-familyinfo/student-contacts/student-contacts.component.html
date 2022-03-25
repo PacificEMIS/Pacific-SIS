@@ -63,7 +63,7 @@
         </div>
     </div>
     <ng-template #other>
-        <div class="text-center mt-6">
+        <div class="text-center mt-6" *ngIf="disableAddButtonFlag === false">
             <button *ngIf="permissions?.add" color="primary" mat-raised-button type="button" (click)='openAddNew("Other")'>
                 <ic-icon [icon]="icAdd" class="ltr:-ml-1 rtl:-mr-1 ltr:mr-2 rtl:ml-2" inline="true" size="24px">
                 </ic-icon>
