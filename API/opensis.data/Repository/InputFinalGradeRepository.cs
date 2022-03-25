@@ -941,7 +941,7 @@ namespace opensis.data.Repository
                             studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
 
                             studentWithGradeBook.Percentage = prgsPercentage;
-                            studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.FirstOrDefault(x => x.Breakoff <= studentWithGradeBook.Percentage)?.Title ?? "";
+                            studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= studentWithGradeBook.Percentage)?.Title ?? "";
 
                             gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
                         }
@@ -1051,7 +1051,7 @@ namespace opensis.data.Repository
                                 studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
 
                                 studentWithGradeBook.Percentage = qtrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.FirstOrDefault(x => x.Breakoff <= qtrPercentage)?.Title ?? "";
+                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= qtrPercentage)?.Title ?? "";
 
                                 gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
                             }
@@ -1161,7 +1161,7 @@ namespace opensis.data.Repository
                                 studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
 
                                 studentWithGradeBook.Percentage = smstrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.FirstOrDefault(x => x.Breakoff <= smstrPercentage)?.Title ?? "";
+                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= smstrPercentage)?.Title ?? "";
 
                                 gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
                             }
@@ -1271,7 +1271,7 @@ namespace opensis.data.Repository
                                 studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
 
                                 studentWithGradeBook.Percentage = yrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.FirstOrDefault(x => x.Breakoff <= yrPercentage)?.Title ?? "";
+                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= yrPercentage)?.Title ?? "";
 
                                 gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
                             }
