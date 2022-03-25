@@ -1780,5 +1780,14 @@
     "courseCodeIsRequired": "Se requiere el código del curso",
     "percentageIsRequired": "Se requiere porcentaje",
     "backtoSuperAdmin":"Volver a Super Admin",
-    "back":"Atrás"
+    "back":"Atrás",
+    "selectScheduleDateForSelectedStudentsIntoCourseSections": "Seleccione la fecha de programación para los estudiantes seleccionados en las secciones del curso",
+    "studentsWhoDontHaveAnyAttendanceGradebookGradesOrFinalGradesDataAssociatedWithTheCourseSectionAboveAreShownInTheListBelow": "Los estudiantes que no tienen datos de asistencia, calificaciones del libro de calificaciones o calificaciones finales asociados con la sección del curso anterior se muestran en la lista a continuación.",
+    "groupDelete": "Eliminar grupo",
+    "selectACourseSectionToDeleteStudentFromIt": "Seleccione una sección del curso para eliminar a un estudiante de ella.",
+    "selectStudentsToDeleteFromCourseSection": "Seleccionar estudiantes para eliminar de la sección del curso",
+    "totalSeats": "Asientos totales",
+    "deleteSelectedStudentsFromCourseSection": "Supprimer les étudiants sélectionnés de la section Cours",
+    "studentsSuccessfullyDeletedFrom": "Estudiantes eliminados con éxito de",
+    "completed": "Terminado"
 }

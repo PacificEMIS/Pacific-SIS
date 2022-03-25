@@ -1,0 +1,98 @@
+<div mat-dialog-title class="flex justify-between items-center">
+    <h2 class="headline m-0">
+        {{ "searchSelectCourseSections" | translate }}
+    </h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content>
+    <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-4 row-gap-1 mt-4 items-center">
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "program" | translate }}</mat-label>
+                <mat-select>
+                    <mat-option value="otherSubjectTaught">All Program</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "course" | translate }}</mat-label>
+                <mat-select>
+                    <mat-option value="otherGradeLevelTaught">Geometry</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "subject" | translate }}</mat-label>
+                <mat-select>
+                    <mat-option value="primarySubjectTaught">Mathematics</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "markingPeriod" | translate }}</mat-label>
+                <mat-select>
+                    <mat-option value="markingPeriod">Quarter 1</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
+            <p>Jan 1, 2022 - Dec 30, 2022</p>
+        </li>
+        <li class="text-right pt-1 my-4 md:my-0">
+            <button color="primary" mat-raised-button type="submit">Search</button>
+        </li>
+    </ul>
+</mat-dialog-content>
+
+<div class="-mx-6 -mb-6 border-t mt-2 overflow-x-auto overflow-y-hidden">
+    
+    <table mat-table [dataSource]="courseDetails" class="mat-elevation-z8 shadow-none">
+
+        <ng-container matColumnDef="courseSection">
+            <th mat-header-cell *matHeaderCellDef>{{ "courseSection" | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-blue cursor-pointer">{{ element.courseSection }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="course">
+            <th mat-header-cell *matHeaderCellDef>{{ "course" | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+                <div>{{ element.course }}</div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="markingPeriod">
+            <th mat-header-cell *matHeaderCellDef>{{ "markingPeriod" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.markingPeriod | translate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef>{{ "startDate" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.startDate | translate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="endDate">
+            <th mat-header-cell *matHeaderCellDef>{{ "endDate" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.endDate | translate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalSeats">
+            <th mat-header-cell *matHeaderCellDef>{{ "totalSeats" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.totalSeats | translate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="available">
+            <th mat-header-cell *matHeaderCellDef>{{ "available" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.available | translate }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+</div>
