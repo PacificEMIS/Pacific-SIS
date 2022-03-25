@@ -171,6 +171,8 @@ namespace opensis.data.Repository
                                         {
                                             var studentCourseSectionSchedule = this.context?.StudentCoursesectionSchedule.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
 
+                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
+
                                             if (studentCourseSectionSchedule != null)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
@@ -199,15 +201,41 @@ namespace opensis.data.Repository
                                                     conflictMessage = "This Student could not be scheduled due to conflicts.";
                                                 }
                                             }
+                                            //Student enrollment checking
+                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                            {
+                                                var conflictStudent = new StudentScheduleView()
+                                                {
+                                                    TenantId = student.TenantId,
+                                                    SchoolId = student.SchoolId,
+                                                    StudentId = student.StudentId,
+                                                    CourseId = courseSection.CourseId,
+                                                    CourseSectionId = courseSection.CourseSectionId,
+                                                    CourseSectionName = courseSection.CourseSectionName,
+                                                    StudentInternalId = student.StudentInternalId,
+                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                    Scheduled = false,
+                                                    ConflictComment = "Student enrollment date is grater than scheduled course section date"
+                                                };
+                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                //this.context.StudentScheduleView.Add(conflictStudent);
+                                                this.context?.StudentScheduleView.Add(conflictStudent);
+
+                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
+                                                {
+                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
+                                                }
+                                                else
+                                                {
+                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                }
+                                            }
                                             else
                                             {
                                                 var courseSectionAllData = this.context?.AllCourseSectionView.Where(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.CourseSectionId == courseSection.CourseSectionId).ToList();
 
                                                 if (courseSectionAllData?.FirstOrDefault()?.AllowStudentConflict == true)
                                                 {
-
-                                                    var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
-
                                                     var studentCourseScheduling = new StudentCoursesectionSchedule()
                                                     {
                                                         TenantId = courseSection.TenantId,
@@ -341,7 +369,6 @@ namespace opensis.data.Repository
                                                             }
                                                             else
                                                             {
-                                                                var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
                                                                 var studentCourseScheduling = new StudentCoursesectionSchedule()
                                                                 {
                                                                     TenantId = courseSection.TenantId,
