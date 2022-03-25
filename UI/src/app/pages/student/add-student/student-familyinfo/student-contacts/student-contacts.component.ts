@@ -83,6 +83,7 @@ export class StudentContactsComponent implements OnInit {
   data: any;
   mode: string;
   viewData: any;
+  disableAddButtonFlag:boolean = false;
   constructor(
     private fb: FormBuilder, private dialog: MatDialog,
     public translateService: TranslateService,
@@ -256,11 +257,14 @@ export class StudentContactsComponent implements OnInit {
             this.parentListArray = data.parentInfoListForView;
             let var1 = 0;
             let var2 = 0;
+            let var3 = 0;
             this.parentListArray.forEach(val => {
               if (val.contactType === 'Primary') {
                 var1++;
               } else if (val.contactType === 'Secondary') {
                 var2++;
+              } else if (val.contactType === 'Other') {
+                var3++;
               }
             });
             if (var1 > 0 && var2 > 0) {
@@ -270,6 +274,7 @@ export class StudentContactsComponent implements OnInit {
             } else {
               this.contactType = 'Primary';
             }
+            this.disableAddButtonFlag = this.checkContactList(var1,var2,var3);
           }
         }
         else {
@@ -278,6 +283,16 @@ export class StudentContactsComponent implements OnInit {
           });
         }
       });
+  }
+
+  checkContactList(primaryCount,secondaryCount,otherCount) {
+    if (primaryCount>0 && secondaryCount>0 && otherCount===6) {
+      return true;
+    } else if (primaryCount>0 && secondaryCount===0 && otherCount===7) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ngOnDestroy() {
