@@ -727,6 +727,34 @@ namespace opensis.core.CourseManager.Services
             }
             return subjectView;
         }
+
+        /// <summary>
+        /// GetCourseSectionAssignmentByStaff
+        /// </summary>
+        /// <param name="courseSectionAssignmentViewModel"></param>
+        /// <returns></returns>
+        public CourseSectionAssignmentViewModel GetCourseSectionAssignmentByStaff(CourseSectionAssignmentViewModel courseSectionAssignmentViewModel)
+        {
+            CourseSectionAssignmentViewModel courseSectionAssignment = new CourseSectionAssignmentViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(courseSectionAssignmentViewModel._tenantName + courseSectionAssignmentViewModel._userName, courseSectionAssignmentViewModel._token))
+                {
+                    courseSectionAssignment = this.courseManagerRepository.GetCourseSectionAssignmentByStaff(courseSectionAssignmentViewModel);
+                }
+                else
+                {
+                    courseSectionAssignment._failure = true;
+                    courseSectionAssignment._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                courseSectionAssignment._failure = true;
+                courseSectionAssignment._message = es.Message;
+            }
+            return courseSectionAssignment;
+        }
     }
 }
  
