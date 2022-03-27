@@ -13,7 +13,7 @@ namespace opensis.data.ViewModels.StaffPortal
         {
             studentAnomalsGrades = new List<StudentAnomalsGrade>();
         }
-
+        public List<StudentAnomalsGrade> studentAnomalsGrades { get; set; }
         public Guid? TenantId { get; set; }
         public int? StaffId { get; set; }
         public int? SchoolId { get; set; }
@@ -22,10 +22,11 @@ namespace opensis.data.ViewModels.StaffPortal
         public int? AssignmentId { get; set; }
         public decimal? AcademicYear { get; set; }
         public string? SearchValue { get; set; }
+        public bool? IncludeInactive { get; set; }
         public int? TotalCount { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
-        public List<StudentAnomalsGrade> studentAnomalsGrades { get; set; }
+
     }
     public class StudentAnomalsGrade
     {
@@ -34,6 +35,9 @@ namespace opensis.data.ViewModels.StaffPortal
         public string? LastFamilyName { get; set; }
         public int? StudentId { get; set; }
         public string? StudentInternalId { get; set; }
+        public int? CourseSectionId { get; set; }
+        public int? AssignmentTypeId { get; set; }
+        public int? AssignmentId { get; set; }
         public string? AssignmentTypeTitle { get; set; }
         public string? AssignmentTitle { get; set; }
         public int? Points { get; set; }
