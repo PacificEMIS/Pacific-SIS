@@ -1443,5 +1443,22 @@
     "EnableDelete": true,
     "IsActive": true,
     "SortOrder": "2"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "PermissionCategoryId": "94",
+    "PermissionGroupId": "7",
+    "PermissionCategoryName": "Group Delete",
+    "ShortCode": "gd",
+    "Path": "/school/scheduling/group-delete",
+    "Title": "Group Delete",
+    "Type": "link",
+    "EnableView": true,
+    "EnableAdd": true,
+    "EnableEdit": true,
+    "EnableDelete": true,
+    "IsActive": true,
+    "SortOrder": "6"
   }
 ]
