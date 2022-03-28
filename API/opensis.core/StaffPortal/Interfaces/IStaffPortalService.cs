@@ -37,5 +37,6 @@ namespace opensis.core.StaffPortal.Interfaces
         public ScheduledCourseSectionViewModel MissingAttendanceListForCourseSection(PageResult pageResult);
         public CourseSectionUpdateViewModel UpdateOnlineClassRoomURLInCourseSection(CourseSectionUpdateViewModel courseSectionUpdateViewModel);
         public ScheduledCourseSectionViewModel GetAllMissingAttendanceListForStaff(PageResult pageResult);
+        public AnomalousGradeViewModel GetAnomalousGrade(AnomalousGradeViewModel anomalousGradeViewModel);
     }
 }

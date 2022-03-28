@@ -135,5 +135,33 @@ namespace opensis.core.StaffPortal.Services
             return missingAttendanceView;
         }
 
+        /// <summary>
+        /// Get Anomalous Grade
+        /// </summary>
+        /// <param name="anomalousGradeViewModel"></param>
+        /// <returns></returns>
+        public AnomalousGradeViewModel GetAnomalousGrade(AnomalousGradeViewModel anomalousGradeViewModel)
+        {
+            AnomalousGradeViewModel anomalousGrade = new AnomalousGradeViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(anomalousGradeViewModel._tenantName + anomalousGradeViewModel._userName, anomalousGradeViewModel._token))
+                {
+                    anomalousGrade = this.staffPortalRepository.GetAnomalousGrade(anomalousGradeViewModel);
+                }
+                else
+                {
+                    anomalousGrade._failure = true;
+                    anomalousGrade._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                anomalousGrade._failure = true;
+                anomalousGrade._message = es.Message;
+            }
+            return anomalousGrade;
+        }
+
     }
 }
