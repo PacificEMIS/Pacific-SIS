@@ -360,8 +360,6 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
     }).afterClosed().subscribe((data) => {
       if(data)
         this.courseSectionList=this.createTableDataset(data);
-      console.log(this.courseSectionList);
-      
       if (this.courseSectionList?.length > 0) {
         if (this.courseSectionList?.length > 1) {
           this.sectionText = true;
