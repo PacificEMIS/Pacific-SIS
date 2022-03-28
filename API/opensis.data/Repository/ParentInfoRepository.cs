@@ -500,7 +500,7 @@ namespace opensis.data.Repository
 
             return address;
         }
-        
+
         /// <summary>
         /// Get All Parent Info List
         /// </summary>
@@ -703,7 +703,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GetAllParentInfoListForView GetAllParentInfoList(PageResult pageResult)
         {
-            GetAllParentInfoListForView parentInfoListModel = new ();
+            GetAllParentInfoListForView parentInfoListModel = new();
             IQueryable<ParentListView>? transactionIQ = null;
 
             var ParentInfoList = this.context?.ParentListView.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.Associationship == true);
@@ -724,7 +724,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        if(pageResult.FilterParams?.Any() == true && ParentInfoList?.Any() == true)
+                        if (pageResult.FilterParams?.Any() == true && ParentInfoList?.Any() == true)
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams, ParentInfoList).AsQueryable();
                         }
@@ -798,25 +798,28 @@ namespace opensis.data.Repository
                         e.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.CreatedBy);
                         e.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.UpdatedBy);
                     });
-
-
-                    foreach (var ParentInfo in parentInfoListModel.parentInfoForView)
+                    int[] ParentId = parentInfoListModel.parentInfoForView.Select(p => p.ParentId).ToArray();
+                    if (ParentInfoList != null && ParentInfoList.Any())
                     {
-                        if(ParentInfoList != null)
+                        var ParentAssoList = ParentInfoList.Where(x => x.Associationship == true && ParentId.Contains(x.ParentId)).Select(a => new { StudentId = a.StudentId, ParentId = a.ParentId, FirstGivenName = a.FirstGivenName == null ? null : a.FirstGivenName, StudentMiddleName = a.StudentMiddleName == null ? null : a.StudentMiddleName, LastFamilyName = a.LastFamilyName == null ? null : a.LastFamilyName }).ToList();
+
+                        foreach (var ParentInfo in parentInfoListModel.parentInfoForView)
                         {
-                            var studentAssociateWithParents = ParentInfoList.Where(x => x.ParentId == ParentInfo.ParentId && x.Associationship == true).ToList();
-                            List<string> studentArray = new List<string>();
-                            if (studentAssociateWithParents.Count > 0)
+                            if (ParentAssoList != null)
                             {
-                                foreach (var studentAssociateWithParent in studentAssociateWithParents)
+                                var studentAssociateWithParents = ParentAssoList.Where(x => x.ParentId == ParentInfo.ParentId).ToList();
+                                List<string> studentArray = new List<string>();
+                                if (studentAssociateWithParents.Count > 0)
                                 {
-                                    studentArray.Add(studentAssociateWithParent.FirstGivenName + "|" + studentAssociateWithParent.StudentMiddleName + "|" + studentAssociateWithParent.LastFamilyName + "|" + studentAssociateWithParent.StudentId);
-                                    ParentInfo.students = studentArray.ToArray();
+                                    foreach (var studentAssociateWithParent in studentAssociateWithParents)
+                                    {
+                                        studentArray.Add(studentAssociateWithParent.FirstGivenName + "|" + studentAssociateWithParent.StudentMiddleName + "|" + studentAssociateWithParent.LastFamilyName + "|" + studentAssociateWithParent.StudentId);
+                                        ParentInfo.students = studentArray.ToArray();
+                                    }
                                 }
                             }
                         }
                     }
-
                     parentInfoListModel.TenantId = pageResult.TenantId;
                     parentInfoListModel.TotalCount = totalCount;
                     parentInfoListModel.PageNumber = pageResult.PageNumber;
