@@ -912,7 +912,7 @@ namespace opensis.report.report.data.Repository
 
                 if (pageResult.PeriodId != null)
                 {
-                    var studentAbsence = this.context?.StudentAttendance.Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.StudentId == pageResult.StudentId && x.PeriodId == pageResult.PeriodId).ToList();
+                    var studentAbsence = this.context?.StudentAttendance.Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.StudentId == pageResult.StudentId && x.PeriodId == pageResult.PeriodId && (x.AttendanceCodeNavigation.StateCode == "Half Day" || x.AttendanceCodeNavigation.StateCode == "Absent")).ToList();
 
                     if (studentAbsence != null && studentAbsence.Any())
                     {
@@ -982,6 +982,8 @@ namespace opensis.report.report.data.Repository
 
                 if (attendanceStudentList.Count() > 0)
                 {
+                    attendanceStudentList = attendanceStudentList.OrderBy(x => x.AbsenceDate).ToList();
+
                     if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                     {
                         transactionIQ = attendanceStudentList.AsQueryable();

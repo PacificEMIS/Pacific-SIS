@@ -237,9 +237,10 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   compareDate(index) {
+    let startDate = this.staffSchoolInfoModel.staffSchoolInfoList[index].startDate;
     let endDate = this.staffSchoolInfoModel.staffSchoolInfoList[index].endDate
     if (this.staffSchoolInfoModel.staffSchoolInfoList[index].startDate != null) {
-      if (endDate == null || moment(endDate).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) {
+      if ((endDate == null || moment(endDate).format('YYYY-MM-DD') >= moment().format('YYYY-MM-DD')) && !(moment(startDate).format('YYYY-MM-DD') > moment().format('YYYY-MM-DD'))) {
         return true;
       } else {
         return false;

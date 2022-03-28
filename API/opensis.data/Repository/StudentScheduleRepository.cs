@@ -171,6 +171,8 @@ namespace opensis.data.Repository
                                         {
                                             var studentCourseSectionSchedule = this.context?.StudentCoursesectionSchedule.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
 
+                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
+
                                             if (studentCourseSectionSchedule != null)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
@@ -199,15 +201,41 @@ namespace opensis.data.Repository
                                                     conflictMessage = "This Student could not be scheduled due to conflicts.";
                                                 }
                                             }
+                                            //Student enrollment checking
+                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                            {
+                                                var conflictStudent = new StudentScheduleView()
+                                                {
+                                                    TenantId = student.TenantId,
+                                                    SchoolId = student.SchoolId,
+                                                    StudentId = student.StudentId,
+                                                    CourseId = courseSection.CourseId,
+                                                    CourseSectionId = courseSection.CourseSectionId,
+                                                    CourseSectionName = courseSection.CourseSectionName,
+                                                    StudentInternalId = student.StudentInternalId,
+                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                    Scheduled = false,
+                                                    ConflictComment = "Student enrollment date is grater than scheduled course section date"
+                                                };
+                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                //this.context.StudentScheduleView.Add(conflictStudent);
+                                                this.context?.StudentScheduleView.Add(conflictStudent);
+
+                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
+                                                {
+                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
+                                                }
+                                                else
+                                                {
+                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                }
+                                            }
                                             else
                                             {
                                                 var courseSectionAllData = this.context?.AllCourseSectionView.Where(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.CourseSectionId == courseSection.CourseSectionId).ToList();
 
                                                 if (courseSectionAllData?.FirstOrDefault()?.AllowStudentConflict == true)
                                                 {
-
-                                                    var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
-
                                                     var studentCourseScheduling = new StudentCoursesectionSchedule()
                                                     {
                                                         TenantId = courseSection.TenantId,
@@ -225,7 +253,7 @@ namespace opensis.data.Repository
                                                         LastFamilyName = student.LastFamilyName ?? "",
                                                         FirstLanguageId = student.FirstLanguageId,
                                                         //GradeId = studentEnrollmentData.GradeId,
-                                                        GradeId = studentEnrollmentData?.GradeId,
+                                                        GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
                                                         //AcademicYear = (decimal)courseSection.AcademicYear,
                                                         AcademicYear = courseSection.AcademicYear != null? (decimal)courseSection.AcademicYear:0 ,
                                                         GradeScaleId = courseSection.GradeScaleId,
@@ -341,7 +369,6 @@ namespace opensis.data.Repository
                                                             }
                                                             else
                                                             {
-                                                                var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
                                                                 var studentCourseScheduling = new StudentCoursesectionSchedule()
                                                                 {
                                                                     TenantId = courseSection.TenantId,
@@ -359,7 +386,7 @@ namespace opensis.data.Repository
                                                                     LastFamilyName = student.LastFamilyName ?? "",
                                                                     FirstLanguageId = student.FirstLanguageId,
                                                                     //GradeId = studentEnrollmentData.GradeId,
-                                                                    GradeId = studentEnrollmentData?.GradeId,
+                                                                    GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
                                                                     //AcademicYear = (decimal)courseSection.AcademicYear,
                                                                     AcademicYear = courseSection.AcademicYear !=null? (decimal)courseSection.AcademicYear:0,
                                                                     GradeScaleId = courseSection.GradeScaleId,
@@ -658,7 +685,7 @@ namespace opensis.data.Repository
                                   //Join(this.context?.StudentMaster,
                                   Join(this.context.StudentMaster,
                                   scs => scs.StudentId, sm => sm.StudentId,
-                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
+                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
 
                 if (pageResult.StaffId != null)
                 {
@@ -760,7 +787,7 @@ namespace opensis.data.Repository
                         UpdatedOn = ssv.scs.UpdatedOn,
                         UpdatedBy = ssv.scs.UpdatedBy,
                         IsDropped = ssv.scs.IsDropped,
-                    }).ToList();
+                    }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                 }
 
                 //if (scheduledStudentData.Count() > 0)
