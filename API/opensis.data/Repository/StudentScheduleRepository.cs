@@ -1721,8 +1721,6 @@ namespace opensis.data.Repository
                     {
                         foreach (var studentId in scheduledStudentDeleteViewModel.StudentIds)
                         {
-                            var studentScheduleData = this.context?.StudentCoursesectionSchedule.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId && (e.IsDropped == null || e.IsDropped == false));
-
                             var gradebookGradeData = this.context?.GradebookGrades.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
 
                             var studentAttendanceData = this.context?.StudentAttendance.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
@@ -1731,7 +1729,7 @@ namespace opensis.data.Repository
 
                             var studentEffortGradeData = this.context?.StudentEffortGradeMaster.FirstOrDefault(e => e.TenantId == scheduledStudentDeleteViewModel.TenantId && e.SchoolId == scheduledStudentDeleteViewModel.SchoolId && e.CourseSectionId == scheduledStudentDeleteViewModel.CourseSectionId && e.StudentId == studentId);
 
-                            if (studentScheduleData != null || gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null)
+                            if (gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null)
                             {
                                 scheduledStudentDelete._failure = true;
                                 scheduledStudentDelete._message = "Some students could not be deleted from the selected course section. They have association";
