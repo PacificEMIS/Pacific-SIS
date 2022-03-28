@@ -697,6 +697,7 @@ namespace opensis.data.Repository
                                         SchoolId = ssv.studentcss.sm.SchoolId,
                                         TenantId = ssv.staffcss.TenantId,
                                         StudentId = ssv.studentcss.scs.StudentId,
+                                        StudentGuid = ssv.studentcss.sm.StudentGuid,
                                         FirstGivenName = ssv.studentcss.sm.FirstGivenName,
                                         MiddleName = ssv.studentcss.sm.MiddleName,
                                         LastFamilyName = ssv.studentcss.sm.LastFamilyName,
@@ -745,6 +746,7 @@ namespace opensis.data.Repository
                         SchoolId = ssv.sm.SchoolId,
                         TenantId = ssv.sm.TenantId,
                         StudentId = ssv.sm.StudentId,
+                        StudentGuid = ssv.sm.StudentGuid,
                         FirstGivenName = ssv.sm.FirstGivenName,
                         LastFamilyName = ssv.sm.LastFamilyName,
                         AlternateId = ssv.sm.AlternateId,
@@ -1762,6 +1764,203 @@ namespace opensis.data.Repository
                 }
                 return scheduledStudentDelete;
             }
+        }
+
+        /// <summary>
+        ///  Get Student List By Course Section who have no associationship
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public ScheduleStudentListViewModel GetUnassociatedStudentListByCourseSection(PageResult pageResult)
+        {
+            ScheduleStudentListViewModel scheduleStudentListView = new ScheduleStudentListViewModel();
+            IQueryable<ScheduleStudentForView>? transactionIQ = null;
+            var scheduledStudentData = new List<ScheduleStudentForView>();
+            try
+            {
+                var scheduledData = this.context?.StudentCoursesectionSchedule.
+                                   Join(this.context.StudentMaster,
+                                   scs => scs.StudentId, sm => sm.StudentId,
+                                   (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && c.scs.CourseSectionId == pageResult.CourseSectionId).ToList();
+
+                if (scheduledData?.Any() == true)
+                {
+                    List<int> studentIds = new List<int>();
+
+                    foreach (var data in scheduledData)
+                    {
+                        var gradebookGradeData = this.context?.GradebookGrades.FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
+
+                        var studentAttendanceData = this.context?.StudentAttendance.FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
+
+                        var studentFinalGradeData = this.context?.StudentFinalGrade.FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
+
+                        var studentEffortGradeData = this.context?.StudentEffortGradeMaster.FirstOrDefault(e => e.TenantId == data.scs.TenantId && e.SchoolId == data.scs.SchoolId && e.CourseSectionId == data.scs.CourseSectionId && e.StudentId == data.scs.StudentId);
+
+                        if (gradebookGradeData != null || studentAttendanceData != null || studentFinalGradeData != null || studentEffortGradeData != null)
+                        {
+                            studentIds.Add(data.scs.StudentId);
+                        }
+                    }
+
+                    if (studentIds?.Any() == true)
+                    {
+                        scheduledData = scheduledData.Where(x => !studentIds.Contains(x.scs.StudentId)).ToList();
+                    }
+
+                    scheduledStudentData = scheduledData?.Select(ssv => new ScheduleStudentForView
+                    {
+                        SchoolId = ssv.sm.SchoolId,
+                        TenantId = ssv.sm.TenantId,
+                        StudentId = ssv.sm.StudentId,
+                        StudentGuid = ssv.sm.StudentGuid,
+                        FirstGivenName = ssv.sm.FirstGivenName,
+                        LastFamilyName = ssv.sm.LastFamilyName,
+                        AlternateId = ssv.sm.AlternateId,
+                        StudentInternalId = ssv.sm.StudentInternalId,
+                        AdmissionNumber = ssv.sm.AdmissionNumber,
+                        RollNumber = ssv.sm.RollNumber,
+                        GradeLevel = this.context?.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.sm.TenantId && c.SchoolId == ssv.sm.SchoolId && c.GradeId == ssv.scs.GradeId)?.Title,
+                        Section = this.context?.Sections.FirstOrDefault(c => c.TenantId == ssv.sm.TenantId && c.SchoolId == ssv.sm.SchoolId && c.SectionId == ssv.sm.SectionId)?.Name,
+                        GradeId = ssv.scs.GradeId,
+                        GradeScaleId = ssv.scs.GradeScaleId,
+                        PhoneNumber = ssv.sm.MobilePhone,
+                        Action = ssv.scs.IsDropped,
+                        ScheduleDate = ssv.scs.EffectiveStartDate,
+                        //StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentPhoto : null,
+                        Dob = ssv.sm.Dob,
+                        Gender = ssv.sm.Gender,
+                        Race = ssv.sm.Race,
+                        Ethnicity = ssv.sm.Ethnicity,
+                        MaritalStatus = ssv.sm.MaritalStatus,
+                        CountryOfBirth = ssv.sm.CountryOfBirth,
+                        Nationality = ssv.sm.Nationality,
+                        FirstLanguageId = ssv.sm.FirstLanguageId,
+                        SecondLanguageId = ssv.sm.SecondLanguageId,
+                        ThirdLanguageId = ssv.sm.ThirdLanguageId,
+                        HomeAddressLineOne = ssv.sm.HomeAddressLineOne,
+                        HomeAddressLineTwo = ssv.sm.HomeAddressLineTwo,
+                        HomeAddressCountry = ssv.sm.HomeAddressCountry,
+                        HomeAddressState = ssv.sm.HomeAddressState,
+                        HomeAddressCity = ssv.sm.HomeAddressCity,
+                        HomeAddressZip = ssv.sm.HomeAddressZip,
+                        BusNo = ssv.sm.BusNo,
+                        HomePhone = ssv.sm.HomePhone,
+                        MobilePhone = ssv.sm.MobilePhone,
+                        PersonalEmail = ssv.sm.PersonalEmail,
+                        SchoolEmail = ssv.sm.SchoolEmail,
+                        CourseSectionId = ssv.scs.CourseSectionId,
+                        MiddleName = ssv.sm.MiddleName,
+                        CreatedOn = ssv.scs.CreatedOn,
+                        CreatedBy = ssv.scs.CreatedBy,
+                        UpdatedOn = ssv.scs.UpdatedOn,
+                        UpdatedBy = ssv.scs.UpdatedBy,
+                        IsDropped = ssv.scs.IsDropped,
+                    }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
+
+                    if (scheduledStudentData != null && scheduledStudentData.Any())
+                    {
+                        if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                        {
+                            transactionIQ = scheduledStudentData.AsQueryable();
+                        }
+                        else
+                        {
+                            if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                            {
+                                string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue.ToLower();
+
+                                transactionIQ = scheduledStudentData.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue) || x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue) ||
+                                x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue) ||
+                                (x.GradeLevel != null && x.GradeLevel.Contains(Columnvalue)) ||
+                                (x.ScheduleDate != null && x.ScheduleDate.ToString() == Columnvalue) ||
+                                (x.Section != null && x.Section.Contains(Columnvalue)) ||
+                                (x.StudentInternalId != null && x.StudentInternalId.Contains(Columnvalue)) ||
+                                (x.AlternateId != null && x.AlternateId.Contains(Columnvalue)) ||
+                                (x.PhoneNumber != null && x.PhoneNumber.Contains(Columnvalue)) ||
+                                (x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue)) ||
+                                (x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue))).AsQueryable();
+                            }
+                            else
+                            {
+                                transactionIQ = Utility.FilteredData(pageResult.FilterParams!, scheduledStudentData).AsQueryable();
+                            }
+                            //transactionIQ = transactionIQ.Distinct();
+                        }
+
+                        if (pageResult.SortingModel != null)
+                        {
+                            switch (pageResult!.SortingModel!.SortColumn)
+                            {
+                                default:
+                                    transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
+                                    break;
+                            }
+                        }
+                        //Advance Search for date range
+                        if (pageResult?.DobStartDate != null && pageResult.DobEndDate != null)
+                        {
+                            var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
+                            if (filterInDateRange.Any())
+                            {
+                                transactionIQ = filterInDateRange;
+                            }
+                            else
+                            {
+                                transactionIQ = null;
+                            }
+                        }
+
+                        int totalCount = transactionIQ != null ? transactionIQ.Count() : 0;
+                        if (pageResult?.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ?.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                        }
+
+                        if (transactionIQ!.ToList()?.Any() == true)
+                        {
+                            scheduleStudentListView.scheduleStudentForView = transactionIQ!.ToList();
+                            scheduleStudentListView.TotalCount = totalCount;
+                            scheduleStudentListView._failure = false;
+                        }
+                        else
+                        {
+                            scheduleStudentListView.scheduleStudentForView = new();
+                            scheduleStudentListView._failure = true;
+                            scheduleStudentListView._message = NORECORDFOUND;
+                        }
+                    }
+                    else
+                    {
+                        scheduleStudentListView.scheduleStudentForView = new();
+                        scheduleStudentListView._failure = true;
+                        scheduleStudentListView._message = NORECORDFOUND;
+                    }
+                }
+                else
+                {
+                    scheduleStudentListView.scheduleStudentForView = new();
+                    scheduleStudentListView._failure = true;
+                    scheduleStudentListView._message = NORECORDFOUND;
+                }
+
+                scheduleStudentListView.TenantId = pageResult?.TenantId;
+                scheduleStudentListView.SchoolId = pageResult?.SchoolId;
+                scheduleStudentListView.CourseSectionId = pageResult?.CourseSectionId;
+                scheduleStudentListView.StaffId = pageResult?.StaffId;
+                scheduleStudentListView.AcademicYear = pageResult?.AcademicYear;
+                scheduleStudentListView.PageNumber = pageResult?.PageNumber;
+                scheduleStudentListView._pageSize = pageResult?.PageSize;
+                scheduleStudentListView._tenantName = pageResult?._tenantName;
+                scheduleStudentListView._token = pageResult?._token;
+            }
+            catch (Exception es)
+            {
+                scheduleStudentListView._failure = true;
+                scheduleStudentListView._message = es.Message; ;
+            }
+            return scheduleStudentListView;
+
         }
     }
 }

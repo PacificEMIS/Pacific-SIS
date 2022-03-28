@@ -195,5 +195,20 @@ namespace opensisAPI.Controllers
             return scheduledStudentDelete;
         }
 
+        [HttpPost("getUnassociatedStudentListByCourseSection")]
+        public ActionResult<ScheduleStudentListViewModel> GetUnassociatedStudentListByCourseSection(PageResult pageResult)
+        {
+            ScheduleStudentListViewModel ScheduledStudentListView = new ScheduleStudentListViewModel();
+            try
+            {
+                ScheduledStudentListView = _studentScheduleService.GetUnassociatedStudentListByCourseSection(pageResult);
+            }
+            catch (Exception es)
+            {
+                ScheduledStudentListView._failure = true;
+                ScheduledStudentListView._message = es.Message;
+            }
+            return ScheduledStudentListView;
+        }
     }
 }
