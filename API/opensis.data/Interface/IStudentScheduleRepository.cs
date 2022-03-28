@@ -42,5 +42,6 @@ namespace opensis.data.Interface
         public ScheduledStudentDropModel DropScheduledCourseSectionForStudent360(ScheduledStudentDropModel scheduledStudentDropModel);
         public Student360ScheduleCourseSectionListViewModel ScheduleCourseSectionListForStudent360(Student360ScheduleCourseSectionListViewModel student360ScheduleCourseSectionListViewModel);
         public ScheduledStudentDeleteViewModel GroupDeleteForScheduledStudent(ScheduledStudentDeleteViewModel scheduledStudentDeleteViewModel);
+        public ScheduleStudentListViewModel GetUnassociatedStudentListByCourseSection(PageResult pageResult);
     }
 }
