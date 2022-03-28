@@ -19,7 +19,7 @@
                         </div>
                         <div class="w-full md:w-10/12 text-center md:text-left text-white md:text-black md:pl-6">
                             <h2 *ngIf="!showStudentCount">{{'student' | translate}}</h2>
-                            <h2 *ngIf="showStudentCount"> {{studentList.length}} Student{{studentText}} Selected</h2>
+                            <h2 *ngIf="showStudentCount"> {{studentList.length}} Student{{studentText ? 's' : ''}} Selected</h2>
                             <p class="md:text-blue">{{'selectStudentToSchedule' | translate}}</p>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                     <div class="flex items-center">
                         <div class="w-full md:w-10/12 text-center md:text-right text-white md:text-black md:pr-6 order-2 md:order-1">
                             <h2 *ngIf="!showCourseSectionCount">{{'courseSection' |translate}}</h2>
-                            <h2 *ngIf="showCourseSectionCount">{{courseSectionList?.length}} {{'courseSection' |translate}}{{sectionText}} {{'selected' |translate}} 
+                            <h2 *ngIf="showCourseSectionCount">{{courseSectionList?.length}} {{'courseSection' |translate}}{{sectionText ? 's' : ''}} {{'selected' |translate}} 
                             </h2>
                             <p class="md:text-blue">{{'selectCourseSectionToSchedule' |translate}}</p>
                         </div>
@@ -65,7 +65,7 @@
             <div *ngIf="loading && !viewReport" class="flex">
                 <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
                 <div class="ml-4">
-                    <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentText}}</span>
+                    <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentText ? 's' : ''}}</span>
                     <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
                 </div>
             </div>

@@ -97,7 +97,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   markingPeriodList = [];
   gradeLevelList = [];
   studentText: boolean;
-  sectionText: string;
+  sectionText: boolean;
   viewReport: boolean = false;
   failedScheduling: boolean = false
   showReportTable: boolean = false;
@@ -363,11 +363,11 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
       console.log(this.courseSectionList);
       
       if (this.courseSectionList?.length > 0) {
-        if (this.studentList?.length > 1) {
-          this.sectionText = 's';
+        if (this.courseSectionList?.length > 1) {
+          this.sectionText = true;
         }
         else {
-          this.sectionText = '';
+          this.sectionText = false;
         }
         this.showCourseSectionCount = true;
       }
