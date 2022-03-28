@@ -25,6 +25,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModuleModule } from '../../shared-module/shared-module.module';
 
 
 @NgModule({
@@ -52,7 +55,11 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModuleModule
   ]
 })
 export class GroupDeleteModule { }

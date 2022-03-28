@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { SearchCourseSectionViewModel } from '../models/course-manager.model';
+import { SearchCourseSectionViewModel, SearchCourseSectionViewModelForGroupDelete } from '../models/course-manager.model';
 import {
   ClassRoomURLInCourseSectionModel,
   CourseSectionAddViewModel,
@@ -103,6 +103,13 @@ export class CourseSectionService {
     let apiurl = this.apiUrl + courseSection._tenantName + "/CourseManager/searchCourseSectionForSchedule";
     return this.http.post<SearchCourseSectionViewModel>(apiurl, courseSection,this.httpOptions)
   }
+
+  searchCourseSectionForScheduleForGroupDelete(courseSection: SearchCourseSectionViewModelForGroupDelete) {
+    courseSection = this.defaultValuesService.getAllMandatoryVariable(courseSection);
+    let apiurl = this.apiUrl + courseSection._tenantName + "/CourseManager/searchCourseSectionForSchedule";
+    return this.http.post<SearchCourseSectionViewModelForGroupDelete>(apiurl, courseSection,this.httpOptions)
+  }
+
   getAllStaffScheduleInCourseSection(courseSection: ScheduledStaffForCourseSection) {
     courseSection = this.defaultValuesService.getAllMandatoryVariable(courseSection);
     let apiurl = this.apiUrl + courseSection._tenantName + "/CourseManager/getAllStaffScheduleInCourseSection";

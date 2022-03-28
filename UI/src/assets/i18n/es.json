@@ -1789,5 +1789,7 @@
     "totalSeats": "Asientos totales",
     "deleteSelectedStudentsFromCourseSection": "Supprimer les étudiants sélectionnés de la section Cours",
     "studentsSuccessfullyDeletedFrom": "Estudiantes eliminados con éxito de",
-    "completed": "Terminado"
+    "completed": "Terminado",
+    "noStudentScheduled": "Ningún estudiante programado",
+    "noStudentsFound": "No se encontraron estudiantes"
 }

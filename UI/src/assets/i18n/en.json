@@ -1787,5 +1787,7 @@
     "totalSeats": "Total Seats",
     "deleteSelectedStudentsFromCourseSection": "Delete Selected Students from Course Section",
     "studentsSuccessfullyDeletedFrom": "Students successfully deleted from",
-    "completed": "Completed"
+    "completed": "Completed",
+    "noStudentScheduled": "No Student Scheduled",
+    "noStudentsFound": "No Students Found"
 }
