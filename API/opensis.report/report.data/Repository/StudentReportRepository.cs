@@ -607,7 +607,7 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionId = courseSectionData.CourseSectionId;
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
-                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId && x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId)?.CourseTitle;
                                         courseSection.GradeScaleType = courseSectionData.GradeScaleType;
                                         courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
@@ -830,7 +830,7 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionId = courseSectionData.CourseSectionId;
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
-                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId && x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId)?.CourseTitle;
                                         courseSection.GradeScaleType = courseSectionData.GradeScaleType;
                                         courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
