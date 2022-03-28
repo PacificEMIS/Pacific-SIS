@@ -2622,7 +2622,7 @@ namespace opensis.data.Repository
                                 foreach (var staff in staffScheduleData)
                                 {
                                     var staffName = staff.StaffMaster.FirstGivenName + " " + staff.StaffMaster.MiddleName + " " + staff.StaffMaster.LastFamilyName;
-                                    CourseData.StaffName = CourseData.StaffName != null ? CourseData.StaffName + ", " + staffName : staffName;
+                                    CourseData.StaffName = CourseData.StaffName != null ? CourseData.StaffName + "|" + staffName : staffName;
                                 }
                             }
 
