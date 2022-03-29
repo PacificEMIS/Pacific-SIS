@@ -69,6 +69,8 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
   modalDialogTitle="addNewStandard"
   destroySubject$: Subject<void> = new Subject();
   loading:boolean;
+  editCourse;  
+  cloneCourseList=[]
   checkStandardRefNo=false;
   constructor(private dialogRef: MatDialogRef<EditSchoolSpecificStandardComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -89,6 +91,14 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
         this.editDetails= this.data.schoolSpecificStandards;
         this.modalActionButton="update";
         this.modalDialogTitle="updateStandard"
+        this.editCourse=this.data.schoolSpecificStandards.course;
+        this.data.parentData.courseList.map(value=>{
+          if(this.data.schoolSpecificStandards.subject === value.course.courseSubject){
+            value.course.courseSection.map(course=>{
+              this.cloneCourseList.push(course)
+            })
+          }
+        })
        }else{
         this.editMode = this.data.editMode;
        }
@@ -161,6 +171,18 @@ export class EditSchoolSpecificStandardComponent implements OnInit, OnDestroy{
   //   document.getElementById("courseFocus").focus();
 
   // }
+
+  
+  selectSubject(subject){
+    this.cloneCourseList=[]
+    this.editCourse=''
+    this.data.parentData.courseList.map(value=>{
+      if(subject.subjectName === value.course.courseSubject)
+        value.course.courseSection.map(course=>{
+          this.cloneCourseList.push(course)
+        })
+    })
+  }
 
   submit(){
     this.form.markAllAsTouched();
