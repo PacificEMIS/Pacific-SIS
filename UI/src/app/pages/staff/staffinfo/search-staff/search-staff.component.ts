@@ -424,47 +424,33 @@ export class SearchStaffComponent implements OnInit, AfterViewInit, OnDestroy {
         this.checkSearchRecord = 0;
       } else {
         let outStafflist = res;
-        for (let staff of outStafflist.staffMaster) {
-          if (staff.isActive === true || staff.isActive === null) {
-          if (staff?.staffSchoolInfo[0]?.endDate) {
-            let today = moment().format('DD-MM-YYYY').toString();
-            let todayarr = today.split('-');
-            let todayDate = +todayarr[0];
-            let todayMonth = +todayarr[1];
-            let todayYear = +todayarr[2];
-            let endDate = moment(staff.staffSchoolInfo[0].endDate).format('DD-MM-YYYY').toString();
-            let endDateArr = endDate.split('-');
-            let endDateDate = +endDateArr[0];
-            let endDateMonth = +endDateArr[1];
-            let endDateYear = +endDateArr[2];
-            if (endDateYear === todayYear) {
-              if (endDateMonth === todayMonth) {
-                if (endDateDate >= todayDate) {
-                  staff.status = 'active';
-                }
-                else {
-                  staff.status = 'inactive';
-                }
-              }
-              else if (endDateMonth < todayMonth) {
-                staff.status = 'inactive';
-              }
-              else {
+        if (this.getAllStaff.searchAllSchool === true) {
+          for (let staff of outStafflist.staffMaster) {
+            for (let schoolList of staff.staffSchoolInfo) {
+              staff.schoolName = schoolList.schoolAttachedName;
+              if (schoolList.endDate === null || moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString())) {
                 staff.status = 'active';
+                break;
+              } else
+                staff.status = 'inactive';
+            }
+          }
+        }
+        else {
+          for (let staff of outStafflist.staffMaster) {
+            staff.staffSchoolInfo.map(schoolList => {
+              if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
+                staff.schoolName = schoolList.schoolAttachedName;
+                if (schoolList.endDate === null)
+                  staff.status = 'active';
+                else {
+                  if (moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString()))
+                    staff.status = 'active';
+                  else
+                    staff.status = 'inactive';
+                }
               }
-            }
-            else if (endDateYear < todayYear) {
-              staff.status = 'inactive';
-            }
-            else {
-              staff.status = 'active';
-            }
-          }
-          else {
-            staff.status = 'active';
-          }
-          } else {
-            staff.status = 'inactive';
+            })
           }
         }
         this.searchList.emit(outStafflist);

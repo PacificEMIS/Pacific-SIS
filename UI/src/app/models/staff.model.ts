@@ -131,6 +131,7 @@ export class StaffListModel {
 export class staffMasterCloneModel extends StaffMasterModel{
     staffSchoolInfo: [StaffSchoolInfoListModel];
     checked: boolean;
+    schoolName: string;
 }
 export class GetAllStaffModel {
     getStaffListForView: [StaffListModel];
