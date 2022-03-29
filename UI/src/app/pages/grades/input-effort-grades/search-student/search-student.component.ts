@@ -410,7 +410,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       this.scheduleStudentListViewModel.searchAllSchool = this.searchAllSchool;
       this.scheduleStudentListViewModel.includeInactive = this.inactiveStudents;
       this.scheduleStudentListViewModel.sortingModel = null;
-      this.scheduleStudentListViewModel.courseSectionId = this.parentData?.courseSectionData;
+      this.scheduleStudentListViewModel.courseSectionIds = [this.parentData?.courseSectionData];
       this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
       this.commonService.setSearchResult(this.scheduleStudentListViewModel.filterParams);

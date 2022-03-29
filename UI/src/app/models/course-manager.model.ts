@@ -285,3 +285,11 @@ export class CourseCatelogViewModel extends CommonField {
         this.gradeLevel = '';
     }
 }
+
+export class CourseSectionByStaffModel extends CommonField {
+    staffId: number;
+    academicYear: number;
+    constructor() {
+        super();
+    }
+}
