@@ -144,11 +144,7 @@ export class ProgressReportComponent implements OnInit {
       this.getCourseSectionByStaff().then(()=>{
         this.getStudentListByCourseSection();
       });
-      console.log(21233);
-
     } else {
-      console.log(23);
-
       this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       this.getAllStudentList();
     }
