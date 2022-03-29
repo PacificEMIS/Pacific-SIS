@@ -98,5 +98,22 @@ namespace opensisAPI.Controllers
             }
             return staffMissingAttendanceListView;
         }
+
+        [HttpPost("getAnomalousGrade")]
+        public ActionResult<AnomalousGradeViewModel> GetAnomalousGrade(AnomalousGradeViewModel anomalousGradeViewModel)
+        {
+            AnomalousGradeViewModel anomalousGrade = new AnomalousGradeViewModel();
+            try
+            {
+                anomalousGrade = _staffPortalService.GetAnomalousGrade(anomalousGradeViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                anomalousGrade._message = ex.Message;
+                anomalousGrade._failure = true;
+            }
+            return anomalousGrade;
+        }
     }
 }

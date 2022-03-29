@@ -262,3 +262,13 @@ export class WeeklyAttendanceList {
   cloneTakenAttendanceDays: any[];
   takenAttendanceList:[]
 }
+
+export class ScheduledStudentDeleteModel extends CommonField {
+  studentIds: any[];
+  courseSectionId: number;
+
+  constructor() {
+    super();
+    this.studentIds = [];
+  }
+}

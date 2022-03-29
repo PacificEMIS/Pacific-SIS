@@ -2622,7 +2622,7 @@ namespace opensis.data.Repository
                                 foreach (var staff in staffScheduleData)
                                 {
                                     var staffName = staff.StaffMaster.FirstGivenName + " " + staff.StaffMaster.MiddleName + " " + staff.StaffMaster.LastFamilyName;
-                                    CourseData.StaffName = CourseData.StaffName != null ? CourseData.StaffName + ", " + staffName : staffName;
+                                    CourseData.StaffName = CourseData.StaffName != null ? CourseData.StaffName + "|" + staffName : staffName;
                                 }
                             }
 
@@ -3217,6 +3217,58 @@ namespace opensis.data.Repository
                 subjectView._message = es.Message;
             }
             return subjectView;
+        }
+
+        /// <summary>
+        /// GetCourseSectionAssignmentByStaff
+        /// </summary>
+        /// <param name="courseSectionAssignmentViewModel"></param>
+        /// <returns></returns>
+        public CourseSectionAssignmentViewModel GetCourseSectionAssignmentByStaff(CourseSectionAssignmentViewModel courseSectionAssignmentViewModel)
+        {
+            CourseSectionAssignmentViewModel courseSectionAssignment = new CourseSectionAssignmentViewModel();
+            courseSectionAssignment.TenantId = courseSectionAssignmentViewModel.TenantId;
+            courseSectionAssignment.SchoolId = courseSectionAssignmentViewModel.SchoolId;
+            courseSectionAssignment.StaffId = courseSectionAssignmentViewModel.StaffId;
+            courseSectionAssignment.AcademicYear = courseSectionAssignmentViewModel.AcademicYear;
+            courseSectionAssignment._tenantName = courseSectionAssignmentViewModel._tenantName;
+            courseSectionAssignment._token = courseSectionAssignmentViewModel._token;
+
+            try
+            {
+                var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.
+                                    Join(this.context.AssignmentType.Include(x => x.Assignment),
+                                    scss => scss.CourseSectionId, a => a.CourseSectionId,
+                                    (scss, a) => new { scss, a }).Where(x => x.scss.TenantId == courseSectionAssignmentViewModel.TenantId && x.a.TenantId == courseSectionAssignmentViewModel.TenantId && x.scss.SchoolId == courseSectionAssignmentViewModel.SchoolId && x.a.SchoolId == courseSectionAssignmentViewModel.SchoolId && x.scss.StaffId == courseSectionAssignmentViewModel.StaffId && x.a.AcademicYear == courseSectionAssignmentViewModel.AcademicYear && x.scss.IsDropped != true).ToList();
+
+                if (staffCoursesectionScheduleData?.Any() == true)
+                {
+                    var courseSectionWiseData = staffCoursesectionScheduleData.GroupBy(x => x.a.CourseSectionId).ToList();
+
+                    foreach (var courseSection in courseSectionWiseData)
+                    {
+                        CourseSectionDetails courseSectionDetails = new();
+
+                        courseSectionDetails.CourseSectionId = courseSection.Key;
+                        courseSectionDetails.CourseSectionName = courseSection.First().scss.CourseSectionName;
+
+                        //select assignmentType for this course section & add view model
+                        courseSectionDetails.assignmentTypes = courseSection.Select(s => s.a).ToList();
+                        courseSectionAssignment.courseSectionList.Add(courseSectionDetails);
+                    }
+                }
+                else
+                {
+                    courseSectionAssignment._failure = true;
+                    courseSectionAssignment._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                courseSectionAssignment._failure = true;
+                courseSectionAssignment._message = es.Message;
+            }
+            return courseSectionAssignment;
         }
     }
 }

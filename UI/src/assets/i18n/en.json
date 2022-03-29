@@ -1789,5 +1789,7 @@
     "deleteSelectedStudentsFromCourseSection": "Delete Selected Students from Course Section",
     "studentsSuccessfullyDeletedFrom": "Students successfully deleted from",
     "completed": "Completed",
-    "selectScheduleDateForSelectedStudentsIntoCourseSections": "Select schedule date for selected student(s) into course section(s)"
+    "selectScheduleDateForSelectedStudentsIntoCourseSections": "Select schedule date for selected student(s) into course section(s)",
+    "noStudentScheduled": "No Student Scheduled",
+    "noStudentsFound": "No Students Found"
 }
