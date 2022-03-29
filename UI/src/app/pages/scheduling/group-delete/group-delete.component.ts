@@ -42,7 +42,7 @@ import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 's
 import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { ScheduledStudentDeleteModel, ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
+import { GetUnassociatedStudentListByCourseSectionModel, ScheduledStudentDeleteModel } from 'src/app/models/student-schedule.model';
 import { Permissions } from '../../../models/roll-based-access.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
@@ -77,7 +77,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   searchCtrl: FormControl;
   isVisible: boolean = false;
   isGroupDelete: boolean = false;
-  showcourseSectionName: boolean = false;
+  showCourseSectionName: boolean = false;
   studentNotFound: boolean = false;
   listOfStudents = [];
   selectedStudents = [];
@@ -85,7 +85,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
-  scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  scheduleStudentListViewModel: GetUnassociatedStudentListByCourseSectionModel = new GetUnassociatedStudentListByCourseSectionModel();
   scheduledStudentDeleteModel: ScheduledStudentDeleteModel = new ScheduledStudentDeleteModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
@@ -149,14 +149,14 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   selectCourseSection() {
     if (this.defaultService.checkAcademicYear()) {
       this.studentDetails = new MatTableDataSource([]);
-      this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+      this.scheduleStudentListViewModel = new GetUnassociatedStudentListByCourseSectionModel();
       this.searchCtrl = new FormControl();
       this.searchInStudentList();
       this.listOfStudents = [];
       this.selectedStudents = [];
       this.isVisible = false;
       this.isGroupDelete = false;
-      this.showcourseSectionName = false;
+      this.showCourseSectionName = false;
       this.studentNotFound = false;
       this.dialog.open(AddCourseSectionComponent, {
         width: '900px',
@@ -169,10 +169,10 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
       }).afterClosed().subscribe(res => {
         this.courseSectionData = res;
         if (this.courseSectionData) {
-          this.showcourseSectionName = true;
+          this.showCourseSectionName = true;
           this.getUnassociatedStudentListByCourseSection(this.courseSectionData.courseSectionId);
         } else {
-          this.showcourseSectionName = false;
+          this.showCourseSectionName = false;
         }
       });
     }
@@ -269,7 +269,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   // For call unassociated student list API
   getUnassociatedStudentListByCourseSection(courseSectionId) {
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
+    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
     this.studentScheduleService.getUnassociatedStudentListByCourseSection(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
@@ -431,7 +431,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
           this.studentNotFound = false;
           this.isVisible = false;
           this.isGroupDelete = true;
-          this.showcourseSectionName = false;
+          this.showCourseSectionName = false;
         }
       } else {
         this.snackbar.open(this.defaultService.getHttpError(), '', {
