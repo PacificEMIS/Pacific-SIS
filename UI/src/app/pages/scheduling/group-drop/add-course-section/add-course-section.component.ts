@@ -116,7 +116,7 @@ export class AddCourseSectionComponent implements OnInit {
       } else {
         res.allCourseSectionViewList = this.findMarkingPeriodTitleById(res.allCourseSectionViewList);
         res.allCourseSectionViewList.map((course:any)=>{
-          if(course.staffName != null)
+          if(course.staffName !== null)
             course.scheduledTeacher=course.staffName.split("|");
         })
         this.courseDetails = new MatTableDataSource(res.allCourseSectionViewList);
