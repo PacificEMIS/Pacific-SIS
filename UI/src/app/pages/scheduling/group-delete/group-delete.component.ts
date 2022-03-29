@@ -269,7 +269,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   // For call unassociated student list API
   getUnassociatedStudentListByCourseSection(courseSectionId) {
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.studentScheduleService.getUnassociatedStudentListByCourseSection(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
         if (res._failure) {

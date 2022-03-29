@@ -110,7 +110,7 @@ export class ScheduledStudentsComponent implements OnInit, AfterViewInit{
 
   // Scheduled Student list
   searchScheduledStudentForGroupDrop() {
-    this.getAllStudent.courseSectionId = this.courseSectionDetails.courseSection.courseSectionId;
+    this.getAllStudent.courseSectionIds = [this.courseSectionDetails.courseSection.courseSectionId];
     this.getAllStudent.sortingModel = null;
     this.getAllStudent.IsDropped = true ;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.getAllStudent).subscribe((res) => {

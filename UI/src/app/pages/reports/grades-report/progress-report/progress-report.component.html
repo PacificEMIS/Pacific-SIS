@@ -1,6 +1,44 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
 <div class="card">
+    <ng-container *ngIf="this.defaultValuesService.getUserMembershipType() === this.profile.Teacher || this.defaultValuesService.getUserMembershipType() === this.profile.HomeroomTeacher">
+        <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 px-6 py-4">
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "subject" | translate }}</mat-label>
+                        <mat-select name="subject" [(ngModel)]="selectedSubject" (selectionChange)="selectedCourse = 'all'; selectedCourseSection = 'all'; getStudentListByCourseSection()">
+                            <mat-option value="all">{{'all'|translate}}</mat-option>
+                            <mat-option *ngFor="let subject of subjectDetails; let i = index;" [value]="i">{{subject.subjectName}}</mat-option>
+                        </mat-select>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "course" | translate }}</mat-label>
+                    <mat-select name="course" [(ngModel)]="selectedCourse" (selectionChange)="selectedCourseSection = 'all'; getStudentListByCourseSection()">
+                        <mat-option value="all">{{'all'|translate}}</mat-option>
+                        <ng-container *ngIf="selectedSubject !== 'all'">
+                            <mat-option *ngFor="let course of subjectDetails[selectedSubject]?.coursesViewModels; let i = index;" [value]="i">{{course.courseName}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+            <li>
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "courseSection" | translate }}</mat-label>
+                    <mat-select name="courseSection" [(ngModel)]="selectedCourseSection" (selectionChange)="getStudentListByCourseSection()">
+                        <mat-option value="all">{{'all'|translate}}</mat-option>
+                        <ng-container *ngIf="selectedCourse !== 'all'">
+                            <mat-option *ngFor="let courseSection of subjectDetails[selectedSubject]?.coursesViewModels[selectedCourse]?.courseSectionsViewModels; let i = index;" [value]="i">{{courseSection.courseSectionName}}</mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+        </ul>
+    </ng-container>
+    
+        <mat-divider></mat-divider>
+
     <div class="px-6 py-4">
         <ul class="flex flex-wrap mb-2">
             <li><mat-slide-toggle [(ngModel)]="toggleMenu.assignedDate" color="primary" class="mr-6 mb-2">{{'assignedDate' | translate }}</mat-slide-toggle></li>
@@ -123,7 +161,7 @@
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
         <vex-search-student (searchList)="getSearchResult($event)" [incomingSearchValue]="searchValue"
-            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
+            (toggelValues)="getToggleValues($event)" [courseSectionIds]="scheduleStudentListViewModel?.courseSectionIds" [incomingToggleValues]="toggleValues"
             (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
         </vex-search-student>
     </div>

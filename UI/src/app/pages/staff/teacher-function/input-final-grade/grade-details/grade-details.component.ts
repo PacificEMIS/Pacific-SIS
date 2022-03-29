@@ -297,7 +297,7 @@ export class GradeDetailsComponent implements OnInit {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
             this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId);
           }
-          this.scheduleStudentListViewModel.courseSectionId = this.courseSectionDetails[0].courseSectionId;
+          this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionDetails[0].courseSectionId];
           this.scheduleStudentListViewModel.profilePhoto = true;
           this.scheduleStudentListViewModel.sortingModel = null;
           this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
@@ -532,7 +532,7 @@ if(courseSection) {
 
   searchScheduledStudentForGroupDrop(courseSectionId) {
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {

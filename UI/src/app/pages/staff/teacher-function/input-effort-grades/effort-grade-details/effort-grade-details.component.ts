@@ -187,7 +187,7 @@ export class EffortGradeDetailsComponent implements OnInit {
           this.searchScheduledStudentForGroupDrop(courseSectionDetails[0].courseSectionId);
         }
         else {
-          this.scheduleStudentListViewModel.courseSectionId = courseSectionDetails[0].courseSectionId;
+          this.scheduleStudentListViewModel.courseSectionIds = [courseSectionDetails[0].courseSectionId];
           this.scheduleStudentListViewModel.profilePhoto = true;
           this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
             if (res) {
@@ -239,7 +239,7 @@ export class EffortGradeDetailsComponent implements OnInit {
   }
 
   searchScheduledStudentForGroupDrop(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {

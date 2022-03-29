@@ -71,6 +71,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() incomingSearchValue;
   @Input() rootSource;
   @Input() incomingToggleValues;
+  @Input() courseSectionIds;
   rollingOptions = Object.keys(RollingOptionsEnum);
   countryModel: CountryModel = new CountryModel();
   languages: LanguageModel = new LanguageModel();
@@ -481,6 +482,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       this.scheduleStudentListViewModel.sortingModel = null;
       this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
       this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
+      this.scheduleStudentListViewModel.courseSectionIds = this.courseSectionIds;
       this.commonService.setSearchResult(this.scheduleStudentListViewModel.filterParams);
       // this.searchAllSchoolsCondition=false;
       this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
