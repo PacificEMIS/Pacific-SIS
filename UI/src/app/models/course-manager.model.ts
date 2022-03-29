@@ -192,6 +192,28 @@ export class SearchCourseSectionViewModel extends CommonField {
     public markingPeriodStartDate: string;
 }
 
+export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
+    public allCourseSectionViewList: AllCourseSectionView[];
+    public tenantId: string;
+    public schoolId: number;
+    public courseId: number | string;
+    public blockId: number;
+    public courseSubject: string;
+    public courseProgram: string;
+    public markingPeriodId: string;
+    public forStaff: boolean;
+    public forStudent: boolean;
+    public markingPeriodStartDate: string;
+
+    constructor(){
+        super();
+        this.courseId = '';
+        this.courseSubject = '';
+        this.courseProgram = '';
+        this.markingPeriodId = '';
+    }
+}
+
 export class AllCourseSectionView {
     public tenantId: string;
     public schoolId: number;
