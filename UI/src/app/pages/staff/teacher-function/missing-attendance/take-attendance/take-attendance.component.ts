@@ -108,7 +108,7 @@ export class TakeAttendanceComponent implements OnInit {
  
    getScheduledStudentList(){
      this.scheduleStudentListViewModel.sortingModel=null;
-     this.scheduleStudentListViewModel.courseSectionId=this.staffDetails.courseSectionId;
+     this.scheduleStudentListViewModel.courseSectionIds=[this.staffDetails.courseSectionId];
      this.scheduleStudentListViewModel.pageNumber=0;
      this.scheduleStudentListViewModel.pageSize = 0;
      this.scheduleStudentListViewModel.attendanceDate = this.staffDetails.attendanceDate;

@@ -31,7 +31,8 @@ export class ScheduleStudentListViewModel extends CommonField {
   public tenantId: string;
   public includeInactive: boolean;
   public schoolId: number;
-  public courseSectionId: number;
+  // public courseSectionId: number;
+  public courseSectionIds: number[];
   public staffId: number;
   public academicYear: number;
   public filterParams: filterParams[];
@@ -52,6 +53,7 @@ export class ScheduleStudentListViewModel extends CommonField {
     this._pageSize = 10;
     this.sortingModel = null;
     this.filterParams = [];
+    this.courseSectionIds = [];
   }
 }
 

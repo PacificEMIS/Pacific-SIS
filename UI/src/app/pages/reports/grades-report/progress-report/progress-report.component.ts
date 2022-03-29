@@ -22,7 +22,11 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { ReportService } from 'src/app/services/report.service';
 import { StudentService } from 'src/app/services/student.service';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-
+import { CourseManagerService } from 'src/app/services/course-manager.service';
+import { CourseSectionByStaffModel } from 'src/app/models/course-manager.model';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
+import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 export interface StudentListsData {
   studentCheck: boolean;
   studentName: string;
@@ -101,29 +105,50 @@ export class ProgressReportComponent implements OnInit {
     dueDate: true,
     excludeUngradedAssignmentsNotDue: false,
   }
-  gradeScaleList: any;
 
+  gradeScaleList: any;
+  courseSectionByStaffModel: CourseSectionByStaffModel = new CourseSectionByStaffModel();
+  profile = ProfilesTypes;
+  selectedSubject = 'all';
+  selectedCourse = 'all';
+  selectedCourseSection = 'all';
+  subjectDetails = [];
+  scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  
   constructor(
     public translateService: TranslateService,
     private studentService: StudentService,
     private commonService: CommonService,
     private snackbar: MatSnackBar,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private loaderService: LoaderService,
     private reportService: ReportService,
     private gradesService: GradesService,
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
+    private courseManagerService: CourseManagerService,
+    private studentScheduleService: StudentScheduleService
   ) {
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
+  
   }
 
   ngOnInit(): void {
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.getAllStudentList();
+    if(this.defaultValuesService.getUserMembershipType() === this.profile.Teacher || this.defaultValuesService.getUserMembershipType() === this.profile.HomeroomTeacher) {
+      this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+      this.getCourseSectionByStaff().then(()=>{
+        this.getStudentListByCourseSection();
+      });
+    } else {
+      this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+      this.getAllStudentList();
+    }
+    
     this.searchCtrl = new FormControl();
   }
 
@@ -315,6 +340,7 @@ export class ProgressReportComponent implements OnInit {
 
   getSearchResult(res) {
     this.getAllStudent = new StudentListModel();
+    res.studentListViews = this.defaultValuesService.getUserMembershipType() === this.profile.Teacher || this.defaultValuesService.getUserMembershipType() === this.profile.HomeroomTeacher ? res.scheduleStudentForView : res.studentListViews;
     if (res?.totalCount) {
       this.searchCount = res.totalCount;
       this.totalCount = res.totalCount;
@@ -1158,6 +1184,88 @@ export class ProgressReportComponent implements OnInit {
     if (date) {
       return moment(date).format('MMM DD, YYYY');
     }
+  }
+  getCourseSectionByStaff() {
+    return new Promise((resolve, reject)=> {
+    this.courseSectionByStaffModel.staffId = this.defaultValuesService.getUserId();
+    this.courseManagerService.getCourseSectionByStaff(this.courseSectionByStaffModel).subscribe((data: any) => {
+      if (data._failure) {
+ this.snackbar.open(data._message, '', {
+            duration: 10000
+          });
+      } else {
+        this.subjectDetails = data.subjectViewModels;
+      }
+      resolve('')
+    });
+  });
+  }
+
+  getStudentListByCourseSection() {
+    if (this.scheduleStudentListViewModel.sortingModel?.sortColumn === "") {
+      this.scheduleStudentListViewModel.sortingModel = null;
+    }
+
+    if(this.selectedSubject === 'all') {      
+      this.subjectDetails.map((subject)=>{
+        subject.coursesViewModels.map((course)=>{
+          course.courseSectionsViewModels.map((courseSection)=>{
+            this.scheduleStudentListViewModel.courseSectionIds.push(courseSection.courseSectionId)
+          })
+        })
+      })
+    } else if(this.selectedCourse === 'all') {
+      this.subjectDetails[this.selectedSubject].coursesViewModels.map((course)=>{
+        course.courseSectionsViewModels.map((courseSection)=>{
+          this.scheduleStudentListViewModel.courseSectionIds.push(courseSection.courseSectionId)
+        })
+      })
+    } else if(this.selectedCourseSection === 'all') {
+      this.subjectDetails[this.selectedSubject].coursesViewModels[this.selectedCourse].courseSectionsViewModels.map((courseSection)=>{
+          this.scheduleStudentListViewModel.courseSectionIds.push(courseSection.courseSectionId)
+      })
+    } else {
+      this.scheduleStudentListViewModel.courseSectionIds = [this.subjectDetails[this.selectedSubject].coursesViewModels[this.selectedCourse].courseSectionsViewModels[this.selectedCourseSection].courseSectionId]
+    }
+
+    this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((data: any) => {
+      data.studentListViews = data.scheduleStudentForView ? data.scheduleStudentForView : null;
+      delete data.scheduleStudentForView;
+      if (data._failure) {
+        if (data.studentListViews === null) {
+          this.totalCount = null;
+          this.studentModelList = new MatTableDataSource([]);
+          this.snackbar.open(data._message, '', {
+            duration: 10000
+          });
+        } else {
+          this.studentModelList = new MatTableDataSource([]);
+          this.totalCount = null;
+        }
+      } else {
+        this.totalCount = data.totalCount;
+        this.pageNumber = data.pageNumber;
+        this.pageSize = data._pageSize;
+        data.studentListViews.forEach((student) => {
+          student.checked = false;
+        });
+        this.listOfStudents = data.studentListViews.map((item) => {
+          this.selectedStudents.map((selectedUser) => {
+            if (item.studentId == selectedUser.studentId) {
+              item.checked = true;
+              return item;
+            }
+          });
+          return item;
+        });
+
+        this.masterCheckBox.checked = this.listOfStudents.every((item) => {
+          return item.checked;
+        })
+        this.studentModelList = new MatTableDataSource(data.studentListViews);
+        // this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+      }
+    });
   }
 
 }
