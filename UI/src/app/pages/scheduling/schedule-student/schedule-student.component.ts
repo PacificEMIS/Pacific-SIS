@@ -96,14 +96,10 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   courseList = [];
   markingPeriodList = [];
   gradeLevelList = [];
-  studentText: boolean;
-  sectionText: boolean;
   viewReport: boolean = false;
   failedScheduling: boolean = false
   showReportTable: boolean = false;
   courseSectionList = [];
-  showStudentCount: boolean = false;
-  showCourseSectionCount: boolean = false;
   destroySubject$: Subject<void> = new Subject();
   languages: LanguageModel = new LanguageModel();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
@@ -328,18 +324,6 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
       }
     }).afterClosed().subscribe((data) => {
       this.studentList = data;
-      if (this.studentList?.length > 0) {
-        if (this.studentList?.length > 1) {
-          this.studentText = true;
-        }
-        else {
-          this.studentText = false;
-        }
-        this.showStudentCount = true;
-      }
-      else {
-        this.showStudentCount = false;
-      }
       this.showCard = false;
       this.viewReport = false;
       this.showReportTable = false;
@@ -360,18 +344,6 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
     }).afterClosed().subscribe((data) => {
       if(data)
         this.courseSectionList=this.createTableDataset(data);
-      if (this.courseSectionList?.length > 0) {
-        if (this.courseSectionList?.length > 1) {
-          this.sectionText = true;
-        }
-        else {
-          this.sectionText = false;
-        }
-        this.showCourseSectionCount = true;
-      }
-      else {
-        this.showCourseSectionCount = false;
-      }
       this.showCard = false;
       this.viewReport = false;
       this.showReportTable = false;
@@ -466,8 +438,6 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   refreshAll() {
     this.studentList = [];
     this.courseSectionList = [];
-    this.showStudentCount = false;
-    this.showCourseSectionCount = false;
     this.showCard = false;
     this.viewReport = false;
     this.showReportTable = false;
