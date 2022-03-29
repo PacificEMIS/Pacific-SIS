@@ -265,6 +265,35 @@ export class WeeklyAttendanceList {
   takenAttendanceList:[]
 }
 
+export class GetUnassociatedStudentListByCourseSectionModel extends CommonField {
+  scheduleStudentForView: ScheduleStudentForView[];
+  tenantId: string;
+  includeInactive: boolean;
+  schoolId: number;
+  courseSectionId: number;
+  staffId: number;
+  academicYear: number;
+  filterParams: filterParams[];
+  searchAllSchool: boolean;
+  dobStartDate: string;
+  dobEndDate: string;
+  attendanceDate: string;
+  pageSize: number;
+  pageNumber: number;
+  sortingModel: Sorting;
+  totalCount: number;
+  profilePhoto: boolean;
+  _pageSize: number; // this is from response.
+  IsDropped: boolean;
+  constructor() {
+    super();
+    this.pageNumber = 1;
+    this._pageSize = 10;
+    this.sortingModel = null;
+    this.filterParams = [];
+  }
+}
+
 export class ScheduledStudentDeleteModel extends CommonField {
   studentIds: any[];
   courseSectionId: number;
