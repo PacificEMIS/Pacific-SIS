@@ -18,8 +18,8 @@
                             <i class="icon icon-plus3 sm:text-xl lg:text-4xl"></i>
                         </div>
                         <div class="w-full md:w-10/12 text-center md:text-left text-white md:text-black md:pl-6">
-                            <h2 *ngIf="!showStudentCount">{{'student' | translate}}</h2>
-                            <h2 *ngIf="showStudentCount"> {{studentList.length}} Student{{studentText}} Selected</h2>
+                            <h2 *ngIf="studentList?.length == 0">{{'student' | translate}}</h2>
+                            <h2 *ngIf="studentList?.length > 0"> {{studentList?.length}} {{'student' | translate}}{{studentList?.length>1 ? 's' : ''}} {{'selected' | translate}}</h2>
                             <p class="md:text-blue">{{'selectStudentToSchedule' | translate}}</p>
                         </div>
                     </div>
@@ -28,12 +28,12 @@
                     </div>
 
                     <!-- start Schedule button design -->
-                    <div *ngIf="studentList?.length > 0 && courseSectionList?.length >0 && !viewReport && permissions?.edit" (click)="scheduleStudent()"
+                    <!-- <div *ngIf="studentList?.length > 0 && courseSectionList?.length >0 && !viewReport && permissions?.edit" (click)="scheduleStudent()"
                         class="schedule-button">
                         <button mat-button class="bg-green text-white">
                             Schedule Student{{studentText}}
                         </button>
-                    </div>
+                    </div> -->
                     <!-- end Schedule button design -->
 
                     <!-- start refresh button design -->
@@ -45,8 +45,8 @@
                 <div class="md:w-1/2 cursor-pointer bg-primary rounded-b md:bg-white pt-12 pb-6 md:py-0" (click)="selectCourseSection()">
                     <div class="flex items-center">
                         <div class="w-full md:w-10/12 text-center md:text-right text-white md:text-black md:pr-6 order-2 md:order-1">
-                            <h2 *ngIf="!showCourseSectionCount">{{'courseSection' |translate}}</h2>
-                            <h2 *ngIf="showCourseSectionCount">{{courseSectionList?.length}} {{'courseSection' |translate}}{{sectionText}} {{'selected' |translate}} 
+                            <h2 *ngIf="courseSectionList?.length == 0">{{'courseSection' |translate}}</h2>
+                            <h2 *ngIf="courseSectionList?.length > 0">{{courseSectionList?.length}} {{'courseSection' |translate}}{{courseSectionList?.length>1 ? 's' : ''}} {{'selected' |translate}} 
                             </h2>
                             <p class="md:text-blue">{{'selectCourseSectionToSchedule' |translate}}</p>
                         </div>
@@ -65,7 +65,7 @@
             <div *ngIf="loading && !viewReport" class="flex">
                 <img src="assets/img/icons/loading-process.svg" class="flex-shrink-0 mt-1 self-start animate-spin w-5" alt="Loader icon">
                 <div class="ml-4">
-                    <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentText}}</span>
+                    <span class="text-lg inline-block align-middle text-primary font-bold">{{'schedulingStudent' |translate}}{{studentList?.length > 1 ? 's' : ''}}</span>
                     <p class="">{{'pleaseDoNotRefreshThePageOrClickBackButton' |translate}}.</p>
                 </div>
             </div>
@@ -182,6 +182,82 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                 </table>
+            </div>
+        </div>
+
+        <div class="card mt-6" *ngIf="studentList?.length > 0 && courseSectionList?.length >0 && !showCard">
+            <div class="p-4">
+                <p class="text-primary font-semibold text-lg">{{ 'selectScheduleDateForSelectedStudentsIntoCourseSections' | translate }}</p>
+            </div>
+            <div class="overflow-x-auto overflow-y-hidden border-b  course-section-table">
+                <table class="table mb-0">
+                    <thead class="text-left">
+                        <tr>
+                            <th>{{'course' | translate }}</th>
+                            <th>{{'courseSection' | translate }}</th>
+                            <th>{{'markingPeriod' | translate }}</th>
+                            <th>{{'startDate' | translate }}</th>
+                            <th>{{'endDate' | translate }}</th>
+                            <th>{{'meetingDays' | translate }}</th>
+                            <th>{{'teachers' | translate }}</th>
+                            <th>{{'scheduleDate' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of courseSectionList">
+                            <td>{{ data?.courseTitle ? data?.courseTitle : 'N/A' }}</td>
+                            <td>{{ data?.courseSectionName ? data?.courseSectionName : 'N/A' }}</td>
+                            <td>{{ data?.markingPeriod ? data?.markingPeriod : 'N/A' }}</td>
+                            <td>{{ data?.courseDurationStartDate ? ( data?.courseDurationStartDate | date : 'mediumDate' ) : 'N/A' }}</td>
+                            <td>{{ data?.durationEndDate ? ( data?.durationEndDate | date : 'mediumDate' ) : 'N/A' }}</td>
+                            <td>
+                                <div *ngIf="data?.meetingDays;else elsePartDay">
+                                    <span *ngFor="let day of weekArray, index as i"
+                                        class="text-white w-5 h-5 rounded inline-block text-xs text-center font-medium mr-1"
+                                        [class.bg-primary]="data?.meetingDays.includes(i+1)"
+                                        [class.bg-gray-light]="data?.meetingDays.includes(i+1)==false">
+                                        {{day}}
+                                    </span>
+                                </div>
+                                <ng-template #elsePartDay>N/A</ng-template>
+                            </td>
+                            <td class="relative w-full">
+                                <div class="teacher-avatar absolute w-full"
+                                    *ngIf="data?.staffNameList?.length>0;else elsePartTeacher">
+                                    <div *ngFor="let teachers of data?.staffNameList;let i =index;"
+                                        class="absolute cursor-pointer w-10 h-10 inline-block rounded-full text-center border-2 border-white overflow-hidden"
+                                        [matTooltip]="teachers.fullName" aria-label="Button that shows a tooltip"
+                                        [matTooltipPosition]="'above'">
+                                        <!-- <img src="assets/img/profilePic.jpg" alt="Teacher Photo" class="" *ngIf="i===0"> -->
+                                        <!--For future implementation of thumbnail profile image-->
+                                        <p [ngClass]="teachers.bgColor" class="font-semibold text-xs p-2 text-white"
+                                            *ngIf="i<=2">{{teachers.firstNameChar}}{{teachers.lastNameChar}}</p>
+                                        <a class="text-gray items-center w-full h-full flex bg-app-bar" *ngIf="i>2">
+                                            <mat-icon class="w-full">more_horiz</mat-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                                <ng-template #elsePartTeacher>-</ng-template>
+                            </td>
+                            <td>
+                                <div>
+                                    <mat-form-field appearance="outline" class="mb-0">
+                                        <input matInput [matDatepicker]="dp1" [(ngModel)]="data.durationStartDate"
+                                            [min]="data?.courseDurationStartDate" [max]="data?.durationEndDate"
+                                            (dateChange)="changeDateEvent(data)">
+                                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                                        <mat-datepicker #dp1></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-right p-4">
+                <button mat-raised-button class="bg-green text-white"
+                    *ngIf="studentList?.length > 0 && courseSectionList?.length >0 && !viewReport && permissions?.edit"
+                    (click)="scheduleStudent()">{{ studentList?.length > 1 ? ('scheduleStudents' | translate ) : ('scheduleStudent' | translate) }}</button>
             </div>
         </div>
     </vex-page-layout-content>
