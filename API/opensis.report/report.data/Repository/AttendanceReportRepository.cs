@@ -276,6 +276,8 @@ namespace opensis.report.report.data.Repository
 
                 var studentAttendanceData = this.context?.StudentAttendance.Include(x => x.AttendanceCodeNavigation).Join(this.context?.AllCourseSectionView, sa => sa.CourseSectionId, acsv => acsv.CourseSectionId, (sa, acsv) => new { sa, acsv }).AsEnumerable().Where(x => x.sa.TenantId == pageResult.TenantId && x.sa.SchoolId == pageResult.SchoolId && x.sa.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.sa.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.acsv.TenantId == pageResult.TenantId && x.acsv.SchoolId == pageResult.SchoolId && (x.acsv.AttendanceTaken == true || x.acsv.TakeAttendanceCalendar == true || x.acsv.TakeAttendanceVariable == true || x.acsv.TakeAttendanceBlock == true));
 
+                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate);
+
                 if (studentAttendanceData?.Any() == true)
                 {
                     var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AcademicYear == pageResult.AcademicYear && x.SessionCalendar == true);
@@ -329,6 +331,7 @@ namespace opensis.report.report.data.Repository
                         int? other = 0;
                         int? studentInfo = 0;
                         int? totalPeriods = 0;
+                        int? notTaken = 0;
 
                         var gradeLevelWiseAttendance = studentAttendanceData.Where(x => x.acsv.CourseGradeLevel == gradeLevel);
 
@@ -417,6 +420,7 @@ namespace opensis.report.report.data.Repository
                                         }
                                     }
                                 }
+                                notTaken += studentMissingAttendanceData.Where(x => x.CourseSectionId == csId && x.SchoolId == pageResult.SchoolId).Count();
                             }
 
                             studentInfo = gradeLevelWiseAttendance.Select(s => new { s.sa.SchoolId, s.sa.StudentId }).Distinct().ToList().Count;
@@ -432,9 +436,10 @@ namespace opensis.report.report.data.Repository
                         averageDailyAttendanceReport.Present = studentInfo * present;
                         averageDailyAttendanceReport.Absent = studentInfo * absent;
                         averageDailyAttendanceReport.Other = studentInfo * other;
-                        averageDailyAttendanceReport.NotTaken = averageDailyAttendanceReport.AttendancePossible - (averageDailyAttendanceReport.Present +
-                        averageDailyAttendanceReport.Absent +
-                        averageDailyAttendanceReport.Other);
+                        //averageDailyAttendanceReport.NotTaken = averageDailyAttendanceReport.AttendancePossible - (averageDailyAttendanceReport.Present +
+                        //averageDailyAttendanceReport.Absent +
+                        //averageDailyAttendanceReport.Other);
+                        averageDailyAttendanceReport.NotTaken = notTaken;
 
                         averageDailyAttendanceReport.ADA = Math.Round((Convert.ToDecimal(averageDailyAttendanceReport.Present) / Convert.ToDecimal(averageDailyAttendanceReport.AttendancePossible) * 100), 2);
                         averageDailyAttendanceReport.AvgAttendance = Math.Round(Convert.ToDecimal(averageDailyAttendanceReport.Present) / Convert.ToDecimal(averageDailyAttendanceReport.AttendancePossible), 2);

@@ -19,6 +19,7 @@ export class StudentCourseSectionScheduleAddViewModel extends CommonField {
   public createdBy: string;
   public updatedBy: string;
   public conflictMessage: string;
+  public durationStartDate:string;
   public _conflictFailure: boolean;
   constructor() {
     super();
@@ -30,7 +31,8 @@ export class ScheduleStudentListViewModel extends CommonField {
   public tenantId: string;
   public includeInactive: boolean;
   public schoolId: number;
-  public courseSectionId: number;
+  // public courseSectionId: number;
+  public courseSectionIds: number[];
   public staffId: number;
   public academicYear: number;
   public filterParams: filterParams[];
@@ -51,6 +53,7 @@ export class ScheduleStudentListViewModel extends CommonField {
     this._pageSize = 10;
     this.sortingModel = null;
     this.filterParams = [];
+    this.courseSectionIds = [];
   }
 }
 
@@ -260,6 +263,35 @@ export class WeeklyAttendanceList {
   takenAttendanceDays: string;
   cloneTakenAttendanceDays: any[];
   takenAttendanceList:[]
+}
+
+export class GetUnassociatedStudentListByCourseSectionModel extends CommonField {
+  scheduleStudentForView: ScheduleStudentForView[];
+  tenantId: string;
+  includeInactive: boolean;
+  schoolId: number;
+  courseSectionId: number;
+  staffId: number;
+  academicYear: number;
+  filterParams: filterParams[];
+  searchAllSchool: boolean;
+  dobStartDate: string;
+  dobEndDate: string;
+  attendanceDate: string;
+  pageSize: number;
+  pageNumber: number;
+  sortingModel: Sorting;
+  totalCount: number;
+  profilePhoto: boolean;
+  _pageSize: number; // this is from response.
+  IsDropped: boolean;
+  constructor() {
+    super();
+    this.pageNumber = 1;
+    this._pageSize = 10;
+    this.sortingModel = null;
+    this.filterParams = [];
+  }
 }
 
 export class ScheduledStudentDeleteModel extends CommonField {

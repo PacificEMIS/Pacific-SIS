@@ -234,7 +234,7 @@ export class InputEffortGradesComponent implements OnInit {
           this.searchScheduledStudentForGroupDrop(courseSectionDetails[0].courseSectionId);
         }
         else {
-          this.scheduleStudentListViewModel.courseSectionId = courseSectionDetails[0].courseSectionId;
+          this.scheduleStudentListViewModel.courseSectionIds = [courseSectionDetails[0].courseSectionId];
           this.scheduleStudentListViewModel.profilePhoto = true;
           this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
             if (res) {
@@ -283,7 +283,7 @@ export class InputEffortGradesComponent implements OnInit {
   }
 
   searchScheduledStudentForGroupDrop(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
@@ -470,7 +470,7 @@ export class InputEffortGradesComponent implements OnInit {
     this.searchFilter = filter;
 
     if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
-      this.scheduleStudentListViewModel.courseSectionId = this.courseSectionId;
+      this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionId];
       this.scheduleStudentListViewModel.profilePhoto = true;
       this.scheduleStudentListViewModel.filterParams = JSON.parse(filter.jsonList);
       this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {

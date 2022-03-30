@@ -448,7 +448,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   getStudentListByCourseSection(courseSectionId) {
     this.selection = new SelectionModel<ScheduleStudentForView>(true, []);
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId]
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);

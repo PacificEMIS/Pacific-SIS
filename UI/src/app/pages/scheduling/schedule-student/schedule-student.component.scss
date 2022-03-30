@@ -8,13 +8,13 @@
     position: absolute;
     right: -6px;
     top: 42%;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;    
+    border-bottom: 6px solid transparent;
     border-left: 6px solid #4caf50;
 
-    @media  screen and (max-width: 767.98px) {
+    @media screen and (max-width: 767.98px) {
         display: none;
     }
 }
@@ -25,13 +25,13 @@
     position: absolute;
     left: -6px;
     top: 42%;
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;    
+    border-bottom: 6px solid transparent;
     border-right: 6px solid #0c3e8a;
 
-    @media  screen and (max-width: 767.98px) {
+    @media screen and (max-width: 767.98px) {
         display: none;
     }
 }
@@ -45,16 +45,16 @@
     height: 60px;
     text-align: center;
     border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 17px;
 
-    @media  screen and (max-width: 767.98px) {
+    @media screen and (max-width: 767.98px) {
         bottom: -30px;
         left: calc(50% - 30px);
         top: auto;
     }
 
-    @media screen and (min-width:768px) {
+    @media screen and (min-width: 768px) {
         &.hide-schedule-icon {
             display: none;
         }
@@ -83,10 +83,10 @@
     height: 60px;
     text-align: center;
     border-radius: 50%;
-    border: 2px solid #0C3F8A;
+    border: 2px solid #0c3f8a;
 }
 .schedule-refresh .mat-icon {
-    padding-top: 12px; 
+    padding-top: 12px;
     margin-left: -10px;
     font-size: 32px;
 }
@@ -102,4 +102,90 @@
     overflow: hidden;
     border-radius: 50%;
     border: 5px solid rgba(103, 58, 183, 0.12);
+}
+.course-section-table {
+    .table {
+        thead {
+            th {
+                border-bottom-width: 1px;
+            }
+        }
+        th,
+        td {
+            @apply px-4;
+            @apply py-2;
+            @apply align-middle;
+            white-space: nowrap;
+        }
+        td {
+            @apply font-medium;
+
+            &:nth-child(7) {
+                min-width: 130px;
+                max-width: 12%;
+            }
+        }
+    }
+}
+
+.teacher-avatar {
+    top: 20%;
+
+    div {
+        &:first-child {
+            z-index: 4;
+        }
+
+        &:nth-child(2) {
+            z-index: 3;
+            margin-left: 20px;
+        }
+
+        &:nth-child(3) {
+            z-index: 2;
+            margin-left: 40px;
+        }
+
+        &:nth-child(4) {
+            z-index: 1;
+            margin-left: 60px;
+        }
+
+        &:hover {
+            z-index: 5;
+        }
+    }
+}
+
+::ng-deep .mat-tooltip {
+    white-space: pre-line;
+    font-size: 12px;
+}
+::ng-deep {
+    .course-section-table {
+        .mat-form-field-appearance-outline .mat-form-field-prefix,
+        .mat-form-field-appearance-outline .mat-form-field-suffix {
+            top: 3px !important;
+        }
+        .mat-form-field {
+            &.mat-form-field-appearance-outline {
+                .mat-form-field-wrapper {
+                    .mat-form-field-infix {
+                        border-top-width: 5px;
+                        padding: 0.5em 0;
+                    }
+                }
+            }
+
+            .mat-form-field-wrapper {
+                .mat-form-field-flex {
+                    margin-top: 0;
+
+                    .mat-form-field-outline {
+                        min-height: 40px;
+                    }
+                }
+            }
+        }
+    }
 }

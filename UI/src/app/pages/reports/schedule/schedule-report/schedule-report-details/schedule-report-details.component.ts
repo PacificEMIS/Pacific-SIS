@@ -99,7 +99,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
             })
             this.courseSectionForView=res.getCourseSectionForView;
             this.courseListCount = res.getCourseSectionForView.length;
-            this.getAllStudent.courseSectionId = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionId;
+            this.getAllStudent.courseSectionIds = [this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionId];
             this.selectedCourseName = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionName;
             this.selectedStaffName = this.courseSectionForView[this.selectedCourseSection].staffName;
             this.searchScheduledStudentForGroupDrop();
@@ -116,7 +116,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
 
   onChangeCourseSection(index) {
     this.selectedCourseSection = index
-    this.getAllStudent.courseSectionId = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionId;
+    this.getAllStudent.courseSectionIds = [this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionId];
     this.selectedCourseName = this.courseSectionForView[this.selectedCourseSection].courseSection.courseSectionName;
     this.selectedStaffName = this.courseSectionForView[this.selectedCourseSection].staffName;
     this.searchScheduledStudentForGroupDrop();

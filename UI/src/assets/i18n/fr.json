@@ -1779,6 +1779,7 @@
     "percentageIsRequired": "Le pourcentage est requis",
     "back":"Arrière",
     "backtoSuperAdmin":"Retour à Super Admin",
+    "scheduleStudent":"Horaire étudiant",
     "selectScheduleDateForSelectedStudentsIntoCourseSections": "Sélectionnez la date du calendrier pour les étudiants sélectionnés dans la ou les sections de cours",
     "studentsWhoDontHaveAnyAttendanceGradebookGradesOrFinalGradesDataAssociatedWithTheCourseSectionAboveAreShownInTheListBelow": "Les étudiants qui n'ont pas de données sur l'assiduité, les notes du carnet de notes ou les notes finales associées à la section de cours ci-dessus sont affichés dans la liste ci-dessous.",
     "groupDelete": "Suppression de groupe",

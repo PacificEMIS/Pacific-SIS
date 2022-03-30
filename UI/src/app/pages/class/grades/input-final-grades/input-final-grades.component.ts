@@ -278,7 +278,7 @@ export class InputFinalGradesComponent implements OnInit {
   }
 
   searchScheduledStudentForGroupDropAPI(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.scheduleStudentListViewModel.sortingModel = null;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
@@ -458,7 +458,7 @@ export class InputFinalGradesComponent implements OnInit {
 
   searchScheduledStudentForGroupDrop(courseSectionId) {
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
