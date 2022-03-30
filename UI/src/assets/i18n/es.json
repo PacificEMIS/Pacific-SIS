@@ -1792,5 +1792,6 @@
     "studentsSuccessfullyDeletedFrom": "Estudiantes eliminados con éxito de",
     "completed": "Terminado",
     "noStudentScheduled": "Ningún estudiante programado",
-    "noStudentsFound": "No se encontraron estudiantes"
+    "noStudentsFound": "No se encontraron estudiantes",
+    "studentReportCard":"Tarjeta de informe del estudiante"
 }

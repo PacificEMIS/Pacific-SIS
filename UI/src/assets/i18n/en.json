@@ -1791,5 +1791,6 @@
     "completed": "Completed",
     "selectScheduleDateForSelectedStudentsIntoCourseSections": "Select schedule date for selected student(s) into course section(s)",
     "noStudentScheduled": "No Student Scheduled",
-    "noStudentsFound": "No Students Found"
+    "noStudentsFound": "No Students Found",
+    "studentReportCard":"Student report card"
 }
