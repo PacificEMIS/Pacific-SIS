@@ -17,6 +17,7 @@ namespace opensis.data.ViewModels.StaffPortal
         public Guid? TenantId { get; set; }
         public int? StaffId { get; set; }
         public int? SchoolId { get; set; }
+        public int? StudentId { get; set; }
         public int? CourseSectionId { get; set; }
         public int? AssignmentTypeId { get; set; }
         public int? AssignmentId { get; set; }
