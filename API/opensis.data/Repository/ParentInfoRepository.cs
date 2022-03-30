@@ -500,7 +500,7 @@ namespace opensis.data.Repository
 
             return address;
         }
-        
+
         /// <summary>
         /// Get All Parent Info List
         /// </summary>
@@ -703,7 +703,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public GetAllParentInfoListForView GetAllParentInfoList(PageResult pageResult)
         {
-            GetAllParentInfoListForView parentInfoListModel = new ();
+            GetAllParentInfoListForView parentInfoListModel = new();
             IQueryable<ParentListView>? transactionIQ = null;
 
             var ParentInfoList = this.context?.ParentListView.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.Associationship == true);
@@ -724,7 +724,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        if(pageResult.FilterParams?.Any() == true && ParentInfoList?.Any() == true)
+                        if (pageResult.FilterParams?.Any() == true && ParentInfoList?.Any() == true)
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams, ParentInfoList).AsQueryable();
                         }
@@ -798,25 +798,28 @@ namespace opensis.data.Repository
                         e.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.CreatedBy);
                         e.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, e.UpdatedBy);
                     });
-
-
-                    foreach (var ParentInfo in parentInfoListModel.parentInfoForView)
+                    int[] ParentId = parentInfoListModel.parentInfoForView.Select(p => p.ParentId).ToArray();
+                    if (ParentInfoList != null && ParentInfoList.Any())
                     {
-                        if(ParentInfoList != null)
+                        var ParentAssoList = ParentInfoList.Where(x => x.Associationship == true && ParentId.Contains(x.ParentId)).Select(a => new { StudentId = a.StudentId, ParentId = a.ParentId, FirstGivenName = a.FirstGivenName == null ? null : a.FirstGivenName, StudentMiddleName = a.StudentMiddleName == null ? null : a.StudentMiddleName, LastFamilyName = a.LastFamilyName == null ? null : a.LastFamilyName }).ToList();
+
+                        foreach (var ParentInfo in parentInfoListModel.parentInfoForView)
                         {
-                            var studentAssociateWithParents = ParentInfoList.Where(x => x.ParentId == ParentInfo.ParentId && x.Associationship == true).ToList();
-                            List<string> studentArray = new List<string>();
-                            if (studentAssociateWithParents.Count > 0)
+                            if (ParentAssoList != null)
                             {
-                                foreach (var studentAssociateWithParent in studentAssociateWithParents)
+                                var studentAssociateWithParents = ParentAssoList.Where(x => x.ParentId == ParentInfo.ParentId).ToList();
+                                List<string> studentArray = new List<string>();
+                                if (studentAssociateWithParents.Count > 0)
                                 {
-                                    studentArray.Add(studentAssociateWithParent.FirstGivenName + "|" + studentAssociateWithParent.StudentMiddleName + "|" + studentAssociateWithParent.LastFamilyName + "|" + studentAssociateWithParent.StudentId);
-                                    ParentInfo.students = studentArray.ToArray();
+                                    foreach (var studentAssociateWithParent in studentAssociateWithParents)
+                                    {
+                                        studentArray.Add(studentAssociateWithParent.FirstGivenName + "|" + studentAssociateWithParent.StudentMiddleName + "|" + studentAssociateWithParent.LastFamilyName + "|" + studentAssociateWithParent.StudentId);
+                                        ParentInfo.students = studentArray.ToArray();
+                                    }
                                 }
                             }
                         }
                     }
-
                     parentInfoListModel.TenantId = pageResult.TenantId;
                     parentInfoListModel.TotalCount = totalCount;
                     parentInfoListModel.PageNumber = pageResult.PageNumber;
@@ -1092,7 +1095,7 @@ namespace opensis.data.Repository
             }
             return parentInfoListModel;
         }
-        
+
         /// <summary>
         /// Get Parent Info By Id 
         /// </summary>
@@ -1103,61 +1106,65 @@ namespace opensis.data.Repository
             ParentInfoAddViewModel parentInfoViewModel = new();
             try
             {
-                var parentInfo = this.context?.ParentInfo.Include(x=>x.ParentAddress).FirstOrDefault( x =>x.TenantId== parentInfoAddViewModel.parentInfo!.TenantId && x.ParentId== parentInfoAddViewModel.parentInfo.ParentId);
-                if (parentInfo!= null)
+                var parentInfo = this.context?.ParentInfo.Include(x => x.ParentAddress).Where(x => x.TenantId == parentInfoAddViewModel.parentInfo!.TenantId && x.ParentId == parentInfoAddViewModel.parentInfo.ParentId).FirstOrDefault();
+                if (parentInfo != null)
                 {
-                    if (parentInfo.ParentAddress.FirstOrDefault()!.StudentAddressSame == true)
+                    var parentAddress = parentInfo.ParentAddress.FirstOrDefault();
+                    if (parentAddress != null)
                     {
-                        var parentAddress = this.context?.StudentMaster.FirstOrDefault(x => x.StudentId == parentInfo.ParentAddress.FirstOrDefault()!.StudentId && x.SchoolId == parentInfo.SchoolId);
-                        if(parentAddress != null)
+                        if (parentAddress.StudentAddressSame == true)
                         {
-                            parentInfo.ParentAddress.FirstOrDefault()!.AddressLineOne = parentAddress.HomeAddressLineOne?.TrimEnd(',');
-                            parentInfo.ParentAddress.FirstOrDefault()!.AddressLineTwo = parentAddress.HomeAddressLineTwo?.TrimEnd(',');
-                            parentInfo.ParentAddress.FirstOrDefault()!.Country = parentAddress.HomeAddressCountry?.TrimEnd(',');
-                            parentInfo.ParentAddress.FirstOrDefault()!.State = parentAddress.HomeAddressState?.TrimEnd(',');
-                            parentInfo.ParentAddress.FirstOrDefault()!.City = parentAddress.HomeAddressCity?.TrimEnd(',');
-                            parentInfo.ParentAddress.FirstOrDefault()!.Zip = parentAddress.HomeAddressZip?.TrimEnd(',');
+                            var studentAddress = this.context?.StudentMaster.Where(x => x.StudentId == parentAddress.StudentId && x.SchoolId == parentInfo.SchoolId).Select(s => new { HomeAddressLineOne = s.HomeAddressLineOne, HomeAddressLineTwo = s.HomeAddressLineTwo, HomeAddressCountry = s.HomeAddressCountry, HomeAddressState = s.HomeAddressState, HomeAddressCity = s.HomeAddressCity, HomeAddressZip = s.HomeAddressZip }).FirstOrDefault();
+                            if (studentAddress != null)
+                            {
+                                parentAddress.AddressLineOne = studentAddress.HomeAddressLineOne?.TrimEnd(',');
+                                parentAddress.AddressLineTwo = studentAddress.HomeAddressLineTwo?.TrimEnd(',');
+                                parentAddress.Country = studentAddress.HomeAddressCountry?.TrimEnd(',');
+                                parentAddress.State = studentAddress.HomeAddressState?.TrimEnd(',');
+                                parentAddress.City = studentAddress.HomeAddressCity?.TrimEnd(',');
+                                parentAddress.Zip = studentAddress.HomeAddressZip?.TrimEnd(',');
+                            }
                         }
-                    }
-                    else
-                    {
-                        parentInfo.ParentAddress.FirstOrDefault()!.AddressLineOne = (parentInfo.ParentAddress.FirstOrDefault()!.AddressLineOne != null) ? (parentInfo.ParentAddress.FirstOrDefault()!.AddressLineOne ?? "").TrimEnd(','):null;
-                        parentInfo.ParentAddress.FirstOrDefault()!.AddressLineTwo = (parentInfo.ParentAddress.FirstOrDefault()!.AddressLineTwo != null) ? (parentInfo.ParentAddress.FirstOrDefault()!.AddressLineTwo ?? "").TrimEnd(','):null;
-                        parentInfo.ParentAddress.FirstOrDefault()!.Country = (parentInfo.ParentAddress.FirstOrDefault()!.Country!=null)?(parentInfo.ParentAddress.FirstOrDefault()!.Country ?? "").TrimEnd(','):null;
-                        parentInfo.ParentAddress.FirstOrDefault()!.State = parentInfo.ParentAddress.FirstOrDefault()!.State?.TrimEnd(',');
-                        parentInfo.ParentAddress.FirstOrDefault()!.City = (parentInfo.ParentAddress.FirstOrDefault()!.City != null) ? (parentInfo.ParentAddress.FirstOrDefault()!.City ?? "").TrimEnd(','):null;
-                        parentInfo.ParentAddress.FirstOrDefault()!.Zip = (parentInfo.ParentAddress.FirstOrDefault()!.Zip != null) ? (parentInfo.ParentAddress.FirstOrDefault()!.Zip ?? "").TrimEnd(','):null;
+                        else
+                        {
+                            parentAddress.AddressLineOne = (parentAddress.AddressLineOne != null) ? (parentAddress.AddressLineOne ?? "").TrimEnd(',') : null;
+                            parentAddress.AddressLineTwo = (parentAddress.AddressLineTwo != null) ? (parentAddress.AddressLineTwo ?? "").TrimEnd(',') : null;
+                            parentAddress.Country = (parentAddress.Country != null) ? (parentAddress.Country ?? "").TrimEnd(',') : null;
+                            parentAddress.State = parentAddress.State?.TrimEnd(',');
+                            parentAddress.City = (parentAddress.City != null) ? (parentAddress.City ?? "").TrimEnd(',') : null;
+                            parentAddress.Zip = (parentAddress.Zip != null) ? (parentAddress.Zip ?? "").TrimEnd(',') : null;
+                        }
                     }
                     parentInfoViewModel.parentInfo = parentInfo;
                     var AssociationshipData = this.context?.ParentAssociationship.Where(x => x.TenantId == parentInfo.TenantId && x.ParentId == parentInfo.ParentId && x.Associationship == true).ToList();
-                    
-                    if(AssociationshipData?.Any() == true)
+
+                    if (AssociationshipData?.Any() == true)
                     {
                         foreach (var studentAssociateWithParent in AssociationshipData)
                         {
-                            var student = this.context?.StudentMaster.Include(s=>s.StudentEnrollment).Include(s=>s.SchoolMaster).Where(x => x.StudentId == studentAssociateWithParent.StudentId && x.SchoolId == studentAssociateWithParent.SchoolId && x.TenantId==studentAssociateWithParent.TenantId).ToList();
+                            var student = this.context?.StudentMaster.Include(s => s.StudentEnrollment).Include(s => s.SchoolMaster).Where(x => x.StudentId == studentAssociateWithParent.StudentId && x.SchoolId == studentAssociateWithParent.SchoolId && x.TenantId == studentAssociateWithParent.TenantId).FirstOrDefault();
 
                             //var student = this.context?.StudentMaster.FirstOrDefault(x => x.StudentId == studentAssociateWithParent.StudentId && x.SchoolId == studentAssociateWithParent.SchoolId);
-                            if(student?.Any() == true)
+                            if (student != null)
                             {
                                 var studentForView = new GetStudentForView()
                                 {
-                                    TenantId = student.FirstOrDefault()!.TenantId,
-                                    SchoolId = student.FirstOrDefault()!.SchoolId,
-                                    StudentId = student.FirstOrDefault()!.StudentId,
-                                    StudentInternalId = student.FirstOrDefault()!.StudentInternalId ?? student.FirstOrDefault()!.StudentInternalId,
-                                    FirstGivenName = student.FirstOrDefault()!.FirstGivenName ?? student.FirstOrDefault()!.FirstGivenName,
-                                    MiddleName = student.FirstOrDefault()!.MiddleName ?? student.FirstOrDefault()!.MiddleName,
-                                    LastFamilyName = student.FirstOrDefault()!.LastFamilyName ?? student.FirstOrDefault()!.LastFamilyName,
-                                    Dob = student.FirstOrDefault()!.Dob ?? student.FirstOrDefault()!.Dob,
-                                    Gender = student.FirstOrDefault()!.Gender ?? student.FirstOrDefault()!.Gender,
-                                    Address = ToFullAddress((student.FirstOrDefault()!.HomeAddressLineOne != null) ? student.FirstOrDefault()!.HomeAddressLineOne!.TrimEnd(',') : null, (student.FirstOrDefault()!.HomeAddressLineTwo != null) ? student.FirstOrDefault()!.HomeAddressLineTwo!.TrimEnd(',') : null, (student.FirstOrDefault()!.HomeAddressCity != null) ? student.FirstOrDefault()!.HomeAddressCity!.TrimEnd(',') : null, (student.FirstOrDefault()!.HomeAddressState != null) ? student.FirstOrDefault()!.HomeAddressState!.TrimEnd(',') : null,
-                                (student.FirstOrDefault()!.HomeAddressCountry != null) ? student.FirstOrDefault()!.HomeAddressCountry!.TrimEnd(',') : null, (student.FirstOrDefault()!.HomeAddressZip != null) ? student.FirstOrDefault()!.HomeAddressZip!.TrimEnd(',') : null),
-                                    SchoolName = student.FirstOrDefault()!.SchoolMaster.SchoolName ?? student.FirstOrDefault()!.SchoolMaster.SchoolName,
-                                    GradeLevelTitle = student.FirstOrDefault()!.StudentEnrollment.Count > 0 ? student.FirstOrDefault()!.StudentEnrollment.OrderByDescending(x => x.EnrollmentDate).FirstOrDefault()!.GradeLevelTitle : null,
+                                    TenantId = student.TenantId,
+                                    SchoolId = student.SchoolId,
+                                    StudentId = student.StudentId,
+                                    StudentInternalId = student.StudentInternalId ?? student.StudentInternalId,
+                                    FirstGivenName = student.FirstGivenName ?? student.FirstGivenName,
+                                    MiddleName = student.MiddleName ?? student.MiddleName,
+                                    LastFamilyName = student.LastFamilyName ?? student.LastFamilyName,
+                                    Dob = student.Dob ?? student.Dob,
+                                    Gender = student.Gender ?? student.Gender,
+                                    Address = ToFullAddress((student.HomeAddressLineOne != null) ? student.HomeAddressLineOne!.TrimEnd(',') : null, (student.HomeAddressLineTwo != null) ? student.HomeAddressLineTwo!.TrimEnd(',') : null, (student.HomeAddressCity != null) ? student.HomeAddressCity!.TrimEnd(',') : null, (student.HomeAddressState != null) ? student.HomeAddressState!.TrimEnd(',') : null,
+                                (student.HomeAddressCountry != null) ? student.HomeAddressCountry!.TrimEnd(',') : null, (student.HomeAddressZip != null) ? student.HomeAddressZip!.TrimEnd(',') : null),
+                                    SchoolName = student.SchoolMaster.SchoolName ?? student.SchoolMaster.SchoolName,
+                                    GradeLevelTitle = student.StudentEnrollment.Count > 0 ? student.StudentEnrollment.OrderByDescending(x => x.EnrollmentDate).FirstOrDefault()!.GradeLevelTitle : null,
                                     IsCustodian = studentAssociateWithParent.IsCustodian,
                                     Relationship = studentAssociateWithParent.Relationship,
-                                    StudentPhoto = student.FirstOrDefault()!.StudentPhoto  ?? student.FirstOrDefault()!.StudentPhoto
+                                    StudentPhoto = student.StudentPhoto ?? student.StudentPhoto
                                 };
                                 //var studentForView = new GetStudentForView()
                                 //{

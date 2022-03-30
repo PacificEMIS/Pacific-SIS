@@ -109,6 +109,7 @@ export class GetAllCourseListModel extends CommonField {
     public academicYear: number;
     public tenantId: string;
     public schoolId: number;
+    public scheduleReport: boolean;
 }
 export class CourseStandardModel {
     public tenantId: string;
@@ -191,6 +192,28 @@ export class SearchCourseSectionViewModel extends CommonField {
     public markingPeriodStartDate: string;
 }
 
+export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
+    public allCourseSectionViewList: AllCourseSectionView[];
+    public tenantId: string;
+    public schoolId: number;
+    public courseId: number | string;
+    public blockId: number;
+    public courseSubject: string;
+    public courseProgram: string;
+    public markingPeriodId: string;
+    public forStaff: boolean;
+    public forStudent: boolean;
+    public markingPeriodStartDate: string;
+
+    constructor(){
+        super();
+        this.courseId = '';
+        this.courseSubject = '';
+        this.courseProgram = '';
+        this.markingPeriodId = '';
+    }
+}
+
 export class AllCourseSectionView {
     public tenantId: string;
     public schoolId: number;
@@ -260,5 +283,13 @@ export class CourseCatelogViewModel extends CommonField {
         this.courseSubject = '';
         this.courseId = '';
         this.gradeLevel = '';
+    }
+}
+
+export class CourseSectionByStaffModel extends CommonField {
+    staffId: number;
+    academicYear: number;
+    constructor() {
+        super();
     }
 }

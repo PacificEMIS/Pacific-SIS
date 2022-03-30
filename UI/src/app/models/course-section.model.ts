@@ -238,6 +238,7 @@ export class GetAllCourseSectionModel extends CommonField {
     public schoolId: number;
     public courseId: number;
     public academicYear: number;
+    public schoolDetails:boolean
 }
 
 export interface SearchCourseSection {

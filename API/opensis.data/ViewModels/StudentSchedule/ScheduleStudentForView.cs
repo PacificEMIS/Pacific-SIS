@@ -34,6 +34,7 @@ namespace opensis.data.ViewModels.StudentSchedule
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StudentId { get; set; }
+        public Guid? StudentGuid { get; set; }
         public int? GradeId { get; set; }
         public int? GradeScaleId { get; set; }
         public string? FirstGivenName { get; set; }

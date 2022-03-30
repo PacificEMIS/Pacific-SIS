@@ -1,4 +1,4 @@
-﻿/***********************************************************************************
+/***********************************************************************************
 openSIS is a free student information system for public and non-public
 schools from Open Solutions for Education, Inc.Website: www.os4ed.com.
 
@@ -37,6 +37,7 @@ namespace opensis.data.Models
         public Guid TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }
+        public int? StudentId { get; set; }
         public int? CourseSectionId { get; set; }
 
         const int maxPageSize = 50;
@@ -80,5 +81,7 @@ namespace opensis.data.Models
         public DateTime? MarkingPeriodEndDate { get; set; }
         public string? GradeLevel { get; set; }
         public bool? IsHomeRoomTeacher { get; set; }
+        public int? PeriodId { get; set; }
+        public int[]? CourseSectionIds { get; set; }
     }
 }

@@ -178,5 +178,37 @@ namespace opensisAPI.Controllers
             }
             return courseListView;
         }
+
+        [HttpPost("groupDeleteForScheduledStudent")]
+        public ActionResult<ScheduledStudentDeleteViewModel> GroupDeleteForScheduledStudent(ScheduledStudentDeleteViewModel scheduledStudentDeleteViewModel)
+        {
+            ScheduledStudentDeleteViewModel scheduledStudentDelete = new ScheduledStudentDeleteViewModel();
+            try
+            {
+                scheduledStudentDelete = _studentScheduleService.GroupDeleteForScheduledStudent(scheduledStudentDeleteViewModel);
+            }
+            catch (Exception es)
+            {
+                scheduledStudentDelete._failure = true;
+                scheduledStudentDelete._message = es.Message;
+            }
+            return scheduledStudentDelete;
+        }
+
+        [HttpPost("getUnassociatedStudentListByCourseSection")]
+        public ActionResult<ScheduleStudentListViewModel> GetUnassociatedStudentListByCourseSection(PageResult pageResult)
+        {
+            ScheduleStudentListViewModel ScheduledStudentListView = new ScheduleStudentListViewModel();
+            try
+            {
+                ScheduledStudentListView = _studentScheduleService.GetUnassociatedStudentListByCourseSection(pageResult);
+            }
+            catch (Exception es)
+            {
+                ScheduledStudentListView._failure = true;
+                ScheduledStudentListView._message = es.Message;
+            }
+            return ScheduledStudentListView;
+        }
     }
 }

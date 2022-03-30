@@ -132,6 +132,7 @@ export class StudentAttendanceCommentComponent implements OnInit {
               studentAttendanceId: 0,
               CommentId: 0,
               comment: null,
+              commentTimestamp: null,
               membershipId: +this.defaultValuesService.getuserMembershipID(),
               studentId: item.studentId,
               tenantId: this.defaultValuesService.getTenantID(),
@@ -145,6 +146,7 @@ export class StudentAttendanceCommentComponent implements OnInit {
             studentAttendanceId: 0,
             CommentId: 0,
             comment: null,
+            commentTimestamp: null,
             membershipId: +this.defaultValuesService.getuserMembershipID(),
             studentId: item.studentId,
             tenantId: this.defaultValuesService.getTenantID(),
@@ -172,6 +174,12 @@ export class StudentAttendanceCommentComponent implements OnInit {
 
   close() {
     this.dialogRef.close(true);
+  }
+
+  isComment(data) {
+    if (data) {
+      return data.filter(x => x.commentId > 0) ? true : false;
+    }
   }
 
   submitStudent360() {
@@ -205,6 +213,19 @@ export class StudentAttendanceCommentComponent implements OnInit {
               duration: 10000,
             });
             this.addUpdateStudentAttendanceModel.studentAttendance = [];
+            this.commentBox = false;
+            this.studentAttendance.map(item => {
+              item.studentAttendanceComments.map(subItem => {
+                res.studentAttendance.map(resItem => {
+                  resItem.studentAttendanceComments.map(resSubItem => {
+                    if (subItem.membershipId === 1 && resSubItem.membershipId === 1) {
+                      subItem.commentTimestamp = resSubItem.commentTimestamp
+                    }
+                  });
+                });
+              });
+            });
+            this.studentAttendanceService.afterSubmit(true);
             this.openExpandable(this.category,this.rowIndex);
           }
         } else {

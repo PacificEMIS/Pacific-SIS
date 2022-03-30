@@ -43,7 +43,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
-import { GetAllStaffModel, StaffListModel, StaffMasterModel, StaffSchoolInfoModel } from '../../../models/staff.model';
+import { GetAllStaffModel, StaffAddModel, StaffListModel, StaffMasterModel, StaffSchoolInfoModel } from '../../../models/staff.model';
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { ExcelService } from '../../../services/excel.service';
 import { Subject } from 'rxjs';
@@ -63,6 +63,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from '../../../common/page-roles-permissions.service';
 import { DataEditInfoComponent } from '../../shared-module/data-edit-info/data-edit-info.component';
 import icRestore from '@iconify/icons-ic/twotone-restore';
+import { ImpersonateServices } from 'src/app/services/impersonate.service';
 
 
 @Component({
@@ -89,6 +90,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
     { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
     { label: 'schoolEmail', property: 'schoolEmail', type: 'text', visible: true },
     { label: 'mobilePhone', property: 'mobilePhone', type: 'number', visible: true },
+    { label: 'schoolName', property: 'schoolName', type: 'text', visible: false },
     { label: 'status', property: 'status', type: 'text', visible: false },
     { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
@@ -138,6 +140,13 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
       title:'Certification Info'
     }
   ]
+  staffAddModel: StaffAddModel = new StaffAddModel();
+  profile=[
+    'School Administrator',
+    'Admin Assistant',
+    'Teacher',
+    'Homeroom Teacher'
+  ];
   permissions: Permissions;
   constructor(private snackbar: MatSnackBar,
               private router: Router,
@@ -153,6 +162,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
               private cryptoService: CryptoService,
               public defaultValuesService: DefaultValuesService,
               private paginatorObj: MatPaginatorIntl,
+              private impersonateServices:ImpersonateServices
               ) {
                 paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
                 this.defaultValuesService.sendAllSchoolFlag(false);
@@ -322,47 +332,33 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
         this.pageNumber = res.pageNumber;
         this.pageSize = res._pageSize;
         this.staffList = new MatTableDataSource(res.staffMaster);
-        for (let staff of this.staffList.filteredData){
-          if (staff.isActive === true || staff.isActive === null) {
-          if (staff.staffSchoolInfo[0].endDate){
-            let today = moment().format('DD-MM-YYYY').toString();
-            let todayarr = today.split('-');
-            let todayDate = +todayarr[0];
-            let todayMonth = +todayarr[1];
-            let todayYear = +todayarr[2];
-            let endDate = moment(staff.staffSchoolInfo[0].endDate).format('DD-MM-YYYY').toString();
-            let endDateArr = endDate.split('-');
-            let endDateDate = +endDateArr[0];
-            let endDateMonth = +endDateArr[1];
-            let endDateYear = +endDateArr[2];
-            if ( endDateYear === todayYear){
-              if (endDateMonth === todayMonth){
-                if (endDateDate >= todayDate){
-                  staff.status = 'active';
-                }
-                else {
-                  staff.status = 'inactive';
-                }
-              }
-              else if (endDateMonth < todayMonth){
-                staff.status = 'inactive';
-              }
-              else{
+        if (this.getAllStaff.searchAllSchool === true) {
+          for (let staff of this.staffList.filteredData) {
+            for (let schoolList of staff.staffSchoolInfo) {
+              staff.schoolName = schoolList.schoolAttachedName;
+              if (schoolList.endDate === null || moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString())) {
                 staff.status = 'active';
+                break;
+              } else
+                staff.status = 'inactive';
+            }
+          }
+        }
+        else {
+          for (let staff of this.staffList.filteredData) {
+            staff.staffSchoolInfo.map(schoolList => {
+              if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
+                staff.schoolName = schoolList.schoolAttachedName;
+                if (schoolList.endDate === null)
+                  staff.status = 'active';
+                else {
+                  if (moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString()))
+                    staff.status = 'active';
+                  else
+                    staff.status = 'inactive';
+                }
               }
-            }
-            else if (endDateYear < todayYear){
-              staff.status = 'inactive';
-            }
-            else{
-              staff.status = 'active';
-            }
-          }
-          else{
-            staff.status = 'active';
-          }
-          } else {
-            staff.status = 'inactive';
+            })
           }
         }
         this.getAllStaff = new GetAllStaffModel();
@@ -454,7 +450,6 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
   }
   getSearchInput(event){
     this.searchValue = event;
-    this.columns[6].visible = event.inactiveStaff;
   }
   resetStaffList(){
     this.searchCount = null;
@@ -463,12 +458,15 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
   }
   getToggleValues(event){
     this.toggleValues = event;
-    if (event.inactiveStaff === true){
+    if (event.inactiveStaff === true)
+      this.columns[7].visible = true;
+    else
+      this.columns[7].visible = false;
+
+    if(event.searchAllSchool === true)
       this.columns[6].visible = true;
-    }
-    else if (event.inactiveStaff === false){
+    else
       this.columns[6].visible = false;
-    }
   }
 
   openSaveFilter(){
@@ -591,6 +589,32 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
         this.getAllStaff = new GetAllStaffModel();
       }
     });
+  }
+
+  impersonateAsStaff(staffId:any){
+    this.impersonateServices.impersonateStoreData();
+    /** call viwe staff api for getting basic staff details */
+    this.staffAddModel.staffMaster.staffId = staffId;
+    this.staffService.viewStaff(this.staffAddModel).subscribe((res:any)=>{
+      if(res._failure){
+        this.commonService.checkTokenValidOrNot(res._message);
+      } else {
+        this.defaultValuesService.setUserGuidId(res.staffMaster.staffGuid);
+        this.defaultValuesService.setUserPhoto(res.staffMaster.staffPhoto);
+        this.defaultValuesService.setUserId(res.staffMaster.staffId);
+        this.profile.map((value,index)=>{
+          if(value == res.staffMaster.profile)
+          this.defaultValuesService.setUserMembershipID((index+2).toString());
+        })
+        this.defaultValuesService.setUserMembershipType(res.staffMaster.profile);
+        let middleName = res.staffMaster.middleName ? ' ' + res.staffMaster.middleName + ' ' : ' ';
+        let fullName = res.staffMaster.firstGivenName + middleName + res.staffMaster.lastFamilyName;
+        this.defaultValuesService.setFullUserName(fullName);
+        this.defaultValuesService.setEmailId(res.staffMaster.loginEmailAddress);
+        this.defaultValuesService.setuserMembershipName(res.staffMaster.profile);
+        this.impersonateServices.callRolePermissions(true);
+      }    
+    }); 
   }
 
   ngOnDestroy(){

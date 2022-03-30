@@ -29,7 +29,7 @@ export class HistoricalMarkingPeriod {
     tenantId: string;
     schoolId: number;
     histMarkingPeriodId: number;
-    academicYear: number;
+    academicYear: string;
     title: string;
     gradePostDate: string;
     doesGrades: boolean;
@@ -72,7 +72,7 @@ export class HistoricalGrade {
     updatedOn: string;
     constructor() {
         this.historicalCreditTransfer= [new HistoricalCreditTransfer()];
-        this.histMarkingPeriodId=0;
+        this.histMarkingPeriodId = null;
         this.gradeAddMode= true;
     }
 }
@@ -95,6 +95,7 @@ export class HistoricalCreditTransfer {
     creditEarned: number;
     creditAddMode: boolean; // for angular view
     creditViewMode: boolean; // for angular view
+    isDefaultRow: boolean; // for frontend check
     createdBy: string;
     createdOn: string;
     updatedBy: string;
@@ -103,6 +104,7 @@ export class HistoricalCreditTransfer {
     constructor(){
         this.creditAddMode= true;
         this.courseType='Regular';
+        this.isDefaultRow = true;
     }
 
 }

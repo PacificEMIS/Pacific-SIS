@@ -2,13 +2,18 @@ import { Component, Input, OnInit } from '@angular/core';
 import icHome from '@iconify/icons-ic/twotone-home';
 import { trackByValue } from '../../utils/track-by';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
   selector: 'vex-breadcrumbs',
   template: `
     <div class="flex items-center">
       <vex-breadcrumb>
-        <a [routerLink]="['/school/dashboards']">
+        <a *ngIf="membershipType === profiles.SuperAdmin || membershipType === profiles.SchoolAdmin || membershipType === profiles.AdminAssitant" [routerLink]="['/school/dashboards']">
+          <ic-icon [icon]="icHome" inline="true" size="20px"></ic-icon>
+        </a>
+        <a *ngIf="membershipType === profiles.Teacher || membershipType === profiles.HomeroomTeacher" [routerLink]="['/school/teacher/dashboards']">
           <ic-icon [icon]="icHome" inline="true" size="20px"></ic-icon>
         </a>
       </vex-breadcrumb>
@@ -28,10 +33,14 @@ export class BreadcrumbsComponent implements OnInit {
   @Input() crumbs: string[] = [];
   trackByValue = trackByValue;
   icHome = icHome;
+  membershipType;
+  profiles = ProfilesTypes;
 
-  constructor(private translate:TranslateService) {
+  constructor(private translate:TranslateService,
+    private defaultValuesService: DefaultValuesService) {
   }
 
   ngOnInit() {
+    this.membershipType = this.defaultValuesService.getUserMembershipType();
   }
 }

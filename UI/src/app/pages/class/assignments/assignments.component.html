@@ -1,4 +1,4 @@
-<div class="card">
+<div *ngIf="!isNotGraded" class="card">
     <!-- Start Add New Assignment Type -->
     <div class="py-24 px-6 text-center" *ngIf="!assignmentModel?.assignmentTypeList?.length;else showTable">
         <mat-icon class="text-4xl">info</mat-icon>
@@ -99,4 +99,9 @@
     </div>
 </ng-template>
 
+</div>
+
+<div *ngIf="isNotGraded" class="overview-content not-graded md:w-7/12 m-auto card p-10 py- md:p-20 text-center">
+    <img src="assets/img/access_denied.svg" alt="Access Denied Icon" class="inline-block mb-5 md:my-10">
+    <p class="text-lg text-red leading-relaxed mb-5 md:mb-10"><span>{{ 'youCannotAccess' | translate }}</span><span class="font-semibold mx-1">{{ 'assignments' | translate }}</span><span>{{ 'becauseTheGradeScaleForTheCourseSectionIsNotSet' | translate }}</span></p>
 </div>

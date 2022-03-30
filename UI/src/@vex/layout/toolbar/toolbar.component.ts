@@ -26,6 +26,7 @@ import { CryptoService } from 'src/app/services/Crypto.service';
 import { Subject } from 'rxjs';
 import { DefaultValuesService } from '../../../app/common/default-values.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ImpersonateServices } from 'src/app/services/impersonate.service';
 
 @Component({
   selector: 'vex-toolbar',
@@ -69,14 +70,16 @@ export class ToolbarComponent implements OnInit,OnDestroy {
   icAdd = icAdd;
   // addNewMenu=[];
   // private destroySubject$ = new Subject<void>();
-
+  impersonateButton:boolean;
+  impersonateSubjectForToolBar:boolean=false;
   constructor(private layoutService: LayoutService,
     private configService: ConfigService,
     private navigationService: NavigationService,
     private popoverService: PopoverService,
-    private defaultValueService: DefaultValuesService,
+    public defaultValueService: DefaultValuesService,
     private cryptoService:CryptoService,
     public translateService: TranslateService,
+    private impersonateServices:ImpersonateServices
     ) {
     this.tenantLogoIcon = this.defaultValueService.getPhotoAndFooter().tenantLogoIcon;
     this.tenantName = this.defaultValueService.getTenantName();
@@ -86,10 +89,25 @@ export class ToolbarComponent implements OnInit,OnDestroy {
     //    }
     //  })
     this.profileType= this.defaultValueService.getUserMembershipType();
+    this.impersonateServices.impersonateSubjectForToolBar.subscribe(x=>{
+      if(x) {
+        this.impersonateSubjectForToolBar=true;
+        this.impersonateToolBar();
+      }
+    })
   }
 
   ngOnInit() {
+    this.impersonateToolBar();
+  }
+
+  impersonateToolBar() {
+    this.impersonateButton = this.impersonateServices.getImpersonateButton();
     // this.renderAddNew();
+    if (this.impersonateSubjectForToolBar) {
+      this.impersonateServices.impersonateSubjectForToolBar.next(false)
+      this.impersonateSubjectForToolBar = false;
+    }
   }
 
   // renderAddNew(){
@@ -130,7 +148,10 @@ export class ToolbarComponent implements OnInit,OnDestroy {
       ]
     });
   }
-
+  backToSuperAdmin() {
+    this.impersonateServices.backToSuperAdmin();
+    this.impersonateServices.callRolePermissions(true);
+  }
   /*openSearch() {
     this.layoutService.openSearch();
   }*/

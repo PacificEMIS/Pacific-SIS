@@ -433,6 +433,17 @@ const routes: Routes = [
           }
         ]
       },
+
+      {
+        path: '',
+        children: [
+          {
+            path: 'scheduling/group-delete',
+            loadChildren: () => import('./pages/scheduling/group-delete/group-delete.module').then(m => m.GroupDeleteModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
     ]
   },
   { path: '**', redirectTo: '/error' }

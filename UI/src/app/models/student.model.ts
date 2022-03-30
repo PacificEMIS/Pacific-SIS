@@ -893,10 +893,12 @@ export class OtherStudentTabs{
     attendance: boolean;
     reportCard: boolean;
     transcript: boolean;
+    progressReport: boolean;
     constructor(){
         this.courseSchedule=false;
         this.attendance = false;
         this.reportCard = false;
         this.transcript = false;
+        this.progressReport = false;
     }
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { CalendarBellScheduleModel, CalendarBellScheduleViewModel } from '../models/calendar.model';
-import { GetAllSubjectModel, AddSubjectModel, MassUpdateSubjectModel, MassUpdateProgramModel, AddProgramModel, DeleteSubjectModel, DeleteProgramModel, GetAllProgramModel, SearchCourseForScheduleModel, CourseStandardForCourseViewModel, CourseWithCourseSectionDetailsViewModel, CourseCatelogViewModel } from '../models/course-manager.model';
+import { GetAllSubjectModel, AddSubjectModel, MassUpdateSubjectModel, MassUpdateProgramModel, AddProgramModel, DeleteSubjectModel, DeleteProgramModel, GetAllProgramModel, SearchCourseForScheduleModel, CourseStandardForCourseViewModel, CourseWithCourseSectionDetailsViewModel, CourseCatelogViewModel, CourseSectionByStaffModel  } from '../models/course-manager.model';
 import { GetAllCourseListModel, AddCourseModel } from '../models/course-manager.model';
 import { CryptoService } from './Crypto.service';
 
@@ -131,5 +131,12 @@ export class CourseManagerService {
         obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/CourseManager/getCourseCatelog";
         return this.http.post<CourseCatelogViewModel>(apiurl, obj, this.httpOptions)
+    }
+
+    getCourseSectionByStaff(obj: CourseSectionByStaffModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        let apiurl = this.apiUrl + obj._tenantName + "/CourseManager/getCourseSectionByStaff";
+        return this.http.post<CourseSectionByStaffModel>(apiurl, obj, this.httpOptions)
     }
 }

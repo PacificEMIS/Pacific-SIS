@@ -315,7 +315,7 @@ export class GroupDropComponent implements OnInit, OnDestroy {
   searchScheduledStudentForGroupDrop(courseSectionId) {
     this.selection = new SelectionModel<ScheduleStudentForView>(true, []);
     this.scheduleStudentListViewModel.sortingModel = null;
-    this.scheduleStudentListViewModel.courseSectionId = courseSectionId
+    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId]
     this.dropSuccess = false;
     this.selectedStudent = [];
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {

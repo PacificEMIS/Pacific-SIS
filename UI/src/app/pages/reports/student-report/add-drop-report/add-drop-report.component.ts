@@ -60,11 +60,10 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
   addDropStudentList: MatTableDataSource<any>;
   reportSchoolInfo;
   studentEnrollmentList = [];
-  totalCount: number;
+  totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
   today: Date = new Date();
-  isVisible: boolean = false;
   searchCtrl: FormControl;
   filterParams: filterParams[] = [];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -115,6 +114,7 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
   ngOnInit(): void {
     this.getStudentAddDropReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCtrl = new FormControl();
+    this.getStudentAddDropReport();
   }
 
   ngAfterViewInit(): void {
@@ -256,9 +256,7 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
 
   // For format the date
   formatDate(date) {
-    if (date) {
-      return moment(date).format('MMM DD, YYYY');
-    }
+    return date ? moment(date).format('MMM DD, YYYY') : null;
   }
 
   // For get all data from API
@@ -267,7 +265,6 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
       if (data) {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
-          this.isVisible = true;
           if (data.studentEnrollmentList === null) {
             this.addDropStudentList = new MatTableDataSource([]);
             this.totalCount = null;
@@ -279,7 +276,6 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
             this.totalCount = null;
           }
         } else {
-          this.isVisible = true;
           this.totalCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
@@ -298,13 +294,8 @@ export class AddDropReportComponent implements OnInit, OnDestroy, AfterViewInit 
   // For creating data set for table
   createDataSetForTable(rawData) {
     rawData.map(item => {
-      if (item.exitDate && item.exitCode) {
-        item.exitDate = this.formatDate(item.exitDate);
-        item.enrollmentDate = null;
-        item.enrollmentCode = null;
-      } else if (item.enrollmentDate) {
-        item.enrollmentDate = this.formatDate(item.enrollmentDate);
-      }
+      item.enrollmentDate = this.formatDate(item.enrollmentDate);
+      item.exitDate = this.formatDate(item.exitDate);
     });
     return rawData;
   }

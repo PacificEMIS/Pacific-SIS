@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
@@ -58,28 +58,28 @@ namespace opensis.report.report.data.Repository
                     scheduleAddDrop.SchoolLogo = schoolData.SchoolDetail.FirstOrDefault().SchoolLogo;
 
                 }
-                //        var studentScheduleAddDropdata = this.context?.StudentCoursesectionSchedule.
-                //Join(this.context?.StaffCoursesectionSchedule, std => std.CourseSectionId, stf => stf.CourseSectionId,
-                //(std, stf) => new { std, stf }).
-                //Join(this.context?.Course, r => r.std.CourseId, cs => cs.CourseId, (r, cs) => new { r, cs }).Join(this.context?.StaffMaster, s => s.r.stf.StaffId, sm => sm.StaffId, (s, sm) => new { s, sm })
-                //.Where(x => x.s.r.std.TenantId == pageResult.TenantId && x.s.r.std.SchoolId == pageResult.SchoolId && x.s.r.stf.TenantId == pageResult.TenantId && x.s.r.stf.SchoolId == pageResult.SchoolId && x.s.cs.TenantId == pageResult.TenantId && x.s.cs.SchoolId == pageResult.SchoolId && x.sm.TenantId == pageResult.TenantId && x.sm.SchoolId == pageResult.SchoolId && ((x.s.r.std.EffectiveStartDate >= pageResult.DobStartDate && x.s.r.std.EffectiveStartDate <= pageResult.DobEndDate) || (x.s.r.std.EffectiveDropDate >= pageResult.DobStartDate && x.s.r.std.EffectiveDropDate <= pageResult.DobEndDate)))
-                //.Select(m => new StudentScheduleData
-                //{
-                //    TenantId = m.s.r.std.TenantId,
-                //    SchoolId = m.s.r.std.SchoolId,
-                //    StudentId = m.s.r.std.StudentId,
-                //    StudentGuid = m.s.r.std.StudentGuid,
-                //    StudentInternalId = m.s.r.std.StudentInternalId,
-                //    CourseName = m.s.cs.CourseTitle,
-                //    CourseSectionName = m.s.r.std.CourseSectionName,
-                //    EnrolledDate = m.s.r.std.EffectiveStartDate,
-                //    DropDate = m.s.r.std.EffectiveDropDate,
-                //    StaffName = m.sm.FirstGivenName + " " + (m.s.r.std.MiddleName != null ? m.s.r.std.MiddleName + " " : "") + m.sm.LastFamilyName,
-                //    StudentName = m.s.r.std.FirstGivenName + " " + (m.s.r.std.MiddleName != null ? m.s.r.std.MiddleName + " " : "") + m.s.r.std.LastFamilyName,
-                //});
+        //        var studentScheduleAddDropdata = this.context?.StudentCoursesectionSchedule.
+        //Join(this.context?.StaffCoursesectionSchedule, std => std.CourseSectionId, stf => stf.CourseSectionId,
+        //(std, stf) => new { std, stf }).
+        //Join(this.context?.Course, r => r.std.CourseId, cs => cs.CourseId, (r, cs) => new { r, cs }).Join(this.context?.StaffMaster, s => s.r.stf.StaffId, sm => sm.StaffId, (s, sm) => new { s, sm })
+        //.Where(x => x.s.r.std.TenantId == pageResult.TenantId && x.s.r.std.SchoolId == pageResult.SchoolId && x.s.r.stf.TenantId == pageResult.TenantId && x.s.r.stf.SchoolId == pageResult.SchoolId && x.s.cs.TenantId == pageResult.TenantId && x.s.cs.SchoolId == pageResult.SchoolId && x.sm.TenantId == pageResult.TenantId && x.sm.SchoolId == pageResult.SchoolId && ((x.s.r.std.EffectiveStartDate >= pageResult.DobStartDate && x.s.r.std.EffectiveStartDate <= pageResult.DobEndDate) || (x.s.r.std.EffectiveDropDate >= pageResult.DobStartDate && x.s.r.std.EffectiveDropDate <= pageResult.DobEndDate)))
+        //.Select(m => new StudentScheduleData
+        //{
+        //    TenantId = m.s.r.std.TenantId,
+        //    SchoolId = m.s.r.std.SchoolId,
+        //    StudentId = m.s.r.std.StudentId,
+        //    StudentGuid = m.s.r.std.StudentGuid,
+        //    StudentInternalId = m.s.r.std.StudentInternalId,
+        //    CourseName = m.s.cs.CourseTitle,
+        //    CourseSectionName = m.s.r.std.CourseSectionName,
+        //    EnrolledDate = m.s.r.std.EffectiveStartDate,
+        //    DropDate = m.s.r.std.EffectiveDropDate,
+        //    StaffName = m.sm.FirstGivenName + " " + (m.s.r.std.MiddleName != null ? m.s.r.std.MiddleName + " " : "") + m.sm.LastFamilyName,
+        //    StudentName = m.s.r.std.FirstGivenName + " " + (m.s.r.std.MiddleName != null ? m.s.r.std.MiddleName + " " : "") + m.s.r.std.LastFamilyName,
+        //});
 
-                var studentScheduleData = this.context?.StudentCoursesectionSchedule.Include(x => x.CourseSection).Include(x => x.CourseSection.StaffCoursesectionSchedule).ThenInclude(x => x.StaffMaster).Include(x => x.CourseSection.Course).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.EffectiveStartDate >= pageResult.MarkingPeriodStartDate && x.EffectiveStartDate <= pageResult.MarkingPeriodEndDate) || (x.EffectiveDropDate >= pageResult.MarkingPeriodStartDate && x.EffectiveDropDate <= pageResult.MarkingPeriodEndDate))).Select(m => new StudentScheduleData
-                {
+                var studentScheduleData = this.context?.StudentCoursesectionSchedule.Include(x => x.CourseSection).Include(x => x.CourseSection.StaffCoursesectionSchedule).ThenInclude(x => x.StaffMaster).Include(x => x.CourseSection.Course).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.EffectiveStartDate >= pageResult.MarkingPeriodStartDate && x.EffectiveStartDate <= pageResult.MarkingPeriodEndDate) || (x.EffectiveDropDate >= pageResult.MarkingPeriodStartDate && x.EffectiveDropDate <= pageResult.MarkingPeriodEndDate)) && ((x.EffectiveStartDate > x.CourseSection.DurationStartDate && x.EffectiveDropDate < x.CourseSection.DurationEndDate) || (x.EffectiveStartDate == x.CourseSection.DurationStartDate && x.EffectiveDropDate < x.CourseSection.DurationEndDate) || (x.EffectiveStartDate > x.CourseSection.DurationStartDate && x.EffectiveDropDate == x.CourseSection.DurationEndDate))).Select(m => new StudentScheduleData
+                  {
                     TenantId = m.TenantId,
                     SchoolId = m.SchoolId,
                     StudentId = m.StudentId,
@@ -347,9 +347,9 @@ namespace opensis.report.report.data.Repository
                                     Nationality = e.StudentMaster.Nationality != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(e.StudentMaster.Nationality))!.Name : null,
                                     FirstLanguage = e.FirstLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(e.FirstLanguageId))!.Locale : null,
                                     SectionId = e.StudentMaster.SectionId,
-                                    SectionName = e.StudentMaster.SectionId != null ? this.context!.Sections.FirstOrDefault(x => x.SectionId == Convert.ToInt32(e.StudentMaster.SectionId)).Name : null,
+                                    SectionName = e.StudentMaster.SectionId != null ? this.context!.Sections.FirstOrDefault(x => x.SectionId == Convert.ToInt32(e.StudentMaster.SectionId) && x.SchoolId == e.StudentMaster.SchoolId && x.TenantId == e.StudentMaster.TenantId).Name : null,
                                     EstimatedGradDate = e.StudentMaster.EstimatedGradDate,
-                                    GradeLevelTitle = e.GradeId != null ? this.context!.Gradelevels.FirstOrDefault(x => x.GradeId == Convert.ToInt32(e.GradeId)).Title : null,
+                                    GradeLevelTitle = e.GradeId != null ? this.context!.Gradelevels.FirstOrDefault(x => x.GradeId == Convert.ToInt32(e.GradeId) && x.SchoolId == e.StudentMaster.SchoolId && x.TenantId == e.StudentMaster.TenantId).Title : null,
                                     Twitter = e.StudentMaster.Twitter,
                                     Facebook = e.StudentMaster.Facebook,
                                     Instagram = e.StudentMaster.Instagram,

@@ -35,10 +35,20 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { StudentFinalGradesComponent } from './student-final-grades/student-final-grades.component';
 import { ProgressReportComponent } from './progress-report/progress-report.component';
 import { HonorRollComponent } from './honor-roll/honor-roll.component';
+import { SearchStudentComponent } from './search-student/search-student.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
-  declarations: [GradesReportComponent, GradeBreakdownComponent, ProgressReportComponent, ClassRankListComponent, StudentFinalGradesComponent, HonorRollComponent],
+  declarations: [
+    GradesReportComponent,
+    GradeBreakdownComponent,
+    ProgressReportComponent,
+    ClassRankListComponent,
+    StudentFinalGradesComponent,
+    HonorRollComponent,
+    SearchStudentComponent
+  ],
   imports: [
     CommonModule,
     GradesReportRoutingModule,
@@ -69,7 +79,8 @@ import { HonorRollComponent } from './honor-roll/honor-roll.component';
     NgxMatSelectSearchModule,
     MatExpansionModule,
     MatRadioModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTooltipModule
   ]
 })
 export class GradesReportModule { }

@@ -56,5 +56,7 @@ namespace opensis.data.Interface
         public BellScheduleAddViewModel AddEditBellSchedule(BellScheduleAddViewModel bellScheduleAddViewModel);
         public BellScheduleListViewModel GetAllBellSchedule(BellScheduleListViewModel bellScheduleListViewModel);
         public CourseCatelogViewModel GetCourseCatelog(CourseCatelogViewModel courseCatelogViewModel);
+        public SubjectsViewModel GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel);
+        public CourseSectionAssignmentViewModel GetCourseSectionAssignmentByStaff(CourseSectionAssignmentViewModel courseSectionAssignmentViewModel);
     }
 }

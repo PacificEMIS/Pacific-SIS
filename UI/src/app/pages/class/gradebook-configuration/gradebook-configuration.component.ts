@@ -25,6 +25,7 @@ export class GradebookConfigurationComponent implements OnInit {
   qtotalNot100: boolean = false;
   stotalNot100: boolean = false;
   ytotalNot100: boolean = false;
+  isNotGraded: boolean;
 
   constructor(private gradeBookConfigurationService: GradeBookConfigurationService,
     private gradesService: GradesService,
@@ -37,7 +38,12 @@ export class GradebookConfigurationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   this.getAllGradeScale(0);
+    if (this.selectedCourseSection?.gradeScaleType !== 'Ungraded') {
+      this.isNotGraded = false;
+      this.getAllGradeScale(0);
+    } else {
+      this.isNotGraded = true;
+    }
   }
 
 

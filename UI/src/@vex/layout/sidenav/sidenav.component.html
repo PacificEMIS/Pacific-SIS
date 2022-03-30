@@ -23,8 +23,8 @@
       <img class="h-10 w-10 rounded-full" [src]="userPhoto" alt="Profile picture">
     </div>
     <div class="ml-4 whitespace-no-wrap">
-      <div class="text-sm leading-5 font-medium text-gray-900">{{userName}}</div>
-      <div class="text-xs leading-5 text-gray-500 opacity-50">{{membershipName}}</div>
+      <div class="text-sm leading-5 font-medium text-gray-900">{{this.defaultValuesService.getFullUserName()}}</div>
+      <div class="text-xs leading-5 text-gray-500 opacity-50">{{defaultValuesService.getuserMembershipName()}}</div>
     </div>
     <div>
       <button 
@@ -33,7 +33,7 @@
       </button>
 
       <mat-menu #addNewMenu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-        <button mat-menu-item *ngIf="membershipName=='Super Administrator' || membershipName=='School Administrator'" (click)="showPreference()">
+        <button mat-menu-item *ngIf="membershipName===profile.SuperAdmin || membershipName === profile.SchoolAdmin " (click)="showPreference()">
           <span>{{'preferences' | translate}}</span>
         </button>
 

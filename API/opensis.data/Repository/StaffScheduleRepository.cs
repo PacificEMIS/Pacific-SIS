@@ -180,6 +180,7 @@ namespace opensis.data.Repository
                                         CourseSections.QtrMarkingPeriodId = courseSection.QtrMarkingPeriodId;
                                         CourseSections.PrgrsprdMarkingPeriodId = courseSection.PrgrsprdMarkingPeriodId;
                                         CourseSections.MeetingDays = concatDay;
+                                        CourseSections.AttendanceTaken = courseSection.AttendanceTaken;
                                         teacherSchedules.courseSectionViewList.Add(CourseSections);
                                     }                                 
                                 }
@@ -258,7 +259,8 @@ namespace opensis.data.Repository
                                         MeetingDays = CourseSection.MeetingDays,
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
-                                        IsAssigned = true
+                                        IsAssigned = true,
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }
@@ -338,7 +340,7 @@ namespace opensis.data.Repository
 
                                            (courseSec.CalPeriodId != null && ((courseSec.CalPeriodId == x.FixedPeriodId && (x.FixedDays??"").ToLower().Contains((courseSec.CalDay??"").ToLower())) || (courseSec.CalPeriodId == x.VarPeriodId && (courseSec.CalDay??"").ToLower() == (x.VarDay??"").ToLower()) || (courseSec.CalPeriodId == x.CalPeriodId && (courseSec.CalDay??"").ToLower() == (x.CalDay??"").ToLower()))) ||
 
-                                           (courseSec.BlockPeriodId != null && (courseSec.BlockPeriodId == x.BlockPeriodId && courseSec.BlockRoomId == x.BlockRoomId && courseSec.BlockId == x.BlockId))) && courseSec.DurationEndDate > x.DurationStartDate).ToList();
+                                           (courseSec.BlockPeriodId != null && (courseSec.BlockPeriodId == x.BlockPeriodId && courseSec.BlockRoomId == x.BlockRoomId && courseSec.BlockId == x.BlockId))) && courseSec.DurationEndDate > x.DurationStartDate && x.AllowTeacherConflict != true).ToList();
 
                                             if (courseSectionInputData?.Any() == true)
                                             {
@@ -400,7 +402,7 @@ namespace opensis.data.Repository
 
                                     (c.acsv.CalPeriodId != null && ((c.acsv.CalPeriodId == courseSectionData.FixedPeriodId && (courseSectionData.FixedDays??"").ToLower().Contains((c.acsv.CalDay??"").ToLower())) || (c.acsv.CalPeriodId == courseSectionData.VarPeriodId && (c.acsv.CalDay??"").ToLower() == (courseSectionData.VarDay??"").ToLower()) || (c.acsv.CalPeriodId == courseSectionData.CalPeriodId && (c.acsv.CalDay??"").ToLower() == (courseSectionData.CalDay??"").ToLower()))) ||
 
-                                    (c.acsv.BlockPeriodId != null && (c.acsv.BlockPeriodId == courseSectionData.BlockPeriodId &&c.acsv.BlockRoomId==courseSectionData.BlockRoomId&& c.acsv.BlockId==courseSectionData.BlockId))) && c.acsv.DurationEndDate > courseSectionData.DurationStartDate && c.scss.IsDropped != true).ToList();
+                                    (c.acsv.BlockPeriodId != null && (c.acsv.BlockPeriodId == courseSectionData.BlockPeriodId &&c.acsv.BlockRoomId==courseSectionData.BlockRoomId&& c.acsv.BlockId==courseSectionData.BlockId))) && c.acsv.DurationEndDate > courseSectionData.DurationStartDate && c.scss.IsDropped != true && c.acsv.AllowTeacherConflict != true).ToList();
                                     //                var checkForConflict = this.context?.AllCourseSectionView.Join(this.context.StaffCoursesectionSchedule, acsv => acsv.CourseSectionId, scss => scss.CourseSectionId, (acsv, scss) => new { acsv, scss }).AsEnumerable().Where(c => c.acsv.TenantId == staffScheduleViewModel.TenantId && c.acsv.SchoolId == staffScheduleViewModel.SchoolId && c.scss.StaffId == staff.StaffId &&
 
                                     //((c.acsv.FixedPeriodId != null && ((c.acsv.FixedPeriodId == courseSectionData.FixedPeriodId && (Regex.IsMatch(courseSectionData.FixedDays.ToLower(), c.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (c.acsv.FixedPeriodId == courseSectionData.VarPeriodId && c.acsv.FixedDays.ToLower().Contains(courseSectionData.VarDay.ToLower())) || (c.acsv.FixedPeriodId == courseSectionData.CalPeriodId && c.acsv.FixedDays.ToLower().Contains(courseSectionData.CalDay.ToLower())))) ||
@@ -613,7 +615,8 @@ namespace opensis.data.Repository
                                         MeetingDays = courseSection.MeetingDays,
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
-                                        IsAssigned = true
+                                        IsAssigned = true,
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }      

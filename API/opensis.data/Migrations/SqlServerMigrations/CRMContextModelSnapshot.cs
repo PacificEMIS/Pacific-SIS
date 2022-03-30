@@ -5150,8 +5150,9 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("int")
                         .HasColumnName("hist_marking_period_id");
 
-                    b.Property<decimal?>("AcademicYear")
-                        .HasColumnType("decimal(4,0)")
+                    b.Property<string>("AcademicYear")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("academic_year");
 
                     b.Property<string>("CreatedBy")

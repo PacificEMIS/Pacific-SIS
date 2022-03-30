@@ -280,5 +280,57 @@ namespace opensis.core.StudentSchedule.Services
             }
             return courseListView;
         }
+
+        public ScheduledStudentDeleteViewModel GroupDeleteForScheduledStudent(ScheduledStudentDeleteViewModel scheduledStudentDeleteViewModel)
+        {
+            ScheduledStudentDeleteViewModel scheduledStudentDelete = new ScheduledStudentDeleteViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(scheduledStudentDeleteViewModel._tenantName + scheduledStudentDeleteViewModel._userName, scheduledStudentDeleteViewModel._token))
+                {
+                    scheduledStudentDelete = this.studentScheduleRepository.GroupDeleteForScheduledStudent(scheduledStudentDeleteViewModel);
+                }
+                else
+                {
+                    scheduledStudentDelete._failure = true;
+                    scheduledStudentDelete._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                scheduledStudentDelete._failure = true;
+                scheduledStudentDelete._message = es.Message;
+            }
+            return scheduledStudentDelete;
+        }
+
+        /// <summary>
+        /// Get Student List By Course Section who have no associationship
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public ScheduleStudentListViewModel GetUnassociatedStudentListByCourseSection(PageResult pageResult)
+        {
+            ScheduleStudentListViewModel ScheduledStudentListView = new ScheduleStudentListViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    ScheduledStudentListView = this.studentScheduleRepository.GetUnassociatedStudentListByCourseSection(pageResult);
+                }
+                else
+                {
+                    ScheduledStudentListView._failure = true;
+                    ScheduledStudentListView._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+
+                ScheduledStudentListView._failure = true;
+                ScheduledStudentListView._message = es.Message;
+            }
+            return ScheduledStudentListView;
+        }
     }
 }

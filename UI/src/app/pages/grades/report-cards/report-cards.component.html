@@ -251,7 +251,7 @@
                             </td>
                             <td width="30%">
                                 <div class="info-left info-right">
-                                    <h2><span class="title">{{'markingPeriod' |translate}}</span> : <span>{{'multiple'|translate}}</span></h2>
+                                    <h2><span class="title">{{'markingPeriod' |translate}}</span> : <span>{{grade?.markingPeriodDetailsForOtherTemplates?.length > 1 ? ('multiple'|translate) : grade?.markingPeriodDetailsForOtherTemplates[0]?.markingPeriodShortName}}</span></h2>
                                     <h2><span class="title">{{'gradeLevel' |translate}}</span> : <span>{{grade?.gradeTitle}}</span></h2>
                                     <h2><span class="title">{{'section' |translate}}</span> : <span>{{grade?.section}}</span></h2>
                                 </div>

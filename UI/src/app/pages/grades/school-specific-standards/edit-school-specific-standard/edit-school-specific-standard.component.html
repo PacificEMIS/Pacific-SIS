@@ -13,7 +13,7 @@
         <mat-form-field class="w-full mb-1" appearance="outline" color="primary">
         <mat-label>{{'subject' | translate}}</mat-label>
         <mat-select name="subject" formControlName="subject" required>
-            <mat-option *ngFor="let subject of subjectList" value="{{subject.subjectName}}">{{subject.subjectName}}</mat-option>
+            <mat-option *ngFor="let subject of subjectList" value="{{subject.subjectName}}" (click)="selectSubject(subject)">{{subject.subjectName}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('subject').hasError('required')">{{'subjectIsRequired'|translate}}
         </mat-error>
@@ -33,7 +33,7 @@
         <mat-form-field class="w-full mb-1" appearance="outline" color="primary">
         <mat-label>{{'course' | translate}}</mat-label>
         <mat-select formControlName="course" name="course" required>
-            <mat-option *ngFor="let course of courseList" value="{{course.course.courseTitle}}">{{course.course.courseTitle}}</mat-option>
+            <mat-option *ngFor="let course of cloneCourseList" value="{{ editCourse ? editCourse : course.courseSectionName}}">{{course.courseSectionName}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('course').hasError('required')">{{'courseIsRequired'|translate}}
         </mat-error>

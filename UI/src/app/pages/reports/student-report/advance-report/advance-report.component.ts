@@ -150,7 +150,6 @@ export class AdvanceReportComponent implements OnInit {
     demographicInformation: [
       { label: 'dateOfBirth', property: 'dateOfBirth', checked: false },
       { label: 'gender', property: 'gender', checked: false },
-      { label: 'firstGivenName', property: 'firstGivenName', checked: false },
       { label: 'race', property: 'race', checked: false },
       { label: 'ethnicity', property: 'ethnicity', checked: false },
       { label: 'maritalStatus', property: 'maritalStatus', checked: false },
@@ -527,6 +526,9 @@ export class AdvanceReportComponent implements OnInit {
           this.generateStudentList[0].studentListForReport.map((item: any)=>{
             const middleName = item.studentMaster.middleName ? ' ' + item.studentMaster?.middleName + ' ' : ' '
             item.studentMaster.fullName = item.studentMaster.firstGivenName + middleName + item.studentMaster?.lastFamilyName;
+            item.studentMaster.countryOfBirth=item.countryOfBirth;
+            item.studentMaster.homeAddressCountry=item.homeAddressCountry;
+            item.studentMaster.mailingAddressCountry=item.mailingAddressCountry;
           item.fieldsCategoryList[0].customFields.map((subItem)=>{
             item.studentMaster[subItem.title] = subItem.customFieldsValue?.length > 0 ? subItem.customFieldsValue[0].customFieldValue : subItem.defaultSelection;
           })

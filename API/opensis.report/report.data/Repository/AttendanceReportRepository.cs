@@ -1,4 +1,4 @@
-﻿using opensis.data.Interface;
+using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.report.report.data.Interface;
 using opensis.report.report.data.ViewModels.AttendanceReport;
@@ -276,6 +276,8 @@ namespace opensis.report.report.data.Repository
 
                 var studentAttendanceData = this.context?.StudentAttendance.Include(x => x.AttendanceCodeNavigation).Join(this.context?.AllCourseSectionView, sa => sa.CourseSectionId, acsv => acsv.CourseSectionId, (sa, acsv) => new { sa, acsv }).AsEnumerable().Where(x => x.sa.TenantId == pageResult.TenantId && x.sa.SchoolId == pageResult.SchoolId && x.sa.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.sa.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.acsv.TenantId == pageResult.TenantId && x.acsv.SchoolId == pageResult.SchoolId && (x.acsv.AttendanceTaken == true || x.acsv.TakeAttendanceCalendar == true || x.acsv.TakeAttendanceVariable == true || x.acsv.TakeAttendanceBlock == true));
 
+                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.MissingAttendanceDate >= pageResult.MarkingPeriodStartDate && x.MissingAttendanceDate <= pageResult.MarkingPeriodEndDate);
+
                 if (studentAttendanceData?.Any() == true)
                 {
                     var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AcademicYear == pageResult.AcademicYear && x.SessionCalendar == true);
@@ -322,13 +324,14 @@ namespace opensis.report.report.data.Repository
 
                     foreach (var gradeLevel in gradeLevels)
                     {
-                        AverageDailyAttendanceReport averageDailyAttendanceReport = new AverageDailyAttendanceReport();                       
+                        AverageDailyAttendanceReport averageDailyAttendanceReport = new AverageDailyAttendanceReport();
                         List<int> courseSectionIds = new List<int>();
                         int? present = 0;
                         int? absent = 0;
                         int? other = 0;
                         int? studentInfo = 0;
                         int? totalPeriods = 0;
+                        int? notTaken = 0;
 
                         var gradeLevelWiseAttendance = studentAttendanceData.Where(x => x.acsv.CourseGradeLevel == gradeLevel);
 
@@ -342,7 +345,7 @@ namespace opensis.report.report.data.Repository
                             foreach (var csId in courseSectionIds)
                             {
                                 var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
-                                
+
                                 if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                 {
                                     List<DateTime> dateList = new List<DateTime>();
@@ -417,12 +420,13 @@ namespace opensis.report.report.data.Repository
                                         }
                                     }
                                 }
+                                notTaken += studentMissingAttendanceData.Where(x => x.CourseSectionId == csId && x.SchoolId == pageResult.SchoolId).Count();
                             }
 
                             studentInfo = gradeLevelWiseAttendance.Select(s => new { s.sa.SchoolId, s.sa.StudentId }).Distinct().ToList().Count;
-                            present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "present").Count();
-                            absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "absent").Count();
-                            other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() != "present" && x.sa.AttendanceCodeNavigation.Title.ToLower() != "absent").Count();
+                            present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "present").Count();
+                            absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
+                            other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "present" && x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "absent").Count();
                         }
                         averageDailyAttendanceReport.GradeLevel = gradeLevel;
                         averageDailyAttendanceReport.Students = studentInfo;
@@ -432,9 +436,10 @@ namespace opensis.report.report.data.Repository
                         averageDailyAttendanceReport.Present = studentInfo * present;
                         averageDailyAttendanceReport.Absent = studentInfo * absent;
                         averageDailyAttendanceReport.Other = studentInfo * other;
-                        averageDailyAttendanceReport.NotTaken = averageDailyAttendanceReport.AttendancePossible - (averageDailyAttendanceReport.Present +
-                        averageDailyAttendanceReport.Absent +
-                        averageDailyAttendanceReport.Other);
+                        //averageDailyAttendanceReport.NotTaken = averageDailyAttendanceReport.AttendancePossible - (averageDailyAttendanceReport.Present +
+                        //averageDailyAttendanceReport.Absent +
+                        //averageDailyAttendanceReport.Other);
+                        averageDailyAttendanceReport.NotTaken = notTaken;
 
                         averageDailyAttendanceReport.ADA = Math.Round((Convert.ToDecimal(averageDailyAttendanceReport.Present) / Convert.ToDecimal(averageDailyAttendanceReport.AttendancePossible) * 100), 2);
                         averageDailyAttendanceReport.AvgAttendance = Math.Round(Convert.ToDecimal(averageDailyAttendanceReport.Present) / Convert.ToDecimal(averageDailyAttendanceReport.AttendancePossible), 2);
@@ -522,46 +527,48 @@ namespace opensis.report.report.data.Repository
                                 if (gradeLevelWiseAttendance.Any())
                                 {
                                     studentInfo = gradeLevelWiseAttendance.Select(s => new { s.sa.SchoolId, s.sa.StudentId }).Distinct().ToList().Count;
-                                    present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "present").Count();
-                                    absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() == "absent").Count();
-                                    other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.Title.ToLower() != "present" && x.sa.AttendanceCodeNavigation.Title.ToLower() != "absent").Count();
+                                    present = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "present").Count();
+                                    absent = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
+                                    other = gradeLevelWiseAttendance.Where(x => x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "present" && x.sa.AttendanceCodeNavigation.StateCode.ToLower() != "absent").Count();
 
                                     var courseSectionIds = gradeLevelWiseAttendance.Select(s => s.acsv.CourseSectionId).Distinct().ToList();
 
                                     foreach (var csId in courseSectionIds)
                                     {
                                         var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
-
-                                        if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
+                                        if (courseSectionData?.Any() == true)
                                         {
-                                            totalPeriods += 1;
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
-                                        {
-                                            var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.DayOfWeek.ToString())).ToList();
-                                            if (courseVariableScheduleData.Any())
+                                            if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                             {
-                                                totalPeriods += courseVariableScheduleData.Count;
+                                                totalPeriods += 1;
                                             }
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
-                                        {
-                                            var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
-
-                                            if (calendarDateList.Count > 0)
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
                                             {
-                                                totalPeriods += calendarDateList.Count;
-                                            }
-                                        }
-                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
-                                        {
-                                            var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
-                                            foreach (var blockId in blockIds)
-                                            {
-                                                var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
-                                                if (bellScheduleList.Count > 0)
+                                                var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.DayOfWeek.ToString())).ToList();
+                                                if (courseVariableScheduleData.Any())
                                                 {
-                                                    totalPeriods += bellScheduleList.Count;
+                                                    totalPeriods += courseVariableScheduleData.Count;
+                                                }
+                                            }
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
+                                            {
+                                                var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
+
+                                                if (calendarDateList.Count > 0)
+                                                {
+                                                    totalPeriods += calendarDateList.Count;
+                                                }
+                                            }
+                                            else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
+                                            {
+                                                var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
+                                                foreach (var blockId in blockIds)
+                                                {
+                                                    var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == dateWiseAttendance.FirstOrDefault().sa.AttendanceDate.Date).ToList();
+                                                    if (bellScheduleList.Count > 0)
+                                                    {
+                                                        totalPeriods += bellScheduleList.Count;
+                                                    }
                                                 }
                                             }
                                         }
@@ -615,36 +622,39 @@ namespace opensis.report.report.data.Repository
                                 {
                                     var courseSectionData = allCourseSectionData.Where(x => x.CourseSectionId == csId).ToList();
 
-                                    if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
+                                    if (courseSectionData?.Any() == true)
                                     {
-                                        totalPeriods += 1;
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
-                                    {
-                                        var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(missingDate.DayOfWeek.ToString())).ToList();
-                                        if (courseVariableScheduleData.Any())
+                                        if (courseSectionData.FirstOrDefault().ScheduleType == "Fixed Schedule (1)")
                                         {
-                                            totalPeriods += courseVariableScheduleData.Count;
+                                            totalPeriods += 1;
                                         }
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
-                                    {
-                                        var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == missingDate.Date).ToList();
-
-                                        if (calendarDateList.Count > 0)
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Variable Schedule (2)")
                                         {
-                                            totalPeriods += calendarDateList.Count;
-                                        }
-                                    }
-                                    else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
-                                    {
-                                        var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
-                                        foreach (var blockId in blockIds)
-                                        {
-                                            var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == missingDate.Date).ToList();
-                                            if (bellScheduleList.Count > 0)
+                                            var courseVariableScheduleData = courseSectionData.Where(e => e.VarDay != null && e.VarDay.Contains(missingDate.DayOfWeek.ToString())).ToList();
+                                            if (courseVariableScheduleData.Any())
                                             {
-                                                totalPeriods += bellScheduleList.Count;
+                                                totalPeriods += courseVariableScheduleData.Count;
+                                            }
+                                        }
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Calendar Schedule (3)")
+                                        {
+                                            var calendarDateList = courseSectionData.Where(s => s.CalDate.Value.Date == missingDate.Date).ToList();
+
+                                            if (calendarDateList.Count > 0)
+                                            {
+                                                totalPeriods += calendarDateList.Count;
+                                            }
+                                        }
+                                        else if (courseSectionData.FirstOrDefault().ScheduleType == "Block Schedule (4)")
+                                        {
+                                            var blockIds = courseSectionData.Select(x => x.BlockId).Distinct().ToList();
+                                            foreach (var blockId in blockIds)
+                                            {
+                                                var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockId && v.BellScheduleDate == missingDate.Date).ToList();
+                                                if (bellScheduleList.Count > 0)
+                                                {
+                                                    totalPeriods += bellScheduleList.Count;
+                                                }
                                             }
                                         }
                                     }
@@ -679,7 +689,7 @@ namespace opensis.report.report.data.Repository
                     int totalCount = averageDailyAttendance.averageDailyAttendanceReport.Count;
                     if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                     {
-                        averageDailyAttendance.averageDailyAttendanceReport = averageDailyAttendance.averageDailyAttendanceReport.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize).ToList();
+                        averageDailyAttendance.averageDailyAttendanceReport.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                     }
                     averageDailyAttendance.TotalCount = totalCount;
                     averageDailyAttendance.PageNumber = pageResult.PageNumber;
@@ -698,5 +708,325 @@ namespace opensis.report.report.data.Repository
             }
             return averageDailyAttendance;
         }
+
+
+        /// <summary>
+        /// Get All Student Attendance List Administration
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentListForAbsenceSummary GetAllStudentAbsenceList(PageResult pageResult)
+        {
+            StudentListForAbsenceSummary studentAbsenceList = new StudentListForAbsenceSummary();
+            studentAbsenceList.TenantId = pageResult.TenantId;
+            studentAbsenceList.SchoolId = pageResult.SchoolId;
+            studentAbsenceList._userName = pageResult._userName;
+            studentAbsenceList._tenantName = pageResult._tenantName;
+            studentAbsenceList._userName = pageResult._userName;
+            IQueryable<StudentListView>? transactionIQ = null;
+            IQueryable<StudentListForAbsence>? attendanceIQ = null;
+            List<StudentListForAbsence> attendanceData = new List<StudentListForAbsence>();
+            try
+            {
+                if (pageResult.PeriodId != null)
+                {
+                    var studentAbsence = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Join(this.context?.StudentListView, sa => sa.StudentId, slv => slv.StudentId, (sa, slv) => new { sa, slv }).Where(x => x.sa.SchoolId == pageResult.SchoolId && x.sa.TenantId == pageResult.TenantId && x.sa.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.sa.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.sa.PeriodId == pageResult.PeriodId && x.sa.BlockPeriod.SchoolId == pageResult.SchoolId && x.sa.BlockPeriod.TenantId == pageResult.TenantId && (x.sa.AttendanceCodeNavigation.StateCode == "Half Day" || x.sa.AttendanceCodeNavigation.StateCode == "Absent") && x.slv.SchoolId == pageResult.SchoolId && x.slv.TenantId == pageResult.TenantId);
+
+                    if (studentAbsence != null && studentAbsence.Any())
+                    {
+                        if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                        {
+                            transactionIQ = studentAbsence.Select(x => x.slv).AsQueryable();
+                        }
+                        else
+                        {
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+
+                            if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                            {
+                                transactionIQ = studentAbsence.Select(x => x.slv).Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
+                                x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) ||
+                                x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
+                            }
+                            else
+                            {
+                                transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentAbsence.Select(x => x.slv)).AsQueryable();
+                            }
+                        }
+                    }
+
+
+                    if (transactionIQ != null && transactionIQ.Any())
+                    {
+                        var studentIds = transactionIQ.Select(a => a.StudentId).Distinct().ToList();
+                        var blockId = studentAbsence.FirstOrDefault().sa.BlockId;
+                        foreach (var ide in studentIds)
+                        {
+                            StudentListForAbsence studentListForAbsence = new();
+                            var studentAttendanceData = studentAbsence.Where(x => x.sa.TenantId == pageResult.TenantId && x.sa.SchoolId == pageResult.SchoolId && x.sa.StudentId == ide).ToList();
+
+                            studentListForAbsence.TenantId = studentAttendanceData.FirstOrDefault().sa.TenantId;
+                            studentListForAbsence.SchoolId = studentAttendanceData.FirstOrDefault().sa.SchoolId;
+                            studentListForAbsence.StudentId = studentAttendanceData.FirstOrDefault().sa.StudentId;
+                            studentListForAbsence.StudentInternalId = studentAttendanceData.FirstOrDefault().slv?.StudentInternalId;
+                            studentListForAbsence.StudentGuid = studentAttendanceData.FirstOrDefault().slv?.StudentGuid;
+                            studentListForAbsence.FirstGivenName = studentAttendanceData.FirstOrDefault().slv?.FirstGivenName;
+                            studentListForAbsence.MiddleName = studentAttendanceData.FirstOrDefault().slv?.MiddleName;
+                            studentListForAbsence.LastFamilyName = studentAttendanceData.FirstOrDefault().slv?.LastFamilyName;
+                            studentListForAbsence.AbsentCount = studentAttendanceData.Where(x => x.sa.AttendanceCodeNavigation?.StateCode == "Absent").Count();
+                            studentListForAbsence.HalfDayCount = studentAttendanceData.Where(x => x.sa.AttendanceCodeNavigation?.StateCode == "Half Day").Count();
+                            studentListForAbsence.GradeLevelTitle = studentAttendanceData.FirstOrDefault().slv.GradeLevelTitle;
+                            studentListForAbsence.HomePhone = studentAttendanceData.FirstOrDefault().slv?.HomePhone;
+
+                            attendanceData.Add(studentListForAbsence);
+
+
+                        }
+                    }
+                }
+                else
+                {
+                    var studentAbsence = this.context?.StudentDailyAttendance.Join(this.context?.StudentAttendance, sda => sda.AttendanceDate, sa => sa.AttendanceDate, (sda, sa) => new { sda, sa }).Join(this.context?.StudentListView, ssa=> ssa.sda.StudentId, slv=>slv.StudentId ,(ssa,slv)=> new{ssa, slv}).Where(x => x.ssa.sda.SchoolId == pageResult.SchoolId && x.ssa.sda.TenantId == pageResult.TenantId && x.ssa.sa.SchoolId == pageResult.SchoolId && x.ssa.sa.TenantId == pageResult.TenantId && x.ssa.sda.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.ssa.sda.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.slv.SchoolId== pageResult.SchoolId && x.slv.TenantId== pageResult.TenantId);
+
+
+                    if (studentAbsence != null && studentAbsence.Any())
+                    {
+                        if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                        {
+                            transactionIQ = studentAbsence.Select(x=> x.slv).AsQueryable();
+                        }
+                        else
+                        {
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+
+                            if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                            {
+                                transactionIQ = studentAbsence.Select(x => x.slv).Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
+                                x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) ||
+                                x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
+                            }
+                            else
+                            {
+                                transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentAbsence.Select(x => x.slv)).AsQueryable();
+                            }
+                        }
+                    }
+
+                    if (transactionIQ != null && transactionIQ.Any())
+                    {
+                        var studentIds = transactionIQ.Select(a => a.StudentId).Distinct().ToList();
+                        var blockId = studentAbsence.FirstOrDefault()!.ssa.sa.BlockId;
+                        foreach (var ide in studentIds)
+                        {
+                            int halfdayCount = 0;
+                            int absentCount = 0;
+                            StudentListForAbsence studentListForAbsence = new();
+                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StudentId == ide && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate).ToList();
+                            var studentAttendance = transactionIQ.Where(x => x.StudentId == ide).FirstOrDefault();
+
+                            foreach (var attendance in studentDailyAttendanceData)
+                            {
+                                var blockData = this.context?.Block.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == blockId);
+                                if (attendance.AttendanceMinutes >= blockData?.HalfDayMinutes && attendance.AttendanceMinutes < blockData?.FullDayMinutes)
+                                {
+                                    halfdayCount += 1;
+                                }
+                                if (attendance.AttendanceMinutes < blockData?.HalfDayMinutes)
+                                {
+                                    absentCount += 1;
+                                }
+                            }
+                            studentListForAbsence.TenantId = studentAttendance.TenantId;
+                            studentListForAbsence.SchoolId = studentAttendance.SchoolId;
+                            studentListForAbsence.StudentId = studentAttendance.StudentId;
+                            studentListForAbsence.StudentInternalId = studentAttendance?.StudentInternalId;
+                            studentListForAbsence.StudentGuid = studentAttendance?.StudentGuid;
+                            studentListForAbsence.FirstGivenName = studentAttendance?.FirstGivenName;
+                            studentListForAbsence.MiddleName = studentAttendance?.MiddleName;
+                            studentListForAbsence.LastFamilyName = studentAttendance?.LastFamilyName;
+                            studentListForAbsence.AbsentCount = absentCount;
+                            studentListForAbsence.HalfDayCount = halfdayCount;
+                            studentListForAbsence.GradeLevelTitle = studentAttendance?.GradeLevelTitle;
+                            studentListForAbsence.HomePhone = studentAttendance?.HomePhone;
+
+                            attendanceData.Add(studentListForAbsence);
+                        }
+                    }
+                }
+
+
+                if (attendanceData.Count() > 0)
+                {
+                    attendanceIQ = attendanceData.AsQueryable();
+
+                    if (attendanceIQ != null)
+                    {
+                        int? totalCount = attendanceIQ.Count();
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            attendanceIQ = attendanceIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                            studentAbsenceList.PageNumber = pageResult.PageNumber;
+                            studentAbsenceList._pageSize = pageResult.PageSize;
+                        }
+                        studentAbsenceList.studendAttendanceList = attendanceIQ.ToList();
+                        studentAbsenceList.TotalCount = totalCount;
+                    }
+                    else
+                    {
+                        studentAbsenceList.TotalCount = 0;
+                    }
+                }
+                else
+                {
+                    studentAbsenceList._failure = true;
+                    studentAbsenceList._message = NORECORDFOUND;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                studentAbsenceList._failure = true;
+                studentAbsenceList._message = ex.Message;
+            }
+
+            return studentAbsenceList;
+        }
+
+
+        /// <summary>
+        /// Get Attendance by Student Id
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public AbsenceListByStudent GetAbsenceListByStudent(PageResult pageResult)
+        {
+            AbsenceListByStudent studentAbsenceList = new();
+            studentAbsenceList.TenantId = pageResult.TenantId;
+            studentAbsenceList.SchoolId = pageResult.SchoolId;
+            studentAbsenceList._userName = pageResult._userName;
+            studentAbsenceList._tenantName = pageResult._tenantName;
+            studentAbsenceList._userName = pageResult._userName;
+            IQueryable<AbsenceStudentModel>? transactionIQ = null;
+            List<AbsenceStudentModel> attendanceStudentList = new List<AbsenceStudentModel>();
+            try
+            {
+                var teacherMembershipIds = this.context?.Membership.Where(x => x.ProfileType == "Teacher" || x.ProfileType == "Homeroom Teacher").Select(x => x.MembershipId).ToList();
+                var adminMembershipIds = this.context?.Membership.Where(x => x.ProfileType == "Super Administrator" || x.ProfileType == "School Administrator" || x.ProfileType == "Admin Assistant").Select(x => x.MembershipId).ToList();
+
+
+                if (pageResult.PeriodId != null)
+                {
+                    var studentAbsence = this.context?.StudentAttendance.Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.StudentId == pageResult.StudentId && x.PeriodId == pageResult.PeriodId && (x.AttendanceCodeNavigation.StateCode == "Half Day" || x.AttendanceCodeNavigation.StateCode == "Absent")).ToList();
+
+                    if (studentAbsence != null && studentAbsence.Any())
+                    {
+                        studentAbsenceList.StudentPhoto = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                        studentAbsenceList.FirstGivenName = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.FirstGivenName;
+                        studentAbsenceList.MiddleName = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.MiddleName;
+                        studentAbsenceList.LastFamilyName = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.LastFamilyName;
+                        studentAbsenceList.StudentInternalId = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.StudentInternalId;
+                        studentAbsenceList.GradeLevelTitle = studentAbsence.FirstOrDefault().StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
+                        var attendanceDates = studentAbsence.Select(a => a.AttendanceDate).Distinct().ToList();
+                        var blockId = studentAbsence.FirstOrDefault().BlockId;
+                        foreach (var date in attendanceDates)
+                        {
+                            AbsenceStudentModel absenceStudentModel = new();
+                            var studentDailyAttendanceData = studentAbsence.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StudentId == pageResult.StudentId && x.AttendanceDate == date);
+
+                            absenceStudentModel.Attendance = studentDailyAttendanceData.AttendanceCodeNavigation?.StateCode;
+                            absenceStudentModel.AbsenceDate = date;
+                            absenceStudentModel.TeacherComment = studentDailyAttendanceData?.StudentAttendanceComments.Where(x => teacherMembershipIds.Contains(x.MembershipId.Value))?.FirstOrDefault()?.Comment;
+                            absenceStudentModel.AdminComment = studentDailyAttendanceData?.StudentAttendanceComments.Where(x => adminMembershipIds.Contains(x.MembershipId.Value))?.FirstOrDefault()?.Comment;
+
+                            attendanceStudentList.Add(absenceStudentModel);
+                        }
+                    }
+                }
+                else
+                {
+                    var studentAbsence = this.context?.StudentDailyAttendance.Include(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Join(this.context?.StudentAttendance, sda => sda.AttendanceDate, sa => sa.AttendanceDate, (sda, sa) => new { sda, sa }).Join(this.context?.StudentAttendanceComments, sa => sa.sa.StudentAttendanceId, sac => sac.StudentAttendanceId, (sa, sac) => new { sa, sac }).Where(x => x.sa.sda.SchoolId == pageResult.SchoolId && x.sa.sda.TenantId == pageResult.TenantId && x.sa.sa.SchoolId == pageResult.SchoolId && x.sa.sa.TenantId == pageResult.TenantId && x.sa.sda.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.sa.sda.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.sa.sda.StudentId == pageResult.StudentId);
+
+
+                    if (studentAbsence != null && studentAbsence.Any())
+                    {
+                        studentAbsenceList.StudentPhoto = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.StudentPhoto;
+                        studentAbsenceList.FirstGivenName = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.FirstGivenName;
+                        studentAbsenceList.MiddleName = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.MiddleName;
+                        studentAbsenceList.LastFamilyName = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.LastFamilyName;
+                        studentAbsenceList.StudentInternalId = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.StudentInternalId;
+                        studentAbsenceList.GradeLevelTitle = studentAbsence.FirstOrDefault().sa.sda.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
+                        var attendanceDates = studentAbsence.Select(a => a.sa.sda.AttendanceDate).Distinct().ToList();
+                        var blockId = studentAbsence.FirstOrDefault()!.sa.sa.BlockId;
+                        foreach (var date in attendanceDates)
+                        {
+                            AbsenceStudentModel absenceStudentModel = new();
+                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StudentId == pageResult.StudentId && x.AttendanceDate == date);
+
+                            if (studentDailyAttendanceData != null)
+                            {
+                                var blockData = this.context?.Block.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == blockId);
+
+                                if (studentDailyAttendanceData.AttendanceMinutes >= blockData?.HalfDayMinutes && studentDailyAttendanceData.AttendanceMinutes < blockData?.FullDayMinutes)
+                                {
+                                    absenceStudentModel.Attendance = "Half-Day";
+                                }
+                                if (studentDailyAttendanceData.AttendanceMinutes < blockData?.HalfDayMinutes)
+                                {
+                                    absenceStudentModel.Attendance = "Absent";
+                                }
+                            }
+                            absenceStudentModel.AbsenceDate = date;
+                            absenceStudentModel.TeacherComment = null; /// daily attendance cannot have teacher comment
+                            absenceStudentModel.AdminComment = studentDailyAttendanceData.AttendanceComment;
+                            attendanceStudentList.Add(absenceStudentModel);
+                        }
+                    }
+                }
+
+
+                if (attendanceStudentList.Count() > 0)
+                {
+                    attendanceStudentList = attendanceStudentList.OrderBy(x => x.AbsenceDate).ToList();
+
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                    {
+                        transactionIQ = attendanceStudentList.AsQueryable();
+                    }
+                    if (transactionIQ != null)
+                    {
+                        int? totalCount = transactionIQ.Count();
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                            studentAbsenceList.PageNumber = pageResult.PageNumber;
+                            studentAbsenceList._pageSize = pageResult.PageSize;
+                        }
+                        studentAbsenceList.studendList = transactionIQ.ToList();
+                        studentAbsenceList.TotalCount = totalCount;
+                    }
+                    else
+                    {
+                        studentAbsenceList.TotalCount = 0;
+                    }
+                }
+                else
+                {
+                    studentAbsenceList._failure = true;
+                    studentAbsenceList._message = NORECORDFOUND;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                studentAbsenceList._failure = true;
+                studentAbsenceList._message = ex.Message;
+            }
+
+            return studentAbsenceList;
+        }
+
+
     }
 }

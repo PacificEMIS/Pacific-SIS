@@ -699,6 +699,62 @@ namespace opensis.core.CourseManager.Services
             }
             return courseCatelog;
         }
+
+        /// <summary>
+        /// Get CourseSection By Staff
+        /// </summary>
+        /// <param name="subjectsViewModel"></param>
+        /// <returns></returns>
+        public SubjectsViewModel GetCourseSectionByStaff(SubjectsViewModel subjectsViewModel)
+        {
+            SubjectsViewModel subjectView = new SubjectsViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(subjectsViewModel._tenantName + subjectsViewModel._userName, subjectsViewModel._token))
+                {
+                    subjectView = this.courseManagerRepository.GetCourseSectionByStaff(subjectsViewModel);
+                }
+                else
+                {
+                    subjectView._failure = true;
+                    subjectView._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                subjectView._failure = true;
+                subjectView._message = es.Message;
+            }
+            return subjectView;
+        }
+
+        /// <summary>
+        /// GetCourseSectionAssignmentByStaff
+        /// </summary>
+        /// <param name="courseSectionAssignmentViewModel"></param>
+        /// <returns></returns>
+        public CourseSectionAssignmentViewModel GetCourseSectionAssignmentByStaff(CourseSectionAssignmentViewModel courseSectionAssignmentViewModel)
+        {
+            CourseSectionAssignmentViewModel courseSectionAssignment = new CourseSectionAssignmentViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(courseSectionAssignmentViewModel._tenantName + courseSectionAssignmentViewModel._userName, courseSectionAssignmentViewModel._token))
+                {
+                    courseSectionAssignment = this.courseManagerRepository.GetCourseSectionAssignmentByStaff(courseSectionAssignmentViewModel);
+                }
+                else
+                {
+                    courseSectionAssignment._failure = true;
+                    courseSectionAssignment._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                courseSectionAssignment._failure = true;
+                courseSectionAssignment._message = es.Message;
+            }
+            return courseSectionAssignment;
+        }
     }
 }
  

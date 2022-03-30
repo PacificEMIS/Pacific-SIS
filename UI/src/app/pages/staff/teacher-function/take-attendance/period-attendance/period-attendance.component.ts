@@ -97,12 +97,12 @@ export class PeriodAttendanceComponent implements OnInit {
 
   getScheduledStudentList(){
     this.scheduleStudentListViewModel.sortingModel=null;
-    this.scheduleStudentListViewModel.courseSectionId=this.staffDetails.courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds=[this.staffDetails.courseSectionId];
     this.scheduleStudentListViewModel.pageNumber=0;
     this.scheduleStudentListViewModel.pageSize = 0;
     this.scheduleStudentListViewModel.sortingModel= null;
     this.scheduleStudentListViewModel.attendanceDate = this.staffDetails.attendanceDate;
-    this.scheduleStudentListViewModel.includeInactive = true;
+    // this.scheduleStudentListViewModel.includeInactive = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res)=>{
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);

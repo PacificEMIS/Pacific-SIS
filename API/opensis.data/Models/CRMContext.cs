@@ -2950,7 +2950,7 @@ namespace opensis.data.Models
                 entity.Property(e => e.HistMarkingPeriodId).HasColumnName("hist_marking_period_id");
 
                 entity.Property(e => e.AcademicYear)
-                    .HasColumnType("decimal(4, 0)")
+                    .HasMaxLength(10)
                     .HasColumnName("academic_year");
 
                 entity.Property(e => e.CreatedBy)

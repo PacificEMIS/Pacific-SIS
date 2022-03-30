@@ -13,6 +13,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { SchoolAddViewModel } from '../../../../app/models/school-master.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from "moment";
+import { ImpersonateServices } from 'src/app/services/impersonate.service';
 @Component({
   selector: 'vex-select-bar',
   templateUrl: './select-bar.component.html',
@@ -38,6 +39,7 @@ export class SelectBarComponent implements OnInit {
 
   /** list of schools filtered by search keyword */
   public filteredSchools: ReplaySubject<AllSchoolListModel[]> = new ReplaySubject<AllSchoolListModel[]>(1);
+  impersonateSubjectForSelectBar:boolean=false;
 
   /** Subject that emits when the component has been destroyed. */
   protected onDestroy = new Subject<void>();
@@ -48,7 +50,8 @@ export class SelectBarComponent implements OnInit {
     private dasboardService:DasboardService,
     private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private impersonateServices:ImpersonateServices
   ) {
     this.schoolService.currentMessage.pipe(takeUntil(this.onDestroy)).subscribe((res) => {
       if (res) {
@@ -57,15 +60,29 @@ export class SelectBarComponent implements OnInit {
         this.callAcademicYearsOnSchoolSelect();
       }
     })
+    this.impersonateServices.impersonateSubjectForSelectBar.subscribe(x=>{
+      if(x) {
+        this.impersonateSelectBarOnInit();
+        this.impersonateSubjectForSelectBar=true;
+      }
+    })
   }
 
   ngOnInit() {
+    this.impersonateSelectBarOnInit();
+  }
+
+  impersonateSelectBarOnInit() {
     this.callAllSchool(); //Initial call of School list
     this.markingPeriodService.currentY.subscribe((res) => {
       if (res) {
-        this.callAcademicYearsOnSchoolSelect();         
+        this.callAcademicYearsOnSchoolSelect();
       }
     })
+    if(this.impersonateSubjectForSelectBar){
+      this.impersonateServices.impersonateSubjectForSelectBar.next(false);
+      this.impersonateSubjectForSelectBar=false;
+    }
   }
   callAllSchool() {
 

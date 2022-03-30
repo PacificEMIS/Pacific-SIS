@@ -64,6 +64,10 @@ const routes: Routes = [
         component: StudentReportCardComponent
       },
       {
+        path:'student-progress-report',
+        loadChildren: () => import('./student-progress-report/student-progress-report.module').then(m => m.StudentProgressReportModule),
+      },
+      {
         path:'custom/:type',
         component: CustomFieldComponent
       }

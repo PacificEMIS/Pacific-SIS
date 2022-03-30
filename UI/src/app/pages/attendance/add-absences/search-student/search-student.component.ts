@@ -368,7 +368,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
           }
         }
     }
-    this.scheduleStudentListViewModel.courseSectionId = + this.parentData.courseSectionId;
+    this.scheduleStudentListViewModel.courseSectionIds = [+ this.parentData.courseSectionId];
     this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.scheduleStudentListViewModel.searchAllSchool = this.searchAllSchool;
     this.scheduleStudentListViewModel.includeInactive = this.inactiveStudents;

@@ -528,7 +528,9 @@ namespace opensis.report.report.data.Repository
 
             try
             {
-                var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster).ThenInclude(b => b.StudentEnrollment).Include(c => c.StudentCoursesectionSchedule).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
+                //var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster).ThenInclude(b => b.StudentEnrollment).Include(c => c.StudentCoursesectionSchedule).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
+
+                var schoolListData = this.context?.SchoolMaster.Include(g => g.SchoolDetail).Include(a => a.StudentMaster.Where(y => studentProgressReport.StudentGuids.Contains(y.StudentGuid))).ThenInclude(b => b.StudentEnrollment.Where(z => z.IsActive == true)).Include(c => c.StudentCoursesectionSchedule.Where(y => studentProgressReport.StudentGuids.Contains(y.StudentGuid))).ThenInclude(d => d.CourseSection).ThenInclude(e => e.StaffCoursesectionSchedule).ThenInclude(f => f.StaffMaster).Where(x => x.TenantId == studentProgressReport.TenantId && x.SchoolId == studentProgressReport.SchoolId).ToList();
 
                 if (schoolListData?.Any() == true)
                 {
@@ -605,7 +607,7 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionId = courseSectionData.CourseSectionId;
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
-                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId && x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId)?.CourseTitle;
                                         courseSection.GradeScaleType = courseSectionData.GradeScaleType;
                                         courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
@@ -665,6 +667,7 @@ namespace opensis.report.report.data.Repository
 
                                         if (assignmentTypeList != null && assignmentTypeList.Any())
                                         {
+                                            assignmentTypeId = assignmentTypeList.Select(y => y.AssignmentTypeId).ToList();
 
                                             if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
                                             {
@@ -827,7 +830,7 @@ namespace opensis.report.report.data.Repository
                                         courseSection.CourseSectionId = courseSectionData.CourseSectionId;
                                         courseSection.CourseSectionName = courseSectionData.CourseSectionName;
                                         courseSection.CourseId = courseSectionData.CourseId;
-                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId)?.CourseTitle;
+                                        courseSection.CourseName = this.context?.Course.FirstOrDefault(x => x.CourseId == courseSectionData.CourseId && x.SchoolId == courseSectionData.SchoolId && x.TenantId == courseSectionData.TenantId)?.CourseTitle;
                                         courseSection.GradeScaleType = courseSectionData.GradeScaleType;
                                         courseSection.GradeScaleId = courseSectionData.GradeScaleId;
 
@@ -887,6 +890,7 @@ namespace opensis.report.report.data.Repository
 
                                         if (assignmentTypeList != null && assignmentTypeList.Any())
                                         {
+                                            assignmentTypeId = assignmentTypeList.Select(y => y.AssignmentTypeId).ToList();
 
                                             if (assignmentTypeList.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
                                             {

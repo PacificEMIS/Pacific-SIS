@@ -211,6 +211,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   checkOtherTabs(){
     this.otherTabs.courseSchedule=this.pageRolePermission.checkPageRolePermission("/school/students/student-course-schedule", this.currentRolePermission)?.view;
     this.otherTabs.attendance=this.pageRolePermission.checkPageRolePermission("/school/students/student-attendance", this.currentRolePermission)?.view
+    this.otherTabs.progressReport=this.pageRolePermission.checkPageRolePermission("/school/students/student-progress-report", this.currentRolePermission)?.view
     this.otherTabs.reportCard=this.pageRolePermission.checkPageRolePermission("/school/students/student-report-card", this.currentRolePermission)?.view
     this.otherTabs.transcript=this.pageRolePermission.checkPageRolePermission("/school/students/student-transcript", this.currentRolePermission)?.view
   }
@@ -287,7 +288,9 @@ export class AddStudentComponent implements OnInit, OnDestroy {
       this.router.navigate(['/school', 'students', 'student-transcript']);
     }  else if(this.categoryPath === '/school/students/student-report-card' ) {
       this.router.navigate(['/school', 'students', 'student-report-card']);
-    }
+    }  else if(this.categoryPath === '/school/students/student-progress-report' ) {
+      this.router.navigate(['/school', 'students', 'student-progress-report']);
+    } 
     else {
       this.router.navigate(['/school', 'students', 'custom', this.categoryTitle.trim().toLowerCase().split(' ').join('-')]);
     }
@@ -364,6 +367,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.studentAddModel = data;
+      this.studentService.setStudentGuid(this.studentAddModel.studentMaster.studentGuid);
       this.responseImage = this.studentAddModel.studentMaster.studentPhoto;
       this.studentAddModel.fieldsCategoryList = this.checkViewPermission(data.fieldsCategoryList);
       this.fieldsCategory = this.studentAddModel.fieldsCategoryList
