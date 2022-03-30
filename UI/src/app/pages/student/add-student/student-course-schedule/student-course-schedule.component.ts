@@ -42,6 +42,7 @@ import {
   RoutineViewModel,
   ScheduleCourseSectionForViewModel,
   ScheduleCoursesForStudent360Model,
+  ScheduledStudentDeleteModel,
   ScheduledStudentDropModel,
   StudentCoursesectionSchedule,
 } from "../../../../models/student-schedule.model";
@@ -316,38 +317,64 @@ export class StudentCourseScheduleComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((dialogResult) => {
       if (dialogResult) {
-        this.onScheduleCourseSectionDeletion(courseDetails);
+        // this.onScheduleCourseSectionDeletion(courseDetails);
+        this.deleteGroupStudents(courseDetails);
       }
     });
   }
 
-  onScheduleCourseSectionDeletion(courseDetails) {
-    let deleteCourseSection: ScheduledStudentDropModel = new ScheduledStudentDropModel();
-    deleteCourseSection.courseSectionId = courseDetails.courseSectionId;
-    deleteCourseSection.studentId = this.studentService.getStudentId();
-    this.studentScheduleService
-      .dropScheduledCourseSectionForStudent360(deleteCourseSection)
-      .subscribe((res) => {
-        if (res) {
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            if (res.studentCoursesectionScheduleList === null) {
-              this.snackbar.open(res._message, "", {
-                duration: 10000,
-              });
-            }
-          } else {
-            this.snackbar.open(res._message, "", {
-              duration: 10000,
-            });
-            this.getAllScheduleCoursesForStudent360();
-          }
+  // onScheduleCourseSectionDeletion(courseDetails) {
+  //   let deleteCourseSection: ScheduledStudentDropModel = new ScheduledStudentDropModel();
+  //   deleteCourseSection.courseSectionId = courseDetails.courseSectionId;
+  //   deleteCourseSection.studentId = this.studentService.getStudentId();
+  //   this.studentScheduleService
+  //     .dropScheduledCourseSectionForStudent360(deleteCourseSection)
+  //     .subscribe((res) => {
+  //       if (res) {
+  //       if(res._failure){
+  //       this.commonService.checkTokenValidOrNot(res._message);
+  //           if (res.studentCoursesectionScheduleList === null) {
+  //             this.snackbar.open(res._message, "", {
+  //               duration: 10000,
+  //             });
+  //           }
+  //         } else {
+  //           this.snackbar.open(res._message, "", {
+  //             duration: 10000,
+  //           });
+  //           this.getAllScheduleCoursesForStudent360();
+  //         }
+  //       } else {
+  //         this.snackbar.open(this.defaultService.getHttpError(), "", {
+  //           duration: 10000,
+  //         });
+  //       }
+  //     });
+  // }
+
+  // For call groupDeleteForScheduledStudent API.
+  deleteGroupStudents(courseDetails) {
+    let scheduledStudentDeleteModel: ScheduledStudentDeleteModel = new ScheduledStudentDeleteModel();
+    scheduledStudentDeleteModel.courseSectionId = courseDetails.courseSectionId;
+    scheduledStudentDeleteModel.studentIds = [this.studentService.getStudentId()];
+    this.studentScheduleService.groupDeleteForScheduledStudent(scheduledStudentDeleteModel).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
         } else {
-          this.snackbar.open(this.defaultService.getHttpError(), "", {
+          this.snackbar.open('Delete Course Section Successfully.', "", {
             duration: 10000,
           });
+          this.getAllScheduleCoursesForStudent360();
         }
-      });
+      } else {
+        this.snackbar.open(this.defaultService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
   }
 
   generateEvents() {
