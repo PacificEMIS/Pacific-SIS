@@ -136,6 +136,11 @@ export class AddAssignmentComponent implements OnInit {
         }
       });
   }
+  
+  checkMinMaxValue(){
+    if (this.form.value.weightage > 100) this.form.value.weightage = 100;
+    else if (this.form.value.weightage < 0) this.form.value.weightage = 0;
+  }
 
   addAssignmentType() {
     const assignmentType: AddAssignmentTypeModel = new AddAssignmentTypeModel();
