@@ -1790,5 +1790,6 @@
     "studentsSuccessfullyDeletedFrom": "Étudiants supprimés avec succès de",
     "completed": "Complété",
     "noStudentScheduled": "Aucun étudiant prévu",
-    "noStudentsFound": "Aucun étudiant trouvé"
+    "noStudentsFound": "Aucun étudiant trouvé",
+    "studentReportCard":"Carte de rapport d'étudiant"
 }

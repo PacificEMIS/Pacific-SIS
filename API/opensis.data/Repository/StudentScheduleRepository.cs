@@ -685,7 +685,7 @@ namespace opensis.data.Repository
                                   //Join(this.context?.StudentMaster,
                                   Join(this.context.StudentMaster,
                                   scs => scs.StudentId, sm => sm.StudentId,
-                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
+                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
 
                 if (pageResult.StaffId != null)
                 {
@@ -1033,8 +1033,10 @@ namespace opensis.data.Repository
 
                     decimal? academicYear = Utility.GetCurrentAcademicYear(this.context!, scheduledStudentDropModel.TenantId, scheduledStudentDropModel.SchoolId);
 
+
                     if (!string.IsNullOrEmpty(scheduledStudentDropModel.StudentId.ToString()) && scheduledStudentDropModel.StudentId > 0)
                     {
+                        //this blok for student 360 screen
                         foreach (var scheduledStudent in scheduledStudentDropModel.studentCoursesectionScheduleList)
                         {
                             var studentData = this.context?.StudentCoursesectionSchedule.Include(c => c.CourseSection).FirstOrDefault(x => x.SchoolId == scheduledStudentDropModel.SchoolId && x.TenantId == scheduledStudentDropModel.TenantId && x.StudentId == scheduledStudentDropModel.StudentId && x.CourseSectionId == scheduledStudent.CourseSectionId && x.IsDropped != true);
@@ -1047,35 +1049,49 @@ namespace opensis.data.Repository
                                 {
                                     if (studentData.CourseSection.DurationEndDate >= scheduledStudent.EffectiveDropDate && currentDate <= scheduledStudent.EffectiveDropDate)
                                     {
-                                        studentData.EffectiveDropDate = scheduledStudent.EffectiveDropDate;
-                                        studentData.EffectiveStartDate = scheduledStudent.EffectiveStartDate;
-                                        studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
-                                        studentData.UpdatedOn = DateTime.UtcNow;
-                                        studentCoursesectionScheduleList.Add(studentData);
-
-                                        //this block for add this req as a job
-                                        reqPram!.studentCoursesectionScheduleList = reqPram.studentCoursesectionScheduleList.Where(x => x.CourseSectionId == scheduledStudent.CourseSectionId && x.EffectiveDropDate == scheduledStudent.EffectiveDropDate).ToList();
-
-                                        var scheduledJob = new ScheduledJob
+                                        if (currentDate == scheduledStudent.EffectiveDropDate.Value.Date)
                                         {
-                                            TenantId = scheduledStudentDropModel.TenantId,
-                                            SchoolId = scheduledStudentDropModel.SchoolId,
-                                            JobId = (long)Id,
-                                            AcademicYear = academicYear,
-                                            JobTitle = "DropStudentfromScheduledCourseSections",
-                                            JobScheduleDate = scheduledStudent.EffectiveDropDate.Value.AddDays(1),
-                                            ApiTitle = "GroupDropForScheduledStudent",
-                                            ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                            TaskJson = JsonConvert.SerializeObject(reqPram),
-                                            LastRunStatus = null,
-                                            LastRunTime = null,
-                                            IsActive = true,
-                                            CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        this.context?.ScheduledJobs.Add(scheduledJob);
-                                        Id++;
-                                        reqPram = JsonConvert.DeserializeObject<ScheduledStudentDropModel>(reqPramInString);
+                                            //this blok for when user drop student instantly
+                                            studentData.EffectiveDropDate = scheduledStudent.EffectiveDropDate;
+                                            studentData.EffectiveStartDate = scheduledStudent.EffectiveStartDate;
+                                            studentData.IsDropped = true;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+                                        }
+                                        else
+                                        {
+                                            //this blok for when user drop student future date by scheduler
+                                            studentData.EffectiveDropDate = scheduledStudent.EffectiveDropDate;
+                                            studentData.EffectiveStartDate = scheduledStudent.EffectiveStartDate;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+
+                                            //this block for add this req as a job
+                                            reqPram!.studentCoursesectionScheduleList = reqPram.studentCoursesectionScheduleList.Where(x => x.CourseSectionId == scheduledStudent.CourseSectionId && x.EffectiveDropDate == scheduledStudent.EffectiveDropDate).ToList();
+
+                                            var scheduledJob = new ScheduledJob
+                                            {
+                                                TenantId = scheduledStudentDropModel.TenantId,
+                                                SchoolId = scheduledStudentDropModel.SchoolId,
+                                                JobId = (long)Id,
+                                                AcademicYear = academicYear,
+                                                JobTitle = "DropStudentfromScheduledCourseSections",
+                                                JobScheduleDate = scheduledStudent.EffectiveDropDate.Value.AddDays(1),
+                                                ApiTitle = "GroupDropForScheduledStudent",
+                                                ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
+                                                TaskJson = JsonConvert.SerializeObject(reqPram),
+                                                LastRunStatus = null,
+                                                LastRunTime = null,
+                                                IsActive = true,
+                                                CreatedBy = scheduledStudentDropModel.UpdatedBy,
+                                                CreatedOn = DateTime.UtcNow
+                                            };
+                                            this.context?.ScheduledJobs.Add(scheduledJob);
+                                            Id++;
+                                            reqPram = JsonConvert.DeserializeObject<ScheduledStudentDropModel>(reqPramInString);
+                                        }
                                     }
                                     else
                                     {
@@ -1102,6 +1118,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
+                        //this blok for Group drop students screen
                         if (scheduledStudentDropModel.EffectiveDropDate is null)
                         {
                             return scheduledStudentDropModel;
@@ -1116,35 +1133,49 @@ namespace opensis.data.Repository
                                 {
                                     if (studentData.CourseSection.DurationEndDate >= scheduledStudentDropModel.EffectiveDropDate)
                                     {
-                                        studentData.EffectiveDropDate = scheduledStudentDropModel.EffectiveDropDate;
-                                        studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
-                                        studentData.UpdatedOn = DateTime.UtcNow;
-                                        studentCoursesectionScheduleList.Add(studentData);
-
-                                        //this block for add this req as a job
-                                        reqPram!.studentCoursesectionScheduleList = reqPram.studentCoursesectionScheduleList.Where(x => x.StudentId == scheduledStudent.StudentId).ToList();
-
-                                        var scheduledJob = new ScheduledJob
+                                        if (currentDate == scheduledStudentDropModel.EffectiveDropDate.Value.Date)
                                         {
-                                            TenantId = scheduledStudentDropModel.TenantId,
-                                            SchoolId = scheduledStudentDropModel.SchoolId,
-                                            JobId = (long)Id,
-                                            AcademicYear = academicYear,
-                                            JobTitle = "GroupDropForScheduledStudent",
-                                            JobScheduleDate = scheduledStudentDropModel.EffectiveDropDate.Value.AddDays(1),
-                                            ApiTitle = "GroupDropForScheduledStudent",
-                                            ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                            TaskJson = JsonConvert.SerializeObject(reqPram),
-                                            LastRunStatus = null,
-                                            LastRunTime = null,
-                                            IsActive = true,
-                                            CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        this.context?.ScheduledJobs.Add(scheduledJob);
-                                        Id++;
-                                        reqPram = JsonConvert.DeserializeObject<ScheduledStudentDropModel>(reqPramInString);
+                                            //this blok for when user drop student instantly
 
+                                            studentData.EffectiveDropDate = scheduledStudentDropModel.EffectiveDropDate;
+                                            studentData.IsDropped = true;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+                                        }
+                                        else
+                                        {
+                                            //this blok for when user drop student future date by scheduler
+
+                                            studentData.EffectiveDropDate = scheduledStudentDropModel.EffectiveDropDate;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+
+                                            //this block for add this req as a job
+                                            reqPram!.studentCoursesectionScheduleList = reqPram.studentCoursesectionScheduleList.Where(x => x.StudentId == scheduledStudent.StudentId).ToList();
+
+                                            var scheduledJob = new ScheduledJob
+                                            {
+                                                TenantId = scheduledStudentDropModel.TenantId,
+                                                SchoolId = scheduledStudentDropModel.SchoolId,
+                                                JobId = (long)Id,
+                                                AcademicYear = academicYear,
+                                                JobTitle = "GroupDropForScheduledStudent",
+                                                JobScheduleDate = scheduledStudentDropModel.EffectiveDropDate.Value.AddDays(1),
+                                                ApiTitle = "GroupDropForScheduledStudent",
+                                                ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
+                                                TaskJson = JsonConvert.SerializeObject(reqPram),
+                                                LastRunStatus = null,
+                                                LastRunTime = null,
+                                                IsActive = true,
+                                                CreatedBy = scheduledStudentDropModel.UpdatedBy,
+                                                CreatedOn = DateTime.UtcNow
+                                            };
+                                            this.context?.ScheduledJobs.Add(scheduledJob);
+                                            Id++;
+                                            reqPram = JsonConvert.DeserializeObject<ScheduledStudentDropModel>(reqPramInString);
+                                        }
                                     }
                                     else
                                     {

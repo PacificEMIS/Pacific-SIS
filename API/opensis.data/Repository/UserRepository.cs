@@ -331,7 +331,7 @@ namespace opensis.data.Repository
                                 }
                                 else
                                 {
-                                    var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == staffDefaultData!.SchoolId && x.StaffId == staffDefaultData.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date)).FirstOrDefault();
+                                    var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == objModel.TenantId && x.SchoolAttachedId == staffDefaultData!.SchoolId && x.StaffId == staffDefaultData.StaffId && (x.EndDate == null || x.EndDate.Value.Date >= DateTime.UtcNow.Date) && x.StartDate <= DateTime.UtcNow.Date).FirstOrDefault();
 
                                     if (staffSchoolInfoData != null)
                                     {
