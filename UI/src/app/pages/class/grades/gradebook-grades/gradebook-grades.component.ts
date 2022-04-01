@@ -122,6 +122,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
 
 
   changeComponent(step, data?) {
+    if (step === 'gradebookGrade') this.getGradebookGrade();
     this.currentComponent = step;
     this.gradeData = data;
   }
@@ -176,6 +177,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   backTogradeList() {
     this.categoryDetails = false;
     this.classGrade = true;
+    this.getGradebookGrade();
   }
   
   addGradeComment(grade) {
