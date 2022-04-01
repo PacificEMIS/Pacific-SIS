@@ -146,7 +146,7 @@ namespace opensis.data.Repository
                                                         }
                                                         else
                                                         {
-                                                            conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                         }
                                                     }
                                                 }
@@ -198,7 +198,7 @@ namespace opensis.data.Repository
                                                 }
                                                 else
                                                 {
-                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
                                             }
                                             //Student enrollment checking
@@ -227,7 +227,7 @@ namespace opensis.data.Repository
                                                 }
                                                 else
                                                 {
-                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
                                             }
                                             else
@@ -475,7 +475,7 @@ namespace opensis.data.Repository
                                                             }
                                                             else
                                                             {
-                                                                conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                                conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                             }
                                                         }
                                                     }
@@ -525,7 +525,7 @@ namespace opensis.data.Repository
                                         }
                                         else
                                         {
-                                            conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                         }
                                     }
                                 }                               
