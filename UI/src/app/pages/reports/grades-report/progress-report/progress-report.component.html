@@ -110,7 +110,7 @@
 
             <ng-container matColumnDef="gradeLevel">
                 <th mat-header-cell *matHeaderCellDef>{{'gradeLevel' | translate }}</th>
-                <td mat-cell *matCellDef="let element"> {{ element?.gradeLevelTitle | EmtyValueCheckPipe}} </td>
+                <td mat-cell *matCellDef="let element"> {{ element?.gradeLevelTitle ? element?.gradeLevelTitle : element?.gradeLevel | EmtyValueCheckPipe}} </td>
             </ng-container>
 
             <ng-container matColumnDef="section">
