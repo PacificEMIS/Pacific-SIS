@@ -76,7 +76,7 @@ namespace opensis.data.Models
         public bool? IsDelete { get; set; }
         public bool? IsListView { get; set; }
         public bool? IsSchoolSpecific { get; set; }
-        public bool? IsDropped { get; set; }
+        public bool? AciveStudentInCourseSection { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
         public string? GradeLevel { get; set; }
