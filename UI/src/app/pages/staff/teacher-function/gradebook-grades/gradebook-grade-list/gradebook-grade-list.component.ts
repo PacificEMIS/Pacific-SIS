@@ -146,6 +146,7 @@ export class GradebookGradeListComponent implements OnInit {
 
 
   changeComponent(step, data?) {
+    if (step === 'gradebookGrade') this.getGradebookGrade();
     this.currentComponent = step;
     this.gradeData = data;
   }
@@ -200,6 +201,7 @@ export class GradebookGradeListComponent implements OnInit {
   backTogradeList() {
     this.categoryDetails = false;
     this.classGrade = true;
+    this.getGradebookGrade();
   }
   
   addGradeComment(grade) {
