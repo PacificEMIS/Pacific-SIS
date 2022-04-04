@@ -4466,8 +4466,8 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("qtr_marking_period_id");
 
                     b.Property<string>("RunningAvg")
-                        .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasMaxLength(10)
+                        .HasColumnType("char(10)")
                         .HasColumnName("running_avg")
                         .IsFixedLength();
 

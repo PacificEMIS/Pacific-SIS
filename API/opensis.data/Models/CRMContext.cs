@@ -2695,7 +2695,7 @@ namespace opensis.data.Models
                 entity.Property(e => e.Percentage).HasColumnName("percentage");
 
                 entity.Property(e => e.RunningAvg)
-                    .HasMaxLength(5)
+                    .HasMaxLength(10)
                     .HasColumnName("running_avg")
                     .IsFixedLength();
 
