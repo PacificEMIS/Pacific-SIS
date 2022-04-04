@@ -138,7 +138,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private commonFunction: SharedFunction,
     private sectionService: SectionService,
-    private defaultValueService: DefaultValuesService,
+    public defaultValueService: DefaultValuesService,
     private commonService: CommonService,
   ) {
     this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
@@ -174,14 +174,6 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
     this.membershipType = this.defaultValueService.getUserMembershipType();
   }
 
-  minDate() {
-    return this.defaultValueService.getFullYearStartDate();
-  }
-
-  maxDate() {
-    return this.defaultValueService.getFullYearEndDate();
-  }
-  
   cmpare(index) {
     return index;
   }
