@@ -137,7 +137,7 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'enrollmentDate'|translate}}</mat-label>
                                                 <input #enrollment_date="ngModel" name="{{'enrollmentDate'+index}}"
-                                                    matInput [matDatepicker]="enrollmentDate" [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
+                                                    matInput [min]="minDate()" [max]="maxDate()" [matDatepicker]="enrollmentDate" [disabled]="this.cloneStudentEnrollment.studentEnrollments[index].exitType==='Drop'"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].enrollmentDate"
                                                     required>
                                                 <mat-datepicker-toggle matSuffix [for]="enrollmentDate">

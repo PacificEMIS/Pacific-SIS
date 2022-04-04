@@ -174,6 +174,14 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
     this.membershipType = this.defaultValueService.getUserMembershipType();
   }
 
+  minDate() {
+    return this.defaultValueService.getFullYearStartDate();
+  }
+
+  maxDate() {
+    return this.defaultValueService.getFullYearEndDate();
+  }
+  
   cmpare(index) {
     return index;
   }
