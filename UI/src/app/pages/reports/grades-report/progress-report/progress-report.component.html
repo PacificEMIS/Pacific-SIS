@@ -6,7 +6,7 @@
             <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "subject" | translate }}</mat-label>
-                        <mat-select name="subject" [(ngModel)]="selectedSubject" (selectionChange)="selectedCourse = 'all'; selectedCourseSection = 'all'; getStudentListByCourseSection()">
+                        <mat-select name="subject" [(ngModel)]="selectedSubject" (selectionChange)="selectedCourse = 'all'; selectedCourseSection = 'all';">
                             <mat-option value="all">{{'all'|translate}}</mat-option>
                             <mat-option *ngFor="let subject of subjectDetails; let i = index;" [value]="i">{{subject.subjectName}}</mat-option>
                         </mat-select>
@@ -15,7 +15,7 @@
             <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "course" | translate }}</mat-label>
-                    <mat-select name="course" [(ngModel)]="selectedCourse" (selectionChange)="selectedCourseSection = 'all'; getStudentListByCourseSection()">
+                    <mat-select name="course" [(ngModel)]="selectedCourse" (selectionChange)="selectedCourseSection = 'all';">
                         <mat-option value="all">{{'all'|translate}}</mat-option>
                         <ng-container *ngIf="selectedSubject !== 'all'">
                             <mat-option *ngFor="let course of subjectDetails[selectedSubject]?.coursesViewModels; let i = index;" [value]="i">{{course.courseName}}</mat-option>
@@ -26,13 +26,16 @@
             <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "courseSection" | translate }}</mat-label>
-                    <mat-select name="courseSection" [(ngModel)]="selectedCourseSection" (selectionChange)="getStudentListByCourseSection()">
+                    <mat-select name="courseSection" [(ngModel)]="selectedCourseSection">
                         <mat-option value="all">{{'all'|translate}}</mat-option>
                         <ng-container *ngIf="selectedCourse !== 'all'">
                             <mat-option *ngFor="let courseSection of subjectDetails[selectedSubject]?.coursesViewModels[selectedCourse]?.courseSectionsViewModels; let i = index;" [value]="i">{{courseSection.courseSectionName}}</mat-option>
                         </ng-container>
                     </mat-select>
                 </mat-form-field>
+            </li>
+            <li>
+                <button mat-raised-button color="primary" (click)="getStudentListByCourseSection()">{{'search' | translate }}</button>
             </li>
         </ul>
     </ng-container>
