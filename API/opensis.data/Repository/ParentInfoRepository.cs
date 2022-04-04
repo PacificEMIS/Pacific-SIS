@@ -217,18 +217,19 @@ namespace opensis.data.Repository
                         var parentData = this.context?.ParentInfo.Include(x => x.ParentAddress).FirstOrDefault(x => x.ParentId == parent.ParentId);
                         if(parentData != null)
                         {
-                            if(parentData.ParentAddress.FirstOrDefault()!.StudentAddressSame == true)
+                            var parentAddress = parentData.ParentAddress.FirstOrDefault();
+                            if (parentData.ParentAddress.FirstOrDefault()!.StudentAddressSame == true)
                             {
-                                var parentAddress = this.context?.StudentMaster.FirstOrDefault(x => x.StudentId == parentInfoList.StudentId && x.SchoolId == parentInfoList.SchoolId);
+                                var studentAddress = this.context?.StudentMaster.FirstOrDefault(x => x.StudentId == parentInfoList.StudentId && x.SchoolId == parentInfoList.SchoolId);
 
                                 if(parentAddress != null)
                                 {
-                                    parentData.ParentAddress.FirstOrDefault()!.AddressLineOne = parentAddress.HomeAddressLineOne;
-                                    parentData.ParentAddress.FirstOrDefault()!.AddressLineTwo = parentAddress.HomeAddressLineTwo;
-                                    parentData.ParentAddress.FirstOrDefault()!.Country = parentInfoList.IsReport==true?  parentAddress.HomeAddressCountry != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(parentAddress.HomeAddressCountry))!.Name:null : parentAddress.HomeAddressCountry;
-                                    parentData.ParentAddress.FirstOrDefault()!.State = parentAddress.HomeAddressState;
-                                    parentData.ParentAddress.FirstOrDefault()!.City = parentAddress.HomeAddressCity;
-                                    parentData.ParentAddress.FirstOrDefault()!.Zip = parentAddress.HomeAddressZip;
+                                    parentAddress!.AddressLineOne = studentAddress!.HomeAddressLineOne;
+                                    parentAddress!.AddressLineTwo = studentAddress.HomeAddressLineTwo;
+                                    parentAddress!.Country = parentInfoList.IsReport==true? studentAddress.HomeAddressCountry != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(studentAddress.HomeAddressCountry))!.Name:null : studentAddress.HomeAddressCountry;
+                                    parentAddress!.State = studentAddress.HomeAddressState;
+                                    parentAddress!.City = studentAddress.HomeAddressCity;
+                                    parentAddress!.Zip = studentAddress.HomeAddressZip;
                                 }
                             }
 
@@ -260,15 +261,15 @@ namespace opensis.data.Repository
                                 ParentPhoto = parentData.ParentPhoto,
                                 IsCustodian = parent.IsCustodian,
                                 Relationship = parent.Relationship,
-                                ParentAddress = parentInfoList.IsReport == true && parentData.ParentAddress.FirstOrDefault()!.StudentAddressSame == false? new ParentAddress
+                                ParentAddress = parentInfoList.IsReport == true && parentAddress!.StudentAddressSame == false? new ParentAddress
                                 {
-                                    AddressLineOne = parentData.ParentAddress.FirstOrDefault()?.AddressLineOne,
-                                    AddressLineTwo = parentData.ParentAddress.FirstOrDefault()?.AddressLineTwo,
-                                    Country= this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(parentData.ParentAddress.FirstOrDefault()!.Country))!.Name,
-                                    State= parentData.ParentAddress.FirstOrDefault()?.State,
-                                    City= parentData.ParentAddress.FirstOrDefault()?.City,
-                                    Zip = parentData.ParentAddress.FirstOrDefault()?.Zip
-                                } : parentData.ParentAddress.FirstOrDefault(),
+                                    AddressLineOne = parentAddress?.AddressLineOne,
+                                    AddressLineTwo = parentAddress?.AddressLineTwo,
+                                    Country= this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(parentAddress!.Country))!.Name,
+                                    State= parentAddress?.State,
+                                    City= parentAddress?.City,
+                                    Zip = parentAddress?.Zip
+                                } : parentAddress,
                                 LoginEmail = parentData.LoginEmail
                             };
                             parentInfoListViewModel.parentInfoListForView.Add(parentInfoListData);
