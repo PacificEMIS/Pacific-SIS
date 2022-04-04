@@ -2037,7 +2037,7 @@ namespace opensis.data.Repository
                 {
                     if (scheduledCourseSectionViewModel.AllCourse != true)
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && x.DurationStartDate <= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
                     }
                     else
                     {
