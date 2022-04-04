@@ -71,6 +71,9 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   changeParcentageCalculationValue;
   markingPeriodId;
   isWeightedSection: boolean;
+  maxAnomalousGrade;
+  isGradeValid: boolean;
+  isAssignmentGradeValid: boolean;
   @Output() isConfigUpdateFlag = new EventEmitter<boolean>()
   constructor(
     public translateService: TranslateService,
@@ -150,6 +153,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         res.assignmentsListViewModels?.map(item => {
           item.studentsListViewModels.map(subItem => {
             subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
           });
         });
         this.addGradebookGradeByAssignmentTypeModel = res;
@@ -158,7 +162,31 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
     })
   }
 
+  checkAssignmentGradeIsValidOrNot() {
+    if (this.maxAnomalousGrade) {
+      loop1:
+      for (let item of this.addGradebookGradeByAssignmentTypeModel.assignmentsListViewModels) {
+        loop2:
+        for (let subItem of item.studentsListViewModels) {
+          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
+            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+              duration: 10000
+            });
+            this.isAssignmentGradeValid = false;
+            break loop1;
+          } else {
+            this.isAssignmentGradeValid = true;
+          }
+        }
+      }
+    } else {
+      this.isAssignmentGradeValid = true;
+    }
+  }
+
   submitGradesBookByAssignmentType() {
+    this.checkAssignmentGradeIsValidOrNot();
+    if (this.isAssignmentGradeValid) {
     delete this.addGradebookGradeByAssignmentTypeModel.academicYear;
     this.addGradebookGradeByAssignmentTypeModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGradeByAssignmentType(this.addGradebookGradeByAssignmentTypeModel).subscribe((res)=>{
@@ -172,6 +200,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         // this.assignmentList = res
       }
     })
+  }
   }
 
   backTogradeList() {
@@ -238,6 +267,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         res.assignmentsListViewModels?.map(item => {
           item.studentsListViewModels.map(subItem => {
             subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
+            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
           });
         });
         this.isConfigUpdateFlag.emit(res?.configUpdateFlag)
@@ -258,13 +288,38 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         }else{
           this.changeParcentageCalculationValue=res.gradebookConfiguration.scoreRounding;
           this.isWeightedSection = res?.gradebookConfiguration?.general?.includes('weightGrades') ? true : false;
+          this.maxAnomalousGrade = res?.gradebookConfiguration?.maxAnomalousGrade;
           this.getGradebookGrade();
         }
       }
     );
   }
 
+  checkGradeIsValidOrNot() {
+    if (this.maxAnomalousGrade) {
+      loop1:
+      for (let item of this.addGradebookGradeModel.assignmentsListViewModels) {
+        loop2:
+        for (let subItem of item.studentsListViewModels) {
+          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
+            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+              duration: 10000
+            });
+            this.isGradeValid = false;
+            break loop1;
+          } else {
+            this.isGradeValid = true;
+          }
+        }
+      }
+    } else {
+      this.isGradeValid = true;
+    }
+  }
+
   submitGradesBook() {
+    this.checkGradeIsValidOrNot();
+    if (this.isGradeValid) {
     delete this.addGradebookGradeModel.academicYear;
     this.addGradebookGradeModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGrade(this.addGradebookGradeModel).subscribe((res)=>{
@@ -278,6 +333,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         // this.assignmentList = res
       }
     })
+  }
   }
 
   createDataSetForExcel() {

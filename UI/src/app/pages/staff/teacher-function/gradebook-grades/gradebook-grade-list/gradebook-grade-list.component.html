@@ -137,7 +137,7 @@
                             aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                             <div class="flex justify-between items-center">
                                 <div class="">
-                                    <p>{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
+                                    <p [ngClass]="{'text-red': grade?.allowedMarks > grade.points}">{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
                                 <button class="" (click)="addGradeComment(grade)">
@@ -283,7 +283,7 @@
                             aria-label="Button that displays a tooltip when focused or hovered over" [matTooltipPosition]="'above'">
                             <div class="flex justify-between items-center">
                                 <div class="">
-                                    <p>{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
+                                    <p [ngClass]="{'text-red': grade?.allowedMarks > grade.points}">{{grade?.allowedMarks ? grade?.allowedMarks : 0}}/{{grade?.points}}</p>
                                     <p>{{grade?.percentage ? grade?.percentage + '%' : ''}} <span class="font-semibold text-black">{{grade?.letterGrade ? '[ ' + grade?.letterGrade + ' ]' : ''}}</span></p>
                                 </div>
                                 <button class="" (click)="addGradeComment(grade)">
@@ -324,6 +324,6 @@
         </div>
     </div>
     <mat-divider></mat-divider>
-    <vex-gradebook-grade-details [isWeightedSection]="isWeightedSection" [studentId]="gradeData?.studentId"></vex-gradebook-grade-details>
+    <vex-gradebook-grade-details [isWeightedSection]="isWeightedSection" [maxAnomalousGrade]="maxAnomalousGrade" [studentId]="gradeData?.studentId"></vex-gradebook-grade-details>
 </div>
 <!-- End Grade Details -->

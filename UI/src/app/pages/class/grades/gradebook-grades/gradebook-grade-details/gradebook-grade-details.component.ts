@@ -41,11 +41,13 @@ export class GradebookGradeDetailsComponent implements OnInit {
   icEdiit = icEdiit;
   @Input() studentId;
   @Input() isWeightedSection;
+  @Input() maxAnomalousGrade;
   viewGradebookGradeByStudentModel: ViewGradebookGradeByStudentModel = new ViewGradebookGradeByStudentModel();
   gradesByStudentId;
   addGradebookGradeByStudentModel: AddGradebookGradeByStudentModel =  new AddGradebookGradeByStudentModel();
   selectedCourseSection;
   markingPeriodId;
+  isStudentGradeValid;
 
   constructor(
     private gradeBookConfigurationService: GradeBookConfigurationService,
@@ -85,13 +87,42 @@ export class GradebookGradeDetailsComponent implements OnInit {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
       } else{
+        res.assignmentTypeViewModelList?.map(item => {
+          item.assignmentViewModelList.map(subItem => {
+            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
+          });
+        });
         this.addGradebookGradeByStudentModel = res;
         this.gradesByStudentId = res.assignmentTypeViewModelList;
       }
     })
   }
 
+  checkStudentGradeIsValidOrNot() {
+    if (this.maxAnomalousGrade) {
+      loop1:
+      for (let item of this.addGradebookGradeByStudentModel.assignmentTypeViewModelList) {
+        loop2:
+        for (let subItem of item.assignmentViewModelList) {
+          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
+            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+              duration: 10000
+            });
+            this.isStudentGradeValid = false;
+            break loop1;
+          } else {
+            this.isStudentGradeValid = true;
+          }
+        }
+      }
+    } else {
+      this.isStudentGradeValid = true;
+    }
+  }
+
   submitGradebookGradeByStudent() {
+    this.checkStudentGradeIsValidOrNot();
+    if (this.isStudentGradeValid) {
     delete this.addGradebookGradeByStudentModel.academicYear;
     this.addGradebookGradeByStudentModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGradeByStudent(this.addGradebookGradeByStudentModel).subscribe((res: any)=>{
@@ -105,6 +136,7 @@ export class GradebookGradeDetailsComponent implements OnInit {
         });
       }
     })
+  }
   }
 
 }
