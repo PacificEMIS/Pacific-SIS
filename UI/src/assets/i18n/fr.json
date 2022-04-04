@@ -1791,5 +1791,7 @@
     "completed": "Complété",
     "noStudentScheduled": "Aucun étudiant prévu",
     "noStudentsFound": "Aucun étudiant trouvé",
-    "studentReportCard":"Carte de rapport d'étudiant"
+    "studentReportCard":"Carte de rapport d'étudiant",
+    "courseNameIsRequired": "Le nom du cours est requis",
+    "letterGradeIsRequired": "La note de lettre est requise"
 }
