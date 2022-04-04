@@ -46,7 +46,7 @@ export class ScheduleStudentListViewModel extends CommonField {
   public totalCount: number;
   public profilePhoto: boolean;
   public _pageSize: number; // this is from response.
-  public IsDropped: boolean;
+  public aciveStudentInCourseSection: boolean;
   constructor() {
     super();
     this.pageNumber = 1;
