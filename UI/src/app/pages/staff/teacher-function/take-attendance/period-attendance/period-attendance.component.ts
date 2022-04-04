@@ -119,11 +119,6 @@ export class PeriodAttendanceComponent implements OnInit {
         this.scheduleStudentListViewModel.scheduleStudentForView=res.scheduleStudentForView;
         this.allStudentList=res.scheduleStudentForView;
         this.getAllAttendanceCode();
-        this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
-          if(x.isDropped === true){
-            this.getTheIndexNumbersForDroppedStudentForCourseSection.push(index)
-          }
-         })
       }
     })
   }
@@ -245,14 +240,6 @@ export class PeriodAttendanceComponent implements OnInit {
   }
 
   addUpdateStudentAttendance() {
-    this.addUpdateStudentAttendanceModel.studentAttendance.map((data,index)=>{
-      this.getTheIndexNumbersForDroppedStudentForCourseSection.map(val=>{
-        if(val === index){
-          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCode = 0;
-          this.addUpdateStudentAttendanceModel.studentAttendance[val].attendanceCategoryId = 0;
-        }
-      })
-     })
     this.addUpdateStudentAttendanceModel={...this.setDefaultDataInStudentAttendance(this.addUpdateStudentAttendanceModel)};
       this.studentAttendanceService.addUpdateStudentAttendance(this.addUpdateStudentAttendanceModel).subscribe((res)=>{
       if(res._failure){

@@ -249,11 +249,6 @@ export class TakeAttendanceComponent implements OnInit {
         this.studentLength = this.scheduleStudentListViewModel.scheduleStudentForView.length;
         this.allStudentList=res.scheduleStudentForView;
         this.getAllAttendanceCode();
-        this.scheduleStudentListViewModel.scheduleStudentForView.map((x,index)=>{
-          if(x.isDropped === true){
-            this.getTheIndexNumbersForDroppedStudentForCourseSection.push(index)
-          }
-         })
       }
     })
   }

@@ -36,7 +36,7 @@
                                     <div class="flex-shrink-0 h-12 w-12">
                                         <img src="{{element.studentPhoto?'data:image/png;base64,'+ element.studentPhoto:'assets/img/default-person.jpg'}}" alt="Student photo" class="h-12 w-12 rounded-full" />
                                     </div>
-                                    <div class="ml-3 flex flex-col justify-center" [ngClass]="element.isDropped ? 'text-gray': ''">
+                                    <div class="ml-3 flex flex-col justify-center">
                                         <h6 class="text-sm font-semibold">{{ element.firstGivenName+' '+element.lastFamilyName }}</h6>
                                         <div>
                                             <span class="">#{{element.studentInternalId}}</span>
@@ -61,7 +61,7 @@
                                     <label for="{{attendance.title+''+i}}">
                                         <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [ngModel]="addUpdateStudentAttendanceModel.studentAttendance[i]?.attendanceCode" 
                                         (ngModelChange)="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode = $event" 
-                                        value="{{attendance.attendanceCode1}}"  [disabled]="element.isDropped || !defaultValuesService.checkAcademicYear()" *ngIf="element.isDropped === null">
+                                        value="{{attendance.attendanceCode1}}">
                                         <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
                                             <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
                                         </div>
@@ -75,7 +75,7 @@
                                 <button
                                     matTooltip="{{addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0].comment}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over"
-                                    [matTooltipPosition]="'left'" (click)="addComments(i)"  [disabled]="element.isDropped">
+                                    [matTooltipPosition]="'left'" (click)="addComments(i)">
                                     <img src="assets/img/comment_inactive.svg" *ngIf="!addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0].comment" alt="Comment Inactive Icon">
                                     <img src="assets/img/comment_active.svg" *ngIf="addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0].comment" alt="Comment Active Icon">
                                     <!-- <i class="icon icon-bubble text-lg" [ngClass]="addUpdateStudentAttendanceModel.studentAttendance[i]?.studentAttendanceComments[0].comment?'text-green':''"></i> -->
