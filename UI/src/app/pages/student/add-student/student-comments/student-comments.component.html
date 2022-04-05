@@ -26,10 +26,10 @@
                                     <div class="flex w-full justify-between items-center h-full">
                                         <h5 class="inline-block font-medium"><mat-icon [icIcon]="icComment" class="inline-block align-middle mr-3"></mat-icon><span class="text-primary font-medium">{{studentComment.updatedBy?studentComment.updatedBy:studentComment.createdBy}}</span> Commented on {{(studentComment.updatedOn?studentComment.updatedOn:studentComment.createdOn)|date:'MMM d, y, h:mm a'}}</h5>
                                         <div class="font-normal pt-1">
-                                            <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Filter Columns" (click)="editComment(studentComment)" type="button">
+                                            <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Edit Comment" (click)="editComment(studentComment)" type="button">
                                                 <mat-icon [icIcon]="icEdit" class="mr-2"></mat-icon>
                                             </button>
-                                            <button *ngIf="permissions?.delete" mat-icon-button matTooltip="Delete Column" (click)="confirmDelete(studentComment)"type="button">
+                                            <button *ngIf="permissions?.delete" mat-icon-button matTooltip="Delete Comment" (click)="confirmDelete(studentComment)"type="button">
                                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                                             </button>
                                         </div>
