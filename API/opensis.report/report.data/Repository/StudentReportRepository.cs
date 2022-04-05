@@ -968,7 +968,6 @@ namespace opensis.report.report.data.Repository
                                                             courseSection.Total = Math.Round(Convert.ToDecimal(totalAvaragePoint), 2).ToString();
                                                             courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "%" + studentGrades.RunningAvgGrade : null;
                                                         }
-
                                                     }
                                                 }
                                             }
