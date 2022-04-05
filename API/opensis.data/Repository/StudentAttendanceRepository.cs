@@ -64,249 +64,260 @@ namespace opensis.data.Repository
 
                     if (studentAttendanceAddViewModel.studentAttendance?.Any() == true)
                     {
-                        var attendanceDataExist = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate && x.PeriodId == studentAttendanceAddViewModel.PeriodId).ToList();
+                        var checkAttendanceDate = CheckAttendanceDate(studentAttendanceAddViewModel.TenantId, studentAttendanceAddViewModel.SchoolId, studentAttendanceAddViewModel.CourseSectionId, studentAttendanceAddViewModel.AttendanceDate);//check attendance date is valid or not.
 
-                        long? StudentAttendanceId = 1;
-
-                        var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
-
-                        if (studentAttendanceData != null)
+                        if (checkAttendanceDate == true)
                         {
-                            StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
-                        }
+                            var attendanceDataExist = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate && x.PeriodId == studentAttendanceAddViewModel.PeriodId).ToList();
 
-                        int? membershipID = null;
+                            long? StudentAttendanceId = 1;
 
-                        var staffSchoolInfoData = this.context?.StaffSchoolInfo.Include(x => x.StaffMaster).FirstOrDefault(c => c.TenantId == studentAttendanceAddViewModel.TenantId && c.SchoolId == studentAttendanceAddViewModel.SchoolId && c.StaffId == studentAttendanceAddViewModel.StaffId);
+                            var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
 
-                        if (staffSchoolInfoData != null)
-                        {
-                            membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && (v.Profile ?? "").ToLower() == (staffSchoolInfoData.Profile ?? "").ToLower())?.MembershipId;
-                            //membershipID = this.context?.Membership.AsEnumerable().FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && String.Compare(v.Profile, staffSchoolInfoData.Profile, true) == 0)?.MembershipId;
-                        }
-
-                        long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
-
-                        foreach (var studentAttendances in studentAttendanceAddViewModel.studentAttendance)
-                        {
-                            if (studentAttendances.StudentAttendanceComments.Count() > 0)
+                            if (studentAttendanceData != null)
                             {
-                                foreach (var StudentAttendanceComment in studentAttendances.StudentAttendanceComments)
+                                StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
+                            }
+
+                            int? membershipID = null;
+
+                            var staffSchoolInfoData = this.context?.StaffSchoolInfo.Include(x => x.StaffMaster).FirstOrDefault(c => c.TenantId == studentAttendanceAddViewModel.TenantId && c.SchoolId == studentAttendanceAddViewModel.SchoolId && c.StaffId == studentAttendanceAddViewModel.StaffId);
+
+                            if (staffSchoolInfoData != null)
+                            {
+                                membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && (v.Profile ?? "").ToLower() == (staffSchoolInfoData.Profile ?? "").ToLower())?.MembershipId;
+                                //membershipID = this.context?.Membership.AsEnumerable().FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && String.Compare(v.Profile, staffSchoolInfoData.Profile, true) == 0)?.MembershipId;
+                            }
+
+                            long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+
+                            foreach (var studentAttendances in studentAttendanceAddViewModel.studentAttendance)
+                            {
+                                if (studentAttendances.StudentAttendanceComments.Count() > 0)
                                 {
-                                    StudentAttendanceComment.CommentId = (long)CommentId!;
-                                    CommentId++;
+                                    foreach (var StudentAttendanceComment in studentAttendances.StudentAttendanceComments)
+                                    {
+                                        StudentAttendanceComment.CommentId = (long)CommentId!;
+                                        CommentId++;
+                                    }
                                 }
                             }
-                        }
 
-                        long? HistoryCommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceHistory, long>(x => x.AttendanceHistoryId));
+                            long? HistoryCommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceHistory, long>(x => x.AttendanceHistoryId));
 
-                        if (attendanceDataExist?.Any() == true)
-                        {
-                            //this.context?.StudentAttendance.RemoveRange(attendanceDataExist);
-                            var studentAttendanceIDs = attendanceDataExist.Select(v => v.StudentAttendanceId).ToList();
-
-                            var studentAttendanceCommentData = this.context?.StudentAttendanceComments.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && (studentAttendanceIDs == null || (studentAttendanceIDs.Contains(x.StudentAttendanceId))));
-
-                            if (studentAttendanceCommentData?.Any() == true)
+                            if (attendanceDataExist?.Any() == true)
                             {
-                                this.context?.StudentAttendanceComments.RemoveRange(studentAttendanceCommentData);
+                                //this.context?.StudentAttendance.RemoveRange(attendanceDataExist);
+                                var studentAttendanceIDs = attendanceDataExist.Select(v => v.StudentAttendanceId).ToList();
+
+                                var studentAttendanceCommentData = this.context?.StudentAttendanceComments.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && (studentAttendanceIDs == null || (studentAttendanceIDs.Contains(x.StudentAttendanceId))));
+
+                                if (studentAttendanceCommentData?.Any() == true)
+                                {
+                                    this.context?.StudentAttendanceComments.RemoveRange(studentAttendanceCommentData);
+                                }
+                                this.context?.StudentAttendance.RemoveRange(attendanceDataExist);
+                                this.context?.SaveChanges();
+
+                                foreach (var studentAttendancedata in studentAttendanceAddViewModel.studentAttendance.ToList())
+                                {
+                                    if (studentAttendancedata.AttendanceCode > 0)
+                                    {
+                                        var studentAttendanceUpdate = new StudentAttendance()
+                                        {
+                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                            StudentId = studentAttendancedata.StudentId,
+                                            StaffId = studentAttendanceAddViewModel.StaffId,
+                                            CourseId = studentAttendanceAddViewModel.CourseId,
+                                            CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                            AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
+                                            AttendanceCode = studentAttendancedata.AttendanceCode,
+                                            AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
+                                            //Comments = studentAttendancedata.Comments,
+                                            UpdatedBy = studentAttendanceAddViewModel.UpdatedBy,
+                                            UpdatedOn = DateTime.UtcNow,
+                                            BlockId = studentAttendancedata.BlockId,
+                                            PeriodId = studentAttendanceAddViewModel.PeriodId,
+                                            StudentAttendanceId = (int)StudentAttendanceId,
+                                            MembershipId = membershipID,
+                                            StudentAttendanceComments = studentAttendancedata.StudentAttendanceComments.Select(c =>
+                                            {
+                                                c.UpdatedBy = studentAttendanceAddViewModel.UpdatedBy;
+                                                c.UpdatedOn = DateTime.UtcNow;
+                                                c.CommentTimestamp = DateTime.UtcNow;
+                                                c.MembershipId = membershipID;
+                                                return c;
+                                            }).ToList()
+                                        };
+                                        studentAttendance.Add(studentAttendanceUpdate);
+                                        //StudentAttendanceId++;
+
+                                        var studentAttendanceHistoryUpdate = new StudentAttendanceHistory()
+                                        {
+                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                            StudentId = studentAttendancedata.StudentId,
+                                            AttendanceHistoryId = (long)HistoryCommentId!,
+                                            CourseId = studentAttendanceAddViewModel.CourseId,
+                                            CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                            AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
+                                            AttendanceCode = studentAttendancedata.AttendanceCode,
+                                            AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
+                                            BlockId = studentAttendancedata.BlockId,
+                                            PeriodId = studentAttendanceAddViewModel.PeriodId,
+                                            ModifiedBy = studentAttendanceAddViewModel.StaffId,
+                                            ModificationTimestamp = DateTime.UtcNow,
+                                            MembershipId = membershipID,
+                                            UpdatedBy = studentAttendanceAddViewModel.UpdatedBy,
+                                            UpdatedOn = DateTime.UtcNow,
+                                        };
+                                        studentAttendanceHistories.Add(studentAttendanceHistoryUpdate);
+                                        StudentAttendanceId++;
+                                        HistoryCommentId++;
+                                    }
+                                }
+
+                                //remove data from StudentMissingAttendances table.
+                                var dataExitsInMA = this.context?.StudentMissingAttendances.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.PeriodId == studentAttendanceAddViewModel.PeriodId && x.MissingAttendanceDate == studentAttendanceAddViewModel.AttendanceDate).FirstOrDefault();
+                                if (dataExitsInMA != null)
+                                {
+                                    studentMissingAttendances.Add(dataExitsInMA);
+                                }
+
+                                studentAttendanceAddViewModel._message = "Student Attendance Updated Succsesfully.";
                             }
-                            this.context?.StudentAttendance.RemoveRange(attendanceDataExist);
+                            else
+                            {
+                                foreach (var studentAttendancedata in studentAttendanceAddViewModel.studentAttendance.ToList())
+                                {
+                                    if (studentAttendancedata.AttendanceCode > 0)
+                                    {
+                                        var studentAttendanceAdd = new StudentAttendance()
+                                        {
+                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                            StudentId = studentAttendancedata.StudentId,
+                                            StaffId = studentAttendanceAddViewModel.StaffId,
+                                            CourseId = studentAttendanceAddViewModel.CourseId,
+                                            CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                            AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
+                                            AttendanceCode = studentAttendancedata.AttendanceCode,
+                                            AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
+                                            //Comments = studentAttendancedata.Comments,
+                                            CreatedBy = studentAttendanceAddViewModel.UpdatedBy,
+                                            CreatedOn = DateTime.UtcNow,
+                                            BlockId = studentAttendancedata.BlockId,
+                                            PeriodId = studentAttendanceAddViewModel.PeriodId,
+                                            StudentAttendanceId = (int)StudentAttendanceId,
+                                            MembershipId = membershipID,
+                                            StudentAttendanceComments = studentAttendancedata.StudentAttendanceComments.Select(c =>
+                                            {
+                                                c.UpdatedBy = studentAttendanceAddViewModel.UpdatedBy;
+                                                c.UpdatedOn = DateTime.UtcNow;
+                                                c.CommentTimestamp = DateTime.UtcNow;
+                                                c.MembershipId = membershipID;
+                                                return c;
+                                            }).ToList()
+                                        };
+                                        studentAttendance.Add(studentAttendanceAdd);
+
+                                        var studentAttendanceHistoryAdd = new StudentAttendanceHistory()
+                                        {
+                                            TenantId = studentAttendanceAddViewModel.TenantId,
+                                            SchoolId = studentAttendanceAddViewModel.SchoolId,
+                                            StudentId = studentAttendancedata.StudentId,
+                                            AttendanceHistoryId = (long)HistoryCommentId!,
+                                            CourseId = studentAttendanceAddViewModel.CourseId,
+                                            CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
+                                            AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
+                                            AttendanceCode = studentAttendancedata.AttendanceCode,
+                                            AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
+                                            BlockId = studentAttendancedata.BlockId,
+                                            PeriodId = studentAttendanceAddViewModel.PeriodId,
+                                            ModifiedBy = studentAttendanceAddViewModel.StaffId,
+                                            ModificationTimestamp = DateTime.UtcNow,
+                                            MembershipId = membershipID,
+                                            CreatedBy = studentAttendanceAddViewModel.UpdatedBy,
+                                            CreatedOn = DateTime.UtcNow,
+                                        };
+                                        studentAttendanceHistories.Add(studentAttendanceHistoryAdd);
+                                        StudentAttendanceId++;
+                                        HistoryCommentId++;
+                                    }
+                                }
+
+                                //check for remove data from StudentMissingAttendances table.
+                                var dataExitsInMA = this.context?.StudentMissingAttendances.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.PeriodId == studentAttendanceAddViewModel.PeriodId && x.MissingAttendanceDate == studentAttendanceAddViewModel.AttendanceDate).FirstOrDefault();
+                                if (dataExitsInMA != null)
+                                {
+                                    studentMissingAttendances.Add(dataExitsInMA);
+                                }
+
+                                studentAttendanceAddViewModel._message = "Student Attendance Added Succsesfully.";
+                            }
+                            this.context?.StudentAttendance.AddRange(studentAttendance);
+                            this.context?.StudentAttendanceHistory.AddRange(studentAttendanceHistories);
+                            this.context?.StudentMissingAttendances.RemoveRange(studentMissingAttendances);
                             this.context?.SaveChanges();
 
-                            foreach (var studentAttendancedata in studentAttendanceAddViewModel.studentAttendance.ToList())
+                            var studentIdList = studentAttendanceAddViewModel.studentAttendance.Where(s => s.AttendanceCode > 0).Select(x => x.StudentId).ToList();
+
+                            foreach (var studentId in studentIdList)
                             {
-                                if (studentAttendancedata.AttendanceCode > 0)
+                                int totalAttendanceMin = 0;
+                                var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate).ToList();
+                                if (attendanceData != null)
                                 {
-                                    var studentAttendanceUpdate = new StudentAttendance()
+                                    foreach (var attendance in attendanceData)
                                     {
-                                        TenantId = studentAttendanceAddViewModel.TenantId,
-                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                        StudentId = studentAttendancedata.StudentId,
-                                        StaffId = studentAttendanceAddViewModel.StaffId,
-                                        CourseId = studentAttendanceAddViewModel.CourseId,
-                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
-                                        AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
-                                        AttendanceCode = studentAttendancedata.AttendanceCode,
-                                        AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
-                                        //Comments = studentAttendancedata.Comments,
-                                        UpdatedBy = studentAttendanceAddViewModel.UpdatedBy,
-                                        UpdatedOn = DateTime.UtcNow,
-                                        BlockId = studentAttendancedata.BlockId,
-                                        PeriodId = studentAttendanceAddViewModel.PeriodId,
-                                        StudentAttendanceId = (int)StudentAttendanceId,
-                                        MembershipId = membershipID,
-                                        StudentAttendanceComments = studentAttendancedata.StudentAttendanceComments.Select(c =>
+                                        var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
+
+                                        if (BlockPeriodData != null)
                                         {
-                                            c.UpdatedBy = studentAttendanceAddViewModel.UpdatedBy;
-                                            c.UpdatedOn = DateTime.UtcNow;
-                                            c.CommentTimestamp = DateTime.UtcNow;
-                                            c.MembershipId = membershipID;
-                                            return c;
-                                        }).ToList()
-                                    };
-                                    studentAttendance.Add(studentAttendanceUpdate);
-                                    //StudentAttendanceId++;
+                                            var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
+                                            var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
+                                            TimeSpan? periodTime = periodEndTime - periodStartTime;
+                                            var hour = Convert.ToInt32(periodTime.Value.Hours);
+                                            var min = Convert.ToInt32(periodTime.Value.Minutes);
+                                            var classMin = hour > 0 ? (hour * 60 + min) : min;
 
-                                    var studentAttendanceHistoryUpdate = new StudentAttendanceHistory()
-                                    {
-                                        TenantId = studentAttendanceAddViewModel.TenantId,
-                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                        StudentId = studentAttendancedata.StudentId,
-                                        AttendanceHistoryId = (long)HistoryCommentId!,
-                                        CourseId = studentAttendanceAddViewModel.CourseId,
-                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
-                                        AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
-                                        AttendanceCode = studentAttendancedata.AttendanceCode,
-                                        AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
-                                        BlockId = studentAttendancedata.BlockId,
-                                        PeriodId = studentAttendanceAddViewModel.PeriodId,
-                                        ModifiedBy = studentAttendanceAddViewModel.StaffId,
-                                        ModificationTimestamp = DateTime.UtcNow,
-                                        MembershipId = membershipID,
-                                        UpdatedBy = studentAttendanceAddViewModel.UpdatedBy,
-                                        UpdatedOn = DateTime.UtcNow,
-                                    };
-                                    studentAttendanceHistories.Add(studentAttendanceHistoryUpdate);
-                                    StudentAttendanceId++;
-                                    HistoryCommentId++;
-                                }
-                            }
-
-                            //remove data from StudentMissingAttendances table.
-                            var dataExitsInMA = this.context?.StudentMissingAttendances.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.PeriodId == studentAttendanceAddViewModel.PeriodId && x.MissingAttendanceDate == studentAttendanceAddViewModel.AttendanceDate).FirstOrDefault();
-                            if (dataExitsInMA != null)
-                            {
-                                studentMissingAttendances.Add(dataExitsInMA);
-                            }
-
-                            studentAttendanceAddViewModel._message = "Student Attendance Updated Succsesfully.";
-                        }
-                        else
-                        {
-                            foreach (var studentAttendancedata in studentAttendanceAddViewModel.studentAttendance.ToList())
-                            {
-                                if (studentAttendancedata.AttendanceCode > 0)
-                                {
-                                    var studentAttendanceAdd = new StudentAttendance()
-                                    {
-                                        TenantId = studentAttendanceAddViewModel.TenantId,
-                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                        StudentId = studentAttendancedata.StudentId,
-                                        StaffId = studentAttendanceAddViewModel.StaffId,
-                                        CourseId = studentAttendanceAddViewModel.CourseId,
-                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
-                                        AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
-                                        AttendanceCode = studentAttendancedata.AttendanceCode,
-                                        AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
-                                        //Comments = studentAttendancedata.Comments,
-                                        CreatedBy = studentAttendanceAddViewModel.UpdatedBy,
-                                        CreatedOn = DateTime.UtcNow,
-                                        BlockId = studentAttendancedata.BlockId,
-                                        PeriodId = studentAttendanceAddViewModel.PeriodId,
-                                        StudentAttendanceId = (int)StudentAttendanceId,
-                                        MembershipId = membershipID,
-                                        StudentAttendanceComments = studentAttendancedata.StudentAttendanceComments.Select(c =>
-                                        {
-                                            c.UpdatedBy = studentAttendanceAddViewModel.UpdatedBy;
-                                            c.UpdatedOn = DateTime.UtcNow;
-                                            c.CommentTimestamp = DateTime.UtcNow;
-                                            c.MembershipId = membershipID;
-                                            return c;
-                                        }).ToList()
-                                    };
-                                    studentAttendance.Add(studentAttendanceAdd);
-
-                                    var studentAttendanceHistoryAdd = new StudentAttendanceHistory()
-                                    {
-                                        TenantId = studentAttendanceAddViewModel.TenantId,
-                                        SchoolId = studentAttendanceAddViewModel.SchoolId,
-                                        StudentId = studentAttendancedata.StudentId,
-                                        AttendanceHistoryId = (long)HistoryCommentId!,
-                                        CourseId = studentAttendanceAddViewModel.CourseId,
-                                        CourseSectionId = studentAttendanceAddViewModel.CourseSectionId,
-                                        AttendanceCategoryId = studentAttendancedata.AttendanceCategoryId,
-                                        AttendanceCode = studentAttendancedata.AttendanceCode,
-                                        AttendanceDate = studentAttendanceAddViewModel.AttendanceDate,
-                                        BlockId = studentAttendancedata.BlockId,
-                                        PeriodId = studentAttendanceAddViewModel.PeriodId,
-                                        ModifiedBy = studentAttendanceAddViewModel.StaffId,
-                                        ModificationTimestamp = DateTime.UtcNow,
-                                        MembershipId = membershipID,
-                                        CreatedBy = studentAttendanceAddViewModel.UpdatedBy,
-                                        CreatedOn = DateTime.UtcNow,
-                                    };
-                                    studentAttendanceHistories.Add(studentAttendanceHistoryAdd);
-                                    StudentAttendanceId++;
-                                    HistoryCommentId++;
-                                }
-                            }
-
-                            //check for remove data from StudentMissingAttendances table.
-                            var dataExitsInMA = this.context?.StudentMissingAttendances.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.PeriodId == studentAttendanceAddViewModel.PeriodId && x.MissingAttendanceDate == studentAttendanceAddViewModel.AttendanceDate).FirstOrDefault();
-                            if (dataExitsInMA != null)
-                            {
-                                studentMissingAttendances.Add(dataExitsInMA);
-                            }
-
-                            studentAttendanceAddViewModel._message = "Student Attendance Added Succsesfully.";
-                        }
-                        this.context?.StudentAttendance.AddRange(studentAttendance);
-                        this.context?.StudentAttendanceHistory.AddRange(studentAttendanceHistories);
-                        this.context?.StudentMissingAttendances.RemoveRange(studentMissingAttendances);
-                        this.context?.SaveChanges();
-
-                        var studentIdList = studentAttendanceAddViewModel.studentAttendance.Where(s => s.AttendanceCode > 0).Select(x => x.StudentId).ToList();
-
-                        foreach (var studentId in studentIdList)
-                        {
-                            int totalAttendanceMin = 0;
-                            var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate).ToList();
-                            if (attendanceData != null)
-                            {
-                                foreach (var attendance in attendanceData)
-                                {
-                                    var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
-
-                                    if (BlockPeriodData != null)
-                                    {
-                                        var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
-                                        var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
-                                        TimeSpan? periodTime = periodEndTime - periodStartTime;
-                                        var hour = Convert.ToInt32(periodTime.Value.Hours);
-                                        var min = Convert.ToInt32(periodTime.Value.Minutes);
-                                        var classMin = hour > 0 ? (hour * 60 + min) : min;
-
-                                        var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
-                                        if (AttendanceCodeData != null)
-                                        {
-                                            if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                            var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                            if (AttendanceCodeData != null)
                                             {
-                                                totalAttendanceMin = totalAttendanceMin + classMin;
+                                                if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                                {
+                                                    totalAttendanceMin = totalAttendanceMin + classMin;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate);
+                                var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate);
 
-                            if (studentDailyAttendanceData != null)
-                            {
-                                studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
+                                if (studentDailyAttendanceData != null)
+                                {
+                                    studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
+                                }
+                                else
+                                {
+                                    var studentDailyAttendance = new StudentDailyAttendance { TenantId = studentAttendanceAddViewModel.TenantId, SchoolId = studentAttendanceAddViewModel.SchoolId, StudentId = studentId, AttendanceDate = studentAttendanceAddViewModel.AttendanceDate, CreatedBy = studentAttendanceAddViewModel.CreatedBy, AttendanceMinutes = totalAttendanceMin, CreatedOn = DateTime.UtcNow };
+                                    studentDailyAttendances.Add(studentDailyAttendance);
+                                }
                             }
-                            else
-                            {
-                                var studentDailyAttendance = new StudentDailyAttendance { TenantId = studentAttendanceAddViewModel.TenantId, SchoolId = studentAttendanceAddViewModel.SchoolId, StudentId = studentId, AttendanceDate = studentAttendanceAddViewModel.AttendanceDate, CreatedBy = studentAttendanceAddViewModel.CreatedBy, AttendanceMinutes = totalAttendanceMin, CreatedOn = DateTime.UtcNow };
-                                studentDailyAttendances.Add(studentDailyAttendance);
-                            }
+                            this.context?.StudentDailyAttendance.AddRange(studentDailyAttendances);
+                            this.context?.SaveChanges();
+                            transaction?.Commit();
+                            studentAttendanceAddViewModel._failure = false;
+                            studentAttendanceAddViewModel.studentAttendance.ForEach(x => { x.StudentAttendanceComments.FirstOrDefault()!.Membership = null; x.StudentAttendanceComments.FirstOrDefault()!.StudentAttendance = new(); });
                         }
-                        this.context?.StudentDailyAttendance.AddRange(studentDailyAttendances);
-                        this.context?.SaveChanges();
-                        transaction?.Commit();
-                        studentAttendanceAddViewModel._failure = false;
-                        studentAttendanceAddViewModel.studentAttendance.ForEach(x => { x.StudentAttendanceComments.FirstOrDefault()!.Membership = null; x.StudentAttendanceComments.FirstOrDefault()!.StudentAttendance = new(); });
+                        else
+                        {
+                            studentAttendanceAddViewModel._failure = true;
+                            studentAttendanceAddViewModel._message = "Your selected date is not in course section date range";
+                        }
                     }
+
                 }
                 catch (Exception es)
                 {
@@ -3077,6 +3088,20 @@ namespace opensis.data.Repository
                 studentAttendanceHistory._message = es.Message;
             }
             return studentAttendanceHistory;
+        }
+
+        private bool CheckAttendanceDate(Guid TenantId, int SchoolId, int CourseSectionID, DateTime AttendanceDate)
+        {
+            bool IsVaild = false;
+
+            var CourseSectionData = this.context?.CourseSection.Where(x => x.TenantId == TenantId && x.SchoolId == SchoolId && x.CourseSectionId == CourseSectionID && x.DurationStartDate <= AttendanceDate && x.DurationEndDate >= AttendanceDate).FirstOrDefault();
+
+            if (CourseSectionData != null)
+            {
+                IsVaild = true;
+            }
+
+            return IsVaild;
         }
     }
 }
