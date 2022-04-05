@@ -222,7 +222,7 @@ namespace opensis.data.Repository
                             {
                                 var studentAddress = this.context?.StudentMaster.FirstOrDefault(x => x.StudentId == parentInfoList.StudentId && x.SchoolId == parentInfoList.SchoolId);
 
-                                if(parentAddress != null)
+                                if(studentAddress != null)
                                 {
                                     parentAddress!.AddressLineOne = studentAddress!.HomeAddressLineOne;
                                     parentAddress!.AddressLineTwo = studentAddress.HomeAddressLineTwo;
