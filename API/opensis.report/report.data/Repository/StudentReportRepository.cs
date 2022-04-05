@@ -946,26 +946,29 @@ namespace opensis.report.report.data.Repository
                                                 {
                                                     GradeBookGradeListData gradeBookGradeData = new();
 
-                                                    var studentGrades = assignmentGrade.GradebookGrades.Where(x => x.StudentId == studentData.StudentId).FirstOrDefault(); if (studentGrades != null)
+                                                    var studentGrades = assignmentGrade.GradebookGrades.Where(x => x.StudentId == studentData.StudentId).FirstOrDefault(); 
+
+                                                    if (studentGrades != null)
                                                     {
                                                         gradeBookGradeData.AllowedMarks = studentGrades != null ? studentGrades.AllowedMarks : null;
                                                         gradeBookGradeData.AssignmentPoint = assignmentGrade.Points;
 
-                                                        if (gradeBookGradeData.AllowedMarks != null)
+                                                        if (gradeBookGradeData.AllowedMarks != "*")
                                                         {
-                                                            totalAllowedMarks = totalAllowedMarks + Convert.ToDecimal(gradeBookGradeData.AllowedMarks);
-                                                        }
-                                                        if (gradeBookGradeData.AssignmentPoint != null)
-                                                        {
-                                                            totalAssignmentPoint = totalAssignmentPoint + Convert.ToDecimal(gradeBookGradeData.AssignmentPoint);
-                                                        }
-                                                        totalAvaragePoint = (totalAllowedMarks / totalAssignmentPoint) * 100;
+                                                            if (gradeBookGradeData.AllowedMarks != null)
+                                                            {
+                                                                totalAllowedMarks = totalAllowedMarks + Convert.ToDecimal(gradeBookGradeData.AllowedMarks);
+                                                            }
+                                                            if (gradeBookGradeData.AssignmentPoint != null)
+                                                            {
+                                                                totalAssignmentPoint = totalAssignmentPoint + Convert.ToDecimal(gradeBookGradeData.AssignmentPoint);
+                                                            }
+                                                            totalAvaragePoint = (totalAllowedMarks / totalAssignmentPoint) * 100;
 
-                                                        courseSection.Total = Math.Round(Convert.ToDecimal(totalAvaragePoint), 2).ToString();
-                                                        courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "%" + studentGrades.RunningAvgGrade : null;
+                                                            courseSection.Total = Math.Round(Convert.ToDecimal(totalAvaragePoint), 2).ToString();
+                                                            courseSection.TotalWeightedGrade = studentGrades != null ? studentGrades.RunningAvg + "%" + studentGrades.RunningAvgGrade : null;
+                                                        }
                                                     }
-
-
                                                 }
                                             }
                                         }
