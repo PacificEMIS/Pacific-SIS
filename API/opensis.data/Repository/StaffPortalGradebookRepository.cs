@@ -479,6 +479,8 @@ namespace opensis.data.Repository
                     foreach (var studentId in studentIds)
                     {
                         List<GradebookGrades> GradebookGradeList = new();
+                        decimal? totalPoint = 0;
+                        decimal? totalAllowedMarks = 0;
 
                         if (YrMarkingPeriodId != null || SmstrMarkingPeriodId != null || QtrMarkingPeriodId != null || PrgrsprdMarkingPeriodId != null)
                         {
@@ -551,7 +553,7 @@ namespace opensis.data.Repository
 
                                             if (weightedGrades == true)
                                             {
-                                                //**//
+                                                //this block for Wightage Grade
                                                 if (totalWeitage > 0)
                                                 {
                                                     weightPersentage = Math.Round((Convert.ToDecimal(assignment.Weightage) / Convert.ToDecimal(totalWeitage) * 100), 2);
@@ -570,9 +572,12 @@ namespace opensis.data.Repository
                                             }
                                             else
                                             {
-                                                //**//
-                                                var runingAvg = (decimal)assignmentPercentage;
-                                                assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+                                                //this block for unWightage Grade
+                                                //var runingAvg = (decimal)assignmentPercentage;
+                                                //assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+
+                                                totalPoint += Convert.ToDecimal(student.Points);
+                                                totalAllowedMarks += Convert.ToDecimal(student.AllowedMarks);
                                             }
 
 
@@ -625,7 +630,8 @@ namespace opensis.data.Repository
                         }
                         else
                         {
-                            runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                            //runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                            runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
                         }
 
                         string? runningGrade = null;
@@ -1011,6 +1017,8 @@ namespace opensis.data.Repository
                     int? PrgrsprdMarkingPeriodId = null;
                     int? totalWeitage = 0;
                     bool? weightedGrades = null;
+                    decimal? totalPoint = 0;
+                    decimal? totalAllowedMarks = 0;
 
                     if (AssignmentTypeData?.Any() == true)
                     {
@@ -1106,8 +1114,11 @@ namespace opensis.data.Repository
                                     else
                                     {
                                         //**//
-                                        runingAvg = (decimal)assignmentPercentage;
-                                        assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+                                        //runingAvg = (decimal)assignmentPercentage;
+                                        //assignmentTypeAvg = assignmentTypeAvg + runingAvg;
+
+                                        totalPoint += Convert.ToDecimal(assignment.Points);
+                                        totalAllowedMarks += Convert.ToDecimal(assignment.AllowedMarks);
                                     }
 
                                     //var runingAvg = Math.Round((decimal)(assignmentPercentage * weightPersentage / 100), 2);
@@ -1172,7 +1183,8 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                        //runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
+                        runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
                     }
 
                     string? runningGrade = null;
