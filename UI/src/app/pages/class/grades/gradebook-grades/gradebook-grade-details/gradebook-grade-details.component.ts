@@ -47,7 +47,6 @@ export class GradebookGradeDetailsComponent implements OnInit {
   addGradebookGradeByStudentModel: AddGradebookGradeByStudentModel =  new AddGradebookGradeByStudentModel();
   selectedCourseSection;
   markingPeriodId;
-  isStudentGradeValid;
 
   constructor(
     private gradeBookConfigurationService: GradeBookConfigurationService,
@@ -89,7 +88,7 @@ export class GradebookGradeDetailsComponent implements OnInit {
       } else{
         res.assignmentTypeViewModelList?.map(item => {
           item.assignmentViewModelList.map(subItem => {
-            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
+            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : null;
           });
         });
         this.addGradebookGradeByStudentModel = res;
@@ -99,30 +98,31 @@ export class GradebookGradeDetailsComponent implements OnInit {
   }
 
   checkStudentGradeIsValidOrNot() {
-    if (this.maxAnomalousGrade) {
-      loop1:
-      for (let item of this.addGradebookGradeByStudentModel.assignmentTypeViewModelList) {
-        loop2:
-        for (let subItem of item.assignmentViewModelList) {
-          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
-            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
-              duration: 10000
-            });
-            this.isStudentGradeValid = false;
-            break loop1;
-          } else {
-            this.isStudentGradeValid = true;
+    return new Promise((resolve, reject) => {
+      if (this.maxAnomalousGrade) {
+        let isResolved = false;
+        outerLoop:
+        for (let item of this.addGradebookGradeByStudentModel.assignmentTypeViewModelList) {
+          innerLoop:
+          for (let subItem of item.assignmentViewModelList) {
+            if (subItem.allowedMarks > subItem.maxAllowedMarks) {
+              isResolved = false;
+              reject();
+              break outerLoop;
+            } else {
+              isResolved = true;
+            }
           }
         }
+        if (isResolved) resolve(true);
+      } else {
+        resolve(true);
       }
-    } else {
-      this.isStudentGradeValid = true;
-    }
+    });
   }
 
   submitGradebookGradeByStudent() {
-    this.checkStudentGradeIsValidOrNot();
-    if (this.isStudentGradeValid) {
+    this.checkStudentGradeIsValidOrNot().then(res => {
     delete this.addGradebookGradeByStudentModel.academicYear;
     this.addGradebookGradeByStudentModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGradeByStudent(this.addGradebookGradeByStudentModel).subscribe((res: any)=>{
@@ -136,7 +136,11 @@ export class GradebookGradeDetailsComponent implements OnInit {
         });
       }
     })
-  }
+    }).catch(err => {
+      this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+        duration: 10000
+      });
+    });
   }
 
 }

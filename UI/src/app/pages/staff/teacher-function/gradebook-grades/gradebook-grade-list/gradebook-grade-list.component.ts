@@ -59,8 +59,6 @@ export class GradebookGradeListComponent implements OnInit {
   markingPeriodId;
   isWeightedSection: boolean;
   maxAnomalousGrade;
-  isGradeValid: boolean;
-  isAssignmentGradeValid: boolean;
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog,
@@ -177,7 +175,7 @@ export class GradebookGradeListComponent implements OnInit {
         res.assignmentsListViewModels?.map(item => {
           item.studentsListViewModels.map(subItem => {
             subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
-            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
+            this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : null;
           });
         });
         this.addGradebookGradeByAssignmentTypeModel = res;
@@ -186,31 +184,8 @@ export class GradebookGradeListComponent implements OnInit {
     })
   }
 
-  checkAssignmentGradeIsValidOrNot() {
-    if (this.maxAnomalousGrade) {
-      loop1:
-      for (let item of this.addGradebookGradeByAssignmentTypeModel.assignmentsListViewModels) {
-        loop2:
-        for (let subItem of item.studentsListViewModels) {
-          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
-            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
-              duration: 10000
-            });
-            this.isAssignmentGradeValid = false;
-            break loop1;
-          } else {
-            this.isAssignmentGradeValid = true;
-          }
-        }
-      }
-    } else {
-      this.isAssignmentGradeValid = true;
-    }
-  }
-
   submitGradesBookByAssignmentType() {
-    this.checkAssignmentGradeIsValidOrNot();
-    if (this.isAssignmentGradeValid) {
+    this.checkGradeIsValidOrNot('gradebookGradeByAssignment').then(res => {
     delete this.addGradebookGradeByAssignmentTypeModel.academicYear;
     this.addGradebookGradeByAssignmentTypeModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGradeByAssignmentType(this.addGradebookGradeByAssignmentTypeModel).subscribe((res)=>{
@@ -224,7 +199,11 @@ export class GradebookGradeListComponent implements OnInit {
         // this.assignmentList = res
       }
     })
-  }
+    }).catch(err => {
+      this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+        duration: 10000
+      });
+    });
   }
 
   backTogradeList() {
@@ -311,7 +290,7 @@ export class GradebookGradeListComponent implements OnInit {
               res.assignmentsListViewModels?.map(item => {
                 item.studentsListViewModels.map(subItem => {
                   subItem?.comment ? subItem.isComment = true : subItem.isComment = false;
-                  this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : subItem.maxAllowedMarks = null;
+                  this.maxAnomalousGrade ? subItem.maxAllowedMarks = ((subItem.points * this.maxAnomalousGrade) / 100) + subItem.points : null;
                 });
               });
               this.addGradebookGradeModel = res;
@@ -325,31 +304,32 @@ export class GradebookGradeListComponent implements OnInit {
       })
   }
 
-  checkGradeIsValidOrNot() {
-    if (this.maxAnomalousGrade) {
-      loop1:
-      for (let item of this.addGradebookGradeModel.assignmentsListViewModels) {
-        loop2:
-        for (let subItem of item.studentsListViewModels) {
-          if (subItem.allowedMarks > subItem.maxAllowedMarks) {
-            this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
-              duration: 10000
-            });
-            this.isGradeValid = false;
-            break loop1;
-          } else {
-            this.isGradeValid = true;
+  checkGradeIsValidOrNot(sourse) {
+    return new Promise((resolve, reject) => {
+      if (this.maxAnomalousGrade) {
+        let isResolved = false;
+        outerLoop:
+        for (let item of sourse === 'gradebookGrade' ? this.addGradebookGradeModel.assignmentsListViewModels : this.addGradebookGradeByAssignmentTypeModel.assignmentsListViewModels) {
+          innerLoop:
+          for (let subItem of item.studentsListViewModels) {
+            if (subItem.allowedMarks > subItem.maxAllowedMarks) {
+              isResolved = false;
+              reject();
+              break outerLoop;
+            } else {
+              isResolved = true;
+            }
           }
         }
+        if (isResolved) resolve(true);
+      } else {
+        resolve(true);
       }
-    } else {
-      this.isGradeValid = true;
-    }
+    });
   }
 
   submitGradesBook() {
-    this.checkGradeIsValidOrNot();
-    if (this.isGradeValid) {
+    this.checkGradeIsValidOrNot('gradebookGrade').then(res => {
     delete this.addGradebookGradeModel.academicYear;
     this.addGradebookGradeModel.markingPeriodId = this.markingPeriodId;
     this.gradeBookConfigurationService.addGradebookGrade(this.addGradebookGradeModel).subscribe((res)=>{
@@ -363,7 +343,11 @@ export class GradebookGradeListComponent implements OnInit {
         // this.assignmentList = res
       }
     })
-  }
+    }).catch(err => {
+      this.snackbar.open('Please enter a valid anomalous grade. Check "Allowed maximum % in anomalous grade".', '', {
+        duration: 10000
+      });
+    });
   }
 
   createDataSetForExcel() {
