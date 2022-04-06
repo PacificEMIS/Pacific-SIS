@@ -385,7 +385,7 @@ export class ProgressReportComponent implements OnInit {
     this.addAndGenerateProgressReportCard().then((res: any) => {
       this.generatedReportCardData = res
 
-      if (!this.getStudentProgressReportModel.TotalsOnly) {
+      if (!this.getStudentProgressReportModel.totalsOnly) {
         this.calculateAndGenerateData();
       } else {
         this.generatedReportCardData.schoolMasterListData.map((schoolDetails) => {
@@ -398,7 +398,7 @@ export class ProgressReportComponent implements OnInit {
         })
       }
       setTimeout(() => {
-        if (this.getStudentProgressReportModel.TotalsOnly) {
+        if (this.getStudentProgressReportModel.totalsOnly) {
           this.generatePdfForTotal();
         } else {
           this.generatePdfForAssignmentDetails();

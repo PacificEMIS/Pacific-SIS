@@ -181,7 +181,7 @@ export class StudentCommentsComponent implements OnInit {
       maxWidth: '400px',
       data: {
           title: this.defaultValuesService.translateKey('areYouSure'),
-          message: this.defaultValuesService.translateKey('youAreAboutToDelete') + element.title + '.'}
+          message: this.defaultValuesService.translateKey('youAreAboutToDeleteThisComment') + '.'}
     });
     dialogRef.afterClosed().subscribe(dialogResult => {
       if (dialogResult){
