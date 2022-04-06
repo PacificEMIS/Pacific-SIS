@@ -170,12 +170,13 @@ export class GetStudentProgressReportModel extends CommonField {
     studentGuids: any[];
     markingPeriodStartDate: string;
     markingPeriodEndDate: string;
-    TotalsOnly: boolean;
-    AcademicYear: number;
+    totalsOnly: boolean;
+    academicYear: number;
+    markingPeriodTitle: string;
 
     constructor() {
         super();
-        this.TotalsOnly = false;
+        this.totalsOnly = false;
         this.studentGuids = [];
     }
 }

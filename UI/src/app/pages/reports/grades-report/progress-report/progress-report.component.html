@@ -50,7 +50,7 @@
             <li><mat-slide-toggle [(ngModel)]="toggleMenu.excludeUngradedAssignmentsNotDue" color="primary" class="mr-6 mb-2">{{'excludeUngradedAssignmentsNotDue' | translate }}</mat-slide-toggle></li>
         </ul>
         <div>
-            <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="getStudentProgressReportModel.TotalsOnly">
+            <mat-radio-group aria-label="Select an option" color="primary" [(ngModel)]="getStudentProgressReportModel.totalsOnly">
                 <mat-radio-button [value]="false" class="mr-6">{{'withAssignmentDetails' | translate }}</mat-radio-button>
                 <mat-radio-button [value]="true" class="mr-6">{{'totalsOnly' | translate }}</mat-radio-button>
             </mat-radio-group>
@@ -360,7 +360,7 @@
                                         <tr>
                                             <td><b>Grade</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
                                             <td><b>Gender</b> : <span>{{studentDetails?.gender}}</span></td>
-                                            <td><b>Marking Period</b> : <span>{{studentDetails?.ethnicity}}</span></td>
+                                            <td><b>Marking Period</b> : <span>{{studentDetails?.markingPeriodTitle}}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
