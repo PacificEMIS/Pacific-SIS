@@ -9,7 +9,7 @@
             <li><mat-slide-toggle [(ngModel)]="toggleMenu.excludeUngradedAssignmentsNotDue" color="primary" class="mr-6 mb-2">{{'excludeUngradedAssignmentsNotDue' | translate }}</mat-slide-toggle></li>
                 </ul>
                 <div>
-                    <mat-radio-group aria-label="Select an option" color="primary" (change)="generatedReportCardData = null;" [(ngModel)]="getStudentProgressReportModel.TotalsOnly">
+                    <mat-radio-group aria-label="Select an option" color="primary" (change)="generatedReportCardData = null;" [(ngModel)]="getStudentProgressReportModel.totalsOnly">
                         <mat-radio-button [value]="false" class="mr-6 mb-2" [checked]="true">{{'withAssignmentDetails' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="true" class="mr-6 mb-2">{{'totalsOnly' | translate }}</mat-radio-button>
                     </mat-radio-group>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <ng-container *ngIf="!getStudentProgressReportModel?.TotalsOnly && generatedReportCardData">
+            <ng-container *ngIf="!getStudentProgressReportModel?.totalsOnly && generatedReportCardData">
             <div class="card mb-4" *ngFor="let courseSection of generatedReportCardData?.courseSectionListData">
                 <mat-accordion>
                     <mat-expansion-panel>
@@ -100,7 +100,7 @@
             </div>
         </ng-container>
 
-            <div class="card mb-4" *ngIf="getStudentProgressReportModel?.TotalsOnly && generatedReportCardData">
+            <div class="card mb-4" *ngIf="getStudentProgressReportModel?.totalsOnly && generatedReportCardData">
                 <div class="overflow-x-auto">
                     <table class="table mb-0">
                         <thead>
@@ -314,7 +314,7 @@
                                                     <tr>
                                                         <td><b>Grade</b> : <span>{{generatedReportCardData?.gradeLevelTitle}}</span></td>
                                                         <td><b>Gender</b> : <span>{{generatedReportCardData?.gender}}</span></td>
-                                                        <td><b>Marking Period</b> : <span>{{generatedReportCardData?.ethnicity}}</span></td>
+                                                        <td><b>Marking Period</b> : <span>{{generatedReportCardData?.markingPeriodTitle}}</span></td>
                                                     </tr>
                                                 </tbody>
                                             </table>

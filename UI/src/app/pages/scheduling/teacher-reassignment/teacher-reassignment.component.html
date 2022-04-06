@@ -219,10 +219,15 @@
 
         <!-- start submit button and conflict text -->
         <div class="flex mt-4 items-end flex-wrap">
-            <p class="text-base mt-2 mr-10" *ngIf="isAllCourseSectionConflicted">
-                <i class="icon icon-notification2 mr-2 text-warn text-lg"></i>
-                The selected teacher is unavailable. Change your selection and try again.
-            </p>
+            <ng-container *ngIf="checkAvailibilityBasedOnTeacher?.staffScheduleViewList?.length > 0">
+                <p class="text-base mt-2 mr-10" *ngIf="isAllCourseSectionConflicted && checkAvailibilityBasedOnTeacher?.existingStaff !== checkAvailibilityBasedOnTeacher?.staffScheduleViewList[0]?.staffId">
+                    <i class="icon icon-notification2 mr-2 text-warn text-lg"></i>
+                    The selected teacher is unavailable. Change your selection and try again.
+                </p>
+                <p class="text-base mt-2 mr-10" *ngIf="isAllCourseSectionConflicted && checkAvailibilityBasedOnTeacher?.existingStaff === checkAvailibilityBasedOnTeacher?.staffScheduleViewList[0]?.staffId">
+                    <i class="icon icon-notification2 mr-2 text-warn"></i>Teacher already scheduled to this course section.
+                </p>  
+            </ng-container>
             <!-- After completed conflicts below success message is seen -->
             <p class="text-base mt-2 mr-10" *ngIf="noConflictDetected">
                 <i class="icon icon-checkmark-circle mr-2 text-green"></i>There are no conflicts detected. You may proceed to reassignment.
