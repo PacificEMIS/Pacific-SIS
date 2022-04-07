@@ -1189,6 +1189,7 @@ namespace opensis.data.Repository
                     schoolLogoUpdate.FirstOrDefault()!.UpdatedOn = DateTime.UtcNow;
                     schoolLogoUpdate.FirstOrDefault()!.UpdatedBy = schoolAddViewModel.schoolMaster.UpdatedBy;
                     schoolLogoUpdate.FirstOrDefault()!.SchoolDetail.FirstOrDefault()!.SchoolLogo = schoolAddViewModel.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolLogo;
+                    schoolLogoUpdate.FirstOrDefault()!.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo = schoolAddViewModel.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo;
                     this.context?.SaveChanges();
                     schoolAddViewModel._message = "School Logo Updated Successfully";
                 }

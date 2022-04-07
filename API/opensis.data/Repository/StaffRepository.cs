@@ -1515,6 +1515,7 @@ namespace opensis.data.Repository
                     {
                         staffUpdate.UpdatedOn = DateTime.UtcNow;
                         staffUpdate.StaffPhoto = staffAddViewModel.staffMaster.StaffPhoto;
+                        staffUpdate.StaffThumbnailPhoto = staffAddViewModel.staffMaster.StaffThumbnailPhoto;
                         staffUpdate.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
                         this.context?.SaveChanges();
                         staffAddViewModel._message = "Staff photo updated successfully";
