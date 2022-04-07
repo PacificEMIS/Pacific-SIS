@@ -258,7 +258,8 @@ namespace opensis.data.Repository
                                 Suffix = parentData.Suffix,
                                 UserProfile = parentData.UserProfile,
                                 WorkEmail = parentData.WorkEmail,
-                                ParentPhoto = parentData.ParentPhoto,
+                                //ParentPhoto = parentData.ParentPhoto,
+                                ParentPhoto = parentData.ParentThumbnailPhoto,
                                 IsCustodian = parent.IsCustodian,
                                 Relationship = parent.Relationship,
                                 ParentAddress = parentInfoList.IsReport == true && parentAddress!.StudentAddressSame == false? new ParentAddress
@@ -1165,7 +1166,8 @@ namespace opensis.data.Repository
                                     GradeLevelTitle = student.StudentEnrollment.Count > 0 ? student.StudentEnrollment.OrderByDescending(x => x.EnrollmentDate).FirstOrDefault()!.GradeLevelTitle : null,
                                     IsCustodian = studentAssociateWithParent.IsCustodian,
                                     Relationship = studentAssociateWithParent.Relationship,
-                                    StudentPhoto = student.StudentPhoto ?? student.StudentPhoto
+                                    //StudentPhoto = student.StudentPhoto ?? student.StudentPhoto
+                                    StudentPhoto = student.StudentThumbnailPhoto ?? student.StudentThumbnailPhoto
                                 };
                                 //var studentForView = new GetStudentForView()
                                 //{
