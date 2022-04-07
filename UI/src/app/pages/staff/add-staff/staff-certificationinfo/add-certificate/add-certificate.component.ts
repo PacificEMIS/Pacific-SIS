@@ -68,6 +68,7 @@ export class AddCertificateComponent implements OnInit, OnDestroy {
   module = Module.STAFF;
   categoryId: number;
   staffCreateMode = SchoolCreate.ADD;
+  customValid=true;
 
   constructor
     (
@@ -121,8 +122,16 @@ export class AddCertificateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   }
+  checkSubmittedForm(){
+    this.customValid=false;
+    this.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
+    if (this.form.valid) 
+      if(this.customValid) this.submit();
+  }
+
   submit(){
-    if (this.form.valid) {
+    // if (this.form.valid) {
       if(
         ((this.form.controls.certificationCode.value!=null) || 
         (this.form.controls.certificationDate.value!=null) ||
@@ -228,7 +237,7 @@ export class AddCertificateComponent implements OnInit, OnDestroy {
         this.formvalidstatas=false;
       }
       
-    }
+    // }
   }
   cancel(){
     this.dialogRef.close();

@@ -242,7 +242,8 @@
 
 <!--Start Staff Module-->
 <div *ngIf="staffAddModel?.fieldsCategoryList && module === 'Staff'">
-    <div class="py-6" @stagger fxLayout="column"
+    <form #staff="ngForm">
+        <div class="py-6" @stagger fxLayout="column"
         *ngIf="staffCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
         <ul *ngIf="staffCreateMode === schoolCreate.EDIT || staffCreateMode === schoolCreate.ADD" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 col-gap-8 md:row-gap-0">
@@ -354,6 +355,8 @@
             </li>
         </ul>
     </div>
+    </form>
+    
 </div>
 
 <!--End Staff Module-->

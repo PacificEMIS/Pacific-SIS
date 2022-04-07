@@ -97,6 +97,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   defaultSchoolId: number=0;
   destroySubject$: Subject<void> = new Subject();
   today : Date
+  customValid=false;
   
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
@@ -230,10 +231,11 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   submitSchoolInfo() {
+    this.customValid=false;
     this.currentForm.form.markAllAsTouched();
-    if (this.currentForm.form.valid) {
-      this.updateSchoolInfo();
-    }
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
+    if (this.currentForm.form.valid) 
+      if(this.customValid) this.updateSchoolInfo();
   }
 
   compareDate(index) {

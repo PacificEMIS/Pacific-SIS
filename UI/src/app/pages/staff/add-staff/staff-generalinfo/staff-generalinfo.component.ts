@@ -137,6 +137,7 @@ export class StaffGeneralinfoComponent implements OnInit {
   cloneStaffAddModel;
   permissions: Permissions;
   isReadOnly: boolean;
+  customValid = false;
 
   constructor(private fb: FormBuilder,
               private el: ElementRef,
@@ -710,8 +711,16 @@ export class StaffGeneralinfoComponent implements OnInit {
     }
   }
 
-  submitStaff() {
+  checkSubmitStaff(){
+    this.customValid=false;
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
+    if (this.currentForm.form.valid) 
+      if(this.customValid) this.submitStaff();
+  }
+  
+  submitStaff() {
+    // this.currentForm.form.markAllAsTouched();
     if (this.currentForm.controls.passwordHash !== undefined) {
       this.staffAddModel.passwordHash = this.currentForm.controls.passwordHash.value;
     }
