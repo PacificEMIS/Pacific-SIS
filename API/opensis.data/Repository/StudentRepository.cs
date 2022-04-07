@@ -2422,6 +2422,7 @@ namespace opensis.data.Repository
                 {
                     studentUpdate.UpdatedOn = DateTime.UtcNow;
                     studentUpdate.StudentPhoto = studentAddViewModel.studentMaster!.StudentPhoto;
+                    studentUpdate.StudentThumbnailPhoto = studentAddViewModel.studentMaster!.StudentThumbnailPhoto;
                     studentUpdate.UpdatedBy = studentAddViewModel.studentMaster.UpdatedBy;
                     this.context?.SaveChanges();
                     studentAddViewModel._message = "Student Photo Updated Successfully";

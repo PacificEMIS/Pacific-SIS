@@ -1290,6 +1290,7 @@ namespace opensis.data.Repository
                 {
                     parentPhotoUpdate.UpdatedOn = DateTime.UtcNow;
                     parentPhotoUpdate.ParentPhoto = parentInfoAddViewModel.parentInfo.ParentPhoto;
+                    parentPhotoUpdate.ParentThumbnailPhoto = parentInfoAddViewModel.parentInfo.ParentThumbnailPhoto;
                     parentPhotoUpdate.UpdatedBy = parentInfoAddViewModel.parentInfo.UpdatedBy;
                     this.context?.SaveChanges();
                     parentInfoAddViewModel._message = "Parent Photo Updated Successfully";

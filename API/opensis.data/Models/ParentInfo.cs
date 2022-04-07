@@ -43,6 +43,7 @@ namespace opensis.data.Models
         public int ParentId { get; set; }
         public Guid ParentGuid { get; set; }
         public byte[]? ParentPhoto { get; set; }
+        public byte[]? ParentThumbnailPhoto { get; set; }
         public string? Salutation { get; set; }
         public string? Firstname { get; set; }
         public string? Middlename { get; set; }

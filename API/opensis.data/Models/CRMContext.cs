@@ -3424,6 +3424,8 @@ namespace opensis.data.Models
 
                 entity.Property(e => e.ParentPhoto).HasColumnName("parent_photo");
 
+                entity.Property(e => e.ParentThumbnailPhoto).HasColumnName("parent_thumbnail_photo");
+
                 entity.Property(e => e.PersonalEmail)
                     .HasMaxLength(150)
                     .HasColumnName("personal_email");
@@ -4529,6 +4531,8 @@ namespace opensis.data.Models
 
                 entity.Property(e => e.SchoolLogo).HasColumnName("school_logo");
 
+                entity.Property(e => e.SchoolThumbnailLogo).HasColumnName("school_thumbnail_logo");
+
                 entity.Property(e => e.SoapAndWaterAvailable).HasColumnName("soap_and_water_available");
 
                 entity.Property(e => e.Status).HasColumnName("status");
@@ -5561,6 +5565,8 @@ namespace opensis.data.Models
                     .HasColumnName("staff_internal_id");
 
                 entity.Property(e => e.StaffPhoto).HasColumnName("staff_photo");
+
+                entity.Property(e => e.StaffThumbnailPhoto).HasColumnName("staff_thumbnail_photo");
 
                 entity.Property(e => e.StateId)
                     .HasMaxLength(50)
@@ -7372,6 +7378,8 @@ namespace opensis.data.Models
                     .HasColumnName("student_internal_id");
 
                 entity.Property(e => e.StudentPhoto).HasColumnName("student_photo");
+
+                entity.Property(e => e.StudentThumbnailPhoto).HasColumnName("student_thumbnail_photo");
 
                 entity.Property(e => e.StudentPortalId)
                     .HasMaxLength(50)
