@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../models/dashboard.model';
 import { Observable,BehaviorSubject } from 'rxjs';
 import { DefaultValuesService } from '../common/default-values.service';
+import { MarkingPeriodAvailability } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,10 @@ export class DasboardService {
 
   private courseSectionDetails = new BehaviorSubject(null);
   selectedCourseSectionDetails = this.courseSectionDetails.asObservable();
+
+  public markingPeriodTriggerData = new BehaviorSubject<MarkingPeriodAvailability>({markingPeriodLoaded:false,markingPeriodChanged:false});
+  markingPeriodTriggeredData = this.markingPeriodTriggerData.asObservable();
+
   httpOptions: { headers: any; };
 
   constructor(private http: HttpClient , private defaultValuesService: DefaultValuesService) { 
@@ -65,7 +70,9 @@ export class DasboardService {
     this.courseSectionDetails.next(details);
   }
   
-
+  changeMarkingPeriodStatus(message: MarkingPeriodAvailability) {
+    this.markingPeriodTriggerData.next(message)
+  }
 
 
 }

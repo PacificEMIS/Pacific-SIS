@@ -51,6 +51,11 @@ export class DataAvailablity{
     academicYearLoaded: boolean;
 }
 
+export class MarkingPeriodAvailability{
+    markingPeriodLoaded:boolean;
+    markingPeriodChanged:boolean;
+}
+
 export class UserLogoutModel extends CommonField {
     email: string;
     constructor() {
