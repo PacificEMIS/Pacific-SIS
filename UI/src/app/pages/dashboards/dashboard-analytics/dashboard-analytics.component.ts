@@ -227,8 +227,8 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngAfterViewInit(): void {
-    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      if (res.academicYearChanged || res.academicYearLoaded) {
+    this.dasboardService.markingPeriodTriggeredData.pipe(takeUntil(this.destroySubject$)).subscribe(flag=>{
+      if((flag.markingPeriodLoaded || flag.markingPeriodChanged) && this.defaultValuesService.getAcademicYear()!==null) {
         this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
         this.getDashboardView();
         this.getDashboardViewForCalendarView();
