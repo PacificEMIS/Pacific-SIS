@@ -6,7 +6,7 @@
             <a (click)="exportCommentsToExcel()" class="cursor-pointer mr-3 inline-block align-middle" matTooltip="Export as Excel">
                 <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
             </a>
-            <a class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Print"><mat-icon [icIcon]="icPrint"></mat-icon></a>
+            <a (click)="generatePdf()" class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Print"><mat-icon [icIcon]="icPrint"></mat-icon></a>
             <button *ngIf="(membershipType === 'Teacher' || membershipType === 'Homeroom Teacher') && this.defaultValuesService.checkAcademicYear() && permissions?.add" mat-raised-button color="primary" class="align-middle" (click)='openAddNew()'>
                 <mat-icon [icIcon]="icAdd"></mat-icon><span class="ml-2 hidden md:inline-block">{{'addComment' |translate}}</span>
             </button>
@@ -52,3 +52,111 @@
         </div>
     </mat-card-content>
 </mat-card>
+
+<div class="hidden" id="printComments">
+    <div class="student-information-report">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <div class="float-left school-logo">
+                                    <img src="" *ngIf="schoolDetails?.schoolLogo"
+                                    [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                </div>
+                                <div class="float-left information">
+                                    <h4>{{schoolDetails?.schoolName}}</h4>
+                                    <p>{{schoolDetails?.streetAddress1}}{{schoolDetails?.streetAddress2 ? ', ' +
+                                        schoolDetails?.streetAddress2 : ''}}{{schoolDetails?.city ? ', ' +
+                                        schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                        ''}}{{schoolDetails?.zip ? ', ' + schoolDetails?.zip :
+                                        ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                </div>
+                            </td>
+                            <td class="header-right text-right">
+                                <div class="text-center inline-block">Student Comments</div>
+                                <p class="text-right">Powered by <b>openSIS</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="generate-date">
+                                <p class="text-center p-b-8">Report Generated on {{today | date : 'mediumDate'}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td class="student-logo width-160">
+                                <div>
+                                    <img [src]="generatedReportCardData?.studentPhoto ? 'data:image/jpeg;base64,' + generatedReportCardData?.studentPhoto : 'data:image/jpeg;base64,' + defaultStudentPhoto"
+                                    alt="Student Photo">
+                                </div>
+                            </td>
+                            <td class="student-details">
+                                <h4 class="inline-block">{{generatedReportCardData?.firstGivenName}}
+                                    {{generatedReportCardData?.middleName
+                                    ? ''+generatedReportCardData?.middleName+' ':''}}{{generatedReportCardData?.lastFamilyName}}</h4><span class="inline-block"> | </span><p class="inline-block">{{generatedReportCardData?.homeAddressLineOne}}{{generatedReportCardData?.homeAddressLineTwo
+                                        ? ', ' + generatedReportCardData?.homeAddressLineTwo :
+                                        ''}}{{generatedReportCardData?.homeAddressCity ? ', ' +
+                                        generatedReportCardData?.homeAddressCity :
+                                        ''}}{{generatedReportCardData?.homeAddressState ? ', ' +
+                                        generatedReportCardData?.homeAddressState :
+                                        ''}}{{generatedReportCardData?.homeAddressZip ? ', ' +
+                                        generatedReportCardData?.homeAddressZip :
+                                        ''}}{{generatedReportCardData?.homeAddressCountry ? ', ' +
+                                        generatedReportCardData?.homeAddressCountry : ''}}</p>
+                                <table class="border-table">
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Student ID</b> : <span>{{generatedReportCardData?.studentInternalId}}</span></td>
+                                            <td><b>Alternate ID</b> : <span>{{generatedReportCardData?.alternateId}}</span></td>
+                                            <td><b>Date of Birth</b> : <span>{{generatedReportCardData?.dob | date :
+                                                'MMM/dd/y'}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Grade</b> : <span>{{generatedReportCardData?.gradeLevelTitle}}</span></td>
+                                            <td><b>Gender</b> : <span>{{generatedReportCardData?.gender}}</span></td>
+                                            <td><b>Marking Period</b> : <span>{{generatedReportCardData?.markingPeriodTitle}}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+    
+            <tr>
+                <td class="p-y-20 p-x-10">
+                    <table>
+                        <tr>
+                            <td>
+                                <table class="information-table" *ngFor="let studentComment of studentCommentsListViewModel.studentCommentsList">
+                                    <thead>
+                                        <tr>
+                                            <th class="bg-slate"><strong>{{studentComment.updatedBy?studentComment.updatedBy:studentComment.createdBy}} Commented on {{(studentComment.updatedOn?studentComment.updatedOn:studentComment.createdOn)|date:'MMM d, y, h:mm a'}}</strong></th>
+                                        </tr>
+                                    </thead>
+                                    <!-- <tbody> -->
+                                        <!-- <tr> -->
+                                        <td>
+                                                        <div class="ql-editor" [innerHTML]="studentComment.comment|safe:'html'"></div>
+                                        </td>
+                                        <!-- </tr> -->
+                                    <!-- </tbody> -->
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+    
+        </table>
+   
+    </div>
+    </div>
