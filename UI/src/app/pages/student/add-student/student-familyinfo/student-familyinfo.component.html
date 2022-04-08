@@ -18,13 +18,17 @@
       <div [ngSwitch]="currentTab">
         <div *ngSwitchCase="'contacts'" class="px-4">
           <div class="pt-6">
-            <vex-student-contacts [studentDetailsForViewAndEditData]="studentDetailsForViewAndEditData">
+            <ng-container *ngIf="multipleData?.countryList && multipleData?.SalutationLOV && multipleData?.RelationshipLOV && multipleData?.SuffixLOV && parentListArray">
+            <vex-student-contacts [studentDetailsForViewAndEditData]="studentDetailsForViewAndEditData" [multipleData]="multipleData" [parentInfoListForView]="parentListArray">
             </vex-student-contacts>
+          </ng-container>
           </div>
         </div>
         <div *ngSwitchCase="'siblingInfo'" class="px-4">
           <div class="pt-6">
-            <vex-siblingsinfo></vex-siblingsinfo>
+            <ng-container *ngIf="multipleData?.RelationshipLOV && studentViewSibling?.studentMaster && gradeLevelArr">
+            <vex-siblingsinfo [multipleData]="multipleData" [siblings]="studentViewSibling.studentMaster" [gradeLevel]="gradeLevelArr"></vex-siblingsinfo>
+          </ng-container>
           </div>
         </div>
       </div>

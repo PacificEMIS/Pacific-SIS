@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit , Input} from '@angular/core';
+import { Component, OnInit , Input, AfterViewInit} from '@angular/core';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
@@ -34,6 +34,18 @@ import icAdd from '@iconify/icons-ic/baseline-add';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StudentService } from '../../../../services/student.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { CommonService } from 'src/app/services/common.service';
+import { CountryModel } from 'src/app/models/country.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { StudentInfoModel } from 'src/app/models/student-info.model';
+import { CommonLOV } from 'src/app/pages/shared-module/lov/common-lov';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { StudentViewSibling } from 'src/app/models/student.model';
+import { ParentInfoService } from 'src/app/services/parent-info.service';
+import { GetAllParentInfoModel } from 'src/app/models/parent-info.model';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 @Component({
   selector: 'vex-student-familyinfo',
   templateUrl: './student-familyinfo.component.html',
@@ -51,10 +63,27 @@ export class StudentFamilyinfoComponent implements OnInit {
   icDelete = icDelete;
   icAdd = icAdd;
   currentTab: string;
+  countryList;
   studentDetailsForViewAndEditData;
-  constructor(public translateService: TranslateService,
+  countryModel: CountryModel = new CountryModel();
+  multipleData: StudentInfoModel = new StudentInfoModel()
+  destroySubject$: Subject<void> = new Subject();
+  studentViewSibling: StudentViewSibling = new StudentViewSibling();
+  getAllParentInfoModel: GetAllParentInfoModel =  new GetAllParentInfoModel();
+  parentListArray: any;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelArr: any;
+
+  constructor(
+    public translateService: TranslateService,
     private studentService: StudentService,
-    private defaultValuesService: DefaultValuesService) {
+    private defaultValuesService: DefaultValuesService,
+    private commonService: CommonService,
+    private snackbar: MatSnackBar,
+    private commonLOV: CommonLOV,
+    private parentInfoService: ParentInfoService,
+    private gradeLevelService: GradeLevelService,
+  ) {
       this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultValuesService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
   }
 
@@ -67,10 +96,130 @@ export class StudentFamilyinfoComponent implements OnInit {
     });
     this.studentDetailsForViewAndEditData = this.studentDetailsForViewAndEdit;
     this.currentTab = 'contacts';
+    this.viewParentListForStudent();
+    this.getAllCountry();
+    this.callLOVs();
+    this.getGradeLevel();
   }
+
+  getAllCountry() {
+    this.commonService.GetAllCountry(this.countryModel).subscribe(data => {
+      if (data) {
+        if (data._failure) {
+          
+          this.countryList = [];
+          if (!data.tableCountry) {
+            this.snackbar.open(data._message, '', {
+              duration: 10000
+            });
+          }
+        } else {
+          this.countryList = data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1);
+          this.multipleData.countryList = this.countryList;
+        }
+      }
+      else {
+        this.countryList = [];
+      }
+    });
+  }
+
+  getGradeLevel() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          
+          this.snackbar.open(res._message, '', {
+            duration: 10000
+          });
+        } else {
+          this.gradeLevelArr = res.tableGradelevelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.translateKey('gradeLevelInformationfailed')
+          + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+
+  callLOVs() {
+    this.commonLOV.getLovByName('Relationship').subscribe((res:any) => {
+      this.multipleData.RelationshipLOV = res;
+    });
+    this.commonLOV.getLovByName('Salutation').subscribe((res:any) => {
+      this.multipleData.SalutationLOV = res;
+    });
+    this.commonLOV.getLovByName('Suffix').subscribe((res:any) => {
+      this.multipleData.SuffixLOV = res;
+    });
+  }
+
   changeTab(status){
+    if(status === 'siblingInfo') {
+      if(!this.studentViewSibling.studentMaster) {
+        this.getAllSiblings();
+      }
+    } else {
+      if(!this.parentListArray) {
+        this.viewParentListForStudent();
+      }
+    }
     this.currentTab = status;
   }
 
+  getAllSiblings() {
+    this.studentViewSibling.studentId = this.studentService.getStudentId();
+    this.studentService.viewSibling(this.studentViewSibling).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+          
+          this.studentViewSibling.studentMaster = [];
+          if (!res.studentMaster) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.studentViewSibling.studentMaster = res.studentMaster;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.translateKey('siblingsFailedToFetch') + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
 
+  viewParentListForStudent() {
+    this.getAllParentInfoModel.studentId = this.studentDetailsForViewAndEditData.studentMaster.studentId;
+    this.parentInfoService.viewParentListForStudent(this.getAllParentInfoModel).subscribe(
+      data => {
+        if (data) {
+          if (data._failure) {
+            
+            if (!data.parentInfoListForView) {
+              this.snackbar.open(data._message, '', {
+                duration: 10000
+              });
+            }
+          }
+          else {
+            this.parentListArray = data.parentInfoListForView;
+          }
+        }
+        else {
+          this.snackbar.open(this.defaultValuesService.translateKey('parentInformationFailed') + this.defaultValuesService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
 }

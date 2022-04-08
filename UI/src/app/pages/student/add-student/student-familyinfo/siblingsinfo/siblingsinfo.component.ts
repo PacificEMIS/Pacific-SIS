@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
@@ -59,11 +59,12 @@ import { GetAllGradeLevelsModel } from '../../../../../models/grade-level.model'
   ]
 })
 export class SiblingsinfoComponent implements OnInit {
+  @Input() multipleData;
+  @Input() siblings;
+  @Input() gradeLevel;
   icEdit = icEdit;
   icRemove = icRemove;
   icAdd = icAdd;
-  gradeLevelArr;
-  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   relationShipList = [];
   lovList: LovList = new LovList();
   removeStudentSibling: StudentSiblingAssociation = new StudentSiblingAssociation();
@@ -75,7 +76,6 @@ export class SiblingsinfoComponent implements OnInit {
     private defaultValuesService: DefaultValuesService,
     public translateService: TranslateService,
     private cryptoService: CryptoService,
-    private gradeLevelService: GradeLevelService,
     private pageRolePermissions: PageRolesPermission,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
@@ -84,9 +84,11 @@ export class SiblingsinfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
-    this.getRelationship();
-    this.getGradeLevel();
-    this.getAllSiblings();
+    // this.getGradeLevel();    
+    // if(!this.studentViewSibling.studentMaster) {
+    //   this.getAllSiblings();
+    // }
+    this.studentViewSibling.studentMaster = this.siblings;
   }
 
   openAddNew() {
@@ -95,8 +97,8 @@ export class SiblingsinfoComponent implements OnInit {
       disableClose: true,
       data: {
         parentData: {
-          relationShipList: this.relationShipList,
-          gradeLevelArr: this.gradeLevelArr
+          relationShipList: this.multipleData.RelationshipLOV,
+          gradeLevelArr: this.gradeLevel
         },
         parentInfo: null,
         source : "siblingInfo"
@@ -117,46 +119,14 @@ export class SiblingsinfoComponent implements OnInit {
     });
   }
 
-  getRelationship() {
 
-    this.lovList.lovName = 'Relationship';
-    this.commonService.getAllDropdownValues(this.lovList).subscribe(
-      (res: LovList) => {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-        }
-        this.relationShipList = res.dropdownList;
-
-      }
-    );
-
-  }
-  getGradeLevel() {
-    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe((res) => {
-      if (res) {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-        } else {
-          this.gradeLevelArr = res.tableGradelevelList;
-        }
-      } else {
-        this.snackbar.open(this.defaultValuesService.translateKey('gradeLevelInformationfailed')
-          + this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-    });
-  }
 
   getAllSiblings() {
     this.studentViewSibling.studentId = this.studentService.getStudentId();
     this.studentService.viewSibling(this.studentViewSibling).subscribe((res) => {
       if (res) {
         if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
+          
           this.studentViewSibling.studentMaster = [];
           if (!res.studentMaster) {
             this.snackbar.open(res._message, '', {
@@ -197,7 +167,7 @@ export class SiblingsinfoComponent implements OnInit {
     this.studentService.removeSibling(this.removeStudentSibling).subscribe((res) => {
       if (res) {
         if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
+          
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
