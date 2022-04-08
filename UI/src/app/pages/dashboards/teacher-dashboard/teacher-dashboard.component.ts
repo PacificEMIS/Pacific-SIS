@@ -102,6 +102,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   listOfAllClasses = [];
   listOfTodaysClasses = [];
   dayOfWeek: string;
+  eventCount = 0;
 
   constructor(
     public translateService: TranslateService,
@@ -350,6 +351,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
               draggable: true
             };
           });
+          this.eventCount = eventList.length;
           return eventList.sort((n1, n2) => {
             if (n1.start > n2.start) {
               return 1;
