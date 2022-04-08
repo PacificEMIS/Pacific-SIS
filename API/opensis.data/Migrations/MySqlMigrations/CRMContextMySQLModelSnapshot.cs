@@ -6810,6 +6810,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.HasKey("TenantId", "SchoolId", "ParentId", "StudentId")
                         .HasName("PK_parent_associationship_tenant_id");
 
+                    b.HasIndex(new[] { "TenantId", "ParentId", "Associationship" }, "IX_parent_associationship_tenant_id_parent_id_asso");
+
+                    b.HasIndex(new[] { "TenantId", "SchoolId", "StudentId", "Associationship" }, "IX_parent_associationship_tenant_id_school_id_student_id_asso");
+
                     b.ToTable("parent_associationship", (string)null);
                 });
 
@@ -6948,6 +6952,8 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.HasKey("TenantId", "SchoolId", "ParentId")
                         .HasName("PK_parent_info_tenant_id");
+
+                    b.HasIndex(new[] { "TenantId", "ParentId" }, "IX_parent_info_tenant_id_parent_id");
 
                     b.ToTable("parent_info", (string)null);
                 });
