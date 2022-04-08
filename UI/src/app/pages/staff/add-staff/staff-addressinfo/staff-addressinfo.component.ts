@@ -95,6 +95,7 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
   public filteredMailingAddressCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
   permissions: Permissions;
   isReadOnly: boolean;
+  customValid=false;
   
   constructor(public translateService: TranslateService,
               private snackbar: MatSnackBar,
@@ -302,6 +303,14 @@ export class StaffAddressinfoComponent implements OnInit, AfterViewInit, OnDestr
         this.nameOfMiscValuesForView.mailingAddressCountry = val.name;
       }
     });
+  }
+
+  checkSubmitAddress() {
+    this.customValid=false;
+    this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
+    if (this.currentForm.form.valid) 
+      if(this.customValid) this.submitAddress();
   }
 
   submitAddress() {

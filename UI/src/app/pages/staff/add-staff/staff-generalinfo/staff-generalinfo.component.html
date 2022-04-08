@@ -1,5 +1,5 @@
 <mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
-    <form (ngSubmit)="submitStaff()" #f="ngForm" novalidate appInvalidControlScroll>
+    <form (ngSubmit)="checkSubmitStaff()" #f="ngForm" novalidate appInvalidControlScroll>
         <h3 class="mb-6">{{'generalInformation'|translate}}</h3>
         <mat-card-content>
 
@@ -126,7 +126,7 @@
                     </li>
                 </ul>
                 <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="staffAddModel" [module]="module"
-                    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"></vex-custom-field-without-form>
+                    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
 
 
                 <hr class="-mx-4">

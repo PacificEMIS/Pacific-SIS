@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm, ControlContainer } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SchoolAddViewModel } from '../../models/school-master.model';
@@ -44,6 +44,7 @@ import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { DefaultValuesService } from '../default-values.service';
 
 
 @Component({
@@ -65,6 +66,7 @@ export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
   @Input() studentCreateMode;
   @Input() staffCreateMode;
   @Input() module;
+  @Output() custom=new EventEmitter;
   staffMultiSelectValue;
   studentMultiSelectValue;
   icCheckboxChecked = icCheckboxChecked;
@@ -75,8 +77,9 @@ export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
   schoolMultiSelectValue
   customFieldListViewModel = new CustomFieldListViewModel();
   headerTitle: string = "Other Information";
-  @ViewChild('f') currentForm: NgForm;
-  f: NgForm;
+  @ViewChild('staff') staffForm: NgForm;
+  @ViewChild('school') schoolForm: NgForm;
+  @ViewChild('student') studentForm: NgForm;
   fieldsCategoryListView = new FieldsCategoryListView();
   destroySubject$: Subject<void> = new Subject();
 
@@ -87,6 +90,7 @@ export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
     private schoolService: SchoolService,
     private studentService: StudentService,
     private staffService : StaffService,
+    private defaultValuesService: DefaultValuesService, 
     public translateService: TranslateService,
   ) {
     // translateService.use("en");
@@ -112,6 +116,7 @@ export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
         }
       }
     })
+    this.defaultValuesService.customFieldsCheckParentCompObs.subscribe(x=>{ if(x) this.checkFormValidOrNot(); })
   }
 
   ngOnInit(): void {
@@ -142,6 +147,22 @@ export class CustomFieldWithoutFormComponent implements OnInit, OnDestroy {
     else if (this.module === 'School') {
       this.schoolService.setSchoolMultiselectValue(selectValue);
     }
+}
+
+checkFormValidOrNot() {
+  if (this.module === 'Staff') {
+    this.defaultValuesService.customFieldsCheckParentComp.next(false);
+    if (this.staffAddModel?.fieldsCategoryList?.length > 0) {
+      this.staffForm.form.markAllAsTouched();
+      if (this.staffForm.form.valid) 
+        this.custom.emit(true)
+      else 
+        this.custom.emit(false)
+    }
+    else {
+      this.custom.emit(false)
+    }
+  }
 }
 
   checkStudentCustomValue() {
