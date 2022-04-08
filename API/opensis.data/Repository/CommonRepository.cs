@@ -1138,11 +1138,11 @@ namespace opensis.data.Repository
                 
                 dashboardView.TotalParent = this.context?.ParentAssociationship.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.Associationship == true).Select(x => x.ParentId).Distinct().Count();
 
-                var notice = this.context?.Notice.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.Isactive == true && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).FirstOrDefault();
-                if (notice != null)
+                var notice = this.context?.Notice.Where(x => x.TenantId == dashboardViewModel.TenantId && (x.SchoolId == dashboardViewModel.SchoolId || (x.SchoolId != dashboardViewModel.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
+                if (notice?.Any() == true)
                 {
-                    dashboardView.NoticeTitle = notice.Title;
-                    dashboardView.NoticeBody = notice.Body;
+                    dashboardView.NoticeList = notice;
+
                 }
 
                 dashboardView._tenantName = dashboardViewModel._tenantName;
@@ -2037,7 +2037,7 @@ namespace opensis.data.Repository
                 {
                     if (scheduledCourseSectionViewModel.AllCourse != true)
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && x.DurationStartDate <= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
                     }
                     else
                     {
@@ -2434,7 +2434,7 @@ namespace opensis.data.Repository
 
                 if (scheduledCourseSectionViewModel.MembershipId != null)
                 {
-                    var noticeList = this.context?.Notice.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.Isactive == true && x.TargetMembershipIds.Contains((scheduledCourseSectionViewModel.MembershipId ?? 0).ToString()) && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
+                    var noticeList = this.context?.Notice.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && (x.SchoolId == scheduledCourseSectionViewModel.SchoolId || (x.SchoolId != scheduledCourseSectionViewModel.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && x.TargetMembershipIds.Contains((scheduledCourseSectionViewModel.MembershipId ?? 0).ToString()) && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
 
                     if (noticeList?.Any() == true)
                     {

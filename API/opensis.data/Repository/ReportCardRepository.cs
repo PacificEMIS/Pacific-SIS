@@ -1854,7 +1854,8 @@ namespace opensis.data.Repository
                             var GradeLevelTitle = studentData!.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
 
                             studentsReportCardViewModel.SchoolName = schoolData!.SchoolName;
-                            studentsReportCardViewModel.SchoolLogo = schoolData!.SchoolDetail.FirstOrDefault()!.SchoolLogo;
+                            //studentsReportCardViewModel.SchoolLogo = schoolData!.SchoolDetail.FirstOrDefault()!.SchoolLogo;
+                            studentsReportCardViewModel.SchoolLogo = schoolData!.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo;
                             studentsReportCardViewModel.SchoolYear = schoolYear;
                             studentsReportCardViewModel.StudentId = studentData.StudentId; studentsReportCardViewModel.StudentInternalId = studentData.StudentInternalId;
                             studentsReportCardViewModel.FirstGivenName = studentData.FirstGivenName;

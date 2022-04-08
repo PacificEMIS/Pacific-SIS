@@ -146,7 +146,7 @@ namespace opensis.data.Repository
                                                         }
                                                         else
                                                         {
-                                                            conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                         }
                                                     }
                                                 }
@@ -198,7 +198,7 @@ namespace opensis.data.Repository
                                                 }
                                                 else
                                                 {
-                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
                                             }
                                             //Student enrollment checking
@@ -227,7 +227,7 @@ namespace opensis.data.Repository
                                                 }
                                                 else
                                                 {
-                                                    conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
                                             }
                                             else
@@ -475,7 +475,7 @@ namespace opensis.data.Repository
                                                             }
                                                             else
                                                             {
-                                                                conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                                                conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                             }
                                                         }
                                                     }
@@ -525,7 +525,7 @@ namespace opensis.data.Repository
                                         }
                                         else
                                         {
-                                            conflictMessage = "This Student could not be scheduled due to conflicts.";
+                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                         }
                                     }
                                 }                               
@@ -685,7 +685,7 @@ namespace opensis.data.Repository
                                   //Join(this.context?.StudentMaster,
                                   Join(this.context.StudentMaster,
                                   scs => scs.StudentId, sm => sm.StudentId,
-                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true))).ToList();
+                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.AciveStudentInCourseSection == true ? c.scs.IsDropped != true : true))).ToList();
 
                 if (pageResult.StaffId != null)
                 {
@@ -760,7 +760,8 @@ namespace opensis.data.Repository
                         PhoneNumber = ssv.sm.MobilePhone,
                         Action = ssv.scs.IsDropped,
                         ScheduleDate = ssv.scs.EffectiveStartDate,
-                        StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentPhoto : null,
+                        //StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentPhoto : null,
+                        StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentThumbnailPhoto : null,
                         Dob = ssv.sm.Dob,
                         Gender = ssv.sm.Gender,
                         Race = ssv.sm.Race,
@@ -1114,7 +1115,7 @@ namespace opensis.data.Repository
                                 return scheduledStudentDropModel;
                             }
                         }
-                        scheduledStudentDropModel._message = "End/Drop Date Updated Successfully.";
+                        scheduledStudentDropModel._message = "Updated successfully";
                     }
                     else
                     {

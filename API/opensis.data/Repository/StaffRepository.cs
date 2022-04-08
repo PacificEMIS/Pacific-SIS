@@ -425,7 +425,8 @@ namespace opensis.data.Repository
                         FirstLanguage = e.FirstLanguage,
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
-                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        //StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffThumbnailPhoto : null,
                         CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
                         UpdatedBy = e.UpdatedBy,
@@ -458,7 +459,8 @@ namespace opensis.data.Repository
                         FirstLanguage = e.FirstLanguage,
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
-                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        //StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffThumbnailPhoto : null,
                         CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
                         UpdatedBy = e.UpdatedBy,
@@ -1515,6 +1517,7 @@ namespace opensis.data.Repository
                     {
                         staffUpdate.UpdatedOn = DateTime.UtcNow;
                         staffUpdate.StaffPhoto = staffAddViewModel.staffMaster.StaffPhoto;
+                        staffUpdate.StaffThumbnailPhoto = staffAddViewModel.staffMaster.StaffThumbnailPhoto;
                         staffUpdate.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
                         this.context?.SaveChanges();
                         staffAddViewModel._message = "Staff photo updated successfully";
@@ -2215,7 +2218,8 @@ namespace opensis.data.Repository
                         FirstLanguage = e.FirstLanguage,
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
-                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        //StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffThumbnailPhoto : null,
                         CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
                         UpdatedBy = e.UpdatedBy,
@@ -2249,7 +2253,8 @@ namespace opensis.data.Repository
                         FirstLanguage = e.FirstLanguage,
                         SecondLanguage = e.SecondLanguage,
                         ThirdLanguage = e.ThirdLanguage,
-                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        //StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffPhoto : null,
+                        StaffPhoto = pageResult.ProfilePhoto != null ? e.StaffThumbnailPhoto : null,
                         CreatedBy = e.CreatedBy,
                         CreatedOn = e.CreatedOn,
                         UpdatedBy = e.UpdatedBy,

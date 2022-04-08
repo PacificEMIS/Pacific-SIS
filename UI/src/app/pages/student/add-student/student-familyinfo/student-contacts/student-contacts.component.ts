@@ -61,6 +61,8 @@ import { CommonLOV } from '../../../../../pages/shared-module/lov/common-lov';
 })
 export class StudentContactsComponent implements OnInit {
   @Input() studentDetailsForViewAndEditData;
+  @Input() multipleData;
+  @Input() parentInfoListForView;
   icEdit = icEdit;
   icDelete = icDelete;
   icAdd = icAdd;
@@ -83,6 +85,7 @@ export class StudentContactsComponent implements OnInit {
   data: any;
   mode: string;
   viewData: any;
+  disableAddButtonFlag:boolean = false;
   constructor(
     private fb: FormBuilder, private dialog: MatDialog,
     public translateService: TranslateService,
@@ -97,10 +100,12 @@ export class StudentContactsComponent implements OnInit {
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
-    this.parentListArray = this.getAllParentInfoModel.parentInfoListForView;
-    this.getAllCountry();
-    this.callLOVs();
-    this.viewParentListForStudent();
+    // console.log(this.parentListArray);
+    // if(this.parentListArray.length === 0) {
+    //   this.viewParentListForStudent();
+    // }
+    this.parentListArray = this.parentInfoListForView;
+    this.checkAndValidateData();
   }
 
   openAddNew(ctype) {
@@ -109,10 +114,10 @@ export class StudentContactsComponent implements OnInit {
         contactType: ctype,
         studentDetailsForViewAndEditData: this.studentDetailsForViewAndEditData,
         contactModalData: {
-          countryListArr: this.countryListArr,
-          relationshipList: this.relationshipList,
-          salutationList: this.salutationList,
-          suffixList: this.suffixList
+          countryListArr: this.multipleData.countryList,
+          relationshipList: this.multipleData.RelationshipLOV,
+          salutationList: this.multipleData.SalutationLOV,
+          suffixList: this.multipleData.SuffixLOV
         },
         mode: 'add'
       },
@@ -123,40 +128,6 @@ export class StudentContactsComponent implements OnInit {
       }
     });
   }
-
-  getAllCountry() {
-    this.commonService.GetAllCountry(this.countryModel).subscribe(data => {
-      if (data) {
-        if (data._failure) {
-          this.commonService.checkTokenValidOrNot(data._message);
-          this.countryListArr = [];
-          if (!data.tableCountry) {
-            this.snackbar.open(data._message, '', {
-              duration: 10000
-            });
-          }
-        } else {
-          this.countryListArr = data.tableCountry?.sort((a, b) => a.name < b.name ? -1 : 1);
-        }
-      }
-      else {
-        this.countryListArr = [];
-      }
-    });
-  }
-
-  callLOVs() {
-    this.commonLOV.getLovByName('Relationship').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.relationshipList = res;
-    });
-    this.commonLOV.getLovByName('Salutation').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.salutationList = res;
-    });
-    this.commonLOV.getLovByName('Suffix').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.suffixList = res;
-    });
-  }
-
 
   openViewDetails(parentInfo) {
 
@@ -177,10 +148,10 @@ export class StudentContactsComponent implements OnInit {
         parentInfo: parentInfo,
         studentDetailsForViewAndEditData: this.studentDetailsForViewAndEditData,
         contactModalData: {
-          countryListArr: this.countryListArr,
-          relationshipList: this.relationshipList,
-          salutationList: this.salutationList,
-          suffixList: this.suffixList
+          countryListArr: this.multipleData.countryList,
+          relationshipList: this.multipleData.RelationshipLOV,
+          salutationList: this.multipleData.SalutationLOV,
+          suffixList: this.multipleData.SuffixLOV
         },
         mode: 'edit'
       },
@@ -217,7 +188,7 @@ export class StudentContactsComponent implements OnInit {
       data => {
         if (data) {
           if (data._failure) {
-            this.commonService.checkTokenValidOrNot(data._message);
+            
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
@@ -245,7 +216,7 @@ export class StudentContactsComponent implements OnInit {
           this.parentListArray = [];
           this.contactType = 'Primary';
           if (data._failure) {
-            this.commonService.checkTokenValidOrNot(data._message);
+            
             if (!data.parentInfoListForView) {
               this.snackbar.open(data._message, '', {
                 duration: 10000
@@ -254,22 +225,7 @@ export class StudentContactsComponent implements OnInit {
           }
           else {
             this.parentListArray = data.parentInfoListForView;
-            let var1 = 0;
-            let var2 = 0;
-            this.parentListArray.forEach(val => {
-              if (val.contactType === 'Primary') {
-                var1++;
-              } else if (val.contactType === 'Secondary') {
-                var2++;
-              }
-            });
-            if (var1 > 0 && var2 > 0) {
-              this.contactType = 'Other';
-            } else if (var1 > 0) {
-              this.contactType = 'Secondary';
-            } else {
-              this.contactType = 'Primary';
-            }
+            this.checkAndValidateData();
           }
         }
         else {
@@ -278,6 +234,39 @@ export class StudentContactsComponent implements OnInit {
           });
         }
       });
+  }
+
+  checkAndValidateData() {
+    let var1 = 0;
+    let var2 = 0;
+    let var3 = 0;
+    this.parentListArray.forEach(val => {
+      if (val.contactType === 'Primary') {
+        var1++;
+      } else if (val.contactType === 'Secondary') {
+        var2++;
+      } else if (val.contactType === 'Other') {
+        var3++;
+      }
+    });
+    if (var1 > 0 && var2 > 0) {
+      this.contactType = 'Other';
+    } else if (var1 > 0) {
+      this.contactType = 'Secondary';
+    } else {
+      this.contactType = 'Primary';
+    }
+    this.disableAddButtonFlag = this.checkContactList(var1,var2,var3);
+  }
+
+  checkContactList(primaryCount,secondaryCount,otherCount) {
+    if (primaryCount>0 && secondaryCount>0 && otherCount===6) {
+      return true;
+    } else if (primaryCount>0 && secondaryCount===0 && otherCount===7) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ngOnDestroy() {

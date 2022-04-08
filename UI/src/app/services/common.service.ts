@@ -295,7 +295,7 @@ export class CommonService {
 
   checkAndRoute() {
     if (this.loginService.isAuthenticated()) {
-      if (this.defaultValuesService.getuserMembershipName() === 'Teacher') {
+      if (this.defaultValuesService.getuserMembershipName() === 'Teacher' || this.defaultValuesService.getuserMembershipName() === 'Homeroom Teacher') {
         this.router.navigate(['/school', 'teacher', 'dashboards']);
       } else {
         this.router.navigate(['/school', 'dashboards']);

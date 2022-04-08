@@ -15,7 +15,8 @@ export class DefaultValuesService {
   public newSubject = new Subject<string>();
   private photoChange = new Subject<string>();
   photoChanged = this.photoChange.asObservable();
-
+  customFieldsCheckParentComp = new BehaviorSubject<boolean>(false);
+  customFieldsCheckParentCompObs = this.customFieldsCheckParentComp.asObservable();
   TenantId: string = '';
   schoolID: number;
   academicYear: number;

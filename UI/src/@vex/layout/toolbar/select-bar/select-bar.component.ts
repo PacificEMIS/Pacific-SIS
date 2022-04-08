@@ -14,6 +14,7 @@ import { SchoolAddViewModel } from '../../../../app/models/school-master.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from "moment";
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 @Component({
   selector: 'vex-select-bar',
   templateUrl: './select-bar.component.html',
@@ -26,6 +27,7 @@ export class SelectBarComponent implements OnInit {
   markingPeriodTitleLists: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
   academicYears = [];
   periods = [];
+  profiles= ProfilesTypes;
   checkForAnyNewSchool: boolean = false;
   nullValueForDropdown="Please Select";
   schoolCtrl: FormControl;
@@ -172,14 +174,9 @@ export class SelectBarComponent implements OnInit {
     this.defaultValuesService.setSchoolClosed(details.dateSchoolClosed);
     this.defaultValuesService.setuserMembershipName(details.membershipType)
     this.defaultValuesService.setUserMembershipType(details.membershipType)
-    this.defaultValuesService.setUserMembershipID(details.membershipId)
+    this.defaultValuesService.setUserMembershipID(details.membershipId.toString())
     this.callAcademicYearsOnSchoolSelect();
-    if(this.defaultValuesService.getuserMembershipName() === 'Teacher' || this.defaultValuesService.getuserMembershipName() === 'Homeroom Teacher'){
-      this.router.navigateByUrl("/school/teacher/dashboards");
-    }
-    else{
-      this.router.navigateByUrl("/school/dashboards");
-    }
+    this.changeUrl();
     this.dasboardService.sendPageLoadEvent(true);
     this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:true,dataFromUserLogin:false,academicYearChanged:false,academicYearLoaded:false});
     this.updateLastUsedSchoolId(); 
@@ -261,12 +258,7 @@ export class SelectBarComponent implements OnInit {
       this.defaultValuesService.setFullYearEndDate(event.value.endDate);
       this.callMarkingPeriodTitleList();
     }
-    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
-      this.router.navigateByUrl("/school/teacher/dashboards");
-    }
-    else{
-      this.router.navigateByUrl("/school/dashboards");
-    }
+    this.changeUrl();
     this.schoolService.changeSchoolListStatus({schoolLoaded:false,schoolChanged:false,dataFromUserLogin:false,academicYearChanged:true,academicYearLoaded:false});
 
   }
@@ -302,12 +294,16 @@ export class SelectBarComponent implements OnInit {
               this.defaultValuesService.setMarkingPeriodTitle(this.periods[0].periodTitle);
             }
           }
+          this.dasboardService.changeMarkingPeriodStatus({markingPeriodLoaded:true,markingPeriodChanged:false});
         } else {
           this.periodCtrl.setValue(this.nullValueForDropdown);
           this.defaultValuesService.setMarkingPeriodId(null);
           this.defaultValuesService.setMarkingPeriodStartDate(null);
           this.defaultValuesService.setMarkingPeriodEndDate(null);
           this.defaultValuesService.setMarkingPeriodTitle(null);
+          if(this.defaultValuesService.getUserMembershipType()===this.profiles.SuperAdmin || this.defaultValuesService.getUserMembershipType()===this.profiles.SchoolAdmin || this.defaultValuesService.getUserMembershipType()===this.profiles.AdminAssitant) {
+            this.dasboardService.changeMarkingPeriodStatus({markingPeriodLoaded:true,markingPeriodChanged:false});
+          }
         }
       })
     } else {
@@ -339,12 +335,16 @@ export class SelectBarComponent implements OnInit {
       this.defaultValuesService.setMarkingPeriodStartDate(event.value.startDate);
       this.defaultValuesService.setMarkingPeriodEndDate(event.value.endDate);
       this.defaultValuesService.setMarkingPeriodTitle(event.value.periodTitle);
+      this.dasboardService.changeMarkingPeriodStatus({markingPeriodLoaded:false,markingPeriodChanged:true});
       }
 
-    if(this.defaultValuesService.getuserMembershipName()=== 'Teacher'){
+    this.changeUrl();
+  }
+
+  changeUrl(){
+    if(this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher){
       this.router.navigateByUrl("/school/teacher/dashboards");
-    }
-    else{
+    } else{
       this.router.navigateByUrl("/school/dashboards");
     }
   }

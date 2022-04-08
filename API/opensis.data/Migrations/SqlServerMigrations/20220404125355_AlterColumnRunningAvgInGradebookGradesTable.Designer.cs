@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using opensis.data.Models;
 
@@ -11,9 +12,10 @@ using opensis.data.Models;
 namespace opensis.data.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(CRMContext))]
-    partial class CRMContextModelSnapshot : ModelSnapshot
+    [Migration("20220404125355_AlterColumnRunningAvgInGradebookGradesTable")]
+    partial class AlterColumnRunningAvgInGradebookGradesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -6910,10 +6912,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("parent_photo");
 
-                    b.Property<byte[]>("ParentThumbnailPhoto")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("parent_thumbnail_photo");
-
                     b.Property<string>("PersonalEmail")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
@@ -8307,10 +8305,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("school_logo");
 
-                    b.Property<byte[]>("SchoolThumbnailLogo")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("school_thumbnail_logo");
-
                     b.Property<bool?>("SoapAndWaterAvailable")
                         .HasColumnType("bit")
                         .HasColumnName("soap_and_water_available");
@@ -9550,10 +9544,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                     b.Property<byte[]>("StaffPhoto")
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("staff_photo");
-
-                    b.Property<byte[]>("StaffThumbnailPhoto")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("staff_thumbnail_photo");
 
                     b.Property<string>("StateId")
                         .HasMaxLength(50)
@@ -11734,10 +11724,6 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_portal_id");
-
-                    b.Property<byte[]>("StudentThumbnailPhoto")
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("student_thumbnail_photo");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(50)

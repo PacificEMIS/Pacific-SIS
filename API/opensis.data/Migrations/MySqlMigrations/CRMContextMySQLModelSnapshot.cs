@@ -4466,8 +4466,8 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("qtr_marking_period_id");
 
                     b.Property<string>("RunningAvg")
-                        .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasMaxLength(10)
+                        .HasColumnType("char(10)")
                         .HasColumnName("running_avg")
                         .IsFixedLength();
 
@@ -6902,6 +6902,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("longblob")
                         .HasColumnName("parent_photo");
 
+                    b.Property<byte[]>("ParentThumbnailPhoto")
+                        .HasColumnType("longblob")
+                        .HasColumnName("parent_thumbnail_photo");
+
                     b.Property<string>("PersonalEmail")
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)")
@@ -8295,6 +8299,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("longblob")
                         .HasColumnName("school_logo");
 
+                    b.Property<byte[]>("SchoolThumbnailLogo")
+                        .HasColumnType("longblob")
+                        .HasColumnName("school_thumbnail_logo");
+
                     b.Property<bool?>("SoapAndWaterAvailable")
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("soap_and_water_available");
@@ -9532,6 +9540,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<byte[]>("StaffPhoto")
                         .HasColumnType("longblob")
                         .HasColumnName("staff_photo");
+
+                    b.Property<byte[]>("StaffThumbnailPhoto")
+                        .HasColumnType("longblob")
+                        .HasColumnName("staff_thumbnail_photo");
 
                     b.Property<string>("StateId")
                         .HasMaxLength(50)
@@ -11708,6 +11720,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("student_portal_id");
+
+                    b.Property<byte[]>("StudentThumbnailPhoto")
+                        .HasColumnType("longblob")
+                        .HasColumnName("student_thumbnail_photo");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(50)

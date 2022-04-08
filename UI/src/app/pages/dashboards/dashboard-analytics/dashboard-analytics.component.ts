@@ -189,7 +189,8 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   // onPopState(event) {
   //   history.pushState(null, null, location.href);
   // }
-
+  noticeList = [];
+  eventCount = 0;
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
@@ -227,8 +228,8 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngAfterViewInit(): void {
-    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      if (res.academicYearChanged || res.academicYearLoaded) {
+    this.dasboardService.markingPeriodTriggeredData.pipe(takeUntil(this.destroySubject$)).subscribe(flag=>{
+      if((flag.markingPeriodLoaded || flag.markingPeriodChanged) && this.defaultValuesService.getAcademicYear()!==null) {
         this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
         this.getDashboardView();
         this.getDashboardViewForCalendarView();
@@ -280,16 +281,12 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
           this.studentCount = res.totalStudent !== null ? res.totalStudent : 0;
           this.staffCount = res.totalStaff !== null ? res.totalStaff : 0;
           this.parentCount = res.totalParent !== null ? res.totalParent : 0;
-          if (res.noticeTitle !== null) {
-            this.noticeTitle = res.noticeTitle;
-            this.noticeHide = true;
+          if (res.noticeList.length>0) {
+            this.noticeList = res.noticeList;
           }
           else {
-
-            this.noticeHide = false;
+            this.noticeList = [];
           }
-          this.noticeBody = res.noticeBody;
-
         }
       }
       else {
@@ -343,6 +340,7 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
           eventList = eventList.filter(itemEvent=>
             moment(itemEvent.start).isBetween(dayBeforeCurrentMonthFirstDay, dayAfterCurrentMonthLastDay) || moment(itemEvent.end).isBetween(dayBeforeCurrentMonthFirstDay, dayAfterCurrentMonthLastDay)
           )
+          this.eventCount = eventList.length;
           return eventList.sort((n1, n2) => {
             if (n1.start > n2.start) {
               return 1;

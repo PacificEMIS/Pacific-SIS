@@ -72,9 +72,10 @@ export class ReportService {
 
   getStudentProgressReport(obj: GetStudentProgressReportModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
-    obj.AcademicYear = this.defaultValuesService.getAcademicYear();
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
     obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
     obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
+    obj.markingPeriodTitle = this.defaultValuesService.getMarkingPeriodTitle();
 
     let apiurl = this.apiUrl + obj._tenantName + "/Report/GetStudentProgressReport";
     return this.http.post<GetStudentProgressReportModel>(apiurl, obj, this.httpOptions)

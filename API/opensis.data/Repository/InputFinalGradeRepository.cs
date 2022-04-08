@@ -575,7 +575,8 @@ namespace opensis.data.Repository
                     studentReportCardGrades.MiddleName = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.MiddleName;
                     studentReportCardGrades.LastFamilyName = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.LastFamilyName;
                     studentReportCardGrades.StudentInternalId = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentInternalId;
-                    studentReportCardGrades.StudentPhoto = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentPhoto;
+                    //studentReportCardGrades.StudentPhoto = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentPhoto;
+                    studentReportCardGrades.StudentPhoto = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentThumbnailPhoto;
                     studentReportCardGrades.WeightedGPA = Wgpa;
                     studentReportCardGrades.UnWeightedGPA = UNWgpa;
                     studentReportCardGrades.GredeLavel = (GradeLevelData!=null && GradeLevelData.Any()) ? GradeLevelData.FirstOrDefault(x => x.GradeId == studentFinalGradeAllData?.FirstOrDefault()?.GradeId)?.Title : null;

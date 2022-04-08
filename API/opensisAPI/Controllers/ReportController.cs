@@ -319,5 +319,21 @@ namespace opensisAPI.Controllers
             }
             return honorRollList;
         }
+
+        [HttpPost("getStudentFinalGradeReport")]
+        public ActionResult<StudentFinalGradeViewModel> GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel)
+        {
+            StudentFinalGradeViewModel studentFinalGrade = new();
+            try
+            {
+                studentFinalGrade = _gradeReportService.GetStudentFinalGradeReport(studentFinalGradeViewModel);
+            }
+            catch (Exception es)
+            {
+                studentFinalGrade._failure = true;
+                studentFinalGrade._message = es.Message;
+            }
+            return studentFinalGrade;
+        }
     }
 }

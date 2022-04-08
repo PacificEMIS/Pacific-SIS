@@ -45,5 +45,33 @@ namespace opensis.report.report.core.Grade.Services
             return honorRollListModel;
 
         }
+
+        /// <summary>
+        /// Get StudentFinalGrade Report
+        /// </summary>
+        /// <param name="studentFinalGradeViewModel"></param>
+        /// <returns></returns>
+        public StudentFinalGradeViewModel GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel)
+        {
+            StudentFinalGradeViewModel studentFinalGrade = new();
+            try
+            {
+                if (tokenManager.CheckToken(studentFinalGradeViewModel._tenantName + studentFinalGradeViewModel._userName, studentFinalGradeViewModel._token))
+                {
+                    studentFinalGrade = this.gradeReportRepository.GetStudentFinalGradeReport(studentFinalGradeViewModel);
+                }
+                else
+                {
+                    studentFinalGrade._failure = true;
+                    studentFinalGrade._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentFinalGrade._failure = true;
+                studentFinalGrade._message = es.Message;
+            }
+            return studentFinalGrade;
+        }
     }
 }

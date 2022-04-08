@@ -123,7 +123,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   }
 
   searchScheduledStudentForGroupDrop() {
-    this.getAllStudent.includeInactive = true;
+    this.getAllStudent.aciveStudentInCourseSection = true;
     this.getAllStudent.profilePhoto = true;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.getAllStudent).subscribe(
       (res: ScheduleStudentListViewModel) => {

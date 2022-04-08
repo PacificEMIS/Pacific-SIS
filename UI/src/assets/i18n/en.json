@@ -1792,5 +1792,8 @@
     "selectScheduleDateForSelectedStudentsIntoCourseSections": "Select schedule date for selected student(s) into course section(s)",
     "noStudentScheduled": "No Student Scheduled",
     "noStudentsFound": "No Students Found",
-    "studentReportCard":"Student report card"
+    "studentReportCard":"Student report card",
+    "courseNameIsRequired": "Course Name is required",
+    "letterGradeIsRequired": "Letter Grade is required",
+    "youAreAboutToDeleteThisComment": "You are about to delete this comment"
 }

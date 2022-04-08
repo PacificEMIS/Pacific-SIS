@@ -281,5 +281,204 @@ namespace opensis.report.report.data.Repository
             }
             return honorRollList;
         }
+
+        /// <summary>
+        /// GetStudentFinalGradeReport
+        /// </summary>
+        /// <param name="studentFinalGradeViewModel"></param>
+        /// <returns></returns>
+        public StudentFinalGradeViewModel GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel)
+        {
+            StudentFinalGradeViewModel studentFinalGrade = new();
+            studentFinalGrade.TenantId = studentFinalGradeViewModel.TenantId;
+            studentFinalGrade.SchoolId = studentFinalGradeViewModel.SchoolId;
+            studentFinalGrade.AcademicYear = studentFinalGradeViewModel.AcademicYear;
+            studentFinalGrade._userName = studentFinalGradeViewModel._userName;
+            studentFinalGrade._token = studentFinalGradeViewModel._token;
+            studentFinalGrade._tenantName = studentFinalGradeViewModel._tenantName;
+            try
+            {
+                List<int?> QtrMarkingPeriodId = new List<int?>();
+                List<int?> SmstrMarkingPeriodId = new List<int?>();
+                List<int?> YrMarkingPeriodId = new List<int?>();
+                List<int?> PrgrsprdMarkingPeriodId = new List<int?>();
+                List<int?> QtrMarkingPeriodIdExam = new List<int?>();
+                List<int?> SmstrMarkingPeriodIdExam = new List<int?>();
+                List<int?> YrMarkingPeriodIdExam = new List<int?>();
+                List<int?> PrgrsprdMarkingPeriodIdExam = new List<int?>();
+                List<MarkingPeriodDetailsView> markingPeriodList = new List<MarkingPeriodDetailsView>();
+
+                var markingPeriodsData = studentFinalGradeViewModel.MarkingPeriods!.Split(",");
+
+                foreach (var markingPeriod in markingPeriodsData)
+                {
+                    MarkingPeriodDetailsView markingPeriodListView = new MarkingPeriodDetailsView();
+                    if (markingPeriod != null)
+                    {
+                        var markingPeriodid = markingPeriod.Split("_", StringSplitOptions.RemoveEmptyEntries);
+
+                        if (markingPeriodid.First() == "3")
+                        {
+                            var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+                            markingPeriodListView.MarkingPeriodId = Id;
+
+                            var ppData = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                markingPeriodListView.MarkingPeriodName = ppData.Title + " Exam";
+                                PrgrsprdMarkingPeriodIdExam.Add(Id);
+                            }
+                            else
+                            {
+                                markingPeriodListView.MarkingPeriodName = ppData.Title;
+                                PrgrsprdMarkingPeriodId.Add(Id);
+                            }
+                            markingPeriodList.Add(markingPeriodListView);
+                        }
+
+                        else if (markingPeriodid.First() == "2")
+                        {
+                            var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+                            markingPeriodListView.MarkingPeriodId = Id;
+
+                            var qtrData = this.context?.Quarters.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                markingPeriodListView.MarkingPeriodName = qtrData.Title + " Exam";
+                                QtrMarkingPeriodIdExam.Add(Id);
+                            }
+                            else
+                            {
+                                markingPeriodListView.MarkingPeriodName = qtrData.Title;
+                                QtrMarkingPeriodId.Add(Id);
+                            }
+                            markingPeriodList.Add(markingPeriodListView);
+                        }
+
+                        else if (markingPeriodid.First() == "1")
+                        {
+                            var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+                            markingPeriodListView.MarkingPeriodId = Id;
+
+                            var smstrData = this.context?.Semesters.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                markingPeriodListView.MarkingPeriodName = smstrData.Title + " Exam";
+                                SmstrMarkingPeriodIdExam.Add(Id);
+                            }
+                            else
+                            {
+                                markingPeriodListView.MarkingPeriodName = smstrData.Title;
+                                SmstrMarkingPeriodId.Add(Id);
+                            }
+                            markingPeriodList.Add(markingPeriodListView);
+                        }
+
+                        else if (markingPeriodid.First() == "0")
+                        {
+                            var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+                            markingPeriodListView.MarkingPeriodId = Id;
+
+                            var yrData = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+
+                            if (markingPeriodid.Last() == "E")
+                            {
+                                markingPeriodListView.MarkingPeriodName = yrData.Title + " Exam";
+                                YrMarkingPeriodIdExam.Add(Id);
+                            }
+                            else
+                            {
+                                markingPeriodListView.MarkingPeriodName = yrData.Title;
+                                YrMarkingPeriodId.Add(Id);
+                            }
+                            markingPeriodList.Add(markingPeriodListView);
+                        }
+                    }
+                }
+
+                //all required data fetch
+                var studentFinalGradeData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentMaster).Include(x => x.SchoolYears).Include(x => x.Semesters).Include(x => x.Quarters).Include(x => x.ProgressPeriod).Join(this.context?.CourseSection.Include(c => c.StaffCoursesectionSchedule).ThenInclude(c => c.StaffMaster), sfg => sfg.CourseSectionId, cs => cs.CourseSectionId,
+                            (sfg, cs) => new { sfg, cs }).Where(x => x.sfg.TenantId == studentFinalGradeViewModel.TenantId && x.sfg.SchoolId == studentFinalGradeViewModel.SchoolId && x.cs.TenantId == studentFinalGradeViewModel.TenantId && x.cs.SchoolId == studentFinalGradeViewModel.SchoolId && studentFinalGradeViewModel.StudentIds.Contains(x.sfg.StudentId) && x.sfg.AcademicYear == studentFinalGradeViewModel.AcademicYear &&
+
+                            ((((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodId.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodId.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodId.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodId.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade != true) ||
+                            (((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodIdExam.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodIdExam.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodIdExam.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodIdExam.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade == true))).ToList();
+
+                if (studentFinalGradeData?.Any() == true)
+                {
+                    var studentAttendanceMasterData = this.context?.StudentAttendance.Include(x => x.AttendanceCodeNavigation).Where(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId);
+
+                    var studentWiseData = studentFinalGradeData.GroupBy(x => x.sfg.StudentId).ToList();
+
+                    foreach (var student in studentWiseData)
+                    {
+                        var finalGradeData = student.Select(s => s.sfg).FirstOrDefault();
+
+                        StudentDetailsView studentDetailsView = new StudentDetailsView();
+
+                        studentDetailsView.SchoolId = finalGradeData.StudentMaster.SchoolId;
+                        studentDetailsView.StudentId = finalGradeData.StudentMaster.StudentId;
+                        studentDetailsView.FirstGivenName = finalGradeData.StudentMaster.FirstGivenName;
+                        studentDetailsView.MiddleName = finalGradeData.StudentMaster.MiddleName;
+                        studentDetailsView.LastFamilyName = finalGradeData.StudentMaster.LastFamilyName;
+
+                        var courseSectionWiseData = student.GroupBy(x => x.sfg.CourseSectionId).ToList();
+
+                        foreach (var courseSection in courseSectionWiseData)
+                        {
+                            CourseSectionDetailsView courseSectionDetailsView = new CourseSectionDetailsView();
+                            var courseSectionData = courseSection.Select(s => s.cs).FirstOrDefault();
+
+                            courseSectionDetailsView.CourseSectionName = courseSectionData.CourseSectionName;
+                            if (studentFinalGradeViewModel.Teacher == true)
+                            {
+                                courseSectionDetailsView.StaffFirstGivenName = courseSectionData.StaffCoursesectionSchedule.FirstOrDefault().StaffMaster.FirstGivenName;
+                                courseSectionDetailsView.StaffMiddleName = courseSectionData.StaffCoursesectionSchedule.FirstOrDefault().StaffMaster.MiddleName;
+                                courseSectionDetailsView.StaffLastFamilyName = courseSectionData.StaffCoursesectionSchedule.FirstOrDefault().StaffMaster.LastFamilyName;
+                            }
+                            if (studentFinalGradeViewModel.Comments == true)
+                            {
+                                courseSectionDetailsView.Comments = courseSection.First().sfg.TeacherComment;
+                            }
+
+                            //fetch markingperiod name & bind in VM where final grade has for this course section.
+                            courseSectionDetailsView.markingPeriodDetailsViews = courseSection.Select(s => new MarkingPeriodDetailsView { Percentage = studentFinalGradeViewModel.Parcentage == true ? s.sfg.PercentMarks : 0, Grade = s.sfg.GradeObtained, MarkingPeriodName = s.sfg.IsExamGrade == true ? s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title + " Exam" : s.sfg.Quarters != null ? s.sfg.Quarters.Title + " Exam" : s.sfg.Semesters != null ? s.sfg.Semesters.Title + " Exam" : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title + " Exam" : null : s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title : s.sfg.Quarters != null ? s.sfg.Quarters.Title : s.sfg.Semesters != null ? s.sfg.Semesters.Title : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title : null }).ToList();
+
+                            //fetch markingperiod name & bind in VM where final grade has not for this course section.
+                            var exceptMarkingPeriod = markingPeriodList.Select(x => x.MarkingPeriodName).Except(courseSectionDetailsView.markingPeriodDetailsViews.Select(x => x.MarkingPeriodName)).Select(s => new MarkingPeriodDetailsView { MarkingPeriodName = s }).ToList();
+
+                            courseSectionDetailsView.markingPeriodDetailsViews.AddRange(exceptMarkingPeriod);
+
+                            //this code for ytd absence
+                            if (studentFinalGradeViewModel.YearToDateDailyAbsences == true)
+                            {
+                                var studentAttendanceData = studentAttendanceMasterData.Where(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.StudentId == student.Key && x.CourseSectionId == courseSection.Key).ToList();
+
+                                if (studentAttendanceData.Count > 0)
+                                {
+                                    courseSectionDetailsView.AbsYTD = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
+                                }
+                            }
+
+                            studentDetailsView.courseSectionDetailsViews.Add(courseSectionDetailsView);
+                        }
+                        studentFinalGrade.studentDetailsViews.Add(studentDetailsView);
+                    }
+                }
+                else
+                {
+                    studentFinalGrade._message = NORECORDFOUND;
+                    studentFinalGrade._failure = true;
+                }
+            }
+            catch (Exception es)
+            {
+                studentFinalGrade._message = es.Message;
+                studentFinalGrade._failure = true;
+            }
+            return studentFinalGrade;
+        }
     }
 }

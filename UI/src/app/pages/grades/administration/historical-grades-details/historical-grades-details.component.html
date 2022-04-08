@@ -102,7 +102,7 @@
                                     <input type="text" name="{{'cc' + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
                                         class="w-full" #courseCode="ngModel" required />
                                 </div>
-                                <div *ngIf="courseCode.errors?.required && courseCode.touched" class="text-red">
+                                <div *ngIf="(!history.courseName && !history.courseCode)?(courseCode.errors?.required && courseCode.touched):''" class="text-red">
                                     {{'courseCodeIsRequired'|translate}}
                                 </div>
                             </ng-container>
@@ -114,7 +114,10 @@
                             <ng-container *ngIf="history.creditAddMode;else viewMode2">
                                 <div class="border border-gray-light rounded p-2 w-32">
                                     <input type="text" name="{{'cn' + j}}" [(ngModel)]="history.courseName"
-                                        class="w-full" />
+                                        class="w-full" #courseName="ngModel"  required="true"/>
+                                </div>
+                                <div *ngIf="(!history.courseName && !history.courseCode)?(courseName.errors?.required && courseName.touched):''" class="text-red">
+                                    {{'courseNameIsRequired'|translate}}
                                 </div>
                             </ng-container>
                             <ng-template #viewMode2>
@@ -127,7 +130,7 @@
                                     <input type="text" name="{{'cp' + j}}" [(ngModel)]="history.percentage"
                                         class="w-full" #percentage="ngModel" required />
                                     </div>
-                                    <div *ngIf="percentage.errors?.required && percentage.touched" class="text-red">
+                                    <div *ngIf="(!history.percentage && !history.letterGrade)?(percentage.errors?.required && percentage.touched):''" class="text-red">
                                         {{'percentageIsRequired'|translate}}
                                     </div>
                             </ng-container>
@@ -138,8 +141,11 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode4">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'lg' + j}}" [(ngModel)]="history.letterGrade"
-                                        class="w-full" />
+                                    <input type="text" name="{{'lg' + i + j}}" [(ngModel)]="history.letterGrade"
+                                        class="w-full" #letterGrade="ngModel"  required="true"/>
+                                </div>
+                                <div *ngIf="(!history.percentage && !history.letterGrade)?(letterGrade.errors?.required && letterGrade.touched):''" class="text-red">
+                                    {{'letterGradeIsRequired'|translate}}
                                 </div>
                             </ng-container>
                             <ng-template #viewMode4>

@@ -385,7 +385,7 @@ export class ProgressReportComponent implements OnInit {
     this.addAndGenerateProgressReportCard().then((res: any) => {
       this.generatedReportCardData = res
 
-      if (!this.getStudentProgressReportModel.TotalsOnly) {
+      if (!this.getStudentProgressReportModel.totalsOnly) {
         this.calculateAndGenerateData();
       } else {
         this.generatedReportCardData.schoolMasterListData.map((schoolDetails) => {
@@ -398,7 +398,7 @@ export class ProgressReportComponent implements OnInit {
         })
       }
       setTimeout(() => {
-        if (this.getStudentProgressReportModel.TotalsOnly) {
+        if (this.getStudentProgressReportModel.totalsOnly) {
           this.generatePdfForTotal();
         } else {
           this.generatePdfForAssignmentDetails();
@@ -420,7 +420,7 @@ export class ProgressReportComponent implements OnInit {
 
           // for grade = * only remove from array and for grade = 0 it will hide in html but it will count
           if (this.toggleMenu.excludeUngradedEcAssignments) {
-            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x => x.grade !== '*');
+            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x => x.grade !== '*' && x.allowedMarks !== '*');
           }
 
           courseSection.gradeBookGradeListData.map((gradeDetails) => {
@@ -429,11 +429,11 @@ export class ProgressReportComponent implements OnInit {
               gradeDetails.hide = true;
             }
 
-            totalAllowedMarks += gradeDetails.allowedMarks ? Number(gradeDetails.allowedMarks) : 0;
             totalAssignmentPoint += gradeDetails.assignmentPoint ? Number(gradeDetails.assignmentPoint) : 0;
 
-            if (gradeDetails.grade !== '*') {
+            if (gradeDetails.grade !== '*' && gradeDetails.allowedMarks !== '*') {              
               totalGradePercentage += gradeDetails.grade ? Number(gradeDetails.grade) : 0;
+              totalAllowedMarks += gradeDetails.allowedMarks ? Number(gradeDetails.allowedMarks) : 0;
               if (Number(gradeDetails.grade) === 0 && this.toggleMenu.excludeUngradedEcAssignments) {
                 gradeDetails.hide = true;
               }

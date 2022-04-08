@@ -25,8 +25,8 @@
 
         <div class="">
             <h4 class="text-lg font-medium mb-2">
-                <span (click)="todaysClasses()" [ngClass]="scheduledCourseSectionViewModel.allCourse?'':'text-blue'" class="pr-4 cursor-pointer border-r border-gray">{{ 'todaysClasses' | translate }}</span>
-                <span (click)="allClasses()" [ngClass]="scheduledCourseSectionViewModel.allCourse?'text-blue':''" class="pl-4 cursor-pointer">{{ 'allClasses' | translate }}</span>
+                <span (click)="todaysClasses()" [ngClass]="allCourseFlag?'':'text-blue'" class="pr-4 cursor-pointer border-r border-gray">{{ 'todaysClasses' | translate }}</span>
+                <span (click)="allClasses()" [ngClass]="allCourseFlag?'text-blue':''" class="pl-4 cursor-pointer">{{ 'allClasses' | translate }}</span>
             </h4>
             <div *ngIf="classCount===0" class="card px-6 pt-4 mb-4">
                 <h5 class="text-warn pb-3">{{ 'noClassesFound' | translate }}</h5>
@@ -93,7 +93,7 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="card overflow-auto w-full">
+            <div class="card overflow-auto w-full" *ngIf="eventCount>0">
 
                 <div class="border-b py-4 px-6">
                     <h4 class="text-lg font-semibold cursor-pointer" (click)="goToCalendar()">{{ 'calendarEventsAndHolidays' | translate }}</h4>

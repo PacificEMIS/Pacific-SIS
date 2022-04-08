@@ -1793,5 +1793,8 @@
     "completed": "Terminado",
     "noStudentScheduled": "Ningún estudiante programado",
     "noStudentsFound": "No se encontraron estudiantes",
-    "studentReportCard":"Tarjeta de informe del estudiante"
+    "studentReportCard":"Tarjeta de informe del estudiante",
+    "courseNameIsRequired": "Se requiere el nombre del curso",
+    "letterGradeIsRequired": "Se requiere grado de letra",
+    "youAreAboutToDeleteThisComment": "Estás a punto de borrar este comentario"
 }

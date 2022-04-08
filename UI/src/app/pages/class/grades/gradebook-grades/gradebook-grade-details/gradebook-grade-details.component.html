@@ -28,7 +28,7 @@
                         </div>
                     </ng-container>
                     <ng-container *ngIf="!assignment?.enableComment">
-                        {{assignment?.allowedMarks ? assignment?.allowedMarks : 0}}/{{assignment?.points}}
+                        <div [ngClass]="{'text-red': assignment?.allowedMarks > assignment?.points}">{{assignment?.allowedMarks ? assignment?.allowedMarks : 0}}/{{assignment?.points}}</div>
                     </ng-container>
                 </td>
                 <td>{{assignment?.percentage ? assignment?.percentage + '%' : ''}} {{assignment?.letterGrade ? '[ ' + assignment?.letterGrade + ' ]' : ''}}</td>
