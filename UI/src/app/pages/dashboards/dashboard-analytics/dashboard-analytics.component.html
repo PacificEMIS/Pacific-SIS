@@ -69,7 +69,7 @@
     </vex-scrollbar>
     </div>
 
-		<vex-widget-table [columns]="tableColumns" [data]="tableData" [calendarEvents]="events$"
+		<vex-widget-table *ngIf="eventCount>0" [columns]="tableColumns" [data]="tableData" [calendarEvents]="events$"
 			class="w-full overflow-auto shadow"></vex-widget-table>
 		<!-- <vex-widget-large-chart [series]="userSessionsSeries"></vex-widget-large-chart> -->
   </div>
@@ -84,14 +84,21 @@
 			{{'missingAttendanceFound'|translate}}
 		</div>
 
-		<div class="card mb-4">
-			<div *ngIf="noticeHide" class="px-6 py-4">
-				<h3 class="text-primary font-bold">{{noticeTitle}}</h3>
-			</div>
-			<hr *ngIf="noticeHide" />
-			<div *ngIf="noticeHide && noticeBody" class="px-3 ql-snow">
-				<div class="ql-editor" [innerHTML]="noticeBody|safe:'html'"></div>
-			</div>
-		</div>		
+    <div *ngIf="noticeList.length>0" class="card mb-4 px-4 pt-4">
+      <mat-divider class="-mx-6"></mat-divider>
+      <mat-accordion>
+        <div *ngFor="let x of noticeList">
+          <mat-expansion-panel>
+              <mat-expansion-panel-header class="px-0 mr-1">
+                  <mat-panel-title class="font-semibold text-base">
+                      {{x.title}}
+                  </mat-panel-title>
+              </mat-expansion-panel-header>
+              <p class="-mx-6" [innerHTML]="x.body|safe:'html'"></p>
+          </mat-expansion-panel>
+          <mat-divider class="-mx-6"></mat-divider>
+       </div>
+      </mat-accordion>
+  </div>		
 	</div>
 </div>
