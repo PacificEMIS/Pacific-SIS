@@ -20,6 +20,11 @@ export class DashboardViewModel extends CommonField{
     public schoolCalendar : CalendarModel;
     public calendarEventList : CalendarEventModel[];
     public membershipId : number;
+    public noticeList: [];
+    constructor() {
+        super();
+        this.noticeList = [];
+    }
 }
 
 export class ScheduledCourseSectionViewModel extends CommonField{
