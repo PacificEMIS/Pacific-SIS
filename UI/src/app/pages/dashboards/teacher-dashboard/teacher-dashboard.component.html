@@ -93,7 +93,7 @@
         </div>
 
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="card overflow-auto w-full">
+            <div class="card overflow-auto w-full" *ngIf="eventCount>0">
 
                 <div class="border-b py-4 px-6">
                     <h4 class="text-lg font-semibold cursor-pointer" (click)="goToCalendar()">{{ 'calendarEventsAndHolidays' | translate }}</h4>
