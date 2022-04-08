@@ -571,11 +571,13 @@ export class StudentComponent implements OnInit, OnDestroy {
   viewStudentDetails(data) {
     this.imageCropperService.enableUpload({ module: this.moduleIdentifier.STUDENT, upload: true, mode: this.createMode.VIEW });
     this.studentService.setStudentId(data.studentId);
-    this.defaultValuesService.setSchoolID(data.schoolId, true);
-    // this.defaultValuesService.setAcademicYear(data.academicYear, true);
-    this.getPermissionForStudent();
-   
-    // this.router.navigate(["school/students/student-generalinfo"]); 
+    if(data.schoolId === this.defaultValuesService.getSchoolID()) {
+      this.defaultValuesService.setSchoolID(data.schoolId, true);
+        this.checkPermissionAndRoute();
+      } else {
+      this.defaultValuesService.setSchoolID(data.schoolId, true);
+        this.getPermissionForStudent();
+      }
   }
 
   getPermissionForStudent() {
@@ -585,19 +587,23 @@ export class StudentComponent implements OnInit, OnDestroy {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
       } else{
-        let permittedDetails = this.pageRolePermission.getPermittedSubCategories('/school/students', res);
-        if (permittedDetails.length) {
-          this.studentService.setCategoryId(0);
-          this.studentService.setCategoryTitle(permittedDetails[0].title);
-          this.router.navigate([permittedDetails[0].path], {state: {permissions: res}});
-        } else {
-          this.defaultValuesService.setSchoolID(undefined);
-          this.snackbar.open('Student didnot have permission to view details.', '', {
-            duration: 10000
-          });
-        }
+        this.checkPermissionAndRoute(res);
       }
     });
+  }
+
+  checkPermissionAndRoute(res?) {
+    let permittedDetails = this.pageRolePermission.getPermittedSubCategories('/school/students', res);
+    if (permittedDetails.length) {
+      this.studentService.setCategoryId(0);
+      this.studentService.setCategoryTitle(permittedDetails[0].title);
+      this.router.navigate([permittedDetails[0].path], {state: {permissions: res}});
+    } else {
+      this.defaultValuesService.setSchoolID(undefined);
+      this.snackbar.open('Student didnot have permission to view details.', '', {
+        duration: 10000
+      });
+    }
   }
 
  
