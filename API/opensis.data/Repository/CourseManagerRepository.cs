@@ -1191,7 +1191,8 @@ namespace opensis.data.Repository
                             courseSectionView.State = SchoolDetailsData.State;
                             courseSectionView.District = SchoolDetailsData.District;
                             courseSectionView.Zip = SchoolDetailsData.Zip;
-                            courseSectionView.SchoolLogo = SchoolDetailsData.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                            //courseSectionView.SchoolLogo = SchoolDetailsData.SchoolDetail.FirstOrDefault()?.SchoolLogo;
+                            courseSectionView.SchoolLogo = SchoolDetailsData.SchoolDetail.FirstOrDefault()?.SchoolThumbnailLogo;
                         }
                     }
 
