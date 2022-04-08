@@ -1,7 +1,7 @@
 <!--Staff Address Add and Edit-->
 
 <mat-card class="w-full" *ngIf="staffCreateMode == staffCreate.EDIT || staffCreateMode == staffCreate.ADD">
-    <form (ngSubmit)="f.form.valid && submitAddress()" #f="ngForm" novalidate appInvalidControlScroll>
+    <form (ngSubmit)="f.form.valid && checkSubmitAddress()" #f="ngForm" novalidate appInvalidControlScroll>
 
         <div>
             <h3 class="mb-6">{{'addressAndContact'|translate}}</h3>
@@ -94,7 +94,7 @@
                     </li>
                 </ul>
                 <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="staffAddModel" [module]="module"
-                    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"></vex-custom-field-without-form>
+                    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
 
                 <hr class="-mx-4 mt-6">
 

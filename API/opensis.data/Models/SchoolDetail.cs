@@ -57,6 +57,7 @@ namespace opensis.data.Models
         public string? NameOfPrincipal { get; set; }
         public string? NameOfAssistantPrincipal { get; set; }
         public byte[]? SchoolLogo { get; set; }
+        public byte[]? SchoolThumbnailLogo { get; set; }
         public bool? RunningWater { get; set; }
         public string? MainSourceOfDrinkingWater { get; set; }
         public bool? CurrentlyAvailable { get; set; }

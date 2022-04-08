@@ -336,7 +336,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
           for (let staff of this.staffList.filteredData) {
             for (let schoolList of staff.staffSchoolInfo) {
               staff.schoolName = schoolList.schoolAttachedName;
-              if (schoolList.endDate === null || moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString())) {
+              if (schoolList.endDate === null || moment(new Date()).isBetween(schoolList.startDate,schoolList.endDate)) {
                 staff.status = 'active';
                 break;
               } else
@@ -352,7 +352,7 @@ export class StaffinfoComponent implements OnInit, AfterViewInit{
                 if (schoolList.endDate === null)
                   staff.status = 'active';
                 else {
-                  if (moment(new Date()).isBetween(moment(schoolList.startDate).format('DD-MM-YYYY'), moment(schoolList.endDate).format('DD-MM-YYYY').toString()))
+                  if (moment(new Date()).isBetween(schoolList.startDate,schoolList.endDate))
                     staff.status = 'active';
                   else
                     staff.status = 'inactive';

@@ -43,6 +43,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { Router } from '@angular/router';
+import moment from 'moment';
 
 @Component({
   selector: 'vex-teacher-dashboard',
@@ -72,7 +73,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   icWarning = icWarning;
   panelOpenState = false;
   icHowToReg = icHowToReg;
-  scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();
+  scheduledCourseSectionViewModel: ScheduledCourseSectionViewModel;
   dashboardViewModel: DashboardViewModel = new DashboardViewModel();
   calendarTitle: string;
   noticeBody: string;
@@ -97,6 +98,10 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
     { name: 'Friday', id: 5 },
     { name: 'Saturday', id: 6 }
   ];
+  allCourseFlag: boolean;
+  listOfAllClasses = [];
+  listOfTodaysClasses = [];
+  dayOfWeek: string;
 
   constructor(
     public translateService: TranslateService,
@@ -112,29 +117,36 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    this.schoolService.schoolListCalled.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-
-      if (res.academicYearChanged || res.academicYearLoaded) {
-        this.getDashboardViewForStaff();
-        this.getDashboardViewForCalendarView();
+    this.dasboardService.markingPeriodTriggeredData.pipe(takeUntil(this.destroySubject$)).subscribe(flag=>{
+      if(flag.markingPeriodLoaded || flag.markingPeriodChanged) {
+        if(this.defaultValuesService.getMarkingPeriodStartDate()!==null && this.defaultValuesService.getMarkingPeriodEndDate()!==null){
+          this.getDashboardViewForStaff();
+          this.getDashboardViewForCalendarView();
+        }
       }
     })
-
   }
 
   getDashboardViewForStaff() {
+    this.allCourseFlag = false;
+    this.scheduledCourseSectionViewModel = new ScheduledCourseSectionViewModel();
     this.scheduledCourseSectionViewModel.staffId = this.defaultValuesService.getUserId();
     this.scheduledCourseSectionViewModel.membershipId=this.defaultValuesService.getuserMembershipID();
+    this.scheduledCourseSectionViewModel.allCourse= true;
     this.dasboardService.getDashboardViewForStaff(this.scheduledCourseSectionViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
           this.classCount=0;
           this.noticeCount=0;
+          this.listOfAllClasses = [];
+          this.listOfTodaysClasses = [];
         }
         else {
           this.scheduledCourseSectionViewModel = res;
-          this.scheduledCourseSectionViewModel.courseSectionViewList = this.findMeetingDays(this.scheduledCourseSectionViewModel.courseSectionViewList);
+          this.listOfAllClasses = this.scheduledCourseSectionViewModel.courseSectionViewList;
+          this.listOfTodaysClasses = this.filterTodaysClassesFromAllClasses(this.listOfAllClasses);
+          this.scheduledCourseSectionViewModel.courseSectionViewList = this.findMeetingDays(this.listOfTodaysClasses);
           this.classCount= this.scheduledCourseSectionViewModel.courseSectionViewList.length;
           this.noticeCount=this.scheduledCourseSectionViewModel.noticeList?.length;
           this.notificationsList=res.notificationList;
@@ -150,6 +162,33 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
     });
   }
 
+  filterTodaysClassesFromAllClasses(allClassesData) {
+    let listOfClasses = [];
+    for(let course of allClassesData) {
+      if(course.scheduleType==="Fixed Schedule" || course.scheduleType==="Variable Schedule") {      
+        let days = course.meetingDays.split("|");
+        for(let x of this.weeks) {
+          if(x.id === new Date().getDay()) {
+            this.dayOfWeek = x.name;
+          }
+        }
+        if(days.includes(this.dayOfWeek) && moment(new Date()).isBetween(course.durationStartDate, course.durationEndDate)) {
+          listOfClasses.push(course);
+        }
+        
+      } else if(course.scheduleType==="Block Schedule") {
+          if(moment(new Date()).isBetween(course.durationStartDate, course.durationEndDate)) {
+            listOfClasses.push(course);
+          }
+      } else if(course.scheduleType==="Calendar Schedule") {
+          if(moment(new Date()).isBetween(course.durationStartDate, course.durationEndDate)) {
+            listOfClasses.push(course);
+          }
+      }
+    }
+    return listOfClasses;
+  }
+  
   findMeetingDays(courseSectionList) {
     courseSectionList = courseSectionList.map((item) => {
       let random = Math.floor((Math.random() * 7) + 0);
@@ -188,7 +227,7 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   }
 
   getAttendanceForPeriod(courseSection) {
-    if (courseSection.scheduleType === "Fixed Schedule") {
+    if (courseSection.scheduleType === "Fixed Schedule" || courseSection.scheduleType === "Calendar Schedule" || courseSection.scheduleType === "Block Schedule" || courseSection.scheduleType === "Variable Schedule") {
       this.takeAttendance = courseSection.takeAttendanceForFixedSchedule ? true : false;
     }
     return this.takeAttendance;
@@ -223,26 +262,38 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   getPeriodTitle(courseSection) {
     if (courseSection.scheduleType === "Fixed Schedule") {
       this.periodTitle = courseSection?.courseFixedSchedule?.blockPeriod?.periodTitle;
-
+    } else if (courseSection.scheduleType === "Calendar Schedule") {
+      this.periodTitle = courseSection?.courseCalendarSchedule[0]?.blockPeriod?.periodTitle;
+    } else if (courseSection.scheduleType === "Block Schedule") {
+      this.periodTitle = courseSection?.courseBlockSchedule[0]?.blockPeriod?.periodTitle;
+    } else if (courseSection.scheduleType === "Variable Schedule") {
+      this.periodTitle = courseSection?.courseVariableSchedule[0]?.blockPeriod?.periodTitle;
     }
 
     return this.periodTitle;
   }
 
   todaysClasses(){
-    this.scheduledCourseSectionViewModel.allCourse= false;
-    this.getDashboardViewForStaff();
+    this.allCourseFlag = false;
+    this.classCount = this.listOfTodaysClasses.length;
+    this.scheduledCourseSectionViewModel.courseSectionViewList = this.findMeetingDays(this.listOfTodaysClasses);
   }
 
   allClasses(){
-    this.scheduledCourseSectionViewModel.allCourse= true;
-    this.getDashboardViewForStaff();
+    this.allCourseFlag = true;
+    this.classCount = this.listOfAllClasses.length;
+    this.scheduledCourseSectionViewModel.courseSectionViewList = this.findMeetingDays(this.listOfAllClasses);
   }
 
   getPeriodStartTime(courseSection) {
     if (courseSection.scheduleType === "Fixed Schedule") {
       this.periodStartTime = new Date("1900-01-01T" + courseSection?.courseFixedSchedule?.blockPeriod?.periodStartTime).toString();
-
+    } else if (courseSection.scheduleType === "Calendar Schedule") {
+      this.periodStartTime = new Date("1900-01-01T" + courseSection?.courseCalendarSchedule[0]?.blockPeriod?.periodStartTime).toString();
+    } else if (courseSection.scheduleType === "Block Schedule") {
+      this.periodStartTime = new Date("1900-01-01T" + courseSection?.courseBlockSchedule[0]?.blockPeriod?.periodStartTime).toString();
+    } else if (courseSection.scheduleType === "Variable Schedule") {
+      this.periodStartTime = new Date("1900-01-01T" + courseSection?.courseVariableSchedule[0]?.blockPeriod?.periodStartTime).toString();
     }
     return this.periodStartTime;
   }
@@ -250,7 +301,12 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
   getRoomTitle(courseSection) {
     if (courseSection.scheduleType === "Fixed Schedule") {
       this.roomTitle = courseSection?.courseFixedSchedule?.rooms?.title;
-
+    } else if (courseSection.scheduleType === "Calendar Schedule") {
+      this.roomTitle = courseSection?.courseCalendarSchedule[0]?.rooms?.title;
+    } else if (courseSection.scheduleType === "Block Schedule") {
+      this.roomTitle = courseSection?.courseBlockSchedule[0]?.rooms?.title;
+    } else if (courseSection.scheduleType === "Variable Schedule") {
+      this.roomTitle = courseSection?.courseVariableSchedule[0]?.rooms?.title;
     }
     return this.roomTitle;
   }

@@ -9,9 +9,9 @@ export enum Profiles{
  }
 
  export enum ProfilesTypes {
-    SuperAdmin='SuperAdmin',
-    SchoolAdmin='SchoolAdmin',
-    AdminAssitant='AdminAssitant',
+    SuperAdmin='Super Administrator',
+    SchoolAdmin='School Administrator',
+    AdminAssitant='Admin Assistant',
     Teacher='Teacher',
     HomeroomTeacher='Homeroom Teacher',
     Parent='Parent',

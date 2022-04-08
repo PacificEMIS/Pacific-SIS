@@ -763,7 +763,8 @@ namespace opensis.data.Repository
                                             }
 
                                             studentsListViewModel.StudentInternalId = studentCoursesectionSchedule.StudentInternalId;
-                                            studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                                            //studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                                            studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentThumbnailPhoto;
                                             studentsListViewModel.FirstGivenName = studentCoursesectionSchedule.StudentMaster.FirstGivenName;
                                             studentsListViewModel.MiddleName = studentCoursesectionSchedule.StudentMaster.MiddleName;
                                             studentsListViewModel.LastFamilyName = studentCoursesectionSchedule.StudentMaster.LastFamilyName;
@@ -1273,7 +1274,8 @@ namespace opensis.data.Repository
                                     }
 
                                     studentsListViewModel.StudentInternalId = studentCoursesectionSchedule.StudentInternalId;
-                                    studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                                    //studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentPhoto;
+                                    studentsListViewModel.StudentPhoto = studentCoursesectionSchedule.StudentMaster.StudentThumbnailPhoto;
                                     studentsListViewModel.FirstGivenName = studentCoursesectionSchedule.StudentMaster.FirstGivenName;
                                     studentsListViewModel.MiddleName = studentCoursesectionSchedule.StudentMaster.MiddleName;
                                     studentsListViewModel.LastFamilyName = studentCoursesectionSchedule.StudentMaster.LastFamilyName;

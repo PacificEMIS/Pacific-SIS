@@ -51,5 +51,6 @@ namespace opensis.data.ViewModels.CommonModel
         public SchoolCalendars? SchoolCalendar { get; set; }
         //public List<opensis.data.Models.CalendarEvents> calendarEventList { get; set; }
         public List<CalenderEventViewModel> CalendarEventList { get; set; }
+        public List<opensis.data.Models.Notice> NoticeList { get; set; }
     }
 }

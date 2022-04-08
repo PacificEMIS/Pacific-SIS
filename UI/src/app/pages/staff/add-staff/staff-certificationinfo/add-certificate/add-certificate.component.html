@@ -51,7 +51,7 @@
     </mat-form-field>
 
     <vex-custom-field-without-form *ngIf="staffCreateMode !== undefined" [schoolDetailsForViewAndEdit]="staffDetailsForViewAndEdit" [module]="module"
-    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"></vex-custom-field-without-form>
+    [categoryId]="categoryId" [staffCreateMode]="staffCreateMode"  (custom)="customValid=$event"></vex-custom-field-without-form>
 
 </mat-dialog-content>
 
@@ -61,7 +61,7 @@
             <span [hidden]="formvalidstatas" class="text-warn"><mat-icon class="align-middle" [icIcon]="icWarning"></mat-icon> {{'CannotSubmitEmptyForm'|translate}}</span>
         </div>
         <div> <button mat-button type="button" (click)="cancel()">{{'cancel' | translate}}</button>
-                <button color="primary" (click)="submit()" mat-raised-button type="submit">{{buttonType|translate}}</button>
+                <button color="primary" (click)="checkSubmittedForm()" mat-raised-button type="submit">{{buttonType|translate}}</button>
             </div>
     </div>
    
