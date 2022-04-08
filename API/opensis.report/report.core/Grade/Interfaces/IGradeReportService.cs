@@ -11,5 +11,6 @@ namespace opensis.report.report.core.Grade.Interfaces
     public interface IGradeReportService
     {
         public HonorRollListForReport GetHonorRollReport(PageResult pageResult);
+        public StudentFinalGradeViewModel GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel);
     }
 }
