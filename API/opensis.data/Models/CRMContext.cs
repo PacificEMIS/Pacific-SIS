@@ -3316,6 +3316,10 @@ namespace opensis.data.Models
 
                 entity.ToTable("parent_associationship");
 
+                entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Associationship }, "IX_parent_associationship_tenant_id_parent_id_asso");
+
+                entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.StudentId, e.Associationship }, "IX_parent_associationship_tenant_id_school_id_student_id_asso");
+
                 entity.Property(e => e.TenantId)
                     .HasMaxLength(36)
                     .HasColumnName("tenant_id")
@@ -3362,7 +3366,7 @@ namespace opensis.data.Models
                     .HasName("PK_parent_info_tenant_id");
 
                 entity.ToTable("parent_info");
-
+                entity.HasIndex(e => new { e.TenantId, e.ParentId }, "IX_parent_info_tenant_id_parent_id");
                 entity.Property(e => e.TenantId)
                     .HasMaxLength(36)
                     .HasColumnName("tenant_id")
