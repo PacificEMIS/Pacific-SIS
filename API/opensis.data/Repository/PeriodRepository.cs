@@ -119,6 +119,7 @@ namespace opensis.data.Repository
                     {
                         if (blockAddViewModel.block != null && blockUpdate != null)
                         {
+                            blockAddViewModel.block.AcademicYear = blockUpdate.AcademicYear;
                             blockAddViewModel.block.CreatedBy = blockUpdate.CreatedBy;
                             blockAddViewModel.block.CreatedOn = blockUpdate.CreatedOn;
                             blockAddViewModel.block.UpdatedOn = DateTime.Now;
