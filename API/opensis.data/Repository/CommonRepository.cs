@@ -2864,7 +2864,7 @@ namespace opensis.data.Repository
 
                     //var Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true) || (x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true))).ToList();
 
-                    var Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && (x.StartDate <= DateTime.UtcNow && DateTime.UtcNow <= x.EndDate) || (x.StartDate >= DateTime.UtcNow) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true || (x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true)))).ToList();
+                    var Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && (x.StartDate <= DateTime.UtcNow && DateTime.UtcNow <= x.EndDate || x.StartDate >= DateTime.UtcNow) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true || (x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true)))).ToList();
 
                     if (Events != null && Events.Any())
                     {
