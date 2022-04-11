@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
 import icSchedule from '@iconify/icons-ic/twotone-schedule';
@@ -61,7 +61,8 @@ export class AddNurseVisitComponent implements OnInit {
     public translateService: TranslateService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
 
     ) {
     //translateService.use('en');
@@ -95,8 +96,20 @@ export class AddNurseVisitComponent implements OnInit {
       this.form.controls.comment.patchValue(this.data.comment);
     }
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.nurseVisitDate.invalid) {
+      const invalidNurseVisitDateControl: HTMLElement = this.el.nativeElement.querySelector('.nurseVisitDate-scroll');
+      invalidNurseVisitDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.reason.invalid) {
+      const invalidReasonControl: HTMLElement = this.el.nativeElement.querySelector('.reason-scroll');
+      invalidReasonControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
     this.form.markAsTouched();
+    this.scrollToInvalidControl();
     if (this.form.valid){
       if (this.form.controls.id.value === 0){
         this.addEditStudentMedicalNurseVisitModel.studentMedicalNurseVisit.nurseVisitDate =

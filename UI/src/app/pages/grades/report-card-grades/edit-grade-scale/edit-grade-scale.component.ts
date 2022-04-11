@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -61,7 +61,8 @@ export class EditGradeScaleComponent implements OnInit {
     private gradesService:GradesService,
     public translateService: TranslateService,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
      ) {
        this.form=fb.group(
          {
@@ -92,9 +93,18 @@ export class EditGradeScaleComponent implements OnInit {
 
   
 
-  
+  scrollToInvalidControl() {
+    if (this.form.controls.gradeScaleName.invalid) {
+      const invalidGradeScaleNameControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScaleName-scroll');
+      invalidGradeScaleNameControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.gradeScaleValue.invalid) {
+      const invalidGradeScaleValueControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScaleValue-scroll');
+      invalidGradeScaleValueControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
 
   submit(){
+    this.scrollToInvalidControl();
     this.form.markAllAsTouched();
     if(this.form.valid){
       if(this.form.controls.gradeScaleId.value==0){

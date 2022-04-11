@@ -18,14 +18,14 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'courseSectionName' | translate}}</mat-label>
-                <input formControlName="courseSectionName"  [readonly]="!this.defaultValuesService.checkAcademicYear()"  name="courseSectionName" cdkFocusInitial matInput required>
+                <input formControlName="courseSectionName" class="courseSectionName-scroll" [readonly]="!this.defaultValuesService.checkAcademicYear()"  name="courseSectionName" cdkFocusInitial matInput required>
                 <mat-error *ngIf="form.get('courseSectionName').hasError('required')">{{'courseSectionNameIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'calendar' | translate}}</mat-label>
-                <mat-select [disabled]="disabledCalendar || !this.defaultValuesService.checkAcademicYear()"  formControlName="calendarId"  name="calendarId" (selectionChange) = "changeCalendar($event.value)" name="calendarId" required>
+                <mat-select [disabled]="disabledCalendar || !this.defaultValuesService.checkAcademicYear()" class="calendar-scroll" formControlName="calendarId"  name="calendarId" (selectionChange) = "changeCalendar($event.value)" name="calendarId" required>
                     <mat-option *ngFor="let calendars of calendarList" [value]="calendars.calenderId">
                         {{calendars.title}}
                     </mat-option>
@@ -36,7 +36,7 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'gradeScale' | translate}}</mat-label>
-                <mat-select formControlName="gradeScaleId"  name="gradeScaleId" [disabled]="!this.defaultValuesService.checkAcademicYear()"  name="gradeScaleId" required>
+                <mat-select formControlName="gradeScaleId" class="gradeScale-scroll" name="gradeScaleId" [disabled]="!this.defaultValuesService.checkAcademicYear()"  name="gradeScaleId" required>
                     <mat-option [value]='staticGradeScaleValue[0].gradeScaleId'>
                     {{staticGradeScaleValue[0].gradescaleName}}
                     </mat-option>
@@ -63,7 +63,7 @@
         <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{'seats' | translate}}</mat-label>
-                <input type="number" [readonly]="!this.defaultValuesService.checkAcademicYear()" min="1" oninput="validity.valid||(value='');" formControlName="seats"   name="seats" matInput required>
+                <input type="number" [readonly]="!this.defaultValuesService.checkAcademicYear()" class="seats-scroll" min="1" oninput="validity.valid||(value='');" formControlName="seats"   name="seats" matInput required>
                 <mat-error *ngIf="form.get('seats').hasError('required')">{{'seatsIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
@@ -132,7 +132,7 @@
      <hr class="-mx-6 my-4">
 
     <h4 class="text-green mb-4">{{'duration' | translate}}</h4>
-    <mat-radio-group aria-label="Select an option" formControlName="durationType" (change)="setDuration($event)" name="duration">
+    <mat-radio-group aria-label="Select an option" formControlName="durationType" class="durationType-scroll" (change)="setDuration($event)" name="duration">
         <mat-radio-button [disabled]="!this.defaultValuesService.checkAcademicYear()" name="markingPeriod" value="1" color="primary" name="markingPeriod">{{'markingPeriod' | translate}}</mat-radio-button>
         <mat-radio-button [disabled]="!this.defaultValuesService.checkAcademicYear()" name="customDate" value="2" color="primary" name="customDate">{{'customDateRange' | translate}}</mat-radio-button>
     </mat-radio-group>
@@ -184,7 +184,7 @@
     <hr class="-mx-6 my-4">
 
     <h4 class="text-green mb-4">{{'scheduleType' | translate}}</h4>
-    <mat-radio-group aria-label="Select an option" (change)="setScheduleType($event)" name="scheduleType">
+    <mat-radio-group aria-label="Select an option" (change)="setScheduleType($event)" class="scheduleType-scroll" name="scheduleType">
         <mat-radio-button value="1" [checked]="data.editMode && scheduleType=='1'" [disabled]="data.editMode && scheduleType!='1'" color="primary">{{'fixedSchedule' | translate}}</mat-radio-button>
         <mat-radio-button value="2" [checked]="data.editMode && scheduleType=='2'" [disabled]="data.editMode && scheduleType!='2'" color="primary">{{'variableSchedule' | translate}}</mat-radio-button>
         <mat-radio-button value="3" [checked]="data.editMode && scheduleType=='3'" [disabled]="data.editMode && scheduleType!='3'" color="primary">{{'enterByCalendarDays' | translate}}</mat-radio-button>

@@ -11,18 +11,18 @@
     <mat-dialog-content fxLayout="column">
         <mat-form-field class="mt-6" appearance="outline" color="primary">
             <mat-label>{{'title' |translate}}</mat-label>
-            <input formControlName="Title" [(ngModel)]="noticeAddViewModel.notice.title" name="Title" matInput required>
+            <input formControlName="Title" class="title-scroll" [(ngModel)]="noticeAddViewModel.notice.title" name="Title" matInput required>
             <mat-error *ngIf="form.get('Title').hasError('required')">{{'titleIsRequired'| translate}}</mat-error>
         </mat-form-field>
         <div class="mb-6 border rounded">
-            <quill-editor formControlName="Body" name="Body" [(ngModel)]="noticeAddViewModel.notice.body" (onEditorChanged)="changedEditor($event)" [styles]="{ height: '250px' }"></quill-editor>
+            <quill-editor formControlName="Body" class="Body-scroll" name="Body" [(ngModel)]="noticeAddViewModel.notice.body" (onEditorChanged)="changedEditor($event)" [styles]="{ height: '250px' }"></quill-editor>
 
         </div>
         <div class="mb-2 md:flex md:flex-wrap -mx-6">
             <div class="flex flex-1 mx-6 md:w-1/2">
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'visibleFromDate' |translate}}</mat-label>
-                    <input formControlName="validFrom"  [(ngModel)]="noticeAddViewModel.notice.validFrom" name="validFrom" [matDatepicker]="begins" matInput required>
+                    <input formControlName="validFrom" class="validFrom-scroll" [(ngModel)]="noticeAddViewModel.notice.validFrom" name="validFrom" [matDatepicker]="begins" matInput required>
                     <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                     <mat-datepicker #begins></mat-datepicker>
                     <mat-error *ngIf="form.get('validFrom').hasError('required')">{{'visibleFromDateIsRequired' | translate}}</mat-error>
@@ -32,7 +32,7 @@
             <div class="flex flex-1 mx-6 md:w-1/2">
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'visibleToDate' | translate}}</mat-label>
-                    <input formControlName="validTo" [(ngModel)]="noticeAddViewModel.notice.validTo" name="validTo" [min]="form.value.validFrom" [matDatepicker]="ends" matInput required>
+                    <input formControlName="validTo" class="validTo-scroll" [(ngModel)]="noticeAddViewModel.notice.validTo" name="validTo" [min]="form.value.validFrom" [matDatepicker]="ends" matInput required>
                     <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                     <mat-datepicker #ends></mat-datepicker>
                     <mat-error *ngIf="form.get('validTo').hasError('required')">{{'visibleToDateIsRequired' | translate}}</mat-error>
@@ -60,7 +60,7 @@
             </mat-checkbox>
         </div>
 
-        <ul class="md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3"  [hidden]="membercount==0">
+        <ul class="md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3 visibleToProfile-scroll"  [hidden]="membercount==0">
             <li *ngFor="let member of getAllMembersList.getAllMemberList">
                 
                 <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1" (click)="selectChildren($event,member.membershipId)" color="primary">

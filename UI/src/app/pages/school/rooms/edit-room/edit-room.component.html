@@ -11,7 +11,7 @@
     
     <mat-form-field class="mt-6" appearance="outline" color="primary">
         <mat-label>{{'title' | translate}}</mat-label>
-        <input cdkFocusInitial matInput formControlName="title"  name="title" required>
+        <input cdkFocusInitial matInput formControlName="title" class="title-scroll" name="title" required>
         <mat-error *ngIf="form.get('title').hasError('whitespace')">{{'titleIsRequired'|translate}}</mat-error>
     </mat-form-field>
 
@@ -19,7 +19,7 @@
         <div class="flex-1 mx-6 md:w-1/2">
             <mat-form-field class="mt-4 w-full" appearance="outline" color="primary">
                 <mat-label>{{'capacity' | translate}}</mat-label>
-                <input matInput formControlName="capacity" type="number" name="capaciy" required>
+                <input matInput formControlName="capacity" type="number" class="capacity-scroll" name="capaciy" required>
                 <mat-error *ngIf="form.get('capacity').hasError('whitespace')">{{'capacityIsRequired'|translate}}</mat-error>
                 <mat-error *ngIf="form.get('capacity').hasError('min')">{{'capacityCannotBeNegative'|translate}}</mat-error>
                 <mat-error *ngIf="form.get('capacity').hasError('max')">{{'capacityCannotBeMoreThanThreeDigits'|translate}}</mat-error>
@@ -28,7 +28,7 @@
         <div class="flex-1 mx-6 md:w-1/2">
             <mat-form-field class="mt-4 w-full" appearance="outline" color="primary">
                 <mat-label>{{'sortOrder' | translate}}</mat-label>
-                <input matInput type="number" formControlName="sortorder" required>
+                <input matInput type="number" formControlName="sortorder" class="sortOrder-scroll" required>
                 <mat-error *ngIf="form.get('sortorder').hasError('whitespace')">{{'sortOrderIsRequired'|translate}}</mat-error>
                 <mat-error *ngIf="form.get('sortorder').hasError('min')">{{'sortOrderCannotBeLessThenOne'|translate}}</mat-error>
                 

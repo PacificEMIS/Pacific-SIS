@@ -427,6 +427,7 @@ export class EditCourseSectionComponent implements OnInit {
   }
 
   checkForSubmit() {
+    this.scrollToInvalidControlForOthers();
     if (this.scheduleType == '0') {
       this.snackbar.open('Please select a schedule ', '', {
         duration: 10000
@@ -491,6 +492,28 @@ export class EditCourseSectionComponent implements OnInit {
         '.attendanceCategory'
       );
         firstInvalidControl.scrollIntoView({ behavior: 'smooth',block: 'center' });
+  }
+
+  scrollToInvalidControlForOthers() {
+    if (this.form.controls.courseSectionName.invalid) {
+      const invalidCourseSectionNameControl: HTMLElement = this.el.nativeElement.querySelector('.courseSectionName-scroll');
+      invalidCourseSectionNameControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.calendarId.invalid) {
+      const invalidCalendarIdControl: HTMLElement = this.el.nativeElement.querySelector('.calendar-scroll');
+      invalidCalendarIdControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.gradeScaleId.invalid) {
+      const invalidGradeScaleIdControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScale-scroll');
+      invalidGradeScaleIdControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.seats.invalid) {
+      const invalidSeatsControl: HTMLElement = this.el.nativeElement.querySelector('.seats-scroll');
+      invalidSeatsControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (!this.durationType) {
+      const invalidDurationTypeControl: HTMLElement = this.el.nativeElement.querySelector('.durationType-scroll');
+      invalidDurationTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.scheduleType === '0') {
+      const invalidScheduleType: HTMLElement = this.el.nativeElement.querySelector('.scheduleType-scroll');
+      invalidScheduleType.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 
   submit() {

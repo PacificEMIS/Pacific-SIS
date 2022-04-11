@@ -12,7 +12,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'date' | translate }}</mat-label>
-                        <input matInput [matDatepicker]="date" formControlName="nurseVisitDate" required>
+                        <input matInput class="nurseVisitDate-scroll" [matDatepicker]="date" formControlName="nurseVisitDate" required>
                         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                         <mat-datepicker #date></mat-datepicker>
                         <mat-error *ngIf="form.get('nurseVisitDate').hasError('required')">{{'nurseVisitDateIsRequired'|translate}}</mat-error>
@@ -56,7 +56,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'reason' | translate }}</mat-label>
-                        <input matInput formControlName="reason" required>
+                        <input matInput class="reason-scroll" formControlName="reason" required>
                         <mat-error *ngIf="form.get('reason').hasError('whitespace')">{{'reasonIsRequired'|translate}}</mat-error>
                     </mat-form-field>
                 </li>

@@ -67,7 +67,7 @@
                     <div fxLayout="column">
                         <mat-form-field class="mt-6" appearance="outline" color="primary">
                             <mat-label>{{'title' | translate}}</mat-label>
-                            <input formControlName="title" name="title" cdkFocusInitial matInput required>
+                            <input formControlName="title" name="title" class="title-scroll" cdkFocusInitial matInput required>
                             <mat-error *ngIf="form.get('title').hasError('required')">
                                 {{'titleIsRequired'|translate}}</mat-error>
                             <mat-error *ngIf="form.get('title').hasError('maxlength')">
@@ -77,7 +77,7 @@
                             <div class="flex flex-1 mx-6 md:w-1/2">
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'startDate' | translate}}</mat-label>
-                                    <input formControlName="startDate" name="startDate" [matDatepicker]="begins"
+                                    <input formControlName="startDate" name="startDate" class="startDate-scroll" [matDatepicker]="begins"
                                         matInput required>
                                     <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                                     <mat-datepicker #begins></mat-datepicker>
@@ -88,7 +88,7 @@
                             <div class="flex flex-1 mx-6 md:w-1/2">
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'endDate' | translate}}</mat-label>
-                                    <input formControlName="endDate" name="endDate" (dateChange)="dateCompare()"
+                                    <input formControlName="endDate" name="endDate" class="endDate-scroll" (dateChange)="dateCompare()"
                                         [matDatepicker]="ends" matInput required>
                                     <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                                     <mat-datepicker #ends></mat-datepicker>
@@ -152,7 +152,7 @@
                     <div fxLayout="column">
                         <mat-form-field class="mt-6" appearance="outline" color="primary">
                             <mat-label>{{'title' | translate}}</mat-label>
-                            <input formControlName="title" name="title" cdkFocusInitial matInput required>
+                            <input formControlName="title" name="title" class="title-scroll" cdkFocusInitial matInput required>
                             <mat-error *ngIf="form.get('title').hasError('required')">
                                 {{'titleIsRequired'|translate}}</mat-error>
                             <mat-error *ngIf="form.get('title').hasError('maxlength')">
@@ -162,7 +162,7 @@
                             <div class="flex flex-1 mx-6 md:w-1/2">
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'startDate' | translate}}</mat-label>
-                                    <input formControlName="startDate" name="startDate" [matDatepicker]="begins"
+                                    <input formControlName="startDate" name="startDate" class="startDate-scroll" [matDatepicker]="begins"
                                         matInput required>
                                     <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                                     <mat-datepicker #begins></mat-datepicker>
@@ -173,7 +173,7 @@
                             <div class="flex flex-1 mx-6 md:w-1/2">
                                 <mat-form-field class="w-full" appearance="outline" color="primary">
                                     <mat-label>{{'endDate' | translate}}</mat-label>
-                                    <input formControlName="endDate" name="endDate" (dateChange)="dateCompare()"
+                                    <input formControlName="endDate" name="endDate" class="endDate-scroll" (dateChange)="dateCompare()"
                                         [matDatepicker]="ends" matInput required>
                                     <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                                     <mat-datepicker #ends></mat-datepicker>

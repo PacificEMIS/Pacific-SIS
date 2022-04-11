@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -58,7 +58,8 @@ export class AddImmunizationComponent implements OnInit {
     private studentService: StudentService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
     ) {
     //translateService.use('en');
   }
@@ -85,8 +86,20 @@ export class AddImmunizationComponent implements OnInit {
       this.form.controls.comment.patchValue(this.data.comment);
     }
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.immunizationType.invalid) {
+      const invalidImmunizationTypeControl: HTMLElement = this.el.nativeElement.querySelector('.immunizationType-scroll');
+      invalidImmunizationTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.immunizationDate.invalid) {
+      const invalidImmunizationDateControl: HTMLElement = this.el.nativeElement.querySelector('.immunizationDate-scroll');
+      invalidImmunizationDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
     this.form.markAsTouched();
+    this.scrollToInvalidControl();
     if (this.form.valid){
       if (this.form.controls.id.value === 0){
         this.addEditStudentMedicalImmunizationModel.studentMedicalImmunization.immunizationType =

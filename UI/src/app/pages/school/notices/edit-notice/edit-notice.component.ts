@@ -90,6 +90,7 @@ export class EditNoticeComponent implements OnInit {
               private loaderService: LoaderService,
               private defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
+    private el: ElementRef
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((v) => {
@@ -156,13 +157,33 @@ export class EditNoticeComponent implements OnInit {
       this.schoolVisibility = false;
     }
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.Title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.title-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.validFrom.invalid) {
+      const invalidValidFromControl: HTMLElement = this.el.nativeElement.querySelector('.validFrom-scroll');
+      invalidValidFromControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.validTo.invalid) {
+      const invalidValidToControl: HTMLElement = this.el.nativeElement.querySelector('.validTo-scroll');
+      invalidValidToControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.checkProfileError()) {
+      const invalidVisibleToProfile: HTMLElement = this.el.nativeElement.querySelector('.visibleToProfile-scroll');
+      invalidVisibleToProfile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submitNotice() {
     if (!this.form.value.Body) {
       this.snackbar.open('Please add notice body to continue.', '', {
         duration: 10000
       });
+      const invalidBodyControl: HTMLElement = this.el.nativeElement.querySelector('.Body-scroll');
+      invalidBodyControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
+    this.scrollToInvalidControl();
     this.noticeAddViewModel.notice.body = this.form.value.Body;
     this.noticeAddViewModel.notice.title = this.form.value.Title;
     this.noticeAddViewModel.notice.validFrom = this.commonFunction.formatDateSaveWithoutTime(this.form.value.validFrom);

@@ -12,7 +12,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'date' | translate }}</mat-label>
-                        <input matInput [matDatepicker]="date" formControlName="noteDate" required>
+                        <input matInput class="noteDate-scroll" [matDatepicker]="date" formControlName="noteDate" required>
                         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                         <mat-datepicker #date></mat-datepicker>
                         <mat-error *ngIf="form.get('noteDate').hasError('required')">{{'dateIsRequired'|translate}}</mat-error>

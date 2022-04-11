@@ -14,7 +14,7 @@
 
     <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
         <mat-label>{{'newSchoolName'|translate}}</mat-label>
-        <input cdkFocusInitial #newSchoolName="ngModel" [(ngModel)]="copySchoolModel.schoolMaster.schoolName"
+        <input cdkFocusInitial class="name-scroll" #newSchoolName="ngModel" [(ngModel)]="copySchoolModel.schoolMaster.schoolName"
             name="newSchoolName" matInput required>
         <mat-error *ngIf="newSchoolName.errors?.required">{{'newSchoolNameIsRequired'|translate}}</mat-error>
     </mat-form-field>

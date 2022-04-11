@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -62,6 +62,7 @@ export class EditRoomComponent implements OnInit {
     private roomService:RoomService,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
     ) {
       this.form=fb.group({
         roomId:[0],
@@ -93,8 +94,23 @@ export class EditRoomComponent implements OnInit {
   ngOnInit(): void {
 
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.title-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.capacity.invalid) {
+      const invalidCapacityControl: HTMLElement = this.el.nativeElement.querySelector('.capacity-scroll');
+      invalidCapacityControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.sortorder.invalid) {
+      const invalidSortorderControl: HTMLElement = this.el.nativeElement.querySelector('.sortOrder-scroll');
+      invalidSortorderControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
     this.form.markAllAsTouched();
+    this.scrollToInvalidControl();
     if (this.form.valid) {
     if (this.form.controls.roomId.value === 0){
       this.roomAddViewModel.tableRoom.title = this.form.controls.title.value;
