@@ -1115,7 +1115,7 @@ namespace opensis.data.Repository
                                 return scheduledStudentDropModel;
                             }
                         }
-                        scheduledStudentDropModel._message = "Updated successfully";
+                        scheduledStudentDropModel._message = "Updated Successfully";
                     }
                     else
                     {
