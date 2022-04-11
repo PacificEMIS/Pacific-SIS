@@ -87,8 +87,8 @@
     <div *ngIf="noticeList.length>0" class="card mb-4 px-4 pt-4">
       <mat-divider class="-mx-6"></mat-divider>
       <mat-accordion>
-        <div *ngFor="let x of noticeList">
-          <mat-expansion-panel>
+        <div *ngFor="let x of noticeList; first as isFirst">
+          <mat-expansion-panel [expanded]="isFirst">
               <mat-expansion-panel-header class="px-0 mr-1">
                   <mat-panel-title class="font-semibold text-base">
                       {{x.title}}
