@@ -170,7 +170,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       (res: HistoricalGradeAddViewModel) => {
         if (res) {
           if (res._failure) {
-            
+            this.commonService.checkTokenValidOrNot(res._message);
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
