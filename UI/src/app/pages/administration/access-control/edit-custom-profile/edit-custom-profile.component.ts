@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit,Inject  } from '@angular/core';
+import { Component, OnInit,Inject, ElementRef  } from '@angular/core';
 import { MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder,FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -58,6 +58,7 @@ export class EditCustomProfileComponent implements OnInit {
   private snackbar:MatSnackBar,
   private commonService: CommonService,
   private defaultValuesService: DefaultValuesService,
+  private el: ElementRef
 
   ) { }
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
@@ -82,7 +83,18 @@ export class EditCustomProfileComponent implements OnInit {
     
   }
 
+  scrollToInvalidControl() {
+    if (this.form.controls.title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.title-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.userType.invalid) {
+      const invalidUserTypeControl: HTMLElement = this.el.nativeElement.querySelector('.userType-scroll');
+      invalidUserTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
+    this.scrollToInvalidControl();
     if (this.form.valid) {   
       if(this.data !== null){
         this.addMembershipModel.membership.membershipId=this.data.membershipId;    

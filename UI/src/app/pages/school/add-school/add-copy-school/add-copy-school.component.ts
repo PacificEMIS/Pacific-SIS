@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -66,7 +66,8 @@ export class AddCopySchoolComponent implements OnInit, OnDestroy {
     private snackbar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private commonService: CommonService,
-    private dialogRef: MatDialogRef<AddCopySchoolComponent>
+    private dialogRef: MatDialogRef<AddCopySchoolComponent>,
+    private el: ElementRef
   ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -108,6 +109,11 @@ export class AddCopySchoolComponent implements OnInit, OnDestroy {
   /* This submit method is used for call copySchool API and after successful API call
   the copy school modal will be close and pass the new school name and new school id to the source. */
   submit() {
+    if (!this.copySchoolModel.schoolMaster.schoolName?.trim()) {
+      const invalidSchoolName: HTMLElement = this.el.nativeElement.querySelector('.name-scroll');
+      invalidSchoolName.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     this.checkValidation();
     if (!this.allToggleValidationCheck) {
       if (this.copySchoolModel.schoolMaster.schoolName?.trim().length > 0) {

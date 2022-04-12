@@ -10,13 +10,13 @@
 <mat-dialog-content  fxLayout="column"  [formGroup]="form">
     <mat-form-field class="mt-6" appearance="outline" color="primary">
         <mat-label>{{'gradeScaleName' | translate}}</mat-label>
-        <input type="text" cdkFocusInitial formControlName="gradeScaleName" matInput required >
+        <input type="text" cdkFocusInitial class="gradeScaleName-scroll" formControlName="gradeScaleName" matInput required >
         <mat-error *ngIf="form.get('gradeScaleName').hasError('whitespace')">{{'gradeScaleNameIsRequired'|translate}}</mat-error>
     </mat-form-field>
 
     <mat-form-field *ngIf="form.controls?.gradeScaleValue" class="w-full" appearance="outline" color="primary">
         <mat-label>{{'scaleValue' | translate}}</mat-label>
-        <input type="number" matInput formControlName="gradeScaleValue" oninput="javascript: if (this.value.length > 5) this.value = this.value.slice(0, 5);" required >
+        <input type="number" matInput class="gradeScaleValue-scroll" formControlName="gradeScaleValue" oninput="javascript: if (this.value.length > 5) this.value = this.value.slice(0, 5);" required >
         <mat-error *ngIf="form.get('gradeScaleValue').hasError('whitespace')">{{'scaleValueIsRequired'|translate}}</mat-error>
     </mat-form-field>
 

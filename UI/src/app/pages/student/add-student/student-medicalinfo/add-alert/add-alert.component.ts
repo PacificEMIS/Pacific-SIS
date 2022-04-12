@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentService } from 'src/app/services/student.service';
@@ -56,7 +56,8 @@ export class AddAlertComponent implements OnInit {
     private snackbar: MatSnackBar,
     private studentService: StudentService,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
     ) {
     //translateService.use('en');
     this.form = fb.group({
@@ -81,8 +82,17 @@ export class AddAlertComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.alertType.invalid) {
+      const invalidAlertTypeControl: HTMLElement = this.el.nativeElement.querySelector('.alertType-scroll');
+      invalidAlertTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
     this.form.markAsTouched();
+    this.scrollToInvalidControl();
     if (this.form.valid){
       if ( this.form.controls.id.value === 0){
         this.addEditStudentMedicalAlertModel.studentMedicalAlert.studentId = this.studentService.getStudentId();

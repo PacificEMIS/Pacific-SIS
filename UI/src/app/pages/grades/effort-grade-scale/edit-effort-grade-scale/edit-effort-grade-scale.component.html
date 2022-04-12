@@ -11,7 +11,7 @@
 
     <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
         <mat-label>{{'value' | translate}}</mat-label>
-        <input type="number" name="gradeScaleValue" formControlName="gradeScaleValue" min=1 matInput required>
+        <input type="number" name="gradeScaleValue" class="gradeScaleValue-scroll" formControlName="gradeScaleValue" min=1 matInput required>
         <mat-error *ngIf="form.get('gradeScaleValue').hasError('required')">{{'gradeScaleValueIsRequired'|translate}}
         </mat-error>
         <mat-error *ngIf="form.get('gradeScaleValue').hasError('min')">{{'gradeScaleValueCannotBeLessThanOne'|translate}}</mat-error>
@@ -19,7 +19,7 @@
 
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'comment' | translate}}</mat-label>
-        <textarea name="gradeScaleComment" formControlName="gradeScaleComment"  matInput required></textarea>
+        <textarea name="gradeScaleComment" class="gradeScaleComment-scroll" formControlName="gradeScaleComment"  matInput required></textarea>
         <mat-error *ngIf="form.get('gradeScaleComment').hasError('required')">{{'gradeScaleCommentIsRequired'|translate}}
         </mat-error>
     </mat-form-field>

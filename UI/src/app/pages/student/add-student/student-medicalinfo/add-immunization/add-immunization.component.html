@@ -12,7 +12,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'type' | translate }}</mat-label>
-                        <mat-select formControlName="immunizationType" required>
+                        <mat-select class="immunizationType-scroll" formControlName="immunizationType" required>
                             <mat-option value="immunization">{{'immunization' | translate}}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="form.get('immunizationType').hasError('required')">{{'immunizationIsRequired'|translate}}</mat-error>
@@ -21,7 +21,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'date' | translate }}</mat-label>
-                        <input matInput [matDatepicker]="date" formControlName="immunizationDate" required>
+                        <input matInput class="immunizationDate-scroll" [matDatepicker]="date" formControlName="immunizationDate" required>
                         <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                         <mat-datepicker #date></mat-datepicker>
                         <mat-error *ngIf="form.get('immunizationDate').hasError('required')">{{'immunizationDateIsRequired'|translate}}</mat-error>

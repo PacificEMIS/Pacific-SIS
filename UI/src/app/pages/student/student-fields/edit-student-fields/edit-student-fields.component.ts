@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -66,7 +66,8 @@ export class EditStudentFieldsComponent implements OnInit {
     private snackbar:MatSnackBar,
     private commonService: CommonService,
     private customFieldService:CustomFieldService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
      ) {
       this.form=fb.group({
         fieldId:[0],
@@ -113,7 +114,19 @@ export class EditStudentFieldsComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.fieldName-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.fieldType.invalid) {
+      const invalidFieldTypeControl: HTMLElement = this.el.nativeElement.querySelector('.fieldType-scroll');
+      invalidFieldTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
+    this.scrollToInvalidControl();
     if(this.form.valid){
       this.checkSearchRecord = 1;
       if(this.form.controls.fieldId.value==0){
