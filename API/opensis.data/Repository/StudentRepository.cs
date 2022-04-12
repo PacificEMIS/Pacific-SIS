@@ -2277,13 +2277,15 @@ namespace opensis.data.Repository
                         foreach (var studentData in studentAssociationship)
                         {
                             studentData.StudentEnrollment = studentData.StudentEnrollment.Where(x => x.IsActive == true && x.SchoolId == studentData.SchoolId && x.TenantId == studentData.TenantId && x.StudentId == studentData.StudentId).ToList();
+                            studentData.StudentPhoto = null;
+
+                            if (!studentListModel.IsShowPicture)
+                            {
+                                studentData.StudentThumbnailPhoto = null;
+                            }
                         }
 
-                        if (!studentListModel.IsShowPicture)
-
-                        {
-                            studentAssociationship.ForEach(x => x.StudentPhoto = null);
-                        }
+                        
                         studentList.studentMaster = studentAssociationship;
                         studentList._tenantName = studentListModel._tenantName;
                         studentList._token = studentListModel._token;
