@@ -108,6 +108,8 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   deleteHistoricalGrade(index) {
     this.divCount.splice(index, 1);
     this.historicalGradeAddViewModel.historicalGradeList.splice(index, 1);
+    this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
+    this.callAddEditHistGrade(this.historicalGradeAddViewModel,true);
   }
 
   creditEdit(histIndex, creditIndex) {
@@ -121,6 +123,8 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
 
   creditDelete(histIndex, creditIndex) {
     this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.splice(creditIndex, 1);
+    this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
+    this.callAddEditHistGrade(this.historicalGradeAddViewModel,true);
   }
 
   addMoreHistoricalGrade() {
@@ -147,7 +151,6 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   addEditHistGrade() {
     this.currentForm.form.markAllAsTouched();
     if (this.currentForm.invalid) return;
-    this.historicalGradeAddViewModel.studentId = this.histStudentDetails.studentId;
     for (let i = 0; i < this.historicalGradeAddViewModel.historicalGradeList?.length; i++) {
       for (let j = 0; j < this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length; j++) {
         if (this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j].creditEarned > this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j].creditAttempted) {
@@ -158,7 +161,12 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.historicalMarkingPeriodService.addUpdateHistoricalGrade(this.historicalGradeAddViewModel).subscribe(
+    this.callAddEditHistGrade(this.historicalGradeAddViewModel);
+  }
+
+  callAddEditHistGrade(modelValues,isDelete?){
+    this.historicalGradeAddViewModel.studentId = this.histStudentDetails.studentId;
+    this.historicalMarkingPeriodService.addUpdateHistoricalGrade(modelValues).subscribe(
       (res: HistoricalGradeAddViewModel) => {
         if (res) {
           if (res._failure) {
@@ -168,6 +176,8 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
             });
           }
           else {
+            if(res._message === "Historical grade updated successfully" && isDelete === true)
+              res._message = "Historical grade deleted successfully";
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
@@ -183,7 +193,6 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   getAllHistoricalGradeList() {
     this.historicalGradeAddViewModel.studentId = this.histStudentDetails.studentId;
     let cloneHistoricalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
