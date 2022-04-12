@@ -143,6 +143,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   cloneStudentModel;
   permissions: Permissions = new Permissions();
   @Output() dataAfterSavingGeneralInfo = new EventEmitter<any>();
+  customValid=false;
   constructor(
     private el: ElementRef,
     private dialog: MatDialog,
@@ -682,7 +683,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   }
 
   submit() {
+    this.customValid=false;
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
     if (this.currentForm.controls.passwordHash !== undefined) {
       this.studentAddModel.passwordHash = this.currentForm.controls.passwordHash.value;
     }
@@ -700,9 +703,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
         }
       }
       if (this.studentCreateMode === this.studentCreate.EDIT) {
-        this.updateStudent();
+        if(this.customValid) this.updateStudent();
       } else {
-        this.addStudent();
+        if(this.customValid) this.addStudent();
       }
     }
   }
