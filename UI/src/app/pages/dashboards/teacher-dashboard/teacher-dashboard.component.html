@@ -79,8 +79,8 @@
             <h4 class="text-primary text-lg font-semibold pb-3">{{ 'notice' | translate }}</h4>
             <mat-divider class="-mx-6"></mat-divider>
             <mat-accordion>
-                <div *ngFor="let notice of scheduledCourseSectionViewModel.noticeList">
-                    <mat-expansion-panel>
+                <div *ngFor="let notice of scheduledCourseSectionViewModel.noticeList; first as isFirst">
+                    <mat-expansion-panel [expanded]="isFirst">
                         <mat-expansion-panel-header class="px-0 mr-1">
                             <mat-panel-title class="font-semibold text-base">{{notice.title}}
                             </mat-panel-title>
