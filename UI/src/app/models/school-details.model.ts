@@ -30,6 +30,7 @@ export class schoolDetailsModel {
     public nameOfPrincipal: string;
     public nameOfAssistantPrincipal: string;
     public schoolLogo: string;
+    public schoolThumbnailLogo: string;
     public runningWater: boolean;
     public mainSourceOfDrinkingWater: string;
     public currentlyAvailable?: boolean;

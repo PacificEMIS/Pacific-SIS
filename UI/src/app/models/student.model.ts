@@ -25,6 +25,7 @@ export class StudentMasterModel {
     public socialSecurityNumber: string;
     public otherGovtIssuedNumber: string;
     public studentPhoto: string;
+    public studentThumbnailPhoto: string;
     public dob: string;
     public displayAge: string;
     public gender: string;

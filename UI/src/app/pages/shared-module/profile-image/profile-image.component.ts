@@ -169,10 +169,40 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
         this.croppedImage = result;
         let base64ImageSplit = this.croppedImage.split(',')
         let sendCropImage = (croppedImage) => {
-          this.imageCropperService.sendCroppedEvent(croppedImage);
+          // this.imageCropperService.sendCroppedEvent(croppedImage);
+          this.checkAndSetImage(croppedImage);
         }
         sendCropImage(base64ImageSplit);
       });
+
+      this.imageCompressService.compressFile(event.base64, -1, 25, 50).then(result => {
+        let base64ImageSplit = result.split(',')
+        let sendCropImage = (croppedImage) => {
+          // this.imageCropperService.sendCroppedEventForThumbnail(croppedImage);
+          this.checkAndSetThumbnailImage(croppedImage);
+        }
+        sendCropImage(base64ImageSplit);
+      });
+  }
+
+  checkAndSetThumbnailImage(croppedImage) {
+    if (this.moduleIdentifier == this.modules.STUDENT) {
+      this.studentService.setStudentThumbnailImage(croppedImage[1]);
+    } else if (this.moduleIdentifier == this.modules.STAFF) {
+      this.staffService.setStaffThumbnailImage(croppedImage[1]);
+    } else if (this.moduleIdentifier == this.modules.PARENT) {
+      this.parentService.setParentThumbnailImage(croppedImage[1]);
+    }
+  }
+
+  checkAndSetImage(croppedImage) {
+    if (this.moduleIdentifier == this.modules.STUDENT) {
+      this.studentService.setStudentImage(croppedImage[1]);
+    } else if (this.moduleIdentifier == this.modules.STAFF) {
+      this.staffService.setStaffImage(croppedImage[1]);
+    } else if (this.moduleIdentifier == this.modules.PARENT) {
+      this.parentService.setParentImage(croppedImage[1]);
+    }
   }
 
   setImage() {
@@ -239,7 +269,10 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
       this.resizeImage(reader.result, 256, 256).then(compressed => {
         this.imageCompressService.compressFile(compressed as string, -1, 75, 50).then(result => {
           this.preview = result ;
-          this.handleReaderLoaded(result.split(',')[1]);
+          this.handleReaderLoaded(result.split(',')[1], 'schoolLogo');
+        });
+        this.imageCompressService.compressFile(compressed as string, -1, 25, 50).then(result => {
+          this.handleReaderLoaded(result.split(',')[1], 'schoolThumbnailLogo', true);
         });
       })
     }
@@ -264,14 +297,17 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
     })
   }
 
-  handleReaderLoaded(e) {
+  handleReaderLoaded(e, fieldname, triggerUpdate?) {
     this.croppedImage = '';
     let sendImageData2 = (e) => {
       this.imageCropperService.sendUncroppedEvent(e);
       if (this.moduleIdentifier == this.modules.SCHOOL && this.createMode != this.modes.ADD) {
         this.preview = '';
-        this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo = e;
-        this.updateSchoolImage(e);
+        this.schoolAddModel.schoolMaster.schoolDetail[0][fieldname] = e;
+
+        if(triggerUpdate) {          
+          this.updateSchoolImage();
+        }
       }
       this.fileUploader.value = null;
     }
@@ -322,8 +358,8 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSchoolImage(logo) {
-    this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo = logo;
+  updateSchoolImage() {
+    // this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo = logo;
     this.schoolService.addUpdateSchoolLogo(this.schoolAddModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       if (typeof (res) == 'undefined') {
         this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
