@@ -153,6 +153,11 @@ export class ParentInfoService {
     this.parentImage = imageInBase64;
   }
 
+  private parentThumbnailImage;
+  setParentThumbnailImage(imageInBase64) {
+    this.parentThumbnailImage = imageInBase64;
+  }
+
   setParentCreateMode(data) {
     this.parentCreateMode.next(data);
   }

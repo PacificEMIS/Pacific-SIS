@@ -83,9 +83,9 @@ export class EditParentComponent implements OnInit {
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService
     ) {
-    this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.parentInfoService.setParentImage(res[1]);
-    });
+    // this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+    //   this.parentInfoService.setParentImage(res[1]);
+    // });
     this.parentInfoService.modeToUpdate.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
       if(res==this.parentCreate.EDIT){
         this.pageStatus="editParent"
