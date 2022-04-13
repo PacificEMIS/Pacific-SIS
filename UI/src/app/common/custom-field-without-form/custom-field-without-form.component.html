@@ -1,10 +1,11 @@
 <!--School Module-->
 <div *ngIf="schoolDetailsForViewAndEdit?.schoolMaster?.fieldsCategory && module =='School'">
+    <form #school="ngForm">
     <div @stagger fxLayout="column"
         *ngIf="schoolCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
-        <div *ngIf="schoolCreateMode==schoolCreate.EDIT">
-            <ul ngModelGroup="vex-custom-field-without-form" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+        <!-- <div > -->
+            <ul *ngIf="schoolCreateMode==schoolCreate.EDIT" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
                 <li *ngFor="let customField of schoolCustomFields; let index = index"
                     [ngSwitch]="customField.type">
                     <div *ngSwitchCase="'Checkbox'">
@@ -99,7 +100,7 @@
 
                 </li>
             </ul>
-        </div>
+        <!-- </div> -->
 
         <ul *ngIf="schoolCreateMode==schoolCreate.VIEW" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 col-gap-8 row-gap-10">
             <li
@@ -117,12 +118,14 @@
             </li>
         </ul>
     </div>
+</form>
 </div>
 <!---->
 
 <!--Student Module-->
 
 <div *ngIf="studentAddModel?.fieldsCategoryList && module =='Student'">
+    <form #student="ngForm">
     <div class="py-6" @stagger fxLayout="column"
         *ngIf="studentCustomFields?.length > 0">
         <hr class="-mx-4 my-6">
@@ -237,6 +240,7 @@
             </li>
         </ul>
     </div>
+</form>
 </div>
 <!---->
 

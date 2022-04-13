@@ -54,7 +54,7 @@
                 </ul>
 
                 <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentDetailsForViewAndEdit" [module]="module"
-                [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+                [categoryId]="categoryId" [studentCreateMode]="studentCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
 
                 <ul class="mt-2">
                     <li>

@@ -154,14 +154,26 @@ checkFormValidOrNot() {
     this.defaultValuesService.customFieldsCheckParentComp.next(false);
     if (this.staffAddModel?.fieldsCategoryList?.length > 0) {
       this.staffForm.form.markAllAsTouched();
-      if (this.staffForm.form.valid) 
-        this.custom.emit(true)
-      else 
-        this.custom.emit(false)
+      if (this.staffForm.form.valid) this.custom.emit(true)
+      else this.custom.emit(false)
     }
-    else {
-      this.custom.emit(false)
+    else this.custom.emit(true)
+  } else if (this.module === 'School') {
+    this.defaultValuesService.customFieldsCheckParentComp.next(false);
+    if (this.schoolCustomFields.length > 0) {
+      this.schoolForm.form.markAllAsTouched();
+      if (this.schoolForm.form.valid) this.custom.emit(true);
+      else this.custom.emit(false);
     }
+    else this.custom.emit(true);
+  }else if (this.module === 'Student') {
+    this.defaultValuesService.customFieldsCheckParentComp.next(false);
+    if (this.studentAddModel?.fieldsCategoryList?.length>0) {
+      this.studentForm.form.markAllAsTouched();
+      if (this.studentForm.form.valid) this.custom.emit(true)
+      else this.custom.emit(false)
+    }
+    else this.custom.emit(true)
   }
 }
 
@@ -201,7 +213,6 @@ checkFormValidOrNot() {
   checkStaffCustomValue(){    
       if (this.staffAddModel?.fieldsCategoryList?.length>0) {        
         this.staffCustomFields = this.staffAddModel?.fieldsCategoryList[this.categoryId]?.customFields.filter(x=> !x.systemField && !x.hide);
-        
         if(this.staffCustomFields?.length>0 ){
         for (let staffCustomField of this.staffCustomFields) {
           if (staffCustomField?.customFieldsValue.length !== 0) {
@@ -232,7 +243,6 @@ checkFormValidOrNot() {
   }
 
   checkNgOnInitCustomValue() {
-
     if (this.schoolDetailsForViewAndEdit !== undefined) {      
       if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory !== undefined) {
         if (this.schoolDetailsForViewAndEdit.schoolMaster.fieldsCategory[this.categoryId]?.customFields !== undefined) {

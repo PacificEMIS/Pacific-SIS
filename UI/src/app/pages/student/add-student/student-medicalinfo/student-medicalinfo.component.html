@@ -353,7 +353,7 @@
                                 </li>
                             </ul>
                             <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="addEditStudentMedicalProviderModel" [module]="module"
-                            [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+                            [categoryId]="categoryId" [studentCreateMode]="studentCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
                         </div>
                         <div class="px-4 text-right">
                             <button mat-button type="button" *ngIf="studentCreateMode == studentCreate.EDIT"

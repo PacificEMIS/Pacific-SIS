@@ -86,6 +86,7 @@ export class WashInfoComponent implements OnInit,OnDestroy {
   cloneSchool;
   destroySubject$: Subject<void> = new Subject();
   permissions: Permissions
+  customValid=false;
   constructor(
     private schoolService: SchoolService,
     private snackbar: MatSnackBar,
@@ -174,7 +175,7 @@ export class WashInfoComponent implements OnInit,OnDestroy {
     this.initializeDropdownValues();
     this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.EDIT});
     this.schoolCreateMode = this.schoolCreate.EDIT;
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    // this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
   }
   cancelEdit() {
     this.imageCropperService.enableUpload({module:this.moduleIdentifier.SCHOOL,upload:true,mode:this.schoolCreate.VIEW});
@@ -185,16 +186,19 @@ export class WashInfoComponent implements OnInit,OnDestroy {
       // this.schoolService.sendDetails(JSON.parse(this.cloneSchool));
     }
     this.schoolCreateMode = this.schoolCreate.VIEW;
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    // this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
 
   }
 
   submit() {
+    this.customValid=false;
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
     if (this.currentForm.form.valid) {
       if (this.schoolAddViewModel.schoolMaster.fieldsCategory !== null) {
         this.modifyCustomFields();
       }
+      if(this.customValid){
       this.schoolService.UpdateSchool(this.schoolAddViewModel).pipe(takeUntil(this.destroySubject$)).subscribe(
         data => {
           if (data){
@@ -222,6 +226,7 @@ export class WashInfoComponent implements OnInit,OnDestroy {
           }
         }
       );
+    }
     }
   }
 
