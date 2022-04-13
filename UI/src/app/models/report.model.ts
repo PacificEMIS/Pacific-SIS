@@ -199,3 +199,29 @@ export class GetHonorRollReportModel extends CommonField {
         this.filterParams = [];
     }
 }
+
+export class GetStudentFinalGradeReportModel extends CommonField {
+    studentIds: any[];
+    teacher: boolean;
+    comments: boolean
+    parcentage: boolean;
+    yearToDateDailyAbsences: boolean;
+    dailyAbsencesThisQuater: boolean;
+    periodByPeriodAbsences: boolean;
+    otherAttendanceCodeYearToDate: boolean;
+    otherAttendanceCodeThisQuater: boolean;
+    academicYear: number;
+    markingPeriods: string;
+    studentDetailsViews: any[];
+    constructor() {
+        super();
+        this.teacher = true;
+        this.comments = true;
+        this.parcentage = false;
+        this.yearToDateDailyAbsences = true;
+        this.dailyAbsencesThisQuater = true;
+        this.periodByPeriodAbsences = false;
+        this.otherAttendanceCodeYearToDate = false;
+        this.otherAttendanceCodeThisQuater = false;
+    }
+}
