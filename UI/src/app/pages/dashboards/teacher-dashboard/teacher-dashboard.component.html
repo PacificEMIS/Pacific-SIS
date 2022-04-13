@@ -6,13 +6,13 @@
     </vex-page-layout-header>
     <vex-page-layout-content class="">
 
-        <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4 cursor-pointer" *ngIf="scheduledCourseSectionViewModel.missingAttendanceCount>0" (click)="goTeacherMissingAttendance()" >
+        <div class="card px-6 py-4 border border-warn text-warn text-lg font-semibold bg-warn-light mb-4 cursor-pointer" *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" (click)="goTeacherMissingAttendance()" >
             <mat-icon [icIcon]="icMissingAttendance" class="align-middle mr-3"></mat-icon>
             {{scheduledCourseSectionViewModel.missingAttendanceCount}} {{
             'missingAttendanceFound' | translate }}
         </div>
 
-        <div *ngIf="scheduledCourseSectionViewModel.missingAttendanceCount>0" class="card px-6 py-4 border-2 border-blue mb-4">
+        <div *ngIf="scheduledCourseSectionViewModel?.missingAttendanceCount>0" class="card px-6 py-4 border-2 border-blue mb-4">
             <div class="text-blue relative">
                 <mat-icon [icIcon]="icAssessment" class="align-middle mr-5"></mat-icon>
                 <mat-icon [icIcon]="icWarning" class="absolute text-warn ic-warning text-base"></mat-icon>
