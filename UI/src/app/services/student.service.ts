@@ -298,6 +298,11 @@ export class StudentService {
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentDocument';
     return this.http.post<StudentDocumentAddModel>(apiurl, obj,this.httpOptions);
   }
+  updateStudentDocument(obj: StudentDocumentAddModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentDocument';
+    return this.http.put<StudentDocumentAddModel>(apiurl, obj,this.httpOptions);
+  }
   DeleteStudentDocument(obj: StudentDocumentAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/deleteStudentDocument';

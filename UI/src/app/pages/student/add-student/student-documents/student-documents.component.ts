@@ -105,6 +105,8 @@ export class StudentDocumentsComponent implements OnInit {
   studentDocumentAddModel: StudentDocumentAddModel = new StudentDocumentAddModel();
   @ViewChild(MatSort) sort: MatSort;
   permissions: Permissions
+  documentId: any;
+
   constructor(
     public translateService: TranslateService,
     private loaderService: LoaderService,
@@ -213,14 +215,14 @@ export class StudentDocumentsComponent implements OnInit {
     });
   }
 
-  uploadFile(){
+  uploadFile(){    
     this.base64Arr.forEach((value, index) => {
         let obj = {};
         obj = {
             tenantId: this.defaultValuesService.getTenantID(),
             schoolId: this.defaultValuesService.getSchoolID(),
             studentId: this.studentDetailsForViewAndEdit.studentMaster.studentId,
-            documentId: 0,
+            documentId: this.documentId ? this.documentId : 0,
             filename: this.filesName[index],
             filetype: this.filesType[index],
             fileUploaded: value,
@@ -231,7 +233,36 @@ export class StudentDocumentsComponent implements OnInit {
       });
 
     if (this.studentDocument.length > 0){
+      if(this.documentId) {
+        this.studentDocumentAddModel.studentDocuments = this.studentDocument;
+        this.studentService.updateStudentDocument(this.studentDocumentAddModel).subscribe(data => {
+          if (data){
+           if(data._failure){
 
+              this.snackbar.open( data._message, '', {
+                duration: 10000
+              });
+            } else {
+              this.snackbar.open(data._message, '', {
+                duration: 10000
+              }).afterOpened().subscribe(() => {
+                this.base64Arr = [];
+                this.studentDocument = [];
+                this.filesName = [];
+                this.filesType = [];
+                this.uploadSuccessfull = true;
+                this.isShowDiv = true;
+                this.getAllDocumentsList();
+                this.files = [];
+              });
+            }
+          }else{
+            this.snackbar.open(this.defaultValuesService.translateKey('studentDocumentUploadfailed') + this.defaultValuesService.getHttpError(), '', {
+              duration: 10000
+            });
+          }
+        });
+      } else {
         this.studentDocumentAddModel.studentDocuments = this.studentDocument;
         this.studentService.AddStudentDocument(this.studentDocumentAddModel).subscribe(data => {
           if (data){
@@ -260,6 +291,7 @@ export class StudentDocumentsComponent implements OnInit {
             });
           }
         });
+      }
       }
       else{
         this.snackbar.open(this.defaultValuesService.translateKey('pleaseSelectFile'), '', {
@@ -313,9 +345,10 @@ export class StudentDocumentsComponent implements OnInit {
     column.visible = !column.visible;
   }
 
-  toggleDisplayDiv() {
+  toggleDisplayDiv(documentId?) {
     this.isShowDiv = !this.isShowDiv;
     this.uploadSuccessfull = false;
+    this.documentId = documentId;
   }
 
   get visibleColumns() {
