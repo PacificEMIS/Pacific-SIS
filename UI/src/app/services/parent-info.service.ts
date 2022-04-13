@@ -136,6 +136,7 @@ export class ParentInfoService {
     obj.parentInfo.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.parentInfo.parentId = this.getParentId();
     obj.parentInfo.parentPhoto = this.parentImage;
+    obj.parentInfo.parentThumbnailPhoto  = this.parentThumbnailImage;
     let apiurl = this.apiUrl + obj._tenantName + "/ParentInfo/addUpdateParentPhoto";
     return this.http.put<AddParentInfoModel>(apiurl, obj,this.httpOptions);
   }
