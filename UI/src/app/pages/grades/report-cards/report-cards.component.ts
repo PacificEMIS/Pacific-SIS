@@ -707,6 +707,14 @@ export class ReportCardsComponent implements OnInit {
           .semester-table .comments-table { border: none; }
           
           .comments-table td { border-bottom: 1px dashed #b7b4b4; padding: 35px 0 0 } 
+
+          .behavior-subtable th, .behavior-subtable td {
+            border-right: 1px solid #000;
+          }
+
+          .behavior-subtable th:last-child, .behavior-subtable td:last-child {
+            border-right: none;
+          }
           
           </style>
         </head>
