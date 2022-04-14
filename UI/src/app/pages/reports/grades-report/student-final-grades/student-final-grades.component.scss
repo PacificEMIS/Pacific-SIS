@@ -136,3 +136,8 @@
 .whitespace-nowrap {
     white-space: nowrap;
 }
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+  }
