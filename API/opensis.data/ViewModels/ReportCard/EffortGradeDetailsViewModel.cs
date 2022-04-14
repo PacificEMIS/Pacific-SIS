@@ -23,39 +23,43 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-using opensis.data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace opensis.data.ViewModels.ReportCard
 {
-    public class ReportCardViewModel : CommonFields
+    public class EffortGradeDetailsViewModel
     {
-        public ReportCardViewModel()
+        public EffortGradeDetailsViewModel()
         {
-            studentsReportCardViewModelList = new List<StudentsReportCardViewModel>();
+            effortGradeItemDetails = new List<EffortGradeItemDetails>();
         }
-        public Guid TenantId { get; set; }
-        public int SchoolId { get; set; }
-        public decimal? AcademicYear { get; set; }
-        public string? MarkingPeriods { get; set; }
-        public bool? StandardGrade { get; set; }
-        public bool? EffortGrade { get; set; }
-        public bool? TeacherName { get; set; }
-        public bool? TeacherComments { get; set; }
-        public bool? Parcentage { get; set; }
-        public bool? GPA { get; set; }
-        public bool? YearToDateDailyAbsences { get; set; }
-        public bool? DailyAbsencesThisMarkingPeriod { get; set; }
-        public bool? OtherAttendanceCodeYearToDate { get; set; }
-        public string? CreatedBy { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedOn { get; set; }
-
-        public List<StudentsReportCardViewModel> studentsReportCardViewModelList { get; set; }
-        public string? ReportCardPdf { get; set; }
-        public string? TemplateType { get; set; }
+        public string? CategoryName { get; set; }
+        public string? MarkingPeriodName { get; set; }
+        public string? EffortItemTitle { get; set; }
+        public int? GradeScaleValue { get; set; }
+        public string? SortId { get; set; }
+        public List<EffortGradeItemDetails> effortGradeItemDetails { get; set; }
     }
+    public class EffortGradeItemDetails
+    {
+        public EffortGradeItemDetails()
+        {
+            markingPeriodDetailsforEffortGrades = new List<MarkingPeriodDetailsforEffortGrade>();
+        }
+        public string? EffortItemTitle { get; set; }
+        public List<MarkingPeriodDetailsforEffortGrade> markingPeriodDetailsforEffortGrades { get; set; }
+
+    }
+    public class MarkingPeriodDetailsforEffortGrade
+    {
+        public string? MarkingPeriodName { get; set; }
+        public int? GradeScaleValue { get; set; }
+        public string? SortId { get; set; }
+
+    }
+
 }

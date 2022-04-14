@@ -351,9 +351,13 @@ namespace opensis.data.Repository
                 {
                     var historicalGradeDataList = this.context?.HistoricalGrade.Include(x => x.HistoricalCreditTransfer).Where(x => x.TenantId == historicalGradeList.TenantId && x.StudentId == historicalGradeList.StudentId && x.SchoolId == historicalGradeList.SchoolId).ToList();
 
+                    var studentPhoto = this.context?.StudentMaster.Where(x => x.TenantId == historicalGradeList.TenantId && x.StudentId == historicalGradeList.StudentId && x.SchoolId == historicalGradeList.SchoolId).Select(x => x.StudentThumbnailPhoto).FirstOrDefault();
+
                     if (historicalGradeDataList?.Any() == true)
                     {
                         historicalGradeListModel.HistoricalGradeList = historicalGradeDataList;
+                        historicalGradeListModel.StudentPhoto = studentPhoto;
+                        historicalGradeListModel.StudentId = historicalGradeList.StudentId;
                         historicalGradeListModel._failure = false;
                     }
                     else

@@ -26,6 +26,7 @@ All rights reserved.
 using opensis.data.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace opensis.data.ViewModels.ReportCard
@@ -39,7 +40,11 @@ namespace opensis.data.ViewModels.ReportCard
             gradeList = new List<Grade>();
             teacherCommentList = new List<string>();
             courseCommentCategories = new List<CourseCommentCategory>();
-        }    
+            effortGradeScales = new List<EffortGradeScale>();
+            effortGradeList = new List<EffortGradeDetailsViewModel>();
+            standerdGradeScale = new List<Grade>();
+            standerdsGradeList = new List<StanderdsGradeDetailsViewModel>();
+        }
         public string? SchoolName { get; set; }
         public byte[]? SchoolLogo { get; set; }
         public string? SchoolYear { get; set; }
@@ -66,5 +71,10 @@ namespace opensis.data.ViewModels.ReportCard
         public List<Grade> gradeList { get; set; }
         public List<string> teacherCommentList { get; set; }
         public List<CourseCommentCategory> courseCommentCategories { get; set; }
+        public List<EffortGradeScale> effortGradeScales { get; set; }
+        public List<EffortGradeDetailsViewModel> effortGradeList { get; set; }
+        public List<Grade> standerdGradeScale { get; set; }
+        public List<StanderdsGradeDetailsViewModel> standerdsGradeList { get; set; }
+
     }
 }
