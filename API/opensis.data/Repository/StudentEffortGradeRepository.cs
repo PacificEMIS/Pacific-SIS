@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static opensis.data.ViewModels.StudentEffortGrade.HomeRoomStaffByStudentListModel;
 
 namespace opensis.data.Repository
 {
@@ -71,27 +72,64 @@ namespace opensis.data.Repository
                     int? QtrMarkingPeriodId = 0;
                     int? PrgrsprdMarkingPeriodId = 0;
 
-                    if (studentEffortGradeListModel.MarkingPeriodId != null)
-                    {
-                        var markingPeriodid = studentEffortGradeListModel.MarkingPeriodId.Split("_", StringSplitOptions.RemoveEmptyEntries);
 
-                        if (markingPeriodid.First() == "3")
+                    var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                    if (progressPeriodsData != null)
+                    {
+                        PrgrsprdMarkingPeriodId = progressPeriodsData.MarkingPeriodId;
+                    }
+                    else
+                    {
+                        var quartersData = this.context?.Quarters.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                        if (quartersData != null)
                         {
-                            PrgrsprdMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                            QtrMarkingPeriodId = quartersData.MarkingPeriodId;
+
                         }
-                        if (markingPeriodid.First() == "2")
+                        else
                         {
-                            QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
-                        }
-                        if (markingPeriodid.First() == "1")
-                        {
-                            SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
-                        }
-                        if (markingPeriodid.First() == "0")
-                        {
-                            YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                            var semestersData = this.context?.Semesters.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                            if (semestersData != null)
+                            {
+                                SmstrMarkingPeriodId = semestersData.MarkingPeriodId;
+                            }
+                            else
+                            {
+                                var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                                if (yearsData != null)
+                                {
+                                    YrMarkingPeriodId = yearsData.MarkingPeriodId;
+
+                                }
+                            }
                         }
                     }
+
+                    //if (studentEffortGradeListModel.MarkingPeriodId != null)
+                    //{
+                    //    var markingPeriodid = studentEffortGradeListModel.MarkingPeriodId.Split("_", StringSplitOptions.RemoveEmptyEntries);
+
+                    //    if (markingPeriodid.First() == "3")
+                    //    {
+                    //        PrgrsprdMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                    //    }
+                    //    if (markingPeriodid.First() == "2")
+                    //    {
+                    //        QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                    //    }
+                    //    if (markingPeriodid.First() == "1")
+                    //    {
+                    //        SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                    //    }
+                    //    if (markingPeriodid.First() == "0")
+                    //    {
+                    //        YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                    //    }
+                    //}
 
                     if (studentEffortGradeListModel.studentEffortGradeList!=null && studentEffortGradeListModel.studentEffortGradeList.Any())
                     {
@@ -112,7 +150,7 @@ namespace opensis.data.Repository
 
                         studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
 
-                        studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && e.CourseId == studentEffortGradeListModel.CourseId && e.CourseSectionId == studentEffortGradeListModel.CourseSectionId).ToList();
+                        studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
 
                         if (studentEffortGradeData!=null && studentEffortGradeData.Any())
                         {
@@ -146,8 +184,8 @@ namespace opensis.data.Repository
                                     TenantId = studentEffortGradeListModel.TenantId,
                                     SchoolId = studentEffortGradeListModel.SchoolId,
                                     StudentId = studentEffortGrade.StudentId,
-                                    CourseId = studentEffortGradeListModel.CourseId,
-                                    CourseSectionId = studentEffortGradeListModel.CourseSectionId,
+                                    CourseId = 0,
+                                    CourseSectionId = 0,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
                                     CalendarId = studentEffortGradeListModel.CalendarId,
                                     YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
@@ -188,8 +226,8 @@ namespace opensis.data.Repository
                                     TenantId = studentEffortGradeListModel.TenantId,
                                     SchoolId = studentEffortGradeListModel.SchoolId,
                                     StudentId = studentEffortGrade.StudentId,
-                                    CourseId = studentEffortGradeListModel.CourseId,
-                                    CourseSectionId = studentEffortGradeListModel.CourseSectionId,
+                                    CourseId = 0,
+                                    CourseSectionId = 0,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
                                     CalendarId = studentEffortGradeListModel.CalendarId,
                                     YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
@@ -243,42 +281,79 @@ namespace opensis.data.Repository
                 int? QtrMarkingPeriodId = 0;
                 int? PrgrsprdMarkingPeriodId = 0;
 
-                if (studentEffortGradeListModel.MarkingPeriodId != null)
+
+                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                if (progressPeriodsData != null)
                 {
+                    PrgrsprdMarkingPeriodId = progressPeriodsData.MarkingPeriodId;
+                }
+                else
+                {
+                    var quartersData = this.context?.Quarters.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
 
-                    var markingPeriodid = studentEffortGradeListModel.MarkingPeriodId.Split("_", StringSplitOptions.RemoveEmptyEntries);
+                    if (quartersData != null)
+                    {
+                        QtrMarkingPeriodId = quartersData.MarkingPeriodId;
 
-                    if (markingPeriodid.First() == "3")
-                    {
-                        PrgrsprdMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
                     }
-                    if (markingPeriodid.First() == "2")
+                    else
                     {
-                        QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
-                    }
-                    if (markingPeriodid.First() == "1")
-                    {
-                        SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
-                    }
-                    if (markingPeriodid.First() == "0")
-                    {
-                        YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                        var semestersData = this.context?.Semesters.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                        if (semestersData != null)
+                        {
+                            SmstrMarkingPeriodId = semestersData.MarkingPeriodId;
+                        }
+                        else
+                        {
+                            var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId && x.StartDate == studentEffortGradeListModel.MarkingPeriodStartDate && x.EndDate == studentEffortGradeListModel.MarkingPeriodEndDate && x.AcademicYear == studentEffortGradeListModel.AcademicYear).FirstOrDefault();
+
+                            if (yearsData != null)
+                            {
+                                YrMarkingPeriodId = yearsData.MarkingPeriodId;
+
+                            }
+                        }
                     }
                 }
 
+                //if (studentEffortGradeListModel.MarkingPeriodId != null)
+                //{
+
+                //    var markingPeriodid = studentEffortGradeListModel.MarkingPeriodId.Split("_", StringSplitOptions.RemoveEmptyEntries);
+
+                //    if (markingPeriodid.First() == "3")
+                //    {
+                //        PrgrsprdMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                //    }
+                //    if (markingPeriodid.First() == "2")
+                //    {
+                //        QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                //    }
+                //    if (markingPeriodid.First() == "1")
+                //    {
+                //        SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                //    }
+                //    if (markingPeriodid.First() == "0")
+                //    {
+                //        YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
+                //    }
+                //}
+
                 var studentEffortGradeData = new List<StudentEffortGradeMaster>();
 
-                studentEffortGradeData = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && e.CourseId == studentEffortGradeListModel.CourseId && e.CourseSectionId == studentEffortGradeListModel.CourseSectionId && e.AcademicYear == studentEffortGradeListModel.AcademicYear).ToList();
+                studentEffortGradeData = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.AcademicYear == studentEffortGradeListModel.AcademicYear).ToList();
 
                 if (studentEffortGradeData!=null && studentEffortGradeData.Any())
                 {
                     studentEffortGradeList.studentEffortGradeList = studentEffortGradeData;
                     studentEffortGradeList.TenantId = studentEffortGradeListModel.TenantId;
                     studentEffortGradeList.SchoolId = studentEffortGradeListModel.SchoolId;
-                    studentEffortGradeList.CourseId = studentEffortGradeListModel.CourseId;
-                    studentEffortGradeList.CourseSectionId = studentEffortGradeListModel.CourseSectionId;
+                    //studentEffortGradeList.CourseId = studentEffortGradeListModel.CourseId;
+                    //studentEffortGradeList.CourseSectionId = studentEffortGradeListModel.CourseSectionId;
                     studentEffortGradeList.CalendarId = studentEffortGradeListModel.CalendarId;
-                    studentEffortGradeList.MarkingPeriodId = studentEffortGradeListModel.MarkingPeriodId;
+                    //studentEffortGradeList.MarkingPeriodId = studentEffortGradeListModel.MarkingPeriodId;
                     studentEffortGradeList.AcademicYear = studentEffortGradeListModel.AcademicYear;
                     studentEffortGradeList.CreatedOrUpdatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy;
                     studentEffortGradeList._userName = studentEffortGradeListModel._userName;
@@ -300,5 +375,108 @@ namespace opensis.data.Repository
             }
             return studentEffortGradeList;
         }
+
+
+        //Start GetStudentListByHomeRoomStaff //
+        public HomeRoomStaffByStudentListModel GetStudentListByHomeRoomStaff(PageResult pageResult)
+        {
+            HomeRoomStaffByStudentListModel studentListByHomeRoomStaff = new HomeRoomStaffByStudentListModel();
+
+            IQueryable<StudentsByHomeRoomStaffView>? transactionIQ = null;
+
+            var studentListByHomeRoomStaffView = new List<StudentsByHomeRoomStaffView>();
+            try
+            {
+                var staffCourseSection = this.context?.StaffCoursesectionSchedule.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StaffId == pageResult.StaffId && x.IsDropped != true && (pageResult.MarkingPeriodStartDate >= x.DurationStartDate && pageResult.MarkingPeriodStartDate <= x.DurationEndDate) && (pageResult.MarkingPeriodEndDate >= x.DurationStartDate && pageResult.MarkingPeriodEndDate <= x.DurationEndDate) && x.AcademicYear == pageResult.AcademicYear).ToList();
+
+                var staffcsids = staffCourseSection?.Select(x => x.CourseSectionId).ToList();
+
+                var scheduledData = this.context?.StudentCoursesectionSchedule.
+                                   Join(this.context.StudentMaster,
+                                   scs => scs.StudentId, sm => sm.StudentId,
+                                   (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (staffcsids == null || staffcsids.ToList().Count == 0 || staffcsids!.Contains(c.scs.CourseSectionId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (c.scs.IsDropped != true)).ToList();
+                if (scheduledData != null && scheduledData.Any())
+                {
+
+                    studentListByHomeRoomStaffView = scheduledData?.Select(ssv => new StudentsByHomeRoomStaffView
+                    {
+                        SchoolId = ssv.sm.SchoolId,
+                        TenantId = ssv.sm.TenantId,
+                        StudentId = ssv.sm.StudentId,
+                        StudentGuid = ssv.sm.StudentGuid,
+                        FirstGivenName = ssv.sm.FirstGivenName,
+                        LastFamilyName = ssv.sm.LastFamilyName,
+                        AlternateId = ssv.sm.AlternateId,
+                        StudentInternalId = ssv.sm.StudentInternalId,
+                        GradeLevel = this.context?.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.sm.TenantId && c.SchoolId == ssv.sm.SchoolId && c.GradeId == ssv.scs.GradeId)?.Title,
+                        StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentThumbnailPhoto : null,
+                        CourseSectionId = ssv.scs.CourseSectionId,
+                        MiddleName = ssv.sm.MiddleName,
+                        IsDropped = ssv.scs.IsDropped,
+                    }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
+
+
+                }
+
+                if (studentListByHomeRoomStaffView != null && studentListByHomeRoomStaffView.Any())
+                {
+                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                    {
+                        transactionIQ = studentListByHomeRoomStaffView.AsQueryable();
+                    }
+                    else
+                    {
+                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                        {
+                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+
+                            transactionIQ = studentListByHomeRoomStaffView.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
+                            x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
+                            (x.GradeLevel != null && x.GradeLevel.Contains(Columnvalue)) ||
+                            (x.StudentInternalId != null && x.StudentInternalId.Contains(Columnvalue))).AsQueryable();
+                        }
+                        else
+                        {
+                            transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentListByHomeRoomStaffView).AsQueryable();
+                        }
+                        transactionIQ = transactionIQ.Distinct();
+                    }
+
+                    if (pageResult.SortingModel != null)
+                    {
+                        switch (pageResult!.SortingModel!.SortColumn)
+                        {
+                            default:
+                                transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
+                                break;
+                        }
+                    }
+
+                    studentListByHomeRoomStaff.studentsByHomeRoomStaffView = transactionIQ!.ToList() ?? new();
+                    studentListByHomeRoomStaff._failure = false;
+                }
+                else
+                {
+                    studentListByHomeRoomStaff.studentsByHomeRoomStaffView = studentListByHomeRoomStaffView ?? new();
+                    studentListByHomeRoomStaff._failure = true;
+                    studentListByHomeRoomStaff._message = NORECORDFOUND;
+                }
+
+                studentListByHomeRoomStaff.TenantId = pageResult?.TenantId;
+                studentListByHomeRoomStaff.SchoolId = pageResult?.SchoolId;
+                studentListByHomeRoomStaff.CourseSectionId = pageResult?.CourseSectionId;
+                studentListByHomeRoomStaff.StaffId = pageResult?.StaffId;
+                studentListByHomeRoomStaff.AcademicYear = pageResult?.AcademicYear;
+                studentListByHomeRoomStaff._tenantName = pageResult?._tenantName;
+                studentListByHomeRoomStaff._token = pageResult?._token;
+            }
+            catch (Exception es)
+            {
+                studentListByHomeRoomStaff._failure = true;
+                studentListByHomeRoomStaff._message = es.Message; ;
+            }
+            return studentListByHomeRoomStaff;
+        }
+        //End GetStudentListByHomeRoomStaff API//
     }
 }
