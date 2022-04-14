@@ -40,6 +40,8 @@ namespace opensis.data.ViewModels.ReportCard
         public int SchoolId { get; set; }
         public decimal? AcademicYear { get; set; }
         public string? MarkingPeriods { get; set; }
+        public bool? StandardGrade { get; set; }
+        public bool? EffortGrade { get; set; }
         public bool? TeacherName { get; set; }
         public bool? TeacherComments { get; set; }
         public bool? Parcentage { get; set; }
