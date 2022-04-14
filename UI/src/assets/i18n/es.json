@@ -1796,5 +1796,6 @@
     "studentReportCard":"Tarjeta de informe del estudiante",
     "courseNameIsRequired": "Se requiere el nombre del curso",
     "letterGradeIsRequired": "Se requiere grado de letra",
-    "youAreAboutToDeleteThisComment": "Estás a punto de borrar este comentario"
+    "youAreAboutToDeleteThisComment": "Estás a punto de borrar este comentario",
+    "absYtdMp": "Abdominales Hasta la fecha / MP"
 }

@@ -1795,5 +1795,6 @@
     "studentReportCard":"Student report card",
     "courseNameIsRequired": "Course Name is required",
     "letterGradeIsRequired": "Letter Grade is required",
-    "youAreAboutToDeleteThisComment": "You are about to delete this comment"
+    "youAreAboutToDeleteThisComment": "You are about to delete this comment",
+    "absYtdMp": "Abs YTD / MP"
 }

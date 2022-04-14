@@ -6,6 +6,7 @@ export class ParentInfoModel {
     public schoolId: number;
     public parentId: number;
     public parentPhoto: string;
+    public parentThumbnailPhoto : string;
     public salutation: string;
     public firstname: string;
     public middlename: string;

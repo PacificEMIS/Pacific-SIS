@@ -279,6 +279,7 @@ export class StaffService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.staffMaster.staffId = this.getStaffId();
     obj.staffMaster.staffPhoto = this.staffImage;
+    obj.staffMaster.staffThumbnailPhoto  = this.staffThumbnailImage;
     obj.staffMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.staffMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Staff/addUpdateStaffPhoto';
