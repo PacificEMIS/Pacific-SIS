@@ -30,6 +30,7 @@ export class StaffService {
   userName = this.defaultValuesService.getUserName();
 
   private staffImage;
+  private staffThumbnailImage;
   private isFirstView:boolean= true;
 
   private staffId: number;
@@ -88,6 +89,9 @@ export class StaffService {
 
   setStaffImage(imageInBase64) {
     this.staffImage = imageInBase64;
+  }
+  setStaffThumbnailImage(imageInBase64) {
+    this.staffThumbnailImage = imageInBase64;
   }
   setStaffId(id: number) {
     this.staffId = id;
@@ -275,6 +279,7 @@ export class StaffService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.staffMaster.staffId = this.getStaffId();
     obj.staffMaster.staffPhoto = this.staffImage;
+    obj.staffMaster.staffThumbnailPhoto  = this.staffThumbnailImage;
     obj.staffMaster.tenantId = this.defaultValuesService.getTenantID();
     obj.staffMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/Staff/addUpdateStaffPhoto';

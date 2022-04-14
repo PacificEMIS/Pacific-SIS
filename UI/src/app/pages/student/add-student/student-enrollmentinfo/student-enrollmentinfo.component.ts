@@ -126,7 +126,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
   permissions: Permissions;
   module = Module.STUDENT;
   categoryId = 1;
-
+  customValid=false;
   constructor(
     private dialog: MatDialog,
     private calendarService: CalendarService,
@@ -357,8 +357,9 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
 
   //checking for dropped of student
   confirmDroppedOut() {
-
+    this.customValid=false;
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
     if (this.currentForm.form.invalid) {
       return;
     }
@@ -380,12 +381,12 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
       });
       dialogRef.afterClosed().subscribe(dialogResult => {
         if (dialogResult) {
-          this.updateStudentEnrollment();
+          if(this.customValid) this.updateStudentEnrollment();
         }
       });
     }
     else {
-      this.updateStudentEnrollment();
+      if(this.customValid) this.updateStudentEnrollment();
     }
 
   }

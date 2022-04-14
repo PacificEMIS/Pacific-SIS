@@ -218,6 +218,11 @@ export class StudentService {
     this.studentImage = imageInBase64;
   }
 
+  private studentThumbnailImage;
+  setStudentThumbnailImage(imageInBase64) {
+    this.studentThumbnailImage = imageInBase64;
+  }
+
   // Update Mode in Student
   public pageMode = new Subject;
   modeToUpdate = this.pageMode.asObservable();
@@ -293,6 +298,11 @@ export class StudentService {
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addStudentDocument';
     return this.http.post<StudentDocumentAddModel>(apiurl, obj,this.httpOptions);
   }
+  updateStudentDocument(obj: StudentDocumentAddModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    const apiurl = this.apiUrl + obj._tenantName + '/Student/updateStudentDocument';
+    return this.http.put<StudentDocumentAddModel>(apiurl, obj,this.httpOptions);
+  }
   DeleteStudentDocument(obj: StudentDocumentAddModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     const apiurl = this.apiUrl + obj._tenantName + '/Student/deleteStudentDocument';
@@ -362,6 +372,8 @@ export class StudentService {
     obj.studentMaster.schoolId = this.defaultValuesService.getSchoolID();
     obj.studentMaster.updatedBy = this.defaultValuesService.getUserGuidId();
     obj.studentMaster.studentPhoto = this.studentImage;
+    obj.studentMaster.studentThumbnailPhoto = this.studentThumbnailImage;
+    
     const apiurl = this.apiUrl + obj._tenantName + '/Student/addUpdateStudentPhoto';
     return this.http.put<StudentAddModel>(apiurl, obj,this.httpOptions);
   }

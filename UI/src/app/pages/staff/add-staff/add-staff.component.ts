@@ -121,9 +121,9 @@ export class AddStaffComponent implements OnInit, OnDestroy {
         !this.staffService.getStaffId() ? this.router.navigate(['school/teacher/dashboards']) : ''
       }
 
-    this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
-      this.staffService.setStaffImage(res[1]);
-    });
+    // this.imageCropperService.getCroppedEvent().pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+    //   this.staffService.setStaffImage(res[1]);
+    // });
     this.staffService.selectedCategoryTitle.pipe(takeUntil(this.destroySubject$)).subscribe((res:string) => {
       if(res){
         this.categoryTitle=res;        

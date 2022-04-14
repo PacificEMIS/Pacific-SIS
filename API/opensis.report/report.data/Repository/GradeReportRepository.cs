@@ -320,9 +320,9 @@ namespace opensis.report.report.data.Repository
                         if (markingPeriodid.First() == "3")
                         {
                             var Id = Int32.Parse(markingPeriodid.ElementAt(1));
-                            markingPeriodListView.MarkingPeriodId = Id;
 
                             var ppData = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+                            markingPeriodListView.SortId = "3_" + ppData.MarkingPeriodId;
 
                             if (markingPeriodid.Last() == "E")
                             {
@@ -340,9 +340,9 @@ namespace opensis.report.report.data.Repository
                         else if (markingPeriodid.First() == "2")
                         {
                             var Id = Int32.Parse(markingPeriodid.ElementAt(1));
-                            markingPeriodListView.MarkingPeriodId = Id;
 
                             var qtrData = this.context?.Quarters.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+                            markingPeriodListView.SortId = "2_" + qtrData.MarkingPeriodId;
 
                             if (markingPeriodid.Last() == "E")
                             {
@@ -360,9 +360,9 @@ namespace opensis.report.report.data.Repository
                         else if (markingPeriodid.First() == "1")
                         {
                             var Id = Int32.Parse(markingPeriodid.ElementAt(1));
-                            markingPeriodListView.MarkingPeriodId = Id;
 
                             var smstrData = this.context?.Semesters.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+                            markingPeriodListView.SortId = "1_" + smstrData.MarkingPeriodId;
 
                             if (markingPeriodid.Last() == "E")
                             {
@@ -380,9 +380,9 @@ namespace opensis.report.report.data.Repository
                         else if (markingPeriodid.First() == "0")
                         {
                             var Id = Int32.Parse(markingPeriodid.ElementAt(1));
-                            markingPeriodListView.MarkingPeriodId = Id;
 
                             var yrData = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == studentFinalGradeViewModel.TenantId && x.SchoolId == studentFinalGradeViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == studentFinalGradeViewModel.AcademicYear);
+                            markingPeriodListView.SortId = "0_" + yrData.MarkingPeriodId;
 
                             if (markingPeriodid.Last() == "E")
                             {
@@ -444,13 +444,14 @@ namespace opensis.report.report.data.Repository
                             }
 
                             //fetch markingperiod name & bind in VM where final grade has for this course section.
-                            courseSectionDetailsView.markingPeriodDetailsViews = courseSection.Select(s => new MarkingPeriodDetailsView { Percentage = studentFinalGradeViewModel.Parcentage == true ? s.sfg.PercentMarks : 0, Grade = s.sfg.GradeObtained, MarkingPeriodName = s.sfg.IsExamGrade == true ? s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title + " Exam" : s.sfg.Quarters != null ? s.sfg.Quarters.Title + " Exam" : s.sfg.Semesters != null ? s.sfg.Semesters.Title + " Exam" : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title + " Exam" : null : s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title : s.sfg.Quarters != null ? s.sfg.Quarters.Title : s.sfg.Semesters != null ? s.sfg.Semesters.Title : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title : null }).ToList();
+                            courseSectionDetailsView.markingPeriodDetailsViews = courseSection.Select(s => new MarkingPeriodDetailsView { Percentage = studentFinalGradeViewModel.Parcentage == true ? s.sfg.PercentMarks : 0, Grade = s.sfg.GradeObtained, MarkingPeriodName = s.sfg.IsExamGrade == true ? (s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title + " Exam" : s.sfg.Quarters != null ? s.sfg.Quarters.Title + " Exam" : s.sfg.Semesters != null ? s.sfg.Semesters.Title + " Exam" : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title + " Exam" : null) : (s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.Title : s.sfg.Quarters != null ? s.sfg.Quarters.Title : s.sfg.Semesters != null ? s.sfg.Semesters.Title : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.Title : null), SortId = s.sfg.ProgressPeriod != null ? "3_" + s.sfg.ProgressPeriod.MarkingPeriodId : s.sfg.Quarters != null ? "2_" + s.sfg.Quarters.MarkingPeriodId : s.sfg.Semesters != null ? "1_" + s.sfg.Semesters.MarkingPeriodId : s.sfg.SchoolYears != null ? "0_" + s.sfg.ProgressPeriod.MarkingPeriodId : null }).ToList();
 
                             //fetch markingperiod name & bind in VM where final grade has not for this course section.
-                            var exceptMarkingPeriod = markingPeriodList.Select(x => x.MarkingPeriodName).Except(courseSectionDetailsView.markingPeriodDetailsViews.Select(x => x.MarkingPeriodName)).Select(s => new MarkingPeriodDetailsView { MarkingPeriodName = s }).ToList();
+
+                            var exceptMarkingPeriod = markingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(courseSectionDetailsView.markingPeriodDetailsViews.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsView { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
 
                             courseSectionDetailsView.markingPeriodDetailsViews.AddRange(exceptMarkingPeriod);
-
+                            courseSectionDetailsView.markingPeriodDetailsViews = courseSectionDetailsView.markingPeriodDetailsViews.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
                             //this code for ytd absence
                             if (studentFinalGradeViewModel.YearToDateDailyAbsences == true)
                             {

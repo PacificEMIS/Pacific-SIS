@@ -218,7 +218,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="header-middle float-left">
+                                <div class="header-middle text-center">
                                     <h2 class="text-uppercase">{{'studentReportCard' | translate | uppercase }}</h2>
                                     <p class="text-center">{{grade?.schoolName}}</p>
                                 </div>
@@ -298,7 +298,7 @@
             </tr>
             <tr>
                 <td *ngIf="addReportCardPdf?.templateType === 'chuuk'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -355,7 +355,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'kosrae'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -395,7 +395,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'pohnpei'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -431,7 +431,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'yap'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>

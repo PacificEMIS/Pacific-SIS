@@ -116,6 +116,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   addEditStudentMedicalProviderModel: AddEditStudentMedicalProviderModel = new AddEditStudentMedicalProviderModel();
   currentTab: string;
   permissions: Permissions;
+  customValid=false;
   constructor(
     private fb: FormBuilder,
     public translateService: TranslateService,
@@ -494,6 +495,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    this.customValid=false;
     if (this.addEditStudentMedicalProviderModel.fieldsCategoryList){
       this.addEditStudentMedicalProviderModel.selectedCategoryId =
       this.addEditStudentMedicalProviderModel.fieldsCategoryList[this.categoryId].categoryId;
@@ -511,7 +513,9 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
       }
     }
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
     if (this.currentForm.form.valid) {
+      if(this.customValid){
       this.addEditStudentMedicalProviderModel.studentMedicalProvider.studentId = this.studentService.getStudentId();
       if (this.addEditStudentMedicalProviderModel.studentMedicalProvider.id === 0){
         this.studentService.addStudentMedicalProvider(this.addEditStudentMedicalProviderModel).subscribe(
@@ -611,6 +615,7 @@ export class StudentMedicalinfoComponent implements OnInit, OnDestroy {
           }
         }); */
     }
+  }
   }
   getAllStudentMedicalInfo(){
     this.studentMedicalInfoListModel.studentId = this.studentService.getStudentId();
