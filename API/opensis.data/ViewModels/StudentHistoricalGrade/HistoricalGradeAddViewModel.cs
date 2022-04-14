@@ -17,6 +17,7 @@ namespace opensis.data.ViewModels.StudentHistoricalGrade
         public int? SchoolId { get; set; }
         public Guid TenantId { get; set; }
         public int? StudentId { get; set; }
+        public byte[]? StudentPhoto { get; set; }
         public string? CreatedBy { get; set; }
 
     }
