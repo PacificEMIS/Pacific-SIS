@@ -78,5 +78,22 @@ namespace opensisAPI.Controllers
             }
             return studentEffortGradeList;
         }
+
+        [HttpPost("GetStudentListByHomeRoomStaff")]
+        public ActionResult<HomeRoomStaffByStudentListModel> GetStudentListByHomeRoomStaff(PageResult pageResult)
+        {
+            HomeRoomStaffByStudentListModel studentListByHomeRoomStaff = new HomeRoomStaffByStudentListModel();
+            try
+            {
+                studentListByHomeRoomStaff = _studentEffortGradeService.GetStudentListByHomeRoomStaff(pageResult);
+            }
+            catch (Exception ex)
+            {
+
+                studentListByHomeRoomStaff._message = ex.Message;
+                studentListByHomeRoomStaff._failure = true;
+            }
+            return studentListByHomeRoomStaff;
+        }
     }
 }
