@@ -41,7 +41,6 @@ namespace opensis.data.ViewModels.StudentEffortGrade
         public int SchoolId { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
-        public int? CalendarId { get; set; }
         public decimal? AcademicYear { get; set; }
         public string? CreatedOrUpdatedBy { get; set; }
     }
