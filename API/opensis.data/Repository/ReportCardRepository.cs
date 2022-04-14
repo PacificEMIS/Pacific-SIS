@@ -1574,6 +1574,7 @@ namespace opensis.data.Repository
                             List<DateTime> holidayList = new List<DateTime>();
                             List<EffortGradeDetailsViewModel> effortGradeDetailList = new List<EffortGradeDetailsViewModel>();
                             List<StanderdsGradeDetailsViewModel> standerdsGradeDetailsList = new List<StanderdsGradeDetailsViewModel>();
+                            List<StanderdsGradeDetailsViewModel> MarkingPeriodList = new List<StanderdsGradeDetailsViewModel>();
 
                             var studentData = studentMasterData!.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
@@ -1592,11 +1593,13 @@ namespace opensis.data.Repository
                             DateTime? endDate = null;
                             string? MarkingPeriodTitle = null;
                             string? MarkingPeriodShortTitle = null;
+                            string? SortId = null;
 
                             //this loop for marking periods
                             foreach (var markingPeriod in markingPeriodsData)
                             {
                                 MarkingPeriodDetailsForDefaultTemplate markingPeriodDetailsForDefaultTemplates = new MarkingPeriodDetailsForDefaultTemplate();
+                                StanderdsGradeDetailsViewModel MarkingPeriod = new();
 
                                 int? Absences = 0;
                                 int? ExcusedAbsences = 0;
@@ -1621,13 +1624,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodShortTitle = ppData!.ShortName;
                                         startDate = ppData.StartDate;
                                         endDate = ppData.EndDate;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
+                                        SortId = "3_" + ppData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = ppData!.Title + " Exam";
                                             MarkingPeriodShortTitle = ppData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     else if (markingPeriodid.First() == "2")
@@ -1640,13 +1648,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodShortTitle = qtrData!.ShortName;
                                         startDate = qtrData.StartDate;
                                         endDate = qtrData.EndDate;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
+                                        SortId = "2_" + qtrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = qtrData!.Title + " Exam";
                                             MarkingPeriodShortTitle = qtrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     else if (markingPeriodid.First() == "1")
@@ -1659,13 +1672,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodShortTitle = smstrData!.ShortName;
                                         startDate = smstrData.StartDate;
                                         endDate = smstrData.EndDate;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
+                                        SortId = "1_" + smstrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = smstrData!.Title + " Exam";
                                             MarkingPeriodShortTitle = smstrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     else if (markingPeriodid.First() == "0")
@@ -1678,13 +1696,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodShortTitle = yrData!.ShortName;
                                         startDate = yrData.StartDate;
                                         endDate = yrData.EndDate;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
+                                        SortId = "0_" + yrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = yrData!.Title + " Exam";
                                             MarkingPeriodShortTitle = yrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     markingPeriodDetailsForDefaultTemplates.MarkingPeriodTitle = MarkingPeriodTitle;
@@ -1760,6 +1783,7 @@ namespace opensis.data.Repository
                                                         standerdsGradeDetails.CourseSectionName = CourseSectionData?.CourseSectionName;
                                                         standerdsGradeDetails.StaffName = CourseSectionData?.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
                                                         standerdsGradeDetails.MarkingPeriodName = MarkingPeriodShortTitle;
+                                                        standerdsGradeDetails.SortId = SortId;
 
                                                         var gradeUsStandardData = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.GradeStandardId == finalGradeStandardData.StandardGradeScaleId);
 
@@ -1798,6 +1822,7 @@ namespace opensis.data.Repository
                                                 {
                                                     CategoryName = EffortGradeLibraryCategoryData.FirstOrDefault(x => x.EffortCategoryId == s.EffortCategoryId)?.CategoryName,
                                                     MarkingPeriodName = MarkingPeriodShortTitle,
+                                                    SortId = SortId,
                                                     EffortItemTitle = EffortGradeLibraryCategoryData.SelectMany(x => x.EffortGradeLibraryCategoryItem).FirstOrDefault(x => x.EffortCategoryId == s.EffortCategoryId && x.EffortItemId == s.EffortItemId)?.EffortItemTitle,
                                                     GradeScaleValue = s.EffortGradeScaleId
                                                 });
@@ -1905,7 +1930,7 @@ namespace opensis.data.Repository
                             studentsReportCard.teacherCommentList = teacherComments;
                             studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
 
-
+                            //this block for effort grade
                             if (reportCardViewModel.EffortGrade == true)
                             {
                                 var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
@@ -1920,7 +1945,13 @@ namespace opensis.data.Repository
                                         EffortGradeItemDetails effortGradeItemDetails = new();
 
                                         effortGradeItemDetails.EffortItemTitle = item.Key;
-                                        effortGradeItemDetails.effortGradeMarkingPeriodDetails = item.Select(s => new EffortGradeMarkingPeriodDetails { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue }).ToList();
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+
                                         effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
 
                                     }
@@ -1951,8 +1982,13 @@ namespace opensis.data.Repository
                                         StanderdsGradeDetails standerdsGrade = new();
 
                                         standerdsGrade.StandardRefNo = standerd.Key;
-                                        standerdsGrade.StandardRefNo = standerd.First().StandardDetails;
-                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerd.Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, value = s.value }).ToList();
+                                        standerdsGrade.StandardDetails = standerd.First().StandardDetails;
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerd.Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, value = s.value, SortId = s.SortId }).ToList();
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(standerdsGrade.markingPeriodDetailsforStanderdsGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades.AddRange(exceptMarkingPeriod);
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerdsGrade.markingPeriodDetailsforStanderdsGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
                                         standerdsGradeDetails.standerdsGradeDetails.Add(standerdsGrade);
 
                                     }
@@ -1976,6 +2012,7 @@ namespace opensis.data.Repository
                             StudentsReportCardViewModel studentsReportCardViewModel = new StudentsReportCardViewModel();
                             List<EffortGradeDetailsViewModel> effortGradeDetailList = new List<EffortGradeDetailsViewModel>();
                             List<StanderdsGradeDetailsViewModel> standerdsGradeDetailsList = new List<StanderdsGradeDetailsViewModel>();
+                            List<StanderdsGradeDetailsViewModel> MarkingPeriodList = new List<StanderdsGradeDetailsViewModel>();
 
                             var studentData = this.context?.StudentMaster.Include(x => x.Sections).Include(x => x.StudentEnrollment).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
@@ -2014,6 +2051,7 @@ namespace opensis.data.Repository
                             DateTime? startDate = null;
                             DateTime? endDate = null;
                             string? MarkingPeriodTitle = null;
+                            string? SortId = null;
 
                             var StudentDailyAttendanceData = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
@@ -2024,6 +2062,8 @@ namespace opensis.data.Repository
                             foreach (var markingPeriod in markingPeriodsData)
                             {
                                 MarkingPeriodDetailsForOtherTemplate markingPeriodDetailsForOtherTemplate = new MarkingPeriodDetailsForOtherTemplate();
+                                StanderdsGradeDetailsViewModel MarkingPeriod = new();
+
                                 int? QtrMarkingPeriodId = null;
                                 int? SmstrMarkingPeriodId = null;
                                 int? YrMarkingPeriodId = null;
@@ -2043,12 +2083,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = ppData!.ShortName;
                                         startDate = ppData.StartDate;
                                         endDate = ppData.EndDate;
+                                        SortId = "3_" + ppData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = ppData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
+
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     if (markingPeriodid.First() == "2")
@@ -2060,12 +2106,17 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = qtrData!.ShortName;
                                         startDate = qtrData.StartDate;
                                         endDate = qtrData.EndDate;
+                                        SortId = "2_" + qtrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = qtrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     if (markingPeriodid.First() == "1")
@@ -2077,12 +2128,17 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = smstrData!.ShortName;
                                         startDate = smstrData.StartDate;
                                         endDate = smstrData.EndDate;
+                                        SortId = "1_" + smstrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = smstrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     if (markingPeriodid.First() == "0")
@@ -2094,16 +2150,22 @@ namespace opensis.data.Repository
                                         MarkingPeriodTitle = yrData!.ShortName;
                                         startDate = yrData.StartDate;
                                         endDate = yrData.EndDate;
+                                        SortId = "0_" + yrData.MarkingPeriodId;
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
                                             Exam = true;
                                             MarkingPeriodTitle = yrData!.ShortName + " Exam";
+                                            MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
                                         }
+                                        MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
                                     markingPeriodDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
                                     var reportCardData = new List<StudentFinalGrade>();
+
                                     if (Exam == true)
                                     {
                                         reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
@@ -2144,7 +2206,7 @@ namespace opensis.data.Repository
                                             courseSectionGradeDetailsForOtherTemplate.Percentage = reportCard.PercentMarks.ToString();
                                             markingPeriodDetailsForOtherTemplate.courseSectionGradeDetailsForOtherTemplates.Add(courseSectionGradeDetailsForOtherTemplate);
 
-                                            //this if for StandardGrade
+                                            //this block for StandardGrade
                                             if (reportCardViewModel.StandardGrade == true)
                                             {
                                                 var StudentFinalGradeStandardData = reportCard.StudentFinalGradeStandard.Where(s => s.StandardGradeScaleId > 0 && s.GradeObtained > 0);
@@ -2156,6 +2218,7 @@ namespace opensis.data.Repository
                                                         standerdsGradeDetails.CourseSectionName = CourseSectionData?.CourseSectionName;
                                                         standerdsGradeDetails.StaffName = CourseSectionData?.StaffCoursesectionSchedule.Count > 0 ? CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.FirstGivenName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.MiddleName + " " + CourseSectionData?.StaffCoursesectionSchedule.FirstOrDefault()!.StaffMaster.LastFamilyName : null;
                                                         standerdsGradeDetails.MarkingPeriodName = MarkingPeriodTitle;
+                                                        standerdsGradeDetails.SortId = SortId;
 
                                                         var gradeUsStandardData = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.GradeStandardId == finalGradeStandardData.StandardGradeScaleId);
 
@@ -2250,6 +2313,7 @@ namespace opensis.data.Repository
                                                 {
                                                     CategoryName = EffortGradeLibraryCategoryData.FirstOrDefault(x => x.EffortCategoryId == s.EffortCategoryId)?.CategoryName,
                                                     MarkingPeriodName = MarkingPeriodTitle,
+                                                    SortId = SortId,
                                                     EffortItemTitle = EffortGradeLibraryCategoryData.SelectMany(x => x.EffortGradeLibraryCategoryItem).FirstOrDefault(x => x.EffortCategoryId == s.EffortCategoryId && x.EffortItemId == s.EffortItemId)?.EffortItemTitle,
                                                     GradeScaleValue = s.EffortGradeScaleId
                                                 });
@@ -2262,6 +2326,7 @@ namespace opensis.data.Repository
                                 }
                             }
 
+                            //this block for effort grade
                             if (reportCardViewModel.EffortGrade == true)
                             {
                                 var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
@@ -2276,7 +2341,13 @@ namespace opensis.data.Repository
                                         EffortGradeItemDetails effortGradeItemDetails = new();
 
                                         effortGradeItemDetails.EffortItemTitle = item.Key;
-                                        effortGradeItemDetails.effortGradeMarkingPeriodDetails = item.Select(s => new EffortGradeMarkingPeriodDetails { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue }).ToList();
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+
                                         effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
 
                                     }
@@ -2307,8 +2378,13 @@ namespace opensis.data.Repository
                                         StanderdsGradeDetails standerdsGrade = new();
 
                                         standerdsGrade.StandardRefNo = standerd.Key;
-                                        standerdsGrade.StandardRefNo = standerd.First().StandardDetails;
-                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerd.Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, value = s.value }).ToList();
+                                        standerdsGrade.StandardDetails = standerd.First().StandardDetails;
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerd.Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, value = s.value, SortId = s.SortId }).ToList();
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(standerdsGrade.markingPeriodDetailsforStanderdsGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforStanderdsGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades.AddRange(exceptMarkingPeriod);
+                                        standerdsGrade.markingPeriodDetailsforStanderdsGrades = standerdsGrade.markingPeriodDetailsforStanderdsGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
                                         standerdsGradeDetails.standerdsGradeDetails.Add(standerdsGrade);
 
                                     }
