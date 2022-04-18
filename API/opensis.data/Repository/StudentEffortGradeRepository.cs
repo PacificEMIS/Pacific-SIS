@@ -390,84 +390,88 @@ namespace opensis.data.Repository
 
                 var staffcsids = staffCourseSection?.Select(x => x.CourseSectionId).ToList();
 
-                var scheduledData = this.context?.StudentCoursesectionSchedule.
-                                   Join(this.context.StudentMaster,
-                                   scs => scs.StudentId, sm => sm.StudentId,
-                                   (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (staffcsids == null || staffcsids.ToList().Count == 0 || staffcsids!.Contains(c.scs.CourseSectionId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (c.scs.IsDropped != true)).ToList();
-                if (scheduledData != null && scheduledData.Any())
+                if (staffcsids?.Any() == true)
                 {
-
-                    studentListByHomeRoomStaffView = scheduledData?.Select(ssv => new StudentsByHomeRoomStaffView
+                    var scheduledData = this.context?.StudentCoursesectionSchedule.
+                                       Join(this.context.StudentMaster,
+                                       scs => scs.StudentId, sm => sm.StudentId,
+                                       (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && staffcsids!.Contains(c.scs.CourseSectionId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (c.scs.IsDropped != true)).ToList();
+                    if (scheduledData != null && scheduledData.Any())
                     {
-                        SchoolId = ssv.sm.SchoolId,
-                        TenantId = ssv.sm.TenantId,
-                        StudentId = ssv.sm.StudentId,
-                        StudentGuid = ssv.sm.StudentGuid,
-                        FirstGivenName = ssv.sm.FirstGivenName,
-                        LastFamilyName = ssv.sm.LastFamilyName,
-                        AlternateId = ssv.sm.AlternateId,
-                        StudentInternalId = ssv.sm.StudentInternalId,
-                        GradeLevel = this.context?.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.sm.TenantId && c.SchoolId == ssv.sm.SchoolId && c.GradeId == ssv.scs.GradeId)?.Title,
-                        StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentThumbnailPhoto : null,
-                        CourseSectionId = ssv.scs.CourseSectionId,
-                        MiddleName = ssv.sm.MiddleName,
-                        IsDropped = ssv.scs.IsDropped,
-                    }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
-
-
-                }
-
-                if (studentListByHomeRoomStaffView != null && studentListByHomeRoomStaffView.Any())
-                {
-                    if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
-                    {
-                        transactionIQ = studentListByHomeRoomStaffView.AsQueryable();
-                    }
-                    else
-                    {
-                        if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                        studentListByHomeRoomStaffView = scheduledData?.Select(ssv => new StudentsByHomeRoomStaffView
                         {
-                            string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                            SchoolId = ssv.sm.SchoolId,
+                            TenantId = ssv.sm.TenantId,
+                            StudentId = ssv.sm.StudentId,
+                            StudentGuid = ssv.sm.StudentGuid,
+                            FirstGivenName = ssv.sm.FirstGivenName,
+                            LastFamilyName = ssv.sm.LastFamilyName,
+                            AlternateId = ssv.sm.AlternateId,
+                            StudentInternalId = ssv.sm.StudentInternalId,
+                            GradeLevel = this.context?.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.sm.TenantId && c.SchoolId == ssv.sm.SchoolId && c.GradeId == ssv.scs.GradeId)?.Title,
+                            StudentPhoto = (pageResult.ProfilePhoto == true) ? ssv.sm.StudentThumbnailPhoto : null,
+                            CourseSectionId = ssv.scs.CourseSectionId,
+                            MiddleName = ssv.sm.MiddleName,
+                            IsDropped = ssv.scs.IsDropped,
+                        }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
+                    }
 
-                            transactionIQ = studentListByHomeRoomStaffView.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
-                            x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
-                            (x.GradeLevel != null && x.GradeLevel.Contains(Columnvalue)) ||
-                            (x.StudentInternalId != null && x.StudentInternalId.Contains(Columnvalue))).AsQueryable();
+                    if (studentListByHomeRoomStaffView != null && studentListByHomeRoomStaffView.Any())
+                    {
+                        if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                        {
+                            transactionIQ = studentListByHomeRoomStaffView.AsQueryable();
                         }
                         else
                         {
-                            transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentListByHomeRoomStaffView).AsQueryable();
-                        }
-                        transactionIQ = transactionIQ.Distinct();
-                    }
+                            if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                            {
+                                string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
 
-                    if (pageResult.SortingModel != null)
-                    {
-                        switch (pageResult!.SortingModel!.SortColumn)
+                                transactionIQ = studentListByHomeRoomStaffView.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
+                                x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
+                                (x.GradeLevel != null && x.GradeLevel.Contains(Columnvalue)) ||
+                                (x.StudentInternalId != null && x.StudentInternalId.Contains(Columnvalue))).AsQueryable();
+                            }
+                            else
+                            {
+                                transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentListByHomeRoomStaffView).AsQueryable();
+                            }
+                            transactionIQ = transactionIQ.Distinct();
+                        }
+
+                        if (pageResult.SortingModel != null)
                         {
-                            default:
-                                transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
-                                break;
+                            switch (pageResult!.SortingModel!.SortColumn)
+                            {
+                                default:
+                                    transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
+                                    break;
+                            }
                         }
-                    }
 
-                    studentListByHomeRoomStaff.studentsByHomeRoomStaffView = transactionIQ!.ToList() ?? new();
-                    studentListByHomeRoomStaff._failure = false;
+                        studentListByHomeRoomStaff.studentsByHomeRoomStaffView = transactionIQ!.ToList() ?? new();
+                        studentListByHomeRoomStaff._failure = false;
+                    }
+                    else
+                    {
+                        studentListByHomeRoomStaff.studentsByHomeRoomStaffView = studentListByHomeRoomStaffView ?? new();
+                        studentListByHomeRoomStaff._failure = true;
+                        studentListByHomeRoomStaff._message = NORECORDFOUND;
+                    }
+                    studentListByHomeRoomStaff.TenantId = pageResult?.TenantId;
+                    studentListByHomeRoomStaff.SchoolId = pageResult?.SchoolId;
+                    studentListByHomeRoomStaff.CourseSectionId = pageResult?.CourseSectionId;
+                    studentListByHomeRoomStaff.StaffId = pageResult?.StaffId;
+                    studentListByHomeRoomStaff.AcademicYear = pageResult?.AcademicYear;
+                    studentListByHomeRoomStaff._tenantName = pageResult?._tenantName;
+                    studentListByHomeRoomStaff._token = pageResult?._token;
                 }
                 else
                 {
-                    studentListByHomeRoomStaff.studentsByHomeRoomStaffView = studentListByHomeRoomStaffView ?? new();
                     studentListByHomeRoomStaff._failure = true;
-                    studentListByHomeRoomStaff._message = NORECORDFOUND;
+                    studentListByHomeRoomStaff._message = "Staff is not sheduled in Any Coursesections";
                 }
-
-                studentListByHomeRoomStaff.TenantId = pageResult?.TenantId;
-                studentListByHomeRoomStaff.SchoolId = pageResult?.SchoolId;
-                studentListByHomeRoomStaff.CourseSectionId = pageResult?.CourseSectionId;
-                studentListByHomeRoomStaff.StaffId = pageResult?.StaffId;
-                studentListByHomeRoomStaff.AcademicYear = pageResult?.AcademicYear;
-                studentListByHomeRoomStaff._tenantName = pageResult?._tenantName;
-                studentListByHomeRoomStaff._token = pageResult?._token;
             }
             catch (Exception es)
             {
