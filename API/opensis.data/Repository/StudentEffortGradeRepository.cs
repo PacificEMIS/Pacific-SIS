@@ -398,7 +398,6 @@ namespace opensis.data.Repository
                                        (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && staffcsids!.Contains(c.scs.CourseSectionId) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (c.scs.IsDropped != true)).ToList();
                     if (scheduledData != null && scheduledData.Any())
                     {
-
                         studentListByHomeRoomStaffView = scheduledData?.Select(ssv => new StudentsByHomeRoomStaffView
                         {
                             SchoolId = ssv.sm.SchoolId,
@@ -460,7 +459,6 @@ namespace opensis.data.Repository
                         studentListByHomeRoomStaff._failure = true;
                         studentListByHomeRoomStaff._message = NORECORDFOUND;
                     }
-
                     studentListByHomeRoomStaff.TenantId = pageResult?.TenantId;
                     studentListByHomeRoomStaff.SchoolId = pageResult?.SchoolId;
                     studentListByHomeRoomStaff.CourseSectionId = pageResult?.CourseSectionId;
