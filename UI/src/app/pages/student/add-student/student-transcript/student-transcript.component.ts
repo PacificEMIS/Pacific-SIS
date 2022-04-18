@@ -321,6 +321,12 @@ export class StudentTranscriptComponent implements OnInit {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -582,8 +588,8 @@ export class StudentTranscriptComponent implements OnInit {
     );
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
-
     return;
+    }
   }
 
   ngOnDestroy() {

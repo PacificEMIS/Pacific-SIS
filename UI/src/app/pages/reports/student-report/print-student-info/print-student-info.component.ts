@@ -398,6 +398,12 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     printContents = document.getElementById('printReportCardId').innerHTML;
     document.getElementById('printReportCardId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printReportCardId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -693,6 +699,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     popupWin.document.close();
     document.getElementById('printReportCardId').className = 'hidden';
     return;
+    }
   }
 
 }
