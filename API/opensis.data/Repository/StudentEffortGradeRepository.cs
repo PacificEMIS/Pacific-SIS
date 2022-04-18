@@ -415,8 +415,6 @@ namespace opensis.data.Repository
                             MiddleName = ssv.sm.MiddleName,
                             IsDropped = ssv.scs.IsDropped,
                         }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
-
-
                     }
 
                     if (studentListByHomeRoomStaffView != null && studentListByHomeRoomStaffView.Any())
