@@ -67,6 +67,8 @@ namespace opensis.data.Repository
                         Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault()!.Id + 1;
                     }
 
+                    studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
+
                     int? YrMarkingPeriodId = 0;
                     int? SmstrMarkingPeriodId = 0;
                     int? QtrMarkingPeriodId = 0;
@@ -147,8 +149,6 @@ namespace opensis.data.Repository
                         }
 
                         var studentEffortGradeData = new List<StudentEffortGradeMaster>();
-
-                        studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
 
                         studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.AcademicYear == studentEffortGradeListModel.AcademicYear && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
 
