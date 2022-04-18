@@ -66,6 +66,7 @@ namespace opensis.data.Repository
                        // Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault().Id + 1;
                         Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault()!.Id + 1;
                     }
+                    studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
 
                     int? YrMarkingPeriodId = 0;
                     int? SmstrMarkingPeriodId = 0;
@@ -148,9 +149,7 @@ namespace opensis.data.Repository
 
                         var studentEffortGradeData = new List<StudentEffortGradeMaster>();
 
-                        studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
-
-                        studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
+                        studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.AcademicYear == studentEffortGradeListModel.AcademicYear && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
 
                         if (studentEffortGradeData!=null && studentEffortGradeData.Any())
                         {
@@ -187,7 +186,7 @@ namespace opensis.data.Repository
                                     CourseId = 0,
                                     CourseSectionId = 0,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
-                                    CalendarId = studentEffortGradeListModel.CalendarId,
+                                    CalendarId = null,
                                     YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
                                     SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
                                     QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
@@ -229,7 +228,7 @@ namespace opensis.data.Repository
                                     CourseId = 0,
                                     CourseSectionId = 0,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
-                                    CalendarId = studentEffortGradeListModel.CalendarId,
+                                    CalendarId = null,
                                     YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
                                     SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
                                     QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
@@ -343,7 +342,7 @@ namespace opensis.data.Repository
 
                 var studentEffortGradeData = new List<StudentEffortGradeMaster>();
 
-                studentEffortGradeData = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.CalendarId == studentEffortGradeListModel.CalendarId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.AcademicYear == studentEffortGradeListModel.AcademicYear).ToList();
+                studentEffortGradeData = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.AcademicYear == studentEffortGradeListModel.AcademicYear).ToList();
 
                 if (studentEffortGradeData!=null && studentEffortGradeData.Any())
                 {
@@ -352,7 +351,7 @@ namespace opensis.data.Repository
                     studentEffortGradeList.SchoolId = studentEffortGradeListModel.SchoolId;
                     //studentEffortGradeList.CourseId = studentEffortGradeListModel.CourseId;
                     //studentEffortGradeList.CourseSectionId = studentEffortGradeListModel.CourseSectionId;
-                    studentEffortGradeList.CalendarId = studentEffortGradeListModel.CalendarId;
+                    //studentEffortGradeList.CalendarId = studentEffortGradeListModel.CalendarId;
                     //studentEffortGradeList.MarkingPeriodId = studentEffortGradeListModel.MarkingPeriodId;
                     studentEffortGradeList.AcademicYear = studentEffortGradeListModel.AcademicYear;
                     studentEffortGradeList.CreatedOrUpdatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy;
