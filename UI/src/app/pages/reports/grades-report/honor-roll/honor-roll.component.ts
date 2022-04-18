@@ -407,6 +407,12 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -627,8 +633,8 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
-
     return;
+    }
   }
 
   // For destroy the isLoading subject.

@@ -443,6 +443,12 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     printContents = document.getElementById('printContactInfo').innerHTML;
     document.getElementById('printContactInfo').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printContactInfo').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -670,6 +676,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     popupWin.document.close();
     document.getElementById('printContactInfo').className = 'hidden';
     return;
+    }
   }
 
 
