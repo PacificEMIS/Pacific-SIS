@@ -66,7 +66,6 @@ namespace opensis.data.Repository
                        // Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault().Id + 1;
                         Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault()!.Id + 1;
                     }
-
                     studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
 
                     int? YrMarkingPeriodId = 0;
