@@ -106,6 +106,7 @@ export class ReportCardsComponent implements OnInit {
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   teacherSearchInput:any;
   isAdmin:boolean;
+  halfLengthOfComment:number = 0;
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -576,6 +577,9 @@ export class ReportCardsComponent implements OnInit {
       this.addAndGenerateReportCard().then((res: any) => {
         this.generatedReportCardData = res;
         if(this.addReportCardPdf?.templateType === 'default') {
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length>0) {
+            this.halfLengthOfComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length/2);
+          }
           setTimeout(() => {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
@@ -846,6 +850,9 @@ export class ReportCardsComponent implements OnInit {
           .comments p { margin-bottom: 3px; padding-right: 20px; }
 
           .inline-block {display: inline-block}
+
+          td.comments table td { vertical-align: top; }
+          
     </style>
         </head>
     <body onload="window.print()">${printContents}</body>

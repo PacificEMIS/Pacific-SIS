@@ -246,7 +246,7 @@
                     <div class="card" *ngIf="currentComponent === 'historicalGradesDetails'">
                         <div class="flex px-6 pt-4 pb-2">
                             <div class="flex-shrink-0 h-24 w-24">
-                                <img src="assets/img/default.jpg" alt="" class="h-24 w-24 rounded-full" />
+                                <img src="{{studentPhoto==null?'assets/img/default.jpg':'data:image/png;base64,'+ studentPhoto}}" alt="" class="h-24 w-24 rounded-full" />
                             </div>
                             <div class="ml-3 flex-grow">
                                 <p class="text-xl font-semibold text-blue cursor-pointer flex flex-wrap pt-2">
@@ -283,7 +283,7 @@
                             </div>
                         </div>
                         <mat-divider></mat-divider>
-                        <vex-historical-grades-details></vex-historical-grades-details>
+                        <vex-historical-grades-details (newItemEvent)="itemHandler($event)"></vex-historical-grades-details>
                     </div>
                     <!-- End Historical Grades Details -->
                 </div>
