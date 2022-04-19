@@ -80,6 +80,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   loading: boolean;
   displayedColumnsHistoricalGrades: string[] = ['studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'phone'];
   histStudentDetails;
+  studentPhoto: string;
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -476,6 +477,10 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
         this.getAllStudent = new StudentListModel();
       }
     });
+  }
+
+  itemHandler(event) {
+    this.studentPhoto = event;
   }
 
   ngOnDestroy() {

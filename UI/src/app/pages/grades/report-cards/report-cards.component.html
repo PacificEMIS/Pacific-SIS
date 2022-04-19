@@ -754,27 +754,27 @@
                 <td class="comments">
                     <table>
                         <h4>{{'forCommentKeysPleaseFollowTheDescriptionBelow'|translate}}:</h4>
-                        <tr>
+                        <tr *ngIf="grade?.courseCommentCategories?.length>0">
                             <td>
-                                <p>1. {{'Works for academic excellence'|translate}}</p>
-                                <p>2. {{'showsAcademicImprovements'|translate}}</p>
+                                <p *ngFor="let x of grade?.courseCommentCategories| slice:0:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let i=index;">{{i+1}}. {{x?.comments}}</p>
+                                <!-- <p>2. {{'showsAcademicImprovements'|translate}}</p>
                                 <p>3. {{'Participates effectively'|translate}}</p>
                                 <p>4. {{'positiveAttitudeAndEffort'|translate}}</p>
                                 <p>5. {{'makesConnectionAndAppliesKnowledge'|translate}}</p>
                                 <p>6. {{'displaysGoodStudySkills'|translate}}</p>
                                 <p>7. {{'worksWellInGroupactivities'|translate}}</p>
                                 <p>8. {{'homeAssignmentsAreGenerallyInferiorToWorkDoneInSchool'|translate}}</p>
-                                <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool'|translate}}</p>
+                                <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool'|translate}}</p> -->
                             </td>
                             <td>
-                                <p>10. {{'appearsDisorganized'|translate}}</p>
-                                <p>11. {{'qualityOfWorkDeclining'|translate}}</p>
+                                <p *ngFor="let y of grade?.courseCommentCategories| slice:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let j=index;">{{j+10}}. {{y?.comments}}</p>
+                                <!-- <p>11. {{'qualityOfWorkDeclining'|translate}}</p>
                                 <p>12. {{'doesNotBringMaterialsFollowDirections'|translate}}</p>
                                 <p>13. {{'inconsistentEffort'|translate}}</p>
                                 <p>14. {{'needsToParticipateMoreInDiscussion'|translate}}</p>
                                 <p>15. {{'difficultyInMakingConnectionsAndApplyingKnowledge'|translate}}</p>
                                 <p>16. {{'hasDifficultyOnExams'|translate}}</p>
-                                <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod'|translate}}</p>
+                                <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod'|translate}}</p> -->
                             </td>
                         </tr>
                     </table>
@@ -783,14 +783,14 @@
             <tr>
                 <td class="comments">
                     <h4>{{'teacherComments'|translate}}:</h4>
-                    <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
+                    <p *ngFor="let comment of grade?.teacherCommentList; let k=index;">{{k+1}}. {{comment}}.</p>
+                    <!-- <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
                         convallis pulvinar nec et dui.</p>
                     <p>3. Ut tempus tristique velit ut eleifend. In hac habitasse platea dictumst. Pellentesque ac
                         mattis ipsum.</p>
                     <p>4. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                     <p>5. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
-                        convallis pulvinar nec et dui.</p>
+                        convallis pulvinar nec et dui.</p> -->
                 </td>
             </tr>
         </table>

@@ -114,6 +114,7 @@ export class HistoricalGradeAddViewModel extends CommonField {
     tenantId: string;
     schoolId: number;
     studentId: number;
+    studentPhoto:string;
     CreatedBy: string;
     constructor(){
         super();
