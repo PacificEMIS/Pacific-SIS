@@ -85,6 +85,7 @@
 		</div>
 
     <div *ngIf="noticeList.length>0" class="card mb-4 px-4 pt-4">
+      <h4 class="text-primary font-semibold pb-3">{{ 'notice' | translate }}</h4>
       <mat-divider class="-mx-6"></mat-divider>
       <mat-accordion>
         <div *ngFor="let x of noticeList; first as isFirst">

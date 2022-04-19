@@ -1795,5 +1795,9 @@
     "courseNameIsRequired": "Le nom du cours est requis",
     "letterGradeIsRequired": "La note de lettre est requise",
     "youAreAboutToDeleteThisComment": "Vous êtes sur le point de supprimer ce commentaire",
-    "absYtdMp": "Abdos Cumul annuel/MP"
+    "absYtdMp": "Abdos Cumul annuel/MP",
+    "standardsGrade": "Qualité des normes",
+    "effortGrade": "Niveau d'effort",
+    "standardsGradeLegend": "Légende des normes de qualité",
+    "effortGradeLegend": "Légende de la note d'effort"
 }

@@ -95,6 +95,8 @@ export class AddReportCardPdf extends CommonField{
     teacherComments: boolean;
     parcentage: boolean;
     gpa: boolean;
+    StandardGrade: boolean;
+    effortGrade: boolean;
     yearToDateDailyAbsences: boolean;
     dailyAbsencesThisMarkingPeriod: boolean;
     otherAttendanceCodeYearToDate: boolean;

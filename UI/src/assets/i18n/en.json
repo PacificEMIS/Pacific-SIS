@@ -1796,5 +1796,9 @@
     "courseNameIsRequired": "Course Name is required",
     "letterGradeIsRequired": "Letter Grade is required",
     "youAreAboutToDeleteThisComment": "You are about to delete this comment",
-    "absYtdMp": "Abs YTD / MP"
+    "absYtdMp": "Abs YTD / MP",
+    "standardsGrade": "Standards Grade",
+    "effortGrade": "Effort Grade",
+    "standardsGradeLegend": "Standards Grade Legend",
+    "effortGradeLegend": "Effort Grade Legend"
 }

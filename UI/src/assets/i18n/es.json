@@ -1797,5 +1797,9 @@
     "courseNameIsRequired": "Se requiere el nombre del curso",
     "letterGradeIsRequired": "Se requiere grado de letra",
     "youAreAboutToDeleteThisComment": "Estás a punto de borrar este comentario",
-    "absYtdMp": "Abdominales Hasta la fecha / MP"
+    "absYtdMp": "Abdominales Hasta la fecha / MP",
+    "standardsGrade": "Grado de estándares",
+    "effortGrade": "Grado de esfuerzo",
+    "standardsGradeLegend": "Leyenda de la calificación de los estándares",
+    "effortGradeLegend": "Leyenda del grado de esfuerzo"
 }
