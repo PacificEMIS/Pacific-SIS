@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import icRemoveCircle from '@iconify/icons-ic/twotone-remove-circle';
 import icEdit from '@iconify/icons-ic/twotone-edit';
 import icDeleteForever from '@iconify/icons-ic/twotone-delete-forever';
@@ -39,7 +39,8 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
   historicalGrade: HistoricalGrade = new HistoricalGrade();
   allCourseTypes = []
-
+  @Output() newItemEvent = new EventEmitter<string>();
+  
   constructor(private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
     private commonService: CommonService,
     private gradeLevelService: GradeLevelService,
@@ -212,6 +213,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
         }
         else {
           this.historicalGradeAddViewModel = res;
+          this.newItemEvent.emit(this.historicalGradeAddViewModel.studentPhoto);
           this.historicalGradeAddViewModel.historicalGradeList.map(item => {
             item.historicalCreditTransfer.map(subItem => {
               subItem.courseCode && subItem.percentage ? subItem.isDefaultRow = false : subItem.isDefaultRow = true;
