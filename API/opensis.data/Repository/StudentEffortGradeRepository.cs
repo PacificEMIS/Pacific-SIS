@@ -384,6 +384,7 @@ namespace opensis.data.Repository
             IQueryable<StudentsByHomeRoomStaffView>? transactionIQ = null;
 
             var studentListByHomeRoomStaffView = new List<StudentsByHomeRoomStaffView>();
+
             try
             {
                 int? YrMarkingPeriodId = 0;
@@ -426,10 +427,6 @@ namespace opensis.data.Repository
                         }
                     }
                 }
-
-                var studentEffortGradeData = new List<StudentEffortGradeMaster>();
-
-                studentEffortGradeData = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.AcademicYear == pageResult.AcademicYear).ToList();
 
                 var staffCourseSection = this.context?.StaffCoursesectionSchedule.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StaffId == pageResult.StaffId && x.IsDropped != true && (pageResult.MarkingPeriodStartDate >= x.DurationStartDate && pageResult.MarkingPeriodStartDate <= x.DurationEndDate) && (pageResult.MarkingPeriodEndDate >= x.DurationStartDate && pageResult.MarkingPeriodEndDate <= x.DurationEndDate) && x.AcademicYear == pageResult.AcademicYear).ToList();
 
