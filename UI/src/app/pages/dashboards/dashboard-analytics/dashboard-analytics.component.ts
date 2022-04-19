@@ -281,7 +281,7 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
           this.studentCount = res.totalStudent !== null ? res.totalStudent : 0;
           this.staffCount = res.totalStaff !== null ? res.totalStaff : 0;
           this.parentCount = res.totalParent !== null ? res.totalParent : 0;
-          if (res.noticeList.length>0) {
+          if (res.noticeList?.length>0) {
             this.noticeList = res.noticeList;
           }
           else {
