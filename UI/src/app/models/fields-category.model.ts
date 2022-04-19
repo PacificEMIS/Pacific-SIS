@@ -6,6 +6,7 @@ export class FieldsCategoryModel {
     tenantId: string;
     schoolId: number;
     categoryId: number;
+    path: string;
     isSystemCategory: boolean;
     search: boolean;
     title: string;

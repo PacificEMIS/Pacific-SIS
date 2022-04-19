@@ -48,6 +48,9 @@ export class StudentService {
   private categoryId = new BehaviorSubject(null);
   categoryIdSelected = this.categoryId.asObservable();
 
+  private enrollmentInfo = new BehaviorSubject(false);
+  enrollmentInfoSelected = this.enrollmentInfo.asObservable();
+
   private categoryTitle = new BehaviorSubject(null);
   selectedCatgoryTitle = this.categoryTitle.asObservable();
 
@@ -559,6 +562,10 @@ export class StudentService {
 
   setCategoryId(data) {
     this.categoryId.next(data);
+  }
+
+  setIsEnrollmentInfo(data: boolean) {
+    this.enrollmentInfo.next(data);
   }
 
   setCategoryTitle(title: string){

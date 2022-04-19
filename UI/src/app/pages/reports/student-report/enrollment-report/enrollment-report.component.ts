@@ -50,6 +50,14 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { ExcelService } from "../../../../services/excel.service";
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
+import { RollBasedAccessService } from 'src/app/services/roll-based-access.service';
+import { ImageCropperService } from 'src/app/services/image-cropper.service';
+import { StudentService } from 'src/app/services/student.service';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
+import { ModuleIdentifier } from 'src/app/enums/module-identifier.enum';
+import { SchoolCreate } from 'src/app/enums/school-create.enum';
+import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'vex-enrollment-report',
@@ -79,6 +87,8 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   enrollmentData: any;
   loading: boolean;
   showAdvanceSearchPanel: boolean = false;
+  moduleIdentifier = ModuleIdentifier;
+  createMode = SchoolCreate;
   searchValue;
   toggleValues;
   gradeLevelList = [];
@@ -126,6 +136,11 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     private gradeLevelService: GradeLevelService,
     private excelService: ExcelService,
     private commonFunction: SharedFunction,
+    private rollBasedAccessService: RollBasedAccessService,
+    private imageCropperService: ImageCropperService,
+    private studentService: StudentService,
+    private pageRolePermissions: PageRolesPermission,
+    private router: Router
   ) {
     this.defaultValuesService.setReportCompoentTitle.next("Student Enrollment Report")
     // translateService.use("en");
@@ -184,6 +199,51 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
 
   get visibleColumns() {
     return this.columns.filter(column => column.visible).map(column => column.property);
+  }
+
+  viewStudentDetails(element) {
+    this.imageCropperService.enableUpload({ module: this.moduleIdentifier.STUDENT, upload: true, mode: this.createMode.VIEW });
+    this.studentService.setStudentId(element.studentId);
+    this.defaultValuesService.setSchoolID(element.schoolId, true);
+    // this.defaultValuesService.setAcademicYear(element.studentEnrollment[0]?.academicYear, true);
+    this.getPermissionForStudent();
+  }
+
+  getPermissionForStudent() {
+    let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
+    this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
+      if (res._failure) {
+
+      } else {
+        let permittedDetails = this.pageRolePermissions.getPermittedSubCategories('/school/students', res);
+        if (permittedDetails.length) {
+          let found = false;
+          let index = 0;
+          for (let i = 0; i < permittedDetails.length; i++) {
+            if (permittedDetails[i].path === "/school/students/student-enrollmentinfo") {
+              found = true;
+              index = i;
+              break;
+            }
+          }
+          if (found) {
+            this.studentService.setCategoryId(found ? index : 0);
+            this.studentService.setIsEnrollmentInfo(found ? true : false);
+            this.studentService.setCategoryTitle(permittedDetails[found ? index : 0].title);
+            this.router.navigate([permittedDetails[found ? index : 0].path], { state: res });
+          } else {
+            this.snackbar.open('Student did not have permission to view enrollment details.', '', {
+              duration: 10000
+            });
+          }
+        } else {
+          this.defaultValuesService.setSchoolID(undefined);
+          this.snackbar.open('Student did not have permission to view details.', '', {
+            duration: 10000
+          });
+        }
+      }
+    });
   }
 
   getAllGradeLevelList() {

@@ -100,6 +100,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   studentCriticalInfo: string;
   otherTabs: OtherStudentTabs = new OtherStudentTabs();
   currentRolePermission;
+  isEnrollmentInfo: boolean;
 
   constructor(
     private studentService: StudentService,
@@ -126,6 +127,11 @@ export class AddStudentComponent implements OnInit, OnDestroy {
     //   .subscribe((res) => {
     //     this.studentService.setStudentImage(res[1]);
     //   });
+
+    this.studentService.enrollmentInfoSelected.pipe(takeUntil(this.destroySubject$)).subscribe(res => {
+      this.isEnrollmentInfo = res ? true : false;
+    });
+
     this.studentService.selectedCatgoryTitle
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: string) => {
@@ -347,7 +353,20 @@ export class AddStudentComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.currentCategory = filteredCategory[0]?.categoryId;
+    if (this.isEnrollmentInfo) {
+      let found = false;
+      let index = 0;
+      for (let i = 0; i < filteredCategory.length; i++) {
+        if (filteredCategory[i].path === "/school/students/student-enrollmentinfo") {
+          found = true;
+          index = i;
+          break;
+        }
+      }
+      this.currentCategory = filteredCategory[found ? index : 0]?.categoryId;
+    } else {
+      this.currentCategory = filteredCategory[0]?.categoryId;
+    }
     return filteredCategory;
   }
 
@@ -424,6 +443,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.defaultValuesService.setSchoolID(undefined);
     this.studentService.setStudentDetails(undefined);
+    this.studentService.setIsEnrollmentInfo(false);
     this.studentService.setStudentImage(null);
     this.studentService.setStudentId(null);
     this.studentService.setStudentFirstView(true);
