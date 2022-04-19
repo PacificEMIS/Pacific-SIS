@@ -28,7 +28,7 @@ namespace opensis.data.ViewModels.StudentEffortGrade
         {
             public List<StudentEffortGradeMaster>? studentEffortGradeList { get; set; }
             public Guid? TenantId { get; set; }
-            public int? SchoolId { get; set; }
+            public int SchoolId { get; set; }
             public int? StudentId { get; set; }
             public Guid? StudentGuid { get; set; }
             public int? GradeId { get; set; }
