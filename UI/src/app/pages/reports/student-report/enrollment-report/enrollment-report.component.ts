@@ -210,40 +210,34 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   }
 
   getPermissionForStudent() {
-    let rolePermissionListView: RolePermissionListViewModel = new RolePermissionListViewModel();
-    this.rollBasedAccessService.getAllRolePermission(rolePermissionListView).subscribe((res: RolePermissionListViewModel) => {
-      if (res._failure) {
-
-      } else {
-        let permittedDetails = this.pageRolePermissions.getPermittedSubCategories('/school/students', res);
-        if (permittedDetails.length) {
-          let found = false;
-          let index = 0;
-          for (let i = 0; i < permittedDetails.length; i++) {
-            if (permittedDetails[i].path === "/school/students/student-enrollmentinfo") {
-              found = true;
-              index = i;
-              break;
-            }
-          }
-          if (found) {
-            this.studentService.setCategoryId(found ? index : 0);
-            this.studentService.setIsEnrollmentInfo(found ? true : false);
-            this.studentService.setCategoryTitle(permittedDetails[found ? index : 0].title);
-            this.router.navigate([permittedDetails[found ? index : 0].path], { state: res });
-          } else {
-            this.snackbar.open('Student did not have permission to view enrollment details.', '', {
-              duration: 10000
-            });
-          }
-        } else {
-          this.defaultValuesService.setSchoolID(undefined);
-          this.snackbar.open('Student did not have permission to view details.', '', {
-            duration: 10000
-          });
+    const permissionList = this.defaultValuesService.getPermissionList();
+    let permittedDetails = this.pageRolePermissions.getPermittedSubCategories('/school/students', permissionList);
+    if (permittedDetails.length) {
+      let found = false;
+      let index = 0;
+      for (let i = 0; i < permittedDetails.length; i++) {
+        if (permittedDetails[i].path === "/school/students/student-enrollmentinfo") {
+          found = true;
+          index = i;
+          break;
         }
       }
-    });
+      if (found) {
+        this.studentService.setCategoryId(found ? index : 0);
+        this.studentService.setIsEnrollmentInfo(found ? true : false);
+        this.studentService.setCategoryTitle(permittedDetails[found ? index : 0].title);
+        this.router.navigate([permittedDetails[found ? index : 0].path], { state: permissionList });
+      } else {
+        this.snackbar.open('Student did not have permission to view enrollment details.', '', {
+          duration: 10000
+        });
+      }
+    } else {
+      this.defaultValuesService.setSchoolID(undefined);
+      this.snackbar.open('Student did not have permission to view details.', '', {
+        duration: 10000
+      });
+    }
   }
 
   getAllGradeLevelList() {
