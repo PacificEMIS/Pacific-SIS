@@ -24,10 +24,11 @@ namespace opensis.data.ViewModels.StudentEffortGrade
         public decimal? AcademicYear { get; set; }
         public string? CreatedOrUpdatedBy { get; set; }
 
-        public class StudentsByHomeRoomStaffView
+        public class StudentsByHomeRoomStaffView : StudentEffortGradeListModel
         {
+            public List<StudentEffortGradeMaster>? studentEffortGradeList { get; set; }
             public Guid? TenantId { get; set; }
-            public int? SchoolId { get; set; }
+            public int SchoolId { get; set; }
             public int? StudentId { get; set; }
             public Guid? StudentGuid { get; set; }
             public int? GradeId { get; set; }

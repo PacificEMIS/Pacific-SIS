@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.StudentEffortGrade.Interfaces;
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentEffortGrade;
 using System;
 using System.Collections.Generic;

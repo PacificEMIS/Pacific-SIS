@@ -384,8 +384,50 @@ namespace opensis.data.Repository
             IQueryable<StudentsByHomeRoomStaffView>? transactionIQ = null;
 
             var studentListByHomeRoomStaffView = new List<StudentsByHomeRoomStaffView>();
+
             try
             {
+                int? YrMarkingPeriodId = 0;
+                int? SmstrMarkingPeriodId = 0;
+                int? QtrMarkingPeriodId = 0;
+                int? PrgrsprdMarkingPeriodId = 0;
+
+                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                if (progressPeriodsData != null)
+                {
+                    PrgrsprdMarkingPeriodId = progressPeriodsData.MarkingPeriodId;
+                }
+                else
+                {
+                    var quartersData = this.context?.Quarters.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                    if (quartersData != null)
+                    {
+                        QtrMarkingPeriodId = quartersData.MarkingPeriodId;
+
+                    }
+                    else
+                    {
+                        var semestersData = this.context?.Semesters.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                        if (semestersData != null)
+                        {
+                            SmstrMarkingPeriodId = semestersData.MarkingPeriodId;
+                        }
+                        else
+                        {
+                            var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                            if (yearsData != null)
+                            {
+                                YrMarkingPeriodId = yearsData.MarkingPeriodId;
+
+                            }
+                        }
+                    }
+                }
+
                 var staffCourseSection = this.context?.StaffCoursesectionSchedule.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StaffId == pageResult.StaffId && x.IsDropped != true && (pageResult.MarkingPeriodStartDate >= x.DurationStartDate && pageResult.MarkingPeriodStartDate <= x.DurationEndDate) && (pageResult.MarkingPeriodEndDate >= x.DurationStartDate && pageResult.MarkingPeriodEndDate <= x.DurationEndDate) && x.AcademicYear == pageResult.AcademicYear).ToList();
 
                 var staffcsids = staffCourseSection?.Select(x => x.CourseSectionId).ToList();
@@ -413,6 +455,8 @@ namespace opensis.data.Repository
                             CourseSectionId = ssv.scs.CourseSectionId,
                             MiddleName = ssv.sm.MiddleName,
                             IsDropped = ssv.scs.IsDropped,
+                            studentEffortGradeList = this.context?.StudentEffortGradeMaster.Include(x => x.StudentEffortGradeDetail.OrderBy(x => x.Id)).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.StudentId == ssv.sm.StudentId && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && e.AcademicYear == pageResult.AcademicYear).ToList(),
+
                         }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                     }
 
@@ -452,6 +496,7 @@ namespace opensis.data.Repository
 
                         studentListByHomeRoomStaff.studentsByHomeRoomStaffView = transactionIQ!.ToList() ?? new();
                         studentListByHomeRoomStaff._failure = false;
+                        studentListByHomeRoomStaff.studentsByHomeRoomStaffView.ForEach(x => x.studentEffortGradeList.ForEach(y => { y.ProgressPeriod = null; y.Quarters = null; y.Semesters = null; y.SchoolYears = null; }));
                     }
                     else
                     {
