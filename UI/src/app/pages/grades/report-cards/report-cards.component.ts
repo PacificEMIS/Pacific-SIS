@@ -106,7 +106,10 @@ export class ReportCardsComponent implements OnInit {
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   teacherSearchInput:any;
   isAdmin:boolean;
+  public selection: string;
   halfLengthOfComment:number = 0;
+  halfLengthOfStandardGradeComment:number = 0;
+  halfLengthOfEffortGradeComment:number = 0;
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -130,6 +133,8 @@ export class ReportCardsComponent implements OnInit {
       this.isAdmin = false
     else
       this.isAdmin = true
+      
+      this.selection = 'standardGrade';
   }
 
 
@@ -558,6 +563,13 @@ export class ReportCardsComponent implements OnInit {
 
   addAndGenerateReportCard() {
     return new Promise((resolve, reject) => {
+      if(this.selection == 'standardGrade') {
+        this.addReportCardPdf.StandardGrade = true;
+        this.addReportCardPdf.effortGrade = false;
+      } else {
+        this.addReportCardPdf.StandardGrade = false;
+        this.addReportCardPdf.effortGrade = true;
+      }
       this.addReportCardPdf.markingPeriods = this.markingPeriods.toString();
       this.reportCardService.getReportCardForStudents(this.addReportCardPdf).subscribe((res) => {
         if (res._failure) {
@@ -579,6 +591,12 @@ export class ReportCardsComponent implements OnInit {
         if(this.addReportCardPdf?.templateType === 'default') {
           if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length>0) {
             this.halfLengthOfComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length/2);
+          }
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length>0) {
+            this.halfLengthOfStandardGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length/2);
+          }
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length>0) {
+            this.halfLengthOfEffortGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length/2);
           }
           setTimeout(() => {
             this.generatePdfForDefault();
