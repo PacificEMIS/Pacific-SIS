@@ -7,12 +7,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DefaultValuesService } from '../../../common/default-values.service';
 import { CommonService } from '../../../services/common.service';
 import { RolloverViewModel } from '../../../models/roll-over.model';
-import { TableProgressPeriod, TableQuarter, TableSchoolSemester } from '../../../models/marking-period.model';
+import { GetAcademicYearListModel, TableProgressPeriod, TableQuarter, TableSchoolSemester } from '../../../models/marking-period.model';
 import { RollOverService } from '../../../services/roll-over.service';
 import { NgForm } from '@angular/forms';
 import { SharedFunction } from '../../shared/shared-function';
 import { LoaderService } from '../../../services/loader.service';
 import * as moment from 'moment';
+import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 
 @Component({
   selector: 'vex-rollover-processing',
@@ -25,7 +26,9 @@ export class RolloverComponent implements OnInit {
   loading: boolean;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
-  minSchoolBeginDateVal: Date;
+  minSchoolBeginDateVal: Date;  
+  getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
+  showRollOver: boolean = false;
   finalGradingMarkingPeriodList: FinalGradingMarkingPeriodList = new FinalGradingMarkingPeriodList();
   rolloverViewModel: RolloverViewModel = new RolloverViewModel();
   constructor(public translateService: TranslateService,
@@ -34,6 +37,7 @@ export class RolloverComponent implements OnInit {
     private commonFunction: SharedFunction,
     public defaultValuesService: DefaultValuesService,
     private rollOverService: RollOverService,
+    private markingPeriodService: MarkingPeriodService,
     private loaderService: LoaderService,
     private commonService: CommonService) {
     this.loaderService.isLoading.subscribe((v) => {
@@ -42,8 +46,28 @@ export class RolloverComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.populateFinalGrading();
+    this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
     this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(1, 'days').toDate();
+  }
+
+  checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
+    let maxArr = []
+    this.getAcademicYears.schoolId = this.defaultValuesService.getSchoolID();
+    this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res:any) => {
+    if(res._failure) { } 
+    else
+      res.academicYears.forEach(element => {
+        maxArr.push(element.academyYear)
+      });
+    let maxYear = Math.max(...maxArr)
+    if(selectedYear = maxYear || selectedYear < maxYear)
+      res.academicYears.forEach(value => {
+        if(maxYear==value.academyYear) 
+          this.showRollOver = !moment(new Date()).isBetween(value.startDate, value.endDate);
+        })
+    if(this.showRollOver)
+      this.populateFinalGrading();
+    })
   }
 
   getMinDateValue() {
