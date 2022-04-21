@@ -4,7 +4,12 @@ export class StudentEffortGradeMaster {
     public tenantId: string;
     public schoolId: number;
     public studentId: number;
-    public studentFinalGradeSrlno: number;
+    public studentEffortGradeSrlno: number;
+    public firstGivenName: string;
+    public middleName: string;
+    public lastFamilyName: string;
+    public studentInternalId: string;
+    public gradeLevel: string;
     public courseId: number;
     public courseSectionId: number;
     public academicYear: number;
@@ -38,4 +43,19 @@ export class StudentEffortGradeListModel extends CommonField {
     markingPeriodId: string;
     academicYear: number;
     createdOrUpdatedBy: string;
+}
+
+export class GetStudentListByHomeRoomStaffModel extends CommonField {
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    profilePhoto: boolean;
+    IncludeInactive: boolean
+    staffId: number;
+    academicYear: number;
+    createdOrUpdatedBy: string;
+    studentsByHomeRoomStaffView: StudentEffortGradeMaster[];
+    constructor() {
+        super();
+        this.IncludeInactive = false;
+    }
 }

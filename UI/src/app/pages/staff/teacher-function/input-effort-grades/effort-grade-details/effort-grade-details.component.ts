@@ -23,18 +23,14 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from '../../../../../common/default-values.service';
 import { EffortGradeLibraryCategoryListView, GetAllEffortGradeScaleListModel } from '../../../../../models/grades.model';
-import { GetMarkingPeriodTitleListModel } from '../../../../../models/marking-period.model';
-import { StudentEffortGradeListModel, StudentEffortGradeMaster } from '../../../../../models/student-effort-grade.model';
-import { ScheduleStudentForView, ScheduleStudentListViewModel } from '../../../../../models/student-schedule.model';
-import { AllScheduledCourseSectionForStaffModel } from '../../../../../models/teacher-schedule.model';
-import { CourseManagerService } from '../../../../../services/course-manager.service';
+import { GetStudentListByHomeRoomStaffModel, StudentEffortGradeMaster } from '../../../../../models/student-effort-grade.model';
 import { EffotrGradeService } from '../../../../../services/effort-grade.service';
 import { FinalGradeService } from '../../../../../services/final-grade.service';
 import { GradesService } from '../../../../../services/grades.service';
@@ -46,6 +42,8 @@ import { fadeInRight400ms } from '../../../../../../@vex/animations/fade-in-righ
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
 import { CommonService } from 'src/app/services/common.service';
+import { Subject } from 'rxjs';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 
 @Component({
@@ -58,43 +56,39 @@ import { CommonService } from 'src/app/services/common.service';
     fadeInUp400ms
   ]
 })
-export class EffortGradeDetailsComponent implements OnInit {
+export class EffortGradeDetailsComponent implements OnInit, OnDestroy {
   pageStatus = "Grade Details";
   staffDetails;
-  showMessage="pleaseSelectCourseSectionAndMarkingPeriodForEffortGrade";
-  showStudentList: boolean = true;
-  courseSectionData;
-  selectedStudent: number = 0;
+  showMessage;
+  showStudentList: boolean;
+  selectedStudent: number;
+  viewDetailsModal: number = 0;
   loading: boolean = false;
-  totalCount: number = 0;
+  destroySubject$: Subject<void> = new Subject();
+  totalCount: number;
   courseSectionId: number;
   showEffort: boolean = false;
-  markingPeriodList = [];
   effortCategoriesList = [];
   effortGradeDetailViewList = [];
   effortGradeScaleModelList = [];
-  studentMasterList: ScheduleStudentForView[];
+  studentMasterList: StudentEffortGradeMaster[];
+  profiles = ProfilesTypes;
   getEffortGradeScaleList: GetAllEffortGradeScaleListModel = new GetAllEffortGradeScaleListModel();
   effortGradeLibraryCategoryListView: EffortGradeLibraryCategoryListView = new EffortGradeLibraryCategoryListView();
-  allScheduledCourseSectionBasedOnTeacher: AllScheduledCourseSectionForStaffModel = new AllScheduledCourseSectionForStaffModel();
-  studentEffortGradeListModel: StudentEffortGradeListModel = new StudentEffortGradeListModel();
-  scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
-  getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
+  getStudentListByHomeRoomStaffModel: GetStudentListByHomeRoomStaffModel = new GetStudentListByHomeRoomStaffModel();
+  addUpdateStudentEffortGradeModel: GetStudentListByHomeRoomStaffModel = new GetStudentListByHomeRoomStaffModel();
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
-    private teacherReassignmentService: TeacherScheduleService,
     private snackbar: MatSnackBar,
-    private studentScheduleService: StudentScheduleService,
-    private markingPeriodService: MarkingPeriodService,
     private router: Router,
     public defaultValuesService: DefaultValuesService,
     private loaderService: LoaderService,
     private gradesService: GradesService,
-    private effotrGradeService: EffotrGradeService,
     private commonService: CommonService,
-    ) {
-    this.loaderService.isLoading.subscribe((val) => {
+    private effotrGradeService: EffotrGradeService
+  ) {
+    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
     //translateService.use('en');
@@ -102,185 +96,34 @@ export class EffortGradeDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.allScheduledCourseSectionBasedOnTeacher.staffId = this.staffDetails.staffId;
-    if (this.allScheduledCourseSectionBasedOnTeacher.staffId) {
-
+    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher) {
+      this.getStudentListByHomeRoomStaffModel.staffId = parseInt(this.defaultValuesService.getUserId());
+    } else {
+      this.getStudentListByHomeRoomStaffModel.staffId = this.staffDetails.staffId;
     }
-    else {
+    if (!this.getStudentListByHomeRoomStaffModel.staffId && this.defaultValuesService.getUserMembershipType() !== this.profiles.HomeroomTeacher) {
       this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-effort-grade']);
     }
-    this.getAllMarkingPeriodList();
     this.getAllEffortGradeLlibraryCategoryList();
-    
   }
 
- 
-
-  getAllMarkingPeriodList() {
-    this.getMarkingPeriodTitleListModel.schoolId = this.defaultValuesService.getSchoolID();
-    this.getMarkingPeriodTitleListModel.academicYear = this.defaultValuesService.getAcademicYear();
-    this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
-     if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
-        if(!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView){
-          this.snackbar.open(data._message, '', {
-            duration: 1000
-          }); 
-        }
-      } else {
-        this.getMarkingPeriodTitleListModel.getMarkingPeriodView = data.getMarkingPeriodView;
-        this.getAllScheduledCourseSectionBasedOnTeacher();
-      }
-    });
-  }
-
-  getAllScheduledCourseSectionBasedOnTeacher() {
-    //this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = null;
-    this.teacherReassignmentService.getAllScheduledCourseSectionForStaff(this.allScheduledCourseSectionBasedOnTeacher).pipe(
-      map((res) => {
-        res._userName = this.defaultValuesService.getUserName();
-        return res;
-      })
-    ).subscribe((res) => {
-      if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = [];
-          if (!res.courseSectionViewList) {
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
-        } else {
-          this.allScheduledCourseSectionBasedOnTeacher = res;
-          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.gradeScaleType !== 'Ungraded');
-
-        }
-      }
-      else {
-        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-
-      }
-    })
-  }
-
-  selectedCourseSection(courseSection) {
-    this.courseSectionId = courseSection;
-    let courseSectionDetails = this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter(x => x.courseSectionId === +this.courseSectionId);
-    this.courseSectionData = this.findMarkingPeriodTitleById(courseSectionDetails[0]);
-    this.markingPeriodList = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId);
-    this.studentEffortGradeListModel.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView.filter(x => x.value === this.courseSectionData.markingPeriodId)[0].value;
-    this.studentEffortGradeListModel.schoolId = this.defaultValuesService.getSchoolID();
-    this.studentEffortGradeListModel.tenantId = this.defaultValuesService.getTenantID();
-    this.studentEffortGradeListModel.courseId = courseSectionDetails[0].courseId;
-    this.studentEffortGradeListModel.courseSectionId = courseSectionDetails[0].courseSectionId;
-    this.studentEffortGradeListModel.calendarId = courseSectionDetails[0].calendarId;
-    this.effotrGradeService.getAllStudentEffortGradeList(this.studentEffortGradeListModel).subscribe((res) => {
-      if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.studentEffortGradeListModel.courseId = courseSectionDetails[0].courseId;
-          this.studentEffortGradeListModel.calendarId = courseSectionDetails[0].calendarId;
-          this.searchScheduledStudentForGroupDrop(courseSectionDetails[0].courseSectionId);
-        }
-        else {
-          this.scheduleStudentListViewModel.courseSectionIds = [courseSectionDetails[0].courseSectionId];
-          this.scheduleStudentListViewModel.profilePhoto = true;
-          this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
-            if (res) {
-            if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-                this.showMessage = 'noRecordFound';
-              } else {
-                this.studentMasterList = res.scheduleStudentForView;
-                this.totalCount = this.studentMasterList.length;
-                if (this.studentMasterList.length === 0) {
-                  this.showMessage = 'noRecordFound';
-                }
-              }
-            }
-          });
-          this.studentEffortGradeListModel = res;
-        }
-      }
-      else {
-        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-
-
-    });
-  }
-
-  goToAddEffortGrade(){
+  goToAddEffortGrade() {
     this.router.navigate(['/school', 'settings', 'grade-settings']);
     this.defaultValuesService.setPageId('Effort Grade Setup');
   }
 
-  findMarkingPeriodTitleById(courseDetails) {
-    if (courseDetails.yrMarkingPeriodId) {
-      courseDetails.markingPeriodId = '0_' + courseDetails.yrMarkingPeriodId;
-    } else if (courseDetails.smstrMarkingPeriodId) {
-      courseDetails.markingPeriodId = '1_' + courseDetails.smstrMarkingPeriodId;
-    } else if (courseDetails.qtrMarkingPeriodId) {
-      courseDetails.markingPeriodId = '2_' + courseDetails.qtrMarkingPeriodId;
-    } else if (courseDetails.prgrsprdMarkingPeriodId) {
-      courseDetails.markingPeriodId = '3_' + courseDetails.prgrsprdMarkingPeriodId;
-    }
-    else {
-      courseDetails.markingPeriodId = this.getMarkingPeriodTitleListModel.getMarkingPeriodView[0].value;
-    }
-    return courseDetails;
-
-  }
-
-  searchScheduledStudentForGroupDrop(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
-    this.scheduleStudentListViewModel.profilePhoto = true;
-    this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
-      if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.showMessage = 'noRecordFound';
-        } else {
-          this.studentMasterList = res.scheduleStudentForView;
-          this.totalCount = this.studentMasterList.length;
-          if (this.studentMasterList.length === 0) {
-            this.showMessage = 'noRecordFound';
-          }
-          this.studentEffortGradeListModel.studentEffortGradeList = [new StudentEffortGradeMaster()];
-          this.studentMasterList.map((item, i) => {
-            this.initializeDefaultValues(item, i);
-            this.studentEffortGradeListModel.studentEffortGradeList.push(new StudentEffortGradeMaster());
-          });
-          this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
-          this.studentEffortGradeListModel.studentEffortGradeList.pop();
-        }
-      }
-      else {
-        this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-    });
+  closeDetailsModal() {
+    this.viewDetailsModal = 0;
   }
 
   getAllEffortGradeLlibraryCategoryList() {
     this.gradesService.getAllEffortGradeLlibraryCategoryList(this.effortGradeLibraryCategoryListView).subscribe(
       (res: EffortGradeLibraryCategoryListView) => {
-        if (typeof (res) == 'undefined') {
-          this.snackbar.open('' + this.defaultValuesService.getHttpError(), '', {
-            duration: 10000
-          });
-        }
-        else {
-        if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-            this.effortCategoriesList = null
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.effortCategoriesList = null;
+            this.showStudentList = false;
             if (!res.effortGradeLibraryCategoryList) {
               this.snackbar.open(res._message, '', {
                 duration: 10000
@@ -288,26 +131,39 @@ export class EffortGradeDetailsComponent implements OnInit {
             }
           }
           else {
-            this.effortCategoriesList = res.effortGradeLibraryCategoryList;
-            this.getAllEffortGradeScale();
-            for (let category of this.effortCategoriesList) {
-              for (let item of category.effortGradeLibraryCategoryItem) {
-                this.effortGradeDetailViewList.push({ categoryName: category.categoryName, effortCategoryId: item.effortCategoryId, effortItemTitle: item.effortItemTitle, effortItemId: item.effortItemId });
+            if (!res.effortGradeLibraryCategoryList.every(item => item.effortGradeLibraryCategoryItem.length === 0)) {
+              this.effortCategoriesList = res.effortGradeLibraryCategoryList.filter(item => item.effortGradeLibraryCategoryItem.length > 0);
+              for (let category of this.effortCategoriesList) {
+                for (let item of category.effortGradeLibraryCategoryItem) {
+                  this.effortGradeDetailViewList.push({ categoryName: category.categoryName, effortCategoryId: item.effortCategoryId, effortItemTitle: item.effortItemTitle, effortItemId: item.effortItemId });
+                }
               }
+              this.getAllEffortGradeScale();
+            } else {
+              this.showStudentList = false;
             }
           }
+        } else {
+          this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+            duration: 10000
+          });
         }
       }
     );
   }
 
-  addEffortItems(id) {
+  viewDetails(id) {
     this.selectedStudent = id;
     this.showEffort = true;
+    if (this.viewDetailsModal === 0) {
+      this.viewDetailsModal = 1;
+    } else {
+      this.viewDetailsModal = 0;
+    }
   }
 
   selectCategory(item, index, value) {
-    this.studentEffortGradeListModel.studentEffortGradeList[this.selectedStudent].studentEffortGradeDetail[index] = { effortCategoryId: item.effortCategoryId, effortItemId: item.effortItemId, effortGradeScaleId: value.value };
+    this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[this.selectedStudent].studentEffortGradeDetail[index] = { effortCategoryId: item.effortCategoryId, effortItemId: item.effortItemId, effortGradeScaleId: JSON.parse(value.target.value) };
   }
 
   getAllEffortGradeScale() {
@@ -318,9 +174,10 @@ export class EffortGradeDetailsComponent implements OnInit {
 
     this.gradesService.getAllEffortGradeScaleList(this.getEffortGradeScaleList).subscribe(data => {
       if (data) {
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.effortGradeScaleModelList = null;
+          this.showStudentList = false;
           if (!data.effortGradeScaleList) {
             this.snackbar.open(data._message, '', {
               duration: 10000
@@ -328,61 +185,104 @@ export class EffortGradeDetailsComponent implements OnInit {
           }
         } else {
           this.effortGradeScaleModelList = data.effortGradeScaleList;
-
-          if(this.effortGradeScaleModelList.length>0 && this.effortCategoriesList.length>0){
-              this.showStudentList= false;
+          if (this.effortGradeScaleModelList.length > 0 && this.effortCategoriesList.length > 0) {
+            this.showStudentList = true;
+            this.getStudentListByHomeRoomStaff();
           }
         }
       }
       else {
-        this.snackbar.open(data._message, '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
     });
   }
 
+  getStudentListByHomeRoomStaff() {
+    this.effotrGradeService.getStudentListByHomeRoomStaff(this.getStudentListByHomeRoomStaffModel).subscribe(res => {
+      if (res) {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          this.studentMasterList = [];
+          this.totalCount = null;
+          this.showMessage = 'noStudentsFound';
+        } else {
+          this.totalCount = res.studentsByHomeRoomStaffView.length;
+          if (!this.totalCount) {
+            this.showMessage = 'noStudentsFound';
+            this.studentMasterList = [];
+          } else {
+            this.addUpdateStudentEffortGradeModel = res;
+            this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView.map((item, index) => {
+              if (item.studentEffortGradeDetail.length) {
+                this.initializeValues(item, index);
+              } else {
+                this.initializeDefaultValues(item, index);
+              }
+            });
+            this.studentMasterList = res.studentsByHomeRoomStaffView;
+          }
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
 
-  initializeDefaultValues(item, i) {
-
+  // If student has already Grade
+  initializeValues(data, i) {
+    const studentEffortGradeDetail = data.studentEffortGradeDetail;
+    this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[i].studentEffortGradeDetail = [];
     for (let category of this.effortGradeDetailViewList) {
-      this.studentEffortGradeListModel.studentEffortGradeList[i].studentEffortGradeDetail.push({ effortCategoryId: null, effortItemId: null, effortGradeScaleId: null });
+      this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[i].studentEffortGradeDetail.push({ effortCategoryId: category.effortCategoryId, effortItemId: category.effortItemId, effortGradeScaleId: null });
     }
-    this.studentEffortGradeListModel.studentEffortGradeList[i].studentId = item.studentId;
-    this.studentEffortGradeListModel.studentEffortGradeList[i].studentFinalGradeSrlno = 0;
-    this.studentEffortGradeListModel.studentEffortGradeList[i].teacherComment = null;
 
+    studentEffortGradeDetail.map((item) => {
+      this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[i].studentEffortGradeDetail.map((effortItem, index) => {
+        if ((item.effortCategoryId === effortItem.effortCategoryId) && (item.effortItemId === effortItem.effortItemId)) {
+          this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[i].studentEffortGradeDetail[index] = item;
+        }
+      });
+    });
+  }
+
+  // If student has not any grade
+  initializeDefaultValues(data, i) {
+    for (let category of this.effortGradeDetailViewList) {
+      this.addUpdateStudentEffortGradeModel.studentsByHomeRoomStaffView[i].studentEffortGradeDetail.push({ effortCategoryId: category.effortCategoryId, effortItemId: category.effortItemId, effortGradeScaleId: null });
+    }
   }
 
   submitEffortGrade() {
-    delete this.studentEffortGradeListModel.academicYear;
-    this.effotrGradeService.addUpdateStudentEffortGrade(this.studentEffortGradeListModel).subscribe(data => {
+    this.effotrGradeService.addUpdateStudentEffortGrade(this.addUpdateStudentEffortGradeModel).subscribe(data => {
       if (data) {
-
-       if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
-          if (data.studentEffortGradeList == null) {
-
-            this.snackbar.open(data._message, '', {
-              duration: 10000
-            });
-          } else {
-
-          }
-        } else {
-          this.effortGradeScaleModelList = data.studentEffortGradeList;
+        if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+        } else {
+          this.snackbar.open(data._message, '', {
+            duration: 10000
+          });
+          this.getStudentListByHomeRoomStaff();
         }
       }
       else {
-        this.snackbar.open(data._message, '', {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
           duration: 10000
         });
       }
-
     });
+  }
+
+  // For destroy the isLoading subject.
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
   }
 
 }

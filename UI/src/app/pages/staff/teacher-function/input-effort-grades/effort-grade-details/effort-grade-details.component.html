@@ -7,8 +7,8 @@
     </vex-page-layout-header>
 
     <vex-page-layout-content class="-mt-6"> -->
-        <div class="card">
-            <div class="flex justify-between items-center px-4">
+        <div class="card" [ngClass]="viewDetailsModal===1?'showing-details':''">
+            <div class="flex justify-between items-center px-4" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.HomeroomTeacher">
                 <div class="py-4">
                     <a [routerLink]="['/school', 'staff', 'teacher-functions', 'input-effort-grade']"
                         class="cursor-pointer">
@@ -17,57 +17,34 @@
                     <span class="font-medium text-lg">{{staffDetails.staffFullName}}</span>
                 </div>
                 <div>
-                    <mat-slide-toggle color="primary">{{ "includeInactiveStudents" | translate }}
+                    <mat-slide-toggle [(ngModel)]="getStudentListByHomeRoomStaffModel.IncludeInactive" (change)="getStudentListByHomeRoomStaff()" color="primary">{{ "includeInactiveStudents" | translate }}
                     </mat-slide-toggle>
                 </div>
             </div>
+            <div class="p-4" *ngIf="defaultValuesService.getUserMembershipType() === profiles.HomeroomTeacher">
+                <mat-slide-toggle [(ngModel)]="getStudentListByHomeRoomStaffModel.IncludeInactive"
+                    (change)="getStudentListByHomeRoomStaff()" color="primary">{{ "includeInactiveStudents" | translate }}
+                </mat-slide-toggle>
+            </div>
             <mat-divider class=""></mat-divider>
-            <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-4 row-gap-2 mt-4 px-6">
-                <li>
-                    <mat-form-field class="w-full" appearance="outline" color="primary">
-                        <mat-label>{{ "courseSection" | translate }}</mat-label>
-                        <mat-select (selectionChange)="selectedCourseSection($event.value)" name="courseSection"
-                            [(ngModel)]="studentEffortGradeListModel.courseSectionId">
-                            <mat-option></mat-option>
-                            <mat-option
-                                *ngFor="let courseSectionDetail of allScheduledCourseSectionBasedOnTeacher?.courseSectionViewList"
-                                [value]="courseSectionDetail.courseSectionId">
-                                {{courseSectionDetail.courseSectionName}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </li>
-                <li>
-                    <mat-form-field class="w-full" appearance="outline" color="primary">
-                        <mat-label>{{ "markingPeriod" | translate }}</mat-label>
-                        <mat-select name="markingPeriod" [(value)]="studentEffortGradeListModel.markingPeriodId"
-                            [(ngModel)]="studentEffortGradeListModel.markingPeriodId">
-                            <mat-option></mat-option>
-                            <mat-option *ngFor="let period of markingPeriodList" [value]="period.value">
-                                {{period.text}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </li>
-            </ul>
-            <mat-divider class=""></mat-divider>
-            <div *ngIf="!showStudentList" class="lg:flex lg:flex-wrap">
+            <div *ngIf="showStudentList" class="lg:flex lg:flex-wrap">
                 <div class="lg:w-4/12 lg:pr-4">
                     <div class="content-left">
                         <h4 class="font-medium text-sm py-2 px-6">{{'studentDetails' | translate}}</h4>
                         <mat-divider class=""></mat-divider>
                         <ul class="border-right">
-                            <li *ngIf="totalCount===0">
+                            <li *ngIf="!totalCount">
                                 <div class="py-3 px-6"><span class="mb-5 italic text-gray">{{ showMessage | translate }}</span></div>
                             </li>
-                            <li class="flex py-2 px-6 bg-skyblue-light cursor-pointer"
-                                *ngFor="let student of studentMasterList;let i = index">
+                            <li class="flex py-2 px-6 cursor-pointer"
+                                [ngClass]="{'bg-skyblue-light':selectedStudent === i}"
+                                *ngFor="let student of studentMasterList;let i = index" (click)="viewDetails(i)">
 
                                 <div class="flex-shrink-0 h-12 w-12">
                                     <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
                                         alt="student photo" class="h-12 w-12 rounded-full" />
                                 </div>
-                                <div class="ml-3 flex flex-col justify-center" (click)="addEffortItems(i)">
+                                <div class="ml-3 flex flex-col justify-center">
                                     <h6 class="text-sm font-semibold">{{student.firstGivenName+" "+
                                         student.lastFamilyName}}</h6>
                                     <div>
@@ -82,7 +59,15 @@
                     </div>
                 </div>
                 <div *ngIf="showEffort" class="lg:w-8/12 md:pr-6 lg:pr-4 content-right">
-                    <h4 class="text-base font-medium text-green py-2">{{ "effortGrades" | translate }}</h4>
+                    <div class="card shadow-none p-4 md:p-0">
+                        <div class="flex md:px-0 justify-between">
+                            <h4 class="text-base font-medium text-green py-2">{{ "effortGrades" | translate }}
+                            </h4>
+                            <button (click)="closeDetailsModal()" class="md:hidden text-primary" mat-icon-button
+                                type="button">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
                     <div class="overflow-x-auto overflow-y-hidden rounded border mb-2">
                         <table class="w-full schedule-table">
                             <thead>
@@ -97,15 +82,16 @@
                                     <td>{{effortItem.categoryName}}</td>
                                     <td>{{effortItem.effortItemTitle}}</td>
                                     <td>
-                                        <mat-form-field class="w-full mb-0" appearance="outline" color="primary">
-                                            <mat-select
-                                                [ngModel]="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent]?.studentEffortGradeDetail[j]?.effortGradeScaleId" (ngModelChange)="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent]?.studentEffortGradeDetail[j].effortGradeScaleId = $event"
-                                                (selectionChange)="selectCategory(effortItem ,j, $event)" [disabled]="!this.defaultValuesService.checkAcademicYear()" >
-                                                <mat-option *ngFor="let grade of effortGradeScaleModelList"
+                                        <div class="select-dropdown">
+                                            <select
+                                            [ngModel]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent]?.studentEffortGradeDetail[j]?.effortGradeScaleId" (ngModelChange)="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent]?.studentEffortGradeDetail[j].effortGradeScaleId = $event"
+                                                (change)="selectCategory(effortItem ,j, $event)" [disabled]="!this.defaultValuesService.checkAcademicYear()">
+                                                <option value=null>NA</option>
+                                                <option *ngFor="let grade of effortGradeScaleModelList"
                                                     [value]="grade.effortGradeScaleId">
-                                                    {{grade.gradeScaleValue}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                                                    {{grade.gradeScaleValue}}</option>
+                                            </select>
+                                        </div>
                                     </td>
                                 </tr>
 
@@ -113,25 +99,26 @@
                         </table>
                     </div>
                     <h4 class="text-base font-medium text-green py-2">{{ "generalComments" | translate }}</h4>
-                    <div class="w-full border rounded mb-2">
+                    <div class="w-full border w-full p-2 rounded mb-2">
                         <textarea placeholder="Comments" name="teacherComment"
-                            [(ngModel)]="studentEffortGradeListModel?.studentEffortGradeList[selectedStudent].teacherComment"
-                            class="w-full p-2" rows="8" [readonly]="!this.defaultValuesService.checkAcademicYear()"></textarea>
+                            [(ngModel)]="addUpdateStudentEffortGradeModel?.studentsByHomeRoomStaffView[selectedStudent].teacherComment"
+                            class="w-full" rows="8" [readonly]="!this.defaultValuesService.checkAcademicYear()"></textarea>
                     </div>
+                </div>
                 </div>
             </div>
 
             <!-- Error msg for grade scale -->
-            <div *ngIf="showStudentList" class="text-center py-32 px-6 text-warn">
+            <div *ngIf="showStudentList === false" class="text-center py-32 px-6 text-warn">
                 <i class="icon icon-warning2 text-4xl"></i>
                 <p class="text-lg mt-4">{{'effortGradeScaleAndEffortGradesAreNotSetForThisSchool' | translate}}.</p>
-                <p class="text-lg"><a href="javascript:void(0);" (click)="goToAddEffortGrade()" class="underline font-semibold">{{'clickHere' | translate}}</a> {{'toSetItUp' | translate}}.</p>
+                <p class="text-lg" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.HomeroomTeacher"><a href="javascript:void(0);" (click)="goToAddEffortGrade()" class="underline font-semibold">{{'clickHere' | translate}}</a> {{'toSetItUp' | translate}}.</p>
             </div>
         </div>
 
         <!-- End Input effort Grade -->
 
-        <div class="text-right mt-4 mb-10" *ngIf="this.defaultValuesService.checkAcademicYear()">
+        <div class="text-right mt-4 mb-10" *ngIf="this.defaultValuesService.checkAcademicYear() && totalCount">
             <button (click)="submitEffortGrade()" mat-raised-button color="primary">{{ "submit" | translate }}</button>
         </div>
     <!-- </vex-page-layout-content>
