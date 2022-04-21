@@ -48,9 +48,9 @@ namespace opensisAPI.Controllers
         }
 
         [HttpPost("addUpdateStudentEffortGrade")]
-        public ActionResult<StudentEffortGradeListModel> AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel)
+        public ActionResult<HomeRoomStaffByStudentListModel> AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel)
         {
-            StudentEffortGradeListModel studentEffortGradeAdd = new StudentEffortGradeListModel();
+            HomeRoomStaffByStudentListModel studentEffortGradeAdd = new HomeRoomStaffByStudentListModel();
             try
             {
                 studentEffortGradeAdd = _studentEffortGradeService.AddUpdateStudentEffortGrade(studentEffortGradeListModel);

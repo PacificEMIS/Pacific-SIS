@@ -33,7 +33,7 @@ namespace opensis.core.StudentEffortGrade.Interfaces
 {
     public interface IStudentEffortGradeService
     {
-        public StudentEffortGradeListModel AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel);
+        public HomeRoomStaffByStudentListModel AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel);
         public StudentEffortGradeListModel GetAllStudentEffortGradeList(StudentEffortGradeListModel studentEffortGradeListModel);
         public HomeRoomStaffByStudentListModel GetStudentListByHomeRoomStaff(PageResult pageResult);
     }
