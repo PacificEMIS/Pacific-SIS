@@ -54,9 +54,9 @@ namespace opensis.core.StudentEffortGrade.Services
         /// </summary>
         /// <param name="studentEffortGradeListModel"></param>
         /// <returns></returns>
-        public StudentEffortGradeListModel AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel)
+        public HomeRoomStaffByStudentListModel AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel)
         {
-            StudentEffortGradeListModel studentEffortGradeList = new StudentEffortGradeListModel();
+            HomeRoomStaffByStudentListModel studentEffortGradeList = new HomeRoomStaffByStudentListModel();
             try
             {
                 if (tokenManager.CheckToken(studentEffortGradeListModel._tenantName + studentEffortGradeListModel._userName, studentEffortGradeListModel._token))
