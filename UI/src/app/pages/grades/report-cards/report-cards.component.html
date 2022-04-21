@@ -28,9 +28,9 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
                         <div class="mb-2">
-                            <mat-radio-group aria-label="Select an option" [(ngModel)]="selection">
-                                <mat-radio-button value="standardGrade">{{'standardsGrade' | translate}}</mat-radio-button>
-                                <mat-radio-button value="effortGrade" style="margin-left: 10px;">{{'effortGrade' | translate}}</mat-radio-button>
+                            <mat-radio-group aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                                <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="false" style="margin-left: 10px;">{{'effortGrade' | translate}}</mat-radio-button>
                               </mat-radio-group> <br><br>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
                                 [(ngModel)]="addReportCardPdf.teacherName">
@@ -728,7 +728,7 @@
                     </table>
                 </td>
             </tr>
-            <ng-container *ngIf="selection == 'standardGrade';else ViewMode2">
+            <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode2">
                 <tr *ngFor="let standerdsGrade of grade?.standerdsGradeList">
                     <td class="semester-table">
                         <table>
@@ -824,7 +824,7 @@
             <tr>
                 <td class="comments">
                     <table>
-                        <ng-container *ngIf="selection == 'standardGrade';else ViewMode1">
+                        <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode1">
                             <h4>{{'standardsGradeLegend' | translate}}:</h4>
                             <tr *ngIf="grade?.standerdGradeScale?.length>0">
                                 <td>

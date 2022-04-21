@@ -106,7 +106,6 @@ export class ReportCardsComponent implements OnInit {
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   teacherSearchInput:any;
   isAdmin:boolean;
-  public selection: string;
   halfLengthOfComment:number = 0;
   halfLengthOfStandardGradeComment:number = 0;
   halfLengthOfEffortGradeComment:number = 0;
@@ -134,7 +133,6 @@ export class ReportCardsComponent implements OnInit {
     else
       this.isAdmin = true
       
-      this.selection = 'standardGrade';
   }
 
 
@@ -563,13 +561,7 @@ export class ReportCardsComponent implements OnInit {
 
   addAndGenerateReportCard() {
     return new Promise((resolve, reject) => {
-      if(this.selection == 'standardGrade') {
-        this.addReportCardPdf.StandardGrade = true;
-        this.addReportCardPdf.effortGrade = false;
-      } else {
-        this.addReportCardPdf.StandardGrade = false;
-        this.addReportCardPdf.effortGrade = true;
-      }
+      this.addReportCardPdf.effortGrade = !this.addReportCardPdf.standardGrade;
       this.addReportCardPdf.markingPeriods = this.markingPeriods.toString();
       this.reportCardService.getReportCardForStudents(this.addReportCardPdf).subscribe((res) => {
         if (res._failure) {

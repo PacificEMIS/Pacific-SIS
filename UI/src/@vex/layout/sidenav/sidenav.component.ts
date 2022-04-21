@@ -54,7 +54,8 @@ export class SidenavComponent implements OnInit {
   permittedSubmenuList:any;
   impersonateSubjectForsideNav:boolean=false;
   profile = ProfilesTypes;
-  constructor(private navigationService: NavigationService,
+  constructor(
+    private navigationService: NavigationService,
     private layoutService: LayoutService,
     private configService: ConfigService,
     private router: Router,
@@ -66,7 +67,7 @@ export class SidenavComponent implements OnInit {
     public defaultValuesService:DefaultValuesService,
     private impersonateServices:ImpersonateServices
     ) {
-      
+
       this.tenantSidenavLogo = this.defaultValuesService.getPhotoAndFooter().tenantSidenavLogo;
       this.tenantLogoIcon = this.defaultValuesService.getPhotoAndFooter().tenantLogoIcon;
       this.tenantName = this.defaultValuesService.getTenantName();
@@ -126,11 +127,11 @@ export class SidenavComponent implements OnInit {
 
   toggleCollapse() {
     if (this.collapsed) {
-      this.defaultValuesService.setCollapseValue("false");
+      this.defaultValuesService.setCollapseValue(false);
       this.layoutService.expandSidenav()
     } else {
       this.layoutService.collapseSidenav();
-      this.defaultValuesService.setCollapseValue("true");
+      this.defaultValuesService.setCollapseValue(true);
     }
 
   }

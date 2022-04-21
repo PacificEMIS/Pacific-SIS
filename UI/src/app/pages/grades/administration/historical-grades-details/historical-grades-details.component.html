@@ -2,9 +2,9 @@
     <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
     <form #f="ngForm" (ngSubmit)="addEditHistGrade()">
     <h4 class="px-6 py-4 text-lg font-semibold">{{ 'historicalGradesTransferOfCreditsEntry' | translate }}</h4>
-    <div class="mx-6 border border-gray-light rounded mb-6" *ngFor="let info of divCount;let i=index;">
+    <div class="mx-6 border border-gray-light rounded mb-6" *ngFor="let info of historicalGradeAddViewModel?.historicalGradeList;let i=index;">
         <div class="p-4 md:flex justify-between bg-skyblue items-center">
-            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId === null" class="">
+            <div *ngIf="info?.histMarkingPeriodId === null" class="">
                 <h5 class="text-primary text-base font-medium">{{
                     'selectAmarkingPeriodGradeLevelEquivalencyAndEnterTheSchoolName' | translate }}</h5>
                 <p class="text-sm text-gray font-medium">{{ 'ifYouDontFindTheSpecificMarkingPeriodBelow' | translate}}
@@ -13,21 +13,21 @@
                     'toAddIt' | translate}}
                 </p>
             </div>
-            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId >0" class="">
+            <div *ngIf="info?.histMarkingPeriodId >0" class="">
                 <h5 class="text-primary text-base font-medium">
-                    <span>{{historicalGradeAddViewModel.historicalGradeList[i].schoolName}}</span>
+                    <span>{{info?.schoolName}}</span>
                     <span class="inline-block w-1 h-1 rounded bg-gray mx-4 align-middle"></span>
-                    <span>{{this.selectedMarkingPeriod(historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId)}}</span>
+                    <span>{{this.selectedMarkingPeriod(info?.histMarkingPeriodId)}}</span>
                     <span class="inline-block w-1 h-1 rounded bg-gray mx-4 align-middle"></span>
-                    <span>{{this.selectedGrade(historicalGradeAddViewModel.historicalGradeList[i].equivalencyId)}}</span>
+                    <span>{{this.selectedGrade(info?.equivalencyId)}}</span>
                 </h5>
             </div>
-            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeAddMode"
+            <div *ngIf="info?.gradeAddMode && historicalGradeAddViewModel?.historicalGradeList?.length > 1"
                 class="flex justify-end mt-2 md:mt-0">
                 <mat-icon [icIcon]="icRemoveCircle" (click)="deleteHistoricalGrade(i)"
                     class="text-primary cursor-pointer"></mat-icon>
             </div>
-            <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeViewMode"
+            <div *ngIf="info?.gradeViewMode"
                 class="flex justify-end mt-2 md:mt-0">
                 <mat-icon [icIcon]="icEdit" (click)="histGradeEdit(i)" class="text-primary cursor-pointer mr-2">
                 </mat-icon>
@@ -36,13 +36,13 @@
             </div>
         </div>
 
-        <div *ngIf="historicalGradeAddViewModel.historicalGradeList[i].gradeAddMode" class="p-4">
+        <div *ngIf="info?.gradeAddMode" class="p-4">
             <ul class="grid grid-cols-1 md:grid-cols-3 col-gap-8 w-full">
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'markingPeriod'|translate}}</mat-label>
                         <mat-select name="{{'markingPeriod'+i}}"
-                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].histMarkingPeriodId" #markingPeriod="ngModel" required>
+                            [(ngModel)]="info.histMarkingPeriodId" #markingPeriod="ngModel" required>
                             <mat-option></mat-option>
                             <mat-option
                                 *ngFor="let histMarkingPeriod of historicalMarkingPeriodList.historicalMarkingPeriodList"
@@ -57,14 +57,14 @@
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'schoolName'|translate}}</mat-label>
                         <input matInput name="{{'schoolName'+i}}"
-                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].schoolName">
+                            [(ngModel)]="info.schoolName">
                     </mat-form-field>
                 </li>
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'gradeLevelEquivalency'|translate}}</mat-label>
                         <mat-select name="{{'gradeLevelEquivalency'+i}}"
-                            [(ngModel)]="historicalGradeAddViewModel.historicalGradeList[i].equivalencyId" #gradeLevelEquivalency="ngModel" required>
+                            [(ngModel)]="info.equivalencyId" #gradeLevelEquivalency="ngModel" required>
                             <mat-option></mat-option>
                             <mat-option *ngFor="let list of getGradeEquivalencyList.gradeEquivalencyList"
                                 [value]="list.equivalencyId">
@@ -95,14 +95,14 @@
                 </thead>
                 <tbody>
                     <tr
-                        *ngFor="let history of historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer; let j=index">
+                        *ngFor="let history of info.historicalCreditTransfer; let j=index">
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode1">
                                 <div class="border border-gray-light rounded p-2 w-24">
                                     <input type="text" name="{{'cc' + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
-                                        class="w-full" #courseCode="ngModel" required />
+                                    class="w-full" #courseCode="ngModel" [required]="!history.courseName && !history.courseCode" />
                                 </div>
-                                <div *ngIf="(!history.courseName && !history.courseCode)?(courseCode.errors?.required && courseCode.touched):''" class="text-red">
+                                <div *ngIf="courseCode.errors?.required && courseCode.touched" class="text-red">
                                     {{'courseCodeIsRequired'|translate}}
                                 </div>
                             </ng-container>
@@ -114,9 +114,9 @@
                             <ng-container *ngIf="history.creditAddMode;else viewMode2">
                                 <div class="border border-gray-light rounded p-2 w-32">
                                     <input type="text" name="{{'cn' + j}}" [(ngModel)]="history.courseName"
-                                        class="w-full" #courseName="ngModel"  required="true"/>
+                                    class="w-full" #courseName="ngModel"  [required]="!history.courseName && !history.courseCode"/>
                                 </div>
-                                <div *ngIf="(!history.courseName && !history.courseCode)?(courseName.errors?.required && courseName.touched):''" class="text-red">
+                                <div *ngIf="courseName.errors?.required && courseName.touched" class="text-red">
                                     {{'courseNameIsRequired'|translate}}
                                 </div>
                             </ng-container>
@@ -127,11 +127,11 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode3">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'cp' + j}}" [(ngModel)]="history.percentage"
-                                        class="w-full" #percentage="ngModel" required />
-                                    </div>
-                                    <div *ngIf="(!history.percentage && !history.letterGrade)?(percentage.errors?.required && percentage.touched):''" class="text-red">
-                                        {{'percentageIsRequired'|translate}}
+                                    <input type="text" name="{{'cp' + j}}" mask="0*" [(ngModel)]="history.percentage"
+                                    class="w-full" #percentage="ngModel" [required]="!history.percentage && !history.letterGrade" />
+                                </div>
+                                <div *ngIf="percentage.errors?.required && percentage.touched" class="text-red">
+                                    {{'percentageIsRequired'|translate}}
                                     </div>
                             </ng-container>
                             <ng-template #viewMode3>
@@ -142,9 +142,9 @@
                             <ng-container *ngIf="history.creditAddMode;else viewMode4">
                                 <div class="border border-gray-light rounded p-2 w-24">
                                     <input type="text" name="{{'lg' + i + j}}" [(ngModel)]="history.letterGrade"
-                                        class="w-full" #letterGrade="ngModel"  required="true"/>
+                                    class="w-full" #letterGrade="ngModel"  [required]="!history.percentage && !history.letterGrade"/>
                                 </div>
-                                <div *ngIf="(!history.percentage && !history.letterGrade)?(letterGrade.errors?.required && letterGrade.touched):''" class="text-red">
+                                <div *ngIf="letterGrade.errors?.required && letterGrade.touched" class="text-red">
                                     {{'letterGradeIsRequired'|translate}}
                                 </div>
                             </ng-container>
@@ -234,9 +234,11 @@
                         </td>
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode11">
-                                <!-- <div class="w-16">
-                                    <mat-icon [icIcon]="icRemoveCircle" (click)="creditDelete(i,j)" class="text-primary cursor-pointer"></mat-icon>
-                                </div> -->
+                                <ng-container *ngIf="(info?.historicalCreditTransfer?.length === 1 && !history?.isNewEntry) || (info?.historicalCreditTransfer?.length>1)">
+                                    <div class="w-16">
+                                        <mat-icon [icIcon]="icRemoveCircle" (click)="removeCourseSection(i, history, j)" class="text-primary cursor-pointer"></mat-icon>
+                                    </div>
+                                </ng-container>
                             </ng-container>
                             <ng-template #viewMode11>
                                 <div class="w-16">
@@ -251,6 +253,9 @@
 
                 </tbody>
             </table>
+        </div>
+        <div class="text-center py-3 cursor-pointer" (click)="addCouseSection(i)">
+            <a class="text-primary ml-2 inline-block p-2"><mat-icon class="inline-block align-middle">add</mat-icon> Add Another Course</a>
         </div>
     </div>
 
