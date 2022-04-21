@@ -70,10 +70,12 @@ export class HistoricalGrade {
     createdOn: string;
     updatedBy: string;
     updatedOn: string;
+    isNewEntry: boolean;
     constructor() {
         this.historicalCreditTransfer= [new HistoricalCreditTransfer()];
         this.histMarkingPeriodId = null;
         this.gradeAddMode= true;
+        this.isNewEntry = true;
     }
 }
 
@@ -101,10 +103,12 @@ export class HistoricalCreditTransfer {
     updatedBy: string;
     updatedOn: string;
     courseType: string;
+    isNewEntry: boolean;
     constructor(){
         this.creditAddMode= true;
         this.courseType='Regular';
         this.isDefaultRow = true;
+        this.isNewEntry = true;
     }
 
 }

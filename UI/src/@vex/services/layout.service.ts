@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject,Subject,Observable } from 'rxjs';
+import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -8,7 +8,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   providedIn: 'root'
 })
 export class LayoutService {
- 
+
   private _quickpanelOpenSubject = new BehaviorSubject<boolean>(false);
   quickpanelOpen$ = this._quickpanelOpenSubject.asObservable();
 
@@ -50,8 +50,10 @@ export class LayoutService {
 
   isMobile = () => this.breakpointObserver.isMatched(`(max-width: 599px)`);
 
-  constructor(private router: Router,
-              private breakpointObserver: BreakpointObserver) { }
+  constructor(
+    private router: Router,
+    private breakpointObserver: BreakpointObserver
+  ) { }
 
   openQuickpanel() {
     this._quickpanelOpenSubject.next(true);
@@ -117,5 +119,5 @@ export class LayoutService {
     });
   }
 
- 
+
 }

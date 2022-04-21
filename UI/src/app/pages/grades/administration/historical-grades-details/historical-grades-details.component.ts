@@ -29,10 +29,8 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   icAdd = icAdd;
   loading: boolean;
   selectedMarkingPeriodName: string;
-  divCount = [2];
   histStudentDetails;
   equivalencyList = [];
-  childDivCount = [1];
   @ViewChild('f') currentForm: NgForm;
   getGradeEquivalencyList: GelAllGradeEquivalencyModel = new GelAllGradeEquivalencyModel();
   historicalMarkingPeriodList: HistoricalMarkingPeriodListModel = new HistoricalMarkingPeriodListModel();
@@ -107,30 +105,28 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   }
 
   deleteHistoricalGrade(index) {
-    this.divCount.splice(index, 1);
     this.historicalGradeAddViewModel.historicalGradeList.splice(index, 1);
-    this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
+    // this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
     this.callAddEditHistGrade(this.historicalGradeAddViewModel,true);
   }
 
   creditEdit(histIndex, creditIndex) {
     this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[creditIndex].creditViewMode = false;
     this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[creditIndex].creditAddMode = true;
-    let lastIndex = this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.length - 1;
-    if (this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[lastIndex].isDefaultRow) {
-      this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.pop();
-    }
+    // let lastIndex = this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.length - 1;
+    // if (this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[lastIndex].isDefaultRow) {
+    //   this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.pop();
+    // }
   }
 
   creditDelete(histIndex, creditIndex) {
     this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.splice(creditIndex, 1);
-    this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
+    // this.historicalGradeAddViewModel.historicalGradeList.map(historicalValue=>{historicalValue.historicalCreditTransfer.pop();})    
     this.callAddEditHistGrade(this.historicalGradeAddViewModel,true);
   }
 
   addMoreHistoricalGrade() {
     this.historicalGradeAddViewModel.historicalGradeList.push(new HistoricalGrade());
-    this.divCount.push(2);
   }
 
   selectedMarkingPeriod(hrMarkingPeriodId) {
@@ -202,13 +198,14 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.historicalMarkingPeriodService.getAllHistoricalGradeList(cloneHistoricalGradeAddViewModel).subscribe(
       (res) => {
         if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
+          
           if (res.historicalGradeList === null) {
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
           } else {
 
+            this.historicalGradeAddViewModel = new HistoricalGradeAddViewModel();
           }
         }
         else {
@@ -219,18 +216,43 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
               subItem.courseCode && subItem.percentage ? subItem.isDefaultRow = false : subItem.isDefaultRow = true;
             });
           });
-          this.divCount.length = this.historicalGradeAddViewModel?.historicalGradeList?.length;
           for (let i = 0; i < this.historicalGradeAddViewModel.historicalGradeList?.length; i++) {
             for (let j = 0; j < this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length; j++) {
               Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j], { creditAddMode: false });
             }
             Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i], { gradeAddMode: false, gradeViewMode: true });
-            this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
+            // this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
+            if(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length === 0) {
+              this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
+            }
           }
         }
       }
     );
+    
+  }
 
+  addCouseSection(index) {
+    this.historicalGradeAddViewModel.historicalGradeList[index].historicalCreditTransfer.push(new HistoricalCreditTransfer());
+  }
+
+  removeCourseSection(index, history, subIndex) {    
+    console.log(history);
+
+    if(history.isNewEntry) {
+      this.historicalGradeAddViewModel.historicalGradeList[index].historicalCreditTransfer.splice(subIndex, 1);
+    } else {
+      history.creditAddMode = false;
+    }
+  }
+
+  removeMarkingPeriod(index, historicalGrade) {    
+    if(historicalGrade.isNewEntry) {
+      this.historicalGradeAddViewModel.historicalGradeList.splice(index, 1);
+    } else {
+      historicalGrade.gradeAddMode = false;
+      historicalGrade.gradeViewMode = true;
+    }
   }
 
   ngOnDestroy() {

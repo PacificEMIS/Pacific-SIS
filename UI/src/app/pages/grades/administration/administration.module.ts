@@ -40,6 +40,7 @@ import { SearchStudentComponentForEditReportCardGrades } from './search-student-
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CourseSectionComponent } from './course-section/course-section.component';
 import { HistSearchStudentComponent } from './search-student/search-student.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { HistSearchStudentComponent } from './search-student/search-student.comp
     MatRippleModule,
     MatChipsModule,
     MatAutocompleteModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    NgxMaskModule
   ]
 })
 export class AdministrationModule { }
