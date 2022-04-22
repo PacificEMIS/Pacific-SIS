@@ -117,6 +117,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.courseSectionService.searchCourseSectionForScheduleForGroupDelete(cloneCourseSectionSearch).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           if (res.allCourseSectionViewList === null) {
             this.courseDetails = new MatTableDataSource([]);
             this.snackbar.open(res._message, '', {
