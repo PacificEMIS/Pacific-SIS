@@ -20,7 +20,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { SearchStudentComponent } from './search-student/search-student.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
@@ -30,7 +29,7 @@ import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
-  declarations: [InputEffortGradesComponent, SearchStudentComponent],
+  declarations: [InputEffortGradesComponent],
   imports: [
     CommonModule,
     InputEffortGradesRoutingModule,
