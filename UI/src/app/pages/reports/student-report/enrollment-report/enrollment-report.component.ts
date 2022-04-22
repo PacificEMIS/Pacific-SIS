@@ -382,7 +382,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
       })
       this.generatedReportCardData = res;
       setTimeout(() => {
-        this.generateReportForPerticularStudent();
+        this.generateReportForParticularStudent();
       }, 100 * this.generatedReportCardData.schoolMasterData.length);
     });
   }
@@ -688,7 +688,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     }
   }
 
-  generateReportForPerticularStudent() {
+  generateReportForParticularStudent() {
     let printContents, popupWin;
     printContents = document.getElementById('printReportCardId').innerHTML;
     document.getElementById('printReportCardId').className = 'block';
