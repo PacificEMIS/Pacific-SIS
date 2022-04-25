@@ -62,8 +62,6 @@ export class StudentReportCardComponent implements OnInit {
   reportCardType = reportCardType;
   generatedReportCardData: any;
   halfLengthOfComment:number = 0;
-  halfLengthOfStandardGradeComment:number = 0;
-  halfLengthOfEffortGradeComment:number = 0;
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -132,9 +130,9 @@ export class StudentReportCardComponent implements OnInit {
 
   addAndGenerateReportCard() {
     return new Promise((resolve, reject) => {
-      this.addReportCardPdf.effortGrade = !this.addReportCardPdf.standardGrade;
       this.addReportCardPdf.markingPeriods = this.markingPeriods.toString();
-
+      this.addReportCardPdf.standardGrade = null;
+      this.addReportCardPdf.effortGrade = null;
       // this.reportCardService.addReportCard(this.addReportCardPdf).subscribe((res) => {
       this.reportCardService.getReportCardForStudents(this.addReportCardPdf).subscribe((res) => {
         if (res._failure) {
@@ -160,12 +158,6 @@ export class StudentReportCardComponent implements OnInit {
         if(this.addReportCardPdf?.templateType === 'default') {
           if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length>0) {
             this.halfLengthOfComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length/2);
-          }
-          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length>0) {
-            this.halfLengthOfStandardGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length/2);
-          }
-          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length>0) {
-            this.halfLengthOfEffortGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length/2);
           }
           setTimeout(() => {
             this.generatePdfForDefault();

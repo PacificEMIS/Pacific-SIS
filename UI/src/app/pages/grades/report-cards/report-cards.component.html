@@ -30,7 +30,7 @@
                         <div class="mb-2">
                             <mat-radio-group aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
                                 <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
-                                <mat-radio-button [value]="false" style="margin-left: 10px;">{{'effortGrade' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="false" style="margin-left: 10px;" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
                               </mat-radio-group> <br><br>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
                                 [(ngModel)]="addReportCardPdf.teacherName">

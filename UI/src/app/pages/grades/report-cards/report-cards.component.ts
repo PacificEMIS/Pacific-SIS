@@ -56,6 +56,7 @@ import { reportCardType } from "../../../common/static-data";
 import * as html2pdf from 'html2pdf.js';
 import { ScheduleStudentListViewModel } from "src/app/models/student-schedule.model";
 import { StudentScheduleService } from "src/app/services/student-schedule.service";
+import { ProfilesTypes } from "src/app/enums/profiles.enum";
 
 @Component({
   selector: "vex-report-cards",
@@ -109,6 +110,7 @@ export class ReportCardsComponent implements OnInit {
   halfLengthOfComment:number = 0;
   halfLengthOfStandardGradeComment:number = 0;
   halfLengthOfEffortGradeComment:number = 0;
+  profiles = ProfilesTypes;
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -121,7 +123,7 @@ export class ReportCardsComponent implements OnInit {
     private loaderService: LoaderService,
     private pageRolePermissions: PageRolesPermission,
     private studentScheduleService: StudentScheduleService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
