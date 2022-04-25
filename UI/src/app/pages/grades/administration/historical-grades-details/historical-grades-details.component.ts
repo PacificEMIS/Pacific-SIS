@@ -15,6 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 import { LoaderService } from 'src/app/services/loader.service';
 import { Subject } from 'rxjs';
 import { NgForm } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-historical-grades-details',
@@ -38,14 +39,15 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   historicalGrade: HistoricalGrade = new HistoricalGrade();
   allCourseTypes = []
   @Output() newItemEvent = new EventEmitter<string>();
-  
+
   constructor(private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
     private commonService: CommonService,
     private gradeLevelService: GradeLevelService,
     private defaultValuesService: DefaultValuesService,
     private loaderService: LoaderService,
     private snackbar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    public translateService: TranslateService
   ) {
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -69,7 +71,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       (res) => {
         if (res) {
           if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
+            
           }
           else {
             this.historicalMarkingPeriodList.historicalMarkingPeriodList = res.historicalMarkingPeriodList;
@@ -85,7 +87,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.gradeLevelService.getAllGradeEquivalency(this.getGradeEquivalencyList).subscribe((res) => {
 
       if (res._failure) {
-        this.commonService.checkTokenValidOrNot(res._message);
+        
         this.getGradeEquivalencyList = new GelAllGradeEquivalencyModel();
       }
       else {
@@ -115,7 +117,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[creditIndex].creditAddMode = true;
     // let lastIndex = this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.length - 1;
     // if (this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[lastIndex].isDefaultRow) {
-    //   this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.pop();
+      // this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.pop();
     // }
   }
 
@@ -167,7 +169,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       (res: HistoricalGradeAddViewModel) => {
         if (res) {
           if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
+            
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
@@ -204,7 +206,6 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
               duration: 10000
             });
           } else {
-
             this.historicalGradeAddViewModel = new HistoricalGradeAddViewModel();
           }
         }
@@ -221,7 +222,6 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
               Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer[j], { creditAddMode: false });
             }
             Object.assign(this.historicalGradeAddViewModel.historicalGradeList[i], { gradeAddMode: false, gradeViewMode: true });
-            // this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
             if(this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer?.length === 0) {
               this.historicalGradeAddViewModel.historicalGradeList[i].historicalCreditTransfer.push(new HistoricalCreditTransfer());
             }
@@ -229,7 +229,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
         }
       }
     );
-    
+
   }
 
   addCouseSection(index) {
@@ -237,8 +237,6 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
   }
 
   removeCourseSection(index, history, subIndex) {    
-    console.log(history);
-
     if(history.isNewEntry) {
       this.historicalGradeAddViewModel.historicalGradeList[index].historicalCreditTransfer.splice(subIndex, 1);
     } else {
