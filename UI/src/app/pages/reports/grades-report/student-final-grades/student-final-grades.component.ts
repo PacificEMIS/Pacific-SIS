@@ -47,6 +47,7 @@ import { GetMarkingPeriodByCourseSectionModel } from 'src/app/models/marking-per
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { GetStudentFinalGradeReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'vex-student-final-grades',
@@ -108,7 +109,8 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
     private excelService: ExcelService,
     private markingPeriodService: MarkingPeriodService,
     private reportService: ReportService,
-    private el: ElementRef
+    private el: ElementRef,
+    private commonService: CommonService
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.defaultValuesService.setReportCompoentTitle.next("Student Final Grades");
@@ -187,6 +189,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
     this.markingPeriodService.getMarkingPeriodsByCourseSection(this.getMarkingPeriodByCourseSectionModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.markingPeriodList = [];
           if (!res.getMarkingPeriodView) {
             this.snackbar.open(res._message, '', {
@@ -214,6 +217,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       this.studentService.GetAllStudentList(this.getAllStudentModel).subscribe(res => {
         if (res) {
           if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
             if (res.studentListViews === null) {
               this.totalCount = null;
               this.studentList = new MatTableDataSource([]);
@@ -261,6 +265,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
         if (data) {
           if (data._failure) {
+            this.commonService.checkTokenValidOrNot(data._message);
             if (data.scheduleStudentForView === null) {
               this.totalCount = null;
               this.studentList = new MatTableDataSource([]);
@@ -499,6 +504,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       getAllStudent.sortingModel = null;
       this.studentService.GetAllStudentList(getAllStudent).subscribe(res => {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open('Failed to Export Student List.' + res._message, '', {
             duration: 10000
           });
@@ -532,6 +538,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
       this.studentScheduleService.searchScheduledStudentForGroupDrop(scheduleStudentListViewModel).subscribe(res => {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open('Failed to Export Student List.' + res._message, '', {
             duration: 10000
           });
@@ -581,6 +588,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       this.reportService.getStudentFinalGradeReport(this.getStudentFinalGradeReportModel).subscribe(res => {
         if (res) {
           if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
             this.studentFinalGradeReport = [];
             this.snackbar.open(res._message, '', {
               duration: 10000

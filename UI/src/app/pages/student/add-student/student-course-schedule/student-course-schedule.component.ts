@@ -360,6 +360,7 @@ export class StudentCourseScheduleComponent implements OnInit {
     this.studentScheduleService.groupDeleteForScheduledStudent(scheduledStudentDeleteModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });

@@ -183,6 +183,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
       if (data) {
         if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.programList = [];
           if (!data.programList) {
             this.snackbar.open(data._message, '', {
@@ -204,6 +205,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
       if (data) {
         if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.subjectList = [];
           if (!data.subjectList) {
             this.snackbar.open(data._message, '', {
@@ -227,6 +229,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.markingPeriodService.getAllMarkingPeriodList(this.getMarkingPeriodTitleListModel).subscribe(data => {
       if (data) {
         if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.getMarkingPeriodTitleListModel.getMarkingPeriodView = [];
           if (!this.getMarkingPeriodTitleListModel?.getMarkingPeriodView) {
             this.snackbar.open(data._message, '', {
@@ -248,6 +251,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
       if (data) {
         if (data._failure) {
+          this.commonService.checkTokenValidOrNot(data._message);
           this.courseList = [];
           if (!data.courseViewModelList) {
             this.snackbar.open(data._message, '', {
@@ -273,6 +277,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.studentScheduleService.getUnassociatedStudentListByCourseSection(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.studentNotFound = true;
           this.studentDetails = new MatTableDataSource([]);
           this.totalCount = null;
@@ -424,6 +429,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.studentScheduleService.groupDeleteForScheduledStudent(this.scheduledStudentDeleteModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
