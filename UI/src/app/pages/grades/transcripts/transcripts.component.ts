@@ -675,7 +675,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     vertical-align: top;
   }
   .semester-table th,
-  .semester-table td {
+  .semester-table td:not(.semester-subtable) {
     border-bottom: 1px solid #000;
     padding: 8px 15px;
   }
@@ -693,12 +693,14 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     font-size: 24px;
   }
   .semester-table .semester-subtable caption {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     text-align: left;
   }
   .semester-table .semester-subtable {
     margin-bottom: 20px;
     margin-top: 10px;
+  }
+  .semester-table .semester-subtable thead, .semester-table .semester-subtable tbody {
     border: 1px solid #000;
   }
   .gpa-table {

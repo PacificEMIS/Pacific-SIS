@@ -288,40 +288,40 @@
                                 <p class="float-right">{{'schoolYear' | translate}} : {{gradeLevelDetails?.schoolYear}}</p>
                             </caption>
                             <tr *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
-                            <td>
-                            <table class="semester-subtable">
-                                <caption>
-                                    <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
-                                </caption>
-                                <thead>
-                                    <tr>
-                                        <th>{{'courseCode' |translate}}</th>
-                                        <th>{{'course' |translate}}</th>
-                                        <th>{{'creditHours' |translate}}</th>
-                                        <th>{{'creditsEarned' |translate}}</th>
-                                        <th>{{'grade' |translate}}</th>
-                                        <th>{{'gpValue'|translate}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        *ngFor="let reportCardDetails of markingPeriod?.reportCardDetailsForTranscripts">
-                                        <td>{{reportCardDetails?.courseCode}}</td>
-                                        <td>{{reportCardDetails?.courseSectionName}}</td>
-                                        <td>{{reportCardDetails?.creditHours}}</td>
-                                        <td>{{reportCardDetails?.creditEarned}}</td>
-                                        <td>{{reportCardDetails?.grade}}</td>
-                                        <td>{{reportCardDetails?.gpValue}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / {{'creditEarned' |translate}}: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
-                                                {{markingPeriod?.gpa}}</b>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        </tr>
+                                <td class="semester-subtable">
+                                    <table>
+                                        <caption>
+                                            <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
+                                        </caption>
+                                        <thead>
+                                            <tr>
+                                                <th>{{'courseCode' |translate}}</th>
+                                                <th>{{'course' |translate}}</th>
+                                                <th>{{'creditHours' |translate}}</th>
+                                                <th>{{'creditsEarned' |translate}}</th>
+                                                <th>{{'grade' |translate}}</th>
+                                                <th>{{'gpValue'|translate}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let reportCardDetails of markingPeriod?.reportCardDetailsForTranscripts">
+                                                <td>{{reportCardDetails?.courseCode}}</td>
+                                                <td>{{reportCardDetails?.courseSectionName}}</td>
+                                                <td>{{reportCardDetails?.creditHours}}</td>
+                                                <td>{{reportCardDetails?.creditEarned}}</td>
+                                                <td>{{reportCardDetails?.grade}}</td>
+                                                <td>{{reportCardDetails?.gpValue}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / {{'creditEarned' |translate}}: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
+                                                        {{markingPeriod?.gpa}}</b>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 </tr>
