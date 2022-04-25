@@ -71,7 +71,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       (res) => {
         if (res) {
           if (res._failure) {
-            
+            this.commonService.checkTokenValidOrNot(res._message);
           }
           else {
             this.historicalMarkingPeriodList.historicalMarkingPeriodList = res.historicalMarkingPeriodList;
@@ -87,7 +87,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.gradeLevelService.getAllGradeEquivalency(this.getGradeEquivalencyList).subscribe((res) => {
 
       if (res._failure) {
-        
+        this.commonService.checkTokenValidOrNot(res._message);
         this.getGradeEquivalencyList = new GelAllGradeEquivalencyModel();
       }
       else {
@@ -169,7 +169,7 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
       (res: HistoricalGradeAddViewModel) => {
         if (res) {
           if (res._failure) {
-            
+            this.commonService.checkTokenValidOrNot(res._message);
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
