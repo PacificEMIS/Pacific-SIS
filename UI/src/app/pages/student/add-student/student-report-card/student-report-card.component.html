@@ -15,6 +15,10 @@
         </div>
         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
         <div class="mb-2">
+            <mat-radio-group aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
+                <mat-radio-button [value]="false" style="margin-left: 10px;">{{'effortGrade' | translate}}</mat-radio-button>
+            </mat-radio-group> <br><br>
             <mat-slide-toggle class="mr-4 mb-2" color="primary" [(ngModel)]="addReportCardPdf.teacherName">
                 {{ "teacherName" | translate}}
             </mat-slide-toggle>
@@ -612,6 +616,52 @@
                         </table>
                     </td>
                 </tr>
+                <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode2">
+                    <tr *ngFor="let standerdsGrade of grade?.standerdsGradeList; let i=index">
+                        <td class="semester-table">
+                            <table>
+                                <caption *ngIf="i==0">
+                                    <h2 class="float-left">{{'standardsGrade' | translate}}</h2>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th>{{standerdsGrade.courseSectionName+'   |   '+('teacher' | translate)+' : '+standerdsGrade.staffName}}</th>
+                                        <th *ngFor="let markingPeriod of standerdsGrade?.standerdsGradeDetails[0]?.markingPeriodDetailsforStanderdsGrades">{{markingPeriod.markingPeriodName}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let x of standerdsGrade?.standerdsGradeDetails">
+                                        <td>{{x?.standardRefNo+' : '+x?.standardDetails}}</td>
+                                        <td *ngFor="let y of x?.markingPeriodDetailsforStanderdsGrades">{{y?.value ? y?.value:'N/A'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-template #ViewMode2>
+                    <tr *ngFor="let effortGrade of grade?.effortGradeList; let i=index">
+                        <td class="semester-table">
+                            <table>
+                                <caption *ngIf="i==0">
+                                    <h2 class="float-left">{{'effortGrade' | translate}}</h2>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th>{{effortGrade.categoryName}}</th>
+                                        <th *ngFor="let markingPeriod of effortGrade?.effortGradeItemDetails[0]?.markingPeriodDetailsforEffortGrades">{{markingPeriod.markingPeriodName}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let x of effortGrade?.effortGradeItemDetails">
+                                        <td>{{x?.effortItemTitle}}</td>
+                                        <td *ngFor="let y of x?.markingPeriodDetailsforEffortGrades">{{y?.gradeScaleValue ? y?.gradeScaleValue:'N/A'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-template>
                 <tr>
                     <td class="signature-table">
                         <table cell-padding="10">
@@ -642,27 +692,27 @@
                     <td class="comments">
                         <table>
                             <h4>{{'forCommentKeysPleaseFollowTheDescriptionBelow' | translate }}</h4>
-                            <tr>
+                            <tr *ngIf="grade?.courseCommentCategories?.length>0">
                                 <td>
-                                    <p>1. {{'worksForAcademicExcellence' | translate}}</p>
-                                    <p>2. {{'showsAcademicImprovements' | translate}}</p>
+                                    <p *ngFor="let x of grade?.courseCommentCategories| slice:0:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let i=index;">{{i+1}}. {{x?.comments}}</p>
+                                    <!-- <p>2. {{'showsAcademicImprovements' | translate}}</p>
                                     <p>3. {{'participatesEffectively' | translate}}</p>
                                     <p>4. {{'positiveAttitudeAndEffort' | translate}}</p>
                                     <p>5. {{'makesConnectionAndAppliesKnowledge' | translate}}</p>
                                     <p>6. {{'displaysGoodStudySkills' | translate}}</p>
                                     <p>7. {{'worksWellInGroupactivities' | translate}}</p>
                                     <p>8. {{'homeAssignmentsAreGenerallyInferiorToWorkDoneInSchool' | translate}}</p>
-                                    <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool' | translate}}</p>
+                                    <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool' | translate}}</p> -->
                                 </td>
                                 <td>
-                                    <p>10. {{'appearsDisorganized' | translate}}</p>
-                                    <p>11. {{'qualityOfWorkDeclining' | translate}}</p>
+                                    <p *ngFor="let y of grade?.courseCommentCategories| slice:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let j=index;">{{j+(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment+1:halfLengthOfComment+2)}}. {{y?.comments}}</p>
+                                    <!-- <p>11. {{'qualityOfWorkDeclining' | translate}}</p>
                                     <p>12. {{'doesNotBringMaterialsFollowDirections' | translate}}</p>
                                     <p>13. {{'inconsistentEffort' | translate}}</p>
                                     <p>14. {{'needsToParticipateMoreInDiscussion' | translate}}</p>
                                     <p>15. {{'difficultyInMakingConnectionsAndApplyingKnowledge' | translate}}</p>
                                     <p>16. {{'hasDifficultyOnExams' | translate}}</p>
-                                    <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod' | translate}}</p>
+                                    <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod' | translate}}</p> -->
                                 </td>
                             </tr>
                         </table>
@@ -671,14 +721,42 @@
                 <tr>
                     <td class="comments">
                         <h4>{{'teacherComments' | translate}}:</h4>
-                        <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
+                        <p *ngFor="let comment of grade?.teacherCommentList; let k=index;">{{k+1}}. {{comment}}.</p>
+                        <!-- <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
                             convallis pulvinar nec et dui.</p>
                         <p>3. Ut tempus tristique velit ut eleifend. In hac habitasse platea dictumst. Pellentesque ac
                             mattis ipsum.</p>
                         <p>4. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                         <p>5. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
-                            convallis pulvinar nec et dui.</p>
+                            convallis pulvinar nec et dui.</p> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="comments">
+                        <table>
+                            <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode1">
+                                <h4>{{'standardsGradeLegend' | translate}}:</h4>
+                                <tr *ngIf="grade?.standerdGradeScale?.length>0">
+                                    <td>
+                                        <p *ngFor="let x of grade?.standerdGradeScale| slice:0:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let i=index;">{{i+1}}. {{x?.comment}}</p>
+                                    </td>
+                                    <td>
+                                        <p *ngFor="let y of grade?.standerdGradeScale| slice:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let j=index;">{{j+(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment+1:halfLengthOfStandardGradeComment+2)}}. {{y?.comment}}</p>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <ng-template #ViewMode1>
+                                <h4>{{'effortGradeLegend' | translate}}:</h4>
+                                <tr *ngIf="grade?.effortGradeScales?.length>0">
+                                    <td>
+                                        <p *ngFor="let x of grade?.effortGradeScales| slice:0:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let i=index;">{{i+1}}. {{x?.gradeScaleComment}}</p>
+                                    </td>
+                                    <td>
+                                        <p *ngFor="let y of grade?.effortGradeScales| slice:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let j=index;">{{j+(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment+1:halfLengthOfEffortGradeComment+2)}}. {{y?.gradeScaleComment}}</p>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </table>
                     </td>
                 </tr>
             </table>

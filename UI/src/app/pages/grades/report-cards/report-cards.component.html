@@ -729,10 +729,10 @@
                 </td>
             </tr>
             <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode2">
-                <tr *ngFor="let standerdsGrade of grade?.standerdsGradeList">
+                <tr *ngFor="let standerdsGrade of grade?.standerdsGradeList; let i=index">
                     <td class="semester-table">
                         <table>
-                            <caption>
+                            <caption *ngIf="i==0">
                                 <h2 class="float-left">{{'standardsGrade' | translate}}</h2>
                             </caption>
                             <thead>
@@ -752,10 +752,10 @@
                 </tr>
             </ng-container>
             <ng-template #ViewMode2>
-                <tr *ngFor="let effortGrade of grade?.effortGradeList">
+                <tr *ngFor="let effortGrade of grade?.effortGradeList; let i=index">
                     <td class="semester-table">
                         <table>
-                            <caption>
+                            <caption *ngIf="i==0">
                                 <h2 class="float-left">{{'effortGrade' | translate}}</h2>
                             </caption>
                             <thead>
