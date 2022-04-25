@@ -1801,5 +1801,6 @@
     "standardsGrade": "Grado de estándares",
     "effortGrade": "Grado de esfuerzo",
     "standardsGradeLegend": "Leyenda de la calificación de los estándares",
-    "effortGradeLegend": "Leyenda del grado de esfuerzo"
+    "effortGradeLegend": "Leyenda del grado de esfuerzo",
+    "addAnotherCourse": "Agregar otro curso"
 }
