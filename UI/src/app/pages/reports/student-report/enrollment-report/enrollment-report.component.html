@@ -77,8 +77,10 @@
         <table mat-table [dataSource]="studentModelList" class="mat-elevation-z8">
             <ng-container matColumnDef="studentName">
                 <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
-                <td mat-cell *matCellDef="let element"> {{element.firstGivenName}} {{element.middleName
-                    ? ''+element.middleName+' ':''}}{{element.lastFamilyName}} </td>
+                <td mat-cell *matCellDef="let element">
+                    <a class="text-blue cursor-pointer" (click)="viewStudentDetails(element.studentGuid)">{{ element.firstGivenName }}
+                        {{element.middleName? ''+element.middleName+' ':''}} {{ element.lastFamilyName}}</a>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="studentId">
@@ -173,13 +175,13 @@
                                 </div>
                             </td>
                             <td class="header-right text-right">
-                                <div class="text-center inline-block">Student Enrollment Report</div>
-                                <p class="text-right">Powered by <b>openSIS</b></p>
+                                <div class="text-center inline-block">{{'studentEnrollmentReport' | translate}}</div>
+                                <p class="text-right">{{'poweredBy' | translate}} <b>openSIS</b></p>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" class="generate-date">
-                                <p class="text-center p-b-8">Report Generated on {{toDay | date : 'mediumDate'}}</p>
+                                <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{toDay | date : 'mediumDate'}}</p>
                             </td>
                         </tr>
                     </table>
@@ -194,13 +196,13 @@
                                 <table class="information-table">
                                     <thead>
                                         <tr>
-                                            <th class="bg-slate"><strong>Student Name</strong></th>
-                                            <th class="bg-slate"><strong>Student ID</strong></th>
-                                            <th class="bg-slate"><strong>Alternate ID</strong></th>
-                                            <th class="bg-slate"><strong>Phone</strong></th>
-                                            <th class="bg-slate"><strong>Grade Level</strong></th>
-                                            <th class="bg-slate"><strong>Section</strong></th>
-                                            <th class="bg-slate"><strong>Enrollment Date</strong></th>
+                                            <th class="bg-slate"><strong>{{'studentName' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'studentId' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'alternateId' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'phone' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'gradeLevel' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'section' | translate }}</strong></th>
+                                            <th class="bg-slate"><strong>{{'enrollmentDate' | translate }}</strong></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -224,3 +226,145 @@
         </table>
     </div>
 </div>
+
+<!-- For generate particular student enrollment report section start -->
+<div class="hidden" id="printReportCardId">
+    <div class="student-information-report" *ngFor="let schoolDetails of generatedReportCardData?.schoolMasterData; ">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <div class="float-left school-logo">
+                                    <img *ngIf="schoolDetails?.schoolLogo"
+                                        [src]="'data:image/jpeg;base64,'+schoolDetails?.schoolLogo" alt="School Logo">
+                                </div>
+                                <div class="float-left information">
+                                    <h4>{{schoolDetails?.schoolName}}</h4>
+                                    <p>{{schoolDetails?.streetAddress1}}{{schoolDetails?.streetAddress2 ? ', ' +
+                                        schoolDetails?.streetAddress2 : ''}}{{schoolDetails?.city ? ', ' +
+                                        schoolDetails?.city : ''}}{{schoolDetails?.state ? ', ' + schoolDetails?.state :
+                                        ''}}{{schoolDetails?.zip ? ', ' + schoolDetails?.zip :
+                                        ''}}{{schoolDetails?.country ? ', ' + schoolDetails?.country : ''}}</p>
+                                </div>
+                            </td>
+                            <td class="header-right text-right">
+                                <div class="text-center inline-block">{{'studentEnrollmentReport' | translate}}</div>
+                                <p class="text-right">{{'poweredBy' | translate}} <b>openSIS</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="generate-date">
+                                <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{toDay | date : 'mediumDate'}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <ng-container *ngFor="let studentDetails of schoolDetails?.studentMasterData; let i=index;">
+                <tr *ngIf="studentEnrollmentInfoReportModel.isGeneralInfo">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="student-logo width-160">
+                                    <div *ngIf="studentDetails?.studentPhoto">
+                                        <img [src]="studentDetails?.studentPhoto ? 'data:image/jpeg;base64,' + studentDetails?.studentPhoto : ''"
+                                            alt="Student Photo">
+                                    </div>
+                                </td>
+                                <td class="student-details">
+                                    <h4 class="inline-block">{{studentDetails?.firstGivenName}}
+                                        {{studentDetails?.middleName
+                                        ? ''+studentDetails?.middleName+' ':''}}{{studentDetails?.lastFamilyName}}</h4>
+                                    <span class="inline-block" *ngIf="studentDetails?.homeAddressLineOne"> | </span>
+                                    <p class="inline-block">
+                                        {{studentDetails?.homeAddressLineOne}}{{studentDetails?.homeAddressLineTwo
+                                        ? ', ' + studentDetails?.homeAddressLineTwo :
+                                        ''}}{{studentDetails?.homeAddressCity ? ', ' +
+                                        studentDetails?.homeAddressCity :
+                                        ''}}{{studentDetails?.homeAddressState ? ', ' +
+                                        studentDetails?.homeAddressState :
+                                        ''}}{{studentDetails?.homeAddressZip ? ', ' +
+                                        studentDetails?.homeAddressZip :
+                                        ''}}{{studentDetails?.homeAddressCountry ? ', ' +
+                                        studentDetails?.homeAddressCountry : ''}}</p>
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>{{'studentId' | translate }}</b> : <span>{{studentDetails?.studentId}}</span></td>
+                                                <td><b>{{'alternateId' | translate }}</b> : <span>{{studentDetails?.alternateId}}</span>
+                                                </td>
+                                                <td><b>{{'dateOfBirth' | translate}}</b> : <span>{{studentDetails?.dob | date :
+                                                        'MMM/dd/y'}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>{{'grade' | translate}}</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
+                                                <td><b>{{'gender' | translate}}</b> : <span>{{studentDetails?.gender}}</span></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr
+                    *ngIf="studentEnrollmentInfoReportModel.isEnrollmentInfo && studentDetails?.studentEnrollment?.length > 0">
+                    <td>
+                        <table>
+                            <tr>
+                                <td class="p-20 width-160">
+                                    <h4 class="f-s-18"><strong>{{'enrollment' | translate}}<br>{{'information' | translate}}</strong></h4>
+                                </td>
+                                <td class="student-details">
+                                    <table class="border-table information-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate"><strong>{{'schoolYear' | translate}}</strong></td>
+                                                <td class="bg-slate"><strong>{{'enrollmentDateAndCode' | translate}}</strong></td>
+                                                <td class="bg-slate"><strong>{{'gradeLevel' | translate }}</strong></td>
+                                                <td class="bg-slate"><strong>{{'exitDateAndCode' | translate}}</strong></td>
+                                                <td class="bg-slate"><strong>{{'schoolName' | translate}}</strong></td>
+                                            </tr>
+                                            <tr *ngFor="let enrollmentDetails of studentDetails?.studentEnrollment">
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    {{enrollmentDetails?.startYear && enrollmentDetails?.startYear ?
+                                                    enrollmentDetails?.startYear + ' - ' + enrollmentDetails?.endYear :
+                                                    ''}}
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.enrollmentDate">
+                                                        {{enrollmentDetails?.enrollmentDate | date : 'mediumDate'}} -
+                                                        Enrolled as {{enrollmentDetails?.enrollmentCode}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.enrollmentDate">
+                                                        {{enrollmentDetails?.gradeLevelTitle}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    <ng-container *ngIf="enrollmentDetails?.exitDate">
+                                                        {{enrollmentDetails?.exitDate | date : 'mediumDate'}} -
+                                                        {{enrollmentDetails?.exitCode}}
+                                                    </ng-container>
+                                                </td>
+                                                <td [ngClass]="{'bg-slate': enrollmentDetails?.exitDate }">
+                                                    {{enrollmentDetails?.schoolName}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+</div>
+<!-- For generate particular student enrollment report section end -->
