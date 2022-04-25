@@ -213,7 +213,7 @@
 </vex-page-layout>
 
 
-<div class="container">
+<!-- <div class="container"> -->
     <div class="hidden" id="printSectionId">
         <div class="report-card" *ngFor="let transcript of generatedTranscriptData?.studentsDetailsForTranscripts">
             <table cellpadding="0" cellspacing="0">
@@ -252,8 +252,8 @@
                                     <div class="info-left float-left">
                                         <h2>{{transcript?.firstGivenName+" "+transcript?.lastFamilyName}}</h2>
                                         <p>{{transcript?.homeAddressLineOne ? transcript?.homeAddressLineOne : ''}}{{transcript?.homeAddressLineTwo ? ', '+transcript?.homeAddressLineTwo : ''}}{{transcript?.homeAddressCity ? ', '+transcript?.homeAddressCity : ''}}{{transcript?.homeAddressState ? ', '+transcript?.homeAddressState : ''}}{{transcript?.homeAddressZip ? ', '+transcript?.homeAddressZip : ''}}</p>
-                                        <p>Date of Birth : {{transcript?.dob | date:'mediumDate'}}</p>
-                                        <p>Student ID : {{transcript?.studentInternalId}}</p>
+                                        <p>{{'dateOfBirth' | translate}} : {{transcript?.dob | date:'mediumDate'}}</p>
+                                        <p>{{'studentId' | translate}} : {{transcript?.studentInternalId}}</p>
                                     </div>
                                 </td>
                                 <td width="35%">
@@ -285,9 +285,10 @@
                                 <h2 class="float-left">
                                     <b>{{gradeLevelDetails?.gradeLevelTitle}}</b>&nbsp;<span>({{gradeLevelDetails?.schoolName}})</span>
                                 </h2>
-                                <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
+                                <p class="float-right">{{'schoolYear' | translate}} : {{gradeLevelDetails?.schoolYear}}</p>
                             </caption>
-                            <div *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                            <tr *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                            <td>
                             <table class="semester-subtable">
                                 <caption>
                                     <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
@@ -313,14 +314,14 @@
                                         <td>{{reportCardDetails?.gpValue}}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / Credit
-                                                Earned: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
+                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / {{'creditEarned' |translate}}: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
                                                 {{markingPeriod?.gpa}}</b>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            </div>
+                        </td>
+                        </tr>
                         </table>
                     </td>
                 </tr>
@@ -335,7 +336,7 @@
                             </caption>
                             <thead>
                                 <tr>
-                                    <th>{{'Grade Letter'|translate}}</th>
+                                    <th>{{'gradeLetter'|translate}}</th>
                                     <th>{{'weightedGradePoints' |translate}}</th>
                                     <th>{{'unweightedGradePoints' |translate}}</th>
                                     <th>{{'comments' |translate}}</th>
@@ -357,7 +358,7 @@
                         <table cell-padding="10">
                             <tr>
                                 <td width="60%" style="vertical-align: top;">
-                                    <i>Not official unless signed.</i>
+                                    <i>{{'notOfficialUnlessSigned' | translate}}</i>
                                 </td>
                                 <td width="40%">
                                     <p class="short-sign"></p>
@@ -375,4 +376,4 @@
             <div style="page-break-before:always">&nbsp;</div>
         </div>
     </div>
-</div>
+<!-- </div> -->

@@ -70,7 +70,7 @@
 </mat-card>
 
 
-<div class="container">
+<!-- <div class="container"> -->
     <div class="hidden" id="printSectionId">
         <div class="report-card" *ngFor="let transcript of generatedTranscriptData?.studentsDetailsForTranscripts">
             <table cellpadding="0" cellspacing="0">
@@ -109,8 +109,8 @@
                                     <div class="info-left float-left">
                                         <h2>{{transcript?.firstGivenName+" "+transcript?.lastFamilyName}}</h2>
                                         <p>{{transcript?.homeAddressLineOne ? transcript?.homeAddressLineOne : ''}}{{transcript?.homeAddressLineTwo ? ', '+transcript?.homeAddressLineTwo : ''}}{{transcript?.homeAddressCity ? ', '+transcript?.homeAddressCity : ''}}{{transcript?.homeAddressState ? ', '+transcript?.homeAddressState : ''}}{{transcript?.homeAddressZip ? ', '+transcript?.homeAddressZip : ''}}</p>
-                                        <p>Date of Birth : {{transcript?.dob | date:'mediumDate'}}</p>
-                                        <p>Student ID : {{transcript?.studentInternalId}}</p>
+                                        <p>{{'dateOfBirth' | translate}} : {{transcript?.dob | date:'mediumDate'}}</p>
+                                        <p>{{'studentId' | translate}} : {{transcript?.studentInternalId}}</p>
                                     </div>
                                 </td>
                                 <td width="35%">
@@ -142,10 +142,11 @@
                                 <h2 class="float-left">
                                     <b>{{gradeLevelDetails?.gradeLevelTitle}}</b>&nbsp;<span>({{gradeLevelDetails?.schoolName}})</span>
                                 </h2>
-                                <p class="float-right">School Year: {{gradeLevelDetails?.schoolYear}}</p>
+                                <p class="float-right">{{'schoolYear' | translate}} : {{gradeLevelDetails?.schoolYear}}</p>
                             </caption>
-                            <div class="semester-subtable" *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
-                            <table>
+                            <tr *ngFor="let markingPeriod of gradeLevelDetails?.markingPeriodDetailsForTranscripts">
+                            <td>
+                            <table class="semester-subtable">
                                 <caption>
                                     <h4><b>{{markingPeriod?.markingPeriodTitle}}</b></h4>
                                 </caption>
@@ -170,14 +171,14 @@
                                         <td>{{reportCardDetails?.gpValue}}</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / Credit
-                                                Earned: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
+                                        <td colspan="6"><b>{{'creditAttempted' |translate}}: {{markingPeriod?.creditAttemped}} / {{'creditEarned' |translate}}: {{markingPeriod?.creditEarned}} / {{'gpa'|translate}}:
                                                 {{markingPeriod?.gpa}}</b>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            </div>
+                        </td>
+                        </tr>
                         </table>
                     </td>
                 </tr>
@@ -203,7 +204,7 @@
                                     <td>{{gradeDetails?.title}}</td>
                                     <td>{{gradeDetails?.weightedGpValue}}</td>
                                     <td>{{gradeDetails?.unweightedGpValue}}</td>
-                                    <td>{{gradeDetails?.comment}}</td>
+                                    <td><p class="word-break">{{gradeDetails?.comment}}</p></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -231,7 +232,7 @@
             </table>
         </div>
     </div>
-</div>
+<!-- </div> -->
 
 
 <!-- <mat-card class="w-full mb-6 py-4">
