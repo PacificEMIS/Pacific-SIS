@@ -584,6 +584,9 @@ export class StudentTranscriptComponent implements OnInit {
     width: 100%;
     overflow: hidden;
   }
+  .semester-table .semester-subtable table {
+    margin-bottom: 20px;
+  }
   .word-break {
     word-break: break-word;
   }

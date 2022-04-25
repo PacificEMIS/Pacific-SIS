@@ -836,6 +836,9 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     width: 100%;
     overflow: hidden;
   }
+  .semester-table .semester-subtable table {
+    margin-bottom: 20px;
+  }
   .word-break {
     word-break: break-word;
   }
