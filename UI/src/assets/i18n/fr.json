@@ -1800,5 +1800,7 @@
     "effortGrade": "Niveau d'effort",
     "standardsGradeLegend": "Légende des normes de qualité",
     "effortGradeLegend": "Légende de la note d'effort",
-    "addAnotherCourse": "Ajouter un autre cours"
+    "addAnotherCourse": "Ajouter un autre cours",
+    "youCannotAccess": "Vous ne pouvez pas accéder",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "parce que l'échelle de notes pour la section de cours n'est pas définie"
 }

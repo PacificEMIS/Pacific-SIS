@@ -1801,5 +1801,7 @@
     "effortGrade": "Effort Grade",
     "standardsGradeLegend": "Standards Grade Legend",
     "effortGradeLegend": "Effort Grade Legend",
-    "addAnotherCourse": "Add Another Course"
+    "addAnotherCourse": "Add Another Course",
+    "youCannotAccess": "You cannot access",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set"
 }

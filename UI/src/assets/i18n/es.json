@@ -1802,5 +1802,7 @@
     "effortGrade": "Grado de esfuerzo",
     "standardsGradeLegend": "Leyenda de la calificación de los estándares",
     "effortGradeLegend": "Leyenda del grado de esfuerzo",
-    "addAnotherCourse": "Agregar otro curso"
+    "addAnotherCourse": "Agregar otro curso",
+    "youCannotAccess": "No puedes acceder",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida"
 }
