@@ -1,5 +1,5 @@
 import { ConstantPool, isNgContent } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonService } from 'src/app/services/common.service';
 import { FinalGradingMarkingPeriodList, GradebookConfigurationAddViewModel, GradebookConfigurationProgressPeriods, GradebookConfigurationQuarter, GradebookConfigurationSemester, GradebookConfigurationYear } from '../../../models/gradebook-configuration.model';
@@ -26,6 +26,7 @@ export class GradebookConfigurationComponent implements OnInit {
   stotalNot100: boolean = false;
   ytotalNot100: boolean = false;
   isNotGraded: boolean;
+  @Input() courseWeightedFlag: boolean;
 
   constructor(private gradeBookConfigurationService: GradeBookConfigurationService,
     private gradesService: GradesService,

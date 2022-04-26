@@ -48,6 +48,8 @@ export class AddAssignmentComponent implements OnInit {
   isWeightedSection: boolean;
   editMode: boolean = false;
   editDetails;
+  weightedGradesFlag: boolean;
+
   constructor(
     private dialogRef: MatDialogRef<AddAssignmentComponent>,
     private assignmentService: StaffPortalAssignmentService,
@@ -59,6 +61,7 @@ export class AddAssignmentComponent implements OnInit {
     private commonService: CommonService,
   ) {
     this.isWeightedSection= this.data.isWeightedSection;
+    this.weightedGradesFlag = this.data.weightedGradesChecked;
     this.dashboardService.selectedCourseSectionDetails.subscribe((res) => {
       if (res) {
         if(res.yrMarkingPeriodId){

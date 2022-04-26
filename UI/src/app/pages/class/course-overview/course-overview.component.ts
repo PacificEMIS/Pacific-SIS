@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icEdit from '@iconify/icons-ic/edit';
 import icHowtoReg from '@iconify/icons-ic/outline-how-to-reg';
@@ -57,6 +57,7 @@ export class CourseOverviewComponent implements OnInit {
   periodTitle;
   weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   name = 'subhajit';
+  @Output() weightedCourse: EventEmitter<boolean> =   new EventEmitter();
 
   constructor(
     public translateService: TranslateService,
@@ -97,6 +98,7 @@ export class CourseOverviewComponent implements OnInit {
           else{
             this.singleCourseSection = res.getCourseSectionForView.find(couresesection =>
               couresesection.courseSection.courseSectionId === this.courseSectionId);
+            this.weightedCourse.emit(this.singleCourseSection?.courseSection?.isWeightedCourse);
           }
         }
         else{
