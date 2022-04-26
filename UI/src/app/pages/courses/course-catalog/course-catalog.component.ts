@@ -363,6 +363,7 @@ export class CourseCatalogComponent implements OnInit {
 
   getCourseCatelog() {
     this.courseSectionData = [];
+    this.newCourseDataSet = [];
     this.courseManager.getCourseCatelog(this.courseCatelogViewModel).subscribe(data => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
