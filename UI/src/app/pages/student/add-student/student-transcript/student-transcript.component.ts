@@ -332,7 +332,7 @@ export class StudentTranscriptComponent implements OnInit {
       <html>
         <head>
           <title>Print tab</title>
-          <style> 
+          <style>
           h1,
   h2,
   h3,
@@ -374,7 +374,7 @@ export class StudentTranscriptComponent implements OnInit {
     font-family: "Roboto", "Helvetica Neue";
   }
   .report-card-header td {
-    padding: 20px 10px;
+    padding: 15px 10px;
   }
   .header-left h2 {
     font-weight: 400;
@@ -396,10 +396,11 @@ export class StudentTranscriptComponent implements OnInit {
     vertical-align: top;
   }
   .student-info-header .info-left {
-    padding-top: 20px;
+    padding-top: 10px;
+    width: calc(100% - 150px);
   }
   .student-info-header .info-left h2 {
-    font-size: 16px;
+    font-size: 20px;
     margin-bottom: 8px;
     font-weight: 600;
   }
@@ -421,11 +422,8 @@ export class StudentTranscriptComponent implements OnInit {
     padding: 0 10px 30px;
     vertical-align: top;
   }
-  .semester-table .semester-subtable table {
-    border: 1px solid #000;
-  }
   .semester-table th,
-  .semester-table td {
+  .semester-table td:not(.semester-subtable) {
     border-bottom: 1px solid #000;
     padding: 8px 15px;
   }
@@ -443,11 +441,15 @@ export class StudentTranscriptComponent implements OnInit {
     font-size: 24px;
   }
   .semester-table .semester-subtable caption {
-    margin-bottom: 0px;
+    margin-bottom: 8px;
     text-align: left;
   }
   .semester-table .semester-subtable {
     margin-bottom: 20px;
+    margin-top: 10px;
+  }
+  .semester-table .semester-subtable thead, .semester-table .semester-subtable tbody {
+    border: 1px solid #000;
   }
   .gpa-table {
     padding: 0 10px 30px;
@@ -539,11 +541,12 @@ export class StudentTranscriptComponent implements OnInit {
   }
 
   .report-card-header .header-left {
-    width: 68%;
+    width: 70%;
   }
 
   .report-card-header .information {
     width: calc(100% - 110px);
+    margin-top: 10px
   }
 
   .header-right {
@@ -558,8 +561,8 @@ export class StudentTranscriptComponent implements OnInit {
     margin-right: 20px;
     border: 1px solid #000;
     border-radius: 3px;
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 
   .student-photo img {
@@ -573,14 +576,20 @@ export class StudentTranscriptComponent implements OnInit {
   }
 
   .student-info-header .info-right td:last-child {
-      background-color: #040404;
-      color: #e2e2e2;
+    background-color: #040404;
+    color: #e2e2e2;
   }
 
   .logo img {
     width: 100%;
     overflow: hidden;
-}
+  }
+  .semester-table .semester-subtable table {
+    margin-bottom: 20px;
+  }
+  .word-break {
+    word-break: break-word;
+  }
           </style>
         </head>
     <body onload="window.print()">${printContents}</body>
