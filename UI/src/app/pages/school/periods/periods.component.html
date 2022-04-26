@@ -156,11 +156,11 @@
                             </ng-container>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" class="justify-center  text-center">
-                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="editPeriod(element)" matTooltip="Edit Info"
+                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="editPeriod(element)" matTooltip="{{'editInfo' | translate}}"
                                 class="mx-1 cursor-pointer">
                                 <mat-icon [icIcon]="icEdit"></mat-icon>
                             </a>
-                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="confirmDeletePeriod(element)" matTooltip="Delete Info"
+                            <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="confirmDeletePeriod(element)" matTooltip="{{'deleteInfo' | translate}}"
                                 class="mx-1 cursor-pointer">
                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                             </a>

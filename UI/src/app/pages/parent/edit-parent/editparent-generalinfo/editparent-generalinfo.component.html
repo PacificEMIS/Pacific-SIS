@@ -96,21 +96,21 @@
                             (click)='openViewDetails(student)'>
                             <div class="subheading-2 leading-snug text-primary">{{student.firstGivenName+'
                                 '+student.middleName+' '+student.lastFamilyName | EmtyValueCheckPipe}}</div>
-                            <div class="body-1 text-secondary truncate contact-type"><span matTooltip="Grade Level">{{student.gradeLevelTitle|
-                                EmtyValueCheckPipe}}</span> <span class="dot-separator"></span> <span matTooltip="School Name">{{student.schoolName |
+                            <div class="body-1 text-secondary truncate contact-type"><span matTooltip="{{'gradeLevel' | translate}}">{{student.gradeLevelTitle|
+                                EmtyValueCheckPipe}}</span> <span class="dot-separator"></span> <span matTooltip="{{'schoolName' | translate}}">{{student.schoolName |
                                 EmtyValueCheckPipe}}</span></div>
                         </div>
                         <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end" class="pr-3">
                             <div class="flex items-center">
                                 <span class="custody mr-3" *ngIf="student.isCustodian;else noCustody"><img
-                                        src="../../../../assets/img/icons/mother.svg" matTooltip="Custody of Student"
+                                        src="../../../../assets/img/icons/mother.svg" matTooltip="{{'custodyOfStudent' | translate}}"
                                         class="w-6 inline-block align-middle" alt="Custody of student icon"/></span>
                                 <ng-template #noCustody>
                                     <span class="no-custody mr-3"><img src="../../../../assets/img/icons/mother.svg"
-                                            matTooltip="No Custody of Student"
+                                            matTooltip="{{'noCustodyOfStudent' | translate}}"
                                             class="inline-block align-middle" alt="No custody of student icon"/></span>
                                 </ng-template>
-                                <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Remove Association" type="button" class="text-gray">
+                                <button *ngIf="permissions?.edit" mat-icon-button matTooltip="{{'removeAssociation' | translate}}" type="button" class="text-gray">
                                     <mat-icon (click)="confirmDelete(student)" [icIcon]="icRemove"></mat-icon>
                                 </button>
                             </div>

@@ -19,7 +19,7 @@
                     <mat-form-field class="flex-none w-full mb-0" appearance="outline" color="primary">
                         <mat-label>{{'password'|translate}}</mat-label>
                         <input [type]="inputType" name="password" matInput required>
-                        <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="Toggle Visibility" type="button">
+                        <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="{{'toggleVisibility' | translate}}" type="button">
                             <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
                             <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
                         </button>

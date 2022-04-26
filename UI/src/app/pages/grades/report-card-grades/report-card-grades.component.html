@@ -61,11 +61,11 @@
                     <hr class="-mx-4 block md:hidden"/> 
                     <div fxFlex="200px" class="pt-3">
                         <a (click)="exportToExcel()" class="cursor-pointer inline-block align-middle"
-                            matTooltip="Export to Excel">
+                            matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                            matTooltip="Filter Columns" type="button">
+                            matTooltip="{{'filterColumns' | translate}}" type="button">
                             <mat-icon [icIcon]="icFilterList"></mat-icon>
                         </button>
                         <button *ngIf="permissions?.add && defaultValuesService.checkAcademicYear()" color="primary" [disabled]="gradeScaleList==null" class="ml-4"
@@ -131,11 +131,11 @@
                     <ng-container matColumnDef="action" stickyEnd *ngIf="defaultValuesService.checkAcademicYear()">
                         <mat-header-cell *matHeaderCellDef>{{'actions'|translate}}</mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <a *ngIf="permissions?.edit" (click)="editGrade(element)" matTooltip="Edit Info"
+                            <a *ngIf="permissions?.edit" (click)="editGrade(element)" matTooltip="{{'editInfo' | translate}}"
                                 class="mr-3 cursor-pointer">
                                 <mat-icon [icIcon]="icEdit"></mat-icon>
                             </a>
-                            <a *ngIf="permissions?.edit" (click)="confirmDeleteGrade(element)" matTooltip="Delete Info"
+                            <a *ngIf="permissions?.edit" (click)="confirmDeleteGrade(element)" matTooltip="{{'deleteInfo' | translate}}"
                                 class="mr-3 cursor-pointer">
                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                             </a>

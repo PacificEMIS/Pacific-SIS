@@ -76,7 +76,7 @@
                     </div>
                     <hr class="-mx-4 block md:hidden" />
                     <div class="flex items-center">
-                        <a (click)="exportStudentListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                        <a (click)="exportStudentListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="30">
                         </a>
                     </div>
@@ -166,7 +166,7 @@
             <div class="bg-white sticky left-0 p-4" fxLayout="row" fxLayoutAlign="start center">
                 <div class="flex w-full justify-between items-center">
                     <h4 class="text-primary font-semibold">{{studentFinalGradeReport.length}} {{'studentRecordsFound' | translate }}</h4>
-                    <a (click)="exportFinalGradeReportToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <a (click)="exportFinalGradeReportToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                         <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                     </a>
                 </div>

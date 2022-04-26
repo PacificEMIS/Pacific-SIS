@@ -27,10 +27,10 @@
             </div>
                      
             <div class="w-1/4">
-                <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="updateSubject(subject,index)" [hidden]="hideDiv[index]" matTooltip="Edit Info" class="mr-3 cursor-pointer">
+                <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="updateSubject(subject,index)" [hidden]="hideDiv[index]" matTooltip="{{'editInfo' | translate}}" class="mr-3 cursor-pointer">
                     <mat-icon [icIcon]="icEdit"></mat-icon>
                 </a>
-                <a (click)="confirmDelete(subject)" *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [hidden]="hideDiv[index]" matTooltip="Delete Info" class="mr-3 cursor-pointer">
+                <a (click)="confirmDelete(subject)" *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" [hidden]="hideDiv[index]" matTooltip="{{'deleteInfo' | translate}}" class="mr-3 cursor-pointer">
                     <mat-icon [icIcon]="icDelete"></mat-icon>
                 </a>
             </div>

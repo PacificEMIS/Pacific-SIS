@@ -10,7 +10,7 @@
                     <span *ngIf="sibling.studentEnrollment[0]?.gradeLevelTitle" class="separator"></span>{{sibling?.studentEnrollment[0]?.gradeLevelTitle}}</div>
             </div>
             <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end">
-                <button *ngIf="permissions.edit" mat-icon-button matTooltip="Remove Association" (click)="confirmDelete(sibling)" type="button" class="text-gray">
+                <button *ngIf="permissions.edit" mat-icon-button matTooltip="{{'removeAssociation' | translate}}" (click)="confirmDelete(sibling)" type="button" class="text-gray">
                     <mat-icon [icIcon]="icRemove"></mat-icon>
                 </button>
             </div>

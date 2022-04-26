@@ -19,17 +19,17 @@
             <div fxFlex="none" fxLayout="column" fxLayoutAlign="center end">
                 <div class="flex">
                         <span  class="custody mr-4"  *ngIf="parent.isCustodian;else noCustody"><img src="../../../../assets/img/icons/mother.svg"
-                            matTooltip="Custody of Student"
+                            matTooltip="{{'custodyOfStudent' | translate}}"
                             class="w-6 mt-2 inline-block align-middle" alt="Custody of student icon"/></span>
                    <ng-template #noCustody>
                         <span  class="no-custody mr-4"  ><img src="../../../../assets/img/icons/mother.svg"
-                            matTooltip="No Custody of Student"
+                            matTooltip="{{'noCustodyOfStudent' | translate}}"
                             class="inline-block align-middle" alt="No custody of student icon"/></span>
                    </ng-template>
-                    <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Edit" type="button" class="text-gray">
+                    <button *ngIf="permissions?.edit" mat-icon-button matTooltip="{{'edit' | translate}}" type="button" class="text-gray">
                     <mat-icon (click) = "editParentInfo(parent)" [icIcon]="icEdit" class="mr-2"></mat-icon>
                 </button>
-                    <button *ngIf="permissions?.delete" mat-icon-button matTooltip="Delete" type="button" class="text-gray">
+                    <button *ngIf="permissions?.delete" mat-icon-button matTooltip="{{'delete' | translate}}" type="button" class="text-gray">
                         <mat-icon (click)="confirmDelete(parent)" [icIcon]="icRemove"></mat-icon>
                     </button>
             </div>

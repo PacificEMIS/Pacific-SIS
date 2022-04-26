@@ -32,6 +32,7 @@ import { SharedModuleModule } from '../../../pages/shared-module/shared-module.m
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [AttendanceSettingsComponent, AttendanceCodesComponent],
@@ -67,7 +68,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatButtonToggleModule,
     MatTabsModule,
     SharedModuleModule,
-    DragDropModule
+    DragDropModule,
+    MatTooltipModule
   ]
 })
 export class AttendanceSettingsModule { }

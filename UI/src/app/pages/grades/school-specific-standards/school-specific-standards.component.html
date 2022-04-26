@@ -67,11 +67,11 @@
 
             <div fxFlex="200px" class="pt-3">
                 <a (click)="exportSchoolSpecificStandardsListToExcel()"
-                    class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                    matTooltip="Filter Columns" type="button">
+                    matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
                 <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button"
@@ -143,11 +143,11 @@
                     </ng-container>
                 </th>
                 <td mat-cell *matCellDef="let element">
-                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="openEdit(element)" matTooltip="Edit Item"
+                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="openEdit(element)" matTooltip="{{'editItem' | translate}}"
                         class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icEdit"></mat-icon>
                     </a>
-                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="confirmDelete(element)" matTooltip="Delete Item"
+                    <a *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click)="confirmDelete(element)" matTooltip="{{'deleteItem' | translate}}"
                         class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icDelete"></mat-icon>
                     </a>

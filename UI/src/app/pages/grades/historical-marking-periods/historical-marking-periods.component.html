@@ -19,13 +19,13 @@
 
             <hr class="-mx-4 block md:hidden" />
             <div fxFlex="200px" class="pt-3">
-                <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel"
+                <a class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                     (click)="exportToExcel()">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
 
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 
-                    inline-block align-middle" fxFlex="none" mat-icon-button matTooltip="Filter Columns" type="button">
+                    inline-block align-middle" fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>filter_list</mat-icon>
                 </button>
                 <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='goToAdd()' *ngIf="defaultValuesService.checkAcademicYear()">
@@ -60,10 +60,10 @@
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef> {{ 'action' | translate }} </th>
                 <td mat-cell *matCellDef="let element">
-                    <a matTooltip="Edit Item" (click)="goToEdit(element)" class="mr-3 cursor-pointer">
+                    <a matTooltip="{{'editItem' | translate}}" (click)="goToEdit(element)" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icEdit"></mat-icon>
                     </a>
-                    <a matTooltip="Delete Item" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
+                    <a matTooltip="{{'deleteItem' | translate}}" (click)="confirmDelete(element)" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icDelete"></mat-icon>
                     </a>
                 </td>
