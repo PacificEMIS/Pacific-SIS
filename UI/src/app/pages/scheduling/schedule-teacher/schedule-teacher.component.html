@@ -71,7 +71,7 @@
                 <div class="teacher-info mb-2">
                     <span
                         class="text-lg inline-block align-middle text-green font-bold">{{teacherSchedule.staffFullName}}</span>
-                    <span class="inline-block align-middle ml-3" matTooltip="Homeroom Teacher"
+                    <span class="inline-block align-middle ml-3" matTooltip="{{'homeroomTeacher' | translate}}"
                         *ngIf="teacherSchedule.homeroomTeacher"><img src="assets/img/icons/homeroom_teacher.svg"
                             class="w-4 opacity-50" alt="Homeroom teacher icon"></span>
                     <ng-container *ngIf="teacherSchedule.staffInternalId">
@@ -155,7 +155,7 @@
                                         <ng-container *ngIf="courseSection.scheduledStaff==null">-</ng-container>
                                     </td>
                                     <td>
-                                        <a href="javascript:void();" class="text-xl" matTooltip="View Details"
+                                        <a href="javascript:void();" class="text-xl" matTooltip="{{'viewDetails' | translate}}"
                                             (click)="viewCorrespondingSchedule(courseSection)"><i
                                                 class="icon icon-info2"></i></a>
                                     </td>

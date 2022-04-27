@@ -21,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { MarkingPeriodsRoutingModule } from './marking-periods-routing-module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { MarkingPeriodsRoutingModule } from './marking-periods-routing-module';
     EditMarkingPeriodModule,
     TranslateModule,
     SharedModuleModule,
-    MarkingPeriodsRoutingModule
+    MarkingPeriodsRoutingModule,
+    MatTooltipModule
   ]
 })
 export class MarkingPeriodsModule { }

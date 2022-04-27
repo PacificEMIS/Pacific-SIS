@@ -235,7 +235,7 @@
                 <div class="md:flex w-full justify-between items-center">
                     <h4 class="text-primary font-semibold">{{generateCourseSectionList?.length}} {{(generateCourseSectionList?.length>1?'courseSectionsAnd':'courseSectionAnd') | translate}} {{totalStudentCount}} {{(totalStudentCount>1?'studentsFound':'studentFound') | translate}}.</h4>
                     <div class="py-2 md:pt-2 items-center">
-                        <a class="cursor-pointer inline-block align-middle" (click)="generateExcel()" matTooltip="Export to Excel">
+                        <a class="cursor-pointer inline-block align-middle" (click)="generateExcel()" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                     </div>

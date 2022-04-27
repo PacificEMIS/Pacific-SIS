@@ -61,7 +61,7 @@
                 </div>
                 <hr class="block md:hidden" />
                 <div class="py-2 md:pt-2 flex items-center">
-                    <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel"
+                    <a class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                         (click)="exportAccessLogListToExcel()">
                         <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                     </a>
@@ -97,7 +97,7 @@
                     <th mat-header-cell *matHeaderCellDef>{{'periodAttendanceStatus' | translate }}</th>
                     <td mat-cell *matCellDef="let element">
                         <div *ngFor="let data of element.studentAttendanceList" class="inline-block">
-                            <div class="inline-block" matTooltip="{{data[0]}} {{' - '}} {{data[1]?data[1]:'Not Taken'}}"
+                            <div class="inline-block" matTooltip="{{data[0]}} {{' - '}} {{data[1]?data[1]:'notTaken' | translate}}"
                                 aria-label="Button that displays a tooltip when focused or hovered over"
                                 [matTooltipPosition]="'above'">
                                 <span class="inline-block bg-green w-5 h-5 mr-2 rounded-full"

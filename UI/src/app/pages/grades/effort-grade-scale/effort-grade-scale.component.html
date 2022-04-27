@@ -18,10 +18,10 @@
 
             <div fxFlex="200px" class="pt-3">
                 <a (click)="exportEffortGradeScaleListToExcel()"
-                    class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                    matTooltip="Filter Columns" type="button">
+                    matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
                 <button *ngIf="permissions?.add && defaultValuesService.checkAcademicYear()" color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" (click)='openAdd()'>
@@ -61,10 +61,10 @@
             <ng-container matColumnDef="actions" stickyEnd *ngIf="defaultValuesService.checkAcademicYear()">
                 <mat-header-cell *matHeaderCellDef width="150">{{'action'|translate}}</mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <a *ngIf="permissions?.edit" (click)="openEdit(element)" matTooltip="Edit Item" class="mr-3 cursor-pointer">
+                    <a *ngIf="permissions?.edit" (click)="openEdit(element)" matTooltip="{{'editItem' | translate}}" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icEdit"></mat-icon>
                     </a>
-                    <a *ngIf="permissions?.edit" (click)="confirmDelete(element)" matTooltip="Delete Item" class="mr-3 cursor-pointer">
+                    <a *ngIf="permissions?.edit" (click)="confirmDelete(element)" matTooltip="{{'deleteItem' | translate}}" class="mr-3 cursor-pointer">
                         <mat-icon [icIcon]="icDelete"></mat-icon>
                     </a>
                 </mat-cell>

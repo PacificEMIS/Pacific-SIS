@@ -27,9 +27,9 @@
           <div fxFlex="350px" class="pt-3">
                       <mat-slide-toggle color="primary" class="mr-6 align-middle" [(ngModel)]="showInactiveSchools" (change)="includeInactiveSchools($event)"><span class="hidden md:inline-block">{{'showInactiveSchool' | translate}}</span><span class="inline-block md:hidden">{{'inactive' | translate}}</span></mat-slide-toggle>
             <a (click)="exportSchoolListToExcel()" class="cursor-pointer inline-block align-middle"
-              matTooltip="Export to Excel"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
+              matTooltip="{{'exportToExcel' | translate}}"><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24"></a>
             <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-              matTooltip="Filter Columns" type="button">
+              matTooltip="{{'filterColumns' | translate}}" type="button">
               <mat-icon [icIcon]="icFilterList"></mat-icon>
             </button>
 

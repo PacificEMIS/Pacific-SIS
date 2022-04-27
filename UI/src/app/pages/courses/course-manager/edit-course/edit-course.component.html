@@ -1,6 +1,6 @@
 <div fxLayout="row" fxLayoutAlign="start center" mat-dialog-title>
     <h2 class="headline m-0" fxFlex="auto" *ngIf="addStandard; else addNewCourseTitle">
-        <a routerLink="" (click)="closeStandardsSelection()" class="text-primary cursor-pointer"><mat-icon [icIcon]="icBack" matTooltip="Back to Previous" class="mr-3 align-middle"></mat-icon></a>{{'addStandardTo'|translate}} <span class="text-green font-bold">{{addCourseModel.course.courseTitle}}</span></h2>
+        <a routerLink="" (click)="closeStandardsSelection()" class="text-primary cursor-pointer"><mat-icon [icIcon]="icBack" matTooltip="{{'backToPrevious' | translate}}" class="mr-3 align-middle"></mat-icon></a>{{'addStandardTo'|translate}} <span class="text-green font-bold">{{addCourseModel.course.courseTitle}}</span></h2>
     <ng-template #addNewCourseTitle><h2 [ngClass]="addStandard?'hidden':''" class="headline m-0" fxFlex="auto">{{courseModalTitle | translate}}</h2></ng-template>
         <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
             <mat-icon [icIcon]="icClose"></mat-icon>

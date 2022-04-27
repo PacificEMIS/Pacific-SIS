@@ -3,10 +3,10 @@
     <div class="flex items-center" fxLayout="row" fxLayoutAlign="center center">
         <h3 class="flex-auto">{{'comments' | translate}}</h3>
         <div>
-            <a (click)="exportCommentsToExcel()" class="cursor-pointer mr-3 inline-block align-middle" matTooltip="Export as Excel">
+            <a (click)="exportCommentsToExcel()" class="cursor-pointer mr-3 inline-block align-middle" matTooltip="{{'exportAsExcel' | translate}}">
                 <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
             </a>
-            <a (click)="generatePdf()" class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="Print"><mat-icon [icIcon]="icPrint"></mat-icon></a>
+            <a (click)="generatePdf()" class="cursor-pointer p-1 mt-1 mr-3 inline-block align-middle" matTooltip="{{'print' | translate}}"><mat-icon [icIcon]="icPrint"></mat-icon></a>
             <button *ngIf="(membershipType === 'Teacher' || membershipType === 'Homeroom Teacher') && this.defaultValuesService.checkAcademicYear() && permissions?.add" mat-raised-button color="primary" class="align-middle" (click)='openAddNew()'>
                 <mat-icon [icIcon]="icAdd"></mat-icon><span class="ml-2 hidden md:inline-block">{{'addComment' |translate}}</span>
             </button>
@@ -26,10 +26,10 @@
                                     <div class="flex w-full justify-between items-center h-full">
                                         <h5 class="inline-block font-medium"><mat-icon [icIcon]="icComment" class="inline-block align-middle mr-3"></mat-icon><span class="text-primary font-medium">{{studentComment.updatedBy?studentComment.updatedBy:studentComment.createdBy}}</span> Commented on {{(studentComment.updatedOn?studentComment.updatedOn:studentComment.createdOn)|date:'MMM d, y, h:mm a'}}</h5>
                                         <div class="font-normal pt-1">
-                                            <button *ngIf="permissions?.edit" mat-icon-button matTooltip="Edit Comment" (click)="editComment(studentComment)" type="button">
+                                            <button *ngIf="permissions?.edit" mat-icon-button matTooltip="{{'editComment' | translate}}" (click)="editComment(studentComment)" type="button">
                                                 <mat-icon [icIcon]="icEdit" class="mr-2"></mat-icon>
                                             </button>
-                                            <button *ngIf="permissions?.delete" mat-icon-button matTooltip="Delete Comment" (click)="confirmDelete(studentComment)"type="button">
+                                            <button *ngIf="permissions?.delete" mat-icon-button matTooltip="{{'deleteComment' | translate}}" (click)="confirmDelete(studentComment)"type="button">
                                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                                             </button>
                                         </div>

@@ -48,6 +48,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 // import { SearchStudentComponent } from '../../grades/search-student/search-student.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { HistoricalMarkingPeriodsComponent } from '../../grades/historical-marking-periods/historical-marking-periods.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -106,7 +107,8 @@ import { HistoricalMarkingPeriodsComponent } from '../../grades/historical-marki
     MatDividerModule,
     NgxDocViewerModule,
     MatExpansionModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ]
 })
 export class GradeSettingsModule { }
