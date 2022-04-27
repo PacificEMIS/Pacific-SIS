@@ -2862,8 +2862,22 @@ namespace opensis.data.Repository
             {
                 try
                 {
-                    if (studentListModel.studentMaster?.Any()==true)
+                    if (studentListModel.studentMaster?.Any() == true)
                     {
+                        //for insert in job fetch max id.
+                        long? Id = 1;
+                        var dataExits = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId);
+                        if (dataExits?.Any() == true)
+                        {
+                            var scheduledJobData = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId).Max(x => x.JobId);
+                            if (scheduledJobData != null)
+                            {
+                                Id = scheduledJobData + 1;
+                            }
+                        }
+
+                        studentListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentListModel.TenantId, studentListModel.SchoolId).ToString(); //fetch current academic year
+
                         int? calenderId = null;
                         var defaultCalender = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == studentListModel.TenantId && x.SchoolId == studentListModel.SchoolId && x.AcademicYear.ToString() == studentListModel.AcademicYear && x.DefaultCalender == true);
 
@@ -2878,7 +2892,7 @@ namespace opensis.data.Repository
                         {
                             var activeEnrollment = this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true).FirstOrDefault();
 
-                            this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true).ToList().ForEach(x => { x.IsActive = false; /*x.ExitCode = activeEnrollment.EnrollmentCode; x.ExitDate = studentListModel.EnrollmentDate;*/ });
+                            this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true && x.ExitDate != null).ToList().ForEach(x => { x.IsActive = false; /*x.ExitCode = activeEnrollment.EnrollmentCode; x.ExitDate = studentListModel.EnrollmentDate;*/ });
 
                             int? EnrollmentId = 1;
                             //EnrollmentId = Utility.GetMaxPK(this.context, new Func<StudentEnrollment, int>(x => x.EnrollmentId));
@@ -2890,11 +2904,15 @@ namespace opensis.data.Repository
                                 EnrollmentId = studentEnrollmentData.EnrollmentId + 1;
                             }
 
-                            var existingStudentData = this.context?.StudentMaster.FirstOrDefault(s => s.SchoolId == studentListModel.SchoolId && s.TenantId == studentListModel.TenantId && s.StudentGuid == studentData.StudentGuid);
+                            var existingStudentData = this.context?.StudentMaster.FirstOrDefault(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid); //check student exists in school or not.
 
                             if (existingStudentData != null)
                             {
-                                existingStudentData.IsActive = true;
+                                //if student re enroll today
+                                if (studentListModel.EnrollmentDate == DateTime.Today)
+                                {
+                                    existingStudentData.IsActive = true;
+                                }
 
                                 var StudentEnrollmentData = new StudentEnrollment()
                                 {
@@ -2918,20 +2936,15 @@ namespace opensis.data.Repository
                             }
                             else
                             {
-
                                 var studentInfo = this.context?.StudentMaster.FirstOrDefault(x => x.StudentGuid == studentData.StudentGuid);
 
-                                int? MasterStudentId = 0;
+                                int? MasterStudentId = 1;
 
                                 var studentId = this.context?.StudentMaster.Where(x => x.SchoolId == studentListModel.SchoolId && x.TenantId == studentListModel.TenantId).OrderByDescending(x => x.StudentId).FirstOrDefault();
 
                                 if (studentId != null)
                                 {
                                     MasterStudentId = studentId.StudentId + 1;
-                                }
-                                else
-                                {
-                                    MasterStudentId = 1;
                                 }
 
                                 var StudentMasterData = new StudentMaster()
@@ -3017,7 +3030,7 @@ namespace opensis.data.Repository
                                     UpdatedOn = DateTime.UtcNow,
                                     UpdatedBy = studentInfo.UpdatedBy,
                                     EnrollmentType = "Internal",
-                                    IsActive = true,
+                                    IsActive = studentListModel.EnrollmentDate == DateTime.Today ? true : false,
                                     StudentGuid = studentData.StudentGuid
 
                                 };
@@ -3043,7 +3056,7 @@ namespace opensis.data.Repository
                                 };
                                 this.context?.StudentEnrollment.Add(StudentEnrollmentData);
 
-                                //Student Protal Access
+                                /* //Student Protal Access
                                 if (studentData.StudentPortalId != null)
                                 {
                                     var userMasterData = this.context?.UserMaster.FirstOrDefault(x => x.EmailAddress == studentData.StudentPortalId && x.TenantId == studentData.TenantId);
@@ -3063,14 +3076,41 @@ namespace opensis.data.Repository
                                         userMaster.MembershipId = (int)membershipsId!;
                                         userMaster.UpdatedOn = DateTime.UtcNow;
                                         userMaster.UpdatedBy = studentListModel.UpdatedBy;
-                                        userMaster.IsActive = true;
+                                        userMaster.IsActive = studentListModel.EnrollmentDate == DateTime.Today ? true : false;
+
                                         this.context?.UserMaster.Add(userMaster);
                                     }
-                                }
+                                }*/
                             }
+
                             this.context?.SaveChanges();
                         }
-                        //this.context?.SaveChanges();
+
+                        if (studentListModel.EnrollmentDate != DateTime.Today)
+                        {
+                            // if student re enroll future date & this block for add this req as a job
+                            var scheduledJob = new ScheduledJob
+                            {
+                                TenantId = (Guid)studentListModel.TenantId!,
+                                SchoolId = (int)studentListModel.SchoolId!,
+                                JobId = (long)Id,
+                                AcademicYear = defaultCalender?.AcademicYear,
+                                JobTitle = "ReenrollmentForStudent",
+                                JobScheduleDate = studentListModel.EnrollmentDate,
+                                ApiTitle = "ReenrollmentForStudent",
+                                ControllerPath = studentListModel._tenantName + "/Student",
+                                TaskJson = JsonConvert.SerializeObject(studentListModel),
+                                LastRunStatus = null,
+                                LastRunTime = null,
+                                IsActive = true,
+                                CreatedBy = studentListModel.UpdatedBy,
+                                CreatedOn = DateTime.UtcNow
+                            };
+                            this.context?.ScheduledJobs.Add(scheduledJob);
+                            Id++;
+                        }
+
+                        this.context?.SaveChanges();
                         transaction?.Commit();
                         studentListModel._failure = false;
                         studentListModel._message = "Student Re-enrollment Added Successfully";
