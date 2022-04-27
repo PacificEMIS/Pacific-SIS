@@ -72,6 +72,7 @@ namespace opensis.backgroundjob.Models
         public string? SocialSecurityNumber { get; set; }
         public string? OtherGovtIssuedNumber { get; set; }
         public byte[]? StudentPhoto { get; set; }
+        public byte[]? StudentThumbnailPhoto { get; set; }
         public DateTime? Dob { get; set; }
         public string? StudentPortalId { get; set; }
         public string? Gender { get; set; }

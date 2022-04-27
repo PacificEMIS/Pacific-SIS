@@ -171,7 +171,7 @@ namespace opensis.data.Repository
                                         {
                                             var studentCourseSectionSchedule = this.context?.StudentCoursesectionSchedule.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
 
-                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true && x.ExitDate == null);
+                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && ((x.IsActive == true && x.ExitDate == null) || (x.ExitDate != null && x.ExitDate < courseSection.DurationStartDate)));
 
                                             if (studentCourseSectionSchedule != null)
                                             {
@@ -202,24 +202,47 @@ namespace opensis.data.Repository
                                                 }
                                             }
                                             //Student enrollment checking
-                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                            else if (studentEnrollmentData != null)
                                             {
-                                                var conflictStudent = new StudentScheduleView()
+                                                if (studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
                                                 {
-                                                    TenantId = student.TenantId,
-                                                    SchoolId = student.SchoolId,
-                                                    StudentId = student.StudentId,
-                                                    CourseId = courseSection.CourseId,
-                                                    CourseSectionId = courseSection.CourseSectionId,
-                                                    CourseSectionName = courseSection.CourseSectionName,
-                                                    StudentInternalId = student.StudentInternalId,
-                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                    Scheduled = false,
-                                                    ConflictComment = "Student enrollment date is grater than scheduled course section date"
-                                                };
-                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                //this.context.StudentScheduleView.Add(conflictStudent);
-                                                this.context?.StudentScheduleView.Add(conflictStudent);
+                                                    var conflictStudent = new StudentScheduleView()
+                                                    {
+                                                        TenantId = student.TenantId,
+                                                        SchoolId = student.SchoolId,
+                                                        StudentId = student.StudentId,
+                                                        CourseId = courseSection.CourseId,
+                                                        CourseSectionId = courseSection.CourseSectionId,
+                                                        CourseSectionName = courseSection.CourseSectionName,
+                                                        StudentInternalId = student.StudentInternalId,
+                                                        StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                        Scheduled = false,
+                                                        ConflictComment = "Student enrollment date is grater than scheduled course section date"
+                                                    };
+                                                    studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                    //this.context.StudentScheduleView.Add(conflictStudent);
+                                                    this.context?.StudentScheduleView.Add(conflictStudent);
+
+                                                }
+
+                                                if (studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
+                                                {
+                                                    var conflictStudent = new StudentScheduleView()
+                                                    {
+                                                        TenantId = student.TenantId,
+                                                        SchoolId = student.SchoolId,
+                                                        StudentId = student.StudentId,
+                                                        CourseId = courseSection.CourseId,
+                                                        CourseSectionId = courseSection.CourseSectionId,
+                                                        CourseSectionName = courseSection.CourseSectionName,
+                                                        StudentInternalId = student.StudentInternalId,
+                                                        StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                        Scheduled = false,
+                                                        ConflictComment = "Student Exit date is smaller than scheduled course section date"
+                                                    };
+                                                    studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                    this.context?.StudentScheduleView.Add(conflictStudent);
+                                                }
 
                                                 if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
                                                 {
