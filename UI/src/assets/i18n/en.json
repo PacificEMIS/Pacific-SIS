@@ -1866,6 +1866,8 @@
     "effortGrade": "Effort Grade",
     "standardsGradeLegend": "Standards Grade Legend",
     "effortGradeLegend": "Effort Grade Legend",
+    "youCannotAccess": "You cannot access",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set",
     "noAssignmentFound":"No assignment found",
     "exportData": "Export Data",
     "schoolData": "School Data",

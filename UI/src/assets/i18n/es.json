@@ -1865,6 +1865,8 @@
     "effortGrade": "Grado de esfuerzo",
     "standardsGradeLegend": "Leyenda de la calificación de los estándares",
     "effortGradeLegend": "Leyenda del grado de esfuerzo",
+    "youCannotAccess": "No puedes acceder",
+    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "porque la escala de calificaciones para la sección del curso no está establecida",
     "noAssignmentFound":"Sin asignación encontrada",
     "exportData": "Exportar datos",
     "schoolData": "Datos de la escuela",

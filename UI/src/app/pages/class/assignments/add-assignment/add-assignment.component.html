@@ -18,7 +18,7 @@
                 <mat-error *ngIf="form.get('title').hasError('required')">{{'titleIsRequired'|translate}}</mat-error>
             </mat-form-field>
         </li>
-        <li>
+        <li *ngIf="weightedGradesFlag">
             <ul class="grid grid-cols-3 col-gap-6 row-gap-4">
                 <li class="col-span-2">
                     <mat-form-field appearance="outline" color="primary" class="w-full mb-4">

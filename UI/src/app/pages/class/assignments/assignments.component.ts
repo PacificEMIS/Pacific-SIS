@@ -68,6 +68,7 @@ export class AssignmentsComponent implements OnInit {
   selectedAssignmentType: AssignmentList;
   selectedCourseSection;
   isNotGraded: boolean;
+  weightedGradesChecked: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -107,7 +108,8 @@ export class AssignmentsComponent implements OnInit {
         data: {
           editMode: assignmentTypeDetails ? true : false,
           editDetails: assignmentTypeDetails,
-          isWeightedSection: this.isWeightedSection
+          isWeightedSection: this.isWeightedSection,
+          weightedGradesChecked: this.weightedGradesChecked,
         },
         width: "500px",
       })
@@ -186,7 +188,7 @@ export class AssignmentsComponent implements OnInit {
     this.assignmentModel.courseSectionId = this.courseSectionId;
     this.assignmentService
       .getAllAssignmentType(this.assignmentModel)
-      .subscribe((res) => {
+      .subscribe((res:any) => {
         if (res) {
         if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
@@ -199,6 +201,7 @@ export class AssignmentsComponent implements OnInit {
             }
           } else {
             this.assignmentModel = res;
+            this.weightedGradesChecked = res.weightedGrades;
             if (assignmentTypeId) {
               let addedTypeIdIndex = res.assignmentTypeList.findIndex(
                 (item) => item.assignmentTypeId === assignmentTypeId
