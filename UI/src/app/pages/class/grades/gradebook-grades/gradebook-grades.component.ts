@@ -268,8 +268,8 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
           this.changeParcentageCalculationValue=res.gradebookConfiguration.scoreRounding;
           this.isWeightedSection = res?.gradebookConfiguration?.general?.includes('weightGrades') ? true : false;
           this.maxAnomalousGrade = res?.gradebookConfiguration?.maxAnomalousGrade;
-          this.getGradebookGrade();
         }
+        this.getGradebookGrade();
       }
     );
   }
