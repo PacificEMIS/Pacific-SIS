@@ -180,7 +180,7 @@
                     <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef>{{'action' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
-                            <a matTooltip="Impersonate as Student" class="mr-3 cursor-pointer">
+                            <a matTooltip="{{'impersonateAsStudent' | translate}}" class="mr-3 cursor-pointer">
                                 <mat-icon [icIcon]="icImpersonate"></mat-icon>
                             </a>
                             <a matTooltip="{{ 'dataEditInfo' | translate }}" class="mr-3 cursor-pointer" (click)="openDataEdit(element)">

@@ -90,7 +90,7 @@
                     <ng-container matColumnDef="title">
                         <mat-header-cell *matHeaderCellDef>{{'fieldName'|translate}}</mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <span class="custom-field" *ngIf="!element.systemField" matTooltip="Custom Field">C</span><span class="default-field" *ngIf="element.systemField" matTooltip="Default Field">D</span>{{element.title}}
+                            <span class="custom-field" *ngIf="!element.systemField" matTooltip="{{'customField' | translate}}">C</span><span class="default-field" *ngIf="element.systemField" matTooltip="{{'defaultField' | translate}}">D</span>{{element.title}}
                         </mat-cell>
                     </ng-container>
 

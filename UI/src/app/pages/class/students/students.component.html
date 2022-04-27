@@ -29,13 +29,13 @@
             </div>
             <hr class="block md:hidden -mx-4" />
             <div class="pt-2 items-center">
-                <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Export to Excel"
+                <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                     (click)="exportToExcel()">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
 
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-2 
-                    inline-block align-middle" fxFlex="none" mat-icon-button matTooltip="Filter Columns" type="button">
+                    inline-block align-middle" fxFlex="none" mat-icon-button matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon>filter_list</mat-icon>
                 </button>
             </div>

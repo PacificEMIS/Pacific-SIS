@@ -291,12 +291,12 @@
             <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
                 <div class="md:flex w-full justify-end">
                     <div class="py-2 md:pt-2 items-center">
-                        <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel"
+                        <a class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                             (click)="generateExcel()">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <a [matMenuTriggerFor]="columnFilterMenu"
-                            class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="Filter">
+                            class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="{{'filter' | translate}}">
                             <mat-icon [icIcon]="icFilterList"></mat-icon>
                         </a>
                     </div>
