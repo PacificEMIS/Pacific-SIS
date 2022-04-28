@@ -1121,7 +1121,7 @@ namespace opensis.data.Repository
 
             try
             {
-                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StaffMaster).Include(d => d.StudentAttendance).Include(b => b.CourseSection).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StudentAttendance).Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1168,7 +1168,8 @@ namespace opensis.data.Repository
                         HomeAddressState = v.StaffMaster.HomeAddressState,
                         HomeAddressZip = v.StaffMaster.HomeAddressZip,
                         BusNo = v.StaffMaster.BusNo,
-                        PersonalEmail = v.StaffMaster.PersonalEmail
+                        PersonalEmail = v.StaffMaster.PersonalEmail,
+                        StaffSchoolInfo = v.StaffMaster.StaffSchoolInfo.ToList(),
                     }
                 });
 
@@ -1275,7 +1276,8 @@ namespace opensis.data.Repository
                                     Profile = p.Profile,
                                     JobTitle = p.JobTitle,
                                     SchoolEmail = p.SchoolEmail,
-                                    MobilePhone = p.MobilePhone
+                                    MobilePhone = p.MobilePhone,
+                                    StaffSchoolInfo = p.StaffSchoolInfo.ToList(),
                                 }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                             }
                         }
