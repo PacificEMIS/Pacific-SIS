@@ -205,7 +205,7 @@
                         </div>
                         <div class="w-10/12 pl-6">
                             <h2 class="font-medium">{{selectedNewTeacher?selectedNewTeacher.firstGivenName+' '+selectedNewTeacher.lastFamilyName:'Select New Teacher'}}</h2>
-                            <div *ngIf="selectedNewTeacher?.profile !==null"><p class="text-red text-sm text-base" *ngIf="checkHomeroomAssigningToNonHomeroom(selectedCurrentTeacher?.profile, selectedNewTeacher?.profile)">{{'youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents' | translate }}</p></div>
+                            <div *ngIf="selectedNewTeacher?.profile !==null"><p class="text-red text-sm text-base" *ngIf="selectedCurrentTeacher?.profile===this.profiles.HomeroomTeacher && selectedNewTeacher?.profile!==this.profiles.HomeroomTeacher?true:false">{{'youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents' | translate }}</p></div>
                             <p class="text-gray">{{'clickHereToSelectANewTeacherToReassign'|translate}}</p>
                         </div>
                     </div>

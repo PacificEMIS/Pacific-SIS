@@ -826,12 +826,4 @@ singleSelectionBasedOnCourse(event, courseSectionIndex, checkedStaffIndex,ref) {
     this.selectedCourse = null;
     this.disableMasterCheckboxBasedOnTeacherConflict = false;
   }
-
-  checkHomeroomAssigningToNonHomeroom(staff1, staff2) {
-    if (staff1===this.profiles.HomeroomTeacher && staff2!==this.profiles.HomeroomTeacher) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
