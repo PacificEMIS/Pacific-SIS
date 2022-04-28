@@ -99,7 +99,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode1">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'cc' + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
+                                    <input type="text" name="{{'cc' + i + j}}" (keyup)="addCreditRow(i,$event.target)" [(ngModel)]="history.courseCode"
                                         class="w-full" #courseCode="ngModel" [required]="!history.courseName && !history.courseCode" />
                                 </div>
                                 <div *ngIf="courseCode.errors?.required && courseCode.touched" class="text-red">
@@ -113,7 +113,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode2">
                                 <div class="border border-gray-light rounded p-2 w-32">
-                                    <input type="text" name="{{'cn' + j}}" [(ngModel)]="history.courseName"
+                                    <input type="text" name="{{'cn' + i + j}}" [(ngModel)]="history.courseName"
                                         class="w-full" #courseName="ngModel"  [required]="!history.courseName && !history.courseCode"/>
                                 </div>
                                 <div *ngIf="courseName.errors?.required && courseName.touched" class="text-red">
@@ -127,7 +127,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode3">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'cp' + j}}" mask="0*" [(ngModel)]="history.percentage"
+                                    <input type="text" name="{{'cp' + i + j}}" mask="0*" [(ngModel)]="history.percentage"
                                         class="w-full" #percentage="ngModel" [required]="!history.percentage && !history.letterGrade" />
                                     </div>
                                     <div *ngIf="percentage.errors?.required && percentage.touched" class="text-red">
@@ -155,7 +155,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode5">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'gpv' + j}}" [(ngModel)]="history.gpValue"
+                                    <input type="text" name="{{'gpv' + i + j}}" [(ngModel)]="history.gpValue"
                                         class="w-full" />
                                 </div>
                             </ng-container>
@@ -165,11 +165,11 @@
                         </td>
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode6">
-                                <mat-slide-toggle class="mt-2" color="primary" name="{{'cgpa' + j}}"
+                                <mat-slide-toggle class="mt-2" color="primary" name="{{'cgpa' + i + j}}"
                                     [(ngModel)]="history.calculateGpa"></mat-slide-toggle>
                             </ng-container>
                             <ng-template #viewMode6>
-                                <mat-slide-toggle color="primary" name="{{'cgpa' + j}}"
+                                <mat-slide-toggle color="primary" name="{{'cgpa' + i + j}}"
                                     [(ngModel)]="history.calculateGpa" disabled></mat-slide-toggle>
                             </ng-template>
                         </td>
@@ -186,7 +186,7 @@
                                     </mat-select>
                                 </mat-form-field> -->
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <select name="{{'ct' + j}}" [(ngModel)]="history.courseType">
+                                    <select name="{{'ct' + i + j}}" [(ngModel)]="history.courseType">
                                         <option
                                             *ngFor="let courseType of allCourseTypes"
                                             [value]="courseType">
@@ -202,7 +202,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode8">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'gs' + j}}" [(ngModel)]="history.gradeScale"
+                                    <input type="text" name="{{'gs' + i + j}}" [(ngModel)]="history.gradeScale"
                                         class="w-full" />
                                 </div>
                             </ng-container>
@@ -213,7 +213,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode9">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'cra' + j}}" [(ngModel)]="history.creditAttempted"
+                                    <input type="text" name="{{'cra' + i + j}}" [(ngModel)]="history.creditAttempted"
                                         class="w-full" />
                                 </div>
                             </ng-container>
@@ -224,7 +224,7 @@
                         <td>
                             <ng-container *ngIf="history.creditAddMode;else viewMode10">
                                 <div class="border border-gray-light rounded p-2 w-24">
-                                    <input type="text" name="{{'cre' + j}}" [(ngModel)]="history.creditEarned"
+                                    <input type="text" name="{{'cre' + i + j}}" [(ngModel)]="history.creditEarned"
                                         class="w-full" />
                                 </div>
                             </ng-container>
@@ -242,7 +242,7 @@
                             </ng-container>
                             <ng-template #viewMode11>
                                 <div class="w-16">
-                                    <mat-icon [icIcon]="icEdit" (click)="creditEdit(i,j)" matTooltip="{{ 'edit' | translate }}"
+                                    <mat-icon [icIcon]="icEdit" (click)="creditEdit(history)" matTooltip="{{ 'edit' | translate }}"
                                         class="text-primary cursor-pointer"></mat-icon>
                                     <mat-icon [icIcon]="icDeleteForever" (click)="creditDelete(i,j)"  matTooltip="{{ 'delete' | translate }}"
                                         class="text-primary cursor-pointer"></mat-icon>
