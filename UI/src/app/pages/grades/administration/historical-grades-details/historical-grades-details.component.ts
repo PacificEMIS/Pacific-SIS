@@ -112,9 +112,9 @@ export class HistoricalGradesDetailsComponent implements OnInit, OnDestroy {
     this.callAddEditHistGrade(this.historicalGradeAddViewModel,true);
   }
 
-  creditEdit(histIndex, creditIndex) {
-    this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[creditIndex].creditViewMode = false;
-    this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[creditIndex].creditAddMode = true;
+  creditEdit(historicalCreditTransfer) {
+    historicalCreditTransfer.creditViewMode = false;
+    historicalCreditTransfer.creditAddMode = true;
     // let lastIndex = this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.length - 1;
     // if (this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer[lastIndex].isDefaultRow) {
       // this.historicalGradeAddViewModel.historicalGradeList[histIndex].historicalCreditTransfer.pop();
