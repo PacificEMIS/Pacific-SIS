@@ -7154,6 +7154,8 @@ namespace opensis.data.Models
                 entity.Property(e => e.StudentId).HasColumnName("student_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+                entity.Property(e => e.StudentGuid).HasColumnName("student_guid");
             });
 
             modelBuilder.Entity<StudentMaster>(entity =>
