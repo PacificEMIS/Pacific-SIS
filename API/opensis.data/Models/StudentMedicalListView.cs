@@ -33,6 +33,7 @@ namespace opensis.data.Models
         public int SchoolId { get; set; }
         public int StudentId { get; set; }
         public Guid TenantId { get; set; }
+        public Guid StudentGuid { get; set; }
         public string? AlertType { get; set; }
         public string? AlertDescription { get; set; }
         public DateTime? NoteDate { get; set; }

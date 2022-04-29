@@ -11970,6 +11970,10 @@ namespace opensis.data.Migrations.SqlServerMigrations
                         .HasColumnType("int")
                         .HasColumnName("school_id");
 
+                    b.Property<Guid>("StudentGuid")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("student_guid");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int")
                         .HasColumnName("student_id");
