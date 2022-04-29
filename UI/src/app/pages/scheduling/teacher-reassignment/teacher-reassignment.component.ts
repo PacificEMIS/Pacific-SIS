@@ -52,6 +52,7 @@ import { LoginService } from '../../../services/login.service';
 import { CourseManagerService } from '../../../services/course-manager.service';
 import { GradeLevelService } from '../../../services/grade-level.service';
 import { MembershipService } from '../../../services/membership.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
   selector: 'vex-teacher-reassignment',
@@ -112,6 +113,7 @@ export class TeacherReassignmentComponent implements OnInit {
   disableMasterCheckboxBasedOnTeacherConflict = false;
   teacherReassigning = false;
   permissions: Permissions;
+  profiles = ProfilesTypes;
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllMarkingPeriodList();
@@ -824,5 +826,4 @@ singleSelectionBasedOnCourse(event, courseSectionIndex, checkedStaffIndex,ref) {
     this.selectedCourse = null;
     this.disableMasterCheckboxBasedOnTeacherConflict = false;
   }
-
 }

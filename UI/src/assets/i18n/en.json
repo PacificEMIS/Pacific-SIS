@@ -1866,8 +1866,6 @@
     "effortGrade": "Effort Grade",
     "standardsGradeLegend": "Standards Grade Legend",
     "effortGradeLegend": "Effort Grade Legend",
-    "youCannotAccess": "You cannot access",
-    "becauseTheGradeScaleForTheCourseSectionIsNotSet": "because the grade scale for the course section is not set",
     "noAssignmentFound":"No assignment found",
     "exportData": "Export Data",
     "schoolData": "School Data",
@@ -1919,5 +1917,6 @@
     "or": "- or -",
     "emailDisplayName": "Email Display Name",
     "fromEmailAddress": "From Email Address",
-    "apiKeyId": "API Key ID"
+    "apiKeyId": "API Key ID",
+    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "You are assigning a Homeroom teacher to a non-homeroom teacher. If you continue, the new teacher will not be able to enter efforts grade for students."
 }
