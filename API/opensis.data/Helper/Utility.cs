@@ -602,6 +602,7 @@ namespace opensis.data.Helper
 
             return AcademicYear;
         }
+
         public static List<Guid>? MedicalAdvancedSearch(CRMContext cRMContext, List<FilterParams> filterParams, Guid? tenantId, int? schoolId, List<Guid>? studentGuids)
         {
             List<Guid>? filterStudentGuids = null;
