@@ -140,7 +140,9 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     private defaultValueService: DefaultValuesService,
     private snackbar: MatSnackBar,
     private paginatorObj: MatPaginatorIntl) {
-      this.advancedSearchExpansionModel.searchAllSchools = false;
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.searchBirthdays = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
       paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
