@@ -6,6 +6,7 @@ import { InputFinalGradeComponent } from './input-final-grade/input-final-grade.
 import { InputEffortGradesComponent } from './input-effort-grades/input-effort-grades.component';
 import { GradeDetailsComponent } from './input-final-grade/grade-details/grade-details.component';
 import { EffortGradeDetailsComponent } from './input-effort-grades/effort-grade-details/effort-grade-details.component';
+import { ProgressReportComponent } from '../../reports/grades-report/progress-report/progress-report.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: 'missing-attendance',
         loadChildren: () => import('./missing-attendance/missing-attendance.module').then(m => m.MissingAttendanceModule),
+      },
+      {
+        path: 'progress-report',
+        component: ProgressReportComponent
       }
     ]
   },

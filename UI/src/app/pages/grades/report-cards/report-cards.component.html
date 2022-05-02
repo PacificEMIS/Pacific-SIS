@@ -28,7 +28,7 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
                         <div class="mb-2">
-                            <mat-radio-group aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                            <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
                                 <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
                                 <mat-radio-button [value]="false" style="margin-left: 10px;" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
                               </mat-radio-group> <br><br>

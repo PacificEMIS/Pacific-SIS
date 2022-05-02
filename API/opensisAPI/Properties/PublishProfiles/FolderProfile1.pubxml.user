@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Projects\Synopsis\opensiscorebuild_FSM_RMI</_PublishTargetUrl>
+    <History>True|2022-04-08T19:58:14.0239022Z;True|2022-04-08T23:52:06.3465701+05:30;True|2022-03-31T17:06:00.6402417+05:30;True|2022-03-30T16:34:07.8341914+05:30;True|2022-03-08T22:47:21.2613929+05:30;True|2022-03-07T19:34:25.9027357+05:30;True|2022-03-01T11:33:19.6401362+05:30;True|2022-02-17T18:31:51.1259535+05:30;</History>
+  </PropertyGroup>
+</Project>

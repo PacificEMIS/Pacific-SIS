@@ -2,23 +2,28 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using opensis.data.Models;
 
 #nullable disable
 
-namespace opensis.data.Migrations.MySqlMigrations
+namespace opensis.data.Migrations.SqlServerMigrations
 {
-    [DbContext(typeof(CRMContextMySQL))]
-    partial class CRMContextMySQLModelSnapshot : ModelSnapshot
+    [DbContext(typeof(CRMContext))]
+    [Migration("20220427131124_CreateStudentMedicalListView")]
+    partial class CreateStudentMedicalListView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("utf8mb4_general_ci")
                 .HasAnnotation("ProductVersion", "6.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("opensis.data.Models.AllCourseSectionView", b =>
                 {
@@ -27,11 +32,11 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("AllowStudentConflict")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("allow_student_conflict");
 
                     b.Property<bool?>("AllowTeacherConflict")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("allow_teacher_conflict");
 
                     b.Property<int?>("AttendanceCategoryId")
@@ -39,7 +44,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("attendance_category_id");
 
                     b.Property<bool?>("AttendanceTaken")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("attendance_taken");
 
                     b.Property<int?>("BlockId")
@@ -60,7 +65,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CalDay")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("cal_day");
 
                     b.Property<int?>("CalPeriodId")
@@ -77,7 +82,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseGradeLevel")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("course_grade_level");
 
                     b.Property<int>("CourseId")
@@ -86,7 +91,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseProgram")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("course_program");
 
                     b.Property<int>("CourseSectionId")
@@ -95,16 +100,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CourseSubject")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("course_subject");
 
                     b.Property<string>("CourseTitle")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("course_title");
 
                     b.Property<DateTime?>("DurationEndDate")
@@ -117,7 +122,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("FixedDays")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("fixed_days");
 
                     b.Property<int?>("FixedPeriodId")
@@ -133,7 +138,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("grade_scale_id");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -146,7 +151,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ScheduleType")
                         .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasColumnType("nvarchar(25)")
                         .HasColumnName("schedule_type");
 
                     b.Property<int>("SchoolId")
@@ -162,26 +167,26 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("smstr_marking_period_id");
 
                     b.Property<bool?>("TakeAttendanceBlock")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance_block");
 
                     b.Property<bool?>("TakeAttendanceCalendar")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance_calendar");
 
                     b.Property<bool?>("TakeAttendanceVariable")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance_variable");
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("VarDay")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("var_day");
 
                     b.Property<int?>("VarPeriodId")
@@ -203,7 +208,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -221,26 +226,26 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "KeyId", "ControllerId")
@@ -255,7 +260,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -265,31 +270,31 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ApiTitle")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("api_title");
 
                     b.Property<string>("ControllerPath")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("controller_path");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("Module")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("module");
 
                     b.Property<int>("SchoolId")
@@ -298,12 +303,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "ControllerId")
@@ -316,7 +321,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -329,28 +334,28 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("key_id");
 
                     b.Property<string>("ApiKey")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("api_key");
 
                     b.Property<string>("ApiTitle")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("api_title");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Emailaddress")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<DateTime?>("Expires")
@@ -358,25 +363,25 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("expires");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool?>("Revoked")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("revoked");
 
                     b.Property<string>("Scopes")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("scopes");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("UserId")
@@ -393,7 +398,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -410,12 +415,12 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("assignment_date");
 
                     b.Property<string>("AssignmentDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("assignment_description");
 
                     b.Property<string>("AssignmentTitle")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("assignment_title");
 
                     b.Property<int>("AssignmentTypeId")
@@ -428,12 +433,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("DueDate")
@@ -450,12 +455,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "AssignmentId")
@@ -472,7 +477,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -494,12 +499,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -516,17 +521,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("Weightage")
@@ -555,7 +560,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -577,21 +582,21 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AllowEntryBy")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("allow_entry_by");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DefaultCode")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("default_code");
 
                     b.Property<int?>("RolloverId")
@@ -600,7 +605,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("short_name");
 
                     b.Property<int?>("SortOrder")
@@ -609,27 +614,27 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("StateCode")
                         .HasMaxLength(8)
-                        .HasColumnType("varchar(8)")
+                        .HasColumnType("nvarchar(8)")
                         .HasColumnName("state_code");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "AttendanceCategoryId", "AttendanceCode1")
@@ -642,7 +647,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -660,12 +665,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("RolloverId")
@@ -674,17 +679,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "AttendanceCategoryId")
@@ -697,7 +702,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -719,22 +724,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "AcademicYear", "BellScheduleDate")
@@ -747,7 +752,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -769,17 +774,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("BlockTitle")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("block_title");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("FullDayMinutes")
@@ -796,12 +801,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "BlockId")
@@ -814,7 +819,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -835,28 +840,28 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("CalculateAttendance")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("calculate_attendance");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("PeriodEndTime")
                         .HasMaxLength(8)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("nchar(8)")
                         .HasColumnName("period_end_time")
                         .IsFixedLength();
 
                     b.Property<string>("PeriodShortName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("period_short_name");
 
                     b.Property<int?>("PeriodSortOrder")
@@ -865,13 +870,13 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("PeriodStartTime")
                         .HasMaxLength(8)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("nchar(8)")
                         .HasColumnName("period_start_time")
                         .IsFixedLength();
 
                     b.Property<string>("PeriodTitle")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("period_title");
 
                     b.Property<int?>("RolloverId")
@@ -880,12 +885,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "BlockId", "PeriodId")
@@ -898,7 +903,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -915,21 +920,21 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("ApplicableToAllSchool")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("applicable_to_all_school");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
                     b.Property<DateTime?>("EndDate")
@@ -938,11 +943,11 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("EventColor")
                         .HasMaxLength(7)
-                        .HasColumnType("varchar(7)")
+                        .HasColumnType("nvarchar(7)")
                         .HasColumnName("event_color");
 
                     b.Property<bool?>("IsHoliday")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_holiday");
 
                     b.Property<DateTime?>("SchoolDate")
@@ -958,27 +963,27 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("start_date");
 
                     b.Property<bool?>("SystemWideEvent")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("system_wide_event");
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("VisibleToMembershipId")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("visible_to_membership_id");
 
                     b.HasKey("TenantId", "CalendarId", "EventId")
@@ -994,19 +999,21 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
                     b.Property<int?>("StateId")
@@ -1016,12 +1023,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -1038,24 +1045,26 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<string>("CountryCode")
                         .HasMaxLength(5)
-                        .HasColumnType("varchar(5)")
+                        .HasColumnType("nvarchar(5)")
                         .HasColumnName("countrycode");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
                     b.Property<int?>("SortOrder")
@@ -1064,12 +1073,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -2559,7 +2568,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2577,53 +2586,53 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseCategory")
                         .HasMaxLength(8)
-                        .HasColumnType("varchar(8)")
+                        .HasColumnType("nvarchar(8)")
                         .HasColumnName("course_category");
 
                     b.Property<string>("CourseDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("course_description");
 
                     b.Property<string>("CourseGradeLevel")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("course_grade_level");
 
                     b.Property<string>("CourseProgram")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("course_program");
 
                     b.Property<string>("CourseShortName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("course_short_name");
 
                     b.Property<string>("CourseSubject")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("course_subject");
 
                     b.Property<string>("CourseTitle")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("course_title");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<double?>("CreditHours")
-                        .HasColumnType("double")
+                        .HasColumnType("float")
                         .HasColumnName("credit_hours");
 
                     b.Property<bool?>("IsCourseActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_course_active");
 
                     b.Property<int?>("RolloverId")
@@ -2632,22 +2641,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Standard")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("standard");
 
                     b.Property<string>("StandardRefNo")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("standard_ref_no");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId")
@@ -2660,7 +2669,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2686,12 +2695,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("GradeScaleId")
@@ -2707,17 +2716,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("room_id");
 
                     b.Property<bool?>("TakeAttendance")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId", "CourseSectionId", "Serial")
@@ -2734,7 +2743,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2760,12 +2769,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("Date")
@@ -2785,17 +2794,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("room_id");
 
                     b.Property<bool?>("TakeAttendance")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId", "CourseSectionId", "Serial")
@@ -2812,7 +2821,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2829,14 +2838,14 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool>("ApplicableAllCourses")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("applicable_all_courses");
 
                     b.Property<string>("Comments")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("comments")
                         .HasDefaultValueSql("(N'')");
 
@@ -2847,17 +2856,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<string>("CourseName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("course_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("RolloverId")
@@ -2870,12 +2879,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseCommentId")
@@ -2888,7 +2897,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2914,12 +2923,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("GradeScaleId")
@@ -2936,12 +2945,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId", "CourseSectionId", "Serial")
@@ -2958,7 +2967,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -2979,19 +2988,19 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("AffectsClassRank")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("affects_class_rank");
 
                     b.Property<bool?>("AffectsHonorRoll")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("affects_honor_roll");
 
                     b.Property<bool?>("AllowStudentConflict")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("allow_student_conflict");
 
                     b.Property<bool?>("AllowTeacherConflict")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("allow_teacher_conflict");
 
                     b.Property<int?>("AttendanceCategoryId")
@@ -2999,7 +3008,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("attendance_category_id");
 
                     b.Property<bool?>("AttendanceTaken")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("attendance_taken");
 
                     b.Property<int?>("CalendarId")
@@ -3008,17 +3017,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("CreditHours")
@@ -3026,7 +3035,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("credit_hours");
 
                     b.Property<bool?>("DurationBasedOnPeriod")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("duration_based_on_period");
 
                     b.Property<DateTime?>("DurationEndDate")
@@ -3043,38 +3052,38 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeScaleType")
                         .HasMaxLength(13)
-                        .HasColumnType("varchar(13)")
+                        .HasColumnType("nvarchar(13)")
                         .HasColumnName("grade_scale_type");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool?>("IsCustomMarkingPeriod")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_custom_marking_period");
 
                     b.Property<bool?>("IsWeightedCourse")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_weighted_course");
 
                     b.Property<string>("MeetingDays")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("meeting_days");
 
                     b.Property<bool?>("OnlineClassRoom")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("online_class_room");
 
                     b.Property<string>("OnlineClassroomPassword")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("online_classroom_password");
 
                     b.Property<string>("OnlineClassroomUrl")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("online_classroom_url");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -3087,7 +3096,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ScheduleType")
                         .HasMaxLength(25)
-                        .HasColumnType("varchar(25)")
+                        .HasColumnType("nvarchar(25)")
                         .HasColumnName("schedule_type");
 
                     b.Property<int?>("Seats")
@@ -3104,16 +3113,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<bool?>("UseStandards")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("use_standards");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -3144,7 +3153,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3158,7 +3167,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("StandardRefNo")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("standard_ref_no");
 
                     b.Property<int>("GradeStandardId")
@@ -3167,22 +3176,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId", "StandardRefNo", "GradeStandardId")
@@ -3197,7 +3206,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3223,17 +3232,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Day")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("day");
 
                     b.Property<int?>("GradeScaleId")
@@ -3249,17 +3258,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("room_id");
 
                     b.Property<bool?>("TakeAttendance")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("take_attendance");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CourseId", "CourseSectionId", "Serial")
@@ -3276,7 +3285,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3294,51 +3303,51 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("DefaultSelection")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("default_selection");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("field_name");
 
                     b.Property<bool?>("Hide")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("hide");
 
                     b.Property<bool?>("IsSystemWideField")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system_wide_field");
 
                     b.Property<string>("Module")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("module")
                         .HasDefaultValueSql("(N'')")
                         .IsFixedLength();
 
                     b.Property<bool?>("Required")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("required");
 
                     b.Property<bool?>("Search")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("search");
 
                     b.Property<string>("SelectOptions")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("select_options");
 
                     b.Property<int?>("SortOrder")
@@ -3346,27 +3355,27 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("sort_order");
 
                     b.Property<bool?>("SystemField")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("system_field");
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CategoryId", "FieldId")
@@ -3381,7 +3390,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3403,42 +3412,42 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Module")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("module")
                         .IsFixedLength();
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("CustomFieldTitle")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("custom_field_title");
 
                     b.Property<string>("CustomFieldType")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("custom_field_type");
 
                     b.Property<string>("CustomFieldValue")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("custom_field_value");
 
                     b.Property<DateTime?>("UpdateOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.HasKey("TenantId", "SchoolId", "CategoryId", "FieldId", "TargetId", "Module")
@@ -3455,28 +3464,28 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("LovCode")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("lov_code");
 
                     b.Property<string>("LovColumnValue")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("lov_column_value");
 
                     b.Property<string>("LovName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("lov_name");
 
                     b.Property<int?>("SchoolId")
@@ -3489,18 +3498,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -3514,7 +3523,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3528,17 +3537,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CategoryName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("category_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("SortOrder")
@@ -3547,12 +3556,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "EffortCategoryId")
@@ -3565,7 +3574,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3583,17 +3592,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("EffortItemTitle")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("effort_item_title");
 
                     b.Property<int?>("SortOrder")
@@ -3602,12 +3611,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "EffortCategoryId", "EffortItemId")
@@ -3620,7 +3629,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3634,17 +3643,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("GradeScaleComment")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("grade_scale_comment");
 
                     b.Property<int?>("GradeScaleValue")
@@ -3657,12 +3666,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "EffortGradeScaleId")
@@ -3675,7 +3684,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3689,38 +3698,38 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("Hide")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("hide");
 
                     b.Property<bool?>("IsSystemCategory")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system_category");
 
                     b.Property<bool?>("IsSystemWideCategory")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system_wide_category");
 
                     b.Property<string>("Module")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("module")
                         .IsFixedLength();
 
                     b.Property<bool?>("Required")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("required");
 
                     b.Property<bool?>("Search")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("search");
 
                     b.Property<int?>("SortOrder")
@@ -3729,17 +3738,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "CategoryId")
@@ -3752,7 +3761,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3773,17 +3782,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("breakoff");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("comment");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("SortOrder")
@@ -3791,7 +3800,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("sort_order");
 
                     b.Property<string>("Title")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("title");
 
                     b.Property<decimal?>("UnweightedGpValue")
@@ -3800,12 +3809,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<decimal?>("WeightedGpValue")
@@ -3826,27 +3835,27 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AgeRange")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("age_range");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("AgeRangeId")
@@ -3936,7 +3945,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -3962,26 +3971,26 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AssignmentSorting")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("assignment_sorting");
 
                     b.Property<bool?>("ConfigUpdateFlag")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("config_update_flag");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("General")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("general");
 
                     b.Property<int?>("MaxAnomalousGrade")
@@ -3990,17 +3999,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ScoreRounding")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("score_rounding");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("UpgradedAssignmentGradeDays")
@@ -4037,12 +4046,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int>("GradeId")
@@ -4063,18 +4072,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -4104,12 +4113,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("ExamPercentage")
@@ -4137,17 +4146,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("school_id");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -4179,12 +4188,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("ExamPercentage")
@@ -4213,18 +4222,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -4256,12 +4265,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("ExamPercentage")
@@ -4290,18 +4299,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -4335,12 +4344,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("ExamPercentage")
@@ -4365,18 +4374,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -4398,7 +4407,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -4428,33 +4437,33 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AllowedMarks")
                         .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasColumnType("nchar(5)")
                         .HasColumnName("allowed_marks")
                         .IsFixedLength();
 
                     b.Property<string>("Comment")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("comment");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("LetterGrade")
                         .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasColumnType("nchar(5)")
                         .HasColumnName("letter_grade")
                         .IsFixedLength();
 
                     b.Property<string>("Percentage")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("percentage");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -4467,13 +4476,13 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("RunningAvg")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("running_avg")
                         .IsFixedLength();
 
                     b.Property<string>("RunningAvgGrade")
                         .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasColumnType("nchar(5)")
                         .HasColumnName("running_avg_grade")
                         .IsFixedLength();
 
@@ -4483,12 +4492,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -4510,27 +4519,27 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("EducationalStage")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("educational_stage");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("IscedCode")
@@ -4594,28 +4603,28 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("GradeLevelEquivalency")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("grade_level_equivalency");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("EquivalencyId")
@@ -4740,7 +4749,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -4758,12 +4767,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("EquivalencyId")
@@ -4780,7 +4789,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(5)
-                        .HasColumnType("varchar(5)")
+                        .HasColumnType("nvarchar(5)")
                         .HasColumnName("short_name");
 
                     b.Property<int?>("SortOrder")
@@ -4789,17 +4798,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "GradeId")
@@ -4818,7 +4827,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -4835,26 +4844,26 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("CalculateGpa")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("calculate_gpa");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("GradeScaleComment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("grade_scale_comment");
 
                     b.Property<string>("GradeScaleName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("grade_scale_name");
 
                     b.Property<decimal?>("GradeScaleValue")
@@ -4871,16 +4880,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<bool?>("UseAsStandardGradeScale")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("use_as_standard_grade_scale");
 
                     b.HasKey("TenantId", "SchoolId", "GradeScaleId")
@@ -4893,7 +4902,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -4903,7 +4912,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("StandardRefNo")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("standard_ref_no");
 
                     b.Property<int>("GradeStandardId")
@@ -4912,55 +4921,55 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Course")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("course");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Domain")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("domain");
 
                     b.Property<string>("GradeLevel")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("grade_level");
 
                     b.Property<bool?>("IsSchoolSpecific")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_school_specific");
 
                     b.Property<string>("StandardDetails")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("standard_details");
 
                     b.Property<string>("Subject")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("subject")
                         .IsFixedLength();
 
                     b.Property<string>("Topic")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("topic");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StandardRefNo", "GradeStandardId")
@@ -4973,7 +4982,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -4998,32 +5007,32 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("credit_transfer_id");
 
                     b.Property<bool?>("CalculateGpa")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("calculate_gpa");
 
                     b.Property<string>("CourseCode")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("course_code");
 
                     b.Property<string>("CourseName")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("course_name");
 
                     b.Property<string>("CourseType")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("course_type");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("CreditAttempted")
@@ -5044,7 +5053,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("LetterGrade")
                         .HasMaxLength(2)
-                        .HasColumnType("char(2)")
+                        .HasColumnType("nchar(2)")
                         .HasColumnName("letter_grade")
                         .IsFixedLength();
 
@@ -5054,12 +5063,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "HistGradeId", "HistMarkingPeriodId", "CreditTransferId")
@@ -5072,7 +5081,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -5090,12 +5099,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("EquivalencyId")
@@ -5108,17 +5117,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("school_name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "HistGradeId")
@@ -5131,7 +5140,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -5145,29 +5154,29 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AcademicYear")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("academic_year");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DoesComments")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_comments");
 
                     b.Property<bool?>("DoesExam")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_exam");
 
                     b.Property<bool?>("DoesGrades")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_grades");
 
                     b.Property<DateTime?>("GradePostDate")
@@ -5180,24 +5189,25 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "HistMarkingPeriodId")
                         .HasName("PK_historical_marking_period_tenant_id");
 
                     b.HasIndex(new[] { "TenantId", "SchoolId", "HistMarkingPeriodId", "AcademicYear", "Title" }, "historical_marking_period$IX_historical_marking_pe")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[academic_year] IS NOT NULL AND [title] IS NOT NULL");
 
                     b.ToTable("historical_marking_period", (string)null);
                 });
@@ -5206,7 +5216,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -5228,17 +5238,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("HonorRoll")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("honor_roll");
 
                     b.Property<int?>("RolloverId")
@@ -5247,12 +5257,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "HonorRollId")
@@ -5269,40 +5279,40 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("LanguageCode")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("language_code")
                         .IsFixedLength();
 
                     b.Property<string>("Lcid")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("lcid")
                         .IsFixedLength();
 
                     b.Property<string>("Locale")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("locale")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("LangId")
@@ -6462,7 +6472,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6472,45 +6482,45 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("EmailAddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Ipaddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("ipaddress");
 
                     b.Property<bool?>("IsExpired")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_expired");
 
                     b.Property<DateTime?>("LoginTime")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("login_time");
 
                     b.Property<string>("Token")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("token");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id", "TenantId", "SchoolId", "EmailAddress")
@@ -6523,7 +6533,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6537,50 +6547,50 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool>("IsSuperadmin")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_superadmin");
 
                     b.Property<bool?>("IsSystem")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system");
 
                     b.Property<string>("Profile")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("profile");
 
                     b.Property<string>("ProfileType")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("profile_type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "MembershipId")
@@ -6593,7 +6603,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6607,21 +6617,21 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("body");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool>("Isactive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("isactive");
 
                     b.Property<int?>("SortOrder")
@@ -6631,22 +6641,22 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<string>("TargetMembershipIds")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("target_membership_ids");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<DateTime>("ValidFrom")
@@ -6658,7 +6668,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("valid_to");
 
                     b.Property<bool>("VisibleToAllSchool")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("visible_to_all_school");
 
                     b.HasKey("TenantId", "SchoolId", "NoticeId")
@@ -6673,7 +6683,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6691,56 +6701,56 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("address_line_one");
 
                     b.Property<string>("AddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("address_line_two");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("city");
 
                     b.Property<string>("Country")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("country");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("State")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("state");
 
                     b.Property<bool>("StudentAddressSame")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("student_address_same");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Zip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("zip");
 
                     b.HasKey("TenantId", "SchoolId", "ParentId", "StudentId")
@@ -6753,7 +6763,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6770,41 +6780,41 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("student_id");
 
                     b.Property<bool>("Associationship")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("associationship");
 
                     b.Property<string>("ContactType")
                         .HasMaxLength(9)
-                        .HasColumnType("varchar(9)")
+                        .HasColumnType("nvarchar(9)")
                         .HasColumnName("contact_type");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("IsCustodian")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_custodian");
 
                     b.Property<string>("Relationship")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("relationship");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "ParentId", "StudentId")
@@ -6821,7 +6831,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -6834,120 +6844,120 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("parent_id");
 
                     b.Property<bool?>("BusDropoff")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_dropoff");
 
                     b.Property<string>("BusNo")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("bus_No");
 
                     b.Property<bool?>("BusPickup")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_pickup");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Firstname")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("firstname");
 
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("home_phone");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool>("IsPortalUser")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_portal_user");
 
                     b.Property<string>("Lastname")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("lastname");
 
                     b.Property<string>("LoginEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("login_email");
 
                     b.Property<string>("Middlename")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middlename");
 
                     b.Property<string>("Mobile")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("mobile");
 
                     b.Property<Guid>("ParentGuid")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("parent_guid")
                         .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
                         .IsFixedLength();
 
                     b.Property<byte[]>("ParentPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("parent_photo");
 
                     b.Property<byte[]>("ParentThumbnailPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("parent_thumbnail_photo");
 
                     b.Property<string>("PersonalEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("personal_email");
 
                     b.Property<string>("Salutation")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("salutation");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("suffix");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("UserProfile")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("user_profile");
 
                     b.Property<string>("WorkEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("work_email");
 
                     b.Property<string>("WorkPhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("work_phone");
 
                     b.HasKey("TenantId", "SchoolId", "ParentId")
@@ -6962,98 +6972,98 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<string>("AddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("address_line_one");
 
                     b.Property<string>("AddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("address_line_two");
 
                     b.Property<bool>("Associationship")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("associationship");
 
                     b.Property<bool?>("BusDropoff")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_dropoff");
 
                     b.Property<string>("BusNo")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("bus_No");
 
                     b.Property<bool?>("BusPickup")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_pickup");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("city");
 
                     b.Property<string>("Country")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("country");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("FirstGivenName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("first_given_name");
 
                     b.Property<string>("Firstname")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("firstname");
 
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("home_phone");
 
                     b.Property<bool>("IsPortalUser")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_portal_user");
 
                     b.Property<string>("LastFamilyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("last_family_name");
 
                     b.Property<string>("Lastname")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("lastname");
 
                     b.Property<string>("LoginEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("login_email");
 
                     b.Property<string>("Middlename")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middlename");
 
                     b.Property<string>("Mobile")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("mobile");
 
                     b.Property<Guid>("ParentGuid")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("parent_guid")
                         .IsFixedLength();
 
@@ -7062,22 +7072,22 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("parent_id");
 
                     b.Property<byte[]>("ParentPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("parent_photo");
 
                     b.Property<string>("PersonalEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("personal_email");
 
                     b.Property<string>("Relationship")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("relationship");
 
                     b.Property<string>("Salutation")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("salutation");
 
                     b.Property<int>("SchoolId")
@@ -7086,11 +7096,11 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("State")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("state");
 
                     b.Property<bool?>("StudentAddressSame")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("student_address_same");
 
                     b.Property<int>("StudentId")
@@ -7099,48 +7109,48 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("StudentMiddleName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_middle_name");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("suffix");
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("UserProfile")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("user_profile");
 
                     b.Property<string>("WorkEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("work_email");
 
                     b.Property<string>("WorkPhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("work_phone");
 
                     b.Property<string>("Zip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("zip");
 
                     b.ToView("parent_list_view");
@@ -7150,7 +7160,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7164,42 +7174,42 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("EnableAdd")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_add");
 
                     b.Property<bool?>("EnableDelete")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_delete");
 
                     b.Property<bool?>("EnableEdit")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_edit");
 
                     b.Property<bool?>("EnableView")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_view");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("Path")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("path");
 
                     b.Property<string>("PermissionCategoryName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("permission_category_name");
 
                     b.Property<int>("PermissionGroupId")
@@ -7208,7 +7218,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("short_code");
 
                     b.Property<int?>("SortOrder")
@@ -7217,22 +7227,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "PermissionCategoryId")
@@ -7247,7 +7257,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7260,60 +7270,60 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("permission_group_id");
 
                     b.Property<bool?>("Active")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("active");
 
                     b.Property<string>("BadgeType")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("badgeType");
 
                     b.Property<string>("BadgeValue")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("badgeValue");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Icon")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("icon");
 
                     b.Property<string>("IconType")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("icon_type");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool>("IsSystem")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system");
 
                     b.Property<string>("Path")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("path");
 
                     b.Property<string>("PermissionGroupName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("permission_group_name");
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("short_name");
 
                     b.Property<int?>("SortOrder")
@@ -7322,22 +7332,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "PermissionGroupId")
@@ -7350,7 +7360,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7364,41 +7374,41 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("EnableAdd")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_add");
 
                     b.Property<bool?>("EnableDelete")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_delete");
 
                     b.Property<bool?>("EnableEdit")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_edit");
 
                     b.Property<bool?>("EnableView")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("enable_view");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool?>("IsSystem")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_system");
 
                     b.Property<string>("Path")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("path");
 
                     b.Property<int>("PermissionCategoryId")
@@ -7411,12 +7421,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("PermissionSubcategoryName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("permission_subcategory_name");
 
                     b.Property<string>("ShortCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("short_code");
 
                     b.Property<int?>("SortOrder")
@@ -7425,22 +7435,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "PermissionSubcategoryId")
@@ -7455,7 +7465,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7469,16 +7479,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<byte[]>("Features")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("features");
 
                     b.Property<int?>("MaxApiChecks")
@@ -7487,17 +7497,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "PlanId")
@@ -7510,7 +7520,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7524,27 +7534,27 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("ProgramName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("program_name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "ProgramId")
@@ -7557,7 +7567,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7575,24 +7585,24 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DoesComments")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_comments");
 
                     b.Property<bool?>("DoesExam")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_exam");
 
                     b.Property<bool?>("DoesGrades")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_grades");
 
                     b.Property<DateTime?>("EndDate")
@@ -7617,7 +7627,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("short_name");
 
                     b.Property<int?>("SortOrder")
@@ -7630,17 +7640,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "MarkingPeriodId")
@@ -7655,7 +7665,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7673,24 +7683,24 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DoesComments")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_comments");
 
                     b.Property<bool?>("DoesExam")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_exam");
 
                     b.Property<bool?>("DoesGrades")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_grades");
 
                     b.Property<DateTime?>("EndDate")
@@ -7715,7 +7725,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("short_name");
 
                     b.Property<decimal?>("SortOrder")
@@ -7728,17 +7738,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "MarkingPeriodId")
@@ -7753,7 +7763,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7763,17 +7773,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ReleaseNumber1")
                         .HasMaxLength(9)
-                        .HasColumnType("varchar(9)")
+                        .HasColumnType("nvarchar(9)")
                         .HasColumnName("release_number");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime>("ReleaseDate")
@@ -7782,12 +7792,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "ReleaseNumber1")
@@ -7800,7 +7810,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7813,29 +7823,29 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("role_permission_id");
 
                     b.Property<bool?>("CanAdd")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("can_add");
 
                     b.Property<bool?>("CanDelete")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("can_delete");
 
                     b.Property<bool?>("CanEdit")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("can_edit");
 
                     b.Property<bool?>("CanView")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("can_view");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("MembershipId")
@@ -7856,12 +7866,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "RolePermissionId")
@@ -7882,7 +7892,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -7904,20 +7914,20 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("isactive");
 
                     b.Property<int?>("RolloverId")
@@ -7930,17 +7940,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "RoomId")
@@ -7952,7 +7962,7 @@ namespace opensis.data.Migrations.MySqlMigrations
             modelBuilder.Entity("opensis.data.Models.ScheduledJob", b =>
                 {
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id");
 
                     b.Property<int>("SchoolId")
@@ -7969,26 +7979,26 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ApiTitle")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("api_title");
 
                     b.Property<string>("ControllerPath")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("controller_path");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<DateTime?>("JobScheduleDate")
@@ -7997,11 +8007,11 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("JobTitle")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("job_title");
 
                     b.Property<bool?>("LastRunStatus")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("last_run_status");
 
                     b.Property<DateTime?>("LastRunTime")
@@ -8009,17 +8019,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("last_run_time");
 
                     b.Property<string>("TaskJson")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("task_json");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "JobId");
@@ -8030,7 +8040,7 @@ namespace opensis.data.Migrations.MySqlMigrations
             modelBuilder.Entity("opensis.data.Models.ScheduledJobHistory", b =>
                 {
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id");
 
                     b.Property<int>("SchoolId")
@@ -8046,7 +8056,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("job_run_id");
 
                     b.Property<bool?>("JobStatus")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("job_status");
 
                     b.Property<DateTime?>("RunTime")
@@ -8066,7 +8076,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8084,21 +8094,21 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Days")
                         .HasMaxLength(7)
-                        .HasColumnType("varchar(7)")
+                        .HasColumnType("nvarchar(7)")
                         .HasColumnName("days");
 
                     b.Property<bool?>("DefaultCalender")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("default_calender");
 
                     b.Property<DateTime?>("EndDate")
@@ -8110,7 +8120,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("rollover_id");
 
                     b.Property<bool?>("SessionCalendar")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("session_calendar");
 
                     b.Property<DateTime?>("StartDate")
@@ -8119,22 +8129,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("VisibleToMembershipId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("visible_to_membership_id");
 
                     b.HasKey("TenantId", "SchoolId", "CalenderId")
@@ -8150,33 +8160,33 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("id");
 
                     b.Property<string>("Affiliation")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("affiliation");
 
                     b.Property<string>("Associations")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("associations");
 
                     b.Property<string>("CommonToiletAccessibility")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("common_toilet_accessibility");
 
                     b.Property<string>("ComonToiletType")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("comon_toilet_type");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("CurrentlyAvailable")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("currently_available");
 
                     b.Property<DateTime?>("DateSchoolClosed")
@@ -8188,113 +8198,113 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("date_school_opened");
 
                     b.Property<bool?>("Electricity")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("electricity");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("email")
                         .IsFixedLength();
 
                     b.Property<string>("Facebook")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("facebook")
                         .IsFixedLength();
 
                     b.Property<string>("Fax")
                         .HasMaxLength(20)
-                        .HasColumnType("char(20)")
+                        .HasColumnType("nchar(20)")
                         .HasColumnName("fax")
                         .IsFixedLength();
 
                     b.Property<string>("FemaleToiletAccessibility")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("female_toilet_accessibility");
 
                     b.Property<string>("FemaleToiletType")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("female_toilet_type");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(15)
-                        .HasColumnType("char(15)")
+                        .HasColumnType("nchar(15)")
                         .HasColumnName("gender")
                         .IsFixedLength();
 
                     b.Property<bool?>("HandwashingAvailable")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("handwashing_available");
 
                     b.Property<string>("HighestGradeLevel")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("highest_grade_level")
                         .IsFixedLength();
 
                     b.Property<string>("HygeneEducation")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("hygene_education")
                         .IsFixedLength();
 
                     b.Property<string>("Instagram")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("instagram")
                         .IsFixedLength();
 
                     b.Property<bool?>("Internet")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("internet");
 
                     b.Property<string>("LinkedIn")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("linkedin")
                         .IsFixedLength();
 
                     b.Property<string>("Locale")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("locale")
                         .IsFixedLength();
 
                     b.Property<string>("LowestGradeLevel")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("lowest_grade_level")
                         .IsFixedLength();
 
                     b.Property<string>("MainSourceOfDrinkingWater")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("main_source_of_drinking_water")
                         .IsFixedLength();
 
                     b.Property<string>("MaleToiletAccessibility")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("male_toilet_accessibility");
 
                     b.Property<string>("MaleToiletType")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("male_toilet_type");
 
                     b.Property<string>("NameOfAssistantPrincipal")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("name_of_assistant_principal")
                         .IsFixedLength();
 
                     b.Property<string>("NameOfPrincipal")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("name_of_principal")
                         .IsFixedLength();
 
                     b.Property<bool?>("RunningWater")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("running_water");
 
                     b.Property<int?>("SchoolId")
@@ -8302,30 +8312,30 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("school_id");
 
                     b.Property<byte[]>("SchoolLogo")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("school_logo");
 
                     b.Property<byte[]>("SchoolThumbnailLogo")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("school_thumbnail_logo");
 
                     b.Property<bool?>("SoapAndWaterAvailable")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("soap_and_water_available");
 
                     b.Property<bool?>("Status")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("status");
 
                     b.Property<string>("Telephone")
                         .HasMaxLength(30)
-                        .HasColumnType("char(30)")
+                        .HasColumnType("nchar(30)")
                         .HasColumnName("telephone")
                         .IsFixedLength();
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8355,29 +8365,29 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Twitter")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("twitter")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Website")
                         .HasMaxLength(150)
-                        .HasColumnType("char(150)")
+                        .HasColumnType("nchar(150)")
                         .HasColumnName("website")
                         .IsFixedLength();
 
                     b.Property<string>("Youtube")
                         .HasMaxLength(100)
-                        .HasColumnType("char(100)")
+                        .HasColumnType("nchar(100)")
                         .HasColumnName("youtube")
                         .IsFixedLength();
 
@@ -8392,7 +8402,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8402,64 +8412,64 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AlternateName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("alternate_name");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("city")
                         .IsFixedLength();
 
                     b.Property<string>("Country")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("country")
                         .IsFixedLength();
 
                     b.Property<string>("County")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("county")
                         .IsFixedLength();
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("CurrentPeriodEnds")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("current_period_ends");
 
                     b.Property<string>("District")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("district")
                         .IsFixedLength();
 
                     b.Property<string>("Division")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("division")
                         .IsFixedLength();
 
                     b.Property<string>("Features")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("features");
 
                     b.Property<double?>("Latitude")
-                        .HasColumnType("double")
+                        .HasColumnType("float")
                         .HasColumnName("latitude");
 
                     b.Property<double?>("Longitude")
-                        .HasColumnType("double")
+                        .HasColumnType("float")
                         .HasColumnName("longitude");
 
                     b.Property<int?>("MaxApiChecks")
@@ -8472,81 +8482,81 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolAltId")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_alt_id")
                         .IsFixedLength();
 
                     b.Property<string>("SchoolClassification")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_classification")
                         .IsFixedLength();
 
                     b.Property<string>("SchoolDistrictId")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_district_id")
                         .IsFixedLength();
 
                     b.Property<Guid>("SchoolGuid")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("school_guid")
                         .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
                         .IsFixedLength();
 
                     b.Property<string>("SchoolInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("school_internal_id");
 
                     b.Property<string>("SchoolLevel")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_level")
                         .IsFixedLength();
 
                     b.Property<string>("SchoolName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("school_name");
 
                     b.Property<string>("SchoolStateId")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_state_id")
                         .IsFixedLength();
 
                     b.Property<string>("State")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("state")
                         .IsFixedLength();
 
                     b.Property<string>("StreetAddress1")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("street_address_1");
 
                     b.Property<string>("StreetAddress2")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("street_address_2");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Zip")
                         .HasMaxLength(20)
-                        .HasColumnType("char(20)")
+                        .HasColumnType("nchar(20)")
                         .HasColumnName("zip")
                         .IsFixedLength();
 
@@ -8562,7 +8572,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8576,12 +8586,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("FullDayMinutes")
@@ -8602,29 +8612,29 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolAltId")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("school_alt_id")
                         .IsFixedLength();
 
                     b.Property<Guid>("SchoolGuid")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("school_guid")
                         .IsFixedLength();
 
                     b.Property<string>("SchoolInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("school_internal_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "SchoolPreferenceId")
@@ -8637,7 +8647,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8651,12 +8661,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("ReenrollmentDate")
@@ -8664,11 +8674,11 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("reenrollment_date");
 
                     b.Property<string>("RolloverContent")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("rollover_content");
 
                     b.Property<bool?>("RolloverStatus")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("rollover_status");
 
                     b.Property<DateTime?>("SchoolBeginDate")
@@ -8681,12 +8691,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "RolloverId")
@@ -8699,7 +8709,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8717,24 +8727,24 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DoesComments")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_comments");
 
                     b.Property<bool?>("DoesExam")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_exam");
 
                     b.Property<bool?>("DoesGrades")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_grades");
 
                     b.Property<DateTime?>("EndDate")
@@ -8755,7 +8765,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("short_name");
 
                     b.Property<decimal?>("SortOrder")
@@ -8768,17 +8778,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "MarkingPeriodId")
@@ -8791,7 +8801,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8801,7 +8811,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Module")
                         .HasMaxLength(15)
-                        .HasColumnType("char(15)")
+                        .HasColumnType("nchar(15)")
                         .HasColumnName("module")
                         .IsFixedLength();
 
@@ -8811,39 +8821,39 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("char(150)")
+                        .HasColumnType("nchar(150)")
                         .HasColumnName("created_by")
                         .IsFixedLength();
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Emailaddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<string>("FilterName")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("filter_name")
                         .IsFixedLength();
 
                     b.Property<string>("JsonList")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("json_list");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("char(150)")
+                        .HasColumnType("nchar(150)")
                         .HasColumnName("updated_by")
                         .IsFixedLength();
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "Module", "FilterId")
@@ -8860,7 +8870,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8874,17 +8884,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
                     b.Property<int?>("SortOrder")
@@ -8893,12 +8903,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "SectionId")
@@ -8911,7 +8921,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -8929,24 +8939,24 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("DoesComments")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_comments");
 
                     b.Property<bool?>("DoesExam")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_exam");
 
                     b.Property<bool?>("DoesGrades")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("does_grades");
 
                     b.Property<DateTime?>("EndDate")
@@ -8967,7 +8977,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("short_name");
 
                     b.Property<decimal?>("SortOrder")
@@ -8980,17 +8990,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("title");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YearId")
@@ -9012,9 +9022,11 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<string>("CertificationCode")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("certification_code");
 
                     b.Property<DateTime?>("CertificationDate")
@@ -9022,7 +9034,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("certification_date");
 
                     b.Property<string>("CertificationDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("certification_description");
 
                     b.Property<DateTime?>("CertificationExpiryDate")
@@ -9031,21 +9043,21 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CertificationName")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("certification_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("PrimaryCertification")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("primary_certification");
 
                     b.Property<int?>("SchoolId")
@@ -9054,7 +9066,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("short_name");
 
                     b.Property<int?>("StaffId")
@@ -9063,18 +9075,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid?>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -9088,7 +9100,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -9114,17 +9126,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("DurationEndDate")
@@ -9137,20 +9149,20 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<DateTime?>("EffectiveDropDate")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("effective_drop_date");
 
                     b.Property<bool?>("IsAssigned")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_assigned");
 
                     b.Property<bool?>("IsDropped")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_dropped");
 
                     b.Property<string>("MeetingDays")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("meeting_days");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -9167,18 +9179,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("StaffGuid")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("staff_guid")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -9207,7 +9219,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -9217,20 +9229,20 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AlternateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("alternate_id");
 
                     b.Property<bool?>("BusDropoff")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_dropoff");
 
                     b.Property<string>("BusNo")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("bus_no");
 
                     b.Property<bool?>("BusPickup")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("bus_pickup");
 
                     b.Property<int?>("CountryOfBirth")
@@ -9239,22 +9251,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("DisabilityDescription")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("disability_description");
 
                     b.Property<string>("DistrictId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("district_id");
 
                     b.Property<DateTime?>("Dob")
@@ -9263,32 +9275,32 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("EmergencyEmail")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emergency_email");
 
                     b.Property<string>("EmergencyFirstName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("emergency_first_name");
 
                     b.Property<string>("EmergencyHomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("emergency_home_phone");
 
                     b.Property<string>("EmergencyLastName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("emergency_last_name");
 
                     b.Property<string>("EmergencyMobilePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("emergency_mobile_phone");
 
                     b.Property<string>("EmergencyWorkPhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("emergency_work_phone");
 
                     b.Property<DateTime?>("EndDate")
@@ -9297,16 +9309,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Ethnicity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("ethnicity");
 
                     b.Property<string>("Facebook")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("facebook");
 
                     b.Property<string>("FirstGivenName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("first_given_name");
 
                     b.Property<int?>("FirstLanguage")
@@ -9315,59 +9327,59 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Gender")
                         .HasMaxLength(6)
-                        .HasColumnType("varchar(6)")
+                        .HasColumnType("nvarchar(6)")
                         .HasColumnName("gender");
 
                     b.Property<string>("HomeAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_city");
 
                     b.Property<string>("HomeAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_country");
 
                     b.Property<string>("HomeAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_one");
 
                     b.Property<string>("HomeAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_two");
 
                     b.Property<string>("HomeAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_state");
 
                     b.Property<string>("HomeAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("home_address_zip");
 
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("home_phone");
 
                     b.Property<bool?>("HomeroomTeacher")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("homeroom_teacher");
 
                     b.Property<string>("Instagram")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("instagram");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("JobTitle")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("job_title");
 
                     b.Property<DateTime?>("JoiningDate")
@@ -9376,65 +9388,65 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("LastFamilyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("last_family_name");
 
                     b.Property<string>("Linkedin")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("linkedin");
 
                     b.Property<string>("LoginEmailAddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("login_email_address");
 
                     b.Property<string>("MailingAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_city");
 
                     b.Property<string>("MailingAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_country");
 
                     b.Property<string>("MailingAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_one");
 
                     b.Property<string>("MailingAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_two");
 
                     b.Property<bool?>("MailingAddressSameToHome")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("mailing_address_same_to_home");
 
                     b.Property<string>("MailingAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_state");
 
                     b.Property<string>("MailingAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("mailing_address_zip");
 
                     b.Property<string>("MaritalStatus")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("marital_status");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middle_name");
 
                     b.Property<string>("MobilePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("mobile_phone");
 
                     b.Property<int?>("Nationality")
@@ -9443,78 +9455,78 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("OfficePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("office_phone");
 
                     b.Property<string>("OtherGovtIssuedNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("other_govt_issued_number");
 
                     b.Property<string>("OtherGradeLevelTaught")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("other_grade_level_taught");
 
                     b.Property<string>("OtherSubjectTaught")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("other_subject_taught");
 
                     b.Property<string>("PersonalEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("personal_email");
 
                     b.Property<bool?>("PhysicalDisability")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("physical_disability");
 
                     b.Property<bool?>("PortalAccess")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("portal_access");
 
                     b.Property<string>("PreferredName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("preferred_name");
 
                     b.Property<string>("PreviousName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("previous_name");
 
                     b.Property<string>("PrimaryGradeLevelTaught")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("primary_grade_level_taught");
 
                     b.Property<string>("PrimarySubjectTaught")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("primary_subject_taught");
 
                     b.Property<string>("Profile")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("profile");
 
                     b.Property<string>("Race")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("race");
 
                     b.Property<string>("RelationshipToStaff")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("relationship_to_staff");
 
                     b.Property<string>("Salutation")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("salutation");
 
                     b.Property<string>("SchoolEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("school_email");
 
                     b.Property<int>("SchoolId")
@@ -9527,38 +9539,38 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SocialSecurityNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("social_security_number");
 
                     b.Property<Guid>("StaffGuid")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("staff_guid")
                         .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
                         .IsFixedLength();
 
                     b.Property<string>("StaffInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("staff_internal_id");
 
                     b.Property<byte[]>("StaffPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("staff_photo");
 
                     b.Property<byte[]>("StaffThumbnailPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("staff_thumbnail_photo");
 
                     b.Property<string>("StateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("state_id");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("suffix");
 
                     b.Property<int?>("ThirdLanguage")
@@ -9566,21 +9578,21 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("third_language");
 
                     b.Property<string>("Twitter")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("twitter");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Youtube")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("youtube");
 
                     b.HasKey("TenantId", "StaffId")
@@ -9601,7 +9613,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -9623,51 +9635,51 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ConflictComment")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("nvarchar(300)")
                         .HasColumnName("conflict_comment");
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CourseShortName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("course_short_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool>("Scheduled")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("scheduled");
 
                     b.Property<string>("StaffInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("staff_internal_id");
 
                     b.Property<string>("StaffName")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("staff_name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StaffId", "CourseId", "CourseSectionId")
@@ -9683,14 +9695,16 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("EndDate")
@@ -9703,7 +9717,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Profile")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("profile");
 
                     b.Property<int?>("SchoolAttachedId")
@@ -9712,7 +9726,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolAttachedName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("school_attached_name");
 
                     b.Property<int?>("SchoolId")
@@ -9729,18 +9743,18 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid?>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -9759,32 +9773,34 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<int?>("CountryId")
                         .HasColumnType("int")
                         .HasColumnName("countryid");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("CreatedBy");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(6)
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("datetime2(6)")
                         .HasColumnName("CreatedOn");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -9798,7 +9814,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -9844,12 +9860,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("MembershipId")
@@ -9862,12 +9878,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "StaffId", "CourseId", "CourseSectionId", "AttendanceDate", "BlockId", "PeriodId")
@@ -9904,7 +9920,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -9926,22 +9942,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Comment")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("comment");
 
                     b.Property<DateTime?>("CommentTimestamp")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("comment_timestamp");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("MembershipId")
@@ -9950,12 +9966,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "StudentAttendanceId", "CommentId")
@@ -9970,7 +9986,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10012,12 +10028,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("MembershipId")
@@ -10026,7 +10042,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<DateTime>("ModificationTimestamp")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("modification_timestamp");
 
                     b.Property<int>("ModifiedBy")
@@ -10039,12 +10055,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "AttendanceHistoryId")
@@ -10057,7 +10073,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10074,27 +10090,27 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("comment_id");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("comment");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "CommentId")
@@ -10107,7 +10123,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10133,7 +10149,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AlternateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("alternate_id");
 
                     b.Property<int?>("CalendarId")
@@ -10142,33 +10158,33 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("EffectiveDropDate")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("effective_drop_date");
 
                     b.Property<DateTime?>("EffectiveStartDate")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("effective_start_date");
 
                     b.Property<string>("FirstGivenName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("first_given_name");
 
                     b.Property<int?>("FirstLanguageId")
@@ -10184,39 +10200,39 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("grade_scale_id");
 
                     b.Property<bool?>("IsDropped")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_dropped");
 
                     b.Property<string>("LastFamilyName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("last_family_name");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middle_name");
 
                     b.Property<Guid>("StudentGuid")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("student_guid")
                         .IsFixedLength();
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "CourseId", "CourseSectionId")
@@ -10233,7 +10249,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10251,12 +10267,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AttendanceCode")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("attendance_code");
 
                     b.Property<string>("AttendanceComment")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("attendance_comment");
 
                     b.Property<int?>("AttendanceMinutes")
@@ -10265,12 +10281,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("GradeId")
@@ -10287,12 +10303,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "AttendanceDate")
@@ -10309,7 +10325,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10327,46 +10343,46 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<byte[]>("FileUploaded")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("file_uploaded");
 
                     b.Property<string>("Filename")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("filename");
 
                     b.Property<string>("Filetype")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("filetype");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("UploadedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("uploaded_by");
 
                     b.Property<DateTime?>("UploadedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("uploaded_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "DocumentId")
@@ -10379,7 +10395,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10401,12 +10417,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("EffortCategoryId")
@@ -10423,12 +10439,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "StudentEffortGradeSrlno", "Id")
@@ -10441,7 +10457,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10475,20 +10491,20 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool?>("IsCustomMarkingPeriod")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_custom_marking_period");
 
                     b.Property<bool?>("IsExamGrade")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_exam_grade");
 
                     b.Property<int?>("PrgrsprdMarkingPeriodId")
@@ -10505,17 +10521,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("TeacherComment")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("teacher_comment");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -10542,7 +10558,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10564,17 +10580,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("EnrollmentCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("enrollment_code");
 
                     b.Property<DateTime?>("EnrollmentDate")
@@ -10583,7 +10599,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ExitCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("exit_code");
 
                     b.Property<DateTime?>("ExitDate")
@@ -10596,16 +10612,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeLevelTitle")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("grade_level_title");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("RollingOption")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("rolling_option");
 
                     b.Property<int?>("RolloverId")
@@ -10614,25 +10630,25 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("school_name");
 
                     b.Property<string>("SchoolTransferred")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("school_transferred");
 
                     b.Property<Guid>("StudentGuid")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("student_guid")
                         .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
                         .IsFixedLength();
 
                     b.Property<string>("TransferredGrade")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("transferred_grade");
 
                     b.Property<int?>("TransferredSchoolId")
@@ -10641,12 +10657,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "EnrollmentId")
@@ -10663,7 +10679,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10681,12 +10697,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("RolloverId")
@@ -10695,7 +10711,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ShortName")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("short_name")
                         .IsFixedLength();
 
@@ -10705,22 +10721,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("title");
 
                     b.Property<string>("Type")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "EnrollmentCode")
@@ -10733,7 +10749,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10754,7 +10770,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("academic_year");
 
                     b.Property<bool?>("BasedOnStandardGrade")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("based_on_standard_grade");
 
                     b.Property<int?>("CalendarId")
@@ -10771,12 +10787,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("CreditAttempted")
@@ -10793,7 +10809,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeObtained")
                         .HasMaxLength(5)
-                        .HasColumnType("char(5)")
+                        .HasColumnType("nchar(5)")
                         .HasColumnName("grade_obtained")
                         .IsFixedLength();
 
@@ -10802,15 +10818,15 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("grade_scale_id");
 
                     b.Property<bool?>("IsCustomMarkingPeriod")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_custom_marking_period");
 
                     b.Property<bool?>("IsExamGrade")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_exam_grade");
 
                     b.Property<bool?>("IsPercent")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_percent");
 
                     b.Property<decimal?>("PercentMarks")
@@ -10831,17 +10847,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("TeacherComment")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("teacher_comment");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -10866,7 +10882,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10888,22 +10904,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "StudentFinalGradeSrlno", "CourseCommentId")
@@ -10918,7 +10934,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -10944,12 +10960,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("GradeObtained")
@@ -10978,17 +10994,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("TeacherComment")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("teacher_comment");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YrMarkingPeriodId")
@@ -11007,17 +11023,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<string>("AdmissionNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("admission_number");
 
                     b.Property<string>("AlternateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("alternate_id");
 
                     b.Property<string>("BusNo")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("bus_no");
 
                     b.Property<int?>("CalenderId")
@@ -11030,17 +11046,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("DistrictId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("district_id");
 
                     b.Property<DateTime?>("Dob")
@@ -11048,16 +11064,16 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("dob");
 
                     b.Property<bool?>("EconomicDisadvantage")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("economic_disadvantage");
 
                     b.Property<bool?>("Eligibility504")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("eligibility_504");
 
                     b.Property<string>("EnrollmentCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("enrollment_code");
 
                     b.Property<DateTime?>("EnrollmentDate")
@@ -11070,7 +11086,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("EnrollmentType")
                         .HasMaxLength(8)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("nchar(8)")
                         .HasColumnName("enrollment_type")
                         .IsFixedLength();
 
@@ -11080,16 +11096,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Ethnicity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("ethnicity");
 
                     b.Property<string>("Facebook")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("facebook");
 
                     b.Property<string>("FirstGivenName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("first_given_name");
 
                     b.Property<int?>("FirstLanguageId")
@@ -11097,12 +11113,12 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("first_language_id");
 
                     b.Property<bool?>("FreeLunchEligibility")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("free_lunch_eligibility");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(6)
-                        .HasColumnType("varchar(6)")
+                        .HasColumnType("nvarchar(6)")
                         .HasColumnName("gender");
 
                     b.Property<int?>("GradeId")
@@ -11111,112 +11127,112 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeLevelTitle")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("grade_level_title");
 
                     b.Property<string>("HomeAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_city");
 
                     b.Property<string>("HomeAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_country");
 
                     b.Property<string>("HomeAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_one");
 
                     b.Property<string>("HomeAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_two");
 
                     b.Property<string>("HomeAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_state");
 
                     b.Property<string>("HomeAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("home_address_zip");
 
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("home_phone");
 
                     b.Property<string>("Instagram")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("instagram");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("LastFamilyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("last_family_name");
 
                     b.Property<bool?>("LepIndicator")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("lep_indicator");
 
                     b.Property<string>("Linkedin")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("linkedin");
 
                     b.Property<string>("MailingAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_city");
 
                     b.Property<string>("MailingAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_country");
 
                     b.Property<string>("MailingAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_one");
 
                     b.Property<string>("MailingAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_two");
 
                     b.Property<bool?>("MailingAddressSameToHome")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("mailing_address_same_to_home");
 
                     b.Property<string>("MailingAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_state");
 
                     b.Property<string>("MailingAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("mailing_address_zip");
 
                     b.Property<string>("MaritalStatus")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("marital_status");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middle_name");
 
                     b.Property<string>("MobilePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("mobile_phone");
 
                     b.Property<int?>("Nationality")
@@ -11225,53 +11241,53 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("OtherGovtIssuedNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("other_govt_issued_number");
 
                     b.Property<string>("PersonalEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("personal_email");
 
                     b.Property<string>("PreferredName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("preferred_name");
 
                     b.Property<string>("PreviousName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("previous_name");
 
                     b.Property<string>("Race")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("race");
 
                     b.Property<string>("RollNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("roll_number");
 
                     b.Property<string>("RollingOption")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("rolling_option");
 
                     b.Property<string>("Salutation")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("salutation");
 
                     b.Property<bool?>("SchoolBusDropOff")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("school_bus_drop_off");
 
                     b.Property<bool?>("SchoolBusPickUp")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("school_bus_pick_up");
 
                     b.Property<string>("SchoolEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("school_email");
 
                     b.Property<int>("SchoolId")
@@ -11280,7 +11296,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("school_name");
 
                     b.Property<int?>("SecondLanguageId")
@@ -11293,26 +11309,26 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SectionName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("nvarchar(255)")
                         .HasColumnName("section_name");
 
                     b.Property<string>("SocialSecurityNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("social_security_number");
 
                     b.Property<bool?>("SpecialEducationIndicator")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("special_education_indicator");
 
                     b.Property<string>("StateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("state_id");
 
                     b.Property<Guid>("StudentGuid")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("student_guid")
                         .IsFixedLength();
 
@@ -11322,22 +11338,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<string>("StudentPortalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_portal_id");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("suffix");
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -11346,21 +11362,21 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("third_language_id");
 
                     b.Property<string>("Twitter")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("twitter");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Youtube")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("youtube");
 
                     b.ToView("student_list_view");
@@ -11370,7 +11386,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -11384,25 +11400,25 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("AdmissionNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("admission_number");
 
                     b.Property<string>("AlertDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("alert_description");
 
                     b.Property<string>("AlternateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("alternate_id");
 
                     b.Property<string>("Associationship")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("associationship");
 
                     b.Property<string>("BusNo")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("nvarchar(15)")
                         .HasColumnName("bus_no");
 
                     b.Property<int?>("CountryOfBirth")
@@ -11411,32 +11427,32 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("CriticalAlert")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("critical_alert");
 
                     b.Property<string>("Dentist")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("dentist");
 
                     b.Property<string>("DentistPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("dentist_phone");
 
                     b.Property<string>("DistrictId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("district_id");
 
                     b.Property<DateTime?>("Dob")
@@ -11444,16 +11460,16 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("dob");
 
                     b.Property<bool?>("EconomicDisadvantage")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("economic_disadvantage");
 
                     b.Property<bool?>("Eligibility504")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("eligibility_504");
 
                     b.Property<string>("EnrollmentType")
                         .HasMaxLength(8)
-                        .HasColumnType("char(8)")
+                        .HasColumnType("nchar(8)")
                         .HasColumnName("enrollment_type")
                         .IsFixedLength();
 
@@ -11463,16 +11479,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Ethnicity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("ethnicity");
 
                     b.Property<string>("Facebook")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("facebook");
 
                     b.Property<string>("FirstGivenName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("first_given_name");
 
                     b.Property<int?>("FirstLanguageId")
@@ -11480,137 +11496,137 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("first_language_id");
 
                     b.Property<bool?>("FreeLunchEligibility")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("free_lunch_eligibility");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(6)
-                        .HasColumnType("varchar(6)")
+                        .HasColumnType("nvarchar(6)")
                         .HasColumnName("gender");
 
                     b.Property<string>("HomeAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_city");
 
                     b.Property<string>("HomeAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_country");
 
                     b.Property<string>("HomeAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_one");
 
                     b.Property<string>("HomeAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("home_address_line_two");
 
                     b.Property<string>("HomeAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("home_address_state");
 
                     b.Property<string>("HomeAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("home_address_zip");
 
                     b.Property<string>("HomePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("home_phone");
 
                     b.Property<string>("Instagram")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("instagram");
 
                     b.Property<string>("InsuranceCompany")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("insurance_company");
 
                     b.Property<string>("InsuranceCompanyPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("insurance_company_phone");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<string>("LastFamilyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("last_family_name");
 
                     b.Property<bool?>("LepIndicator")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("lep_indicator");
 
                     b.Property<string>("Linkedin")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("linkedin");
 
                     b.Property<string>("MailingAddressCity")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_city");
 
                     b.Property<string>("MailingAddressCountry")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_country");
 
                     b.Property<string>("MailingAddressLineOne")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_one");
 
                     b.Property<string>("MailingAddressLineTwo")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("mailing_address_line_two");
 
                     b.Property<bool?>("MailingAddressSameToHome")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("mailing_address_same_to_home");
 
                     b.Property<string>("MailingAddressState")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("mailing_address_state");
 
                     b.Property<string>("MailingAddressZip")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("mailing_address_zip");
 
                     b.Property<string>("MaritalStatus")
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("marital_status");
 
                     b.Property<string>("MedicalFacility")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("medical_facility");
 
                     b.Property<string>("MedicalFacilityPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("medical_facility_phone");
 
                     b.Property<string>("MiddleName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("middle_name");
 
                     b.Property<string>("MobilePhone")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("mobile_phone");
 
                     b.Property<int?>("Nationality")
@@ -11619,68 +11635,68 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("OtherGovtIssuedNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("other_govt_issued_number");
 
                     b.Property<string>("PersonalEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("personal_email");
 
                     b.Property<string>("PolicyHolder")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("policy_holder");
 
                     b.Property<string>("PolicyNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("policy_number");
 
                     b.Property<string>("PreferredName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("preferred_name");
 
                     b.Property<string>("PreviousName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("previous_name");
 
                     b.Property<string>("PrimaryCarePhysician")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("primary_care_physician");
 
                     b.Property<string>("PrimaryCarePhysicianPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("primary_care_physician_phone");
 
                     b.Property<string>("Race")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("race");
 
                     b.Property<string>("RollNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("roll_number");
 
                     b.Property<string>("Salutation")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("salutation");
 
                     b.Property<bool?>("SchoolBusDropOff")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("school_bus_drop_off");
 
                     b.Property<bool?>("SchoolBusPickUp")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("school_bus_pick_up");
 
                     b.Property<string>("SchoolEmail")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("school_email");
 
                     b.Property<int?>("SecondLanguageId")
@@ -11693,47 +11709,47 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SocialSecurityNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("social_security_number");
 
                     b.Property<bool?>("SpecialEducationIndicator")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("special_education_indicator");
 
                     b.Property<string>("StateId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("state_id");
 
                     b.Property<Guid>("StudentGuid")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("student_guid")
                         .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
                         .IsFixedLength();
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<byte[]>("StudentPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("student_photo");
 
                     b.Property<string>("StudentPortalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_portal_id");
 
                     b.Property<byte[]>("StudentThumbnailPhoto")
-                        .HasColumnType("longblob")
+                        .HasColumnType("varbinary(max)")
                         .HasColumnName("student_thumbnail_photo");
 
                     b.Property<string>("Suffix")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("suffix");
 
                     b.Property<int?>("ThirdLanguageId")
@@ -11741,31 +11757,31 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("third_language_id");
 
                     b.Property<string>("Twitter")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("twitter");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("Vision")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("vision");
 
                     b.Property<string>("VisionPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("vision_phone");
 
                     b.Property<string>("Youtube")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("youtube");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId")
@@ -11792,7 +11808,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -11809,32 +11825,32 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("id");
 
                     b.Property<string>("AlertDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("alert_description");
 
                     b.Property<string>("AlertType")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("alert_type");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "Id")
@@ -11847,7 +11863,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -11864,17 +11880,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("id");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("comment");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("ImmunizationDate")
@@ -11883,17 +11899,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ImmunizationType")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("immunization_type");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "Id")
@@ -11905,16 +11921,16 @@ namespace opensis.data.Migrations.MySqlMigrations
             modelBuilder.Entity("opensis.data.Models.StudentMedicalListView", b =>
                 {
                     b.Property<string>("AlertDescription")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("alert_description");
 
                     b.Property<string>("AlertType")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("alert_type");
 
                     b.Property<string>("ImmunizationComment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("immunization_comment");
 
                     b.Property<DateTime?>("ImmunizationDate")
@@ -11923,11 +11939,11 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ImmunizationType")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("immunization_type");
 
                     b.Property<string>("MedicalNote")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("medical_note");
 
                     b.Property<DateTime?>("NoteDate")
@@ -11935,7 +11951,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("note_date");
 
                     b.Property<string>("NurseComment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("nurse_comment");
 
                     b.Property<DateTime?>("NurseVisitDate")
@@ -11944,28 +11960,24 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Reason")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("reason");
 
                     b.Property<string>("Result")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("result");
 
                     b.Property<int>("SchoolId")
                         .HasColumnType("int")
                         .HasColumnName("school_id");
 
-                    b.Property<Guid>("StudentGuid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("student_guid");
-
                     b.Property<int>("StudentId")
                         .HasColumnType("int")
                         .HasColumnName("student_id");
 
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id");
 
                     b.ToView("student_medical_list_view");
@@ -11975,7 +11987,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -11993,16 +12005,16 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("MedicalNote")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("medical_note");
 
                     b.Property<DateTime?>("NoteDate")
@@ -12011,12 +12023,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "Id")
@@ -12029,7 +12041,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12046,17 +12058,17 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("id");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("comment");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("NurseVisitDate")
@@ -12065,32 +12077,32 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Reason")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("reason");
 
                     b.Property<string>("Result")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("result");
 
                     b.Property<DateTime?>("TimeIn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("time_in");
 
                     b.Property<DateTime?>("TimeOut")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("time_out");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "Id")
@@ -12103,7 +12115,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12121,82 +12133,82 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("DentistName")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("dentist_name");
 
                     b.Property<string>("DentistPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("dentist_phone");
 
                     b.Property<string>("InsuranceCompany")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("insurance_company");
 
                     b.Property<string>("InsuranceCompanyPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("insurance_company_phone");
 
                     b.Property<string>("PolicyHolderName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("policy_holder_name");
 
                     b.Property<string>("PolicyNumber")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("policy_number");
 
                     b.Property<string>("PreferredMedicalFacility")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("preferred_medical_facility");
 
                     b.Property<string>("PreferredMedicalFacilityPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("preferred_medical_facility_phone");
 
                     b.Property<string>("PrimaryCarePhysician")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("primary_care_physician");
 
                     b.Property<string>("PrimaryCarePhysicianPhone")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("primary_care_physician_phone");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("VisionName")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("vision_name");
 
                     b.Property<string>("VisionProviderPhone")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("vision_provider_phone");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "Id")
@@ -12208,7 +12220,7 @@ namespace opensis.data.Migrations.MySqlMigrations
             modelBuilder.Entity("opensis.data.Models.StudentMissingAttendance", b =>
                 {
                     b.Property<Guid>("TenantId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id");
 
                     b.Property<int>("SchoolId")
@@ -12247,12 +12259,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<DateTime?>("MissingAttendanceDate")
@@ -12273,12 +12285,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "MissingAttendanceId")
@@ -12300,24 +12312,26 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
                     b.Property<string>("Comments")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("comments");
 
                     b.Property<string>("CourseName")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("course_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("Gpa")
@@ -12326,23 +12340,23 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Grade")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("grade");
 
                     b.Property<string>("GradeTitle")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("grade_title");
 
                     b.Property<string>("MarkingPeriodTitle")
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("marking_period_title")
                         .IsFixedLength();
 
                     b.Property<string>("OverallTeacherComments")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("overall_teacher_comments");
 
                     b.Property<int>("SchoolId")
@@ -12352,7 +12366,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<string>("SchoolYear")
                         .IsRequired()
                         .HasMaxLength(9)
-                        .HasColumnType("varchar(9)")
+                        .HasColumnType("nvarchar(9)")
                         .HasColumnName("school_year");
 
                     b.Property<int>("StudentId")
@@ -12361,28 +12375,28 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Teacher")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("teacher");
 
                     b.Property<string>("TeacherComments")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("teacher_comments");
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id");
@@ -12396,7 +12410,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12410,13 +12424,13 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolYear")
                         .HasMaxLength(9)
-                        .HasColumnType("varchar(9)")
+                        .HasColumnType("nvarchar(9)")
                         .HasColumnName("school_year");
 
                     b.Property<string>("MarkingPeriodTitle")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
-                        .HasColumnType("char(50)")
+                        .HasColumnType("nchar(50)")
                         .HasColumnName("marking_period_title")
                         .HasDefaultValueSql("(N'')")
                         .IsFixedLength();
@@ -12427,12 +12441,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("ExcusedAbsences")
@@ -12441,27 +12455,27 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeTitle")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("grade_title");
 
                     b.Property<DateTime?>("ReportGenerationDate")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("report_generation_date");
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("YodAbsence")
@@ -12470,7 +12484,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("YodAttendance")
                         .HasMaxLength(4)
-                        .HasColumnType("varchar(4)")
+                        .HasColumnType("nvarchar(4)")
                         .HasColumnName("yod_attendance");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "SchoolYear", "MarkingPeriodTitle")
@@ -12483,7 +12497,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12505,46 +12519,46 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("ConflictComment")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("nvarchar(300)")
                         .HasColumnName("conflict_comment");
 
                     b.Property<string>("CourseSectionName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("course_section_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<bool>("Scheduled")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("scheduled");
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<string>("StudentName")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("student_name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "CourseId", "CourseSectionId")
@@ -12561,7 +12575,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12575,22 +12589,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CourseCode")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("course_code");
 
                     b.Property<string>("CourseName")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("course_name");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("CreditEarned")
@@ -12607,7 +12621,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Grade")
                         .HasMaxLength(10)
-                        .HasColumnType("char(10)")
+                        .HasColumnType("nchar(10)")
                         .HasColumnName("grade")
                         .IsFixedLength();
 
@@ -12615,18 +12629,18 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("grade_title")
                         .HasDefaultValueSql("(N'')");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("Id", "TenantId", "SchoolId", "StudentId")
@@ -12641,7 +12655,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12655,17 +12669,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("GradeTitle")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("grade_title");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<decimal?>("CreditAttempted")
@@ -12678,7 +12692,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<DateTime?>("GeneratedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("generated_on");
 
                     b.Property<decimal?>("Gpa")
@@ -12687,17 +12701,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SchoolName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("school_name");
 
                     b.Property<string>("SchoolYear")
                         .HasMaxLength(9)
-                        .HasColumnType("varchar(9)")
+                        .HasColumnType("nvarchar(9)")
                         .HasColumnName("school_year");
 
                     b.Property<string>("StudentInternalId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("student_internal_id");
 
                     b.Property<decimal?>("TotalCreditAttempted")
@@ -12714,12 +12728,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "StudentId", "GradeTitle")
@@ -12732,7 +12746,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12750,12 +12764,12 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<int?>("RolloverId")
@@ -12764,17 +12778,17 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("SubjectName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("subject_name");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.HasKey("TenantId", "SchoolId", "SubjectId")
@@ -12791,7 +12805,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12801,28 +12815,28 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<DateTime>("LoginAttemptDate")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("login_attempt_date");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Emailaddress")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<string>("Ipaddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("ipaddress");
 
                     b.Property<int?>("LoginFailureCount")
@@ -12830,7 +12844,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnName("login_failure_count");
 
                     b.Property<bool?>("LoginStatus")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("login_status");
 
                     b.Property<int?>("MembershipId")
@@ -12839,22 +12853,22 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Profile")
                         .HasMaxLength(30)
-                        .HasColumnType("varchar(30)")
+                        .HasColumnType("nvarchar(30)")
                         .HasColumnName("profile");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("user_name");
 
                     b.HasKey("Id", "TenantId", "SchoolId", "LoginAttemptDate")
@@ -12867,7 +12881,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12877,30 +12891,30 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("EmailAddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("description");
 
                     b.Property<bool?>("IsActive")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_active");
 
                     b.Property<bool?>("IsTenantadmin")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("bit")
                         .HasColumnName("is_tenantadmin");
 
                     b.Property<int>("LangId")
@@ -12928,23 +12942,23 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("name");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("passwordhash");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int>("UserId")
@@ -12965,7 +12979,7 @@ namespace opensis.data.Migrations.MySqlMigrations
                 {
                     b.Property<Guid>("TenantId")
                         .HasMaxLength(36)
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tenant_id")
                         .IsFixedLength();
 
@@ -12975,52 +12989,52 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.Property<string>("Emailaddress")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("emailaddress");
 
                     b.Property<string>("Book")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("book");
 
                     b.Property<string>("Cartoon")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("cartoon");
 
                     b.Property<string>("City")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("city");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("CreatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("created_on");
 
                     b.Property<string>("Hero")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("hero");
 
                     b.Property<string>("Movie")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("movie");
 
                     b.Property<string>("UpdatedBy")
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)")
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("updated_by");
 
                     b.Property<DateTime?>("UpdatedOn")
                         .HasPrecision(0)
-                        .HasColumnType("datetime(0)")
+                        .HasColumnType("datetime2(0)")
                         .HasColumnName("updated_on");
 
                     b.Property<int?>("UserId")

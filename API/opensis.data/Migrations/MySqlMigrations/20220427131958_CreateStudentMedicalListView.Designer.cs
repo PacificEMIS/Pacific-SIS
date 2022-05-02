@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using opensis.data.Models;
 
@@ -10,9 +11,10 @@ using opensis.data.Models;
 namespace opensis.data.Migrations.MySqlMigrations
 {
     [DbContext(typeof(CRMContextMySQL))]
-    partial class CRMContextMySQLModelSnapshot : ModelSnapshot
+    [Migration("20220427131958_CreateStudentMedicalListView")]
+    partial class CreateStudentMedicalListView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11955,10 +11957,6 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<int>("SchoolId")
                         .HasColumnType("int")
                         .HasColumnName("school_id");
-
-                    b.Property<Guid>("StudentGuid")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("student_guid");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int")
