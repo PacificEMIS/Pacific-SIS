@@ -52,6 +52,7 @@ import { SharedFunction } from "../../shared/shared-function";
 import { StudentAttendanceModel } from "../../../models/take-attendance-list.model";
 import { DefaultValuesService } from "../../../common/default-values.service";
 import { scheduleType } from "../../../enums/takeAttendanceList.enum";
+import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
 
 
 export interface StudentList {
@@ -106,6 +107,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   studentAttendanceAddViewModel: StudentAttendanceAddViewModel = new StudentAttendanceAddViewModel();
   selection: SelectionModel<ScheduleStudentForView> = new SelectionModel<ScheduleStudentForView>(true, []);
+  advancedSearchExpansionModel : AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   courseSectionData;
   showAdvanceSearchPanel: boolean;
   filterJsonParams: any;
@@ -113,6 +115,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   searchValue: any;
   toggleValues: any;
   attendance = [new attendance()];
+  isFromAdvancedSearch: boolean = false;
   myHolidayDates = [];
   calendarDays = [];
   blockDays = [];
@@ -137,6 +140,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     private defaultValueService: DefaultValuesService,
     private snackbar: MatSnackBar,
     private paginatorObj: MatPaginatorIntl) {
+      this.advancedSearchExpansionModel.searchAllSchools = false;
       paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -456,8 +460,12 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
           duration: 10000
         });
         this.studentDetails = new MatTableDataSource([]);
-        this.totalCount = data.totalCount;
+        this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+        this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+        this.isFromAdvancedSearch = false;
       } else {
+        this.totalCount = data.totalCount;
+        this.searchCount = data.totalCount ? data.totalCount : null;
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
         this.studentMasterList = data.scheduleStudentForView;
@@ -476,11 +484,26 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
         });
         this.listOfStudent = response;
         this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
 
-
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+    NOTE: We just get the filterParams Array from Search component
+    */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.scheduleStudentListViewModel.pageSize = this.defaultValueService.getPageSize() ? this.defaultValueService.getPageSize() : 10;
+    if (res) {
+      this.scheduleStudentListViewModel.filterParams = res.filterParams;
+      this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+      this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+      this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+      this.getStudentListByCourseSection(res.courseSectionId);
+    }
+  }
 
   getSearchResult(res) {
     if (res.totalCount) {

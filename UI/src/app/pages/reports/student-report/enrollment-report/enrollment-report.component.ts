@@ -52,6 +52,7 @@ import { ExcelService } from "../../../../services/excel.service";
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
 import { StudentReportService } from 'src/app/services/student-report.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-enrollment-report',
@@ -71,6 +72,8 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   studentInfoReportModel: GetStudentEnrollmentReportModel = new GetStudentEnrollmentReportModel();
   studentEnrollmentInfoReportModel: StudentInfoReportModel = new StudentInfoReportModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  isFromAdvancedSearch: boolean = false;
   studentModelList: MatTableDataSource<any>;
   searchCtrl = new FormControl();
   icPrint = icPrint;
@@ -94,7 +97,6 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   generatedReportCardData;
   globalMarkingPeriodEndDate;
   globalMarkingPeriodStartDate;
-  pageSource = 'Enrollment_Report'
   tempGradeLevel = '';
   isVisible: boolean = false;
   selectOptions: any = [
@@ -132,6 +134,9 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     private commonFunction: SharedFunction,
     private studentReportService: StudentReportService
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     this.defaultValuesService.setReportCompoentTitle.next("Student Enrollment Report")
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -266,11 +271,12 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     this.getStudentEnrollmentList();
   }
 
-  /*this is for get all data from the Advanced Search component and then call the api in this page 
-  NOTE: we just get ta filterParams Array from Srarch component
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
     this.studentInfoReportModel.filterParams = []
+    this.isFromAdvancedSearch = true;
     this.studentInfoReportModel = new GetStudentEnrollmentReportModel();
     if (res) {
       this.studentInfoReportModel.markingPeriodStartDate = this.globalMarkingPeriodStartDate;
@@ -319,14 +325,18 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     this.studentInfoReportModel.schoolId = this.defaultValuesService.getSchoolID();
     this.reportService.getStudentEnrollmentReport(this.studentInfoReportModel).subscribe(res => {
       if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
         if (res.studentListViews === null) {
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = res.totalCount;
@@ -334,6 +344,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
         this.pageSize = res._pageSize;
         this.studentModelList = new MatTableDataSource(res.studentListViews);
         this.dataForPdf = res
+        this.isFromAdvancedSearch = false;
       }
     })
   }

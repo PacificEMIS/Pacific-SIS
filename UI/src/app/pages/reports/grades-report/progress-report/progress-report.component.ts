@@ -27,6 +27,8 @@ import { CourseSectionByStaffModel } from 'src/app/models/course-manager.model';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import { SharedFunction } from 'src/app/pages/shared/shared-function';
 export interface StudentListsData {
   studentCheck: boolean;
   studentName: string;
@@ -113,7 +115,9 @@ export class ProgressReportComponent implements OnInit {
   selectedCourse = 'all';
   selectedCourseSection = 'all';
   subjectDetails = [];
+  isFromAdvancedSearch: boolean = false;
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   
   constructor(
     public translateService: TranslateService,
@@ -127,8 +131,12 @@ export class ProgressReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
     private courseManagerService: CourseManagerService,
-    private studentScheduleService: StudentScheduleService
+    private studentScheduleService: StudentScheduleService,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
@@ -189,17 +197,22 @@ export class ProgressReportComponent implements OnInit {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
+        this.searchCount = data.totalCount;
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
         data.studentListViews.forEach((student) => {
@@ -220,6 +233,7 @@ export class ProgressReportComponent implements OnInit {
         })
         this.studentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -336,6 +350,35 @@ export class ProgressReportComponent implements OnInit {
 
   get visibleColumns() {
     return this.columns.filter(column => column.visible).map(column => column.property);
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.defaultValuesService.getUserMembershipType() === this.profile.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profile.Teacher) {
+        this.scheduleStudentListViewModel.filterParams = res.filterParams;
+        this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+        this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.getStudentListByCourseSection();
+      } else {
+        this.getAllStudent.filterParams = res.filterParams;
+        this.getAllStudent.includeInactive = res.inactiveStudents;
+        this.getAllStudent.searchAllSchool = res.searchAllSchool;
+        this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.getAllStudentList();
+      }
+    }
   }
 
   getSearchResult(res) {
@@ -1219,6 +1262,7 @@ export class ProgressReportComponent implements OnInit {
     if (this.scheduleStudentListViewModel.sortingModel?.sortColumn === "") {
       this.scheduleStudentListViewModel.sortingModel = null;
     }
+    this.scheduleStudentListViewModel.courseSectionIds = [];
 
     if(this.selectedSubject === 'all') {      
       this.subjectDetails.map((subject)=>{
@@ -1247,17 +1291,22 @@ export class ProgressReportComponent implements OnInit {
       delete data.scheduleStudentForView;
       if (data._failure) {
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
+        this.searchCount = data.totalCount ? data.totalCount : null;
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
         data.studentListViews.forEach((student) => {
@@ -1278,6 +1327,7 @@ export class ProgressReportComponent implements OnInit {
         })
         this.studentModelList = new MatTableDataSource(data.studentListViews);
         // this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }

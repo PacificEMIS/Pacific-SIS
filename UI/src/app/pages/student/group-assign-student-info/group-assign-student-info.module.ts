@@ -35,6 +35,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SearchStudentComponent } from './search-student/search-student.component';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
@@ -77,6 +78,7 @@ import { SearchStudentComponent } from './search-student/search-student.componen
     MatProgressSpinnerModule,
     MatCardModule,
     MatSnackBarModule,
+    SearchStudentModule,
     QuillModule.forRoot({
       modules: {
         toolbar: [

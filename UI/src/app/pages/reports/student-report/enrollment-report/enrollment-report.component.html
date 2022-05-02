@@ -64,10 +64,10 @@
             </div>
             <hr class="-mx-4 block md:hidden" />
             <div class="py-2 md:pt-2 items-center">
-                <a  class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'print' | translate}}" (click)="createPDF()" [class.disabled]="totalCount == null">
+                <a  class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'print' | translate}}" (click)="createPDF()" [class.disabled]="totalCount == null || totalCount == 0">
                     <mat-icon [icIcon]="icPrint"></mat-icon>
                 </a>
-                <a  class="cursor-pointer inline-block align-middle ml-4" matTooltip="{{'exportToExcel' | translate}}" (click)="exportAccessLogListToExcel()" [class.disabled]="totalCount == null">
+                <a  class="cursor-pointer inline-block align-middle ml-4" matTooltip="{{'exportToExcel' | translate}}" (click)="exportAccessLogListToExcel()" [class.disabled]="totalCount == null || totalCount == 0">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
             </div>
@@ -140,10 +140,10 @@
 </div>
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-        <vex-search-student [incomingSearchValue]="searchValue"
+        <vex-common-search-student [incomingSearchValue]="searchValue" [advancedSearchExpansion]="advancedSearchExpansionModel"
             (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
-            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)" (filteredValue)="filterData($event)" [rootSource]="pageSource">
-        </vex-search-student>
+            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)" (filteredValue)="filterData($event)">
+        </vex-common-search-student>
     </div>
     <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>

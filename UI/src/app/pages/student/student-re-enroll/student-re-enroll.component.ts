@@ -53,6 +53,7 @@ import { RollBasedAccessService } from '../../../services/roll-based-access.serv
 import { ImageCropperService } from '../../../services/image-cropper.service';
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { SchoolCreate } from '../../../enums/school-create.enum';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 @Component({
   selector: 'vex-student-re-enroll',
   templateUrl: './student-re-enroll.component.html',
@@ -95,14 +96,18 @@ export class StudentReEnrollComponent implements OnInit {
   gradeLavelList = [];
   listOfStudent = [];
   selectedStudent = [];
+  searchValue: any = null;
+  toggleValues: any = null;
   studentMasterList: [StudentMasterModel] = [new StudentMasterModel()];
   cloneStudentEnrollment: StudentEnrollmentModel = new StudentEnrollmentModel();
   studentEnrollmentModel: StudentEnrollmentModel = new StudentEnrollmentModel();
   schoolListWithGrades: StudentEnrollmentSchoolListModel = new StudentEnrollmentSchoolListModel();
   enrollmentCodeListView: EnrollmentCodeListView = new EnrollmentCodeListView();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') private masterCheckBox: MatCheckbox;
   permissions: Permissions;
+  isFromAdvancedSearch: boolean = false;
   columns = [
     { label: 'studentCheck', property: 'studentCheck', type: 'text', visible: true },
     { label: 'name', property: 'studentName', type: 'text', visible: true },
@@ -129,6 +134,13 @@ export class StudentReEnrollComponent implements OnInit {
     private imageCropperService: ImageCropperService,
     private paginatorObj: MatPaginatorIntl,
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.searchBirthdays = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.reEnrollmentInformation = true;
+    this.advancedSearchExpansionModel.addressInformation = false;
+    this.advancedSearchExpansionModel.personalContactInformation = false;
+    this.advancedSearchExpansionModel.includeInactiveStudents = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -469,6 +481,21 @@ export class StudentReEnrollComponent implements OnInit {
     }
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.schoolId = res.searchAllSchool ? 0 : this.defaultValuesService.getSchoolID();
+      this.searchForReEnrollStudent();
+    }
+  }
+
   getSearchResult(res) {
     if (res?.data.studentMaster.length > 0) {
       this.totalCount = res?.data.totalCount;
@@ -485,6 +512,14 @@ export class StudentReEnrollComponent implements OnInit {
       this.getAllStudent = new StudentListModel();
     }
 
+  }
+
+  getToggleValues(event) {
+    this.toggleValues = event;
+  }
+
+  getSearchInput(event) {
+    this.searchValue = event;
   }
 
   hideAdvanceSearch(event) {

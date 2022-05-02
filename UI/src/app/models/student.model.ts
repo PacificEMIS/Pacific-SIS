@@ -736,7 +736,15 @@ export class StudentMasterSearchModel {
     public vision: string;
     public visionPhone: string;
     public schoolMaster: Object;
-
+    public alertType: string;
+    public noteDate: string;
+    public medicalNote: string;
+    public immunizationType: string;
+    public immunizationDate: string;
+    public comment: string;
+    public nurseVisitDate: string;
+    public reason: string;
+    public result: string;
 }
 
 export class StudentImportModel extends CommonField {

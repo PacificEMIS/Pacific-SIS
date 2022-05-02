@@ -51,6 +51,8 @@ import { CommonService } from "src/app/services/common.service";
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { HistoricalMarkingPeriodService } from "src/app/services/historical-marking-period.service";
 import { HistoricalGradeAddViewModel } from "src/app/models/historical-marking-period.model";
+import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
+import { SharedFunction } from "../../shared/shared-function";
 
 @Component({
   selector: "vex-transcripts",
@@ -102,9 +104,11 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   permissions: Permissions;
   generatedTranscriptData;
   historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   historicalGradeList;
   selectedHistoricalGradeList=[];
   historicalGradeError:boolean;
+  isFromAdvancedSearch: boolean = false;
   constructor(
     public translateService: TranslateService,
     private gradeLevelService: GradeLevelService,
@@ -117,8 +121,12 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
-    private historicalMarkingPeriodService:HistoricalMarkingPeriodService
+    private historicalMarkingPeriodService:HistoricalMarkingPeriodService,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.getAllStudent.filterParams = null;
@@ -235,6 +243,8 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   }
 
   resetStudentList() {
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCount = null;
     this.searchValue = null;
     this.callAllStudent();
@@ -278,17 +288,22 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
         if (res.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentList = new MatTableDataSource([]);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = res.totalCount;
+        this.searchCount = res.totalCount;
         this.pageNumber = res.pageNumber;
         this.pageSize = res._pageSize;
         res.studentListViews.forEach((student) => {
@@ -309,8 +324,28 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
         })
         this.studentList = new MatTableDataSource(res.studentListViews);
         this.getAllStudent = new StudentListModel();
+        this.isFromAdvancedSearch = false;
       }
     });
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+      this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.callAllStudent();
+    }
   }
 
   getSearchResult(res) {
