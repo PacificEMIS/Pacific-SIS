@@ -73,6 +73,7 @@ export class TeacherFunctionComponent implements OnInit {
   showIsEffortGrade: boolean;
   showIsTakeAttendance: boolean;
   showIsMissingAttendance: boolean;
+  showIsProgressReport: boolean;
   constructor(
     public translateService:TranslateService,
     private router: Router,
@@ -111,6 +112,9 @@ export class TeacherFunctionComponent implements OnInit {
       if(this.router.url == '/school/staff/teacher-functions/take-attendance'){
         this.activeMenu = 'takeAttendance';
       }
+      if(this.router.url == '/school/staff/teacher-functions/progress-report'){
+        this.activeMenu = 'progressReport';
+      }
       this.secondarySidebar = 0;
   });
   }
@@ -148,6 +152,8 @@ export class TeacherFunctionComponent implements OnInit {
         this.showIsTakeAttendance = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/take-attendance').view
       } else if(item.path === '/school/staff/teacher-functions/missing-attendance') {
         this.showIsMissingAttendance = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/missing-attendance').view
+      } else if(item.path === '/school/staff/teacher-functions/progress-report') {
+        this.showIsProgressReport = this.pageRolePermissions.checkPageRolePermission('/school/staff/teacher-functions/progress-report').view
       }
     })
   }
