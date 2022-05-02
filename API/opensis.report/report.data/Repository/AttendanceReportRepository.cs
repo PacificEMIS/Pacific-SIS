@@ -751,6 +751,22 @@ namespace opensis.report.report.data.Repository
                             else
                             {
                                 transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentAbsence.Select(x => x.slv)).AsQueryable();
+
+                                //medical advance search
+                                var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                                if (studentGuids.Count > 0)
+                                {
+                                    var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                    if (filterStudentIds?.Count > 0)
+                                    {
+                                        transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                    }
+                                    else
+                                    {
+                                        transactionIQ = null;
+                                    }
+                                }
                             }
                         }
                     }
@@ -786,14 +802,14 @@ namespace opensis.report.report.data.Repository
                 }
                 else
                 {
-                    var studentAbsence = this.context?.StudentDailyAttendance.Join(this.context?.StudentAttendance, sda => sda.AttendanceDate, sa => sa.AttendanceDate, (sda, sa) => new { sda, sa }).Join(this.context?.StudentListView, ssa=> ssa.sda.StudentId, slv=>slv.StudentId ,(ssa,slv)=> new{ssa, slv}).Where(x => x.ssa.sda.SchoolId == pageResult.SchoolId && x.ssa.sda.TenantId == pageResult.TenantId && x.ssa.sa.SchoolId == pageResult.SchoolId && x.ssa.sa.TenantId == pageResult.TenantId && x.ssa.sda.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.ssa.sda.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.slv.SchoolId== pageResult.SchoolId && x.slv.TenantId== pageResult.TenantId);
+                    var studentAbsence = this.context?.StudentDailyAttendance.Join(this.context?.StudentAttendance, sda => sda.AttendanceDate, sa => sa.AttendanceDate, (sda, sa) => new { sda, sa }).Join(this.context?.StudentListView, ssa => ssa.sda.StudentId, slv => slv.StudentId, (ssa, slv) => new { ssa, slv }).Where(x => x.ssa.sda.SchoolId == pageResult.SchoolId && x.ssa.sda.TenantId == pageResult.TenantId && x.ssa.sa.SchoolId == pageResult.SchoolId && x.ssa.sa.TenantId == pageResult.TenantId && x.ssa.sda.AttendanceDate >= pageResult.MarkingPeriodStartDate && x.ssa.sda.AttendanceDate <= pageResult.MarkingPeriodEndDate && x.slv.SchoolId == pageResult.SchoolId && x.slv.TenantId == pageResult.TenantId);
 
 
                     if (studentAbsence != null && studentAbsence.Any())
                     {
                         if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                         {
-                            transactionIQ = studentAbsence.Select(x=> x.slv).AsQueryable();
+                            transactionIQ = studentAbsence.Select(x => x.slv).AsQueryable();
                         }
                         else
                         {
@@ -881,8 +897,6 @@ namespace opensis.report.report.data.Repository
                     studentAbsenceList._failure = true;
                     studentAbsenceList._message = NORECORDFOUND;
                 }
-
-
             }
             catch (Exception ex)
             {

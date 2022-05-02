@@ -602,6 +602,20 @@ namespace opensis.data.Helper
 
             return AcademicYear;
         }
+        public static List<Guid>? MedicalAdvancedSearch(CRMContext cRMContext, List<FilterParams> filterParams, Guid? tenantId, int? schoolId, List<Guid>? studentGuids)
+        {
+            List<Guid>? filterStudentGuids = null;
+
+            var medicalInfoList = cRMContext.StudentMedicalListViews.Where(x => x.TenantId == tenantId && (schoolId == null || x.SchoolId == schoolId) && studentGuids!.Contains(x.StudentGuid));
+
+            var medicalFilterData = Utility.FilteredData(filterParams, medicalInfoList).AsQueryable();
+
+            if (medicalFilterData?.Any() == true)
+            {
+                filterStudentGuids = medicalFilterData.Select(s => s.StudentGuid).Distinct().ToList();
+            }
+            return filterStudentGuids;
+        }
     }
 }
 

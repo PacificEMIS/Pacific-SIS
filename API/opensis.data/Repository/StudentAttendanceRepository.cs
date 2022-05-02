@@ -1939,21 +1939,37 @@ namespace opensis.data.Repository
                             else
                             {
                                 transactionIQ = Utility.FilteredData(pageResult.FilterParams!, attendanceData).AsQueryable();
-                            }
-                        }
 
-                        if (pageResult.SortingModel != null)
-                        {
-                            switch (pageResult.SortingModel.SortColumn!.ToLower())
-                            {
-                                default:
-                                    transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection!.ToLower());
-                                    break;
+                                //medical advance search
+                                var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                                if (studentGuids.Count > 0)
+                                {
+                                    var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                    if (filterStudentIds?.Count > 0)
+                                    {
+                                        transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                    }
+                                    else
+                                    {
+                                        transactionIQ = null;
+                                    }
+                                }
                             }
                         }
 
                         if (transactionIQ != null)
                         {
+                            if (pageResult.SortingModel != null)
+                            {
+                                switch (pageResult.SortingModel.SortColumn!.ToLower())
+                                {
+                                    default:
+                                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection!.ToLower());
+                                        break;
+                                }
+                            }
+
                             int? totalCount = transactionIQ.Count();
                             if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                             {
@@ -1967,6 +1983,8 @@ namespace opensis.data.Repository
                         else
                         {
                             studentAttendanceList.TotalCount = 0;
+                            studentAttendanceList._failure = true;
+                            studentAttendanceList._message = NORECORDFOUND;
                         }
                     }
                     else
