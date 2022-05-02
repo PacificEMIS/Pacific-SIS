@@ -741,10 +741,11 @@ export class StudentMasterSearchModel {
     public medicalNote: string;
     public immunizationType: string;
     public immunizationDate: string;
-    public comment: string;
+    public immunizationComment: string;
     public nurseVisitDate: string;
     public reason: string;
     public result: string;
+    public nurseComment: string;
 }
 
 export class StudentImportModel extends CommonField {
