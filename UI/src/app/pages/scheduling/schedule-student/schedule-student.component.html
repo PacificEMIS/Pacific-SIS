@@ -214,8 +214,8 @@
                                 <div *ngIf="data?.meetingDays;else elsePartDay">
                                     <span *ngFor="let day of weekArray, index as i"
                                         class="text-white w-5 h-5 rounded inline-block text-xs text-center font-medium mr-1"
-                                        [class.bg-primary]="data?.meetingDays.includes(i+1)"
-                                        [class.bg-gray-light]="data?.meetingDays.includes(i+1)==false">
+                                        [class.bg-primary]="data?.meetingDays.includes(i)"
+                                        [class.bg-gray-light]="data?.meetingDays.includes(i)==false">
                                         {{day}}
                                     </span>
                                 </div>
