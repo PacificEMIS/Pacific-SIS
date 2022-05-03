@@ -273,7 +273,7 @@ export class StudentCourseScheduleComponent implements OnInit {
             subjectList: this.getAllSubjectModel.subjectList,
             programList: this.getAllProgramModel.programList
         },
-        width: "900px",
+        width: "1200px",
       })
       .afterClosed()
       .subscribe((res) => {

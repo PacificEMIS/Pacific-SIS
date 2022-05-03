@@ -47,6 +47,7 @@ import { StudentMasterModel } from '../../../../../models/student.model';
 import { Permissions } from '../../../../../models/roll-based-access.model';
 import { PageRolesPermission } from '../../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import moment from 'moment';
 
 
 @Component({
@@ -61,7 +62,7 @@ export class AddAssignCourseComponent implements OnInit {
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
-  displayedColumns: string[] = ['staffSelected', 'course', 'courseSectionName', 'markingPeriod', 'startDate', 'endDate', 'seats', 'available'];
+  displayedColumns: string[] = ['staffSelected', 'course', 'courseSectionName', 'markingPeriod', 'startDate', 'endDate', 'seats', 'available', 'scheduleDate'];
   courseSectionSearch: SearchCourseSectionViewModel = new SearchCourseSectionViewModel();
   courseSectionList: MatTableDataSource<any>;
   loading: boolean;
@@ -122,6 +123,12 @@ export class AddAssignCourseComponent implements OnInit {
         }
       } else {
         res.allCourseSectionViewList = this.findMarkingPeriodTitleById(res.allCourseSectionViewList)
+        res.allCourseSectionViewList.map((courseSection: any) => {
+          courseSection.courseDurationStartDate=courseSection.durationStartDate=moment(courseSection.durationStartDate).format('YYYY-MM-DD');
+          if (moment(new Date()).isBetween(courseSection.courseDurationStartDate, courseSection.durationEndDate)) {
+            courseSection.durationStartDate = moment(new Date()).format('YYYY-MM-DD');
+          }
+        })
         this.courseSectionList = new MatTableDataSource(res.allCourseSectionViewList);
         this.courseSectionList.paginator = this.paginator;
       }
@@ -227,7 +234,9 @@ export class AddAssignCourseComponent implements OnInit {
     }
   }
 
-
+  changeDateEvent(getValue) {
+    getValue.durationStartDate=moment(getValue.durationStartDate).format('YYYY-MM-DD');
+  }
 
   selectRows() {
     for (let index = 0; index < this.courseSectionList.paginator.pageSize; index++) {
