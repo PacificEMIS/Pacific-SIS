@@ -40,5 +40,6 @@ namespace opensis.data.ViewModels.Calendar
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? AcademicYear { get; set; }
+        public DateTime? MaxEndDateForSessionCalendar { get; set; }
     }
 }
