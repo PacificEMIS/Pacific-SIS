@@ -115,7 +115,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   displayedColumns: string[];
   permissions: Permissions;
   date = new FormControl(moment());
-  weekArray = ['M', 'T', 'W', 'T', 'F'];
+  weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentScheduleService: StudentScheduleService,
     private loaderService: LoaderService,
