@@ -37,6 +37,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AddGradeCommentsComponent } from './add-grade-comments/add-grade-comments.component';
 import { GradebookGradeListComponent } from './gradebook-grade-list/gradebook-grade-list.component';
 import { GradebookGradeDetailsComponent } from './gradebook-grade-details/gradebook-grade-details.component';
+import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-staff-list.module';
 
 
 @NgModule({
@@ -76,7 +77,9 @@ import { GradebookGradeDetailsComponent } from './gradebook-grade-details/gradeb
     MatSlideToggleModule,
     MatRippleModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    CommonStaffListModule
+
   ]
 })
 export class GradebookGradesModule { }
