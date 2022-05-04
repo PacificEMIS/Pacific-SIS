@@ -38,7 +38,6 @@ export class ClassComponent implements OnInit {
 
   currentTab: string;
   selectedCourseSection;
-  courseWeightedFlag: boolean;
 
   constructor(public translateService: TranslateService,
     private dashboardService: DasboardService,
@@ -60,10 +59,6 @@ export class ClassComponent implements OnInit {
 
   changeTab(status) {
     this.currentTab = status;
-  }
-
-  courseWeightedOrNot(event) {
-    this.courseWeightedFlag = event
   }
 
 }
