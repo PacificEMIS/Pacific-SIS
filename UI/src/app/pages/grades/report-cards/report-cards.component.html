@@ -699,7 +699,7 @@
                 </td>
             </tr>
             <tr *ngFor="let markingPeriod of grade?.markingPeriodDetailsForDefaultTemplates">
-                <td class="semester-table">
+                <td class="semester-table" *ngIf="markingPeriod?.courseSectionGradeDetailsForDefaultTemplates.length>0">
                     <table>
                         <caption>
                             <h2 class="float-left">{{markingPeriod?.markingPeriodTitle}}</h2>
@@ -801,10 +801,10 @@
         <div style="page-break-before:always">&nbsp;</div>
         <table>
             <tr>
-                <td class="comments">
+                <td class="comments" *ngIf="grade?.courseCommentCategories?.length>0">
                     <table>
                         <h4>{{'forCommentKeysPleaseFollowTheDescriptionBelow'|translate}}:</h4>
-                        <tr *ngIf="grade?.courseCommentCategories?.length>0">
+                        <tr>
                             <td>
                                 <p *ngFor="let x of grade?.courseCommentCategories| slice:0:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let i=index;">{{i+1}}. {{x?.comments}}</p>
                             </td>
@@ -816,7 +816,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="comments">
+                <td class="comments" *ngIf="grade?.teacherCommentList.length>0">
                     <h4>{{'teacherComments'|translate}}:</h4>
                     <p *ngFor="let comment of grade?.teacherCommentList; let k=index;">{{k+1}}. {{comment}}.</p>
                 </td>
@@ -825,8 +825,9 @@
                 <td class="comments">
                     <table>
                         <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode1">
+                            <div *ngIf="grade?.standerdGradeScale?.length>0">
                             <h4>{{'standardsGradeLegend' | translate}}:</h4>
-                            <tr *ngIf="grade?.standerdGradeScale?.length>0">
+                            <tr>
                                 <td>
                                     <p *ngFor="let x of grade?.standerdGradeScale| slice:0:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let i=index;">{{i+1}}. {{x?.comment}}</p>
                                 </td>
@@ -834,10 +835,12 @@
                                     <p *ngFor="let y of grade?.standerdGradeScale| slice:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let j=index;">{{j+(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment+1:halfLengthOfStandardGradeComment+2)}}. {{y?.comment}}</p>
                                 </td>
                             </tr>
+                            </div>
                         </ng-container>
                         <ng-template #ViewMode1>
+                            <div *ngIf="grade?.effortGradeScales?.length>0">
                             <h4>{{'effortGradeLegend' | translate}}:</h4>
-                            <tr *ngIf="grade?.effortGradeScales?.length>0">
+                            <tr>
                                 <td>
                                     <p *ngFor="let x of grade?.effortGradeScales| slice:0:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let i=index;">{{i+1}}. {{x?.gradeScaleComment}}</p>
                                 </td>
@@ -845,6 +848,7 @@
                                     <p *ngFor="let y of grade?.effortGradeScales| slice:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let j=index;">{{j+(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment+1:halfLengthOfEffortGradeComment+2)}}. {{y?.gradeScaleComment}}</p>
                                 </td>
                             </tr>
+                            </div>
                         </ng-template>
                     </table>
                 </td>
