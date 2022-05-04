@@ -455,6 +455,24 @@ namespace opensis.report.report.data.Repository
                         else
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentDataList).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
+
+
                         }
                     }
                     if (transactionIQ != null)
@@ -467,33 +485,33 @@ namespace opensis.report.report.data.Repository
                         {
                             transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(c => c.FirstGivenName);
                         }
-                        totalCount = transactionIQ.Count();
+                    }
 
+                    totalCount = transactionIQ != null ? transactionIQ?.Count() : 0;
 
-                        if (totalCount > 0)
+                    if (totalCount > 0)
+                    {
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                         {
-                            if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                            {
-                                transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
-                            }
-
-                            studentListModel.studentListViews = transactionIQ.ToList();
-
-                            studentListModel.studentListViews.ForEach(c =>
-                            {
-                                c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
-                                c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
-                            });
-
-                            studentListModel.TotalCount = totalCount;
-                            studentListModel._message = "success";
-                            studentListModel._failure = false;
+                            transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                         }
-                        else
+
+                        studentListModel.studentListViews = transactionIQ.ToList();
+
+                        studentListModel.studentListViews.ForEach(c =>
                         {
-                            studentListModel._message = NORECORDFOUND;
-                            studentListModel._failure = true;
-                        }
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+
+                        studentListModel.TotalCount = totalCount;
+                        studentListModel._message = "success";
+                        studentListModel._failure = false;
+                    }
+                    else
+                    {
+                        studentListModel._message = NORECORDFOUND;
+                        studentListModel._failure = true;
                     }
                     studentListModel.TenantId = pageResult.TenantId;
                     studentListModel.SchoolId = pageResult.SchoolId;
@@ -502,7 +520,6 @@ namespace opensis.report.report.data.Repository
                     studentListModel._tenantName = pageResult._tenantName;
                     studentListModel._token = pageResult._token;
                 }
-
                 else
                 {
                     studentListModel._message = NORECORDFOUND;

@@ -50,7 +50,7 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public String? SectionName { get; set; }
         public String? HonorRoll { get; set; }
         public int? StudentId { get; set; }
-        public Guid? StudentGuid { get; set; }
+        public Guid StudentGuid { get; set; }
         public string? StudentInternalId { get; set; }
         public string? AlternateId { get; set; }
         public string? DistrictId { get; set; }

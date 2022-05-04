@@ -183,7 +183,6 @@ namespace opensis.report.report.data.Repository
                                 honorRoll.SectionName = SectionData.FirstOrDefault(y => y.SectionId == studentData.StudentMaster.SectionId)?.Name;
                             }
                             honorRollList.HonorRollViewForReports.Add(honorRoll);
-
                         }
                     }
                     var StudentHonorRollData = honorRollList.HonorRollViewForReports.AsQueryable();
@@ -211,19 +210,37 @@ namespace opensis.report.report.data.Repository
                         else
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, StudentHonorRollData).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
                         }
                     }
-                    if (pageResult.SortingModel != null)
+                    if (transactionIQ != null)
                     {
-                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
-                    }
-                    else
-                    {
-                        transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(c => c.FirstGivenName);
+                        if (pageResult.SortingModel != null)
+                        {
+                            transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
+                        }
+                        else
+                        {
+                            transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(c => c.FirstGivenName);
+                        }
                     }
 
-                    totalCount = transactionIQ.Count();
-
+                    totalCount = transactionIQ != null ? transactionIQ?.Count() : 0;
 
                     if (totalCount > 0)
                     {
@@ -244,9 +261,7 @@ namespace opensis.report.report.data.Repository
                         honorRollList._failure = true;
                         honorRollList.HonorRollViewForReports = new();
                     }
-
                 }
-
                 else
                 {
                     honorRollList._failure = true;

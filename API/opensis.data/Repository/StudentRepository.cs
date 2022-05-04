@@ -461,6 +461,8 @@ namespace opensis.data.Repository
             IQueryable<StudentListView>? transactionIQ = null;
             IQueryable<StudentListView>? studentDataList = null;
             int? totalCount = 0;
+            IEnumerable<int?>? schoolAttachedId = null;
+
             var membershipData = this.context?.UserMaster.Include(x => x.Membership).FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.EmailAddress == pageResult.EmailAddress);
 
             var activeSchools = this.context?.SchoolDetail.Where(x => x.Status == true).Select(x => x.SchoolId).ToList();
@@ -468,18 +470,16 @@ namespace opensis.data.Repository
             if (membershipData != null)
             {
                 //if (membershipData.Membership.ProfileType.ToLower() == "super administrator")
-                if (String.Compare(membershipData.Membership.ProfileType, "super administrator",true)==0)
+                if (String.Compare(membershipData.Membership.ProfileType, "super administrator", true) == 0)
                 {
                     studentDataList = this.context?.StudentListView.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolId == pageResult.SchoolId : activeSchools!.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
                 }
                 else
                 {
-                    var schoolAttachedId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.StaffId == membershipData.UserId && x.EndDate == null && activeSchools!.Contains(x.SchoolAttachedId)).ToList().Select(s => s.SchoolAttachedId);
+                    schoolAttachedId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.StaffId == membershipData.UserId && x.EndDate == null && activeSchools!.Contains(x.SchoolAttachedId)).ToList().Select(s => s.SchoolAttachedId);
 
                     studentDataList = this.context?.StudentListView.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolId == pageResult.SchoolId : schoolAttachedId!.Contains(x.SchoolId)) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
 
-
-                    
                 }
             }
 
@@ -513,13 +513,30 @@ namespace opensis.data.Repository
                         }
                         else
                         {
+                            //normal advance search
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentDataList).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
                         }
                     }
 
                     if (pageResult.DobStartDate != null && pageResult.DobEndDate != null)
                     {
-                        var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
+                        var filterInDateRange = transactionIQ?.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
                         if (filterInDateRange?.Any() == true)
                         {
                             transactionIQ = filterInDateRange;
@@ -529,74 +546,71 @@ namespace opensis.data.Repository
                             transactionIQ = null;
                         }
                     }
-                    if (transactionIQ != null)
+
+                    if (pageResult.FullName != null)
                     {
-
-
-
-                        if (pageResult.FullName != null)
+                        var studentName = pageResult.FullName.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                        if (studentName.Length > 1)
                         {
-                            var studentName = pageResult.FullName.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                            if (studentName.Length > 1)
+                            var firstName = studentName.First();
+                            var lastName = studentName.Last();
+                            pageResult.FullName = null;
+
+                            if (pageResult.FullName == null)
                             {
-                                var firstName = studentName.First();
-                                var lastName = studentName.Last();
-                                pageResult.FullName = null;
-
-                                if (pageResult.FullName == null)
-                                {
-
-                                    var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName ?? "").StartsWith(firstName.ToString()) && (x.LastFamilyName ?? "").StartsWith(lastName.ToString()));
-
-                                    transactionIQ = nameSearch;
-
-
-                                }
-                            }
-                            else
-                            {
-                                var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.FirstGivenName??"").StartsWith(pageResult.FullName) || (x.LastFamilyName??"").StartsWith(pageResult.FullName))).AsQueryable();
+                                var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName ?? "").StartsWith(firstName.ToString()) && (x.LastFamilyName ?? "").StartsWith(lastName.ToString()));
 
                                 transactionIQ = nameSearch;
                             }
                         }
+                        else
+                        {
+                            var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.FirstGivenName ?? "").StartsWith(pageResult.FullName) || (x.LastFamilyName ?? "").StartsWith(pageResult.FullName))).AsQueryable();
 
+                            transactionIQ = nameSearch;
+                        }
+                    }
+
+                    if (transactionIQ != null)
+                    {
                         if (pageResult.SortingModel != null)
                         {
-                            transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn??"", (pageResult.SortingModel.SortDirection??"").ToLower());
+                            transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
                         }
                         else
                         {
                             transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(c => c.FirstGivenName);
                         }
-                        totalCount = transactionIQ.Count();
-
-
-                        if (totalCount > 0)
-                        {
-                            if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                            {
-                                transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
-                            }
-
-                            studentListModel.studentListViews = transactionIQ.ToList();
-
-                            studentListModel.studentListViews.ForEach(c =>
-                            {
-                                c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
-                                c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
-                            });
-
-                            studentListModel.TotalCount = totalCount;
-                            studentListModel._message = "success";
-                            studentListModel._failure = false;
-                        }
-                        else
-                        {
-                            studentListModel._message = NORECORDFOUND;
-                            studentListModel._failure = true;
-                        }
                     }
+
+                    totalCount = transactionIQ != null ? transactionIQ?.Count() : 0;
+
+
+                    if (totalCount > 0)
+                    {
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ!.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                        }
+
+                        studentListModel.studentListViews = transactionIQ!.ToList();
+
+                        studentListModel.studentListViews.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+
+                        studentListModel.TotalCount = totalCount;
+                        studentListModel._message = "success";
+                        studentListModel._failure = false;
+                    }
+                    else
+                    {
+                        studentListModel._message = NORECORDFOUND;
+                        studentListModel._failure = true;
+                    }
+
                     studentListModel.TenantId = pageResult.TenantId;
                     studentListModel.SchoolId = pageResult.SchoolId;
                     studentListModel.PageNumber = pageResult.PageNumber;
@@ -604,7 +618,6 @@ namespace opensis.data.Repository
                     studentListModel._tenantName = pageResult._tenantName;
                     studentListModel._token = pageResult._token;
                 }
-
             }
             catch (Exception es)
             {
@@ -2598,7 +2611,7 @@ namespace opensis.data.Repository
                     }).ToList()
                 }).ToList();
 
-                if (studentDataList?.Any()==true)
+                if (studentDataList?.Any() == true)
                 {
                     Guid studentGuidData = new Guid();
                     foreach (var studentData in studentDataList)
@@ -2638,9 +2651,9 @@ namespace opensis.data.Repository
 
                         //for StudentEnrollment Searching
 
-                        var studentEnrollmentFilter = Student.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.ToList()?.Any()==true ? (x.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle !=null && (x.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle??"").ToLower().Contains(Columnvalue.ToLower())) : string.Empty.Contains(Columnvalue)).AsQueryable();
+                        var studentEnrollmentFilter = Student.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.ToList()?.Any() == true ? (x.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle != null && (x.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle ?? "").ToLower().Contains(Columnvalue.ToLower())) : string.Empty.Contains(Columnvalue)).AsQueryable();
 
-                        if (studentEnrollmentFilter.ToList()?.Any()==true)
+                        if (studentEnrollmentFilter.ToList()?.Any() == true)
                         {
                             transactionIQ = transactionIQ.AsNoTracking().ToList().Concat(studentEnrollmentFilter).AsQueryable();
                             //transactionIQ = gradeLevelFilter;
@@ -2672,7 +2685,7 @@ namespace opensis.data.Repository
                                         if (columnName.ToLower() == "exitcode")
                                         {
                                             enrollmentData = enrollmentData.AsQueryable().AsNoTracking().ToList().Where(x => /*x.StudentEnrollment.FirstOrDefault()!.ExitCode.ToLower() == filterValue.ToString().ToLower()*/
-                                            String.Compare(x.StudentEnrollment.FirstOrDefault()!.ExitCode, filterValue,true)==0
+                                            String.Compare(x.StudentEnrollment.FirstOrDefault()!.ExitCode, filterValue, true) == 0
                                             ).AsQueryable();
                                         }
                                     }
@@ -2681,7 +2694,7 @@ namespace opensis.data.Repository
 
                             pageResult.FilterParams.RemoveAll(x => x.ColumnName.ToLower() == "enrollmentdate" || x.ColumnName.ToLower() == "exitdate" || x.ColumnName.ToLower() == "exitcode");
 
-                            if (pageResult.FilterParams?.Any()==true)
+                            if (pageResult.FilterParams?.Any() == true)
                             {
                                 transactionIQ = Utility.FilteredData(pageResult.FilterParams, enrollmentData).AsQueryable();
                             }
@@ -2740,79 +2753,97 @@ namespace opensis.data.Repository
                         else
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, Student).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
                         }
                     }
-
                 }
-                if (pageResult.SortingModel != null)
+
+                if (transactionIQ != null)
                 {
-                    switch ((pageResult.SortingModel.SortColumn??"").ToLower())
+                    if (pageResult.SortingModel != null)
                     {
-                        //For GradeLevel Sorting
-                        case "gradeleveltitle":
+                        switch ((pageResult.SortingModel.SortColumn ?? "").ToLower())
+                        {
+                            //For GradeLevel Sorting
+                            case "gradeleveltitle":
 
-                            if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
-                            {
+                                if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle : null).AsQueryable();
-                            }
-                            else
-                            {
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle : null).AsQueryable();
+                                }
+                                else
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle : null).AsQueryable();
-                            }
-                            break;
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.GradeLevelTitle : null).AsQueryable();
+                                }
+                                break;
 
-                        //For Student Enrollment Date Sorting
-                        case "enrollmentdate":
+                            //For Student Enrollment Date Sorting
+                            case "enrollmentdate":
 
-                            if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
-                            {
+                                if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.EnrollmentDate : null).AsQueryable();
-                            }
-                            else
-                            {
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.EnrollmentDate : null).AsQueryable();
+                                }
+                                else
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.EnrollmentDate : null).AsQueryable();
-                            }
-                            break;
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.EnrollmentDate : null).AsQueryable();
+                                }
+                                break;
 
-                        //For Student Enrollment Exit Date Sorting
-                        case "exitdate":
+                            //For Student Enrollment Exit Date Sorting
+                            case "exitdate":
 
-                            if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
-                            {
+                                if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.ExitDate : null).AsQueryable();
-                            }
-                            else
-                            {
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.ExitDate : null).AsQueryable();
+                                }
+                                else
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.ExitDate : null).AsQueryable();
-                            }
-                            break;
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.ExitDate : null).AsQueryable();
+                                }
+                                break;
 
-                        //For Student Enrollment Exit Code Sorting
-                        case "exitcode":
+                            //For Student Enrollment Exit Code Sorting
+                            case "exitcode":
 
-                            if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
-                            {
+                                if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.ExitCode : null).AsQueryable();
-                            }
-                            else
-                            {
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.ExitCode : null).AsQueryable();
+                                }
+                                else
+                                {
 
-                                transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any()==true ? a.StudentEnrollment.FirstOrDefault()?.ExitCode : null).AsQueryable();
-                            }
-                            break;
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.StudentEnrollment?.Any() == true ? a.StudentEnrollment.FirstOrDefault()?.ExitCode : null).AsQueryable();
+                                }
+                                break;
 
-                        default:
-                            transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn??"", pageResult.SortingModel.SortDirection.ToLower());
-                            break;
+                            default:
+                                transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", pageResult.SortingModel.SortDirection.ToLower());
+                                break;
+                        }
                     }
-
                 }
 
                 if (transactionIQ != null)
@@ -2831,7 +2862,6 @@ namespace opensis.data.Repository
                     //studentListModel.studentMaster = null;
                     studentListModel.TotalCount = 0;
                 }
-
 
                 studentListModel.TenantId = pageResult.TenantId;
                 studentListModel.SchoolId = pageResult.SchoolId;
@@ -5652,7 +5682,6 @@ namespace opensis.data.Repository
             IQueryable<StudentListView>? transactionIQ = null;
             IQueryable<StudentListView>? studentDataList = null;
             int? totalCount = 0;
-           
 
             var membershipData = this.context?.UserMaster.Include(x => x.Membership).FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.EmailAddress == pageResult.EmailAddress);
 
@@ -5667,10 +5696,10 @@ namespace opensis.data.Repository
                     if (studentGuids?.Any() == true)
                     {
                         studentDataList = this.context?.StudentListView.Where(x => x.TenantId == pageResult.TenantId && studentGuids.Contains(x.StudentGuid) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
-                    }                 
+                    }
                 }
                 else
-                {              
+                {
                     var schoolAttachedId = this.context?.StaffSchoolInfo.Where(x => x.TenantId == pageResult.TenantId && x.StaffId == membershipData.UserId && x.EndDate == null && activeSchools!.Contains(x.SchoolAttachedId)).ToList().Select(s => s.SchoolAttachedId);
 
                     var studentGuids = this.context?.StudentEnrollment.Where(x => x.TenantId == pageResult.TenantId && (pageResult.SearchAllSchool == false || pageResult.SearchAllSchool == null ? x.SchoolId == pageResult.SchoolId : schoolAttachedId!.Contains(x.SchoolId)) && (x.ExitDate == null ? ((x.EnrollmentDate >= pageResult.MarkingPeriodStartDate && x.EnrollmentDate <= pageResult.MarkingPeriodEndDate) || x.EnrollmentDate <= pageResult.MarkingPeriodStartDate) : ((pageResult.MarkingPeriodStartDate >= x.EnrollmentDate && pageResult.MarkingPeriodStartDate <= x.ExitDate) || (pageResult.MarkingPeriodEndDate >= x.EnrollmentDate && pageResult.MarkingPeriodEndDate <= x.ExitDate)))).Select(x => x.StudentGuid).Distinct();
@@ -5678,7 +5707,7 @@ namespace opensis.data.Repository
                     if (studentGuids?.Any() == true)
                     {
                         studentDataList = this.context?.StudentListView.Where(x => x.TenantId == pageResult.TenantId && studentGuids.Contains(x.StudentGuid) && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? x.IsActive != false : true));
-                        
+
                     }
                 }
                 if (pageResult.SearchAllSchool != true)
@@ -5715,13 +5744,30 @@ namespace opensis.data.Repository
                         }
                         else
                         {
+                            //normal advance search
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, studentDataList).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
                         }
                     }
 
                     if (pageResult.DobStartDate != null && pageResult.DobEndDate != null)
                     {
-                        var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
+                        var filterInDateRange = transactionIQ?.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
                         if (filterInDateRange?.Any() == true)
                         {
                             transactionIQ = filterInDateRange;
@@ -5731,38 +5777,32 @@ namespace opensis.data.Repository
                             transactionIQ = null;
                         }
                     }
-                    if (transactionIQ != null)
+
+                    if (pageResult.FullName != null)
                     {
-
-
-
-                        if (pageResult.FullName != null)
+                        var studentName = pageResult.FullName.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                        if (studentName.Length > 1)
                         {
-                            var studentName = pageResult.FullName.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                            if (studentName.Length > 1)
+                            var firstName = studentName.First();
+                            var lastName = studentName.Last();
+                            pageResult.FullName = null;
+
+                            if (pageResult.FullName == null)
                             {
-                                var firstName = studentName.First();
-                                var lastName = studentName.Last();
-                                pageResult.FullName = null;
-
-                                if (pageResult.FullName == null)
-                                {
-
-                                    var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName ?? "").StartsWith(firstName.ToString()) && (x.LastFamilyName ?? "").StartsWith(lastName.ToString()));
-
-                                    transactionIQ = nameSearch;
-
-
-                                }
-                            }
-                            else
-                            {
-                                var nameSearch = transactionIQ.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.FirstGivenName ?? "").StartsWith(pageResult.FullName) || (x.LastFamilyName ?? "").StartsWith(pageResult.FullName))).AsQueryable();
+                                var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (x.FirstGivenName ?? "").StartsWith(firstName.ToString()) && (x.LastFamilyName ?? "").StartsWith(lastName.ToString()));
 
                                 transactionIQ = nameSearch;
                             }
                         }
+                        else
+                        {
+                            var nameSearch = transactionIQ?.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && ((x.FirstGivenName ?? "").StartsWith(pageResult.FullName) || (x.LastFamilyName ?? "").StartsWith(pageResult.FullName))).AsQueryable();
 
+                            transactionIQ = nameSearch;
+                        }
+                    }
+                    if (transactionIQ != null)
+                    {
                         if (pageResult.SortingModel != null)
                         {
                             transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
@@ -5771,34 +5811,35 @@ namespace opensis.data.Repository
                         {
                             transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(c => c.FirstGivenName);
                         }
-                        totalCount = transactionIQ.Count();
-
-
-                        if (totalCount > 0)
-                        {
-                            if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
-                            {
-                                transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
-                            }
-
-                            studentListModel.studentListViews = transactionIQ.ToList();
-
-                            studentListModel.studentListViews.ForEach(c =>
-                            {
-                                c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
-                                c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
-                            });
-
-                            studentListModel.TotalCount = totalCount;
-                            studentListModel._message = "success";
-                            studentListModel._failure = false;
-                        }
-                        else
-                        {
-                            studentListModel._message = NORECORDFOUND;
-                            studentListModel._failure = true;
-                        }
                     }
+
+                    totalCount = transactionIQ != null ? transactionIQ?.Count() : 0;
+
+                    if (totalCount > 0)
+                    {
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ!.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                        }
+
+                        studentListModel.studentListViews = transactionIQ!.ToList();
+
+                        studentListModel.studentListViews.ForEach(c =>
+                        {
+                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.CreatedBy);
+                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, pageResult.TenantId, c.UpdatedBy);
+                        });
+
+                        studentListModel.TotalCount = totalCount;
+                        studentListModel._message = "success";
+                        studentListModel._failure = false;
+                    }
+                    else
+                    {
+                        studentListModel._message = NORECORDFOUND;
+                        studentListModel._failure = true;
+                    }
+
                     studentListModel.TenantId = pageResult.TenantId;
                     studentListModel.SchoolId = pageResult.SchoolId;
                     studentListModel.PageNumber = pageResult.PageNumber;
@@ -5806,7 +5847,6 @@ namespace opensis.data.Repository
                     studentListModel._tenantName = pageResult._tenantName;
                     studentListModel._token = pageResult._token;
                 }
-
             }
             catch (Exception es)
             {

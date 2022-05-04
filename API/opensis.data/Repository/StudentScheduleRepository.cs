@@ -201,48 +201,55 @@ namespace opensis.data.Repository
                                                     conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
                                             }
+
                                             //Student enrollment checking
-                                            else if (studentEnrollmentData != null)
+                                            else if (studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
                                             {
-                                                if (studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                                var conflictStudent = new StudentScheduleView()
                                                 {
-                                                    var conflictStudent = new StudentScheduleView()
-                                                    {
-                                                        TenantId = student.TenantId,
-                                                        SchoolId = student.SchoolId,
-                                                        StudentId = student.StudentId,
-                                                        CourseId = courseSection.CourseId,
-                                                        CourseSectionId = courseSection.CourseSectionId,
-                                                        CourseSectionName = courseSection.CourseSectionName,
-                                                        StudentInternalId = student.StudentInternalId,
-                                                        StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                        Scheduled = false,
-                                                        ConflictComment = "Student enrollment date is grater than scheduled course section date"
-                                                    };
-                                                    studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                    //this.context.StudentScheduleView.Add(conflictStudent);
-                                                    this.context?.StudentScheduleView.Add(conflictStudent);
+                                                    TenantId = student.TenantId,
+                                                    SchoolId = student.SchoolId,
+                                                    StudentId = student.StudentId,
+                                                    CourseId = courseSection.CourseId,
+                                                    CourseSectionId = courseSection.CourseSectionId,
+                                                    CourseSectionName = courseSection.CourseSectionName,
+                                                    StudentInternalId = student.StudentInternalId,
+                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                    Scheduled = false,
+                                                    ConflictComment = "Student enrollment date is grater than scheduled course section date"
+                                                };
+                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                //this.context.StudentScheduleView.Add(conflictStudent);
+                                                this.context?.StudentScheduleView.Add(conflictStudent);
 
+                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
+                                                {
+                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
+                                                }
+                                                else
+                                                {
+                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
 
-                                                if (studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
+                                            }
+
+                                            else if (studentEnrollmentData.ExitDate != null && studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
+                                            {
+                                                var conflictStudent = new StudentScheduleView()
                                                 {
-                                                    var conflictStudent = new StudentScheduleView()
-                                                    {
-                                                        TenantId = student.TenantId,
-                                                        SchoolId = student.SchoolId,
-                                                        StudentId = student.StudentId,
-                                                        CourseId = courseSection.CourseId,
-                                                        CourseSectionId = courseSection.CourseSectionId,
-                                                        CourseSectionName = courseSection.CourseSectionName,
-                                                        StudentInternalId = student.StudentInternalId,
-                                                        StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                        Scheduled = false,
-                                                        ConflictComment = "Student Exit date is smaller than scheduled course section date"
-                                                    };
-                                                    studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                    this.context?.StudentScheduleView.Add(conflictStudent);
-                                                }
+                                                    TenantId = student.TenantId,
+                                                    SchoolId = student.SchoolId,
+                                                    StudentId = student.StudentId,
+                                                    CourseId = courseSection.CourseId,
+                                                    CourseSectionId = courseSection.CourseSectionId,
+                                                    CourseSectionName = courseSection.CourseSectionName,
+                                                    StudentInternalId = student.StudentInternalId,
+                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
+                                                    Scheduled = false,
+                                                    ConflictComment = "Student Exit date is smaller than scheduled course section date"
+                                                };
+                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
+                                                this.context?.StudentScheduleView.Add(conflictStudent);
 
                                                 if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
                                                 {
@@ -713,7 +720,7 @@ namespace opensis.data.Repository
                 if (pageResult.StaffId != null)
                 {
                     scheduledStudentData = scheduledData?.Join(this.context!.StaffCoursesectionSchedule,
-                                          //scheduledData.Join(this.context?.StaffCoursesectionSchedule,
+                                    //scheduledData.Join(this.context?.StaffCoursesectionSchedule,
                                     studentcss => studentcss.scs.CourseSectionId, staffcss => staffcss.CourseSectionId,
                                     (studentcss, staffcss) => new { studentcss, staffcss }).Where(c => c.studentcss.scs.TenantId == pageResult.TenantId && c.studentcss.scs.SchoolId == pageResult.SchoolId && c.staffcss.SchoolId == pageResult.SchoolId && c.staffcss.TenantId == pageResult.TenantId && c.staffcss.StaffId == pageResult.StaffId && c.staffcss.IsDropped != true).ToList().Select(ssv => new ScheduleStudentForView
                                     {
@@ -750,13 +757,13 @@ namespace opensis.data.Repository
                                         MobilePhone = ssv.studentcss.sm.MobilePhone,
                                         PersonalEmail = ssv.studentcss.sm.PersonalEmail,
                                         SchoolEmail = ssv.studentcss.sm.SchoolEmail,
-                                        GradeLevel = this.context.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.GradeId == ssv.studentcss.scs.GradeId)?.Title,   
+                                        GradeLevel = this.context.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.GradeId == ssv.studentcss.scs.GradeId)?.Title,
                                         IsActive = ssv.studentcss.sm.IsActive,
-                                        CreatedOn= ssv.studentcss.scs.CreatedOn,
+                                        CreatedOn = ssv.studentcss.scs.CreatedOn,
                                         CreatedBy = ssv.studentcss.scs.CreatedBy,
-                                        UpdatedOn= ssv.studentcss.scs.UpdatedOn,
-                                        UpdatedBy= ssv.studentcss.scs.UpdatedBy,
-                                        IsDropped= ssv.studentcss.scs.IsDropped,
+                                        UpdatedOn = ssv.studentcss.scs.UpdatedOn,
+                                        UpdatedBy = ssv.studentcss.scs.UpdatedBy,
+                                        IsDropped = ssv.studentcss.scs.IsDropped,
                                         SchoolName = this.context?.SchoolMaster.Where(x => x.SchoolId == ssv.studentcss.sm.SchoolId).Select(x => x.SchoolName).FirstOrDefault(),
                                         Section = this.context?.Sections.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.SectionId == ssv.studentcss.sm.SectionId)?.Name,
                                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
@@ -831,13 +838,13 @@ namespace opensis.data.Repository
 
                             //transactionIQ = scheduledStudentData.Where(x => x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
                             //x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) ||
-                            transactionIQ = scheduledStudentData.Where(x => x.FirstGivenName !=null && x.FirstGivenName.Contains(Columnvalue) ||
-                            x.LastFamilyName !=null && x.LastFamilyName.Contains(Columnvalue) ||
+                            transactionIQ = scheduledStudentData.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
+                            x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
                             (x.GradeLevel != null && x.GradeLevel.Contains(Columnvalue)) ||
                             (x.ScheduleDate != null && x.ScheduleDate.ToString() == Columnvalue) ||
                             (x.Section != null && x.Section.Contains(Columnvalue)) ||
                             (x.StudentInternalId != null && x.StudentInternalId.Contains(Columnvalue)) ||
-                            (x.AlternateId != null && x.AlternateId.Contains(Columnvalue)) || 
+                            (x.AlternateId != null && x.AlternateId.Contains(Columnvalue)) ||
                             (x.PhoneNumber != null && x.PhoneNumber.Contains(Columnvalue)) ||
                             (x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue)) ||
                             (x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue))).AsQueryable();
@@ -846,36 +853,54 @@ namespace opensis.data.Repository
                         {
                             //transactionIQ = Utility.FilteredData(pageResult!.FilterParams, scheduledStudentData).AsQueryable();
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, scheduledStudentData).AsQueryable();
+
+                            //medical advance search
+                            var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                            if (studentGuids.Count > 0)
+                            {
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                if (filterStudentIds?.Count > 0)
+                                {
+                                    transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                }
+                                else
+                                {
+                                    transactionIQ = null;
+                                }
+                            }
                         }
                         //transactionIQ = transactionIQ.Distinct();
                     }
-
-                    if (pageResult.SortingModel != null)
+                    if (transactionIQ != null)
                     {
-                        switch (pageResult!.SortingModel!.SortColumn)
+                        if (pageResult.SortingModel != null)
                         {
-                            default:
-                                //transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection);
-                                transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
-                                break;
+                            switch (pageResult!.SortingModel!.SortColumn)
+                            {
+                                default:
+                                    //transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection);
+                                    transactionIQ = Utility.Sort(transactionIQ, pageResult?.SortingModel?.SortColumn!, pageResult?.SortingModel?.SortDirection!);
+                                    break;
+                            }
                         }
-                    }
-                    //Advance Search for date range
-                    if (pageResult?.DobStartDate != null && pageResult.DobEndDate != null)
-                    {
-                        var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
-                        if (filterInDateRange.Any())
+                        //Advance Search for date range
+                        if (pageResult?.DobStartDate != null && pageResult.DobEndDate != null)
                         {
-                            transactionIQ = filterInDateRange;
-                        }
-                        else
-                        {
-                            transactionIQ = null;
+                            var filterInDateRange = transactionIQ.Where(x => x.Dob >= pageResult.DobStartDate && x.Dob <= pageResult.DobEndDate);
+                            if (filterInDateRange.Any())
+                            {
+                                transactionIQ = filterInDateRange;
+                            }
+                            else
+                            {
+                                transactionIQ = null;
+                            }
                         }
                     }
 
                     //int totalCount = transactionIQ.Count();
-                    int totalCount = transactionIQ!=null? transactionIQ.Count():0;
+                    int totalCount = transactionIQ != null ? transactionIQ.Count() : 0;
                     if (pageResult?.PageNumber > 0 && pageResult.PageSize > 0)
                     {
                         //transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
@@ -888,7 +913,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    scheduleStudentListView.scheduleStudentForView = scheduledStudentData?? new();
+                    scheduleStudentListView.scheduleStudentForView = scheduledStudentData ?? new();
                     scheduleStudentListView._failure = true;
                     scheduleStudentListView._message = NORECORDFOUND;
                 }
@@ -901,7 +926,7 @@ namespace opensis.data.Repository
                 scheduleStudentListView.PageNumber = pageResult?.PageNumber;
                 scheduleStudentListView._pageSize = pageResult?.PageSize;
                 scheduleStudentListView._tenantName = pageResult?._tenantName;
-                scheduleStudentListView._token = pageResult?._token;               
+                scheduleStudentListView._token = pageResult?._token;
             }
             catch (Exception es)
             {
