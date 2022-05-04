@@ -33,6 +33,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-staff-list.module';
 @NgModule({
   declarations: [StaffinfoComponent, SearchStaffComponent],
   imports: [
@@ -69,7 +70,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatNativeDateModule,
     MatFormFieldModule,
     MatSlideToggleModule,
-    MatRippleModule
+    MatRippleModule,
+    CommonStaffListModule
   ]
 })
 export class StaffinfoModule { }

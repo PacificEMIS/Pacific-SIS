@@ -44,6 +44,7 @@ import { Router } from "@angular/router";
 import { ExcelService } from "src/app/services/excel.service";
 import { DefaultValuesService } from "src/app/common/default-values.service";
 import { CommonService } from "src/app/services/common.service";
+import moment from "moment";
 
 @Component({
   selector: "vex-missing-attendance",
@@ -66,6 +67,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
     { label: 'schoolEmail', property: 'schoolEmail', type: 'text', visible: true },
     { label: 'mobilePhone', property: 'mobilePhone', type: 'text', visible: true },
+    { label: 'status', property: 'status', type: 'text', visible: true },
     // { label: 'action', property: 'action', type: 'text', visible: true },
   ];
   maxDate = new Date();
@@ -75,7 +77,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   pageSize: number;
   missingAttendanceDateList = [];
   searchKeyword: string;
-  staffList: MatTableDataSource<StaffMasterModel>;
+  staffList: MatTableDataSource<any>;
   pageNumber: number;
   searchCtrl: FormControl;
   @ViewChild(MatSort) sort: MatSort;
@@ -107,10 +109,15 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   }
 
   viewStudentAttendanceDetails(element) {
-    const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
-    this.studentAttendanceService.setStaffDetails({ staffId: element.staffId, staffFullName, startDate: this.getAllStaffModel.dobStartDate, endDate: this.getAllStaffModel.dobEndDate });
-    this.router.navigate(['/school', 'staff', 'teacher-functions', 'missing-attendance' , 'missing-attendance-details']);
-    //this.pageInit = 2;
+    if(element.status === "active"){
+      const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
+      this.studentAttendanceService.setStaffDetails({ staffId: element.staffId, staffFullName, startDate: this.getAllStaffModel.dobStartDate, endDate: this.getAllStaffModel.dobEndDate });
+      this.router.navigate(['/school', 'staff', 'teacher-functions', 'missing-attendance' , 'missing-attendance-details']);
+      //this.pageInit = 2;
+    }else
+    this.snackbar.open('Inactive staff does not have any access to enter the next page', '', {
+      duration: 10000
+    })
   }
 
   ngAfterViewInit() {
@@ -233,6 +240,21 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
             this.pageNumber = res.pageNumber;
             this.pageSize = res._pageSize;
             this.staffList = new MatTableDataSource(res.staffMaster);
+            for (let staff of this.staffList.filteredData) {
+              staff.staffSchoolInfo.map(schoolList => {
+                if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
+                  staff.schoolName = schoolList.schoolAttachedName;
+                  if (schoolList.endDate === null)
+                    staff.status = 'active';
+                  else {
+                    if (moment(new Date()).isBetween(schoolList.startDate, schoolList.endDate))
+                      staff.status = 'active';
+                    else
+                      staff.status = 'inactive';
+                  }
+                }
+              })
+            }
             //this.getAllStaffModel = new GetAllStaffModel();
           }
         }
@@ -266,6 +288,21 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
             this.pageSize = res._pageSize;
             this.staffList = new MatTableDataSource(res.staffMaster);
             this.missingAttendanceDateList = res.missingAttendanceDateList;
+            for (let staff of this.staffList.filteredData) {
+              staff.staffSchoolInfo.map(schoolList => {
+                if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
+                  staff.schoolName = schoolList.schoolAttachedName;
+                  if (schoolList.endDate === null)
+                    staff.status = 'active';
+                  else {
+                    if (moment(new Date()).isBetween(schoolList.startDate, schoolList.endDate))
+                      staff.status = 'active';
+                    else
+                      staff.status = 'inactive';
+                  }
+                }
+              })
+            }
             this.minDate = null;
             for (var i = 0; i < this.missingAttendanceDateList.length; i++) {
               var current = this.missingAttendanceDateList[i];

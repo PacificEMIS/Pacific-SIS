@@ -34,6 +34,7 @@ import { InputFinalGradeRoutingModule } from './input-final-grade-routing.module
 import { GradeDetailsComponent } from './grade-details/grade-details.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-staff-list.module';
 
 
 @NgModule({
@@ -73,7 +74,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatSlideToggleModule,
     MatRippleModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    CommonStaffListModule
+
   ]
 })
 export class InputFinalGradeModule { }

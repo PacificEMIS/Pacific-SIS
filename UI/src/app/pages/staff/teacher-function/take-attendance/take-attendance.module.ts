@@ -32,6 +32,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
+import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-staff-list.module';
 
 
 
@@ -70,7 +71,9 @@ import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.mo
     MatExpansionModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    MatRippleModule
+    MatRippleModule,
+    CommonStaffListModule
+
   ]
 })
 export class TakeAttendanceModule { }

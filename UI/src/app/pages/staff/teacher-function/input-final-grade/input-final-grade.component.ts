@@ -23,28 +23,11 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { GetAllStaffModel, StaffMasterModel } from 'src/app/models/staff.model';
-import { RolePermissionListViewModel } from 'src/app/models/roll-based-access.model';
-import { CryptoService } from 'src/app/services/Crypto.service';
-import { LoaderService } from 'src/app/services/loader.service';
-import { StaffService } from 'src/app/services/staff.service';
-import { FinalGradeService } from 'src/app/services/final-grade.service';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 import { stagger60ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
-import { Permissions } from '../../../../models/roll-based-access.model';
-import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
-import { CommonService } from 'src/app/services/common.service';
-import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Component({
   selector: 'vex-input-final-grade',
@@ -57,168 +40,16 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
   ],
 })
 export class InputFinalGradeComponent implements OnInit {
-  pageStatus = "Teacher Function";
-  pageInit = 1;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort
-  getAllStaff: GetAllStaffModel = new GetAllStaffModel();
-  staffList: MatTableDataSource<StaffMasterModel>;
 
-  permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
-  permissionGroup;
-  permissionCategoryForTeacherFunctions;
-  loading: boolean;
-  totalCount: number = 0;
-  pageNumber: number;
-  pageSize: number;
-  searchCtrl: FormControl;
-  displayedColumns: string[] = ['lastFamilyName', 'staffInternalId', 'profile', 'jobTitle', 'schoolEmail', 'mobilePhone'];
-  inputFinalGradePermissions: any;
-  permissions: Permissions;
   constructor(
     public translateService: TranslateService,
-    private router: Router,
-    private snackbar: MatSnackBar,
-    private pageRolePermissions: PageRolesPermission,
-    private loaderService: LoaderService,
-    private staffService: StaffService,
-    private finalGradeService: FinalGradeService,
-    private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService,
-    private paginatorObj: MatPaginatorIntl,
   ) {
-    paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
-    //translateService.use('en');
-    this.getAllStaff.filterParams = null;
-    this.loaderService.isLoading.subscribe((val) => {
-      this.loading = val;
-    });
-  }
-  viewEffortGradeDetails(element) {
-    if(!this.permissions?.edit) return;
-    const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
-    this.finalGradeService.setStaffDetails({ staffId: element.staffId, staffFullName });
-    this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade', 'final-grade-details']);
-    this.pageInit = 2;
-  }
 
+  }
+  
   ngOnInit(): void {
-    this.callStaffList();
-    this.searchCtrl = new FormControl();
-    this.permissions = this.pageRolePermissions.checkPageRolePermission()
+
   }
 
-  ngAfterViewInit() {
-    //  Sorting
-    this.getAllStaff = new GetAllStaffModel();
-    this.sort.sortChange.subscribe((res) => {
-      this.getAllStaff.pageNumber = this.pageNumber
-      this.getAllStaff.pageSize = this.pageSize;
-      this.getAllStaff.sortingModel.sortColumn = res.active;
-      if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
-        let filterParams = [
-          {
-            columnName: null,
-            filterValue: this.searchCtrl.value,
-            filterOption: 4
-          }
-        ]
-        Object.assign(this.getAllStaff, { filterParams: filterParams });
-      }
-      if (res.direction == "") {
-        this.getAllStaff.sortingModel = null;
-        this.callStaffList();
-        this.getAllStaff = new GetAllStaffModel();
-        this.getAllStaff.sortingModel = null;
-      } else {
-        this.getAllStaff.sortingModel.sortDirection = res.direction;
-        this.callStaffList();
-      }
-    });
-
-    //  Searching
-    this.searchCtrl?.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
-      if (term != '') {
-        this.callWithFilterValue(term);
-      } else {
-        this.callWithoutFilterValue()
-      }
-    });
-  }
-
-  callWithFilterValue(term) {
-    let filterParams = [
-      {
-        columnName: null,
-        filterValue: term,
-        filterOption: 4
-      }
-    ]
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    Object.assign(this.getAllStaff, { filterParams: filterParams });
-    this.getAllStaff.pageNumber = 1;
-    this.paginator.pageIndex = 0;
-    this.getAllStaff.pageSize = this.pageSize;
-    this.callStaffList();
-  }
-
-  callWithoutFilterValue() {
-    Object.assign(this.getAllStaff, { filterParams: null });
-    this.getAllStaff.pageNumber = this.paginator.pageIndex + 1;
-    this.getAllStaff.pageSize = this.pageSize;
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    this.callStaffList();
-  }
-
-  getPageEvent(event) {
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
-      let filterParams = [
-        {
-          columnName: null,
-          filterValue: this.searchCtrl.value,
-          filterOption: 3
-        }
-      ]
-      Object.assign(this.getAllStaff, { filterParams: filterParams });
-    }
-    this.getAllStaff.pageNumber = event.pageIndex + 1;
-    this.getAllStaff.pageSize = event.pageSize;
-    this.callStaffList();
-  }
-
-  callStaffList() {
-    if (this.getAllStaff.sortingModel?.sortColumn == "") {
-      this.getAllStaff.sortingModel = null
-    }
-    this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
-    if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-        this.staffList = new MatTableDataSource([]);
-        if (!res.staffMaster) {
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-        }
-
-      } else {
-        this.totalCount = res.totalCount;
-        this.pageNumber = res.pageNumber;
-        this.pageSize = res._pageSize;
-        this.staffList = new MatTableDataSource(res.staffMaster);
-        this.getAllStaff = new GetAllStaffModel();
-      }
-    });
-  }
-
-
+ 
 }
