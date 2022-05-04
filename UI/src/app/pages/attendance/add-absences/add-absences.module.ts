@@ -31,6 +31,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 @NgModule({
   declarations: [AddAbsencesComponent,SearchStudentComponent],
   imports: [
@@ -63,7 +64,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatExpansionModule,
     MatProgressSpinnerModule,
     MatSlideToggleModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    SearchStudentModule
   ]
 })
 export class AddAbsencesModule { }

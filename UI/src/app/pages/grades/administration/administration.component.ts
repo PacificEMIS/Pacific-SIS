@@ -25,6 +25,8 @@ import { GetAllStudentListForFinalGradeModel } from 'src/app/models/student-fina
 import { GetMarkingPeriodTitleListModel } from 'src/app/models/marking-period.model';
 import { ResponseStudentReportCardGradesModel, StudentReportCardGradesModel } from 'src/app/models/report-card.model';
 import { GradeScaleListView } from 'src/app/models/grades.model';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import { SharedFunction } from '../../shared/shared-function';
 @Component({
   selector: 'vex-administration',
   templateUrl: './administration.component.html',
@@ -52,6 +54,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   responseStudentReportCardGradesModel: ResponseStudentReportCardGradesModel = new ResponseStudentReportCardGradesModel();
   updateStudentReportCardGradesModel: ResponseStudentReportCardGradesModel = new ResponseStudentReportCardGradesModel();
   gradeScaleListView: GradeScaleListView = new GradeScaleListView();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   histSearchCtrl: FormControl;
   histTotalCount: number;
   histPageNumber: number;
@@ -81,6 +84,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   displayedColumnsHistoricalGrades: string[] = ['studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'phone'];
   histStudentDetails;
   studentPhoto: string;
+  isFromAdvancedSearch: boolean = false;
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -93,7 +97,10 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
     private historicalMarkingPeriodService: HistoricalMarkingPeriodService,
     private snackbar: MatSnackBar,
     private paginatorObj: MatPaginatorIntl,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.searchAllSchools = false;
+    this.currentTab === 'editReportCardGrades' ? this.advancedSearchExpansionModel.course = true : this.advancedSearchExpansionModel.course = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -114,6 +121,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   changeTab(status) {
     this.currentTab = status;
     this.currentComponent = status == "editReportCardGrades" ? "editReportGradesList" : "historicalGradesList";
+    this.currentTab === 'editReportCardGrades' ? this.advancedSearchExpansionModel.course = true : this.advancedSearchExpansionModel.course = false;
     this.generateMarkingPeriodId = true;
     if (this.currentComponent === 'editReportGradesList') {
       this.getAllStudentListForFinalGradeModel.pageNumber = 1;
@@ -142,19 +150,25 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.studentListViews === null) {
             this.reportGradesList = new MatTableDataSource([]);
-            this.reportTotalCount = null;
+            this.reportTotalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.reportSearchCount = this.isFromAdvancedSearch ? 0 : null;
             this.snackbar.open('' + data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.reportGradesList = new MatTableDataSource([]);
-            this.reportTotalCount = null;
+            this.reportTotalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.reportSearchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.reportTotalCount = data.totalCount;
+          this.reportSearchCount = data.totalCount;
           this.reportPageNumber = data.pageNumber;
           this.reportPageSize = data._pageSize;
           this.reportGradesList = new MatTableDataSource(data.studentListViews);
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -378,6 +392,35 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
     }
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.getAllStudentListForFinalGradeModel = new GetAllStudentListForFinalGradeModel();
+    this.getAllStudentListForFinalGradeModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.currentComponent === 'editReportGradesList') {
+        this.getAllStudentListForFinalGradeModel.filterParams = res.filterParams;
+        this.getAllStudentListForFinalGradeModel.includeInactive = res.inactiveStudents;
+        this.getAllStudentListForFinalGradeModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudentListForFinalGradeModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.getAllStudentListForFinalGrade();
+      } else {
+        this.getAllStudent.filterParams = res.filterParams;
+        this.getAllStudent.includeInactive = res.inactiveStudents;
+        this.getAllStudent.searchAllSchool = res.searchAllSchool;
+        this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.callAllStudent();
+      }
+    }
+  }
+
   getSearchResult(res) {
     if (this.currentComponent === 'editReportGradesList') {
       if (res.totalCount) {
@@ -460,21 +503,27 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.histTotalCount = null;
+          this.histTotalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.histSearchCount = this.isFromAdvancedSearch ? 0 : null;
           this.StudentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.StudentModelList = new MatTableDataSource([]);
-          this.histTotalCount = null;
+          this.histTotalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.histSearchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.histTotalCount = data.totalCount;
+        this.histSearchCount = data.totalCount;
         this.histPageNumber = data.pageNumber;
         this.histPageSize = data._pageSize;
         this.StudentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }

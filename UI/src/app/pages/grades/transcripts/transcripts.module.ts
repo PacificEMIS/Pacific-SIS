@@ -36,6 +36,7 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ReportCardsModule } from '../report-cards/report-cards.module';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { ReportCardsModule } from '../report-cards/report-cards.module';
     NgxDocViewerModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    ReportCardsModule
+    ReportCardsModule,
+    SearchStudentModule
   ]
 })
 export class TranscriptsModule { }

@@ -23,6 +23,7 @@ import icFilterList from '@iconify/icons-ic/filter-list';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 
 export interface StudentListData {
@@ -94,6 +95,8 @@ export class AdvanceReportComponent implements OnInit {
   displayedColumnsReportList: string[] = ['studentName', 'studentId', 'alternateId', 'dateOfBirth', 'firstLanguage', 'fullAddress', 'mailingAddress'];
   generateStudentList: any;
   getAllStudent: StudentListByDateRangeModel = new StudentListByDateRangeModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  isFromAdvancedSearch: boolean = false;
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
@@ -201,6 +204,9 @@ export class AdvanceReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
       this.defaultValuesService.setReportCompoentTitle.next(translateService.instant("Advanced Report"));
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.selectedStudentListForTable = new MatTableDataSource([]);
@@ -261,14 +267,16 @@ export class AdvanceReportComponent implements OnInit {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
@@ -292,6 +300,7 @@ export class AdvanceReportComponent implements OnInit {
         })
         this.studentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListByDateRangeModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -318,6 +327,23 @@ export class AdvanceReportComponent implements OnInit {
       } else {
         return true;
       }
+    }
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListByDateRangeModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.getAllStudentList();
     }
   }
 

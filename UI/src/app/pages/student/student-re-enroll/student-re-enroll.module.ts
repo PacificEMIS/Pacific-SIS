@@ -31,6 +31,7 @@ import { IconModule } from '@visurel/iconify-angular';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 @NgModule({
   declarations: [StudentReEnrollComponent, SearchStudentComponent],
@@ -65,7 +66,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatExpansionModule,
     IconModule,
     MatProgressSpinnerModule,
-    SharedModuleModule
+    SharedModuleModule,
+    SearchStudentModule
   ],
   providers: [DatePipe]
 })

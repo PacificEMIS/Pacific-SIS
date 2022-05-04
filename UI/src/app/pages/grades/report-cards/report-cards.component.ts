@@ -57,6 +57,8 @@ import * as html2pdf from 'html2pdf.js';
 import { ScheduleStudentListViewModel } from "src/app/models/student-schedule.model";
 import { StudentScheduleService } from "src/app/services/student-schedule.service";
 import { ProfilesTypes } from "src/app/enums/profiles.enum";
+import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
+import { SharedFunction } from "../../shared/shared-function";
 
 @Component({
   selector: "vex-report-cards",
@@ -105,11 +107,13 @@ export class ReportCardsComponent implements OnInit {
   generatedReportCardData;
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   teacherSearchInput:any;
   isAdmin:boolean;
   halfLengthOfComment:number = 0;
   halfLengthOfStandardGradeComment:number = 0;
   halfLengthOfEffortGradeComment:number = 0;
+  isFromAdvancedSearch: boolean = false;
   profiles = ProfilesTypes;
   constructor(
     private router: Router,
@@ -125,7 +129,11 @@ export class ReportCardsComponent implements OnInit {
     private studentScheduleService: StudentScheduleService,
     public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.markingPeriods = [];
@@ -198,24 +206,30 @@ export class ReportCardsComponent implements OnInit {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.studentListViews === null) {
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.totalCount = data.totalCount;
+          this.searchCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
           this.listOfStudent = data.studentListViews;
           this.StudentModelList = new MatTableDataSource(this.listOfStudent);
           this.getAllStudent = new StudentListModel();
+          this.isFromAdvancedSearch = false;
         }
       });
     }else{
@@ -232,28 +246,30 @@ export class ReportCardsComponent implements OnInit {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.scheduleStudentForView === null) {
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.totalCount = data.totalCount;
+          this.searchCount = data.totalCount ? data.totalCount : null;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
-          data.scheduleStudentForView.map(item => {
-            item.gradeLevelTitle = item.gradeLevel;
-            item.sectionName = item.section;
-          });
           this.listOfStudent = data.scheduleStudentForView;
           this.StudentModelList = new MatTableDataSource(this.listOfStudent);
           this.getAllStudent = new StudentListModel();
+          this.isFromAdvancedSearch = false;
         }
       });
     }
@@ -322,6 +338,10 @@ export class ReportCardsComponent implements OnInit {
 
 
   resetStudentList() {
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCount = null;
     this.searchValue = null;
     this.getAllStudentList();    
@@ -352,9 +372,41 @@ export class ReportCardsComponent implements OnInit {
     });
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+        this.scheduleStudentListViewModel.filterParams = res.filterParams;
+        this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+        this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.getAllStudentList();
+        this.showSaveFilter = true;
+      } else {
+        this.getAllStudent.filterParams = res.filterParams;
+        this.getAllStudent.includeInactive = res.inactiveStudents;
+        this.getAllStudent.searchAllSchool = res.searchAllSchool;
+        this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.getAllStudentList();
+        this.showSaveFilter = true;
+      }
+    }
+  }
+
   getSearchResult(res) {
     this.getAllStudent = new StudentListModel();
-    if (res.totalCount) {
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    if (res?.totalCount) {
       this.searchCount = res.totalCount;
       this.totalCount = res.totalCount;
     }
@@ -365,8 +417,13 @@ export class ReportCardsComponent implements OnInit {
     this.showSaveFilter = true;
     this.pageNumber = res.pageNumber;
     this.pageSize = res._pageSize;
-    this.StudentModelList = new MatTableDataSource(res.studentListViews);
-    this.getAllStudent = new StudentListModel();
+    if (this.isAdmin) {
+      this.StudentModelList = new MatTableDataSource(res?.studentListViews);
+      this.getAllStudent = new StudentListModel();
+    } else {
+      this.StudentModelList = new MatTableDataSource(res?.scheduleStudentForView);
+      this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    }
   }
 
   getAllSearchFilter() {

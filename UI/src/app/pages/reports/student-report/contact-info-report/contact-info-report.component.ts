@@ -26,6 +26,7 @@ import { StudentReportService } from 'src/app/services/student-report.service';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 
 @Component({
@@ -70,6 +71,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   studentModelList: MatTableDataSource<any>;
   pageNumber: number;
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   markingPeriodList: any[];
   searchCount: any;
   searchValue: any;
@@ -80,6 +82,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   currentDate = new Date();
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
+  isFromAdvancedSearch: boolean = false;
 
 
 
@@ -104,6 +107,9 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     private studentReportService: StudentReportService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     this.defaultValuesService.setReportCompoentTitle.next("Student Contact Info")
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
@@ -175,6 +181,23 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     this.searchValue = event;
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListByDateRangeModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.getAllStudentList();
+    }
+  }
+
   getSearchResult(res) {
     this.getAllStudent = new StudentListByDateRangeModel();
     if (res?.totalCount) {
@@ -216,16 +239,18 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.listOfStudents = [];
           this.studentModelList = new MatTableDataSource(this.listOfStudents);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.listOfStudents = [];
           this.studentModelList = new MatTableDataSource(this.listOfStudents);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
@@ -252,7 +277,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
         
         this.studentModelList = new MatTableDataSource(this.listOfStudents);
         this.getAllStudent = new StudentListByDateRangeModel();
-
+        this.isFromAdvancedSearch = false;
       }
     });
   }

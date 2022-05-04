@@ -41,10 +41,10 @@
             </div>
         </div>
         <div>
-            <vex-course-overview *ngIf="currentTab === 'overview'" (weightedCourse)="courseWeightedOrNot($event)"></vex-course-overview>
+            <vex-course-overview *ngIf="currentTab === 'overview'"></vex-course-overview>
             <vex-students *ngIf="currentTab === 'students'"></vex-students>
             <vex-attendance *ngIf="currentTab === 'attendance'"></vex-attendance>
-            <vex-gradebook-configuration *ngIf="currentTab === 'gradebook configuration'" [courseWeightedFlag]="courseWeightedFlag"></vex-gradebook-configuration>
+            <vex-gradebook-configuration *ngIf="currentTab === 'gradebook configuration'"></vex-gradebook-configuration>
             <vex-assignments *ngIf="currentTab === 'assignments'"></vex-assignments>
             <vex-grades *ngIf="currentTab === 'grades'"></vex-grades>
         </div>

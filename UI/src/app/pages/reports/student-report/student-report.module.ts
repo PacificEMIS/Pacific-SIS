@@ -36,6 +36,7 @@ import { EnrollmentReportComponent } from './enrollment-report/enrollment-report
 import { AdvanceReportComponent } from './advance-report/advance-report.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 
@@ -84,6 +85,7 @@ import { MatMenuModule } from '@angular/material/menu';
     NgxMatSelectSearchModule,
     MatExpansionModule,
     MatMenuModule,
+    SearchStudentModule
   ]
 })
 export class StudentReportModule { }
