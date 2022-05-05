@@ -149,6 +149,7 @@ export class AddCalendarComponent implements OnInit {
   }
 
   checkDate(){
+    if(this.data.sessionCalendar) {
     let markingPeriodDate=new Date(this.defaultValuesService.getSchoolOpened()).getTime();
     let startDate=new Date(this.calendarAddViewModel.schoolCalendar.startDate).getTime(); 
     if((startDate!=markingPeriodDate) || (this.data.calendarListCount==0 && startDate!=markingPeriodDate)){
@@ -157,6 +158,7 @@ export class AddCalendarComponent implements OnInit {
       if(this.form.controls.startDate.errors?.nomatch){
         this.form.controls.startDate.setErrors(null);
       }
+    }
     }
   }
 
