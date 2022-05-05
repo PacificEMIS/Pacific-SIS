@@ -135,7 +135,17 @@ export class AddCalendarComponent implements OnInit {
   }
 
   getMinEndDateVal() {
-    return moment(this.form.value.startDate).add(1, 'days').toDate();
+    if(this.data.sessionCalendar) {
+      return moment(this.data.maxEndDateForSessionCalendar).toDate();
+    } else {
+      return moment(this.form.value.startDate).add(1, 'days').toDate();
+    }
+  }
+
+  getMaxEndDateVal() {
+    if(!this.data.sessionCalendar) {
+      return moment(this.defaultValuesService.getFullYearEndDate()).toDate();
+    }
   }
 
   checkDate(){
