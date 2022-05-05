@@ -132,6 +132,7 @@ export class CalendarComponent implements OnInit {
   displayedColumns: string[]
   eventList = [];
   allData = [];
+  maxEndDateForSessionCalendar: Date;
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -295,11 +296,12 @@ export class CalendarComponent implements OnInit {
 
   //Show all calendar
   getAllCalendar() {
-    this.calendarService.getAllCalendar(this.getCalendarList).subscribe((data) => {
+    this.calendarService.getAllCalendar(this.getCalendarList).subscribe((data:any) => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.calendars = data.calendarList;
+      this.maxEndDateForSessionCalendar = data.maxEndDateForSessionCalendar;
       this.showCalendarView = false;
       if (this.calendars.length !== 0) {
         this.showCalendarView = true;
@@ -463,7 +465,7 @@ export class CalendarComponent implements OnInit {
   //Open modal for add new calendar
   openAddNewCalendar() {
     this.dialog.open(AddCalendarComponent, {
-      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList?.getAllMemberList?.length, calendarListCount: this.calendars?.length },
+      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList?.getAllMemberList?.length, calendarListCount: this.calendars?.length, sessionCalendar:false},
       width: '600px'
     }).afterClosed().subscribe(data => {
       if (data === 'submited') {
@@ -517,7 +519,7 @@ export class CalendarComponent implements OnInit {
   // Edit calendar which is selected in dropdown
   openEditCalendar(event) {
     this.dialog.open(AddCalendarComponent, {
-      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendar: event },
+      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendar: event, sessionCalendar: event.sessionCalendar, maxEndDateForSessionCalendar: this.maxEndDateForSessionCalendar},
       width: '600px'
     }).afterClosed().subscribe(data => {
       if (data === 'submited') {
