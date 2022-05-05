@@ -25,20 +25,11 @@ All rights reserved.
 
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { TakeAttendanceList } from '../../../../models/take-attendance-list.model';
 import { Router} from '@angular/router';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import { LoaderService } from '../../../../services/loader.service';
-import { GetAllStaffModel, StaffMasterModel } from '../../../../models/staff.model';
 import { StudentAttendanceService } from '../../../../services/student-attendance.service';
-import { SearchFilter, SearchFilterListViewModel } from '../../../../models/search-filter.model';
 import { CommonService } from '../../../../services/common.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
-import { CryptoService } from '../../../../services/Crypto.service';
-import { MatSort } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { ExcelService } from '../../../../services/excel.service';
 import { FormControl } from '@angular/forms';
@@ -59,292 +50,19 @@ import { StaffService } from 'src/app/services/staff.service';
     fadeInRight400ms
   ]
 })
-export class TakeAttendanceComponent implements OnInit, AfterViewInit {
+export class TakeAttendanceComponent implements OnInit {
 
-  pageStatus = "Teacher Function";
-  totalCount:number=0;
-  pageSize:number;
-  searchFilterListViewModel: SearchFilterListViewModel= new SearchFilterListViewModel();
-  searchKeyword: string;
-  staffList: MatTableDataSource<StaffMasterModel>;
-  pageNumber: number;
-  permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
-  permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  showSaveFilter:boolean;
-  permissions: Permissions;
-  columns = [
-    { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
-    { label: 'staffId', property: 'staffInternalId', type: 'text', visible: true },
-    { label: 'profile', property: 'profile', type: 'text', visible: true },
-    { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
-    { label: 'schoolEmail', property: 'schoolEmail', type: 'text', visible: true },
-    { label: 'mobilePhone', property: 'mobilePhone', type: 'number', visible: true },
-    // { label: 'Actions', property: 'actions', type: 'text', visible: true }
-  ];
-  destroySubject$: Subject<boolean> = new Subject();
-  loading: boolean;
-  getAllStaff: GetAllStaffModel = new GetAllStaffModel();
-  searchFilter: SearchFilter = new SearchFilter();
-  editPermission: boolean;
-  deletePermission: boolean;
-  addPermission: boolean;
-  filterJsonParams;
-  showAdvanceSearchPanel: boolean;
-  searchCtrl: FormControl;
-  permissionCategoryForTeacherFunctions;
-  inputTakeAttendancePermissions;
 
   constructor(
     public translateService:TranslateService,
-    private router: Router,
-    private loaderService: LoaderService,
-    private studentAttendanceService: StudentAttendanceService,
-    private staffService: StaffService,
-    private commonService:CommonService,
-    private snackbar: MatSnackBar,
-    private pageRolePermissions: PageRolesPermission,
-    private excelService: ExcelService,
-    private defaultValuesService: DefaultValuesService,
-    private paginatorObj: MatPaginatorIntl,
     ) { 
-      paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
-    this.getAllStaff.filterParams = null;
-    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
-      this.loading = val;
-    });
+
   }
 
   ngOnInit(): void {
-    this.callStaffList();
-    this.getAllSearchFilter();
-    this.searchCtrl = new FormControl();
-
-    this.permissions = this.pageRolePermissions.checkPageRolePermission()
 
   }
 
-  ngAfterViewInit() {
-     //  Sorting
-     this.getAllStaff = new GetAllStaffModel();
-     this.sort.sortChange.subscribe((res) => {
-       this.getAllStaff.pageNumber = this.pageNumber
-       this.getAllStaff.pageSize = this.pageSize;
-       this.getAllStaff.sortingModel.sortColumn = res.active;
-       if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
-         let filterParams = [
-           {
-             columnName: null,
-             filterValue: this.searchCtrl.value,
-             filterOption: 4
-           }
-         ]
-         Object.assign(this.getAllStaff, { filterParams: filterParams });
-       }
-       if (res.direction == "") {
-         this.getAllStaff.sortingModel = null;
-         this.callStaffList();
-         this.getAllStaff = new GetAllStaffModel();
-         this.getAllStaff.sortingModel = null;
-       } else {
-         this.getAllStaff.sortingModel.sortDirection = res.direction;
-         this.callStaffList();
-       }
-     });
- 
-     //  Searching
-     this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
-       if (term != '') {
-         this.callWithFilterValue(term);
-       } else {
-         this.callWithoutFilterValue()
-       }
-     });
-  }
-
-  callWithFilterValue(term) {
-    let filterParams = [
-      {
-        columnName: null,
-        filterValue: term,
-        filterOption: 4
-      }
-    ]
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    Object.assign(this.getAllStaff, { filterParams: filterParams });
-    this.getAllStaff.pageNumber = 1;
-    this.paginator.pageIndex = 0;
-    this.getAllStaff.pageSize = this.pageSize;
-    this.callStaffList();
-  }
-
-  getSearchResult(res){
-    this.showSaveFilter=true;
-    this.totalCount= res.totalCount;
-    this.pageNumber = res.pageNumber;
-    this.pageSize = res.pageSize;
-    this.staffList = new MatTableDataSource(res.staffMaster);
-    this.getAllStaff = new GetAllStaffModel();
-  }
-
-  callWithoutFilterValue() {
-    Object.assign(this.getAllStaff, { filterParams: null });
-    this.getAllStaff.pageNumber = this.paginator.pageIndex + 1;
-    this.getAllStaff.pageSize = this.pageSize;
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    this.callStaffList();
-  }
-
-  viewCourseSectionDetails(element) {
-    if(!this.permissions?.edit) return;
-    const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${ element.lastFamilyName}`;
-    this.studentAttendanceService.setStaffDetails({staffId: element.staffId, staffFullName});
-    this.router.navigate(['/school', 'staff', 'teacher-functions', 'take-attendance', 'course-section']);
-  }
-
-
-  getPageEvent(event) {
-    if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStaff.sortingModel.sortColumn = this.sort.active;
-      this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
-    }
-    if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
-      let filterParams = [
-        {
-          columnName: null,
-          filterValue: this.searchCtrl.value,
-          filterOption: 3
-        }
-      ]
-      Object.assign(this.getAllStaff, { filterParams: filterParams });
-    }
-    this.getAllStaff.pageNumber = event.pageIndex + 1;
-    this.getAllStaff.pageSize = event.pageSize;
-    this.callStaffList();
-  }
-
-  getAllSearchFilter(){
-    this.searchFilterListViewModel.module='Staff';
-    this.searchFilterListViewModel.schoolId = this.defaultValuesService.getSchoolID();
-    this.searchFilterListViewModel.tenantId = this.defaultValuesService.getTenantID();
-    this.commonService.getAllSearchFilter(this.searchFilterListViewModel).subscribe((res) => {
-      if (res) {
-      if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.searchFilterListViewModel.searchFilterList=[]
-          if(!res.searchFilterList){
-            this.snackbar.open(res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else {
-          this.searchFilterListViewModel= res;
-          let filterData=this.searchFilterListViewModel.searchFilterList.filter(x=> x.filterId == this.searchFilter.filterId);
-          if(filterData.length > 0) {
-            this.searchFilter.jsonList= filterData[0].jsonList;
-          }
-          if(this.filterJsonParams == null){
-            this.searchFilter = this.searchFilterListViewModel.searchFilterList[this.searchFilterListViewModel.searchFilterList.length-1];
-          }
-        }
-      } else {
-        this.snackbar.open('Filter list failed. ' + this.defaultValuesService.getHttpError(), '', {
-          duration: 10000
-        });
-      }
-    }
-    );
-  }
-
-  callStaffList() {
-    if (this.getAllStaff.sortingModel?.sortColumn == "") {
-      this.getAllStaff.sortingModel = null
-    }
-    this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
-    if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-        this.staffList = new MatTableDataSource([]);
-        if(!res.staffMaster){
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-        }
-       
-      } else {
-        this.totalCount = res.totalCount;
-        this.pageNumber = res.pageNumber;
-        this.pageSize = res._pageSize;
-        this.staffList = new MatTableDataSource(res.staffMaster);
-        this.getAllStaff = new GetAllStaffModel();
-      }
-    });
-  }
-
-
-  get visibleColumns() {
-    return this.columns.filter(column => column.visible).map(column => column.property);
-  }
-
-  exportStaffListToExcel(){
-    let getAllStaff: GetAllStaffModel = new GetAllStaffModel();
-    getAllStaff.pageNumber=0;
-    getAllStaff.pageSize=0;
-    getAllStaff.sortingModel=null;
-      this.staffService.getAllStaffList(getAllStaff).subscribe(res => {
-       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
-          this.snackbar.open('Failed to Export Staff List.'+ res._message, '', {
-          duration: 10000
-          });
-        }else{
-          if(res.staffMaster.length>0){
-            let staffList = res.staffMaster?.map((x:StaffMasterModel)=>{
-              let middleName=x.middleName ? ' '+x.middleName+' ' : ' ';
-              return {
-               Name: x.firstGivenName+middleName+x.lastFamilyName,
-               'Staff ID': x.staffInternalId,
-               Profile: x.profile,
-               'Job Title': x.jobTitle,
-               'School Email':x.schoolEmail,
-               'Mobile Phone':x.mobilePhone
-             }
-            });
-            this.excelService.exportAsExcelFile(staffList,'Staffs_List_')
-          }else{
-            this.snackbar.open('No Records Found. Failed to Export Staff List','', {
-              duration: 5000
-            });
-          }
-        }
-      });
-    
-  }
-
-  toggleColumnVisibility(column, event) {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    column.visible = !column.visible;
-  }
-
-  showAdvanceSearch() {
-    this.showAdvanceSearchPanel = true;
-    this.filterJsonParams = null;
-  }
-
-  hideAdvanceSearch(event){
-    this.showSaveFilter = event.showSaveFilter;
-    this.showAdvanceSearchPanel = false;
-    if(event.showSaveFilter == false){
-      this.getAllSearchFilter();
-    }
-  }
+  
 
 }

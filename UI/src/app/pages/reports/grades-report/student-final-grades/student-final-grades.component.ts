@@ -48,6 +48,8 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { GetStudentFinalGradeReportModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { CommonService } from 'src/app/services/common.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import { SharedFunction } from 'src/app/pages/shared/shared-function';
 
 @Component({
   selector: 'vex-student-final-grades',
@@ -75,6 +77,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   getStudentFinalGradeReportModel: GetStudentFinalGradeReportModel = new GetStudentFinalGradeReportModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -96,6 +99,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
   toggleValues;
   isAdmin: boolean;
   profiles = ProfilesTypes;
+  isFromAdvancedSearch: boolean = false;
   studentFinalGradeReport = [];
 
   constructor(
@@ -110,8 +114,12 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
     private markingPeriodService: MarkingPeriodService,
     private reportService: ReportService,
     private el: ElementRef,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.defaultValuesService.setReportCompoentTitle.next("Student Final Grades");
     // translateService.use("en");
@@ -219,17 +227,22 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
           if (res._failure) {
             this.commonService.checkTokenValidOrNot(res._message);
             if (res.studentListViews === null) {
-              this.totalCount = null;
+              this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+              this.searchCount = this.isFromAdvancedSearch ? 0 : null;
               this.studentList = new MatTableDataSource([]);
               this.snackbar.open(res._message, '', {
                 duration: 10000
               });
+              this.isFromAdvancedSearch = false;
             } else {
               this.studentList = new MatTableDataSource([]);
-              this.totalCount = null;
+              this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+              this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+              this.isFromAdvancedSearch = false;
             }
           } else {
             this.totalCount = res.totalCount;
+            this.searchCount = res.totalCount;
             this.pageNumber = res.pageNumber;
             this.pageSize = res._pageSize;
             res.studentListViews.forEach((student) => {
@@ -249,6 +262,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
               return item.checked;
             });
             this.studentList = new MatTableDataSource(res.studentListViews);
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -267,17 +281,22 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
           if (data._failure) {
             this.commonService.checkTokenValidOrNot(data._message);
             if (data.scheduleStudentForView === null) {
-              this.totalCount = null;
+              this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+              this.searchCount = this.isFromAdvancedSearch ? 0 : null;
               this.studentList = new MatTableDataSource([]);
               this.snackbar.open(data._message, '', {
                 duration: 10000
               });
+              this.isFromAdvancedSearch = false;
             } else {
               this.studentList = new MatTableDataSource([]);
-              this.totalCount = null;
+              this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+              this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+              this.isFromAdvancedSearch = false;
             }
           } else {
             this.totalCount = data.totalCount;
+            this.searchCount = data.totalCount ? data.totalCount : null;
             this.pageNumber = data.pageNumber;
             this.pageSize = data._pageSize;
             data.scheduleStudentForView.forEach((student) => {
@@ -297,6 +316,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
               return item.checked;
             });
             this.studentList = new MatTableDataSource(data.scheduleStudentForView);
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -409,6 +429,35 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
       isIdIncludesInSelectedList = false;
     });
     this.selectedStudents = this.selectedStudents.filter((item) => item.checked);
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudentModel = new StudentListModel();
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.getAllStudentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+        this.scheduleStudentListViewModel.filterParams = res.filterParams;
+        this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+        this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.callAllStudent();
+      } else {
+        this.getAllStudentModel.filterParams = res.filterParams;
+        this.getAllStudentModel.includeInactive = res.inactiveStudents;
+        this.getAllStudentModel.searchAllSchool = res.searchAllSchool;
+        this.getAllStudentModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudentModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.callAllStudent();
+      }
+    }
   }
 
   getSearchResult(res) {

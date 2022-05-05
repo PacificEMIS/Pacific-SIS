@@ -65,6 +65,8 @@ import { Permissions } from '../../models/roll-based-access.model';
 import { StudentScheduleService } from '../../services/student-schedule.service';
 import { ScheduleStudentListViewModel } from '../../models/student-schedule.model';
 import { ProfilesTypes } from '../../enums/profiles.enum';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import { SharedFunction } from '../shared/shared-function';
 
 
 @Component({
@@ -125,7 +127,9 @@ export class StudentComponent implements OnInit, OnDestroy {
   searchValue: any = null;
   toggleValues: any = null;
   searchCount: number = null;
+  isFromAdvancedSearch: boolean = false;
   permissionListViewModel: RolePermissionListViewModel = new RolePermissionListViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   permissionGroup: RolePermissionViewModel = new RolePermissionViewModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -175,6 +179,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     private pageRolePermission: PageRolesPermission,
     public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
+    private commonFunction: SharedFunction
   ) {
     this.defaultValuesService.sendAllSchoolFlag(false);
     this.defaultValuesService.sendIncludeInactiveFlag(false);
@@ -204,6 +209,37 @@ export class StudentComponent implements OnInit, OnDestroy {
       this.isAdvance=data;
     })
     
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+        this.scheduleStudentListViewModel.filterParams = res.filterParams;
+        this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+        this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.callAllStudentForTeacher();
+        this.showSaveFilter = true;
+      } else {
+        this.getAllStudent.filterParams = res.filterParams;
+        this.getAllStudent.includeInactive = res.inactiveStudents;
+        this.getAllStudent.searchAllSchool = res.searchAllSchool;
+        this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.callAllStudent();
+        this.showSaveFilter = true;
+      }
+    }
   }
 
   getSearchResult(res) {
@@ -243,9 +279,13 @@ export class StudentComponent implements OnInit, OnDestroy {
     this.searchCount = null;
     this.searchValue = null;
     if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+      this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+      this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       this.callAllStudentForTeacher();
     }
     else {
+      this.getAllStudent = new StudentListModel();
+      this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       this.callAllStudent();
     }
   }
@@ -712,21 +752,27 @@ export class StudentComponent implements OnInit, OnDestroy {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.StudentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.StudentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
+        this.searchCount = data.totalCount;
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
         this.StudentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -742,21 +788,27 @@ export class StudentComponent implements OnInit, OnDestroy {
      if(data._failure){
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.scheduleStudentForView === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.StudentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.StudentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
+        this.searchCount = data.totalCount ? data.totalCount : null;
         this.pageNumber = data.pageNumber;
         this.pageSize = data._pageSize;
         this.StudentModelList = new MatTableDataSource(data.scheduleStudentForView);
         this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }

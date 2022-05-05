@@ -31,6 +31,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
 import { InputEffortGradesRoutingModule } from './input-effort-grades-routing.module';
 import { InputEffortGradesComponent } from './input-effort-grades.component';
+import { CommonStaffListModule } from 'src/app/common/common-staff-list/common-staff-list.module';
 
 
 
@@ -69,7 +70,9 @@ import { InputEffortGradesComponent } from './input-effort-grades.component';
     MatExpansionModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    MatRippleModule
+    MatRippleModule,
+    CommonStaffListModule
+
   ]
 })
 export class InputEffortGradesModule { }

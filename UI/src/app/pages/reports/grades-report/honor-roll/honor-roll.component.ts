@@ -44,6 +44,7 @@ import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { DomSanitizer } from '@angular/platform-browser';
 import { BackGroundImageEnum } from 'src/app/enums/bg-image.enum';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-honor-roll',
@@ -70,6 +71,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   studentLists: MatTableDataSource<any>;
   getHonorRollReportModel: GetHonorRollReportModel = new GetHonorRollReportModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   isCertificateHeader: boolean = false;
   totalCount: number;
   pageNumber: number;
@@ -87,12 +89,12 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
   searchCount;
   searchValue;
   toggleValues;
-  pageSource = 'Honor_Roll_Report';
   backgroundImage: any;
   today: Date = new Date();
   schoolYear;
   markingPeriodStartDate;
   markingPeriodEndDate;
+  isFromAdvancedSearch: boolean = false;
 
   constructor(public translateService: TranslateService,
     private paginatorObj: MatPaginatorIntl,
@@ -105,6 +107,9 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
     private domSanitizer: DomSanitizer,
     private excelService: ExcelService
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.defaultValuesService.setReportCompoentTitle.next("Honor Roll");
 
@@ -161,16 +166,21 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.honorRollViewForReports === null) {
             this.studentLists = new MatTableDataSource([]);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
             this.snackbar.open('' + data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.studentLists = new MatTableDataSource([]);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.totalCount = data.totalCount;
+          this.searchCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data.pageSize;
           this.honorRollListForPDF = data;
@@ -190,6 +200,7 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
             return item.checked;
           });
           this.studentLists = new MatTableDataSource(data.honorRollViewForReports);
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -285,6 +296,20 @@ export class HonorRollComponent implements OnInit, AfterViewInit, OnDestroy {
       isIdIncludesInSelectedList = false;
     });
     this.selectedStudents = this.selectedStudents.filter((item) => item.checked);
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getHonorRollReportModel = new GetHonorRollReportModel();
+    this.getHonorRollReportModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getHonorRollReportModel.filterParams = res.filterParams;
+      this.getHonorRollReportModel.includeInactive = res.inactiveStudents;
+      this.getHonorRollReport();
+    }
   }
 
   getSearchResult(res) {

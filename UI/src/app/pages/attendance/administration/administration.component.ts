@@ -47,6 +47,7 @@ import { StudentAttendanceCommentComponent } from "./student-attendance-comment/
 import { fadeInUp400ms } from '../../../../@vex/animations/fade-in-up.animation';
 import { stagger40ms, stagger60ms } from '../../../../@vex/animations/stagger.animation';
 import { fadeInRight400ms } from "../../../../@vex/animations/fade-in-right.animation";
+import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
 
 export interface StudentList {
   studentName: string;
@@ -77,6 +78,7 @@ export class AdministrationComponent implements OnInit {
   getAllStudent: StudentAttendanceListViewModel = new StudentAttendanceListViewModel();
   getAllAttendanceCodeModel: GetAllAttendanceCodeModel = new GetAllAttendanceCodeModel();
   studentDailyAttendanceListViewModel: StudentDailyAttendanceListViewModel = new StudentDailyAttendanceListViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   attendanceCodeList = [];
   totalCount = 0;
   pageNumber: number;
@@ -92,6 +94,7 @@ export class AdministrationComponent implements OnInit {
   disabledAdvancedSearch: boolean = false;
   attendanceNoToString:string;
   cloneStudentlist;
+  isFromAdvancedSearch: boolean = false;
   constructor(
     private dialog: MatDialog,
     private loaderService: LoaderService,
@@ -105,6 +108,9 @@ export class AdministrationComponent implements OnInit {
     private paginatorObj: MatPaginatorIntl,
     private translateService: TranslateService
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.searchBirthdays = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
@@ -216,6 +222,23 @@ export class AdministrationComponent implements OnInit {
     this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
     this.getAllStudent.pageSize = this.pageSize;
     this.getAllStudentAttendanceListForAdministration();
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentAttendanceListViewModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.attendanceCode = res.attendanceCode;
+      this.getAllStudent.attendanceDate = res.attendanceDate;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.getAllStudentAttendanceListForAdministration();
+    }
   }
 
   getSearchResult(res) {

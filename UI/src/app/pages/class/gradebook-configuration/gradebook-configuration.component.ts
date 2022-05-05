@@ -26,7 +26,6 @@ export class GradebookConfigurationComponent implements OnInit {
   stotalNot100: boolean = false;
   ytotalNot100: boolean = false;
   isNotGraded: boolean;
-  @Input() courseWeightedFlag: boolean;
 
   constructor(private gradeBookConfigurationService: GradeBookConfigurationService,
     private gradesService: GradesService,

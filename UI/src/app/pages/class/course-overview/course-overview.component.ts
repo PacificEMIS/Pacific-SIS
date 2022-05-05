@@ -57,7 +57,6 @@ export class CourseOverviewComponent implements OnInit {
   periodTitle;
   weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   name = 'subhajit';
-  @Output() weightedCourse: EventEmitter<boolean> =   new EventEmitter();
 
   constructor(
     public translateService: TranslateService,
@@ -98,7 +97,6 @@ export class CourseOverviewComponent implements OnInit {
           else{
             this.singleCourseSection = res.getCourseSectionForView.find(couresesection =>
               couresesection.courseSection.courseSectionId === this.courseSectionId);
-            this.weightedCourse.emit(this.singleCourseSection?.courseSection?.isWeightedCourse);
           }
         }
         else{
