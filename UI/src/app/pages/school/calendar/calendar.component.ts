@@ -133,6 +133,7 @@ export class CalendarComponent implements OnInit {
   eventList = [];
   allData = [];
   maxEndDateForSessionCalendar: Date;
+  isSessionCalender: boolean;
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -186,6 +187,11 @@ export class CalendarComponent implements OnInit {
   }
 
   changeCalendar(event) {
+    if (event.sessionCalendar === true){
+      this.isSessionCalender = true;
+    } else {
+      this.isSessionCalender = false;
+    }
     this.calendarStartDate = event.startDate;
     this.calendarEndDate = event.endDate;
     this.getDays(event.days);
@@ -288,6 +294,14 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  checkEvent(events) {
+    if(events.filter(y => y?.meta?.calendar?.isHoliday).length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   getEventColor(event){
     let events = [];
     events = event;
@@ -308,6 +322,11 @@ export class CalendarComponent implements OnInit {
         const defaultCalender = this.calendars.find(element => element.defaultCalender === true);
         if (defaultCalender != null) {
           this.selectedCalendar = defaultCalender;
+          if (this.selectedCalendar.sessionCalendar === true){
+            this.isSessionCalender = true;
+          } else {
+            this.isSessionCalender = false;
+          }
           this.calendarStartDate = this.selectedCalendar.startDate;
           this.calendarEndDate = this.selectedCalendar.endDate;
           this.calendarService.setCalendarId(this.selectedCalendar.calenderId);
