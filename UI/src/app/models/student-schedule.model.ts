@@ -253,8 +253,10 @@ export class AttendanceWeekViewModel {
 export class WeeklyAttendanceList {
   periodId: number;
   attendanceTaken: boolean;
-  courseId:number;
-  courseSectionId:number;
+  courseId?: number;
+  courseIds: number | string;
+  courseSectionId?: number;
+  courseSectionIds: number | string;
   blockId: number;
   periodTitle: string;
   days:string;

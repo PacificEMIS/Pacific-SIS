@@ -386,16 +386,22 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     this.weekEvents?.map((item) => {
       let isSameBlockPeriodFound = false;
       for (const eachDay of this.weeklyAttendanceView.attendanceWeekView) {
-        if (
-          eachDay.blockId === item.blockId &&
-          eachDay.periodId === item.periodId
-        ) {
-          eachDay.days = eachDay.days
-            ? eachDay.days + "|" + item.day
-            : item.day.toString();
-          eachDay.dayDate = eachDay.dayDate
-            ? eachDay.dayDate + "|" + item.dayDate
-            : item?.dayDate?.toString();
+        if (eachDay.blockId === item.blockId && eachDay.periodId === item.periodId) {
+          eachDay.days = eachDay.days ? eachDay.days + "|" + item.day : item.day.toString();
+          eachDay.dayDate = eachDay.dayDate ? eachDay.dayDate + "|" + item.dayDate : item?.dayDate?.toString();
+          const cloneTakenAttendanceDays = this.findTakenDays(item.takenAttendanceList, item);
+          const takenAttendanceDays = this.generateDayFromDate(item.takenAttendanceList, item);
+          if (cloneTakenAttendanceDays) {
+            cloneTakenAttendanceDays.map((attendanceObj, index) => {
+              if (attendanceObj?.attendanceCode) {
+                eachDay.cloneTakenAttendanceDays[index] = attendanceObj;
+              }
+            });
+          }
+          eachDay.takenAttendanceDays = eachDay.takenAttendanceDays && takenAttendanceDays ? eachDay.takenAttendanceDays + "|" + takenAttendanceDays : eachDay.takenAttendanceDays ? eachDay.takenAttendanceDays : takenAttendanceDays ? takenAttendanceDays : null;
+          eachDay.courseIds = eachDay.courseIds.toString() + "|" + item.courseId.toString();
+          eachDay.courseSectionIds = eachDay.courseSectionIds.toString() + "|" + item.courseSectionId.toString();
+          eachDay.takenAttendanceList.push(...item.takenAttendanceList);
           isSameBlockPeriodFound = true;
           break;
         }
@@ -406,15 +412,15 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           periodId: item.periodId,
           attendanceTaken: false,
           periodTitle: item.periodTitle,
-          courseId: item.courseId,
-          courseSectionId: item.courseSectionId,
+          courseIds: item.courseId,
+          courseSectionIds: item.courseSectionId,
           days: item.day.toString(),
           dayDate: item.dayDate?.toString(),
           cloneTakenAttendanceDays: this.findTakenDays(
-            item.takenAttendanceList
+            item.takenAttendanceList, item
           ),
           takenAttendanceDays: this.generateDayFromDate(
-            item.takenAttendanceList
+            item.takenAttendanceList, item
           ),
           takenAttendanceList: item.takenAttendanceList,
           attendanceList: item.attendanceList,
@@ -514,11 +520,13 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  findTakenDays(takenDaysList) {
+  findTakenDays(takenDaysList, item) {
+    const filterTakenDaysList = takenDaysList.filter(x => (x.blockId === item.blockId) && (x.periodId === item.periodId));
     const takenDays = [null, null, null, null, null, null, null];
-    takenDaysList?.map((day) => {
-      takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: day.attendanceCodeNavigation.stateCode };
-    });
+    if (filterTakenDaysList?.length)
+      filterTakenDaysList?.map((day) => {
+        takenDays[new Date(day.attendanceDate).getDay()] = { attendanceCode: day.attendanceCode, stateCode: day.attendanceCodeNavigation.stateCode };
+      });
     return takenDays;
   }
 
@@ -532,12 +540,14 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     return index;
   }
 
-  generateDayFromDate(takenAttendanceList) {
+  generateDayFromDate(takenAttendanceList, item) {
     let days;
-    takenAttendanceList?.map((takenDay) => {
-      const day = new Date(takenDay.attendanceDate).getDay();
-      days = days ? days + "|" + day : day.toString();
-    });
+    const filterTakenAttendanceList = takenAttendanceList.filter(x => (x.blockId === item.blockId) && (x.periodId === item.periodId));
+    if (filterTakenAttendanceList)
+      filterTakenAttendanceList?.map((takenDay) => {
+        const day = new Date(takenDay.attendanceDate).getDay();
+        days = days ? days + "|" + day : day.toString();
+      });
     return days;
   }
 
@@ -636,11 +646,27 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
     let attendanceCategoryId;
     let staffId;
     let studentAttendanceComments = [];
+    let attendanceDate;
 
     for (const takenDay of periodDetails.takenAttendanceList) {
       if (new Date(takenDay.attendanceDate).getDay() == day) {
         staffId = takenDay.staffId;
         studentAttendanceComments = takenDay.studentAttendanceComments;
+        attendanceDate = takenDay.attendanceDate.split("T")[0];
+        if (typeof (periodDetails.courseIds) === "string") {
+          periodDetails.courseIds?.split("|").map(item => {
+            if (+item === takenDay.courseId) periodDetails.courseId = takenDay.courseId;
+          });
+        } else {
+          periodDetails.courseId = periodDetails.courseIds;
+        }
+        if (typeof (periodDetails.courseSectionIds) === "string") {
+          periodDetails.courseSectionIds?.split("|").map(item => {
+            if (+item === takenDay.courseSectionId) periodDetails.courseSectionId = takenDay.courseSectionId;
+          });
+        } else {
+          periodDetails.courseSectionId = periodDetails.courseSectionIds;
+        }
         break;
       }
     }
@@ -658,7 +684,8 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
             item.courseId === periodDetails.courseId &&
             item.courseSectionId === periodDetails.courseSectionId &&
             item.blockId === periodDetails.blockId &&
-            item.periodId === periodDetails.periodId
+            item.periodId === periodDetails.periodId &&
+            item.attendanceDate === attendanceDate
           );
         }
       );
