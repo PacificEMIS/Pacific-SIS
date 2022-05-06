@@ -468,7 +468,7 @@ export class ProgressReportComponent implements OnInit {
 
           courseSection.gradeBookGradeListData.map((gradeDetails) => {
             // assignmentPoint should be null and due date future date
-            if (this.toggleMenu.excludeUngradedAssignmentsNotDue && !gradeDetails?.assignmentPoint && moment(new Date()).isSameOrAfter(gradeDetails.assignmentDate)) {
+            if(this.toggleMenu.excludeUngradedAssignmentsNotDue && moment(new Date()).isSameOrBefore(gradeDetails.dueDate) && !gradeDetails?.allowedMarks){
               gradeDetails.hide = true;
             }
 
