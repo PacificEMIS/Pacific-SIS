@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ParentinfoComponent } from './parentinfo.component';
-import { SecondaryToolbarModule } from '../../../../@vex/components/secondary-toolbar/secondary-toolbar.module';
-import { BreadcrumbsModule } from '../../../../@vex/components/breadcrumbs/breadcrumbs.module';
+import { ParentAdvancedSearchComponent } from './parent-advanced-search.component';
+import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/secondary-toolbar.module';
+import { BreadcrumbsModule } from 'src/@vex/components/breadcrumbs/breadcrumbs.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { PageLayoutModule } from '../../../../@vex/components/page-layout/page-layout.module';
-import { ContainerModule } from '../../../../@vex/directives/container/container.module';
+import { PageLayoutModule } from 'src/@vex/components/page-layout/page-layout.module';
+import { ContainerModule } from 'src/@vex/directives/container/container.module';
 import { IconModule } from '@visurel/iconify-angular';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -17,25 +17,25 @@ import { MatTableModule } from '@angular/material/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { SharedModuleModule } from '../../shared-module/shared-module.module';
-import { ParentRoutingModule } from '../parentinfo/parent-routing-module';
+import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
+import { ParentRoutingModule } from 'src/app/pages/parent/parent-routing-module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatSortModule} from '@angular/material/sort';
-import { SearchParentComponent } from './search-parent/search-parent.component';
+import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ParentAdvancedSearchModule } from 'src/app/common/parent-advanced-search/parent-advanced-search.module';
+
+
+
 @NgModule({
-  declarations: [ParentinfoComponent, SearchParentComponent],
+  declarations: [ParentAdvancedSearchComponent],
   imports: [
     CommonModule,
     SecondaryToolbarModule,
@@ -69,8 +69,8 @@ import { ParentAdvancedSearchModule } from 'src/app/common/parent-advanced-searc
     MatFormFieldModule,
     MatSlideToggleModule,
     MatRippleModule,
-    MatProgressSpinnerModule,
-    ParentAdvancedSearchModule
-  ]
+    MatProgressSpinnerModule
+  ],
+  exports: [ParentAdvancedSearchComponent]
 })
-export class ParentinfoModule { }
+export class ParentAdvancedSearchModule { }

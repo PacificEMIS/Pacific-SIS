@@ -147,8 +147,8 @@
 </mat-menu>
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-        <vex-search-parent (searchList)="getSearchResult($event)" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
-            (searchValue)="getSearchInput($event)"></vex-search-parent>
+        <vex-common-parent-advanced-search (filteredValue)="filterData($event)" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
+            (searchValue)="getSearchInput($event)"></vex-common-parent-advanced-search>
     </div>
     <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>

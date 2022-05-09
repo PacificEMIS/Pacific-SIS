@@ -22,7 +22,7 @@ import { StaffService } from 'src/app/services/staff.service';
 import { DefaultValuesService } from '../default-values.service';
 
 @Component({
-  selector: 'vex-staff-advanced-search',
+  selector: 'vex-common-staff-advanced-search',
   templateUrl: './staff-advanced-search.component.html',
   styleUrls: ['./staff-advanced-search.component.scss']
 })
@@ -30,6 +30,7 @@ export class StaffAdvancedSearchComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();
+  @Output() filteredValue = new EventEmitter<any>();
   @Input() filterJsonParams;
   @Output() searchValue = new EventEmitter<any>();
   @Input() incomingSearchValue;
@@ -372,65 +373,18 @@ export class StaffAdvancedSearchComponent implements OnInit {
         }
         );
       }
-  
-      this.getAllStaff.sortingModel = null;
-      this.getAllStaff.searchAllSchool = this.searchAllSchool;
-      this.getAllStaff.includeInactive = this.inactiveStaff;
-      this.getAllStaff.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
-      this.getAllStaff.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
       this.commonService.setSearchResult(this.getAllStaff.filterParams);
-      // this.getAllStaff.searchAllSchool = this.searchAllSchool;
-      // this.getAllStaff.includeInactive = this.inactiveStaff;
-      this.defaultValuesService.sendAllSchoolFlag(this.searchAllSchool);
-        this.defaultValuesService.sendIncludeInactiveFlag(this.inactiveStaff);
-      this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
-      if(res._failure){
-          
-          this.searchList.emit([]);
-          this.searchValue.emit(this.currentForm.value);
-          this.toggelValues.emit({ inactiveStaff: this.inactiveStaff, searchAllSchool: this.searchAllSchool });
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-          this.checkSearchRecord = 0;
-        } else {
-          let outStafflist = res;
-        if (this.getAllStaff.searchAllSchool === true) {
-          for (let staff of outStafflist.staffMaster) {
-            for (let schoolList of staff.staffSchoolInfo) {
-              staff.schoolName = schoolList.schoolAttachedName;
-              if (schoolList.endDate === null || moment(new Date()).isBetween(schoolList.startDate,schoolList.endDate)) {
-                staff.status = 'active';
-                break;
-              } else
-                staff.status = 'inactive';
-            }
-          }
-        }
-        else {
-          for (let staff of outStafflist.staffMaster) {
-            staff.staffSchoolInfo.map(schoolList => {
-              if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
-                staff.schoolName = schoolList.schoolAttachedName;
-                if (schoolList.endDate === null)
-                  staff.status = 'active';
-                else {
-                  if (moment(new Date()).isBetween(schoolList.startDate,schoolList.endDate))
-                    staff.status = 'active';
-                  else
-                    staff.status = 'inactive';
-                }
-              }
-            })
-          }
-        }
-          this.searchList.emit(outStafflist);
-          this.searchValue.emit(this.currentForm.value);
-          this.toggelValues.emit({ inactiveStaff: this.inactiveStaff, searchAllSchool: this.searchAllSchool });
-          this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
-          this.checkSearchRecord = 0;
-        }
+      this.filteredValue.emit({
+        filterParams: this.getAllStaff.filterParams,
+        inactiveStaff: this.inactiveStaff,
+        searchAllSchool: this.searchAllSchool,
+        dobStartDate: this.dobStartDate,
+        dobEndDate: this.dobEndDate
       });
+      this.searchValue.emit(this.currentForm.value);
+      this.toggelValues.emit({ inactiveStaff: this.inactiveStaff, searchAllSchool: this.searchAllSchool });
+      this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
+      this.checkSearchRecord = 0;
     }
   
     resetData() {

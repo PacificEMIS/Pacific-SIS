@@ -83,7 +83,7 @@ export class AdvanceReportComponent implements OnInit {
   selectedStaffListForTable: MatTableDataSource<any>;
   generateStaffList: any;
   loading: boolean;
-  totalCount: number;
+  totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
   searchCtrl = new FormControl();
@@ -102,6 +102,8 @@ export class AdvanceReportComponent implements OnInit {
   pageSizeForReport: number;
   getStaffAdvancedReportModel: GetStaffAdvancedReportModel = new GetStaffAdvancedReportModel();
   icFilterList = icFilterList;
+  parentComponent = "staff_advanced_report"
+  isFromAdvancedSearch: boolean = false;
   fieldsDetailsArray = {
     identificationInformation: [
       { label: 'fullName', property: 'fullName', checked: false },
@@ -256,17 +258,22 @@ export class AdvanceReportComponent implements OnInit {
       if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);
         if (res.staffMaster === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
           this.staffList = new MatTableDataSource([]);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.staffList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = res.totalCount;
+        this.searchCount = res.totalCount;
         this.pageNumber = res.pageNumber;
         this.pageSize = res._pageSize;
         res.staffMaster.forEach((staff) => {
@@ -285,7 +292,23 @@ export class AdvanceReportComponent implements OnInit {
           return item.checked;
         })
         this.staffList = new MatTableDataSource(res.staffMaster);
+        for (let staff of this.staffList.filteredData) {
+          staff.staffSchoolInfo.map(schoolList => {
+            if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
+              staff.schoolName = schoolList.schoolAttachedName;
+              if (schoolList.endDate === null)
+                staff.status = 'active';
+              else {
+                if (moment(new Date()).isBetween(schoolList.startDate, schoolList.endDate))
+                  staff.status = 'active';
+                else
+                  staff.status = 'inactive';
+              }
+            }
+          })
+        }
         this.getAllStaffModel = new GetAllStaffReportModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -387,6 +410,25 @@ export class AdvanceReportComponent implements OnInit {
     });
 
     this.decideCheckUncheck();
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStaffModel = new GetAllStaffReportModel();
+    this.getAllStaffModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStaffModel.filterParams = res.filterParams;
+      this.getAllStaffModel.includeInactive = res.inactiveStaff;
+      this.getAllStaffModel.searchAllSchool = res.searchAllSchool;
+      this.getAllStaffModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+      this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStaff);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.callStaffList();
+    }
   }
 
   getSearchResult(res) {

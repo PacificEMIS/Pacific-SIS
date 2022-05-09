@@ -34,6 +34,7 @@ import icImpersonate from '@iconify/icons-ic/twotone-account-circle';
 import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { SharedFunction } from 'src/app/pages/shared/shared-function';
 
 @Component({
   selector: 'vex-common-staff-list',
@@ -94,6 +95,7 @@ export class CommonStaffListComponent implements OnInit {
   profiles = ProfilesTypes;
   searchCount: number = null;
   searchValue: any = null;
+  isFromAdvancedSearch: boolean = false;
 
   constructor(
     private staffService: StaffService,
@@ -109,7 +111,8 @@ export class CommonStaffListComponent implements OnInit {
     private dialog: MatDialog,
     private imageCropperService: ImageCropperService,
     private excelService: ExcelService,
-    private impersonateServices: ImpersonateServices
+    private impersonateServices: ImpersonateServices,
+    private commonFunction: SharedFunction
 
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
@@ -120,6 +123,7 @@ export class CommonStaffListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.columns.map((x, index) => {
       if (this.parentComponent === 'takeAttendence') {
         if (x.label === "actions")
@@ -185,14 +189,17 @@ export class CommonStaffListComponent implements OnInit {
       if (res._failure) {
 
         this.staffList = new MatTableDataSource([]);
-        this.totalCount = null;
+        this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+        this.searchCount = this.isFromAdvancedSearch ? 0 : null;
         if (!res.staffMaster) {
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
         }
+        this.isFromAdvancedSearch = false;
       } else {
         this.totalCount = res.totalCount;
+        this.searchCount = res.totalCount;
         this.pageNumber = res.pageNumber;
         this.pageSize = res._pageSize;
         this.staffList = new MatTableDataSource(res.staffMaster);
@@ -226,6 +233,7 @@ export class CommonStaffListComponent implements OnInit {
           }
         }
         this.getAllStaff = new GetAllStaffModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -550,6 +558,8 @@ export class CommonStaffListComponent implements OnInit {
   resetStaffList() {
     this.searchCount = null;
     this.searchValue = null;
+    this.getAllStaff = new GetAllStaffModel();
+    this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.callStaffList();
   }
 
@@ -571,6 +581,26 @@ export class CommonStaffListComponent implements OnInit {
   getSearchInput(event) {
     this.searchValue = event;
     // this.columns[6].visible = event.inactiveStaff;
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStaff = new GetAllStaffModel();
+    this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStaff.filterParams = res.filterParams;
+      this.getAllStaff.includeInactive = res.inactiveStaff;
+      this.getAllStaff.searchAllSchool = res.searchAllSchool;
+      this.getAllStaff.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+      this.getAllStaff.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStaff);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.callStaffList();
+      this.showSaveFilter = true;
+    }
   }
 
   getSearchResult(res) {

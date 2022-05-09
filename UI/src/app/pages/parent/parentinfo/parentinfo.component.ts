@@ -101,6 +101,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   pageNumber:number;
   pageSize:number;
   searchCtrl: FormControl;
+  isFromAdvancedSearch: boolean = false;
   // categories=[
   //   {
   //     categoryId:3,
@@ -318,7 +319,7 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   // }
 
 
-  getAllparentList() {
+   getAllparentList() {
     if(this.getAllParentModel.sortingModel?.sortColumn==""){
       this.getAllParentModel.sortingModel=null
     }
@@ -334,20 +335,23 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
         this.commonService.checkTokenValidOrNot(res._message);
             this.parentFieldsModelList = new MatTableDataSource([]);
             this.totalCount=0;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
               if (!res.parentInfoForView){
                 this.snackbar.open( res._message, '', {
                   duration: 10000
                 });
               }
+              this.isFromAdvancedSearch = false;
           }
           else {
             this.totalCount=res.totalCount;
+            this.searchCount = res.totalCount;
             this.pageNumber = res.pageNumber;
             this.pageSize = res._pageSize;
             this.parentListForExcel = res.parentInfoForView;
             this.parentFieldsModelList = new MatTableDataSource(res.parentInfoForView);
             this.getAllParentModel = new GetAllParentModel();
-
+            this.isFromAdvancedSearch = false;
           }
         }
       }
@@ -409,6 +413,17 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
       
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllParentModel = new GetAllParentModel();
+    this.getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.getAllParentModel.filterParams = res;
+    this.getAllparentList();
+  }
+
   getSearchResult(res: GetAllParentResponseModel) {
     this.searchCount=res.parentInfoForView?.length | 0;
     this.pageNumber = res.pageNumber;
@@ -426,6 +441,8 @@ export class ParentinfoComponent implements OnInit, OnDestroy {
   resetParentList(){
     this.searchCount = null;
     this.getAllParentModel.filterParams=null;
+    this.getAllParentModel = new GetAllParentModel();
+    this.getAllParentModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.parentInfoService.setAdvanceSearchParams(null);
     this.getAllparentList();
   }

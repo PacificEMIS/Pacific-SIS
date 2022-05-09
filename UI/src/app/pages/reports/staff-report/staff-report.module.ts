@@ -33,6 +33,7 @@ import { AdvanceReportComponent } from './advance-report/advance-report.componen
 import { SearchStaffComponent } from './search-staff/search-staff.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { StaffAdvancedSearchModule } from 'src/app/common/staff-advanced-search/staff-advanced-search.module';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NgxMatSelectSearchModule,
     MatExpansionModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    StaffAdvancedSearchModule
   ]
 })
 export class StaffReportModule { }

@@ -549,7 +549,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       );
     }
-
+    this.commonService.setSearchResult(this.filterParamsForAdvancedSearchModel.filterParams);
     this.filteredValue.emit({
       filterParams: this.filterParamsForAdvancedSearchModel.filterParams,
       inactiveStudents: this.inactiveStudents,
