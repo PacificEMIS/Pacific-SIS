@@ -285,7 +285,7 @@ namespace opensis.data.Repository
                                             var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                             if (AttendanceCodeData != null)
                                             {
-                                                if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                                if (AttendanceCodeData.StateCode!.ToLower() != "absent".ToLower())
                                                 {
                                                     totalAttendanceMin = totalAttendanceMin + classMin;
                                                 }
@@ -742,8 +742,8 @@ namespace opensis.data.Repository
                                         var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                         if (AttendanceCodeData != null)
                                         {
-                                            //if (AttendanceCodeData.Title.ToLower() != "absent")
-                                            if (String.Compare(AttendanceCodeData.Title, "absent", true) == 0)
+                                            //if (String.Compare(AttendanceCodeData.Title, "absent", true) == 0)
+                                            if (AttendanceCodeData.StateCode!.ToLower() != "absent")
                                             {
                                                 totalAttendanceMin = totalAttendanceMin + classMin;
                                             }
