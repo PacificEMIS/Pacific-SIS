@@ -35,6 +35,7 @@ import { ImpersonateServices } from 'src/app/services/impersonate.service';
 import { DataEditInfoComponent } from 'src/app/pages/shared-module/data-edit-info/data-edit-info.component';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
+import { StudentAttendanceService } from 'src/app/services/student-attendance.service';
 
 @Component({
   selector: 'vex-common-staff-list',
@@ -112,8 +113,8 @@ export class CommonStaffListComponent implements OnInit {
     private imageCropperService: ImageCropperService,
     private excelService: ExcelService,
     private impersonateServices: ImpersonateServices,
-    private commonFunction: SharedFunction
-
+    private commonFunction: SharedFunction,
+    private studentAttendanceService:StudentAttendanceService
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
 
@@ -247,15 +248,18 @@ export class CommonStaffListComponent implements OnInit {
       if (element.status === "active") {
         if (!this.permissions?.edit) return;
         const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
-        this.finalGradeService.setStaffDetails({ staffId: element.staffId, staffFullName });
+        if(this.parentComponent === "inputFinalGrage" || this.parentComponent === "inputEffortGrage" || this.parentComponent === "gradebookGrades")
+          this.finalGradeService.setStaffDetails({ staffId: element.staffId, staffFullName });
         if (this.parentComponent === "inputFinalGrage")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade', 'final-grade-details']);
         else if (this.parentComponent === "inputEffortGrage")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-effort-grade', 'effort-grade-details']);
         else if (this.parentComponent === "gradebookGrades")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'gradebook-grades', 'gradebook-grade-list']);
-        else if (this.parentComponent === "takeAttendence")
+        else if (this.parentComponent === "takeAttendence"){
+          this.studentAttendanceService.setStaffDetails({staffId: element.staffId, staffFullName});
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'take-attendance', 'course-section']);
+        }
         this.pageInit = 2;
       }
       else
