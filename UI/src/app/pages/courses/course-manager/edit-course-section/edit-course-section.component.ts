@@ -215,7 +215,7 @@ export class EditCourseSectionComponent implements OnInit {
       isActive: this.data.courseSectionDetails.courseSection.isActive,
       courseSectionName: this.data.courseSectionDetails.courseSection.courseSectionName,
       calendarId: this.data.courseSectionDetails.courseSection.calendarId,
-      creditHours: this.data.courseSectionDetails.courseSection.creditHours,
+      creditHours: this.data.courseSectionDetails.courseSection.creditHours ? parseFloat(this.data.courseSectionDetails.courseSection.creditHours).toFixed(3) : this.data.courseDetails?.creditHours ? parseFloat(this.data.courseDetails?.creditHours).toFixed(3) : null,
       attendanceCategoryId: this.data.courseSectionDetails.courseSection.attendanceCategoryId,
       seats: this.data.courseSectionDetails.courseSection.seats,
       allowStudentConflict: this.data.courseSectionDetails.courseSection.allowStudentConflict,
