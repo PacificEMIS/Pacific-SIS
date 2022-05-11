@@ -165,6 +165,7 @@ export class EditCourseComponent implements OnInit {
         this.courseModalActionTitle="update"  
         delete this.data.editDetails?.academicYear;
       this.addCourseModel.course = this.data.editDetails;
+      this.addCourseModel.course.creditHours = this.addCourseModel.course.creditHours ? parseFloat(this.addCourseModel.course.creditHours).toFixed(3) : null;
       this.courseId = this.data.editDetails.courseId;
       if(this.data.editDetails.courseStandard !== undefined){
         if(this.data.editDetails.courseStandard.length > 0){
