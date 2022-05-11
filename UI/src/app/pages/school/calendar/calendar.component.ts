@@ -133,6 +133,8 @@ export class CalendarComponent implements OnInit {
   eventList = [];
   allData = [];
   maxEndDateForSessionCalendar: Date;
+  minSchoolYearStartDate: Date;
+  maxSchoolYearEndDate: Date;
   isSessionCalender: boolean;
   constructor(
     private http: HttpClient,
@@ -302,6 +304,14 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  checkDate(date) {
+    if (moment(date).isBetween(this.minSchoolYearStartDate, this.maxSchoolYearEndDate)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   getEventColor(event){
     let events = [];
     events = event;
@@ -316,6 +326,8 @@ export class CalendarComponent implements OnInit {
       }
       this.calendars = data.calendarList;
       this.maxEndDateForSessionCalendar = data.maxEndDateForSessionCalendar;
+      this.minSchoolYearStartDate = data.minSchoolYearStartDate;
+      this.maxSchoolYearEndDate = data.maxSchoolYearEndDate;
       this.showCalendarView = false;
       if (this.calendars.length !== 0) {
         this.showCalendarView = true;
