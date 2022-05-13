@@ -241,13 +241,18 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   compareDate(index) {
     let startDate = this.staffSchoolInfoModel.staffSchoolInfoList[index].startDate;
     let endDate = this.staffSchoolInfoModel.staffSchoolInfoList[index].endDate
-    if (startDate != null && endDate != null)
-      if(moment(new Date()).isBetween(startDate, endDate))
+    if (!endDate) {
+      if (moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrAfter(this.commonFunction.formatDateSaveWithoutTime(startDate)))
         return true;
       else
         return false;
-    else 
-      return true;
+    } else {
+      if (moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrAfter(this.commonFunction.formatDateSaveWithoutTime(startDate)) &&
+        moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.commonFunction.formatDateSaveWithoutTime(endDate)))
+        return true;
+      else
+        return false;
+    }
   }
 
   getAllStaffSchoolInfo() {
