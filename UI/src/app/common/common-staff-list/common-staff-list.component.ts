@@ -221,14 +221,7 @@ export class CommonStaffListComponent implements OnInit {
             staff.staffSchoolInfo.map(schoolList => {
               if (this.defaultValuesService.getSchoolID() == schoolList.schoolAttachedId) {
                 staff.schoolName = schoolList.schoolAttachedName;
-                if (schoolList.endDate === null)
-                  staff.status = 'active';
-                else {
-                  if (moment(new Date()).isBetween(schoolList.startDate, schoolList.endDate))
-                    staff.status = 'active';
-                  else
-                    staff.status = 'inactive';
-                }
+                staff.status = this.checkStaffActiveOrInactive(schoolList.startDate,schoolList.endDate)
               }
             })
           }
@@ -239,6 +232,21 @@ export class CommonStaffListComponent implements OnInit {
     });
   }
 
+  checkStaffActiveOrInactive(startDate, endDate) {
+    if (!endDate) {
+      if (moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrAfter(this.commonFunction.formatDateSaveWithoutTime(startDate)))
+        return 'active';
+      else
+        return 'inactive';
+    } else {
+      if (moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrAfter(this.commonFunction.formatDateSaveWithoutTime(startDate)) &&
+        moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.commonFunction.formatDateSaveWithoutTime(endDate)))
+        return 'active';
+      else
+        return 'inactive';
+    }
+  }
+  
   viewStaffDetails(element, checkFlag?) {
     if (checkFlag) {
       this.imageCropperService.enableUpload({ module: this.moduleIdentifier.STAFF, upload: true, mode: this.createMode.VIEW });
