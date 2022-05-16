@@ -2005,6 +2005,317 @@ namespace opensis.data.Repository
                             reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
                         }
                     }
+
+                    else if (String.Compare(reportCardViewModel.TemplateType, "rmi", true) == 0)
+                    {
+                        List<string?> Subjects = new List<string?> { "math", "science", "social studies", "health", "marshallese", "english" };
+
+                        var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
+
+                        foreach (var student in reportCardViewModel.studentsReportCardViewModelList)
+                        {
+                            StudentsReportCardViewModel studentsReportCard = new StudentsReportCardViewModel();
+                            List<int?> QtrMarkingPeriodId = new List<int?>();
+                            List<int?> SmstrMarkingPeriodId = new List<int?>();
+                            List<int?> YrMarkingPeriodId = new List<int?>();
+                            List<int?> PrgrsprdMarkingPeriodId = new List<int?>();
+                            List<int?> QtrMarkingPeriodIdExam = new List<int?>();
+                            List<int?> SmstrMarkingPeriodIdExam = new List<int?>();
+                            List<int?> YrMarkingPeriodIdExam = new List<int?>();
+                            List<int?> PrgrsprdMarkingPeriodIdExam = new List<int?>();
+                            List<MarkingPeriodDetailsViewforRMIReport> markingPeriodList = new List<MarkingPeriodDetailsViewforRMIReport>();
+
+                            var StudentDailyAttendanceData = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
+
+                            var AttendanceData = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
+
+                            var studentData = studentMasterData!.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
+
+                            var GradeLevelTitle = studentData!.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
+
+                            studentsReportCard.SchoolName = schoolData!.SchoolName;
+                            studentsReportCard.SchoolLogo = schoolData!.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo;
+                            studentsReportCard.SchoolYear = schoolYear;
+                            studentsReportCard.HomeAddressLineOne = schoolData.StreetAddress1;
+                            studentsReportCard.HomeAddressLineTwo = schoolData.StreetAddress2;
+                            studentsReportCard.HomeAddressCountry = schoolData.Country;
+                            studentsReportCard.HomeAddressState = schoolData.State;
+                            studentsReportCard.HomeAddressCity = schoolData.City;
+                            studentsReportCard.HomeAddressZip = schoolData.Zip;
+                            studentsReportCard.FirstGivenName = studentData.FirstGivenName;
+                            studentsReportCard.MiddleName = studentData.MiddleName;
+                            studentsReportCard.LastFamilyName = studentData.LastFamilyName;
+                            studentsReportCard.StudentInternalId = studentData.StudentInternalId;
+                            studentsReportCard.GradeTitle = GradeLevelTitle;
+
+                            if (schoolData.GradeScale.Count > 0)
+                            {
+                                var gradeScaledata = schoolData.GradeScale.FirstOrDefault(x => x.UseAsStandardGradeScale != true);
+
+                                if (gradeScaledata != null && gradeScaledata?.Grade.Count > 0)
+                                {
+                                    gradeScaledata?.Grade.ToList().ForEach(x => x.GradeScale = new());
+                                    studentsReportCard.gradeList = gradeScaledata!.Grade.ToList();
+                                }
+                            }
+
+                            var markingPeriodsData = reportCardViewModel.MarkingPeriods!.Split(",");
+
+                            foreach (var markingPeriod in markingPeriodsData)
+                            {
+                                MarkingPeriodDetailsViewforRMIReport markingPeriodListView = new MarkingPeriodDetailsViewforRMIReport();
+                                if (markingPeriod != null)
+                                {
+                                    var markingPeriodid = markingPeriod.Split("_", StringSplitOptions.RemoveEmptyEntries);
+
+                                    if (markingPeriodid.First() == "3")
+                                    {
+                                        var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                                        var ppData = this.context?.ProgressPeriods.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == reportCardViewModel.AcademicYear);
+                                        markingPeriodListView.StartDate = ppData!.StartDate;
+                                        markingPeriodListView.EndDate = ppData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = ppData!.ShortName + " Exam";
+                                            markingPeriodListView.SortId = "3_" + ppData.MarkingPeriodId + " Exam";
+                                            PrgrsprdMarkingPeriodIdExam.Add(Id);
+                                        }
+                                        else
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = ppData.ShortName;
+                                            markingPeriodListView.SortId = "3_" + ppData.MarkingPeriodId;
+                                            PrgrsprdMarkingPeriodId.Add(Id);
+                                        }
+                                        markingPeriodList.Add(markingPeriodListView);
+                                    }
+
+                                    else if (markingPeriodid.First() == "2")
+                                    {
+                                        var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                                        var qtrData = this.context?.Quarters.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == reportCardViewModel.AcademicYear);
+                                        markingPeriodListView.StartDate = qtrData!.StartDate;
+                                        markingPeriodListView.EndDate = qtrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = qtrData!.ShortName + " Exam";
+                                            markingPeriodListView.SortId = "2_" + qtrData.MarkingPeriodId + " Exam";
+                                            QtrMarkingPeriodIdExam.Add(Id);
+                                        }
+                                        else
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = qtrData.ShortName;
+                                            markingPeriodListView.SortId = "2_" + qtrData.MarkingPeriodId;
+                                            QtrMarkingPeriodId.Add(Id);
+                                        }
+                                        markingPeriodList.Add(markingPeriodListView);
+                                    }
+
+                                    else if (markingPeriodid.First() == "1")
+                                    {
+                                        var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                                        var smstrData = this.context?.Semesters.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == reportCardViewModel.AcademicYear);
+                                        markingPeriodListView.StartDate = smstrData!.StartDate;
+                                        markingPeriodListView.EndDate = smstrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = smstrData!.ShortName + " Exam";
+                                            markingPeriodListView.SortId = "1_" + smstrData.MarkingPeriodId + " Exam";
+                                            SmstrMarkingPeriodIdExam.Add(Id);
+                                        }
+                                        else
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = smstrData.ShortName;
+                                            markingPeriodListView.SortId = "1_" + smstrData.MarkingPeriodId;
+                                            SmstrMarkingPeriodId.Add(Id);
+                                        }
+                                        markingPeriodList.Add(markingPeriodListView);
+                                    }
+
+                                    else if (markingPeriodid.First() == "0")
+                                    {
+                                        var Id = Int32.Parse(markingPeriodid.ElementAt(1));
+
+                                        var yrData = this.context?.SchoolYears.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.MarkingPeriodId == Id && x.AcademicYear == reportCardViewModel.AcademicYear);
+                                        markingPeriodListView.StartDate = yrData!.StartDate;
+                                        markingPeriodListView.EndDate = yrData.EndDate;
+
+                                        if (markingPeriodid.Last() == "E")
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = yrData.ShortName + " Exam";
+                                            markingPeriodListView.SortId = "0_" + yrData.MarkingPeriodId + " Exam";
+                                            YrMarkingPeriodIdExam.Add(Id);
+                                        }
+                                        else
+                                        {
+                                            markingPeriodListView.MarkingPeriodName = yrData!.ShortName;
+                                            markingPeriodListView.SortId = "0_" + yrData.MarkingPeriodId;
+                                            YrMarkingPeriodId.Add(Id);
+                                        }
+                                        markingPeriodList.Add(markingPeriodListView);
+                                    }
+                                }
+                            }
+
+                            //fetch all final grade data for student
+                            var studentFinalGradeData = this.context?.StudentFinalGrade.Include(x => x.SchoolYears).Include(x => x.Semesters).Include(x => x.Quarters).Include(x => x.ProgressPeriod).Join(this.context?.CourseSection.Include(x => x.Course)!, sfg => sfg.CourseSectionId, cs => cs.CourseSectionId,
+                           (sfg, cs) => new { sfg, cs }).Where(x => x.sfg.TenantId == reportCardViewModel.TenantId && x.sfg.SchoolId == reportCardViewModel.SchoolId && x.cs.TenantId == reportCardViewModel.TenantId && x.cs.SchoolId == reportCardViewModel.SchoolId && x.sfg.StudentId == student.StudentId && x.sfg.AcademicYear == reportCardViewModel.AcademicYear && Subjects.Contains(x.cs.Course.CourseSubject.ToLower()) &&
+
+                           ((((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodId.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodId.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodId.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodId.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade != true) ||
+                           (((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodIdExam.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodIdExam.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodIdExam.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodIdExam.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade == true))).ToList();
+
+                            if (studentFinalGradeData?.Any() == true)
+                            {
+                                var subjectWiseData = studentFinalGradeData.GroupBy(x => x.cs.Course.CourseSubject).ToList();
+
+                                foreach (var subject in subjectWiseData)
+                                {
+                                    SubjectDetailsForRMITemplate subjectDetailsForRMITemplate = new();
+                                    subjectDetailsForRMITemplate.SubjectName = subject.Key;
+
+                                    //fetch course section from subject
+                                    var courseSectionWiseData = subject.GroupBy(x => x.sfg.CourseSectionId).ToList();
+
+                                    foreach (var courseSection in courseSectionWiseData)
+                                    {
+                                        CourseSectionDetailsViewforRMIReport courseSectionDetailsView = new();
+
+                                        var courseSectionData = courseSection.Select(s => s.cs).FirstOrDefault();
+
+                                        courseSectionDetailsView.CourseSectionName = courseSectionData!.CourseSectionName;
+
+                                        //fetch markingperiod name & bind in VM where final grade has for this course section.
+                                        courseSectionDetailsView.markingPeriodDetailsViewforRMIReports = courseSection.Select(s => new MarkingPeriodDetailsViewforRMIReport { Percentage = reportCardViewModel.Parcentage == true ? s.sfg.PercentMarks : 0, Grade = s.sfg.GradeObtained, MarkingPeriodName = s.sfg.IsExamGrade == true ? (s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.ShortName + " Exam" : s.sfg.Quarters != null ? s.sfg.Quarters.ShortName + " Exam" : s.sfg.Semesters != null ? s.sfg.Semesters.ShortName + " Exam" : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.ShortName + " Exam" : null) : (s.sfg.ProgressPeriod != null ? s.sfg.ProgressPeriod.ShortName : s.sfg.Quarters != null ? s.sfg.Quarters.ShortName : s.sfg.Semesters != null ? s.sfg.Semesters.ShortName : s.sfg.SchoolYears != null ? s.sfg.SchoolYears.ShortName : null), SortId = s.sfg.ProgressPeriod != null ? "3_" + s.sfg.ProgressPeriod.MarkingPeriodId : s.sfg.Quarters != null ? "2_" + s.sfg.Quarters.MarkingPeriodId : s.sfg.Semesters != null ? "1_" + s.sfg.Semesters.MarkingPeriodId : s.sfg.SchoolYears != null ? "0_" + s.sfg.SchoolYears.MarkingPeriodId : null }).ToList();
+
+                                        //fetch markingperiod name & bind in VM where final grade has not for this course section.
+                                        var exceptMarkingPeriod = markingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(courseSectionDetailsView.markingPeriodDetailsViewforRMIReports.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsViewforRMIReport { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        courseSectionDetailsView.markingPeriodDetailsViewforRMIReports.AddRange(exceptMarkingPeriod);
+                                        courseSectionDetailsView.markingPeriodDetailsViewforRMIReports = courseSectionDetailsView.markingPeriodDetailsViewforRMIReports.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+                                        subjectDetailsForRMITemplate.courseSectionDetailsViewforRMIReports.Add(courseSectionDetailsView);
+                                    }
+                                    studentsReportCard.subjectDetailsForRMITemplates.Add(subjectDetailsForRMITemplate);
+                                }
+
+                                //overall GPA calculation marking period waise
+                                markingPeriodList = markingPeriodList.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+
+                                //this loop for all marking period
+                                foreach (var markingPeriod in markingPeriodList)
+                                {
+                                    MarkingPeriodDetailsViewforRMIReport markingPeriodListView = new MarkingPeriodDetailsViewforRMIReport();
+
+                                    int? PPId = null;
+                                    int? QtrId = null;
+                                    int? SemId = null;
+                                    int? FYId = null;
+                                    DateTime? startDate = null;
+                                    DateTime? endDate = null;
+
+                                    if (markingPeriod != null)
+                                    {
+                                        startDate = markingPeriod.StartDate;
+                                        endDate = markingPeriod.EndDate;
+                                        var markingPeriodid = markingPeriod.SortId!.Split("_", StringSplitOptions.RemoveEmptyEntries);
+
+                                        if (markingPeriodid.First() == "3")
+                                        {
+                                            PPId = Int32.Parse(markingPeriodid.ElementAt(1));
+                                        }
+
+                                        else if (markingPeriodid.First() == "2")
+                                        {
+                                            QtrId = Int32.Parse(markingPeriodid.ElementAt(1));
+                                        }
+
+                                        else if (markingPeriodid.First() == "1")
+                                        {
+                                            SemId = Int32.Parse(markingPeriodid.ElementAt(1));
+                                        }
+
+                                        else if (markingPeriodid.First() == "0")
+                                        {
+                                            FYId = Int32.Parse(markingPeriodid.ElementAt(1));
+                                        }
+
+                                        var reportCardData = studentFinalGradeData.Where(x => ((x.sfg.YrMarkingPeriodId != null && x.sfg.YrMarkingPeriodId == FYId) || (x.sfg.SmstrMarkingPeriodId != null && x.sfg.SmstrMarkingPeriodId == SemId) || (x.sfg.QtrMarkingPeriodId != null && x.sfg.QtrMarkingPeriodId == QtrId) || (x.sfg.PrgrsprdMarkingPeriodId != null && x.sfg.PrgrsprdMarkingPeriodId == PPId)) && (markingPeriodid.Last() == "E" ? x.sfg.IsExamGrade == true : x.sfg.IsExamGrade != true)).ToList();
+
+                                        decimal? SumofCreditEarned = 0.0m;
+                                        decimal? SumofGPaValue = 0.0m;
+
+                                        if (reportCardData?.Any() == true)
+                                        {
+                                            foreach (var reportCard in reportCardData)
+                                            {
+                                                var gradeData = reportCard.cs.GradeScale?.Grade.AsEnumerable().Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && String.Compare(x.Title, reportCard.sfg.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.sfg.GradeScaleId).FirstOrDefault();
+
+                                                if (gradeData != null)
+                                                {
+                                                    var CreditEarned = reportCard.sfg.CreditEarned != null ? reportCard.sfg.CreditEarned : 0.0m;
+                                                    var gPaValue = reportCard.cs.IsWeightedCourse != true ? gradeData.UnweightedGpValue * CreditEarned : gradeData.WeightedGpValue * CreditEarned;
+                                                    SumofCreditEarned = SumofCreditEarned + CreditEarned;
+                                                    SumofGPaValue = SumofGPaValue + gPaValue;
+                                                }
+                                            }
+
+                                            if (SumofGPaValue > 0 && SumofCreditEarned > 0)
+                                            {
+                                                markingPeriodListView.GPA = (Math.Round((decimal)(SumofGPaValue / SumofCreditEarned), 3)).ToString();
+                                            }
+                                            markingPeriodListView.MarkingPeriodName = markingPeriod.MarkingPeriodName;
+                                            studentsReportCard.overallGPAList.Add(markingPeriodListView);
+                                        }
+
+                                        //this block for attendance details marking period waise
+                                        int PresentCount = 0;
+                                        int AbsentCount = 0;
+                                        //int HalfDayCount = 0;
+                                        MarkingPeriodDetailsViewforRMIReport attendanceByMarkingPeriod = new();
+                                        //var attendanceData = this.context?.AttendanceCodeCategories.Include(x => x.AttendanceCode).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
+
+                                        //if (attendanceData != null)
+                                        //{
+                                        var studentDailyAttendanceData = StudentDailyAttendanceData?.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList();
+                                        if (studentDailyAttendanceData?.Any() == true)
+                                        {
+                                            foreach (var dailyAttendance in studentDailyAttendanceData)
+                                            {
+                                                var StudentAttendanceData = AttendanceData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate == dailyAttendance.AttendanceDate);
+
+                                                var block = BlockData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.BlockId == StudentAttendanceData!.BlockId
+                                                );
+
+                                                if (dailyAttendance.AttendanceMinutes >= block?.FullDayMinutes)
+                                                {
+                                                    PresentCount++;
+                                                }
+                                                //if (dailyAttendance.AttendanceMinutes >= block?.HalfDayMinutes && dailyAttendance.AttendanceMinutes < block?.FullDayMinutes)
+                                                //{
+                                                //    HalfDayCount++;
+                                                //}
+                                                if (dailyAttendance.AttendanceMinutes < block?.HalfDayMinutes)
+                                                {
+                                                    AbsentCount++;
+                                                }
+                                            }
+                                            attendanceByMarkingPeriod.PresentCount = PresentCount;
+                                            attendanceByMarkingPeriod.AbsencesCount = AbsentCount;
+                                        }
+                                        attendanceByMarkingPeriod.MarkingPeriodName = markingPeriod.MarkingPeriodName;
+                                        studentsReportCard.attendanceDetailsViewforRMIReports.Add(attendanceByMarkingPeriod);
+                                        //}
+                                    }
+                                }
+                            }
+                            reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
+                        }
+                    }
+
                     else
                     {
                         foreach (var student in reportCardViewModel.studentsReportCardViewModelList)

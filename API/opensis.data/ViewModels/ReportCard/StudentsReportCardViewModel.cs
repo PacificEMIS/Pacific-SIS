@@ -44,6 +44,9 @@ namespace opensis.data.ViewModels.ReportCard
             effortGradeList = new List<EffortGradeDetailsViewModel>();
             standerdGradeScale = new List<Grade>();
             standerdsGradeList = new List<StanderdsGradeDetailsViewModel>();
+            subjectDetailsForRMITemplates = new List<SubjectDetailsForRMITemplate>();
+            overallGPAList = new List<MarkingPeriodDetailsViewforRMIReport>();
+            attendanceDetailsViewforRMIReports = new List<MarkingPeriodDetailsViewforRMIReport>();
         }
         public string? SchoolName { get; set; }
         public byte[]? SchoolLogo { get; set; }
@@ -75,6 +78,9 @@ namespace opensis.data.ViewModels.ReportCard
         public List<EffortGradeDetailsViewModel> effortGradeList { get; set; }
         public List<Grade> standerdGradeScale { get; set; }
         public List<StanderdsGradeDetailsViewModel> standerdsGradeList { get; set; }
+        public List<SubjectDetailsForRMITemplate> subjectDetailsForRMITemplates { get; set; }
+        public List<MarkingPeriodDetailsViewforRMIReport> overallGPAList { get; set; }
+        public List<MarkingPeriodDetailsViewforRMIReport> attendanceDetailsViewforRMIReports { get; set; }
 
     }
 }
