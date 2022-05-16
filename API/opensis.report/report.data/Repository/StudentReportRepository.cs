@@ -214,7 +214,7 @@ namespace opensis.report.report.data.Repository
                         schoolReport.Latitude = school.Latitude;
                         List<StudentReport> studentListForReport = new();
 
-                        var studentData = this.context?.StudentMaster.Where(x => x.TenantId == school.TenantId && x.SchoolId == school.SchoolId && reportModel!.StudentGuids!.Contains(x.StudentGuid)).ToList();
+                        var studentData = this.context?.StudentMaster.Include(x => x.StudentMedicalAlert).Include(x => x.StudentMedicalImmunization).Include(x => x.StudentMedicalNote).Include(x => x.StudentMedicalNurseVisit).Where(x => x.TenantId == school.TenantId && x.SchoolId == school.SchoolId && reportModel!.StudentGuids!.Contains(x.StudentGuid)).ToList();
 
                         foreach (var student in studentData)
                         {
