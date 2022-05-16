@@ -28,7 +28,7 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
                         <div class="mb-2">
-                            <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                            <mat-radio-group *ngIf="this.addReportCardPdf.templateType!=='RMI'" color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
                                 <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
                                 <mat-radio-button [value]="false" style="margin-left: 10px;" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
                               </mat-radio-group> <br><br>
@@ -51,19 +51,19 @@
                                 {{ "gpa" | translate}}
                             </mat-slide-toggle>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                [(ngModel)]="addReportCardPdf.yearToDateDailyAbsences" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                [(ngModel)]="addReportCardPdf.yearToDateDailyAbsences" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                 {{ "yearToDateDailyAbsences" | translate}}
                             </mat-slide-toggle>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                [(ngModel)]="addReportCardPdf.dailyAbsencesThisMarkingPeriod" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                [(ngModel)]="addReportCardPdf.dailyAbsencesThisMarkingPeriod" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                 {{ "dailyAbsencesThisMarkingPeriod" | translate}}
                             </mat-slide-toggle>
                             <span class="inline-block">
                                 <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                    [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                    [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                     {{ "otherAttendanceCodeYearToDate" | translate}}
                                 </mat-slide-toggle>
-                                <div class="select-dropdown inline-block" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                <div class="select-dropdown inline-block" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                     <select>
                                         <option value="na" selected>EA(Excused Absence)</option>
                                     </select>
@@ -856,4 +856,909 @@
     </div>
 </div>
 </ng-container>
+
+<ng-container *ngIf="addReportCardPdf?.templateType === 'RMI'">
+    <div class="hidden" id="reportCardIdForRMI">
+        <div class="RMI-report-card">
+            <table cellpadding="0" cellspacing="0" class="main-table">
+                <tr>
+                    <td class="w-33 border-1 p-5">
+                        <table>
+                            <tr>
+                                <td class="student-details">
+                                    <div class="style-border">
+                                        <div>
+                                            <h4 class="text-uppercase underline text-center">Placement for the next
+                                                school
+                                                year</h4>
+                                            <div class="rounded-ruler"></div>
+                                            <p class="text-uppercase font-normal spacing-3 mb-40">Grade:<span></span>
+                                            </p>
+                                            <p class="text-uppercase font-normal spacing-3 mb-60">Principal
+                                                signature:<span></span></p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table class="text-center">
+                            <tr>
+                                <td class="grades-details">
+                                    <div class="heading">
+                                        Parent/Guardian Signature
+                                    </div>
+                                    <h4 class="text-uppercase underline text-center">First Quarter</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">Second Quarter</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">Third Quarter</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">Fourth Quarter</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33 border-1 p-5">
+                        <table>
+                            <tr>
+                                <td class="student-details student-info">
+                                    <div class="style-border">
+                                        <img src="https://media.istockphoto.com/vectors/education-symbol-design-template-pencil-and-book-icon-stylized-vector-id1171617683?k=20&m=1171617683&s=612x612&w=0&h=E2wEAH0mQ2j-MT_i0sHj_6OUWoJKlD-3Pt7_Y8WhzD0="
+                                            alt="School Logo" class="logo">
+                                        <div class="heading text-uppercase text-center">Student Report Card</div>
+                                        <h1 class="text-center">School Year<br />2021-2022</h1>
+                                        <h4 class="text-uppercase text-center">EBEYE PUBLIC MIDDLE SCHOOL</h4>
+                                        <p class="text-center">
+                                            <span>P.O. BOX 5100</span><br /><span>EBEYE, MH
+                                                96970</span><br /><span>329-8033</span>
+                                        </p>
+                                        <div class="rounded-ruler"></div>
+                                        <p class="font-normal spacing-3">Student:<span></span></p>
+                                        <p class="font-normal spacing-3">Grade:<span></span></p>
+                                        <p class="font-normal spacing-3">Homeroom Teacher:<span></span></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="page-break-after: always;"></div>
+
+            <table cellpadding="0" cellspacing="0" class="main-table">
+                <tr>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black mb-5">Student:</h1>
+                                    <h1 class="font-black">School Year: 2021-2022</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td>1st</td>
+                                                <td>2nd</td>
+                                                <td>S1</td>
+                                                <td>3rd</td>
+                                                <td>4th</td>
+                                                <td>S2</td>
+                                                <td>F</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Math</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Science</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Social Studies</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Health</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="px-10">
+                                    <table class="report-card gpa-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black text-center text-uppercase" colspan="2">
+                                                    Gpa
+                                                    Convertion</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>
+                                                        <span class="inline-block">A+</span>
+                                                        <span class="inline-block ">98-100</span>
+                                                        <span class="inline-block ">4.00</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">A</span>
+                                                        <span class="inline-block ">94-97</span>
+                                                        <span class="inline-block ">4.00</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">A-</span>
+                                                        <span class="inline-block ">90-93</span>
+                                                        <span class="inline-block ">4.00</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">B+</span>
+                                                        <span class="inline-block ">88-89</span>
+                                                        <span class="inline-block ">3.80</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">B</span>
+                                                        <span class="inline-block ">84-87</span>
+                                                        <span class="inline-block ">3.40</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">B-</span>
+                                                        <span class="inline-block ">80-83</span>
+                                                        <span class="inline-block ">3.00</span>
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p>
+                                                        <span class="inline-block ">C+</span>
+                                                        <span class="inline-block">78-79</span>
+                                                        <span class="inline-block ">2.80</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">C</span>
+                                                        <span class="inline-block ">74-77</span>
+                                                        <span class="inline-block ">2.40</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">C-</span>
+                                                        <span class="inline-block ">70-73</span>
+                                                        <span class="inline-block ">2.00</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">D+</span>
+                                                        <span class="inline-block ">68-69</span>
+                                                        <span class="inline-block ">1.80</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">D</span>
+                                                        <span class="inline-block ">64-67</span>
+                                                        <span class="inline-block ">1.40</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">D-</span>
+                                                        <span class="inline-block ">60-63</span>
+                                                        <span class="inline-block ">1.00</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="inline-block ">F</span>
+                                                        <span class="inline-block ">0-59</span>
+                                                        <span class="inline-block ">0.00</span>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black text-center mt-20">EBEYE PUBLIC MIDDLE SCHOOL</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td>1st</td>
+                                                <td>2nd</td>
+                                                <td>S1</td>
+                                                <td>3rd</td>
+                                                <td>4th</td>
+                                                <td>S2</td>
+                                                <td>F</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Marshallese</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">English</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Overall GPA</td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="font-italic mt-100 f-s-28 text-center">Jeramon im Kate Yuk!</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black text-center">SUBJECT TEACHER COMMENTS</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card teacher-comment-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Math</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Science</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Social Studies</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">English</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Markshallese</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Health</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="report-card attendance-table">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center text-uppercase font-black">Attendance</td>
+                                    <td>Q1</td>
+                                    <td>Q2</td>
+                                    <td>S1</td>
+                                    <td>Q3</td>
+                                    <td>Q4</td>
+                                    <td>S2</td>
+                                    <td>T</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-italic">Present</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-italic">Absent</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</ng-container>
+
 

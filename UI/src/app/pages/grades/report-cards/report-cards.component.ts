@@ -652,6 +652,10 @@ export class ReportCardsComponent implements OnInit {
           setTimeout(() => {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
+        } else if (this.addReportCardPdf?.templateType === 'RMI') {
+          setTimeout(() => {
+            this.generatePdfForRMI();
+          }, 100 * this.generatedReportCardData.studentsReportCardViewModelList.length);
         } else {
           this.generatedReportCardData.studentsReportCardViewModelList.map((res: any)=>{
             Object.assign(res, this.modifyMarkingPeriodDataSet(res))
@@ -933,5 +937,350 @@ export class ReportCardsComponent implements OnInit {
     }
   }
 
+  generatePdfForRMI() {
+    let printContents, popupWin;
+    printContents = document.getElementById('reportCardIdForRMI').innerHTML;
+    document.getElementById('reportCardIdForRMI').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin === null || typeof (popupWin) === 'undefined') {
+      document.getElementById('reportCardIdForRMI').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            margin: 0;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+            font-family: Arial;
+            background-color: #fff;
+            margin: 0;
+        }
+
+        .RMI-report-card {
+            width: 1024px;
+            margin: 20px auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table td {
+            vertical-align: top;
+        }
+
+        table h1 {
+            font-size:16px;
+            text-transform: uppercase;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .inline-block {
+            display: inline-block;
+        }
+
+        .border-table {
+            border: 1px solid #000;
+            border-top: none;
+        }
+
+        .clearfix::after {
+            display: block;
+            clear: both;
+            content: "";
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .bg-slate {
+            background-color: #E5E5E5;
+        }
+
+        .w-33 {
+            width: 33.33%;
+        }
+
+        .font-black {
+            font-weight: 800;
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        .font-italic {
+            font-style: italic;
+        }
+
+        .px-10 {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .mt-100 {
+            margin-top: 100px;
+        }
+
+        .f-s-28 {
+            font-size: 28px;
+        }
+
+        .mb-5 {
+            margin-bottom: 5px;
+        }
+
+        .report-card {
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+
+        .report-card thead td:first-child {
+            /* width: 100px; */
+            border: none;
+        }
+
+        .report-card td {
+            padding: 8px 3px;
+            font-size: 14px;
+            vertical-align: bottom;
+        }
+
+        .report-card thead td {
+            padding: 10px 5px;
+            border: 1px solid #000;
+            border-top-width: 3px;
+            border-bottom-width: 3px;
+        }
+
+        .report-card thead td:last-child {
+            border-right-width: 3px;
+        }
+
+        .report-card thead td:nth-child(2) {
+            border-left-width: 3px;
+        }
+
+        .report-card tbody {
+            border: 2px solid #000;
+        }
+
+        .report-card tbody td {
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;
+            height: 30px;
+            min-width: 20px;
+        }
+
+        .report-card tbody td:last-child {
+            border-right: none;
+        }
+
+        .teacher-comment-table {
+            table-layout: unset;
+        }
+
+        .teacher-comment-table tbody, .attendance-table tbody, .gpa-table tbody {
+            border-width: 6px;
+        }
+
+        .teacher-comment-table tbody td.bg-slate {
+            padding-left: 5px;
+        }
+
+        .teacher-comment-table tbody td {
+            padding-left: 5px;
+            border-right: none;
+        }
+
+        .attendance-table {
+            margin-top: 5px;
+            table-layout: unset;
+        }
+
+        .attendance-table tbody td {
+            height: 40px;
+            vertical-align: middle;
+            font-size: 16px;
+        }
+
+        .gpa-table tbody td {
+            vertical-align: middle;
+        }
+
+        .gpa-table tbody p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .gpa-table tbody p span {
+            flex: 1;
+        }
+        .gpa-table tbody p span:first-child {
+            padding-left: 20px;
+        }
+
+        .gpa-table tbody p span:nth-child(2){
+            margin-left: -15px;
+        }
+
+        .main-table {
+            margin-bottom: 60px;
+        }
+
+        .main-table td.w-33:nth-child(2) {
+            padding: 0 15px;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        .border-1 {
+            border: 1px solid #000;
+        }
+        .p-5 {
+            padding: 5px;
+        }
+
+        .rounded-ruler {
+            width: 100%;
+            height: 4px;
+            background-color: #000;
+            border-radius: 2px;
+            margin: 20px 0;
+        }
+
+        .font-normal {
+            font-weight: 400;
+        }
+        
+        .spacing-3 {
+            letter-spacing: 3px;
+        }
+
+        .mb-40 {
+            margin-bottom: 40px;
+        }
+
+        .mb-60 {
+            margin-bottom: 60px;
+        }
+        .style-border {
+            border: 1px solid #000;
+            margin: -15px 0;
+            padding: 20px 10px;
+        }
+
+        .bg-black {
+            background-color: #000;
+        }
+
+        .text-white {
+            color: #fff;
+        }
+
+        .heading {
+            font-size: 20px;
+            background-color: #000;
+            color: #fff;
+            margin-bottom: 10px;
+            padding: 10px 8px;
+            letter-spacing: 1px;
+        }
+
+        .grades-details h4 {
+            margin-bottom: 180px;
+        }
+
+        .grades-details h4:last-child {
+            margin-bottom: 80px;
+        }
+
+        .grades-details .rounded-ruler {
+            margin-bottom: 10px;
+        }
+
+        .student-details .style-border {
+            height: 820px;
+        }
+
+        .student-details .style-border > div {
+            margin-top: 575px;
+        }
+
+        .student-info img {
+            width: 170px;
+            height: 170px;
+            display: block;
+            text-align: center;
+            border-radius: 50%;
+            margin: 40px auto 20px;
+            overflow: hidden;
+            border: 5px solid #000;
+        }
+
+        .student-details.student-info .style-border > div {
+            margin-top: 0px;
+        }
+
+        .student-details.student-info .heading {
+            margin: 0 -18px;
+        }
+
+        .student-details.student-info h1 {
+            font-size: 28px;
+            font-weight: normal;
+            margin: 40px 0 20px;
+        }
+
+        .student-details.student-info h4, .student-details.student-info p {
+            margin-bottom: 5px;
+        }
+
+        .student-details.student-info .style-border .rounded-ruler {
+            margin-top: 140px;
+            margin-bottom: 30px;
+        }
+
+        .student-details.student-info p.spacing-3 {
+            margin-bottom: 25px;
+        }
+    </style>
+        </head>
+    <body onload="window.print()">${printContents}</body>
+      </html>`
+      );
+      popupWin.document.close();
+      document.getElementById('reportCardIdForRMI').className = 'hidden';
+      return;
+    }
+  }
   
 }
