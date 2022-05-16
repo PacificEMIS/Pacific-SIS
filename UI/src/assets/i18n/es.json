@@ -1917,5 +1917,11 @@
     "emailDisplayName": "Nombre para mostrar del correo electrónico",
     "fromEmailAddress": "De l'adresse e-mail",
     "apiKeyId": "ID de clave de API",
-    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "Está asignando un maestro del salón principal a un maestro que no es del salón principal. Si continúa, el nuevo maestro no podrá ingresar la calificación de esfuerzos para los estudiantes."
+    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "Está asignando un maestro del salón principal a un maestro que no es del salón principal. Si continúa, el nuevo maestro no podrá ingresar la calificación de esfuerzos para los estudiantes.",
+    "medicalNoteDate": "Fecha de nota médica",
+    "immunizationType": "Tipo de inmunización",
+    "immunizationDate": "Fecha de vacunación",
+    "immunizationComment": "Comentario de inmunización",
+    "nurseVisitDate": "Fecha de visita del enfermero",
+    "nurseComment": "comentario de enfermera"
 }

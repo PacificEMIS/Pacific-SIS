@@ -155,6 +155,26 @@
                         <li *ngFor="let field of fieldsDetailsArray?.demographicInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
+                    <p class="font-medium mb-4">{{'alertInformation' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.alertInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'medicalNotes' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.medicalNotes"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'immunizationPhysicalRecord' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.immunizationPhysicalRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'nurseVisitRecord' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.nurseVisitRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
                     <p class="font-medium mb-4">{{'addressContact' | translate }}</p>
                     <div class="md:flex">
                         <div class="w-1/3">
