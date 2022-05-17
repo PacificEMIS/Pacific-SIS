@@ -1608,6 +1608,7 @@ namespace opensis.data.Repository
                                 int? YrMarkingPeriodId = null;
                                 int? PrgrsprdMarkingPeriodId = null;
                                 bool? Exam = null;
+                                bool? IsCustomDateRange = null;
 
                                 if (markingPeriod != null)
                                 {
@@ -1710,6 +1711,18 @@ namespace opensis.data.Repository
                                         MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
+                                    else if (markingPeriodid.First().ToLower() == "custom")
+                                    {
+                                        IsCustomDateRange = true;
+                                        MarkingPeriodTitle = "Custom Date Range";
+                                        MarkingPeriodShortTitle = "Custom";
+                                        SortId = "5";
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
+                                        MarkingPeriodList.Add(MarkingPeriod);
+                                    }
+
+
                                     markingPeriodDetailsForDefaultTemplates.MarkingPeriodTitle = MarkingPeriodTitle;
 
                                     var studentAttendanceData = studentAttendanceMasterData!.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList();
@@ -1722,13 +1735,20 @@ namespace opensis.data.Repository
                                     }
                                     var reportCardData = new List<StudentFinalGrade>();
 
-                                    if (Exam == true)
+                                    if (IsCustomDateRange == true)
                                     {
-                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && x.IsCustomMarkingPeriod == true).ToList();
                                     }
                                     else
                                     {
-                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                        if (Exam == true)
+                                        {
+                                            reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                        }
+                                        else
+                                        {
+                                            reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                        }
                                     }
 
                                     decimal? gPaValue = 0.0m;
@@ -1741,7 +1761,7 @@ namespace opensis.data.Repository
                                         {
                                             CourseSectionGradeDetailsForDefaultTemplate courseSectionGradeDetailsForDefaultTemplate = new CourseSectionGradeDetailsForDefaultTemplate();
 
-                                            var CourseSectionData = this.context?.CourseSection.Include(x => x.GradeScale).Include(x => x.StaffCoursesectionSchedule).ThenInclude(x => x.StaffMaster).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.CourseId == reportCard.CourseId);
+                                            var CourseSectionData = this.context?.CourseSection.Include(x => x.GradeScale).Include(x => x.StaffCoursesectionSchedule.Where(s => s.IsDropped != true)).ThenInclude(x => x.StaffMaster).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.CourseId == reportCard.CourseId);
 
                                             //var gradeData = CourseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
 
@@ -2380,6 +2400,7 @@ namespace opensis.data.Repository
                                 int? YrMarkingPeriodId = null;
                                 int? PrgrsprdMarkingPeriodId = null;
                                 bool? Exam = null;
+                                bool? IsCustomDateRange = null;
 
                                 if (markingPeriod != null)
                                 {
@@ -2408,7 +2429,7 @@ namespace opensis.data.Repository
                                         MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
-                                    if (markingPeriodid.First() == "2")
+                                    else if (markingPeriodid.First() == "2")
                                     {
                                         QtrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
 
@@ -2430,7 +2451,7 @@ namespace opensis.data.Repository
                                         MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
-                                    if (markingPeriodid.First() == "1")
+                                    else if (markingPeriodid.First() == "1")
                                     {
                                         SmstrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
 
@@ -2452,7 +2473,7 @@ namespace opensis.data.Repository
                                         MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
-                                    if (markingPeriodid.First() == "0")
+                                    else if (markingPeriodid.First() == "0")
                                     {
                                         YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
 
@@ -2474,16 +2495,33 @@ namespace opensis.data.Repository
                                         MarkingPeriodList.Add(MarkingPeriod);
                                     }
 
+                                    else if (markingPeriodid.First() == "Custom")
+                                    {
+                                        IsCustomDateRange = true;
+                                        MarkingPeriodTitle = "Custom";
+                                        SortId = "5";
+                                        MarkingPeriod.SortId = SortId;
+                                        MarkingPeriod.MarkingPeriodName = MarkingPeriodTitle;
+                                        MarkingPeriodList.Add(MarkingPeriod);
+                                    }
+
                                     markingPeriodDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
                                     var reportCardData = new List<StudentFinalGrade>();
 
-                                    if (Exam == true)
+                                    if (IsCustomDateRange == true)
                                     {
-                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && x.IsCustomMarkingPeriod == true).ToList();
                                     }
                                     else
                                     {
-                                        reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                        if (Exam == true)
+                                        {
+                                            reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade == true).ToList();
+                                        }
+                                        else
+                                        {
+                                            reportCardData = this.context?.StudentFinalGrade.Include(x => x.StudentFinalGradeComments).Include(x => x.StudentFinalGradeStandard).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AcademicYear == reportCardViewModel.AcademicYear && ((x.YrMarkingPeriodId != null && x.YrMarkingPeriodId == YrMarkingPeriodId) || (x.SmstrMarkingPeriodId != null && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId) || (x.QtrMarkingPeriodId != null && x.QtrMarkingPeriodId == QtrMarkingPeriodId) || (x.PrgrsprdMarkingPeriodId != null && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)) && x.IsExamGrade != true).ToList();
+                                        }
                                     }
 
                                     decimal? SumofGPaValue = 0.0m;
@@ -2550,64 +2588,67 @@ namespace opensis.data.Repository
                                         }
                                     }
 
-                                    //this block for attendance details
-                                    int PresentCount = 0;
-                                    int AbsentCount = 0;
-                                    int HalfDayCount = 0;
-
-                                    var attendanceData = this.context?.AttendanceCodeCategories.Include(x => x.AttendanceCode).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
-
-                                    if (attendanceData != null)
+                                    //this block for attendance details for marking period not for custom date range
+                                    if (IsCustomDateRange != true)
                                     {
-                                        var studentDailyAttendanceData = StudentDailyAttendanceData?.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList();
+                                        int PresentCount = 0;
+                                        int AbsentCount = 0;
+                                        int HalfDayCount = 0;
 
-                                        if (studentDailyAttendanceData?.Any() == true)
+                                        var attendanceData = this.context?.AttendanceCodeCategories.Include(x => x.AttendanceCode).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
+
+                                        if (attendanceData != null)
                                         {
-                                            foreach (var dailyAttendance in studentDailyAttendanceData)
+                                            var studentDailyAttendanceData = StudentDailyAttendanceData?.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= startDate && x.AttendanceDate <= endDate).ToList();
+
+                                            if (studentDailyAttendanceData?.Any() == true)
                                             {
-                                                var StudentAttendanceData = AttendanceData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate == dailyAttendance.AttendanceDate);
+                                                foreach (var dailyAttendance in studentDailyAttendanceData)
+                                                {
+                                                    var StudentAttendanceData = AttendanceData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate == dailyAttendance.AttendanceDate);
 
-                                                var block = BlockData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.BlockId == StudentAttendanceData!.BlockId
-                                                );
+                                                    var block = BlockData?.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.BlockId == StudentAttendanceData!.BlockId
+                                                    );
 
-                                                if (dailyAttendance.AttendanceMinutes >= block?.FullDayMinutes)
-                                                {
-                                                    PresentCount++;
+                                                    if (dailyAttendance.AttendanceMinutes >= block?.FullDayMinutes)
+                                                    {
+                                                        PresentCount++;
+                                                    }
+                                                    if (dailyAttendance.AttendanceMinutes >= block?.HalfDayMinutes && dailyAttendance.AttendanceMinutes < block?.FullDayMinutes)
+                                                    {
+                                                        HalfDayCount++;
+                                                    }
+                                                    if (dailyAttendance.AttendanceMinutes < block?.HalfDayMinutes)
+                                                    {
+                                                        AbsentCount++;
+                                                    }
                                                 }
-                                                if (dailyAttendance.AttendanceMinutes >= block?.HalfDayMinutes && dailyAttendance.AttendanceMinutes < block?.FullDayMinutes)
+                                            }
+                                            //this loop for multiple attendance code
+                                            foreach (var Attendance in attendanceData.AttendanceCode.ToList())
+                                            {
+                                                AttendanceDetailsForOtherTemplate attendanceDetailsForOtherTemplate = new AttendanceDetailsForOtherTemplate();
+
+                                                if (Attendance.StateCode!.ToLower() == "present")
                                                 {
-                                                    HalfDayCount++;
+                                                    attendanceDetailsForOtherTemplate.AttendanceCount = PresentCount;
                                                 }
-                                                if (dailyAttendance.AttendanceMinutes < block?.HalfDayMinutes)
+                                                if (Attendance.StateCode!.ToLower() == "absent")
                                                 {
-                                                    AbsentCount++;
+                                                    attendanceDetailsForOtherTemplate.AttendanceCount = AbsentCount;
                                                 }
+                                                if (Attendance.StateCode!.ToLower() == "half day")
+                                                {
+                                                    attendanceDetailsForOtherTemplate.AttendanceCount = HalfDayCount;
+                                                }
+
+                                                attendanceDetailsForOtherTemplate.AttendanceTitle = Attendance.Title;
+                                                attendanceDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
+                                                markingPeriodDetailsForOtherTemplate.attendanceDetailsForOtherTemplates.Add(attendanceDetailsForOtherTemplate);
                                             }
                                         }
-                                        //this loop for multiple attendance code
-                                        foreach (var Attendance in attendanceData.AttendanceCode.ToList())
-                                        {
-                                            AttendanceDetailsForOtherTemplate attendanceDetailsForOtherTemplate = new AttendanceDetailsForOtherTemplate();
-
-                                            if (Attendance.StateCode!.ToLower() == "present")
-                                            {
-                                                attendanceDetailsForOtherTemplate.AttendanceCount = PresentCount;
-                                            }
-                                            if (Attendance.StateCode!.ToLower() == "absent")
-                                            {
-                                                attendanceDetailsForOtherTemplate.AttendanceCount = AbsentCount;
-                                            }
-                                            if (Attendance.StateCode!.ToLower() == "half day")
-                                            {
-                                                attendanceDetailsForOtherTemplate.AttendanceCount = HalfDayCount;
-                                            }
-
-                                            attendanceDetailsForOtherTemplate.AttendanceTitle = Attendance.Title;
-                                            attendanceDetailsForOtherTemplate.MarkingPeriodShortName = MarkingPeriodTitle;
-                                            markingPeriodDetailsForOtherTemplate.attendanceDetailsForOtherTemplates.Add(attendanceDetailsForOtherTemplate);
-                                        }
-                                        studentsReportCardViewModel.markingPeriodDetailsForOtherTemplates.Add(markingPeriodDetailsForOtherTemplate);
                                     }
+                                    studentsReportCardViewModel.markingPeriodDetailsForOtherTemplates.Add(markingPeriodDetailsForOtherTemplate);
 
                                     //this block for effot grade
                                     if (reportCardViewModel.EffortGrade == true)
