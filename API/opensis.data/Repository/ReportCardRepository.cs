@@ -1950,40 +1950,6 @@ namespace opensis.data.Repository
                             studentsReportCard.teacherCommentList = teacherComments;
                             studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
 
-                            //this block for effort grade
-                            if (reportCardViewModel.EffortGrade == true)
-                            {
-                                var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
-                                foreach (var category in Categorydata)
-                                {
-                                    EffortGradeDetailsViewModel effortGradeDetailsViewModel = new();
-                                    var itemData = category.GroupBy(g => g.EffortItemTitle).ToList();
-
-                                    effortGradeDetailsViewModel.CategoryName = category.Key;
-                                    foreach (var item in itemData)
-                                    {
-                                        EffortGradeItemDetails effortGradeItemDetails = new();
-
-                                        effortGradeItemDetails.EffortItemTitle = item.Key;
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
-
-                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
-
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
-
-                                        effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
-
-                                    }
-                                    studentsReportCard.effortGradeList.Add(effortGradeDetailsViewModel);
-                                }
-
-                                var effortGradeScale = this.context?.EffortGradeScale.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).Select(s => new EffortGradeScale { GradeScaleValue = s.GradeScaleValue, GradeScaleComment = s.GradeScaleComment }).ToList();
-                                if (effortGradeScale?.Any() == true)
-                                {
-                                    studentsReportCard.effortGradeScales = effortGradeScale;
-                                }
-                            }
 
                             //this block for standerd grade
                             if (reportCardViewModel.StandardGrade == true)
@@ -2020,6 +1986,47 @@ namespace opensis.data.Repository
                                 if (standerdGradeScale != null)
                                 {
                                     studentsReportCard.standerdGradeScale = standerdGradeScale.Grade.Select(s => new Grade { Title = s.Title, Comment = s.Comment, GradeId = s.GradeId }).ToList();
+                                }
+                            }
+
+                            //this block for effort grade
+                            if (reportCardViewModel.EffortGrade == true)
+                            {
+                                var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
+                                foreach (var category in Categorydata)
+                                {
+                                    EffortGradeDetailsViewModel effortGradeDetailsViewModel = new();
+                                    var itemData = category.GroupBy(g => g.EffortItemTitle).ToList();
+
+                                    effortGradeDetailsViewModel.CategoryName = category.Key;
+                                    foreach (var item in itemData)
+                                    {
+                                        EffortGradeItemDetails effortGradeItemDetails = new();
+
+                                        effortGradeItemDetails.EffortItemTitle = item.Key;
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
+
+                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName.ToLower() == "custom"); //effort does't generate for custom
+                                        if (index > -1)
+                                        {
+                                            MarkingPeriodList.RemoveAt(index);
+                                        }
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+
+                                        effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
+
+                                    }
+                                    studentsReportCard.effortGradeList.Add(effortGradeDetailsViewModel);
+                                }
+
+                                var effortGradeScale = this.context?.EffortGradeScale.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).Select(s => new EffortGradeScale { GradeScaleValue = s.GradeScaleValue, GradeScaleComment = s.GradeScaleComment }).ToList();
+                                if (effortGradeScale?.Any() == true)
+                                {
+                                    studentsReportCard.effortGradeScales = effortGradeScale;
                                 }
                             }
                             reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
@@ -2678,41 +2685,6 @@ namespace opensis.data.Repository
                                 }
                             }
 
-                            //this block for effort grade
-                            if (reportCardViewModel.EffortGrade == true)
-                            {
-                                var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
-                                foreach (var category in Categorydata)
-                                {
-                                    EffortGradeDetailsViewModel effortGradeDetailsViewModel = new();
-                                    var itemData = category.GroupBy(g => g.EffortItemTitle).ToList();
-
-                                    effortGradeDetailsViewModel.CategoryName = category.Key;
-                                    foreach (var item in itemData)
-                                    {
-                                        EffortGradeItemDetails effortGradeItemDetails = new();
-
-                                        effortGradeItemDetails.EffortItemTitle = item.Key;
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
-
-                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
-
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
-                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
-
-                                        effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
-
-                                    }
-                                    studentsReportCardViewModel.effortGradeList.Add(effortGradeDetailsViewModel);
-                                }
-
-                                var effortGradeScale = this.context?.EffortGradeScale.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).Select(s => new EffortGradeScale { GradeScaleValue = s.GradeScaleValue, GradeScaleComment = s.GradeScaleComment }).ToList();
-                                if (effortGradeScale?.Any() == true)
-                                {
-                                    studentsReportCardViewModel.effortGradeScales = effortGradeScale;
-                                }
-                            }
-
                             //this block for standerd grade
                             if (reportCardViewModel.StandardGrade == true)
                             {
@@ -2748,6 +2720,47 @@ namespace opensis.data.Repository
                                 if (standerdGradeScale != null)
                                 {
                                     studentsReportCardViewModel.standerdGradeScale = standerdGradeScale.Grade.Select(s => new Grade { Title = s.Title, Comment = s.Comment, GradeId = s.GradeId }).ToList();
+                                }
+                            }
+
+                            //this block for effort grade
+                            if (reportCardViewModel.EffortGrade == true)
+                            {
+                                var Categorydata = effortGradeDetailList.GroupBy(g => g.CategoryName).ToList();
+                                foreach (var category in Categorydata)
+                                {
+                                    EffortGradeDetailsViewModel effortGradeDetailsViewModel = new();
+                                    var itemData = category.GroupBy(g => g.EffortItemTitle).ToList();
+
+                                    effortGradeDetailsViewModel.CategoryName = category.Key;
+                                    foreach (var item in itemData)
+                                    {
+                                        EffortGradeItemDetails effortGradeItemDetails = new();
+
+                                        effortGradeItemDetails.EffortItemTitle = item.Key;
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
+
+                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName.ToLower() == "custom");
+                                        if (index > -1)
+                                        {
+                                            MarkingPeriodList.RemoveAt(index);
+                                        }
+
+                                        var exceptMarkingPeriod = MarkingPeriodList.Select(x => new { x.MarkingPeriodName, x.SortId }).Except(effortGradeItemDetails.markingPeriodDetailsforEffortGrades.Select(x => new { x.MarkingPeriodName, x.SortId })).Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, SortId = s.SortId }).ToList();
+
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades.AddRange(exceptMarkingPeriod);
+                                        effortGradeItemDetails.markingPeriodDetailsforEffortGrades = effortGradeItemDetails.markingPeriodDetailsforEffortGrades.OrderBy(s => s.SortId).ThenBy(s => s.MarkingPeriodName).ToList();
+
+                                        effortGradeDetailsViewModel.effortGradeItemDetails.Add(effortGradeItemDetails);
+
+                                    }
+                                    studentsReportCardViewModel.effortGradeList.Add(effortGradeDetailsViewModel);
+                                }
+
+                                var effortGradeScale = this.context?.EffortGradeScale.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).Select(s => new EffortGradeScale { GradeScaleValue = s.GradeScaleValue, GradeScaleComment = s.GradeScaleComment }).ToList();
+                                if (effortGradeScale?.Any() == true)
+                                {
+                                    studentsReportCardViewModel.effortGradeScales = effortGradeScale;
                                 }
                             }
 
