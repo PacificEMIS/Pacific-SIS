@@ -29,50 +29,67 @@ import { MatAccordion } from '@angular/material/expansion';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CountryModel } from '../../../../models/country.model';
-import { LanguageModel } from '../../../../models/language.model';
-import { StudentListModel, StudentMasterSearchModel } from '../../../../models/student.model';
-import { SearchFilterAddViewModel } from '../../../../models/search-filter.model';
-import { StudentService } from '../../../../services/student.service';
-import { CommonLOV } from '../../../shared-module/lov/common-lov';
-import { SectionService } from '../../../../services/section.service';
-import { CommonService } from '../../../../services/common.service';
-import { DefaultValuesService } from '../../../../common/default-values.service';
-import { LoginService } from '../../../../services/login.service';
-import { SharedFunction } from '../../../shared/shared-function';
-import { GetAllSectionModel } from '../../../../models/section.model';
+import { RollingOptionsEnum } from 'src/app/enums/rolling-retention-option.enum';
+import { CountryModel } from 'src/app/models/country.model';
+import { LanguageModel } from 'src/app/models/language.model';
+import { StudentListModel, StudentMasterSearchModel } from 'src/app/models/student.model';
+import { ScheduleStudentListViewModel } from 'src/app/models/student-schedule.model';
+import { SearchFilterAddViewModel } from 'src/app/models/search-filter.model';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
+import { EnrollmentCodeListView } from 'src/app/models/enrollment-code.model';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { StudentService } from 'src/app/services/student.service';
+import { CommonLOV } from 'src/app/pages/shared-module/lov/common-lov';
+import { SectionService } from 'src/app/services/section.service';
+import { CommonService } from 'src/app/services/common.service';
+import { DefaultValuesService } from '../default-values.service';
+import { LoginService } from 'src/app/services/login.service';
+import { EnrollmentCodesService } from 'src/app/services/enrollment-codes.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { StudentScheduleService } from 'src/app/services/student-schedule.service';
+import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { MatSelect } from '@angular/material/select';
-import { ScheduleStudentListViewModel } from '../../../../models/student-schedule.model';
-import { StudentScheduleService } from '../../../../services/student-schedule.service';
-import { StudentAttendanceListViewModel } from '../../../../models/attendance-administrative.model';
-import { StudentAttendanceService } from '../../../../services/student-attendance.service';
-import { ProfilesTypes } from '../../../../enums/profiles.enum';
-import { FilterParamsForAdvancedSearch } from 'src/app/models/common.model';
+import { GetAllSectionModel } from 'src/app/models/section.model';
+import { AdvancedSearchExpansionModel, FilterParamsForAdvancedSearch, FilterParamsForAdvancedSearchModel } from 'src/app/models/common.model';
+import icListAlt from '@iconify/icons-ic/twotone-list-alt';
+import { CourseSectionComponent } from 'src/app/pages/grades/administration/course-section/course-section.component';
+import { MatDialog } from '@angular/material/dialog';
+import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from 'src/app/models/course-manager.model';
+import { CourseManagerService } from 'src/app/services/course-manager.service';
 
 @Component({
-  selector: 'vex-search-student',
+  selector: 'vex-common-search-student',
   templateUrl: './search-student.component.html',
   styleUrls: ['./search-student.component.scss']
 })
 export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild(MatAccordion) accordion: MatAccordion;
+  icListAlt = icListAlt;
   @Output() showHideAdvanceSearch = new EventEmitter<any>();
   @Output() searchList = new EventEmitter<any>();
   @Output() searchValue = new EventEmitter<any>();
   @Output() toggelValues = new EventEmitter<any>();
+  @Output() filteredValue = new EventEmitter<any>();
+  @Output() sendCourseSectionData = new EventEmitter<any>();
   @Input() filterJsonParams;
-  @Input() parentData;
   @Input() incomingSearchValue;
+  @Input() rootSource;
+  @Input() courseSectionIds;
+  @Input() parentData;
   @Input() incomingToggleValues;
+  @Input() advancedSearchExpansion: AdvancedSearchExpansionModel;
+  @Input() incomingCourseSectionValue;
+  rollingOptions = Object.keys(RollingOptionsEnum);
   countryModel: CountryModel = new CountryModel();
   languages: LanguageModel = new LanguageModel();
   @ViewChild('f') currentForm: NgForm;
   destroySubject$: Subject<void> = new Subject();
   studentMasterSearchModel: StudentMasterSearchModel = new StudentMasterSearchModel();
-  getAllStudent: StudentAttendanceListViewModel = new StudentAttendanceListViewModel();
-  scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
+  filterParamsForAdvancedSearchModel: FilterParamsForAdvancedSearchModel = new FilterParamsForAdvancedSearchModel();
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  getAllProgramModel: GetAllProgramModel = new GetAllProgramModel();
+  getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   dobEndDate: string;
   dobStartDate: string;
   showSaveFilter = true;
@@ -88,10 +105,16 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   maritalStatusList = [];
   salutationList = [];
   sectionList = [];
+  enrollmentList = [];
+  subjectList = [];
+  programList = [];
+  courseList = [];
+  courseSectionName
   languageList;
   searchAllSchool: boolean;
   inactiveStudents = false;
-  profiles= ProfilesTypes;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  enrollmentCodelistView: EnrollmentCodeListView = new EnrollmentCodeListView();
   countryCtrl: FormControl = new FormControl();
   countryFilterCtrl: FormControl = new FormControl();
   public filteredCountry: ReplaySubject<any> = new ReplaySubject<any>(1);
@@ -104,6 +127,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
   public userType: string;
+  profiles = ProfilesTypes;
 
   constructor(
     private studentService: StudentService,
@@ -111,11 +135,14 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     private snackbar: MatSnackBar,
     private sectionService: SectionService,
     private commonService: CommonService,
-    private studentAttendanceService: StudentAttendanceService,
     private defaultValuesService: DefaultValuesService,
     private loginService: LoginService,
+    public enrollmentCodeService: EnrollmentCodesService,
+    private gradeLevelService: GradeLevelService,
     private studentScheduleService: StudentScheduleService,
     private commonFunction: SharedFunction,
+    private dialog: MatDialog,
+    private courseManagerService: CourseManagerService
   ) { }
   protected setInitialValue() {
     this.filteredCountry
@@ -136,11 +163,14 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnInit(): void {
-    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     if (this.incomingSearchValue) {
       this.inactiveStudents = this.incomingToggleValues.inactiveStudents;
       this.searchAllSchool = this.incomingToggleValues.searchAllSchool;
       this.studentMasterSearchModel = this.incomingSearchValue;
+    }
+    if (this.incomingCourseSectionValue) {
+      this.studentMasterSearchModel.courseSection = this.incomingCourseSectionValue;
+      this.courseSectionName = this.defaultValuesService.getCourseSectionName();
     }
     if (this.filterJsonParams !== null && this.filterJsonParams !== undefined) {
       this.updateFilter = true;
@@ -154,6 +184,24 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     this.initializeDropdownsInAddMode();
     this.userType = this.defaultValuesService.getUserMembershipType();
   }
+
+  openCourseSection() {
+    this.dialog.open(CourseSectionComponent, {
+      width: '800px',
+      data: {
+        subjectList: this.subjectList,
+        programList: this.programList,
+        courseList: this.courseList
+      }
+    }).afterClosed().subscribe(data => {
+      if (data) {
+        this.studentMasterSearchModel.courseSection = data.courseSectionId;
+        this.courseSectionName = data.courseSectionName;
+        this.defaultValuesService.setCourseSectionName(data.courseSectionName)
+      }
+    });
+  }
+
   ngAfterViewInit() {
     this.countryValueChange();
     this.nationalityValueChange();
@@ -234,6 +282,11 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     this.getAllCountry();
     this.GetAllLanguage();
     this.getAllSection();
+    this.getAllSubjectList();
+    this.getAllProgramList();
+    this.getAllCourse();
+    this.getAllGradeLevelList()
+    this.getAllStudentEnrollmentCode();
   }
 
   callLOVs() {
@@ -264,7 +317,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       else {
         if (data._failure) {
-          this.commonService.checkTokenValidOrNot(data._message);
+
           this.countryListArr = [];
           if (!data.tableCountry) {
             this.snackbar.open(data._message, '', {
@@ -290,7 +343,7 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       if (typeof (res) == 'undefined') {
         this.languageList = [];
       } else if (res._failure) {
-        this.commonService.checkTokenValidOrNot(res._message);
+
         this.languageList = [];
         if (!res.tableLanguage) {
           this.snackbar.open(res._message, '', {
@@ -321,11 +374,37 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  getAllStudentEnrollmentCode() {
+    this.enrollmentCodelistView.isListView = true;
+    this.enrollmentCodeService.getAllStudentEnrollmentCode(this.enrollmentCodelistView).subscribe(
+      (res: EnrollmentCodeListView) => {
+        if (res) {
+          if (res._failure) {
+
+            this.enrollmentList = [];
+          }
+          else {
+            this.enrollmentList = res.studentEnrollmentCodeList;
+          }
+        }
+      }
+    );
+  }
+
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+
+      }
+      this.getAllGradeLevelsModel.tableGradelevelList = data.tableGradelevelList;
+    });
+  }
+
   getAllSection() {
     let section: GetAllSectionModel = new GetAllSectionModel();
     this.sectionService.GetAllSection(section).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
       if (data._failure) {
-        this.commonService.checkTokenValidOrNot(data._message);
+
         if (!data.tableSectionsList) {
           this.snackbar.open(data._message, '', {
             duration: 10000
@@ -339,12 +418,78 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  getAllSubjectList() {
+    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {
+      if (data) {
+        if (data._failure) {
+
+          this.subjectList = [];
+          if (!data.subjectList) {
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.subjectList = data.subjectList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 1000
+        });
+      }
+    });
+  }
+
+  getAllProgramList() {
+    this.courseManagerService.GetAllProgramsList(this.getAllProgramModel).subscribe(data => {
+      if (data) {
+        if (data._failure) {
+
+          this.programList = [];
+          if (!data.programList) {
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.programList = data.programList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 1000
+        });
+      }
+    });
+  }
+
+  getAllCourse() {
+    this.courseManagerService.GetAllCourseList(this.getAllCourseListModel).subscribe(data => {
+      if (data) {
+        if (data._failure) {
+
+          this.courseList = [];
+          if (!data.courseViewModelList) {
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            });
+          }
+        } else {
+          this.courseList = data.courseViewModelList;
+        }
+      } else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    })
+  }
+
   submit() {
     this.checkSearchRecord = 1;
     this.search();
   }
   search() {
-    this.scheduleStudentListViewModel.filterParams = [];
+    this.filterParamsForAdvancedSearchModel.filterParams = []
     if (Array.isArray(this.studentMasterSearchModel.nationality)) {
       this.studentMasterSearchModel.nationality = null;
     }
@@ -357,39 +502,42 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
         if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== '' && this.studentMasterSearchModel[key] !== undefined) {
-          this.scheduleStudentListViewModel.filterParams.push(new FilterParamsForAdvancedSearch());
-          const lastIndex = this.scheduleStudentListViewModel.filterParams.length - 1;
-          if (key === 'dob') {
-            this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
-            this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
-          }
-          else {
-            this.scheduleStudentListViewModel.filterParams[lastIndex].columnName = key;
-            this.scheduleStudentListViewModel.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
+          this.filterParamsForAdvancedSearchModel.filterParams.push(new FilterParamsForAdvancedSearch());
+          const lastIndex = this.filterParamsForAdvancedSearchModel.filterParams.length - 1;
+          if (key === 'dob' || key === 'estimatedGradDate' || key === 'enrollmentDate' || key === 'noteDate' || key === 'immunizationDate' || key === 'nurseVisitDate') {
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].columnName = key;
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].filterOption = 11;
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].filterValue = this.commonFunction.formatDateSaveWithoutTime(this.studentMasterSearchModel[key]);
+          } else if (this.studentMasterSearchModel[key] === false) {
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].columnName = '';
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].filterValue = '';
+          } else {
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].columnName = key;
+            this.filterParamsForAdvancedSearchModel.filterParams[lastIndex].filterValue = this.studentMasterSearchModel[key];
           }
         }
     }
-
-
 
     if (this.updateFilter) {
       this.showSaveFilter = false;
       this.searchFilterAddViewModel.searchFilter.filterId = this.filterJsonParams.filterId;
       this.searchFilterAddViewModel.searchFilter.module = 'Student';
-      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.scheduleStudentListViewModel.filterParams);
+      this.searchFilterAddViewModel.searchFilter.jsonList = JSON.stringify(this.filterParamsForAdvancedSearchModel.filterParams);
       this.searchFilterAddViewModel.searchFilter.filterName = this.filterJsonParams.filterName;
       this.commonService.updateSearchFilter(this.searchFilterAddViewModel).subscribe((res) => {
         if (typeof (res) === 'undefined') {
           this.snackbar.open('Search filter updated failed' + this.defaultValuesService.getHttpError(), '', {
             duration: 10000
           });
+          this.checkSearchRecord = 0;
         }
         else {
           if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
+
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
+            this.checkSearchRecord = 0;
           }
           else {
             this.snackbar.open(res._message, '', {
@@ -401,71 +549,22 @@ export class SearchStudentComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       );
     }
-    // this.userType=this.defaultValuesService.getUserMembershipType();
-
-
-    if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
-      this.scheduleStudentListViewModel.staffId = +this.defaultValuesService.getUserId();
-      this.scheduleStudentListViewModel.academicYear = this.defaultValuesService.getAcademicYear();
-      this.scheduleStudentListViewModel.searchAllSchool = this.searchAllSchool;
-      this.scheduleStudentListViewModel.includeInactive = this.inactiveStudents;
-      this.scheduleStudentListViewModel.sortingModel = null;
-      this.scheduleStudentListViewModel.courseSectionIds = [this.parentData?.courseSectionData];
-      this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.dobStartDate);
-      this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.dobEndDate);
-      this.commonService.setSearchResult(this.scheduleStudentListViewModel.filterParams);
-      // this.searchAllSchoolsCondition=false;
-      this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe(data => {
-        if (data._failure) {
-          this.commonService.checkTokenValidOrNot(data._message);
-          this.searchList.emit([]);
-          this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
-          this.searchValue.emit(this.currentForm.value);
-          this.snackbar.open('' + data._message, '', {
-            duration: 10000
-          });
-
-        } else {
-          this.searchList.emit(data);
-          this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
-          this.searchValue.emit(this.currentForm.value);
-          this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
-          this.checkSearchRecord = 0;
-        }
-      });
-    }
-    // else {
-    //   this.getAllStudent.searchAllSchool = this.searchAllSchool;
-    //   this.getAllStudent.includeInactive = this.inactiveStudents;
-    //   this.getAllStudent.filterParams = this.params;
-    //   this.getAllStudent.sortingModel = null;
-    //   this.commonService.setSearchResult(this.params);
-    //   this.getAllStudent.attendanceCode= this.parentData?.attendanceCode;
-    //   this.getAllStudent.attendanceDate= this.parentData?.attendanceDate;
-    //   this.studentAttendanceService.getAllStudentAttendanceListForAdministration(this.getAllStudent).subscribe(data => {
-    //    if(data._failure){
-    //     this.commonService.checkTokenValidOrNot(data._message);
-    //       this.searchList.emit([]);
-    //       this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
-    //       this.searchValue.emit(this.currentForm.value);
-    //       this.snackbar.open('' + data._message, '', {
-    //         duration: 10000
-    //       });
-
-    //     } else {
-    //       this.searchList.emit(data);
-    //       this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
-    //       this.searchValue.emit(this.currentForm.value);
-    //       this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
-    //       this.checkSearchRecord = 0;
-    //     }
-    //   });
-    // }
-    // if (this.defaultValuesService.getUserMembershipType() === 'Super Administrator'){
-    //   this.searchAllSchoolsCondition=true;
-    // }else{
-    //   this.searchAllSchoolsCondition=false;
-    // }
+    this.commonService.setSearchResult(this.filterParamsForAdvancedSearchModel.filterParams);
+    this.filteredValue.emit({
+      filterParams: this.filterParamsForAdvancedSearchModel.filterParams,
+      inactiveStudents: this.inactiveStudents,
+      searchAllSchool: this.searchAllSchool,
+      dobStartDate: this.dobStartDate,
+      dobEndDate: this.dobEndDate,
+      courseSectionId: this.parentData?.courseSectionId ? this.parentData?.courseSectionId : null,
+      attendanceCode: this.parentData?.attendanceCode ? this.parentData?.attendanceCode : null,
+      attendanceDate: this.parentData?.attendanceDate ? this.parentData?.attendanceDate : null
+    });
+    this.toggelValues.emit({ inactiveStudents: this.inactiveStudents, searchAllSchool: this.searchAllSchool });
+    this.searchValue.emit(this.currentForm.value);
+    this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
+    this.sendCourseSectionData.emit(this.studentMasterSearchModel.courseSection);
+    this.checkSearchRecord = 0;
   }
 
   resetData() {

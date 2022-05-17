@@ -126,7 +126,7 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="calendar"></param>
         /// <returns></returns>
-        public CalendarAddViewModel UpdateCalendar(CalendarAddViewModel calendar)
+        public CalendarAddViewModel UpdateCalendar_old(CalendarAddViewModel calendar)
         {
             try
             {
@@ -199,6 +199,156 @@ namespace opensis.data.Repository
                 return calendar;
             }
         }
+        public CalendarAddViewModel UpdateCalendar(CalendarAddViewModel calendar)
+        {
+            try
+            {
+                var calendarRepository = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalenderId == calendar.SchoolCalendar.CalenderId);
+
+                if (calendarRepository != null)
+                {
+                    List<DateTime?> MaxDate = new List<DateTime?>();
+
+                    var SchoolYearsData = this.context?.SchoolYears.Where(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.AcademicYear == calendarRepository.AcademicYear).ToList();
+
+                    if (SchoolYearsData?.Any() == true)
+                    {
+                        MaxDate.Add(SchoolYearsData.Max(x => x.EndDate));
+                    }
+
+                    var childCalendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalenderId != calendarRepository.CalenderId && x.AcademicYear == calendarRepository.AcademicYear).ToList();
+
+                    if (childCalendarData?.Any() == true)
+                    {
+                        MaxDate.Add(childCalendarData.Max(x => x.EndDate));
+                    }
+
+                    var enrollmentCalendar = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalenderId == calendar.SchoolCalendar.CalenderId && x.IsActive == true);
+
+                    if (enrollmentCalendar != null)
+                    {
+                        if (calendarRepository.SessionCalendar == true)
+                        {
+                            if (MaxDate.Any() == true)
+                            {
+                                if (calendar.SchoolCalendar!.EndDate >= MaxDate.Max())
+                                {
+                                    calendarRepository!.EndDate = calendar.SchoolCalendar!.EndDate;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //this blok for any child calendar
+                            var sessionCalendar = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.AcademicYear == calendarRepository.AcademicYear && x.SessionCalendar == true);
+
+                            if (sessionCalendar != null)
+                            {
+                                if ((sessionCalendar.StartDate <= calendar.SchoolCalendar!.StartDate && sessionCalendar.EndDate >= calendar.SchoolCalendar!.StartDate) && (sessionCalendar.StartDate <= calendar.SchoolCalendar!.EndDate && sessionCalendar.EndDate >= calendar.SchoolCalendar!.EndDate))
+                                {
+                                    calendarRepository!.StartDate = calendar.SchoolCalendar!.StartDate;
+                                    calendarRepository!.EndDate = calendar.SchoolCalendar!.EndDate;
+                                }
+                            }
+                        }
+                        calendarRepository!.Title = calendar.SchoolCalendar!.Title;
+                        calendarRepository!.VisibleToMembershipId = calendar.SchoolCalendar!.VisibleToMembershipId;
+                        calendar._message = "Calendar has association.Only Calendar name, visible to , start date, end date Updated Successfully";
+                        this.context?.SaveChanges();
+                        return calendar;
+                    }
+
+                    var courseSectionCalendar = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalendarId == calendar.SchoolCalendar.CalenderId && x.IsActive == true);
+
+                    if (courseSectionCalendar != null)
+                    {
+                        if (calendarRepository.SessionCalendar == true)
+                        {
+                            if (MaxDate.Any() == true)
+                            {
+                                if (calendar.SchoolCalendar!.EndDate >= MaxDate.Max())
+                                {
+                                    calendarRepository!.EndDate = calendar.SchoolCalendar!.EndDate;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //this blok for any child calendar
+                            var sessionCalendar = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.AcademicYear == calendarRepository.AcademicYear && x.SessionCalendar == true);
+
+                            if (sessionCalendar != null)
+                            {
+                                if ((sessionCalendar.StartDate <= calendar.SchoolCalendar!.StartDate && sessionCalendar.EndDate >= calendar.SchoolCalendar!.StartDate) && (sessionCalendar.StartDate <= calendar.SchoolCalendar!.EndDate && sessionCalendar.EndDate >= calendar.SchoolCalendar!.EndDate))
+                                {
+                                    calendarRepository!.StartDate = calendar.SchoolCalendar!.StartDate;
+                                    calendarRepository!.EndDate = calendar.SchoolCalendar!.EndDate;
+                                }
+                            }
+                        }
+                        calendarRepository!.Title = calendar.SchoolCalendar!.Title;
+                        calendarRepository!.VisibleToMembershipId = calendar.SchoolCalendar!.VisibleToMembershipId;
+                        calendar._message = "Calendar has association.Only Calendar name, visible to , start date, end date can be Updated Successfully";
+                        this.context?.SaveChanges();
+                        return calendar;
+                    }
+
+                    var checkDefaultCalendar = this.context?.SchoolCalendars.Where(x => x.AcademicYear == calendar.SchoolCalendar!.AcademicYear && x.TenantId == calendar.SchoolCalendar.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalenderId != calendar.SchoolCalendar.CalenderId).ToList().Find(x => x.DefaultCalender == true);
+
+                    if (checkDefaultCalendar == null)
+                    {
+                        calendar.SchoolCalendar!.DefaultCalender = true;
+                    }
+                    else
+                    {
+                        var enrollmentDefaultCalendar = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId && x.CalenderId == checkDefaultCalendar.CalenderId);
+
+                        if (enrollmentDefaultCalendar != null && calendar.SchoolCalendar!.DefaultCalender == true)
+                        {
+                            calendar.SchoolCalendar = null;
+                            calendar._failure = true;
+                            calendar._message = "Existing Default Calendar cannot be updated because it has already enrollment.";
+                            return calendar;
+                        }
+                        //calendarRepository.DefaultCalender = calendar.schoolCalendar.DefaultCalender;                        
+                    }
+
+                    if (calendar.SchoolCalendar!.DefaultCalender == true)
+                    {
+                        (from p in this.context?.SchoolCalendars
+                         where p.CalenderId != calendarRepository!.CalenderId && p.AcademicYear == calendar.SchoolCalendar.AcademicYear && p.TenantId == calendar.SchoolCalendar.TenantId && p.SchoolId == calendar.SchoolCalendar.SchoolId
+                         select p).ToList().ForEach(x => x.DefaultCalender = false);
+
+                    }
+
+                    calendar.SchoolCalendar.AcademicYear = calendarRepository!.AcademicYear;
+                    calendar.SchoolCalendar.UpdatedOn = DateTime.Now;
+                    calendar.SchoolCalendar.CreatedOn = calendarRepository!.CreatedOn;
+                    calendar.SchoolCalendar.CreatedBy = calendarRepository.CreatedBy;
+                    this.context!.Entry(calendarRepository).CurrentValues.SetValues(calendar.SchoolCalendar);
+                    this.context?.SaveChanges();
+
+                    //this.context?.SaveChanges();
+                    calendar._failure = false;
+                    calendar._message = "Calendar Updated Successfully";
+                    return calendar;
+                }
+                else
+                {
+                    calendar._failure = true;
+                    calendar._message = NORECORDFOUND;
+                    return calendar;
+                }
+            }
+            catch (Exception ex)
+            {
+                calendar.SchoolCalendar = null;
+                calendar._failure = true;
+                calendar._message = ex.Message;
+                return calendar;
+            }
+        }
+
         /// <summary>
         /// Get All Calendar
         /// </summary>
@@ -219,6 +369,27 @@ namespace opensis.data.Repository
                 {
                     calendarListModel._failure = false;
                     calendarListModel.CalendarList = calendarRepository;
+
+                    List<DateTime?> MaxDate = new List<DateTime?>();
+
+                    var SchoolYearsData = this.context?.SchoolYears.Where(x => x.TenantId == calendarList.TenantId && x.SchoolId == calendarList.SchoolId && x.AcademicYear == calendarList.AcademicYear).ToList();
+
+                    if (SchoolYearsData?.Any() == true)
+                    {
+                        MaxDate.Add(SchoolYearsData.Max(x => x.EndDate));
+                    }
+
+                    var childCalendarData = calendarRepository.Where(x => x.SessionCalendar != true).ToList();
+
+                    if (childCalendarData?.Any() == true)
+                    {
+                        MaxDate.Add(childCalendarData.Max(x => x.EndDate));
+                    }
+
+                    if (MaxDate.Any() == true)
+                    {
+                        calendarListModel.MaxEndDateForSessionCalendar = MaxDate.Max();
+                    }
                 }
                 else
                 {

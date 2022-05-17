@@ -110,7 +110,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     }else{
       dataSet.markingPeriodStartDate=null;
     }
-
+    dataSet.forStaff = true;
     this.courseSectionService.searchCourseSectionForSchedule(dataSet).subscribe((res) => {
     if (res.allCourseSectionViewList === null) {
         this.commonService.checkTokenValidOrNot(res._message);

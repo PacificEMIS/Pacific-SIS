@@ -178,6 +178,12 @@ export class CourseCatalogComponent implements OnInit {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -351,12 +357,13 @@ export class CourseCatalogComponent implements OnInit {
     );
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
-
     return;
+    }
   }
 
   getCourseCatelog() {
     this.courseSectionData = [];
+    this.newCourseDataSet = [];
     this.courseManager.getCourseCatelog(this.courseCatelogViewModel).subscribe(data => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);

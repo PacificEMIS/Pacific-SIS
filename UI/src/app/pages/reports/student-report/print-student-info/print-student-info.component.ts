@@ -44,6 +44,7 @@ import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 import { StudentReportService } from 'src/app/services/student-report.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-print-student-info',
@@ -71,6 +72,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   ];
   getAllStudent: StudentListByDateRangeModel = new StudentListByDateRangeModel();
   studentInfoReportModel: StudentInfoReportModel = new StudentInfoReportModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   totalCount: number;
   pageNumber: number;
   pageSize: number;
@@ -90,6 +92,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   defaultStudentPhoto = "/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABkAAD/4QMtaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA3LjAtYzAwMCA3OS5kYWJhY2JiLCAyMDIxLzA0LzE0LTAwOjM5OjQ0ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjIuNSAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QUE3MTBDNDQwNDk2MTFFQzg4Q0Y5N0JCOEU0Q0FGNTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QUE3MTBDNDUwNDk2MTFFQzg4Q0Y5N0JCOEU0Q0FGNTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpBQTcxMEM0MjA0OTYxMUVDODhDRjk3QkI4RTRDQUY1OSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpBQTcxMEM0MzA0OTYxMUVDODhDRjk3QkI4RTRDQUY1OSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pv/uAA5BZG9iZQBkwAAAAAH/2wCEAAEBAQEBAQEBAQEBAQEBAQEB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"
   homeAddressLogo: any;
   mailAddressLogo: any;
+  isFromAdvancedSearch: boolean = false;
 
 
   constructor(
@@ -103,6 +106,9 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     private domSanitizer: DomSanitizer,
     private paginatorObj: MatPaginatorIntl,
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
@@ -154,14 +160,16 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
@@ -185,6 +193,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
         })
         this.studentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListByDateRangeModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -303,6 +312,23 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     return this.columns.filter(column => column.visible).map(column => column.property);
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListByDateRangeModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.getAllStudentList();
+    }
+  }
+
   getSearchResult(res) {
     this.getAllStudent = new StudentListByDateRangeModel();
     if (res?.totalCount) {
@@ -398,6 +424,12 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     printContents = document.getElementById('printReportCardId').innerHTML;
     document.getElementById('printReportCardId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printReportCardId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -693,6 +725,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     popupWin.document.close();
     document.getElementById('printReportCardId').className = 'hidden';
     return;
+    }
   }
 
 }

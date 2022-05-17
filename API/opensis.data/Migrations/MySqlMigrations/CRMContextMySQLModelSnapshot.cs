@@ -9148,6 +9148,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_dropped");
 
+                    b.Property<bool?>("IsPrimaryStaff")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_primary_staff");
+
                     b.Property<string>("MeetingDays")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
@@ -11900,6 +11904,75 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasName("PK_student_medical_immunization_tenant_id");
 
                     b.ToTable("student_medical_immunization", (string)null);
+                });
+
+            modelBuilder.Entity("opensis.data.Models.StudentMedicalListView", b =>
+                {
+                    b.Property<string>("AlertDescription")
+                        .HasColumnType("longtext")
+                        .HasColumnName("alert_description");
+
+                    b.Property<string>("AlertType")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("alert_type");
+
+                    b.Property<string>("ImmunizationComment")
+                        .HasColumnType("longtext")
+                        .HasColumnName("immunization_comment");
+
+                    b.Property<DateTime?>("ImmunizationDate")
+                        .HasColumnType("date")
+                        .HasColumnName("immunization_date");
+
+                    b.Property<string>("ImmunizationType")
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("immunization_type");
+
+                    b.Property<string>("MedicalNote")
+                        .HasColumnType("longtext")
+                        .HasColumnName("medical_note");
+
+                    b.Property<DateTime?>("NoteDate")
+                        .HasColumnType("date")
+                        .HasColumnName("note_date");
+
+                    b.Property<string>("NurseComment")
+                        .HasColumnType("longtext")
+                        .HasColumnName("nurse_comment");
+
+                    b.Property<DateTime?>("NurseVisitDate")
+                        .HasColumnType("date")
+                        .HasColumnName("nurse_visit_date");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("Result")
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
+                        .HasColumnName("result");
+
+                    b.Property<int>("SchoolId")
+                        .HasColumnType("int")
+                        .HasColumnName("school_id");
+
+                    b.Property<Guid>("StudentGuid")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("student_guid");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int")
+                        .HasColumnName("student_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("tenant_id");
+
+                    b.ToView("student_medical_list_view");
                 });
 
             modelBuilder.Entity("opensis.data.Models.StudentMedicalNote", b =>

@@ -50,6 +50,9 @@ import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { ExcelService } from "../../../../services/excel.service";
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
+import { StudentInfoReportModel } from 'src/app/models/student-info-report.model';
+import { StudentReportService } from 'src/app/services/student-report.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 @Component({
   selector: 'vex-enrollment-report',
@@ -68,6 +71,9 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   markingPeriodListModel: MarkingPeriodListModel = new MarkingPeriodListModel();
   getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
   studentInfoReportModel: GetStudentEnrollmentReportModel = new GetStudentEnrollmentReportModel();
+  studentEnrollmentInfoReportModel: StudentInfoReportModel = new StudentInfoReportModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  isFromAdvancedSearch: boolean = false;
   studentModelList: MatTableDataSource<any>;
   searchCtrl = new FormControl();
   icPrint = icPrint;
@@ -88,9 +94,9 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   gradeLevels: any;
   dataForPdf: any
   toDay = new Date();
+  generatedReportCardData;
   globalMarkingPeriodEndDate;
   globalMarkingPeriodStartDate;
-  pageSource = 'Enrollment_Report'
   tempGradeLevel = '';
   isVisible: boolean = false;
   selectOptions: any = [
@@ -126,7 +132,11 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     private gradeLevelService: GradeLevelService,
     private excelService: ExcelService,
     private commonFunction: SharedFunction,
+    private studentReportService: StudentReportService
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     this.defaultValuesService.setReportCompoentTitle.next("Student Enrollment Report")
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -261,11 +271,12 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     this.getStudentEnrollmentList();
   }
 
-  /*this is for get all data from the Advanced Search component and then call the api in this page 
-  NOTE: we just get ta filterParams Array from Srarch component
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
     this.studentInfoReportModel.filterParams = []
+    this.isFromAdvancedSearch = true;
     this.studentInfoReportModel = new GetStudentEnrollmentReportModel();
     if (res) {
       this.studentInfoReportModel.markingPeriodStartDate = this.globalMarkingPeriodStartDate;
@@ -314,14 +325,18 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     this.studentInfoReportModel.schoolId = this.defaultValuesService.getSchoolID();
     this.reportService.getStudentEnrollmentReport(this.studentInfoReportModel).subscribe(res => {
       if (res._failure) {
+        this.commonService.checkTokenValidOrNot(res._message);
         if (res.studentListViews === null) {
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = res.totalCount;
@@ -329,6 +344,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
         this.pageSize = res._pageSize;
         this.studentModelList = new MatTableDataSource(res.studentListViews);
         this.dataForPdf = res
+        this.isFromAdvancedSearch = false;
       }
     })
   }
@@ -357,6 +373,51 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     } else {
       this.getStudentEnrollmentList();
     }
+  }
+
+  // For Generate particular student enrollment history
+  viewStudentDetails(studentGuid) {
+    this.getStudentInfoReport(studentGuid).then((res: any) => {
+      res.schoolMasterData.map((item) => {
+        item.studentMasterData.map((subItem) => {
+          if (subItem.studentEnrollment) {
+            subItem.studentEnrollment?.length > 0 ? subItem.studentEnrollment.reverse() : '';
+            subItem.studentEnrollment.map((data, index) => {
+              if (data.enrollmentCode === "Dropped Out" && subItem.studentEnrollment[index + 1]?.exitCode === "Dropped Out"
+                && data.enrollmentDate === subItem.studentEnrollment[index + 1]?.exitDate) {
+                subItem.studentEnrollment.splice((index + 1), 1);
+              }
+            });
+          }
+        })
+      })
+      this.generatedReportCardData = res;
+      setTimeout(() => {
+        this.generateReportForParticularStudent();
+      }, 100 * this.generatedReportCardData.schoolMasterData.length);
+    });
+  }
+
+  // For call getStudentInfoReport API
+  getStudentInfoReport(studentGuid) {
+    this.studentEnrollmentInfoReportModel.studentGuids = [studentGuid];
+    this.studentEnrollmentInfoReportModel.isAddressInfo = false;
+    this.studentEnrollmentInfoReportModel.isFamilyInfo = false;
+    this.studentEnrollmentInfoReportModel.isMedicalInfo = false;
+    this.studentEnrollmentInfoReportModel.isComments = false;
+
+    return new Promise((resolve, reject) => {
+      this.studentReportService.getStudentInfoReport(this.studentEnrollmentInfoReportModel).subscribe((res) => {
+        if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
+          this.snackbar.open(res._message, '', {
+            duration: 1000
+          });
+        } else {
+          resolve(res);
+        }
+      })
+    });
   }
 
   createPDF() {
@@ -417,6 +478,12 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
     <html>
@@ -628,6 +695,317 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     );
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
+    return;
+    }
+  }
+
+  generateReportForParticularStudent() {
+    let printContents, popupWin;
+    printContents = document.getElementById('printReportCardId').innerHTML;
+    document.getElementById('printReportCardId').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin === null || typeof (popupWin) === 'undefined') {
+      document.getElementById('printReportCardId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          p {
+            margin: 0;
+          }
+          body {
+            -webkit-print-color-adjust: exact;
+            font-family: Arial;
+            background-color: #fff;
+          }
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          .student-information-report {
+              width: 1024px;
+              margin: auto;
+          }
+          .float-left {
+            float: left;
+          }
+          .float-right {
+            float: right;
+          }
+          .text-center {
+            text-align: center;
+          }
+          .text-right {
+            text-align: right;
+          }
+          .ml-auto {
+            margin-left: auto;
+          }
+          .m-auto {
+            margin: auto;
+          }
+          .inline-block {
+              display: inline-block;
+          }
+          .border-table {
+              border: 1px solid #000;
+          }
+          .clearfix::after {
+              display: block;
+              clear: both;
+              content: "";
+            }
+          .report-header {
+              padding: 20px 0;
+              border-bottom: 2px solid #000;
+          }
+          .school-logo {
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              border: 2px solid #cacaca;
+              margin-right: 20px;
+              text-align: center;
+              overflow: hidden;
+          }
+          .school-logo img {
+              width: 100%;
+              overflow: hidden;
+          }
+          .report-header td {
+              padding: 20px;
+          }
+          .report-header td.generate-date {
+              padding: 0;
+          }
+          .report-header .information h4 {
+              font-size: 20px;
+              font-weight: 600;
+              padding: 10px 0;
+          }
+          .report-header .information p, .header-right p {
+              font-size: 16px;
+          }
+          .header-right div {
+              background-color: #000;
+              color: #fff;
+              font-size: 20px;
+              padding: 5px 20px;
+              font-weight: 600;
+              margin-bottom: 8px;
+          }
+          .student-logo {
+              padding: 20px;
+          }
+          .student-logo div {
+              width: 100%;
+              height: 100%;
+              border: 1px solid rgb(136, 136, 136);
+              border-radius: 3px;
+          }
+          .student-logo img {
+              width: 100%;
+          }
+          .student-details {
+              padding: 20px;
+              vertical-align: top;
+          }
+          .student-details h4 {
+              font-size: 22px;
+              font-weight: 600;
+              margin-bottom: 10px;
+          }
+          .student-details span {
+              color: #817e7e;
+              padding: 0 15px;
+              font-size: 20px;
+          }
+          .student-details p {
+              color: #121212;
+              font-size: 16px;
+          }
+          .student-details table {
+              border-collapse: separate;
+              border-spacing:0;
+              border-radius: 10px;
+          }
+          .student-details table td {
+              border-left: 1px solid #000;
+              border-bottom: 1px solid #000;
+              padding: 8px 10px;
+          }
+          .student-details table td b, .student-details table span {
+              color: #000;
+              font-size: 16px;
+          }
+          .student-details table td b {
+              font-weight: 600;
+          }
+          .student-details table td:first-child {
+              border-left: none;
+          }
+          .student-details table tr:last-child td {
+              border-bottom: none;
+          }
+          .card {
+              border-radius: 5px;
+              padding: 20px;
+              box-shadow: none;
+              display: flex;
+          }
+          .p-20 {
+              padding: 20px;
+          }
+          .p-t-0 {
+              padding-top: 0px;
+          }
+          .p-b-8 {
+              padding-bottom: 8px;
+          }
+          .width-160 {
+              width: 160px;
+          }
+          .m-r-20 {
+              margin-right: 20px;
+          }
+          .m-b-5 {
+              margin-bottom: 5px;
+          }
+          .m-b-8 {
+              margin-bottom: 8px;
+          }
+          .m-b-20 {
+              margin-bottom: 20px;
+          }
+          .m-b-15 {
+              margin-bottom: 15px;
+          }
+          .m-b-10 {
+              margin-bottom: 10px;
+          }
+          .m-t-20 {
+              margin-top: 20px;
+          }
+          .m-b-15 {
+              margin-bottom: 15px;
+          }
+          .font-bold {
+              font-weight: 600;
+          }
+          .font-medium {
+              font-weight: 500;
+          }
+          .f-s-20 {
+              font-size: 20px;
+          }
+          .f-s-18 {
+              font-size: 18px;
+          }
+          .f-s-16 {
+              font-size: 16px;
+          }
+          .bg-black {
+              background-color: #000;
+          }
+          .rounded-3 {
+              border-radius: 3px;
+          }
+          .text-white {
+              color: #fff;
+          }
+          .p-y-5 {
+              padding-top: 5px;
+              padding-bottom: 5px;
+          }
+          .p-x-10 {
+              padding-left: 10px;
+              padding-right: 10px;
+          }
+          .bg-slate {
+              background-color: #E5E5E5;
+          }
+          .information-table td {
+              font-size: 16px;
+          }
+          .information-table tr:first-child td:first-child {
+              border-top-left-radius: 10px;
+          }
+          .information-table tr:first-child td:last-child {
+              border-top-right-radius: 10px;
+          }
+          table td {
+              vertical-align: top;
+          }
+
+          .report-header .header-left {
+            width: 65%;
+          }
+          .report-header .header-right {
+            width: 35%;
+          }
+          .report-header .information {
+            width: calc(100% - 110px);
+          }
+          .information-table tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+          }
+          .information-table tr:last-child td:last-child {
+              border-bottom-right-radius: 10px;
+          }
+          .bg-gray {
+            background-color: #EAEAEA;
+          }
+          .radius-5 {
+            border-radius: 5px;
+          }
+          .information-table tr:first-child th:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+          }
+          .information-table tr:first-child th:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+          }
+          .address-information td:first-child, .address-information td:last-child {
+            width: 49%;
+          }
+          .address-information td:nth-child(2) {
+            width: 2%;
+          }
+          .family-information td:first-child, .family-information td:nth-child(3) {
+            width: 49%;
+          }
+          .family-information td, .address-information td{
+            border-radius: 5px;
+          }
+          .family-information td:nth-child(2) {
+            width: 2%;
+          }
+          .family-information tr:last-child td {
+            border-bottom: none;
+          }
+
+    </style>
+        </head>
+    <body onload="window.print()">${printContents}</body>
+      </html>`
+      );
+      popupWin.document.close();
+      document.getElementById('printReportCardId').className = 'hidden';
+      return;
+    }
   }
 
 

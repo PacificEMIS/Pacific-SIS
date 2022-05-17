@@ -39,10 +39,10 @@
                 <p>{{studentCount?studentCount:0}} {{'studentsFound' | translate}}</p>
             </div>
             <div>
-                <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print" (click)="printStudentsList()">
+                <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'print' | translate}}" (click)="printStudentsList()">
                     <mat-icon [icIcon]="icPrint"></mat-icon>
                 </a>
-                <a class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel"
+                <a class="cursor-pointer inline-block align-middle ml-4" matTooltip="{{'exportToExcel' | translate}}"
                     (click)="exportScheduleStudentsListToExcel()">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>

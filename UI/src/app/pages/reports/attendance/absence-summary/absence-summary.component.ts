@@ -21,6 +21,7 @@ import { SchoolPeriodService } from 'src/app/services/school-period.service';
 import { BlockListViewModel } from 'src/app/models/school-period.model';
 import { ReportService } from 'src/app/services/report.service';
 import { ExcelService } from 'src/app/services/excel.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 
 
 @Component({
@@ -46,6 +47,8 @@ export class AbsenceSummaryComponent implements OnInit {
   pageNumber: number;
   studentListForAbsenceSummary: StudentListForAbsenceSummary = new StudentListForAbsenceSummary();
   getAllAttendanceCodeModel: GetAllAttendanceCodeModel = new GetAllAttendanceCodeModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  isFromAdvancedSearch: boolean = false;
   isVisible: boolean = false;
   destroySubject$: Subject<void> = new Subject();
   loading: boolean;
@@ -69,7 +72,7 @@ export class AbsenceSummaryComponent implements OnInit {
       subTitle: 'this_school_month'
     },
   ];
-  tempGradeLevel = '';
+  tempPeriod = '';
   gradeLevelList = [];
   periodList = []
   markingPeriodListModel: MarkingPeriodListModel = new MarkingPeriodListModel();
@@ -87,6 +90,11 @@ export class AbsenceSummaryComponent implements OnInit {
     private loaderService: LoaderService,
     private markingPeriodService: MarkingPeriodService,
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.searchBirthdays = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.includeInactiveStudents = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.defaultValuesService.setReportCompoentTitle.next("Absence Summary");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -166,13 +174,17 @@ export class AbsenceSummaryComponent implements OnInit {
 getReportBy(event) {
   if (event.value) {
     const selectedOption = this.selectOptions.filter(x => x.subTitle === event.value);
-    this.getStudentAbsenceReportModel.markingPeriodStartDate = this.commonFunction.formatDateSaveWithoutTime(selectedOption[0].startDate);
-    this.getStudentAbsenceReportModel.markingPeriodEndDate = this.commonFunction.formatDateSaveWithoutTime(selectedOption[0].endDate);
+    this.getStudentAbsenceReportModel.markingPeriodStartDate = this.globalMarkingPeriodStartDate = this.commonFunction.formatDateSaveWithoutTime(selectedOption[0].startDate);
+    this.getStudentAbsenceReportModel.markingPeriodEndDate = this.globalMarkingPeriodEndDate = this.commonFunction.formatDateSaveWithoutTime(selectedOption[0].endDate);
   } else {
-    this.getStudentAbsenceReportModel.markingPeriodStartDate = null;
-    this.getStudentAbsenceReportModel.markingPeriodEndDate = null;
+    this.getStudentAbsenceReportModel.markingPeriodStartDate = this.globalMarkingPeriodStartDate = null;
+    this.getStudentAbsenceReportModel.markingPeriodEndDate = this.globalMarkingPeriodEndDate = null;
   }
 }
+
+  selectedPeriod(event) {
+    this.tempPeriod = event.value;
+  }
 
   callWithoutFilterValue() {
     Object.assign(this.getStudentAbsenceReportModel, { filterParams: null });
@@ -213,8 +225,8 @@ getReportBy(event) {
   }
 
   onSearch() {
-    this.parentData.markingPeriodStartDate = this.getStudentAbsenceReportModel.markingPeriodStartDate ? this.commonFunction.formatDateSaveWithoutTime(this.getStudentAbsenceReportModel.markingPeriodStartDate) : null;
-    this.parentData.markingPeriodEndDate = this.getStudentAbsenceReportModel.markingPeriodEndDate ? this.commonFunction.formatDateSaveWithoutTime(this.getStudentAbsenceReportModel.markingPeriodEndDate) : null;
+    this.parentData.markingPeriodStartDate = this.globalMarkingPeriodStartDate = this.getStudentAbsenceReportModel.markingPeriodStartDate ? this.commonFunction.formatDateSaveWithoutTime(this.getStudentAbsenceReportModel.markingPeriodStartDate) : null;
+    this.parentData.markingPeriodEndDate = this.globalMarkingPeriodEndDate = this.getStudentAbsenceReportModel.markingPeriodEndDate ? this.commonFunction.formatDateSaveWithoutTime(this.getStudentAbsenceReportModel.markingPeriodEndDate) : null;
     this.disabledAdvancedSearch = true;
     if(this.getStudentAbsenceReportModel.periodId ==='daily'){
       this.getStudentAbsenceReportModel.periodId= null;
@@ -265,6 +277,21 @@ getReportBy(event) {
   }
   getSearchInput(event) {
     this.searchValue = event;
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getStudentAbsenceReportModel = new GetStudentAbsenceReport();
+    if (res) {
+      this.getStudentAbsenceReportModel.markingPeriodStartDate = this.globalMarkingPeriodStartDate;
+      this.getStudentAbsenceReportModel.markingPeriodEndDate = this.globalMarkingPeriodEndDate;
+      this.getStudentAbsenceReportModel.filterParams = res.filterParams;
+      this.getStudentAbsenceReportModel.periodId = this.tempPeriod;
+      this.getStudentAbsenceReport();
+    }
   }
 
   getSearchResult(res) {
@@ -336,13 +363,16 @@ getReportBy(event) {
     this.reportService.getAllStudentAbsenceList(this.getStudentAbsenceReportModel).subscribe((data: any) => {
       if (data) {
         if (data._failure) {
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.commonService.checkTokenValidOrNot(data._message);
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentListForAbsenceSummary = data;
           this.studentLists = data.studendAttendanceList;
           this.totalCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
+          this.isFromAdvancedSearch = false;
         }
       }
       else {

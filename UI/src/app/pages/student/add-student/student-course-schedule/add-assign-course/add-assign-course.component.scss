@@ -1,0 +1,28 @@
+::ng-deep {
+    .course-section-table {
+        .mat-form-field-appearance-outline .mat-form-field-prefix,
+        .mat-form-field-appearance-outline .mat-form-field-suffix {
+            top: 3px !important;
+        }
+        .mat-form-field {
+            &.mat-form-field-appearance-outline {
+                .mat-form-field-wrapper {
+                    .mat-form-field-infix {
+                        border-top-width: 5px;
+                        padding: 0.5em 0;
+                    }
+                }
+            }
+
+            .mat-form-field-wrapper {
+                .mat-form-field-flex {
+                    margin-top: 0;
+
+                    .mat-form-field-outline {
+                        min-height: 40px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -54,7 +54,7 @@
                 </ul>
 
                 <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentDetailsForViewAndEdit" [module]="module"
-                [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+                [categoryId]="categoryId" [studentCreateMode]="studentCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
 
                 <ul class="mt-2">
                     <li>
@@ -421,14 +421,14 @@
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Add'">
                                                             <mat-icon [icIcon]="icExternal" class="align-middle text-white"
-                                                                matTooltip="Enrolled as External">
+                                                                matTooltip="{{'enrolledAsExternal' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop'">
                                                             <mat-icon [icIcon]="icDrop" class="align-middle text-white"
-                                                                matTooltip="Drop">
+                                                                matTooltip="{{'drop' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                     </ng-container>
@@ -437,35 +437,35 @@
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Add'">
                                                             <mat-icon [icIcon]="icAdd" class="text-white"
-                                                                matTooltip="New">
+                                                                matTooltip="{{'new' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-warn px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop'">
                                                             <mat-icon [icIcon]="icDrop" class="text-white"
-                                                                matTooltip="Drop">
+                                                                matTooltip="{{'drop' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-green px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Rolled Over'">
                                                             <mat-icon [icIcon]="icPromoted" class="text-white"
-                                                                matTooltip="Rolled Over">
+                                                                matTooltip="{{'rolledOver' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-deep-orange px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Drop (Transfer)'">
                                                             <mat-icon [icIcon]="icTrasnferOut" class="text-white"
-                                                                matTooltip="Drop (Transfer)">
+                                                                matTooltip="{{'dropTransfer' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                         <span
                                                             class="flex items-center bg-blue px-2 pt-3 pb-2 mr-2"
                                                             *ngIf="enrollment.enrollmentType=='Enroll (Transfer)'">
                                                             <mat-icon [icIcon]="icTrasnferIn" class="text-white"
-                                                                matTooltip="Enroll (Transfer)">
+                                                                matTooltip="{{'enrollTransfer' | translate}}">
                                                             </mat-icon>
                                                         </span>
                                                     </ng-template>
@@ -475,7 +475,7 @@
                                                     <h5 class="inline-block font-medium">{{enrollment.schoolName}}
                                                         <mat-icon *ngIf="index==0" [icIcon]="icHomeSchool"
                                                             class="text-deep-purple align-middle ml-2 text-sm mt-2"
-                                                            matTooltip="Home School"></mat-icon>
+                                                                matTooltip="{{'homeSchool' | translate}}"></mat-icon>
                                                     </h5>
                                                     <div
                                                         class="inline-block justify-self-stretch md:text-right font-normal">

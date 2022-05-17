@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { StudentEffortGradeListModel } from '../models/student-effort-grade.model';
+import { GetStudentListByHomeRoomStaffModel, StudentEffortGradeListModel } from '../models/student-effort-grade.model';
 
 @Injectable({
     providedIn: 'root'
@@ -23,11 +23,13 @@ export class EffotrGradeService {
         })
       } }
 
-    addUpdateStudentEffortGrade(obj: StudentEffortGradeListModel) {
+    addUpdateStudentEffortGrade(obj: GetStudentListByHomeRoomStaffModel) {
         obj = this.defaultValuesService.getAllMandatoryVariable(obj);
         obj.createdOrUpdatedBy = this.defaultValuesService.getUserGuidId();
+        obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+        obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
         let apiurl = this.apiUrl + obj._tenantName + "/StudentEffortGrade/addUpdateStudentEffortGrade";
-        return this.http.post<StudentEffortGradeListModel>(apiurl, obj,this.httpOptions)
+        return this.http.post<GetStudentListByHomeRoomStaffModel>(apiurl, obj,this.httpOptions)
     }
 
     getAllStudentEffortGradeList(obj: StudentEffortGradeListModel) {
@@ -35,5 +37,15 @@ export class EffotrGradeService {
         obj.academicYear = this.defaultValuesService.getAcademicYear();
         let apiurl = this.apiUrl + obj._tenantName + "/StudentEffortGrade/getAllStudentEffortGradeList";
         return this.http.post<StudentEffortGradeListModel>(apiurl, obj,this.httpOptions)
+    }
+
+    getStudentListByHomeRoomStaff(obj: GetStudentListByHomeRoomStaffModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        obj.markingPeriodStartDate = this.defaultValuesService.getMarkingPeriodStartDate();
+        obj.markingPeriodEndDate = this.defaultValuesService.getMarkingPeriodEndDate();
+        obj.profilePhoto = true;
+        let apiurl = this.apiUrl + obj._tenantName + "/StudentEffortGrade/GetStudentListByHomeRoomStaff";
+        return this.http.post<GetStudentListByHomeRoomStaffModel>(apiurl, obj, this.httpOptions)
     }
 }

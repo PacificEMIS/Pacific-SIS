@@ -631,7 +631,10 @@ namespace opensis.data.Repository
                         else
                         {
                             //runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
-                            runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
+                            if (totalPoint > 0)
+                            {
+                                runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
+                            }
                         }
 
                         string? runningGrade = null;
@@ -1185,7 +1188,10 @@ namespace opensis.data.Repository
                     else
                     {
                         //runningAvg = Math.Round((decimal)runingAvgSum / Convert.ToDecimal(typeCount), 2);
-                        runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
+                        if (totalPoint > 0)
+                        {
+                            runningAvg = Math.Round((decimal)((totalAllowedMarks / totalPoint) * 100), 2);
+                        }
                     }
 
                     string? runningGrade = null;

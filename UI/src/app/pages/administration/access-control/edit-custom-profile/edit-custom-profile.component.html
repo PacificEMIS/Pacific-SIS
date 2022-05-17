@@ -12,12 +12,12 @@
     <mat-dialog-content fxLayout="column">
         <mat-form-field class="mt-6" appearance="outline" color="primary">
             <mat-label>{{'title' | translate}}</mat-label>
-            <input type="text" formControlName="title" name="title" matInput required>
+            <input type="text" formControlName="title" class="title-scroll" name="title" matInput required>
             <mat-error *ngIf="form.get('title').hasError('required')">{{'titleIsRequired'|translate}}</mat-error>
         </mat-form-field>
         <mat-form-field class="w-full" appearance="outline" color="primary">
             <mat-label>{{'userType' | translate}}</mat-label>
-            <mat-select   formControlName="userType" [disabled]="data=== null?false:true" required>
+            <mat-select class="userType-scroll" formControlName="userType" [disabled]="data=== null?false:true" required>
                 <mat-option></mat-option>       
                 <mat-option *ngFor="let profile of profileList"  [value]="profile.profileType">{{profile.profile}}</mat-option>               
             </mat-select>

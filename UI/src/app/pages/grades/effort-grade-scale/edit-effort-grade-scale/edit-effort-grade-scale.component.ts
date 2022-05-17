@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, Optional } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -58,7 +58,8 @@ export class EditEffortGradeScaleComponent implements OnInit {
     private gradesService:GradesService,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
     ) {
       if(this.data.editMode){
         this.editMode = this.data.editMode;
@@ -89,7 +90,18 @@ export class EditEffortGradeScaleComponent implements OnInit {
     })
   }
 
+  scrollToInvalidControl() {
+    if (this.form.controls.gradeScaleValue.invalid) {
+      const invalidGradeScaleValueControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScaleValue-scroll');
+      invalidGradeScaleValueControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.gradeScaleComment.invalid) {
+      const invalidGradeScaleCommentControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScaleComment-scroll');
+      invalidGradeScaleCommentControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
+    this.scrollToInvalidControl();
     this.form.markAllAsTouched();
     if( this.form.invalid ){ return; }
      if(this.editMode){

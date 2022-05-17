@@ -26,14 +26,14 @@
                                     <div>
                                         <div class="flex items-center">
                                             <div *ngIf="item.isParent || (item.semesterId > 0 && item.isParent === false) || (item.semesterId > 0 &&  item.isParent === false) || (item.yearId > 0 && item.isParent === false)">
-                                                <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click) = "addChildren(item)" matTooltip="Add Child Marking Period" class="px-2 pt-3 pb-1">
+                                                <button *ngIf="permissions?.add && this.defaultValuesService.checkAcademicYear()" (click) = "addChildren(item)" matTooltip="{{'addChildMarkingPeriod' | translate}}" class="px-2 pt-3 pb-1">
                                                     <mat-icon [icIcon]="icAdd"></mat-icon>
                                     </button>
                                             </div>
-                                            <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "editItem(item)" matTooltip="Edit Item" class="px-2 pt-3 pb-1">
+                                            <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "editItem(item)" matTooltip="{{'editItem' | translate}}" class="px-2 pt-3 pb-1">
                                                 <mat-icon [icIcon]="icEdit"></mat-icon>
                                         </button>
-                                            <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "confirmDelete(item)" matTooltip="Delete Item" class="px-2 pt-3 pb-1">
+                                            <button *ngIf="permissions?.edit && this.defaultValuesService.checkAcademicYear()" (click) = "confirmDelete(item)" matTooltip="{{'deleteItem' | translate}}" class="px-2 pt-3 pb-1">
                                                 <mat-icon [icIcon]="icDelete"></mat-icon>
                                             </button>
                                         </div>

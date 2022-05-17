@@ -36,6 +36,8 @@ namespace opensis.backgroundjob.Models
         public virtual DbSet<CalendarEvents> CalendarEvents { get; set; } = null!;
         public virtual DbSet<BlockPeriod> BlockPeriod { get; set; } = null!;
         public virtual DbSet<BellSchedule> BellSchedule { get; set; } = null!;
+        public virtual DbSet<SchoolMaster> SchoolMaster { get; set; } = null!;
+        public virtual DbSet<SchoolCalendars> SchoolCalendars { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci");
@@ -631,6 +633,8 @@ namespace opensis.backgroundjob.Models
                     .HasColumnName("student_internal_id");
 
                 entity.Property(e => e.StudentPhoto).HasColumnName("student_photo");
+
+                entity.Property(e => e.StudentThumbnailPhoto).HasColumnName("student_thumbnail_photo");
 
                 entity.Property(e => e.StudentPortalId)
                     .HasMaxLength(50)
@@ -1612,6 +1616,213 @@ namespace opensis.backgroundjob.Models
                 entity.Property(e => e.UpdatedOn)
                     .HasPrecision(0)
                     .HasColumnName("updated_on");
+            });
+
+            modelBuilder.Entity<SchoolMaster>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId })
+                    .HasName("PK_school_master_tenant_id");
+
+                entity.ToTable("school_master");
+
+                entity.HasIndex(e => new { e.TenantId, e.SchoolId, e.PlanId }, "IX_school_master_tenant_id_school_id_plan_id");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.AlternateName)
+                    .HasMaxLength(100)
+                    .HasColumnName("alternate_name");
+
+                entity.Property(e => e.City)
+                    .HasMaxLength(50)
+                    .HasColumnName("city")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Country)
+                    .HasMaxLength(50)
+                    .HasColumnName("country")
+                    .IsFixedLength();
+
+                entity.Property(e => e.County)
+                    .HasMaxLength(50)
+                    .HasColumnName("county")
+                    .IsFixedLength();
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.CurrentPeriodEnds)
+                    .HasPrecision(0)
+                    .HasColumnName("current_period_ends");
+
+                entity.Property(e => e.District)
+                    .HasMaxLength(50)
+                    .HasColumnName("district")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Division)
+                    .HasMaxLength(50)
+                    .HasColumnName("division")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Features).HasColumnName("features");
+
+                entity.Property(e => e.Latitude).HasColumnName("latitude");
+
+                entity.Property(e => e.Longitude).HasColumnName("longitude");
+
+                entity.Property(e => e.MaxApiChecks).HasColumnName("max_api_checks");
+
+                entity.Property(e => e.PlanId).HasColumnName("plan_id");
+
+                entity.Property(e => e.SchoolAltId)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_alt_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolClassification)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_classification")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolDistrictId)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_district_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolGuid)
+                    .HasMaxLength(36)
+                    .HasColumnName("school_guid")
+                    .HasDefaultValueSql("(N'00000000-0000-0000-0000-000000000000')")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolInternalId)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_internal_id");
+
+                entity.Property(e => e.SchoolLevel)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_level")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolName)
+                    .HasMaxLength(100)
+                    .HasColumnName("school_name");
+
+                entity.Property(e => e.SchoolStateId)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_state_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.State)
+                    .HasMaxLength(50)
+                    .HasColumnName("state")
+                    .IsFixedLength();
+
+                entity.Property(e => e.StreetAddress1)
+                    .HasMaxLength(150)
+                    .HasColumnName("street_address_1");
+
+                entity.Property(e => e.StreetAddress2)
+                    .HasMaxLength(150)
+                    .HasColumnName("street_address_2");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                entity.Property(e => e.Zip)
+                    .HasMaxLength(20)
+                    .HasColumnName("zip")
+                    .IsFixedLength();
+
+                //entity.HasOne(d => d.Plans)
+                //    .WithMany(p => p.SchoolMaster)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.PlanId })
+                //    .HasConstraintName("school_master$FK_school_master_plans");
+            });
+
+            modelBuilder.Entity<SchoolCalendars>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.CalenderId })
+                    .HasName("PK_school_calendars_tenant_id");
+
+                entity.ToTable("school_calendars");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.CalenderId).HasColumnName("calender_id");
+
+                entity.Property(e => e.AcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("academic_year");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("created_by");
+
+                entity.Property(e => e.CreatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("created_on");
+
+                entity.Property(e => e.Days)
+                    .HasMaxLength(7)
+                    .HasColumnName("days");
+
+                entity.Property(e => e.DefaultCalender).HasColumnName("default_calender");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("date")
+                    .HasColumnName("end_date");
+
+                entity.Property(e => e.RolloverId).HasColumnName("rollover_id");
+
+                entity.Property(e => e.SessionCalendar).HasColumnName("session_calendar");
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnType("date")
+                    .HasColumnName("start_date");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(50)
+                    .HasColumnName("title");
+
+                entity.Property(e => e.UpdatedBy)
+                    .HasMaxLength(150)
+                    .HasColumnName("updated_by");
+
+                entity.Property(e => e.UpdatedOn)
+                    .HasPrecision(0)
+                    .HasColumnName("updated_on");
+
+                entity.Property(e => e.VisibleToMembershipId)
+                    .HasMaxLength(50)
+                    .HasColumnName("visible_to_membership_id");
+
+                //entity.HasOne(d => d.SchoolMaster)
+                //    .WithMany(p => p.SchoolCalendars)
+                //    .HasForeignKey(d => new { d.TenantId, d.SchoolId })
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("school_calendars$FK_school_calendars_school_master");
             });
         }
     }

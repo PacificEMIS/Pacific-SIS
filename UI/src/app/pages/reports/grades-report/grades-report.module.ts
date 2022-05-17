@@ -37,6 +37,7 @@ import { ProgressReportComponent } from './progress-report/progress-report.compo
 import { HonorRollComponent } from './honor-roll/honor-roll.component';
 import { SearchStudentComponent } from './search-student/search-student.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatExpansionModule,
     MatRadioModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    SearchStudentModule
   ]
 })
 export class GradesReportModule { }

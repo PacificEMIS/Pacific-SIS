@@ -132,6 +132,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
   permissions: Permissions;
+  customValid=false;
   constructor(
     private schoolService: SchoolService,
     private el: ElementRef,
@@ -282,7 +283,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   editGeneralInfo() {
     this.schoolCreateMode = this.schoolCreate.EDIT;
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    // this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
     this.getAllCountry();
     this.initializeDropdownsForSchool();
     this.imageCropperService.enableUpload({ module: this.moduleIdentifier.SCHOOL, upload: true, mode: this.schoolCreate.EDIT });
@@ -296,7 +297,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
       // this.schoolDetailsForViewAndEdit = this.schoolAddViewModel;
       this.schoolService.sendDetails(this.schoolAddViewModel);
     }
-    this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
+    // this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
   }
 
   checkLowGradeLevel(event) {
@@ -518,18 +519,20 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   submit() {
+    this.customValid=false;
     this.internalId.markAsTouched();
     this.countryCtrl.markAsTouched();
     this.currentForm.form.markAllAsTouched();
+    this.defaultValuesService.customFieldsCheckParentComp.next(true);
     if (this.currentForm.form.valid) {
       if (this.countryCtrl.valid) {
         if (this.schoolCreateMode == this.schoolCreate.EDIT) {
           if (this.schoolAddViewModel.schoolMaster.fieldsCategory) {
             this.modifyCustomFields();
           }
-          this.updateSchool();
+          if(this.customValid) this.updateSchool();
         } else {
-          this.addSchool();
+          if(this.customValid) this.addSchool();
         }
       }
     }

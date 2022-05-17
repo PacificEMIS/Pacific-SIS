@@ -132,6 +132,8 @@ export class CalendarComponent implements OnInit {
   displayedColumns: string[]
   eventList = [];
   allData = [];
+  maxEndDateForSessionCalendar: Date;
+  isSessionCalender: boolean;
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -185,6 +187,11 @@ export class CalendarComponent implements OnInit {
   }
 
   changeCalendar(event) {
+    if (event.sessionCalendar === true){
+      this.isSessionCalender = true;
+    } else {
+      this.isSessionCalender = false;
+    }
     this.calendarStartDate = event.startDate;
     this.calendarEndDate = event.endDate;
     this.getDays(event.days);
@@ -287,6 +294,14 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  checkEvent(events) {
+    if(events.filter(y => y?.meta?.calendar?.isHoliday).length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   getEventColor(event){
     let events = [];
     events = event;
@@ -295,17 +310,23 @@ export class CalendarComponent implements OnInit {
 
   //Show all calendar
   getAllCalendar() {
-    this.calendarService.getAllCalendar(this.getCalendarList).subscribe((data) => {
+    this.calendarService.getAllCalendar(this.getCalendarList).subscribe((data:any) => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.calendars = data.calendarList;
+      this.maxEndDateForSessionCalendar = data.maxEndDateForSessionCalendar;
       this.showCalendarView = false;
       if (this.calendars.length !== 0) {
         this.showCalendarView = true;
         const defaultCalender = this.calendars.find(element => element.defaultCalender === true);
         if (defaultCalender != null) {
           this.selectedCalendar = defaultCalender;
+          if (this.selectedCalendar.sessionCalendar === true){
+            this.isSessionCalender = true;
+          } else {
+            this.isSessionCalender = false;
+          }
           this.calendarStartDate = this.selectedCalendar.startDate;
           this.calendarEndDate = this.selectedCalendar.endDate;
           this.calendarService.setCalendarId(this.selectedCalendar.calenderId);
@@ -463,7 +484,7 @@ export class CalendarComponent implements OnInit {
   //Open modal for add new calendar
   openAddNewCalendar() {
     this.dialog.open(AddCalendarComponent, {
-      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList?.getAllMemberList?.length, calendarListCount: this.calendars?.length },
+      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList?.getAllMemberList?.length, calendarListCount: this.calendars?.length, sessionCalendar:false},
       width: '600px'
     }).afterClosed().subscribe(data => {
       if (data === 'submited') {
@@ -517,7 +538,7 @@ export class CalendarComponent implements OnInit {
   // Edit calendar which is selected in dropdown
   openEditCalendar(event) {
     this.dialog.open(AddCalendarComponent, {
-      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendar: event },
+      data: { allMembers: this.getAllMembersList, membercount: this.getAllMembersList.getAllMemberList.length, calendar: event, sessionCalendar: event.sessionCalendar, maxEndDateForSessionCalendar: this.maxEndDateForSessionCalendar},
       width: '600px'
     }).afterClosed().subscribe(data => {
       if (data === 'submited') {

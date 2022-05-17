@@ -174,6 +174,12 @@ export class ProgressReportDetailsComponent implements OnInit {
     printContents = document.getElementById('printReportCardIdForTotal').innerHTML;
     document.getElementById('printReportCardIdForTotal').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+        document.getElementById('printReportCardIdForTotal').className = 'hidden';
+        this.snackbar.open("User needs to allow the popup from the browser", '', {
+          duration: 10000
+        });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -476,6 +482,7 @@ export class ProgressReportDetailsComponent implements OnInit {
     popupWin.document.close();
     document.getElementById('printReportCardIdForTotal').className = 'hidden';
     return;
+    }
   }
 
   generatePdfForAssignmentDetails() {
@@ -483,6 +490,12 @@ export class ProgressReportDetailsComponent implements OnInit {
     printContents = document.getElementById('printReportCardIdForAssignmentDetails').innerHTML;
     document.getElementById('printReportCardIdForAssignmentDetails').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+        document.getElementById('printReportCardIdForAssignmentDetails').className = 'hidden';
+        this.snackbar.open("User needs to allow the popup from the browser", '', {
+          duration: 10000
+        });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -785,6 +798,7 @@ export class ProgressReportDetailsComponent implements OnInit {
     popupWin.document.close();
     document.getElementById('printReportCardIdForAssignmentDetails').className = 'hidden';
     return;
+    }
   }
 
 }

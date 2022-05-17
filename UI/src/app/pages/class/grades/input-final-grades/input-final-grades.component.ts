@@ -237,11 +237,13 @@ export class InputFinalGradesComponent implements OnInit {
 
             let standardArray = [];
             item.studentFinalGradeStandard.map((subItem) => {
+              if(subItem.standardGradeScaleId && subItem.gradeObtained) {
               const standardData = {
                 standardGradeScaleId: subItem.standardGradeScaleId,
                 gradeObtained: subItem.gradeObtained,
               }
               standardArray.push(standardData);
+              }
             });
             item.studentFinalGradeStandard = standardArray;
           });

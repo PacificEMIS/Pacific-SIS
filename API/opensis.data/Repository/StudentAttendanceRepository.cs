@@ -285,7 +285,7 @@ namespace opensis.data.Repository
                                             var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                             if (AttendanceCodeData != null)
                                             {
-                                                if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                                if (AttendanceCodeData.StateCode!.ToLower() != "absent".ToLower())
                                                 {
                                                     totalAttendanceMin = totalAttendanceMin + classMin;
                                                 }
@@ -742,8 +742,8 @@ namespace opensis.data.Repository
                                         var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                         if (AttendanceCodeData != null)
                                         {
-                                            //if (AttendanceCodeData.Title.ToLower() != "absent")
-                                            if (String.Compare(AttendanceCodeData.Title, "absent", true) == 0)
+                                            //if (String.Compare(AttendanceCodeData.Title, "absent", true) == 0)
+                                            if (AttendanceCodeData.StateCode!.ToLower() != "absent")
                                             {
                                                 totalAttendanceMin = totalAttendanceMin + classMin;
                                             }
@@ -1121,7 +1121,7 @@ namespace opensis.data.Repository
 
             try
             {
-                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StaffMaster).Include(d => d.StudentAttendance).Include(b => b.CourseSection).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StudentAttendance).Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1168,7 +1168,8 @@ namespace opensis.data.Repository
                         HomeAddressState = v.StaffMaster.HomeAddressState,
                         HomeAddressZip = v.StaffMaster.HomeAddressZip,
                         BusNo = v.StaffMaster.BusNo,
-                        PersonalEmail = v.StaffMaster.PersonalEmail
+                        PersonalEmail = v.StaffMaster.PersonalEmail,
+                        StaffSchoolInfo = v.StaffMaster.StaffSchoolInfo.ToList(),
                     }
                 });
 
@@ -1275,7 +1276,8 @@ namespace opensis.data.Repository
                                     Profile = p.Profile,
                                     JobTitle = p.JobTitle,
                                     SchoolEmail = p.SchoolEmail,
-                                    MobilePhone = p.MobilePhone
+                                    MobilePhone = p.MobilePhone,
+                                    StaffSchoolInfo = p.StaffSchoolInfo.ToList(),
                                 }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                             }
                         }
@@ -1937,21 +1939,37 @@ namespace opensis.data.Repository
                             else
                             {
                                 transactionIQ = Utility.FilteredData(pageResult.FilterParams!, attendanceData).AsQueryable();
-                            }
-                        }
 
-                        if (pageResult.SortingModel != null)
-                        {
-                            switch (pageResult.SortingModel.SortColumn!.ToLower())
-                            {
-                                default:
-                                    transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection!.ToLower());
-                                    break;
+                                //medical advance search
+                                var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
+                                if (studentGuids.Count > 0)
+                                {
+                                    var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+
+                                    if (filterStudentIds?.Count > 0)
+                                    {
+                                        transactionIQ = transactionIQ.Where(x => filterStudentIds.Contains(x.StudentGuid));
+                                    }
+                                    else
+                                    {
+                                        transactionIQ = null;
+                                    }
+                                }
                             }
                         }
 
                         if (transactionIQ != null)
                         {
+                            if (pageResult.SortingModel != null)
+                            {
+                                switch (pageResult.SortingModel.SortColumn!.ToLower())
+                                {
+                                    default:
+                                        transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn, pageResult.SortingModel.SortDirection!.ToLower());
+                                        break;
+                                }
+                            }
+
                             int? totalCount = transactionIQ.Count();
                             if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                             {
@@ -1965,6 +1983,8 @@ namespace opensis.data.Repository
                         else
                         {
                             studentAttendanceList.TotalCount = 0;
+                            studentAttendanceList._failure = true;
+                            studentAttendanceList._message = NORECORDFOUND;
                         }
                     }
                     else

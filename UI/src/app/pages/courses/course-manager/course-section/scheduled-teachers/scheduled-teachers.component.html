@@ -3,7 +3,7 @@
         <div class="bg-white rounded border px-4 py-3">
             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px" class="items-center">
                 <div class="relative" fxFlex="none">
-                    <img src="{{staff.staffMaster.staffPhoto==null?'assets/img/default-person.jpg':'data:image/png;base64,'+ staff.staffMaster.staffPhoto}}" class="avatar" alt="Staff photo">
+                    <img src="{{staff.staffMaster.staffThumbnailPhoto==null?'assets/img/default-person.jpg':'data:image/png;base64,'+ staff.staffMaster.staffThumbnailPhoto}}" class="avatar" alt="Staff photo">
                 </div>
                 <div class="overflow-hidden" fxFlex="auto">
                     <a (click)="viewStaffDetails(staff)" class="subheading-2 leading-snug text-blue cursor-pointer">{{staff.staffMaster.firstGivenName+' '+staff.staffMaster.lastFamilyName}}</a>

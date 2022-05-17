@@ -65,7 +65,7 @@
                         </mat-form-field>
                     </li>
                 </ul>
-                <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "1" [module] = "module" [schoolCreateMode]="schoolCreateMode"></vex-custom-field-without-form>
+                <vex-custom-field-without-form  [schoolDetailsForViewAndEdit]="schoolAddViewModel" [categoryId] = "1" [module] = "module" [schoolCreateMode]="schoolCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
            
            </div>
            <hr class="-mx-5 mt-4 mb-6">

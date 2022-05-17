@@ -86,7 +86,7 @@
                 <th mat-header-cell *matHeaderCellDef>{{ "studentName" | translate }}</th>
                 <td mat-cell *matCellDef="let element" class="relative student-link">
                     <span>{{ element.firstGivenName + " " + element.lastFamilyName }}
-                                    <img *ngIf="element.enrollmentType=='External'" mat-raised-button matTooltip="External"
+                                    <img *ngIf="element.enrollmentType=='External'" mat-raised-button matTooltip="{{'external' | translate}}"
                                     aria-label="Button that displays a tooltip when focused or hovered over"
                                     [matTooltipPosition]="'above'" class="cursor-pointer ml-2 inline-block" src="../../../../../assets/img/external-student.svg" alt="External student icon"/></span>
                 </td>

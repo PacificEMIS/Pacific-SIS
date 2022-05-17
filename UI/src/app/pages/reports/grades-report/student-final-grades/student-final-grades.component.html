@@ -1,3 +1,4 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="mb-6">
     <div class="md:grid grid-cols-2 gap-6 report-steps">
         <div class="report-box bg-white rounded text-center py-4 px-6 relative cursor-pointer flex items-center" (click)="changeTab('selectStudents')" [class.active]="currentTab === 'selectStudents'" [ngClass]="currentTab === 'selectStudents' ? 'bg-primary text-white arrow-bottom' : ''">
@@ -14,20 +15,20 @@
     </div>
 </div>
 
-<div [ngSwitch]="currentTab">
-    <div *ngSwitchCase="'selectStudents'">
+<div>
+    <div [class.hidden]="currentTab !== 'selectStudents'">
         <!-- Start Select Students -->
         <div class="card px-6 py-4 mb-6">
             <h4 class="text-primary mb-2 font-semibold">{{ 'includeOnGradeList' | translate }}</h4>
             <ul class="grid md:grid-cols-4 row-gap-3 mb-6">
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'teacher' | translate }}</li>
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'comments' | translate }}</li>
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'percents' | translate }}</li>
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'yearToDateDailyAbsences' | translate }}</li>
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'dailyAbsencesThisQuarter' | translate }}</li>
-                <li><mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'periodByPeriodAbsences' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.teacher" class="align-middle mr-2"></mat-slide-toggle>{{'teacher' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.comments" class="align-middle mr-2"></mat-slide-toggle>{{'comments' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.parcentage" class="align-middle mr-2"></mat-slide-toggle>{{'percents' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.yearToDateDailyAbsences" class="align-middle mr-2"></mat-slide-toggle>{{'yearToDateDailyAbsences' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.dailyAbsencesThisQuater" class="align-middle mr-2"></mat-slide-toggle>{{'dailyAbsencesThisQuarter' | translate }}</li>
+                <li><mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.periodByPeriodAbsences" class="align-middle mr-2"></mat-slide-toggle>{{'periodByPeriodAbsences' | translate }}</li>
                 <li class="col-span-4">
-                    <mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'otherAttendanceYearToDate' | translate }}
+                    <mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.otherAttendanceCodeYearToDate" class="align-middle mr-2"></mat-slide-toggle>{{'otherAttendanceYearToDate' | translate }}
                     <div class="select-dropdown inline-block w-16 ml-4">
                         <select>
                             <option>A</option>
@@ -37,7 +38,7 @@
                     </div>
                 </li>
                 <li class="col-span-4">
-                    <mat-slide-toggle color="primary" [checked]="true" class="align-middle mr-2"></mat-slide-toggle>{{'otherAttendanceThisQuarter' | translate }}
+                    <mat-slide-toggle color="primary" [(ngModel)]="getStudentFinalGradeReportModel.otherAttendanceCodeThisQuater" class="align-middle mr-2"></mat-slide-toggle>{{'otherAttendanceThisQuarter' | translate }}
                     <div class="select-dropdown inline-block w-16 ml-4">
                         <select>
                             <option>A</option>
@@ -48,12 +49,9 @@
                 </li>
             </ul>
             <h4 class="text-primary mb-2 font-semibold">{{ 'markingPeriods' | translate }}</h4>
-            <ul class="flex">
-                <li class="mr-6"><mat-slide-toggle color="primary" [checked]="true" class="align-top mr-2 mb-2"></mat-slide-toggle>{{'quarter1' | translate }}</li>
-                <li class="mr-6"><mat-slide-toggle color="primary" [checked]="true" class="align-top mr-2 mb-2"></mat-slide-toggle>{{'quarter2' | translate }}</li>
-                <li class="mr-6"><mat-slide-toggle color="primary" [checked]="true" class="align-top mr-2 mb-2"></mat-slide-toggle>{{'quarter3' | translate }}</li>
-                <li class="mr-6"><mat-slide-toggle color="primary" [checked]="true" class="align-top mr-2 mb-2"></mat-slide-toggle>{{'quarter4' | translate }}</li>
-                <li class="mr-6"><mat-slide-toggle color="primary" [checked]="true" class="align-top mr-2 mb-2"></mat-slide-toggle>{{'fullYear' | translate }}</li>
+            <mat-error *ngIf="markingPeriodError" class="mb-2">{{'pleaseSelectAnyMarkingPeriod' | translate}}</mat-error>
+            <ul class="flex flex-wrap markingPeriod-scroll">
+                <li class="mr-6" *ngFor="let markingPeriod of markingPeriodList"><mat-slide-toggle color="primary" [(ngModel)]="markingPeriod.checked" (change)="changeValue($event, markingPeriod)" class="align-top mr-2 mb-2"></mat-slide-toggle>{{markingPeriod?.fullName}}</li>
             </ul>
         </div>
 
@@ -62,12 +60,13 @@
                 <div class="md:flex w-full justify-between">
                     <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
                         <div class="flex w-full items-center">
-                            <input class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                            <input [formControl]="searchCtrl" class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
                                 type="search">
-                            <button class="ml-4" mat-icon-button type="button">
+                            <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5" alt="Loader icon">
+                            <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                                 <mat-icon>search</mat-icon>
                             </button>
-                            <a class="text-primary cursor-pointer ml-3 md:w-full">
+                            <a (click)="showAdvanceSearchPanel = true;" [class.disabled]="totalCount == null" class="text-primary cursor-pointer ml-3 md:w-full">
                                 <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
                                 <span class="ml-2 hidden lg:inline-block">
                                     {{'advanceSearch' | translate}}
@@ -77,71 +76,97 @@
                     </div>
                     <hr class="-mx-4 block md:hidden" />
                     <div class="flex items-center">
-                        <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                        <a (click)="exportStudentListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="30">
                         </a>
                     </div>
                 </div>
             </div>
             <div class="overflow-x-auto overflow-y-hidden">
-                <table mat-table [dataSource]="studentLists" class="mat-elevation-z8">
+                <table mat-table [dataSource]="studentList" class="mat-elevation-z8">
 
                     <ng-container matColumnDef="studentCheck">
                         <th mat-header-cell *matHeaderCellDef>
-                            <mat-checkbox color="primary"></mat-checkbox>
+                            <mat-checkbox color="primary" [class.hidden]="totalCount === 0 || totalCount === null" #masterCheckBox
+                                [indeterminate]="someComplete()" (change)="setAll($event.checked)"></mat-checkbox>
                         </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-checkbox color="primary" [checked]='element.studentCheck'></mat-checkbox>
+                            <mat-checkbox color="primary" [checked]="element.checked"
+                                (change)="onChangeSelection($event.checked,element.studentId)"></mat-checkbox>
                         </td>
                     </ng-container>
         
                     <ng-container matColumnDef="studentName">
                         <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.studentName}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.firstGivenName}} {{element.middleName ? ' '+element.middleName+' ':''}} {{element.lastFamilyName}} </td>
                     </ng-container>
         
                     <ng-container matColumnDef="studentId">
                         <th mat-header-cell *matHeaderCellDef>{{'studentId' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.studentId}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.studentInternalId | EmtyValueCheckPipe}} </td>
                     </ng-container>
         
                     <ng-container matColumnDef="alternateId">
                         <th mat-header-cell *matHeaderCellDef>{{'alternateId' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.alternateId}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.alternateId | EmtyValueCheckPipe}} </td>
                     </ng-container>
         
                     <ng-container matColumnDef="grade">
                         <th mat-header-cell *matHeaderCellDef>{{'grade' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.grade}} </td>
+                        <td mat-cell *matCellDef="let element"> {{isAdmin ? (element.gradeLevelTitle | EmtyValueCheckPipe) : (element.gradeLevel | EmtyValueCheckPipe)}} </td>
                     </ng-container>
         
                     <ng-container matColumnDef="phone">
                         <th mat-header-cell *matHeaderCellDef>{{'phone' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+                        <td mat-cell *matCellDef="let element"> {{element.homePhone | EmtyValueCheckPipe}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>{{'status' | translate}}</th>
+                        <td mat-cell *matCellDef="let element" [ngClass]="element.isActive?'text-green':'text-red'">
+                            {{element.isActive | EmtyBooleanCheckPipe:'status'}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="noData">
+                        <td mat-footer-cell *matFooterCellDef colspan="6">
+                            {{loading?('fetchingData' | translate):('noData' | translate) }}
+                        </td>
                     </ng-container>
         
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount !== 0 && totalCount !== null"></tr>
                 </table>
             </div>
-            <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
-            </mat-paginator>
+            <mat-paginator [length]="totalCount" [class.hidden]="totalCount===0 || totalCount===null" [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)' aria-label="Select page">
+        </mat-paginator>
 
             <mat-divider></mat-divider>
             <div class="p-4 text-right">
-                <button mat-raised-button color="primary">{{'createGradeListForSelectedStudents' | translate }}</button>
+                <button mat-raised-button color="primary" (click)="createGradeListForSelectedStudents()">{{'createGradeListForSelectedStudents' | translate }}</button>
             </div>
+        </div>
+        <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+            <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+                <vex-common-search-student [incomingSearchValue]="searchValue"
+                    (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" [advancedSearchExpansion]="advancedSearchExpansionModel" (filteredValue)="filterData($event)"
+                    (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
+                </vex-common-search-student>
+            </div>
+            <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>
     </div>
 
-    <div *ngSwitchCase="'generateReport'">
+    <div *ngIf="currentTab === 'generateReport'">
         <!-- Start Generate Report -->
 
         <div class="card">
             <div class="bg-white sticky left-0 p-4" fxLayout="row" fxLayoutAlign="start center">
                 <div class="flex w-full justify-between items-center">
-                    <h4 class="text-primary font-semibold">2 {{'studentRecordsFound' | translate }}</h4>
-                    <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                    <h4 class="text-primary font-semibold">{{studentFinalGradeReport.length}} {{'studentRecordsFound' | translate }}</h4>
+                    <a (click)="exportFinalGradeReportToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                         <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                     </a>
                 </div>
@@ -152,140 +177,34 @@
                         <tr>
                             <th class="whitespace-nowrap">{{'studentName' | translate }}</th>
                             <th>{{'course' | translate }}</th>
-                            <th>{{'teacher' | translate }}</th>
-                            <th>{{'abs' | translate }}<br/><span class="whitespace-nowrap">{{'ytdMp' | translate }}</span></th>
-                            <th class="whitespace-nowrap"><span>{{'quarter1' | translate }} (%)</span></th>
-                            <th class="whitespace-nowrap">{{'quarter2' | translate }} (%)</th>
-                            <th class="whitespace-nowrap">{{'quarter3' | translate }} (%)</th>
-                            <th class="whitespace-nowrap">{{'quarter4' | translate }} (%)</th>
-                            <th>{{'comments' | translate }}</th>
+                            <th *ngIf="getStudentFinalGradeReportModel.teacher">{{'teacher' | translate }}</th>
+                            <th *ngIf="getStudentFinalGradeReportModel.periodByPeriodAbsences">{{'abs' | translate }}<br/><span class="whitespace-nowrap">{{'ytdMp' | translate }}</span></th>
+                            <th class="whitespace-nowrap" *ngFor="let markingPeriod of selectedMarkingPeriodsName">{{markingPeriod?.markingPeriodName}} <span *ngIf="getStudentFinalGradeReportModel.parcentage">(%)</span></th>
+                            <th *ngIf="getStudentFinalGradeReportModel.comments">{{'comments' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td rowspan="6">Arthur Boucher</td>
-                            <td>English Language Arts</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Math</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A- (92.02%)</td>
-                            <td>A- (92.94%)</td>
-                            <td>A- (91.63%)</td>
-                            <td>A (94.22%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Music</td>
-                            <td>Emily Vaughn</td>
-                            <td>N/A</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (100%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Art</td>
-                            <td>Diane llikian</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Social Studies</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Physics</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-
-                        <tr>
-                            <td rowspan="6">Sophia Brown</td>
-                            <td>English Language Arts</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Math</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A- (92.02%)</td>
-                            <td>A- (92.94%)</td>
-                            <td>A- (91.63%)</td>
-                            <td>A (94.22%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Music</td>
-                            <td>Emily Vaughn</td>
-                            <td>N/A</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (90%)</td>
-                            <td>Satisfactory (100%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Art</td>
-                            <td>Diane llikian</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Social Studies</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-                        <tr>
-                            <td>Physics</td>
-                            <td>Samantha Stebelton</td>
-                            <td>N/A</td>
-                            <td>A (96.83%)</td>
-                            <td>A (94.51%)</td>
-                            <td>A+ (97.07%)</td>
-                            <td>A+ (99.1%)</td>
-                            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-                        </tr>
-
+                        <ng-container *ngFor="let report of studentFinalGradeReport">
+                            <tr *ngFor="let courseSection of report?.courseSectionDetailsViews; first as isFirst">
+                                <td [attr.rowspan]="report?.courseSectionDetailsViews?.length" *ngIf="isFirst">{{report?.firstGivenName}}
+                                    {{report?.middleName ?
+                                    '
+                                    '+report?.middleName+' ':''}} {{report?.lastFamilyName}}</td>
+                                <td>{{courseSection?.courseSectionName}}</td>
+                                <td *ngIf="getStudentFinalGradeReportModel.teacher">{{courseSection?.staffFirstGivenName}}
+                                    {{courseSection?.staffMiddleName ? '
+                                    '+courseSection?.staffMiddleName+' ':''}} {{courseSection?.staffLastFamilyName}}</td>
+                                <td *ngIf="getStudentFinalGradeReportModel.periodByPeriodAbsences">{{courseSection?.absYTD !== null ?
+                                    courseSection?.absYTD : 'N/A'}}</td>
+                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViews">{{markingPeriod?.grade !== null ?
+                                    markingPeriod?.grade : 'N/A'}}
+                                    <span *ngIf="getStudentFinalGradeReportModel.parcentage">({{markingPeriod?.percentage !== null ?
+                                        markingPeriod?.percentage + '%' : 'N/A'}})</span>
+                                </td>
+                                <td *ngIf="getStudentFinalGradeReportModel.comments">{{courseSection?.comments !== null ?
+                                    courseSection?.comments : 'N/A'}}</td>
+                            </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </div>

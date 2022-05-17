@@ -11,7 +11,7 @@
         <div fxLayout="column">
             <mat-form-field class="mt-6" appearance="outline" color="primary">
                 <mat-label>{{'title' | translate}}</mat-label>
-                <input formControlName="title" name="title" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.title"
+                <input formControlName="title" name="title" class="title-scroll" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.title"
                     cdkFocusInitial maxlength="50" matInput required>
                 <mat-error *ngIf="form.get('title').hasError('required')">{{'titleIsRequired'| translate}}</mat-error>
             </mat-form-field>
@@ -26,7 +26,7 @@
                 <div class="flex flex-1 mx-6 md:w-1/2">
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'startDate' | translate}}</mat-label>
-                        <input formControlName="startDate" readonly (dateInput)="checkDate()" [min]="minStartDate" [max]="maxStartDate" [(ngModel)]="calendarAddViewModel.schoolCalendar.startDate"
+                        <input formControlName="startDate" readonly (dateInput)="checkDate()" class="startDate-scroll" [min]="minStartDate" [max]="maxStartDate" [(ngModel)]="calendarAddViewModel.schoolCalendar.startDate"
                             name="startDate" [matDatepicker]="begins" matInput required>
                         <mat-datepicker-toggle [for]="begins" matSuffix></mat-datepicker-toggle>
                         <mat-datepicker #begins></mat-datepicker>
@@ -43,8 +43,8 @@
                 <div class="flex flex-1 mx-6 md:w-1/2">
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{'endDate' | translate}}</mat-label>
-                        <input formControlName="endDate" [readonly]="!this.defaultValuesService.checkAcademicYear()" [(ngModel)]="calendarAddViewModel.schoolCalendar.endDate"
-                            name="endDate" [min]="getMinEndDateVal()" [matDatepicker]="ends" matInput required>
+                        <input formControlName="endDate" [readonly]="!this.defaultValuesService.checkAcademicYear()" class="endDate-scroll" [(ngModel)]="calendarAddViewModel.schoolCalendar.endDate"
+                            name="endDate" [min]="getMinEndDateVal()" [max]="getMaxEndDateVal()" [matDatepicker]="ends" matInput required>
                         <mat-datepicker-toggle [for]="ends" matSuffix></mat-datepicker-toggle>
                         <mat-datepicker #ends></mat-datepicker>
                         <mat-error *ngIf="form.get('endDate').hasError('required')">

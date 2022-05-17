@@ -25,7 +25,7 @@
                         'commentedOn' |
                         translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
                         @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
-                        <span mat-raised-button matTooltip="Administrator"
+                        <span mat-raised-button matTooltip="{{'administrator' | translate}}"
                             aria-label="Button that displays a tooltip when focused or hovered over"
                             [matTooltipPosition]="'above'" class="cursor-pointer">
                             <mat-icon class="text-black ml-2 align-middle">manage_accounts</mat-icon>
@@ -52,7 +52,7 @@
                         'commentedOn' |
                         translate }} <span class="font-semibold">{{ comment?.commentTimestamp | date:'longDate'}}</span>
                         @ <span class="font-semibold">{{comment?.commentTimestamp | date:'shortTime'}}</span>
-                        <span mat-raised-button matTooltip="Teacher"
+                        <span mat-raised-button matTooltip="{{'teacher' | translate}}"
                             aria-label="Button that displays a tooltip when focused or hovered over"
                             [matTooltipPosition]="'above'" class="cursor-pointer">
                             <mat-icon class="text-black ml-2 align-middle">person</mat-icon>

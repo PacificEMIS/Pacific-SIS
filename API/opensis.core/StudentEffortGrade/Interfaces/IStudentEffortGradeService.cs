@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentEffortGrade;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,8 @@ namespace opensis.core.StudentEffortGrade.Interfaces
 {
     public interface IStudentEffortGradeService
     {
-        public StudentEffortGradeListModel AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel);
+        public HomeRoomStaffByStudentListModel AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel);
         public StudentEffortGradeListModel GetAllStudentEffortGradeList(StudentEffortGradeListModel studentEffortGradeListModel);
+        public HomeRoomStaffByStudentListModel GetStudentListByHomeRoomStaff(PageResult pageResult);
     }
 }

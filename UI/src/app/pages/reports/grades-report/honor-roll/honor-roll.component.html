@@ -24,7 +24,7 @@
             </div>
             <hr class="block md:hidden" />
             <div class="py-2 md:pt-2 flex items-center">
-                <a (click)="exportHonorRollListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel">
+                <a (click)="exportHonorRollListToExcel()" class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
             </div>
@@ -108,10 +108,10 @@
 
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-        <vex-search-student (searchList)="getSearchResult($event)" [incomingSearchValue]="searchValue"
-            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
-            (showHideAdvanceSearch)="hideAdvanceSearch($event)" [rootSource]="pageSource" (searchValue)="getSearchInput($event)">
-        </vex-search-student>
+        <vex-common-search-student [incomingSearchValue]="searchValue" [advancedSearchExpansion]="advancedSearchExpansionModel"
+            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)"
+            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
+        </vex-common-search-student>
     </div>
     <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>

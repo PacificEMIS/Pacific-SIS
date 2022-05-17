@@ -299,23 +299,27 @@ namespace opensis.data.Repository
                     if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                        var Searchvalue = Columnvalue.Trim();
                         Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+
                         transactionIQ = StaffMasterList?.Where(x => x.FirstGivenName != null && x.FirstGivenName.Contains(Columnvalue) ||
                                                                     x.MiddleName != null && x.MiddleName.Contains(Columnvalue) ||
                                                                     x.LastFamilyName != null && x.LastFamilyName.Contains(Columnvalue) ||
                                                                     (x.FirstGivenName + x.MiddleName + x.LastFamilyName).Contains(Columnvalue) || (x.FirstGivenName + x.MiddleName).Contains(Columnvalue) || (x.FirstGivenName + x.LastFamilyName).Contains(Columnvalue) || (x.MiddleName + x.LastFamilyName).Contains(Columnvalue) ||
-                                                                    x.StaffInternalId != null && x.StaffInternalId.Contains(Columnvalue) ||
-                                                                    x.JobTitle != null && x.JobTitle.Contains(Columnvalue) ||
-                                                                    x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
-                                                                    x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue));
+                                                                    x.StaffInternalId != null && x.StaffInternalId.Contains(Searchvalue) ||
+                                                                    x.JobTitle != null && x.JobTitle.Contains(Searchvalue) ||
+                                                                    x.SchoolEmail != null && x.SchoolEmail.Contains(Searchvalue) ||
+                                                                    x.MobilePhone != null && x.MobilePhone.Contains(Searchvalue)
+                                                                    || (x.StaffSchoolInfo.Count > 0 ? (x.StaffSchoolInfo.Any(x => (x.Profile ?? "").ToLower().Contains(Searchvalue.ToLower()) && x.SchoolAttachedId == pageResult.SchoolId)) : string.Empty.Contains(Searchvalue)));
+
                         //var ProfileFilter = StaffMasterList.Where(x => x.StaffSchoolInfo.FirstOrDefault() != null ? x.StaffSchoolInfo.FirstOrDefault().Profile.ToLower().Contains(Columnvalue.ToLower()) : string.Empty.Contains(Columnvalue));
 
-                        var ProfileFilter = StaffMasterList?.Where(x => x.StaffSchoolInfo.Count > 0 ? x.StaffSchoolInfo.Any(x => (x.Profile??"").ToLower().Contains(Columnvalue.ToLower()) && x.SchoolAttachedId==pageResult.SchoolId) : string.Empty.Contains(Columnvalue));
+                        //var ProfileFilter = StaffMasterList?.Where(x => x.StaffSchoolInfo.Count > 0 ? x.StaffSchoolInfo.Any(x => (x.Profile??"").ToLower().Contains(Columnvalue.ToLower()) && x.SchoolAttachedId==pageResult.SchoolId) : string.Empty.Contains(Columnvalue));
 
-                        if (ProfileFilter!=null && ProfileFilter.Any())
-                        {
-                            transactionIQ = transactionIQ?.Concat(ProfileFilter);
-                        }
+                        //if (ProfileFilter!=null && ProfileFilter.Any())
+                        //{
+                        //    transactionIQ = transactionIQ?.Concat(ProfileFilter);
+                        //}
                     }
                     else
                     {
@@ -2225,7 +2229,7 @@ namespace opensis.data.Repository
                         UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
                         IsActive = e.IsActive,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate, SchoolAttachedId = s.SchoolAttachedId, SchoolId = s.SchoolId, SchoolAttachedName = s.SchoolAttachedName }).ToList() : new()
                     }).Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                 }
                 else
@@ -2260,7 +2264,7 @@ namespace opensis.data.Repository
                         UpdatedBy = e.UpdatedBy,
                         UpdatedOn = e.UpdatedOn,
                         IsActive = e.IsActive,
-                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate }).ToList() : new()
+                        StaffSchoolInfo = e.StaffSchoolInfo.Count > 0 ? e.StaffSchoolInfo.Select(s => new StaffSchoolInfo { StartDate = s.StartDate, EndDate = s.EndDate, SchoolAttachedId = s.SchoolAttachedId, SchoolId = s.SchoolId, SchoolAttachedName = s.SchoolAttachedName }).ToList() : new()
                     });
                 }
                 if (transactionIQ != null && transactionIQ.Any())

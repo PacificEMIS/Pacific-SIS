@@ -378,7 +378,7 @@ export class DefaultValuesService {
   setPageId(pageId: any) {
     localStorage.setItem("pageId", JSON.stringify(pageId));
   }
-  setCollapseValue(collapseValue: string) {
+  setCollapseValue(collapseValue: boolean) {
     localStorage.setItem("collapseValue", JSON.stringify(collapseValue));
   }
   setCourseSectionId(courseSectionId: string) {

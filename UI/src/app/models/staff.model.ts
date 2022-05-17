@@ -11,6 +11,7 @@ export class StaffMasterModel {
     public schoolId: number;
     public staffId: number;
     public staffPhoto: string;
+    public staffThumbnailPhoto: string;
     public staffInternalId: string;
     public alternateId: string;
     public districtId: string;

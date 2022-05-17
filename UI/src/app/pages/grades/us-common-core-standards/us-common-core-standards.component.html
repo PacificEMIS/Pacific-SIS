@@ -65,11 +65,11 @@
                     <mat-icon [icIcon]="icUpdate"></mat-icon>
                 </a> -->
                 <a class="cursor-pointer p-1 mt-1 ml-4 inline-block align-middle"
-                    matTooltip="Export to Excel" (click)="exportSchoolSpecificStandardsListToExcel()" >
+                    matTooltip="{{'exportToExcel' | translate}}" (click)="exportSchoolSpecificStandardsListToExcel()" >
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
                 <button [matMenuTriggerFor]="columnFilterMenu" class="ml-4" fxFlex="none" mat-icon-button
-                    matTooltip="Filter Columns" type="button">
+                    matTooltip="{{'filterColumns' | translate}}" type="button">
                     <mat-icon [icIcon]="icFilterList"></mat-icon>
                 </button>
                 <button color="primary" class="ml-4" fxFlex="none" mat-raised-button type="button" [disabled]="isDisabled"

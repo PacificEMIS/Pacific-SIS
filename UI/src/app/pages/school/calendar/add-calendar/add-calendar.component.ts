@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -83,7 +83,8 @@ export class AddCalendarComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackbar: MatSnackBar,
     private commonService: CommonService,
-    public defaultValuesService: DefaultValuesService
+    public defaultValuesService: DefaultValuesService,
+    private el: ElementRef
   ) {
       this.calendarAddViewModel.schoolCalendar.startDate = this.defaultValuesService.getFullYearStartDate();
       this.minStartDate = this.defaultValuesService.getFullYearStartDate();
@@ -134,10 +135,21 @@ export class AddCalendarComponent implements OnInit {
   }
 
   getMinEndDateVal() {
-    return moment(this.form.value.startDate).add(1, 'days').toDate();
+    if(this.data.sessionCalendar) {
+      return moment(this.data.maxEndDateForSessionCalendar).toDate();
+    } else {
+      return moment(this.form.value.startDate).add(1, 'days').toDate();
+    }
+  }
+
+  getMaxEndDateVal() {
+    if(!this.data.sessionCalendar) {
+      return moment(this.defaultValuesService.getFullYearEndDate()).toDate();
+    }
   }
 
   checkDate(){
+    if(this.data.sessionCalendar) {
     let markingPeriodDate=new Date(this.defaultValuesService.getSchoolOpened()).getTime();
     let startDate=new Date(this.calendarAddViewModel.schoolCalendar.startDate).getTime(); 
     if((startDate!=markingPeriodDate) || (this.data.calendarListCount==0 && startDate!=markingPeriodDate)){
@@ -146,6 +158,7 @@ export class AddCalendarComponent implements OnInit {
       if(this.form.controls.startDate.errors?.nomatch){
         this.form.controls.startDate.setErrors(null);
       }
+    }
     }
   }
 
@@ -156,7 +169,21 @@ export class AddCalendarComponent implements OnInit {
   }
   }
 
+  scrollToInvalidControl() {
+    if (this.form.controls.title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.title-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.startDate.invalid) {
+      const invalidStartDateControl: HTMLElement = this.el.nativeElement.querySelector('.startDate-scroll');
+      invalidStartDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.endDate.invalid) {
+      const invalidEndDateControl: HTMLElement = this.el.nativeElement.querySelector('.endDate-scroll');
+      invalidEndDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submitCalendar() {
+    this.scrollToInvalidControl();
     if (this.form.invalid) {
       return
     }

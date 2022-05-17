@@ -113,7 +113,7 @@
         
                     <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
-                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount != null && totalCount != 0"></tr>
                 </table>
             </div>
 
@@ -128,10 +128,10 @@
         </div>
         <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
             <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-                <vex-search-student (searchList)="getSearchResult($event)" [incomingSearchValue]="searchValue"
-                    (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
+                <vex-common-search-student [incomingSearchValue]="searchValue" [advancedSearchExpansion]="advancedSearchExpansionModel"
+                    (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)"
                     (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
-                </vex-search-student>
+                </vex-common-search-student>
             </div>
             <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>
@@ -153,6 +153,26 @@
                     <p class="font-medium mb-4">{{'demographicInformation' | translate }}</p>
                     <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
                         <li *ngFor="let field of fieldsDetailsArray?.demographicInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'alertInformation' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.alertInformation"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'medicalNotes' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.medicalNotes"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'immunizationPhysicalRecord' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.immunizationPhysicalRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
+                    </ul>
+
+                    <p class="font-medium mb-4">{{'nurseVisitRecord' | translate }}</p>
+                    <ul class="grid md:grid-cols-3 row-gap-3 mb-8">
+                        <li *ngFor="let field of fieldsDetailsArray?.nurseVisitRecord"><mat-slide-toggle color="primary" [(ngModel)]="field.checked" (change)="changeFields($event, field?.property)" class="align-middle mr-2"></mat-slide-toggle>{{field?.label | translate }}</li>
                     </ul>
 
                     <p class="font-medium mb-4">{{'addressContact' | translate }}</p>
@@ -229,10 +249,10 @@
                         <!-- <a class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print">
                             <mat-icon [icIcon]="icPrint"></mat-icon>
                         </a> -->
-                        <a class="cursor-pointer inline-block align-middle ml-2" (click)="generateExcel()" matTooltip="Export to Excel">
+                        <a class="cursor-pointer inline-block align-middle ml-2" (click)="generateExcel()" matTooltip="{{'exportToExcel' | translate}}">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
-                        <a [matMenuTriggerFor]="columnFilterMenu" class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="Filter">
+                        <a [matMenuTriggerFor]="columnFilterMenu" class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="{{'filter' | translate}}">
                             <mat-icon [icIcon]="icFilterList"></mat-icon>
                         </a>
                     </div>

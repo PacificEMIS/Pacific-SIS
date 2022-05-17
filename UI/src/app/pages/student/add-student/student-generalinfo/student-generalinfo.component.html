@@ -287,7 +287,7 @@
                 </ul>
 
                 <vex-custom-field-without-form [schoolDetailsForViewAndEdit]="studentAddModel" [module]="module"
-                    [categoryId]="categoryId" [studentCreateMode]="studentCreateMode"></vex-custom-field-without-form>
+                    [categoryId]="categoryId" [studentCreateMode]="studentCreateMode" (custom)="customValid=$event"></vex-custom-field-without-form>
 
                 <hr class="-mx-4 mt-4">
                 <div class="mt-6">
@@ -322,7 +322,7 @@
                                 <mat-error class="text-red" *ngIf="passwordHash.errors?.required && hidePasswordAccess">
                                     {{'passwordIsRequired'|translate}}</mat-error>
                                 <button (click)="toggleVisibility()" mat-icon-button matSuffix
-                                    matTooltip="Toggle Visibility" type="button">
+                                    matTooltip="{{'toggleVisibility' | translate}}" type="button">
                                     <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
                                     <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
                                 </button>

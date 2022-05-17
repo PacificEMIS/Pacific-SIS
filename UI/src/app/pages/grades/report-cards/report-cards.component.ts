@@ -56,6 +56,9 @@ import { reportCardType } from "../../../common/static-data";
 import * as html2pdf from 'html2pdf.js';
 import { ScheduleStudentListViewModel } from "src/app/models/student-schedule.model";
 import { StudentScheduleService } from "src/app/services/student-schedule.service";
+import { ProfilesTypes } from "src/app/enums/profiles.enum";
+import { AdvancedSearchExpansionModel } from "src/app/models/common.model";
+import { SharedFunction } from "../../shared/shared-function";
 
 @Component({
   selector: "vex-report-cards",
@@ -104,8 +107,14 @@ export class ReportCardsComponent implements OnInit {
   generatedReportCardData;
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   teacherSearchInput:any;
   isAdmin:boolean;
+  halfLengthOfComment:number = 0;
+  halfLengthOfStandardGradeComment:number = 0;
+  halfLengthOfEffortGradeComment:number = 0;
+  isFromAdvancedSearch: boolean = false;
+  profiles = ProfilesTypes;
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -118,9 +127,13 @@ export class ReportCardsComponent implements OnInit {
     private loaderService: LoaderService,
     private pageRolePermissions: PageRolesPermission,
     private studentScheduleService: StudentScheduleService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
+    private commonFunction: SharedFunction
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.markingPeriods = [];
@@ -129,6 +142,7 @@ export class ReportCardsComponent implements OnInit {
       this.isAdmin = false
     else
       this.isAdmin = true
+      
   }
 
 
@@ -192,24 +206,30 @@ export class ReportCardsComponent implements OnInit {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.studentListViews === null) {
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.totalCount = data.totalCount;
+          this.searchCount = data.totalCount;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
           this.listOfStudent = data.studentListViews;
           this.StudentModelList = new MatTableDataSource(this.listOfStudent);
           this.getAllStudent = new StudentListModel();
+          this.isFromAdvancedSearch = false;
         }
       });
     }else{
@@ -226,28 +246,30 @@ export class ReportCardsComponent implements OnInit {
         if (data._failure) {
           this.commonService.checkTokenValidOrNot(data._message);
           if (data.scheduleStudentForView === null) {
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
             this.snackbar.open(data._message, '', {
               duration: 10000
             });
+            this.isFromAdvancedSearch = false;
           } else {
             this.listOfStudent = [];
             this.StudentModelList = new MatTableDataSource(this.listOfStudent);
-            this.totalCount = null;
+            this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+            this.searchCount = this.isFromAdvancedSearch ? 0 : null;
+            this.isFromAdvancedSearch = false;
           }
         } else {
           this.totalCount = data.totalCount;
+          this.searchCount = data.totalCount ? data.totalCount : null;
           this.pageNumber = data.pageNumber;
           this.pageSize = data._pageSize;
-          data.scheduleStudentForView.map(item => {
-            item.gradeLevelTitle = item.gradeLevel;
-            item.sectionName = item.section;
-          });
           this.listOfStudent = data.scheduleStudentForView;
           this.StudentModelList = new MatTableDataSource(this.listOfStudent);
           this.getAllStudent = new StudentListModel();
+          this.isFromAdvancedSearch = false;
         }
       });
     }
@@ -316,6 +338,10 @@ export class ReportCardsComponent implements OnInit {
 
 
   resetStudentList() {
+    this.getAllStudent = new StudentListModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.searchCount = null;
     this.searchValue = null;
     this.getAllStudentList();    
@@ -346,9 +372,41 @@ export class ReportCardsComponent implements OnInit {
     });
   }
 
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListModel();
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    this.scheduleStudentListViewModel.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      if (this.defaultValuesService.getUserMembershipType() === this.profiles.HomeroomTeacher || this.defaultValuesService.getUserMembershipType() === this.profiles.Teacher) {
+        this.scheduleStudentListViewModel.filterParams = res.filterParams;
+        this.scheduleStudentListViewModel.includeInactive = res.inactiveStudents;
+        this.scheduleStudentListViewModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.scheduleStudentListViewModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.getAllStudentList();
+        this.showSaveFilter = true;
+      } else {
+        this.getAllStudent.filterParams = res.filterParams;
+        this.getAllStudent.includeInactive = res.inactiveStudents;
+        this.getAllStudent.searchAllSchool = res.searchAllSchool;
+        this.getAllStudent.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(res.dobStartDate);
+        this.getAllStudent.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(res.dobEndDate);
+        this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+        this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+        this.getAllStudentList();
+        this.showSaveFilter = true;
+      }
+    }
+  }
+
   getSearchResult(res) {
     this.getAllStudent = new StudentListModel();
-    if (res.totalCount) {
+    this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    if (res?.totalCount) {
       this.searchCount = res.totalCount;
       this.totalCount = res.totalCount;
     }
@@ -359,8 +417,13 @@ export class ReportCardsComponent implements OnInit {
     this.showSaveFilter = true;
     this.pageNumber = res.pageNumber;
     this.pageSize = res._pageSize;
-    this.StudentModelList = new MatTableDataSource(res.studentListViews);
-    this.getAllStudent = new StudentListModel();
+    if (this.isAdmin) {
+      this.StudentModelList = new MatTableDataSource(res?.studentListViews);
+      this.getAllStudent = new StudentListModel();
+    } else {
+      this.StudentModelList = new MatTableDataSource(res?.scheduleStudentForView);
+      this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
+    }
   }
 
   getAllSearchFilter() {
@@ -557,6 +620,7 @@ export class ReportCardsComponent implements OnInit {
 
   addAndGenerateReportCard() {
     return new Promise((resolve, reject) => {
+      this.addReportCardPdf.effortGrade = !this.addReportCardPdf.standardGrade;
       this.addReportCardPdf.markingPeriods = this.markingPeriods.toString();
       this.reportCardService.getReportCardForStudents(this.addReportCardPdf).subscribe((res) => {
         if (res._failure) {
@@ -576,6 +640,15 @@ export class ReportCardsComponent implements OnInit {
       this.addAndGenerateReportCard().then((res: any) => {
         this.generatedReportCardData = res;
         if(this.addReportCardPdf?.templateType === 'default') {
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length>0) {
+            this.halfLengthOfComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length/2);
+          }
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length>0) {
+            this.halfLengthOfStandardGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.standerdGradeScale?.length/2);
+          }
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length>0) {
+            this.halfLengthOfEffortGradeComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.effortGradeScales?.length/2);
+          }
           setTimeout(() => {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
@@ -602,6 +675,12 @@ export class ReportCardsComponent implements OnInit {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -707,6 +786,14 @@ export class ReportCardsComponent implements OnInit {
           .semester-table .comments-table { border: none; }
           
           .comments-table td { border-bottom: 1px dashed #b7b4b4; padding: 35px 0 0 } 
+
+          .behavior-subtable th, .behavior-subtable td {
+            border-right: 1px solid #000;
+          }
+
+          .behavior-subtable th:last-child, .behavior-subtable td:last-child {
+            border-right: none;
+          }
           
           </style>
         </head>
@@ -715,9 +802,9 @@ export class ReportCardsComponent implements OnInit {
     );
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
-
-
     return;
+    }
+
     // return new Promise((resolve, reject) => {
     //   const element = document.getElementById('pdfData');
     //   element.style.display = 'block';
@@ -745,6 +832,12 @@ export class ReportCardsComponent implements OnInit {
     printContents = document.getElementById('printReportCardId').innerHTML;
     document.getElementById('printReportCardId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printReportCardId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -826,6 +919,9 @@ export class ReportCardsComponent implements OnInit {
           .comments p { margin-bottom: 3px; padding-right: 20px; }
 
           .inline-block {display: inline-block}
+
+          td.comments table td { vertical-align: top; }
+          
     </style>
         </head>
     <body onload="window.print()">${printContents}</body>
@@ -833,8 +929,8 @@ export class ReportCardsComponent implements OnInit {
     );
     popupWin.document.close();
     document.getElementById('printReportCardId').className = 'hidden';
-
     return;
+    }
   }
 
   

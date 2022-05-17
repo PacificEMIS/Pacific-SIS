@@ -273,7 +273,7 @@ export class StudentCourseScheduleComponent implements OnInit {
             subjectList: this.getAllSubjectModel.subjectList,
             programList: this.getAllProgramModel.programList
         },
-        width: "900px",
+        width: "1200px",
       })
       .afterClosed()
       .subscribe((res) => {
@@ -360,6 +360,7 @@ export class StudentCourseScheduleComponent implements OnInit {
     this.studentScheduleService.groupDeleteForScheduledStudent(scheduledStudentDeleteModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
+          this.commonService.checkTokenValidOrNot(res._message);
           this.snackbar.open(res._message, '', {
             duration: 10000
           });

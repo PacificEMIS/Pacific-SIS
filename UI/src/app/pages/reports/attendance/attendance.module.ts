@@ -38,6 +38,7 @@ import { AbsenceSummaryDetailsComponent } from './absence-summary/absence-summar
 import { AttendanceChartComponent } from './attendance-chart/attendance-chart.component';
 import { AttendanceChartDetailsComponent } from './attendance-chart/attendance-chart-details/attendance-chart-details.component';
 import { SearchStudentComponent } from './absence-summary/search-student/search-student.component';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { SearchStudentComponent } from './absence-summary/search-student/search-
     NgxMatSelectSearchModule,
     MatExpansionModule,
     MatTooltipModule,
-    MatMenuModule
+    MatMenuModule,
+    SearchStudentModule
   ]
 })
 export class AttendanceModule { }

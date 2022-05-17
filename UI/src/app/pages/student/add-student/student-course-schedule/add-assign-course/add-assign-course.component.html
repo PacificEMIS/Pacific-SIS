@@ -53,7 +53,7 @@
     </ul>
 
     <div class="-mx-6 border-t overflow-auto">
-        <table mat-table [dataSource]="courseSectionList" class="mat-elevation-z8 shadow-none">
+        <table mat-table [dataSource]="courseSectionList" class="mat-elevation-z8 shadow-none course-section-table">
             <ng-container matColumnDef="staffSelected">
                 <th mat-header-cell *matHeaderCellDef>
                 </th>
@@ -94,7 +94,18 @@
                 <th mat-header-cell *matHeaderCellDef>{{ "available" | translate }}</th>
                 <td mat-cell *matCellDef="let element">{{ element.availableSeat }}</td>
             </ng-container>
-
+            <ng-container matColumnDef="scheduleDate">
+                <th mat-header-cell *matHeaderCellDef>{{ "scheduleDate" | translate }}</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-form-field appearance="outline" class="mt-2 mb-3">
+                        <input matInput [matDatepicker]="dp1" [(ngModel)]="element.durationStartDate"
+                            [min]="element?.courseDurationStartDate" [max]="element?.durationEndDate"
+                            (dateChange)="changeDateEvent(element)">
+                        <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+                        <mat-datepicker #dp1></mat-datepicker>
+                    </mat-form-field>
+                </td>
+            </ng-container>
 
         
             <ng-container matColumnDef="noData">

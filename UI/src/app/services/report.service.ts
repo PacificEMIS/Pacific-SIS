@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { AbsenceListByStudent, GetStudentAbsenceReport, StudentListForAbsenceSummary } from '../models/absence-summary.model';
-import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel} from '../models/report.model';
+import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel, GetStudentFinalGradeReportModel} from '../models/report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +89,14 @@ export class ReportService {
 
     let apiurl = this.apiUrl + obj._tenantName + "/Report/getHonorRollReport";
     return this.http.post<GetHonorRollReportModel>(apiurl, obj, this.httpOptions)
+  }
+
+  getStudentFinalGradeReport(obj: GetStudentFinalGradeReportModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getStudentFinalGradeReport";
+    return this.http.post<GetStudentFinalGradeReportModel>(apiurl, obj, this.httpOptions)
   }
 
   getAllStudentAbsenceList(obj: GetStudentAbsenceReport) {

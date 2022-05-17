@@ -180,7 +180,7 @@
                     <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef>{{'action' | translate}}</th>
                         <td mat-cell *matCellDef="let element">
-                            <a matTooltip="Impersonate as Student" class="mr-3 cursor-pointer">
+                            <a matTooltip="{{'impersonateAsStudent' | translate}}" class="mr-3 cursor-pointer">
                                 <mat-icon [icIcon]="icImpersonate"></mat-icon>
                             </a>
                             <a matTooltip="{{ 'dataEditInfo' | translate }}" class="mr-3 cursor-pointer" (click)="openDataEdit(element)">
@@ -232,11 +232,11 @@
 
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-        <vex-search-student (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams"
+        <vex-common-search-student [filterJsonParams]="filterJsonParams" [advancedSearchExpansion]="advancedSearchExpansionModel"
             [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)"
-            [incomingToggleValues]="toggleValues" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
+            [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
             (searchValue)="getSearchInput($event)">
-        </vex-search-student>
+        </vex-common-search-student>
     </div>
     <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>

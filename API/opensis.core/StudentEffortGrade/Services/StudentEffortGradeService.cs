@@ -27,6 +27,7 @@ using opensis.core.helper;
 using opensis.core.helper.Interfaces;
 using opensis.core.StudentEffortGrade.Interfaces;
 using opensis.data.Interface;
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentEffortGrade;
 using System;
 using System.Collections.Generic;
@@ -53,9 +54,9 @@ namespace opensis.core.StudentEffortGrade.Services
         /// </summary>
         /// <param name="studentEffortGradeListModel"></param>
         /// <returns></returns>
-        public StudentEffortGradeListModel AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel)
+        public HomeRoomStaffByStudentListModel AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel)
         {
-            StudentEffortGradeListModel studentEffortGradeList = new StudentEffortGradeListModel();
+            HomeRoomStaffByStudentListModel studentEffortGradeList = new HomeRoomStaffByStudentListModel();
             try
             {
                 if (tokenManager.CheckToken(studentEffortGradeListModel._tenantName + studentEffortGradeListModel._userName, studentEffortGradeListModel._token))
@@ -102,6 +103,37 @@ namespace opensis.core.StudentEffortGrade.Services
                 studentEffortGradeList._message = es.Message;
             }
             return studentEffortGradeList;
+        }
+
+
+
+
+        /// <summary>
+        /// Get All Student List By HomeRoomStaff
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public HomeRoomStaffByStudentListModel GetStudentListByHomeRoomStaff(PageResult pageResult)
+        {
+            HomeRoomStaffByStudentListModel studentListByHomeRoomStaff = new HomeRoomStaffByStudentListModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    studentListByHomeRoomStaff = this.studentEffortGradeRepository.GetStudentListByHomeRoomStaff(pageResult);
+                }
+                else
+                {
+                    studentListByHomeRoomStaff._failure = true;
+                    studentListByHomeRoomStaff._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                studentListByHomeRoomStaff._failure = true;
+                studentListByHomeRoomStaff._message = es.Message;
+            }
+            return studentListByHomeRoomStaff;
         }
     }
 }

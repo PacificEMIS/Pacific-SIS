@@ -9,6 +9,7 @@ export class ImageCropperService {
   imageStat:ImageModel=new ImageModel();
 
   private cropEventSubject = new Subject<any>();
+  private cropEventSubjectForThumbnail = new Subject<any>();
   private unCropEventSubject = new Subject<any>();
   private message = new BehaviorSubject(this.imageStat);
   sharedMessage = this.message.asObservable();
@@ -24,6 +25,13 @@ export class ImageCropperService {
     return this.cropEventSubject.asObservable();
   }
 
+  sendCroppedEventForThumbnail(event) {
+    this.cropEventSubjectForThumbnail.next(event);
+  }
+  getCroppedEventForThumbnail(): Observable<any> {
+    return this.cropEventSubjectForThumbnail.asObservable();
+  }
+  
   sendUncroppedEvent(event) {
     this.unCropEventSubject.next(event);
   }

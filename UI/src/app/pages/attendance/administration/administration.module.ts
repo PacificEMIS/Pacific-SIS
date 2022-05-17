@@ -33,6 +33,7 @@ import { SearchStudentComponent } from './search-student/search-student.componen
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     SharedModuleModule,
     MatSlideToggleModule,
     MatExpansionModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    SearchStudentModule
   ]
 })
 export class AdministrationModule { }

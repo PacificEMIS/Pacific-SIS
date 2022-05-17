@@ -14,6 +14,7 @@ namespace opensis.backgroundjob
             UpdateStudentCoursesectionScheduleDropDate();
             UpdateStudentEnrollmmentDropDate();
             AddMissingAttendance();
+            UpdateReenrollmentDateForStudent();
             Console.WriteLine("process completed.");
         }
 
@@ -573,5 +574,122 @@ namespace opensis.backgroundjob
                 }
             }
         }
+
+        private static void UpdateReenrollmentDateForStudent()
+        {
+            using (var context = new TableContext())
+            {
+                int i = 0;
+                int? Id = 1;
+
+                var scheduledJobsData = context.ScheduledJobs.Where(x => x.IsActive == true && x.JobScheduleDate!.Value.Date <= DateTime.UtcNow.Date && x.ApiTitle == "ReenrollmentForStudent").ToList();
+
+                foreach (var scheduledJob in scheduledJobsData)
+                {
+                    using (var transaction = context?.Database.BeginTransaction())
+                    {
+                        var studentListModel = JsonConvert.DeserializeObject<StudentListModel>(scheduledJob.TaskJson!);
+
+                        if (studentListModel != null)
+                        {
+                            if (i == 0)
+                            {
+                                var dataExits = context?.ScheduledJobHistories.Where(x => x.TenantId == studentListModel.TenantId);
+                                if (dataExits?.Any() == true)
+                                {
+                                    var scheduledJobData = context?.ScheduledJobHistories.Where(x => x.TenantId == studentListModel.TenantId).Max(x => x.JobRunId);
+                                    if (scheduledJobData != null)
+                                    {
+                                        Id = scheduledJobData + 1;
+                                    }
+                                }
+                                i++;
+                            }
+
+                            try
+                            {
+                                foreach (var studentData in studentListModel.studentMaster)
+                                {
+                                    var StudentData = context?.StudentMaster.FirstOrDefault(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid);
+
+                                    if (StudentData != null)
+                                    {
+                                        StudentData.IsActive = true;
+
+                                        //Student Protal Access
+                                        if (studentData.StudentPortalId != null)
+                                        {
+                                            var userMasterData = context?.UserMaster.FirstOrDefault(x => x.EmailAddress == studentData.StudentPortalId && x.TenantId == studentData.TenantId);
+                                            if (userMasterData != null)
+                                            {
+                                                context?.UserMaster.Remove(userMasterData);
+
+                                                UserMaster userMaster = new UserMaster();
+                                                userMaster.TenantId = studentData.TenantId;
+                                                userMaster.SchoolId = (int)studentListModel.SchoolId!;
+                                                userMaster.UserId = studentData.StudentId;
+                                                userMaster.Name = userMasterData.Name;
+                                                userMaster.EmailAddress = userMasterData.EmailAddress;
+                                                userMaster.PasswordHash = userMasterData.PasswordHash;
+                                                userMaster.LangId = userMasterData.LangId;
+                                                var membershipsId = context?.Membership.Where(x => x.SchoolId == (int)studentListModel.SchoolId && x.TenantId == studentListModel.TenantId && x.Profile == "Student").Select(x => x.MembershipId).FirstOrDefault();
+                                                userMaster.MembershipId = (int)membershipsId!;
+                                                userMaster.UpdatedOn = DateTime.UtcNow;
+                                                userMaster.UpdatedBy = studentListModel.UpdatedBy;
+                                                userMaster.IsActive = true;
+                                                context?.UserMaster.Add(userMaster);
+                                            }
+                                        }
+                                    }
+                                    context?.SaveChanges();
+                                }
+
+                                transaction?.Commit();
+
+                                //update job status
+                                scheduledJob.LastRunStatus = true;
+                                scheduledJob.LastRunTime = DateTime.UtcNow;
+                                scheduledJob.IsActive = false;
+
+                                var scheduledJobHistory = new ScheduledJobHistory
+                                {
+                                    TenantId = scheduledJob.TenantId,
+                                    SchoolId = scheduledJob.SchoolId,
+                                    JobId = scheduledJob.JobId,
+                                    JobRunId = (int)Id,
+                                    ScheduledDate = scheduledJob.JobScheduleDate,
+                                    JobStatus = true,
+                                    RunTime = DateTime.UtcNow
+                                };
+                                context?.ScheduledJobHistories.Add(scheduledJobHistory);
+                                Id++;
+                                context?.SaveChanges();
+                            }
+                            catch (Exception ex)
+                            {
+                                //update job status
+                                scheduledJob.LastRunStatus = false;
+                                scheduledJob.LastRunTime = DateTime.UtcNow;
+
+                                var scheduledJobHistory = new ScheduledJobHistory
+                                {
+                                    TenantId = scheduledJob.TenantId,
+                                    SchoolId = scheduledJob.SchoolId,
+                                    JobId = scheduledJob.JobId,
+                                    JobRunId = (int)Id,
+                                    ScheduledDate = scheduledJob.JobScheduleDate,
+                                    JobStatus = false,
+                                    RunTime = DateTime.UtcNow
+                                };
+                                context?.ScheduledJobHistories.Add(scheduledJobHistory);
+                                Id++;
+                                context?.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

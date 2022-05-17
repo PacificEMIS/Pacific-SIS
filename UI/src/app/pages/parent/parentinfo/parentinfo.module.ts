@@ -33,6 +33,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { ParentAdvancedSearchModule } from 'src/app/common/parent-advanced-search/parent-advanced-search.module';
 @NgModule({
   declarations: [ParentinfoComponent, SearchParentComponent],
   imports: [
@@ -68,7 +69,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatFormFieldModule,
     MatSlideToggleModule,
     MatRippleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ParentAdvancedSearchModule
   ]
 })
 export class ParentinfoModule { }

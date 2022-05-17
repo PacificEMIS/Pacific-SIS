@@ -103,7 +103,7 @@
 
                     <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: visibleColumns;"></tr>
-                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount != null"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [class.hidden]="totalCount !== 0 && totalCount !== null"></tr>
                 </table>
             </div>
             <mat-paginator [length]="totalCount" [class.hidden]="totalCount == null || totalCount == 0"
@@ -120,10 +120,10 @@
         <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
             <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20"
                 @fadeInRight>
-                <vex-search-staff (searchList)="getSearchResult($event)" [incomingSearchValue]="searchValue"
-                    (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
-                    (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
-                </vex-search-staff>
+                <vex-common-staff-advanced-search [incomingSearchValue]="searchValue"
+                    (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)"
+                   (showHideAdvanceSearch)="hideAdvanceSearch($event)" [parentComponent]="parentComponent" (searchValue)="getSearchInput($event)">
+                </vex-common-staff-advanced-search>
             </div>
             <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>
@@ -291,12 +291,12 @@
             <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
                 <div class="md:flex w-full justify-end">
                     <div class="py-2 md:pt-2 items-center">
-                        <a class="cursor-pointer inline-block align-middle" matTooltip="Export to Excel"
+                        <a class="cursor-pointer inline-block align-middle" matTooltip="{{'exportToExcel' | translate}}"
                             (click)="generateExcel()">
                             <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                         </a>
                         <a [matMenuTriggerFor]="columnFilterMenu"
-                            class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="Filter">
+                            class="cursor-pointer p-1 mt-1 inline-block align-middle ml-2" matTooltip="{{'filter' | translate}}">
                             <mat-icon [icIcon]="icFilterList"></mat-icon>
                         </a>
                     </div>

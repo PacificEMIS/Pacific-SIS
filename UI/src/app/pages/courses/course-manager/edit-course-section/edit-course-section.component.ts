@@ -167,7 +167,7 @@ export class EditCourseSectionComponent implements OnInit {
         calendarId: ['', Validators.required],
         isActive: [true],
         gradeScaleId: ['', Validators.required],
-        creditHours: [this.data.editMode? this.data.courseDetails?.creditHours ? this.data.courseDetails?.creditHours+'' : '' : '', Validators.pattern('[0-9]{1,3}[.]?[0-9]{0,3}')],
+        creditHours: [null, Validators.pattern('[0-9]{1,3}[.]?[0-9]{0,3}')],
         seats: [''],
         attendanceCategoryId: [''],
         allowStudentConflict:[false],
@@ -215,7 +215,7 @@ export class EditCourseSectionComponent implements OnInit {
       isActive: this.data.courseSectionDetails.courseSection.isActive,
       courseSectionName: this.data.courseSectionDetails.courseSection.courseSectionName,
       calendarId: this.data.courseSectionDetails.courseSection.calendarId,
-      creditHours: this.data.courseSectionDetails.courseSection.creditHours,
+      creditHours: this.data.courseSectionDetails.courseSection.creditHours ? parseFloat(this.data.courseSectionDetails.courseSection.creditHours).toFixed(3) : null,
       attendanceCategoryId: this.data.courseSectionDetails.courseSection.attendanceCategoryId,
       seats: this.data.courseSectionDetails.courseSection.seats,
       allowStudentConflict: this.data.courseSectionDetails.courseSection.allowStudentConflict,
@@ -427,6 +427,7 @@ export class EditCourseSectionComponent implements OnInit {
   }
 
   checkForSubmit() {
+    this.scrollToInvalidControlForOthers();
     if (this.scheduleType == '0') {
       this.snackbar.open('Please select a schedule ', '', {
         duration: 10000
@@ -491,6 +492,28 @@ export class EditCourseSectionComponent implements OnInit {
         '.attendanceCategory'
       );
         firstInvalidControl.scrollIntoView({ behavior: 'smooth',block: 'center' });
+  }
+
+  scrollToInvalidControlForOthers() {
+    if (this.form.controls.courseSectionName.invalid) {
+      const invalidCourseSectionNameControl: HTMLElement = this.el.nativeElement.querySelector('.courseSectionName-scroll');
+      invalidCourseSectionNameControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.calendarId.invalid) {
+      const invalidCalendarIdControl: HTMLElement = this.el.nativeElement.querySelector('.calendar-scroll');
+      invalidCalendarIdControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.gradeScaleId.invalid) {
+      const invalidGradeScaleIdControl: HTMLElement = this.el.nativeElement.querySelector('.gradeScale-scroll');
+      invalidGradeScaleIdControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.seats.invalid) {
+      const invalidSeatsControl: HTMLElement = this.el.nativeElement.querySelector('.seats-scroll');
+      invalidSeatsControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (!this.durationType) {
+      const invalidDurationTypeControl: HTMLElement = this.el.nativeElement.querySelector('.durationType-scroll');
+      invalidDurationTypeControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.scheduleType === '0') {
+      const invalidScheduleType: HTMLElement = this.el.nativeElement.querySelector('.scheduleType-scroll');
+      invalidScheduleType.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 
   submit() {

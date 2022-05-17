@@ -33,6 +33,7 @@ import { ContainerModule } from 'src/@vex/directives/container/container.module'
 import { SharedModuleModule } from '../shared-module/shared-module.module';
 import { SearchStudentComponent } from './search-student/search-student.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
@@ -71,6 +72,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     MatSlideToggleModule,
     MatRippleModule,
     MatProgressSpinnerModule,
+    SearchStudentModule
   ],
   exports: [SearchStudentComponent]
 })

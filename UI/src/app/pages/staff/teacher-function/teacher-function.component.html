@@ -15,7 +15,7 @@
                 routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/gradebook-grades']">
                     <img src="assets/img/icons/exam.svg" width="24" class="mr-3" alt="Gradebook grades icon"> {{ "gradebookGrades" | translate }}
                 </a>
-                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" matRipple >
+                <a @fadeInRight class="list-item mt-2 no-underline flex items-center" *ngIf="showIsProgressReport" routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/progress-report']">
                     <mat-icon class="mr-3">insights</mat-icon> {{ "progressReports" | translate }}
                 </a>
                 <a @fadeInRight class="list-item mt-2 no-underline flex items-center" *ngIf="showIsTakeAttendance" routerLinkActive="text-primary" matRipple [routerLink]="['/school/staff/teacher-functions/take-attendance']">

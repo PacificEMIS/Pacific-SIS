@@ -23,6 +23,8 @@ import icFilterList from '@iconify/icons-ic/filter-list';
 import { fadeInUp400ms } from 'src/@vex/animations/fade-in-up.animation';
 import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import * as moment from 'moment';
 
 
 export interface StudentListData {
@@ -94,6 +96,8 @@ export class AdvanceReportComponent implements OnInit {
   displayedColumnsReportList: string[] = ['studentName', 'studentId', 'alternateId', 'dateOfBirth', 'firstLanguage', 'fullAddress', 'mailingAddress'];
   generateStudentList: any;
   getAllStudent: StudentListByDateRangeModel = new StudentListByDateRangeModel();
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  isFromAdvancedSearch: boolean = false;
   totalCount: number = 0;
   pageNumber: number;
   pageSize: number;
@@ -159,6 +163,24 @@ export class AdvanceReportComponent implements OnInit {
       { label: 'secondLanguage', property: 'secondLanguage', checked: false },
       { label: 'thirdLanguage', property: 'thirdLanguage', checked: false },
    ],
+    alertInformation: [
+      { label: 'criticalAlert', property: 'criticalAlert', checked: false },
+    ],
+    medicalNotes: [
+      { label: 'medicalNoteDate', property: 'medicalNoteDate', checked: false },
+      { label: 'doctorsNote', property: 'doctorsNote', checked: false }
+    ],
+    immunizationPhysicalRecord: [
+      { label: 'immunizationType', property: 'immunizationType', checked: false },
+      { label: 'immunizationDate', property: 'immunizationDate', checked: false },
+      { label: 'immunizationComment', property: 'immunizationComment', checked: false }
+    ],
+    nurseVisitRecord: [
+      { label: 'nurseVisitDate', property: 'nurseVisitDate', checked: false },
+      { label: 'reason', property: 'reason', checked: false },
+      { label: 'result', property: 'result', checked: false },
+      { label: 'nurseComment', property: 'nurseComment', checked: false }
+    ],
    addressContact : [
     { label: 'studentsFullHomeAddress', property: 'studentsFullHomeAddress', checked: false },
     { label: 'homeAddressLineOne', property: 'homeAddressLineOne', checked: false },
@@ -201,6 +223,9 @@ export class AdvanceReportComponent implements OnInit {
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
     ) { 
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
       this.defaultValuesService.setReportCompoentTitle.next(translateService.instant("Advanced Report"));
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
       this.selectedStudentListForTable = new MatTableDataSource([]);
@@ -261,14 +286,16 @@ export class AdvanceReportComponent implements OnInit {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
         if (data.studentListViews === null) {
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
           this.studentModelList = new MatTableDataSource([]);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
+          this.isFromAdvancedSearch = false;
         } else {
           this.studentModelList = new MatTableDataSource([]);
-          this.totalCount = null;
+          this.totalCount = this.isFromAdvancedSearch ? 0 : null;
+          this.isFromAdvancedSearch = false;
         }
       } else {
         this.totalCount = data.totalCount;
@@ -292,6 +319,7 @@ export class AdvanceReportComponent implements OnInit {
         })
         this.studentModelList = new MatTableDataSource(data.studentListViews);
         this.getAllStudent = new StudentListByDateRangeModel();
+        this.isFromAdvancedSearch = false;
       }
     });
   }
@@ -318,6 +346,23 @@ export class AdvanceReportComponent implements OnInit {
       } else {
         return true;
       }
+    }
+  }
+
+  /* This is for get all data from the Advanced Search component and then call the API in this page 
+  NOTE: We just get the filterParams Array from Search component
+  */
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.getAllStudent = new StudentListByDateRangeModel();
+    this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
+    if (res) {
+      this.getAllStudent.filterParams = res.filterParams;
+      this.getAllStudent.includeInactive = res.inactiveStudents;
+      this.getAllStudent.searchAllSchool = res.searchAllSchool;
+      this.defaultValuesService.sendIncludeInactiveFlag(res.inactiveStudents);
+      this.defaultValuesService.sendAllSchoolFlag(res.searchAllSchool);
+      this.getAllStudentList();
     }
   }
 
@@ -453,6 +498,11 @@ export class AdvanceReportComponent implements OnInit {
     }
   }
 
+  // For format the date
+  formatDate(date) {
+    return date ? moment(date).format('MMM D, YYYY') : null;
+  }
+
   changeFields(event, type, masterCheck?, key?) {
 
     if(masterCheck) {
@@ -529,6 +579,51 @@ export class AdvanceReportComponent implements OnInit {
             item.studentMaster.countryOfBirth=item.countryOfBirth;
             item.studentMaster.homeAddressCountry=item.homeAddressCountry;
             item.studentMaster.mailingAddressCountry=item.mailingAddressCountry;
+
+            item.studentMaster.criticalAlert = item.studentMaster.studentMedicalAlert.length ? item.studentMaster.studentMedicalAlert[0].alertType : null;
+
+            if (item.studentMaster.studentMedicalNote.length) {
+              item.studentMaster.studentMedicalNote.map(medicalNoteItem => {
+                item.studentMaster.medicalNoteDate = medicalNoteItem.noteDate ? item.studentMaster.medicalNoteDate ? item.studentMaster.medicalNoteDate + ", " + this.formatDate(medicalNoteItem.noteDate) : this.formatDate(medicalNoteItem.noteDate) : item.studentMaster?.medicalNoteDate;
+
+                item.studentMaster.doctorsNote = medicalNoteItem.medicalNote ? item.studentMaster.doctorsNote ? item.studentMaster.doctorsNote + ", " + medicalNoteItem.medicalNote : medicalNoteItem.medicalNote : item.studentMaster?.doctorsNote;
+              });
+            } else {
+              item.studentMaster.medicalNoteDate = null;
+              item.studentMaster.doctorsNote = null;
+            }
+
+            if (item.studentMaster.studentMedicalImmunization.length) {
+              item.studentMaster.studentMedicalImmunization.map(immunizationItem => {
+                item.studentMaster.immunizationType = immunizationItem.immunizationType ? item.studentMaster.immunizationType ? item.studentMaster.immunizationType + ", " + immunizationItem.immunizationType : immunizationItem.immunizationType : item.studentMaster?.immunizationType;
+
+                item.studentMaster.immunizationDate = immunizationItem.immunizationDate ? item.studentMaster.immunizationDate ? item.studentMaster.immunizationDate + ", " + this.formatDate(immunizationItem.immunizationDate) : this.formatDate(immunizationItem.immunizationDate) : item.studentMaster?.immunizationDate;
+
+                item.studentMaster.immunizationComment = immunizationItem.comment ? item.studentMaster.immunizationComment ? item.studentMaster.immunizationComment + ", " + immunizationItem.comment : immunizationItem.comment : item.studentMaster?.immunizationComment;
+              });
+            } else {
+              item.studentMaster.immunizationType = null;
+              item.studentMaster.immunizationDate = null;
+              item.studentMaster.immunizationComment = null;
+            }
+
+            if (item.studentMaster.studentMedicalNurseVisit.length) {
+              item.studentMaster.studentMedicalNurseVisit.map(nurseVisitItem => {
+                item.studentMaster.nurseVisitDate = nurseVisitItem.nurseVisitDate ? item.studentMaster.nurseVisitDate ? item.studentMaster.nurseVisitDate + ", " + this.formatDate(nurseVisitItem.nurseVisitDate) : this.formatDate(nurseVisitItem.nurseVisitDate) : item.studentMaster?.nurseVisitDate;
+
+                item.studentMaster.reason = nurseVisitItem.reason ? item.studentMaster.reason ? item.studentMaster.reason + ", " + nurseVisitItem.reason : nurseVisitItem.reason : item.studentMaster?.reason;
+
+                item.studentMaster.result = nurseVisitItem.result ? item.studentMaster.result ? item.studentMaster.result + ", " + nurseVisitItem.result : nurseVisitItem.result : item.studentMaster?.result;
+
+                item.studentMaster.nurseComment = nurseVisitItem.comment ? item.studentMaster.nurseComment ? item.studentMaster.nurseComment + ", " + nurseVisitItem.comment : nurseVisitItem.comment : item.studentMaster?.nurseComment;
+              });
+            } else {
+              item.studentMaster.nurseVisitDate = null;
+              item.studentMaster.reason = null;
+              item.studentMaster.result = null;
+              item.studentMaster.nurseComment = null;
+            }
+
           item.fieldsCategoryList[0].customFields.map((subItem)=>{
             item.studentMaster[subItem.title] = subItem.customFieldsValue?.length > 0 ? subItem.customFieldsValue[0].customFieldValue : subItem.defaultSelection;
           })

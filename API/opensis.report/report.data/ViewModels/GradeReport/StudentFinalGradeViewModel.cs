@@ -87,10 +87,10 @@ namespace opensis.report.report.data.ViewModels.GradeReport
     }
     public class MarkingPeriodDetailsView
     {
-        public int? MarkingPeriodId { get; set; }
         public string? MarkingPeriodName { get; set; }
         public decimal? Percentage { get; set; }
         public string? Grade { get; set; }
+        public string? SortId { get; set; }
     }
 
 }

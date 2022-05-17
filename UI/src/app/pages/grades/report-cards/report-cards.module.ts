@@ -36,7 +36,8 @@ import { SearchStudentComponent } from '../search-student/search-student.compone
 import { ReportCardsComponent } from './report-cards.component';
 import { ReportCardsRoutingModule } from './report-cards-routing.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import {MatRadioModule} from '@angular/material/radio';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 
@@ -82,7 +83,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDividerModule,
     NgxDocViewerModule,
     MatExpansionModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    SearchStudentModule
   ],
   exports:[
     SearchStudentComponent

@@ -28,6 +28,10 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
                         <div class="mb-2">
+                            <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                                <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="false" style="margin-left: 10px;" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
+                              </mat-radio-group> <br><br>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
                                 [(ngModel)]="addReportCardPdf.teacherName">
                                 {{ "teacherName" | translate}}
@@ -129,13 +133,11 @@
                                 </ng-container>
                                 <ng-container matColumnDef="gradeLevelTitle">
                                     <th mat-header-cell *matHeaderCellDef>{{ 'gradeLevel' | translate }}</th>
-                                    <td mat-cell *matCellDef="let element">{{ element?.gradeLevelTitle
-                                        | EmtyValueCheckPipe}}</td>
+                                    <td mat-cell *matCellDef="let element">{{isAdmin ? (element.gradeLevelTitle | EmtyValueCheckPipe) : (element.gradeLevel | EmtyValueCheckPipe)}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="section">
                                     <th mat-header-cell *matHeaderCellDef>{{ 'section' | translate }}</th>
-                                    <td mat-cell *matCellDef="let element">{{ element.sectionName | EmtyValueCheckPipe}}
-                                    </td>
+                                    <td mat-cell *matCellDef="let element">{{isAdmin ? (element.sectionName | EmtyValueCheckPipe) : (element.section | EmtyValueCheckPipe)}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="homePhone">
                                     <th mat-header-cell *matHeaderCellDef>{{ 'phone' | translate }}</th>
@@ -193,10 +195,10 @@
         <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
             <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20"
                 @fadeInRight>
-                <vex-search-student (searchList)="getSearchResult($event)" [filterJsonParams]="filterJsonParams"
-                    [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)"
-                    [incomingToggleValues]="toggleValues" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
-                    (searchValue)="getSearchInput($event)" (teacherFilterSearchValue)="getTeacherSearchInput($event)"></vex-search-student>
+                <vex-common-search-student [filterJsonParams]="filterJsonParams"
+                    [incomingSearchValue]="searchValue" (toggelValues)="getToggleValues($event)" [advancedSearchExpansion]="advancedSearchExpansionModel"
+                    [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)" (showHideAdvanceSearch)="hideAdvanceSearch($event)"
+                    (searchValue)="getSearchInput($event)" (teacherFilterSearchValue)="getTeacherSearchInput($event)"></vex-common-search-student>
             </div>
             <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
         </div>
@@ -218,7 +220,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="header-middle float-left">
+                                <div class="header-middle text-center">
                                     <h2 class="text-uppercase">{{'studentReportCard' | translate | uppercase }}</h2>
                                     <p class="text-center">{{grade?.schoolName}}</p>
                                 </div>
@@ -298,7 +300,7 @@
             </tr>
             <tr>
                 <td *ngIf="addReportCardPdf?.templateType === 'chuuk'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -355,7 +357,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'kosrae'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -395,7 +397,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'pohnpei'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -431,7 +433,7 @@
                     </table>
                 </td>
                 <td *ngIf="addReportCardPdf?.templateType === 'yap'" class="semester-table">
-                    <table>
+                    <table class="behavior-subtable">
                         <caption>
                             <h2><b>{{'behavior'|translate}} - {{addReportCardPdf?.templateType | titlecase}}</b>
                             </h2>
@@ -695,7 +697,7 @@
                 </td>
             </tr>
             <tr *ngFor="let markingPeriod of grade?.markingPeriodDetailsForDefaultTemplates">
-                <td class="semester-table">
+                <td class="semester-table" *ngIf="markingPeriod?.courseSectionGradeDetailsForDefaultTemplates.length>0">
                     <table>
                         <caption>
                             <h2 class="float-left">{{markingPeriod?.markingPeriodTitle}}</h2>
@@ -724,6 +726,52 @@
                     </table>
                 </td>
             </tr>
+            <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode2">
+                <tr *ngFor="let standerdsGrade of grade?.standerdsGradeList; let i=index">
+                    <td class="semester-table">
+                        <table>
+                            <caption *ngIf="i==0">
+                                <h2 class="float-left">{{'standardsGrade' | translate}}</h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{standerdsGrade.courseSectionName+'   |   '+('teacher' | translate)+' : '+standerdsGrade.staffName}}</th>
+                                    <th *ngFor="let markingPeriod of standerdsGrade?.standerdsGradeDetails[0]?.markingPeriodDetailsforStanderdsGrades">{{markingPeriod.markingPeriodName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let x of standerdsGrade?.standerdsGradeDetails">
+                                    <td>{{x?.standardRefNo+' : '+x?.standardDetails}}</td>
+                                    <td *ngFor="let y of x?.markingPeriodDetailsforStanderdsGrades">{{y?.value ? y?.value:'N/A'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-template #ViewMode2>
+                <tr *ngFor="let effortGrade of grade?.effortGradeList; let i=index">
+                    <td class="semester-table">
+                        <table>
+                            <caption *ngIf="i==0">
+                                <h2 class="float-left">{{'effortGrade' | translate}}</h2>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>{{effortGrade.categoryName}}</th>
+                                    <th *ngFor="let markingPeriod of effortGrade?.effortGradeItemDetails[0]?.markingPeriodDetailsforEffortGrades">{{markingPeriod.markingPeriodName}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let x of effortGrade?.effortGradeItemDetails">
+                                    <td>{{x?.effortItemTitle}}</td>
+                                    <td *ngFor="let y of x?.markingPeriodDetailsforEffortGrades">{{y?.gradeScaleValue ? y?.gradeScaleValue:'N/A'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </ng-template>
             <tr>
                 <td class="signature-table">
                     <table cell-padding="10">
@@ -751,46 +799,56 @@
         <div style="page-break-before:always">&nbsp;</div>
         <table>
             <tr>
-                <td class="comments">
+                <td class="comments" *ngIf="grade?.courseCommentCategories?.length>0">
                     <table>
                         <h4>{{'forCommentKeysPleaseFollowTheDescriptionBelow'|translate}}:</h4>
                         <tr>
                             <td>
-                                <p>1. {{'Works for academic excellence'|translate}}</p>
-                                <p>2. {{'showsAcademicImprovements'|translate}}</p>
-                                <p>3. {{'Participates effectively'|translate}}</p>
-                                <p>4. {{'positiveAttitudeAndEffort'|translate}}</p>
-                                <p>5. {{'makesConnectionAndAppliesKnowledge'|translate}}</p>
-                                <p>6. {{'displaysGoodStudySkills'|translate}}</p>
-                                <p>7. {{'worksWellInGroupactivities'|translate}}</p>
-                                <p>8. {{'homeAssignmentsAreGenerallyInferiorToWorkDoneInSchool'|translate}}</p>
-                                <p>9. {{'homeAssignmentsAreGenerallySuperiorToWorkDoneInSchool'|translate}}</p>
+                                <p *ngFor="let x of grade?.courseCommentCategories| slice:0:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let i=index;">{{i+1}}. {{x?.comments}}</p>
                             </td>
                             <td>
-                                <p>10. {{'appearsDisorganized'|translate}}</p>
-                                <p>11. {{'qualityOfWorkDeclining'|translate}}</p>
-                                <p>12. {{'doesNotBringMaterialsFollowDirections'|translate}}</p>
-                                <p>13. {{'inconsistentEffort'|translate}}</p>
-                                <p>14. {{'needsToParticipateMoreInDiscussion'|translate}}</p>
-                                <p>15. {{'difficultyInMakingConnectionsAndApplyingKnowledge'|translate}}</p>
-                                <p>16. {{'hasDifficultyOnExams'|translate}}</p>
-                                <p>17. {{'unableToMaintainAttentivenessThroughoutEntireClassPeriod'|translate}}</p>
+                                <p *ngFor="let y of grade?.courseCommentCategories| slice:(grade?.courseCommentCategories?.length%2==0?halfLengthOfComment:halfLengthOfComment+1); let j=index;">{{j+10}}. {{y?.comments}}</p>
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr>
-                <td class="comments">
+                <td class="comments" *ngIf="grade?.teacherCommentList.length>0">
                     <h4>{{'teacherComments'|translate}}:</h4>
-                    <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <p>2. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
-                        convallis pulvinar nec et dui.</p>
-                    <p>3. Ut tempus tristique velit ut eleifend. In hac habitasse platea dictumst. Pellentesque ac
-                        mattis ipsum.</p>
-                    <p>4. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <p>5. Vivamus imperdiet pretium pellentesque. Mauris vitae iaculis magna. Nam ut leo in ante
-                        convallis pulvinar nec et dui.</p>
+                    <p *ngFor="let comment of grade?.teacherCommentList; let k=index;">{{k+1}}. {{comment}}.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="comments">
+                    <table>
+                        <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode1">
+                            <div *ngIf="grade?.standerdGradeScale?.length>0">
+                            <h4>{{'standardsGradeLegend' | translate}}:</h4>
+                            <tr>
+                                <td>
+                                    <p *ngFor="let x of grade?.standerdGradeScale| slice:0:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let i=index;">{{i+1}}. {{x?.comment}}</p>
+                                </td>
+                                <td>
+                                    <p *ngFor="let y of grade?.standerdGradeScale| slice:(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment:halfLengthOfStandardGradeComment+1); let j=index;">{{j+(grade?.standerdGradeScale?.length%2==0?halfLengthOfStandardGradeComment+1:halfLengthOfStandardGradeComment+2)}}. {{y?.comment}}</p>
+                                </td>
+                            </tr>
+                            </div>
+                        </ng-container>
+                        <ng-template #ViewMode1>
+                            <div *ngIf="grade?.effortGradeScales?.length>0">
+                            <h4>{{'effortGradeLegend' | translate}}:</h4>
+                            <tr>
+                                <td>
+                                    <p *ngFor="let x of grade?.effortGradeScales| slice:0:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let i=index;">{{i+1}}. {{x?.gradeScaleComment}}</p>
+                                </td>
+                                <td>
+                                    <p *ngFor="let y of grade?.effortGradeScales| slice:(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment:halfLengthOfEffortGradeComment+1); let j=index;">{{j+(grade?.effortGradeScales?.length%2==0?halfLengthOfEffortGradeComment+1:halfLengthOfEffortGradeComment+2)}}. {{y?.gradeScaleComment}}</p>
+                                </td>
+                            </tr>
+                            </div>
+                        </ng-template>
+                    </table>
                 </td>
             </tr>
         </table>

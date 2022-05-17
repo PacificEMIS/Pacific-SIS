@@ -120,12 +120,12 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   
   this.currentRolePermission = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.permissions : undefined;
 
-    this.imageCropperService
-      .getCroppedEvent()
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe((res) => {
-        this.studentService.setStudentImage(res[1]);
-      });
+    // this.imageCropperService
+    //   .getCroppedEvent()
+    //   .pipe(takeUntil(this.destroySubject$))
+    //   .subscribe((res) => {
+    //     this.studentService.setStudentImage(res[1]);
+    //   });
     this.studentService.selectedCatgoryTitle
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: string) => {

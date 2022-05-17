@@ -118,6 +118,7 @@ namespace opensis.data.Models
         public virtual DbSet<StudentFinalGradeComments> StudentFinalGradeComments { get; set; } = null!;
         public virtual DbSet<StudentFinalGradeStandard> StudentFinalGradeStandard { get; set; } = null!;
         public virtual DbSet<StudentListView> StudentListView { get; set; } = null!;
+        public virtual DbSet<StudentMedicalListView> StudentMedicalListViews { get; set; } = null!;
         public virtual DbSet<StudentMaster> StudentMaster { get; set; } = null!;
         public virtual DbSet<StudentMedicalAlert> StudentMedicalAlert { get; set; } = null!;
         public virtual DbSet<StudentMedicalImmunization> StudentMedicalImmunization { get; set; } = null!;
@@ -5244,6 +5245,8 @@ namespace opensis.data.Models
 
                 entity.Property(e => e.IsDropped).HasColumnName("is_dropped");
 
+                entity.Property(e => e.IsPrimaryStaff).HasColumnName("is_primary_staff");
+
                 entity.Property(e => e.MeetingDays)
                     .HasMaxLength(100)
                     .HasColumnName("meeting_days");
@@ -7104,6 +7107,57 @@ namespace opensis.data.Models
                     .HasColumnName("updated_on");
 
                 entity.Property(e => e.Youtube).HasColumnName("youtube");
+            });
+
+            modelBuilder.Entity<StudentMedicalListView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("student_medical_list_view");
+
+                entity.Property(e => e.AlertDescription).HasColumnName("alert_description");
+
+                entity.Property(e => e.AlertType)
+                    .HasMaxLength(100)
+                    .HasColumnName("alert_type");
+
+                entity.Property(e => e.ImmunizationComment).HasColumnName("immunization_comment");
+
+                entity.Property(e => e.ImmunizationDate)
+                    .HasColumnType("date")
+                    .HasColumnName("immunization_date");
+
+                entity.Property(e => e.ImmunizationType)
+                    .HasMaxLength(150)
+                    .HasColumnName("immunization_type");
+
+                entity.Property(e => e.MedicalNote).HasColumnName("medical_note");
+
+                entity.Property(e => e.NoteDate)
+                    .HasColumnType("date")
+                    .HasColumnName("note_date");
+
+                entity.Property(e => e.NurseComment).HasColumnName("nurse_comment");
+
+                entity.Property(e => e.NurseVisitDate)
+                    .HasColumnType("date")
+                    .HasColumnName("nurse_visit_date");
+
+                entity.Property(e => e.Reason)
+                    .HasMaxLength(250)
+                    .HasColumnName("reason");
+
+                entity.Property(e => e.Result)
+                    .HasMaxLength(250)
+                    .HasColumnName("result");
+
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+
+                entity.Property(e => e.StudentId).HasColumnName("student_id");
+
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+                entity.Property(e => e.StudentGuid).HasColumnName("student_guid");
             });
 
             modelBuilder.Entity<StudentMaster>(entity =>

@@ -48,10 +48,10 @@
             </div>
             <hr class="-mx-4 block md:hidden" />
             <div class="py-2 md:pt-2 items-center">
-                <a (click)="printAddDropScheduleList()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="Print">
+                <a (click)="printAddDropScheduleList()" class="cursor-pointer p-1 mt-1 inline-block align-middle" matTooltip="{{'print' | translate}}">
                     <mat-icon [icIcon]="icPrint"></mat-icon>
                 </a>
-                <a (click)="exportAddDropScheduleListToExcel()" class="cursor-pointer inline-block align-middle ml-4" matTooltip="Export to Excel">
+                <a (click)="exportAddDropScheduleListToExcel()" class="cursor-pointer inline-block align-middle ml-4" matTooltip="{{'exportToExcel' | translate}}">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
             </div>

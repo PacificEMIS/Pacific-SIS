@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import icClose from '@iconify/icons-ic/twotone-close';
@@ -110,6 +110,7 @@ export class AddEventComponent implements OnInit {
     private fb: FormBuilder,
     public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
+    private el: ElementRef
   ) {
     this.translate.setDefaultLang('en');
     this.form = this.fb.group({
@@ -234,8 +235,22 @@ export class AddEventComponent implements OnInit {
 
   }
 
+  scrollToInvalidControl() {
+    if (this.form.controls.title.invalid) {
+      const invalidTitleControl: HTMLElement = this.el.nativeElement.querySelector('.title-scroll');
+      invalidTitleControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.startDate.invalid) {
+      const invalidStartDateControl: HTMLElement = this.el.nativeElement.querySelector('.startDate-scroll');
+      invalidStartDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (this.form.controls.endDate.invalid) {
+      const invalidEndDateControl: HTMLElement = this.el.nativeElement.querySelector('.endDate-scroll');
+      invalidEndDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   // save event
   submitCalendarEvent() {
+    this.scrollToInvalidControl();
     this.calendarEventAddViewModel.schoolCalendarEvent.title = this.form.value.title;
     // this.calendarEventAddViewModel.schoolCalendarEvent.academicYear = this.defaultValuesService.getAcademicYear();
     this.calendarEventAddViewModel.schoolCalendarEvent.description = this.form.value.notes;
@@ -284,6 +299,7 @@ export class AddEventComponent implements OnInit {
 
   // Save Holiday
   submitHolidayEvent() {
+    this.scrollToInvalidControl();
     this.calendarEventAddViewModel.schoolCalendarEvent.title = this.form.value.title;
     // this.calendarEventAddViewModel.schoolCalendarEvent.academicYear = this.defaultValuesService.getAcademicYear();
     this.calendarEventAddViewModel.schoolCalendarEvent.description = this.form.value.notes;

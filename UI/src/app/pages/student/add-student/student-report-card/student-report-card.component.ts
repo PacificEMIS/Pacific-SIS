@@ -61,6 +61,7 @@ export class StudentReportCardComponent implements OnInit {
   permissions: Permissions;
   reportCardType = reportCardType;
   generatedReportCardData: any;
+  halfLengthOfComment:number = 0;
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -130,7 +131,8 @@ export class StudentReportCardComponent implements OnInit {
   addAndGenerateReportCard() {
     return new Promise((resolve, reject) => {
       this.addReportCardPdf.markingPeriods = this.markingPeriods.toString();
-
+      this.addReportCardPdf.standardGrade = null;
+      this.addReportCardPdf.effortGrade = null;
       // this.reportCardService.addReportCard(this.addReportCardPdf).subscribe((res) => {
       this.reportCardService.getReportCardForStudents(this.addReportCardPdf).subscribe((res) => {
         if (res._failure) {
@@ -154,6 +156,9 @@ export class StudentReportCardComponent implements OnInit {
       this.addAndGenerateReportCard().then((res: any) => {
         this.generatedReportCardData = res;
         if(this.addReportCardPdf?.templateType === 'default') {
+          if(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length>0) {
+            this.halfLengthOfComment = Math.floor(this.generatedReportCardData?.studentsReportCardViewModelList[0]?.courseCommentCategories?.length/2);
+          }
           setTimeout(() => {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
@@ -215,6 +220,12 @@ export class StudentReportCardComponent implements OnInit {
     printContents = document.getElementById('printSectionId').innerHTML;
     document.getElementById('printSectionId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -329,6 +340,7 @@ export class StudentReportCardComponent implements OnInit {
     popupWin.document.close();
     document.getElementById('printSectionId').className = 'hidden';
     return;
+    }
   }
 
   generatePdfForDefault(){
@@ -336,6 +348,12 @@ export class StudentReportCardComponent implements OnInit {
     printContents = document.getElementById('printReportCardId').innerHTML;
     document.getElementById('printReportCardId').className = 'block';
     popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if(popupWin === null || typeof(popupWin)==='undefined'){
+      document.getElementById('printReportCardId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
     popupWin.document.open();
     popupWin.document.write(`
       <html>
@@ -423,6 +441,7 @@ export class StudentReportCardComponent implements OnInit {
     popupWin.document.close();
     document.getElementById('printReportCardId').className = 'hidden';
     return;
+    }
   }
 
 // Old Method

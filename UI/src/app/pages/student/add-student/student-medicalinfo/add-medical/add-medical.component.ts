@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icClose from '@iconify/icons-ic/twotone-close';
 import { StudentService } from '../../../../../services/student.service';
@@ -58,7 +58,8 @@ export class AddMedicalComponent implements OnInit {
     private studentService: StudentService,
     private sharedFunction: SharedFunction,
     private commonService: CommonService,
-    private defaultValuesService: DefaultValuesService
+    private defaultValuesService: DefaultValuesService,
+    private el: ElementRef
     ) {
     //translateService.use('en');
   }
@@ -83,8 +84,17 @@ export class AddMedicalComponent implements OnInit {
       this.form.controls.medicalNote.patchValue(this.data.medicalNote);
     }
   }
+
+  scrollToInvalidControl() {
+    if (this.form.controls.noteDate.invalid) {
+      const invalidNoteDateControl: HTMLElement = this.el.nativeElement.querySelector('.noteDate-scroll');
+      invalidNoteDateControl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   submit(){
     this.form.markAsTouched();
+    this.scrollToInvalidControl();
     if (this.form.valid){
       if (this.form.controls.id.value === 0){
         this.addEditStudentMedicalNoteModel.studentMedicalNote.noteDate = this.sharedFunction.formatDateSaveWithoutTime(this.form.controls.noteDate.value);

@@ -12,7 +12,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ 'alertInformation' | translate }}</mat-label>
-                        <input matInput formControlName="alertType" required>
+                        <input matInput class="alertType-scroll" formControlName="alertType" required>
                         <mat-error *ngIf="form.get('alertType').hasError('whitespace')">{{'alertInformationIsRequired'|translate}}</mat-error>
                     </mat-form-field>
                 </li>

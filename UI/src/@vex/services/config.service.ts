@@ -7,6 +7,7 @@ import { LayoutService } from './layout.service';
 import { configs } from './configs';
 import { ConfigName } from '../interfaces/config-name.model';
 import { Config } from '../interfaces/config.model';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,11 @@ export class ConfigService {
   private _configSubject = new BehaviorSubject(this.configs.find(c => c.id === this.defaultConfig));
   config$ = this._configSubject.asObservable();
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              private layoutService: LayoutService) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private layoutService: LayoutService,
+    private defaultValuesService: DefaultValuesService,
+  ) {
     this.config$.subscribe(config => this._updateConfig(config));
   }
 
@@ -47,8 +51,9 @@ export class ConfigService {
     });
 
     body.classList.add(config.id);
+    this.defaultValuesService.getCollapseValue() ? this.layoutService.collapseSidenav() : this.layoutService.expandSidenav()
 
-    config.sidenav.state === 'expanded' ? this.layoutService.expandSidenav() : this.layoutService.collapseSidenav();
+    // config.sidenav.state === 'expanded' ? this.layoutService.expandSidenav() : this.layoutService.collapseSidenav();
 
     // Workaround so charts and other externals know they have to resize on Layout switch
     if (window) {

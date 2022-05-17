@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.StudentEffortGrade.Interfaces;
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentEffortGrade;
 using System;
 using System.Collections.Generic;
@@ -47,9 +48,9 @@ namespace opensisAPI.Controllers
         }
 
         [HttpPost("addUpdateStudentEffortGrade")]
-        public ActionResult<StudentEffortGradeListModel> AddUpdateStudentEffortGrade(StudentEffortGradeListModel studentEffortGradeListModel)
+        public ActionResult<HomeRoomStaffByStudentListModel> AddUpdateStudentEffortGrade(HomeRoomStaffByStudentListModel studentEffortGradeListModel)
         {
-            StudentEffortGradeListModel studentEffortGradeAdd = new StudentEffortGradeListModel();
+            HomeRoomStaffByStudentListModel studentEffortGradeAdd = new HomeRoomStaffByStudentListModel();
             try
             {
                 studentEffortGradeAdd = _studentEffortGradeService.AddUpdateStudentEffortGrade(studentEffortGradeListModel);
@@ -77,6 +78,23 @@ namespace opensisAPI.Controllers
                 studentEffortGradeList._failure = true;
             }
             return studentEffortGradeList;
+        }
+
+        [HttpPost("GetStudentListByHomeRoomStaff")]
+        public ActionResult<HomeRoomStaffByStudentListModel> GetStudentListByHomeRoomStaff(PageResult pageResult)
+        {
+            HomeRoomStaffByStudentListModel studentListByHomeRoomStaff = new HomeRoomStaffByStudentListModel();
+            try
+            {
+                studentListByHomeRoomStaff = _studentEffortGradeService.GetStudentListByHomeRoomStaff(pageResult);
+            }
+            catch (Exception ex)
+            {
+
+                studentListByHomeRoomStaff._message = ex.Message;
+                studentListByHomeRoomStaff._failure = true;
+            }
+            return studentListByHomeRoomStaff;
         }
     }
 }

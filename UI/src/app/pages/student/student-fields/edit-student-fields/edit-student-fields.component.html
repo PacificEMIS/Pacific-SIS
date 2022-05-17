@@ -10,14 +10,14 @@
 <mat-dialog-content fxLayout="column" [formGroup]="form">
     <mat-form-field class="mt-6" appearance="outline" color="primary">
         <mat-label>{{'fieldName' | translate}}</mat-label>
-        <input formControlName="title" cdkFocusInitial matInput required>
+        <input formControlName="title" class="fieldName-scroll" cdkFocusInitial matInput required>
         <mat-error *ngIf="form.get('title').hasError('whitespace')">{{'fieldNameIsRequired'|translate}}</mat-error>
     </mat-form-field>
 
 
     <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'fieldType' | translate}}</mat-label>
-        <mat-select name="gender" formControlName="fieldType" (selectionChange)="checkFieldType($event)" required>
+        <mat-select name="gender" formControlName="fieldType" class="fieldType-scroll" (selectionChange)="checkFieldType($event)" required>
             <mat-option *ngFor="let customFieldOption of customFieldOptionsEnum" [value]="customFieldOption">{{customFieldOption}}</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('fieldType').hasError('required')">{{'fieldTypeIsRequired'|translate}}</mat-error>

@@ -1,6 +1,7 @@
 import { DefaultValuesService } from "../common/default-values.service";
 import { CommonField } from "./common-field.model";
 import { CustomFieldModel } from "./custom-field.model";
+import { filterParams } from "./student.model";
 
 export class AgeRangeList extends CommonField{
     gradeAgeRangeList:[GradeRange]
@@ -69,6 +70,48 @@ export class FilterParamsForAdvancedSearch {
     filterOption: number;
     constructor() {
         this.filterOption = 1;
+    }
+}
+
+export class FilterParamsForAdvancedSearchModel {
+    public filterParams: filterParams[];
+    constructor() {
+        this.filterParams = [];
+    }
+}
+
+export class AdvancedSearchExpansionModel {
+    identificationInformation: boolean;
+    accessInformation: boolean;
+    searchBirthdays: boolean;
+    demographicInformation: boolean;
+    enrollmentInformation: boolean;
+    reEnrollmentInformation: boolean;
+    addressInformation: boolean;
+    personalContactInformation: boolean;
+    alertInformation: boolean;
+    medicalNotes: boolean;
+    immunizationRecord: boolean;
+    nurseVisitRecord: boolean;
+    searchAllSchools: boolean;
+    includeInactiveStudents: boolean;
+    course: boolean;
+    constructor() {
+        this.identificationInformation = true;
+        this.accessInformation = true;
+        this.searchBirthdays = true;
+        this.demographicInformation = true;
+        this.enrollmentInformation = true;
+        this.reEnrollmentInformation = false;
+        this.addressInformation = true;
+        this.personalContactInformation = true;
+        this.alertInformation = true;
+        this.medicalNotes = true;
+        this.immunizationRecord = true;
+        this.nurseVisitRecord = true;
+        this.searchAllSchools = true;
+        this.includeInactiveStudents = true;
+        this.course = false;
     }
 }
 

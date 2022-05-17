@@ -209,8 +209,11 @@
 </vex-page-layout>
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
     <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
-        <vex-search-student (searchList)="getSearchResult($event)" (showHideAdvanceSearch)="hideAdvanceSearch($event)">
-        </vex-search-student>
+        <vex-common-search-student (showHideAdvanceSearch)="hideAdvanceSearch($event)"
+            [advancedSearchExpansion]="advancedSearchExpansionModel" [incomingSearchValue]="searchValue"
+            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues"
+            (filteredValue)="filterData($event)" (searchValue)="getSearchInput($event)">
+        </vex-common-search-student>
     </div>
     <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>
