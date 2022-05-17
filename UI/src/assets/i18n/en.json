@@ -1918,5 +1918,11 @@
     "emailDisplayName": "Email Display Name",
     "fromEmailAddress": "From Email Address",
     "apiKeyId": "API Key ID",
-    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "You are assigning a Homeroom teacher to a non-homeroom teacher. If you continue, the new teacher will not be able to enter efforts grade for students."
+    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "You are assigning a Homeroom teacher to a non-homeroom teacher. If you continue, the new teacher will not be able to enter efforts grade for students.",
+    "medicalNoteDate": "Medical Note Date",
+    "immunizationType": "Immunization Type",
+    "immunizationDate": "Immunization Date",
+    "immunizationComment": "Immunization Comment",
+    "nurseVisitDate": "Nurse Visit Date",
+    "nurseComment": "Nurse Comment"
 }
