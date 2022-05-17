@@ -1356,7 +1356,7 @@
     "parentGuardiansSignature":"Signature du parent / du tuteur",
     "yearToDateAttendancePercent":"Année à ce jour fréquentation%",
     "yearToDateAbsencesInDays":"Absences d'une année-jour (en jours)",
-    "forCommentKeysPleaseFollowTheDescriptionBelow":"Pour les clés de commentaire, veuillez suivre la description ci-dessous:",
+    "forCommentKeysPleaseFollowTheDescriptionBelow":"Pour les clés de commentaire, veuillez suivre la description ci-dessous",
     "showsAcademicImprovements":"Montre des améliorations académiques",
     "Participates effectively":"Participe efficacement",
     "displaysGoodStudySkills":"Affiche de bonnes compétences d'étude",
@@ -1917,5 +1917,11 @@
     "emailDisplayName": "Nom d'affichage de l'e-mail",
     "fromEmailAddress": "De l'adresse e-mail",
     "apiKeyId": "ID de clé API",
-    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "Vous affectez un enseignant titulaire à un enseignant non titulaire. Si vous continuez, le nouvel enseignant ne pourra pas entrer de note d'efforts pour les élèves."
+    "youAreAssigningAHomeroomTeacherToANonHomeroomTeacherIfYouContinueTheNewTeacherWillNotBeAbleToEnterEffortsGradeForStudents": "Vous affectez un enseignant titulaire à un enseignant non titulaire. Si vous continuez, le nouvel enseignant ne pourra pas entrer de note d'efforts pour les élèves.",
+    "medicalNoteDate": "Date de la note médicale",
+    "immunizationType": "Type de vaccination",
+    "immunizationDate": "Date de vaccination",
+    "immunizationComment": "Commentaire sur la vaccination",
+    "nurseVisitDate": "Date de la visite de l'infirmière",
+    "nurseComment": "Commentaire de l'infirmière"
 }
