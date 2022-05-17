@@ -9148,6 +9148,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_dropped");
 
+                    b.Property<bool?>("IsPrimaryStaff")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_primary_staff");
+
                     b.Property<string>("MeetingDays")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)")
