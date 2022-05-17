@@ -2289,14 +2289,15 @@ namespace opensis.data.Repository
                                                     SumofGPaValue = SumofGPaValue + gPaValue;
                                                 }
                                             }
-
-                                            if (SumofGPaValue > 0 && SumofCreditEarned > 0)
-                                            {
-                                                markingPeriodListView.GPA = (Math.Round((decimal)(SumofGPaValue / SumofCreditEarned), 3)).ToString();
-                                            }
-                                            markingPeriodListView.MarkingPeriodName = markingPeriod.MarkingPeriodName;
-                                            studentsReportCard.overallGPAList.Add(markingPeriodListView);
                                         }
+
+                                        if (SumofGPaValue > 0 && SumofCreditEarned > 0)
+                                        {
+                                            markingPeriodListView.GPA = (Math.Round((decimal)(SumofGPaValue / SumofCreditEarned), 3)).ToString();
+                                        }
+
+                                        markingPeriodListView.MarkingPeriodName = markingPeriod.MarkingPeriodName;
+                                        studentsReportCard.overallGPAList.Add(markingPeriodListView);
 
                                         //this block for attendance details marking period waise
                                         int PresentCount = 0;
@@ -2338,6 +2339,7 @@ namespace opensis.data.Repository
                                         //}
                                     }
                                 }
+                                studentsReportCard.markingPeriodDetailsViewforRMIReports = markingPeriodList;
                             }
                             reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
                         }
