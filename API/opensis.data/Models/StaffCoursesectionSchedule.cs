@@ -59,6 +59,7 @@ namespace opensis.data.Models
         public bool? IsDropped { get; set; }
         public DateTime? EffectiveDropDate { get; set; }
         public bool? IsAssigned { get; set; }
+        public bool? IsPrimaryStaff { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }

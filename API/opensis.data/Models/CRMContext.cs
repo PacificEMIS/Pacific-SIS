@@ -5245,6 +5245,8 @@ namespace opensis.data.Models
 
                 entity.Property(e => e.IsDropped).HasColumnName("is_dropped");
 
+                entity.Property(e => e.IsPrimaryStaff).HasColumnName("is_primary_staff");
+
                 entity.Property(e => e.MeetingDays)
                     .HasMaxLength(100)
                     .HasColumnName("meeting_days");
