@@ -436,6 +436,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
           this.scheduleStudentListViewModel.scheduleStudentForView = [];
         } else {
           this.scheduleStudentListViewModel.scheduleStudentForView = res.scheduleStudentForView;
+          this.allStudentList=res.scheduleStudentForView;
+          this.getAllAttendanceCodeModel.attendanceCodeList = [];
         }
 
       } else {
