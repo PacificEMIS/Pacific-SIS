@@ -336,6 +336,38 @@ export class ReportCardsComponent implements OnInit {
     return {courseSectionGradeDetailsForOtherTemplates: dataSetForMarkingPeriod, attendanceDetailsForOtherTemplates: dataSetForAttendance};
   }
 
+  modifyRMIDataSet(res) {
+    if (res.subjectDetailsForRMITemplates.length) {
+      res.subjectDetailsForRMITemplates.map(item => {
+        if (item.subjectName === "Math") {
+          res.mathSubjectDataSet = item;
+        } else if (item.subjectName === "Science") {
+          res.scienceSubjectDataSet = item;
+        } else if (item.subjectName === "Social Studies") {
+          res.socialStudiesSubjectDataSet = item;
+        } else if (item.subjectName === "Health") {
+          res.healthSubjectDataSet = item;
+        } else if (item.subjectName === "Marshallese") {
+          res.MarshalleseSubjectDataSet = item;
+        } else if (item.subjectName === "English") {
+          res.englishSubjectDataSet = item;
+        }
+      });
+    }
+
+    if (res.gradeList.length) {
+      let sortedData = [];
+      const highetValue = 100;
+      sortedData = res.gradeList.sort((a, b) => b.breakoff - a.breakoff);
+      sortedData.map((item, index) => {
+        if (index === 0) {
+          res.gradeList[index].breakoffData = `${item.breakoff}-${highetValue}`;
+        } else {
+          res.gradeList[index].breakoffData = `${item.breakoff}-${sortedData[index - 1].breakoff - 1}`;
+        }
+      });
+    }
+  }
 
   resetStudentList() {
     this.getAllStudent = new StudentListModel();
@@ -653,6 +685,9 @@ export class ReportCardsComponent implements OnInit {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
         } else if (this.addReportCardPdf?.templateType === 'RMI') {
+          this.generatedReportCardData.studentsReportCardViewModelList.map((res: any) => {
+            this.modifyRMIDataSet(res);
+          });
           setTimeout(() => {
             this.generatePdfForRMI();
           }, 100 * this.generatedReportCardData.studentsReportCardViewModelList.length);
@@ -1148,6 +1183,16 @@ export class ReportCardsComponent implements OnInit {
 
         .gpa-table tbody p span:nth-child(2){
             margin-left: -15px;
+        }
+
+        .gpa-table tbody p span:last-child {
+          margin-left: 10px;
+        }
+
+        .text-truncate {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap
         }
 
         .main-table {

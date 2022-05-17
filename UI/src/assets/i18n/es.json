@@ -1923,5 +1923,15 @@
     "immunizationDate": "Fecha de vacunación",
     "immunizationComment": "Comentario de inmunización",
     "nurseVisitDate": "Fecha de visita del enfermero",
-    "nurseComment": "comentario de enfermera"
+    "nurseComment": "comentario de enfermera",
+    "placementForTheNextSchoolYear": "Colocación para el próximo año escolar.",
+    "principalSignature": "Firma del director",
+    "parentGuardianSignature": "Firma del Padre / Tutor",
+    "firstQuarter": "Primer cuarto",
+    "secondQuarter": "Segundo cuarto",
+    "thirdQuarter": "Tercer cuarto",
+    "fourthQuarter": "cuarto trimestre",
+    "gpaConversion": "Conversión de promedio general",
+    "overallGPA": "GPA general",
+    "subjectTeacherComments": "Comentarios del profesor de la materia"
 }
