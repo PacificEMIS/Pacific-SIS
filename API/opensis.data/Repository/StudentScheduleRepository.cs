@@ -171,7 +171,7 @@ namespace opensis.data.Repository
                                         {
                                             var studentCourseSectionSchedule = this.context?.StudentCoursesectionSchedule.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
 
-                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && ((x.IsActive == true && x.ExitDate == null) || (x.ExitDate != null && x.ExitDate < courseSection.DurationStartDate)));
+                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true);
 
                                             if (studentCourseSectionSchedule != null)
                                             {
@@ -202,8 +202,8 @@ namespace opensis.data.Repository
                                                 }
                                             }
 
-                                            //Student enrollment checking
-                                            else if (studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                            //Student future enrollment checking
+                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
                                                 {
@@ -230,10 +230,10 @@ namespace opensis.data.Repository
                                                 {
                                                     conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
-
                                             }
 
-                                            else if (studentEnrollmentData.ExitDate != null && studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
+                                            //Student alredy inactive enrollment checking
+                                            else if (studentEnrollmentData == null || studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
                                                 {
