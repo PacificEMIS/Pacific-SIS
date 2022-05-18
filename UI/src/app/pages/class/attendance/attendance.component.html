@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div>
-                <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
+                <div *ngIf="!active && scheduleStudentListViewModel.scheduleStudentForView?.length>0" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
                     <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
             </div> 
             <div *ngIf="isAnyMissingAttendance" class="mt-4 md:pt-0 md:text-right text-warn rounded text-sm font-medium cursor-pointer pl-4"
@@ -89,7 +89,7 @@
                         </ng-container>
                         <ng-container matColumnDef="noData">
                             <td mat-footer-cell *matFooterCellDef colspan="3">
-                            {{'noData'|translate}}
+                            {{'noRecordFound'|translate}}
                             </td>
                         </ng-container>
 

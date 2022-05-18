@@ -47,6 +47,7 @@ namespace opensis.data.ViewModels.ReportCard
             subjectDetailsForRMITemplates = new List<SubjectDetailsForRMITemplate>();
             overallGPAList = new List<MarkingPeriodDetailsViewforRMIReport>();
             attendanceDetailsViewforRMIReports = new List<MarkingPeriodDetailsViewforRMIReport>();
+            markingPeriodDetailsViewforRMIReports = new List<MarkingPeriodDetailsViewforRMIReport>();
         }
         public string? SchoolName { get; set; }
         public byte[]? SchoolLogo { get; set; }
@@ -81,6 +82,7 @@ namespace opensis.data.ViewModels.ReportCard
         public List<SubjectDetailsForRMITemplate> subjectDetailsForRMITemplates { get; set; }
         public List<MarkingPeriodDetailsViewforRMIReport> overallGPAList { get; set; }
         public List<MarkingPeriodDetailsViewforRMIReport> attendanceDetailsViewforRMIReports { get; set; }
+        public List<MarkingPeriodDetailsViewforRMIReport> markingPeriodDetailsViewforRMIReports { get; set; }
 
     }
 }
