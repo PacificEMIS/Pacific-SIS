@@ -1924,5 +1924,6 @@
     "immunizationDate": "Immunization Date",
     "immunizationComment": "Immunization Comment",
     "nurseVisitDate": "Nurse Visit Date",
-    "nurseComment": "Nurse Comment"
+    "nurseComment": "Nurse Comment",
+    "custom":"Custom"
 }

@@ -350,9 +350,9 @@ export class ReportCardsComponent implements OnInit {
 
   markingPeriodChecked(event, markingPeriod) {
     if (event.checked) {
-      this.markingPeriods.push(markingPeriod.value);
+      this.markingPeriods.push(markingPeriod);
     } else {
-      this.markingPeriods.splice(this.markingPeriods.findIndex(x => x === markingPeriod.value), 1);
+      this.markingPeriods.splice(this.markingPeriods.findIndex(x => x === markingPeriod), 1);
     }
     this.markingPeriodError = this.markingPeriods.length > 0 ? false : true;
   }

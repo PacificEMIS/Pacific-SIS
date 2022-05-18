@@ -630,5 +630,9 @@ export class CommonStaffListComponent implements OnInit {
     this.staffList = new MatTableDataSource(res.staffMaster);
     this.getAllStaff = new GetAllStaffModel();
   }
+  ngOnDestroy(){
+    this.getAllStaff.includeInactive=false;
+    this.getAllStaff.searchAllSchool=false;
+  }
 }
 
