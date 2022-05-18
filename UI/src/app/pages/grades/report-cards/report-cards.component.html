@@ -71,7 +71,7 @@
                             </span>
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "markingPeriods" | translate }}</h4>
-                        <div class="mb-4">
+                        <div class="mb-4 custom-scroll">
                             <mat-checkbox color="primary" (change)="markingPeriodChecked($event, markingPeriod)"
                                 *ngFor="let markingPeriod of markingPeriodList" class="mr-6">{{markingPeriod?.fullName}}
                             </mat-checkbox>
