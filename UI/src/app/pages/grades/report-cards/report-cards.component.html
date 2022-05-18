@@ -72,9 +72,10 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "markingPeriods" | translate }}</h4>
                         <div class="mb-4">
-                            <mat-checkbox color="primary" (change)="markingPeriodChecked($event, markingPeriod)"
+                            <mat-checkbox color="primary" (change)="markingPeriodChecked($event, markingPeriod.value)"
                                 *ngFor="let markingPeriod of markingPeriodList" class="mr-6">{{markingPeriod?.fullName}}
                             </mat-checkbox>
+                            <mat-checkbox color="primary" (change)="markingPeriodChecked($event,'custom')">{{'custom'|translate}}</mat-checkbox>
                             <mat-error *ngIf="markingPeriodError">Please select any marking period.</mat-error>
                         </div>
                     </div>

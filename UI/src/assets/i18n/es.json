@@ -1923,5 +1923,6 @@
     "immunizationDate": "Fecha de vacunación",
     "immunizationComment": "Comentario de inmunización",
     "nurseVisitDate": "Fecha de visita del enfermero",
-    "nurseComment": "comentario de enfermera"
+    "nurseComment": "comentario de enfermera",
+    "custom":"Costumbre"
 }
