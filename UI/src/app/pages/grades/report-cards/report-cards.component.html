@@ -947,46 +947,46 @@
                                         <thead>
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td *ngFor="let markingPeriod of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
+                                                <td *ngFor="let markingPeriod of student?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">Math</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.mathSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
-                                                <td colspan="3"><span>{{courseSection?.courseSectionName}}</span></td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
 
 
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">Science</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.scienceSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
-                                                <td colspan="3">{{courseSection?.courseSectionName}}</td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
 
 
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">Social Studies</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.socialStudiesSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
-                                                <td colspan="3">{{courseSection?.courseSectionName}}</td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
 
 
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">Health</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.healthSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
-                                                <td colspan="3">{{courseSection?.courseSectionName}}</td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
 
@@ -1004,14 +1004,14 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <p *ngFor="let grade of student?.gradeList | slice:0:6">
+                                                    <p *ngFor="let grade of student?.gradeList | slice:0:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
                                                         <span class="inline-block">{{grade?.title}}</span>
                                                         <span class="inline-block ">{{grade?.breakoffData}}</span>
                                                         <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
                                                     </p>
                                                 </td>
                                                 <td>
-                                                    <p *ngFor="let grade of student?.gradeList | slice:6">
+                                                    <p *ngFor="let grade of student?.gradeList | slice:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
                                                         <span class="inline-block ">{{grade?.title}}</span>
                                                         <span class="inline-block">{{grade?.breakoffData}}</span>
                                                         <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
@@ -1038,46 +1038,34 @@
                                         <thead>
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td *ngFor="let markingPeriod of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
+                                                <td *ngFor="let markingPeriod of student?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">Marshallese</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.MarshalleseSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:12">
-                                                <td colspan="3">{{courseSection?.courseSectionName}}</td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
 
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">English</td>
-                                                <td class="bg-slate" *ngFor="let item of student?.subjectDetailsForRMITemplates[0]?.courseSectionDetailsViewforRMIReports[0]?.markingPeriodDetailsViewforRMIReports"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
                                             </tr>
                                             <tr *ngFor="let courseSection of student?.englishSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:10">
-                                                <td colspan="3">{{courseSection?.courseSectionName}}</td>
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
                                                 <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="bg-slate font-black" colspan="3">{{'overallGPA' | translate}}</td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
-                                                <td class="bg-slate"></td>
+                                                <td class="bg-slate" *ngFor="let item of student?.overallGPAList"></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3"></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td *ngFor="let item of student?.overallGPAList">{{item?.gpa ? item?.gpa : ''}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1241,15 +1229,21 @@
                             <tbody>
                                 <tr>
                                     <td class="text-center text-uppercase font-black">{{'attendance' | translate}}</td>
-                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReports">{{item?.markingPeriodName}}</td>
+                                    <td>Q1</td>
+                                    <td>Q2</td>
+                                    <td>S1</td>
+                                    <td>Q3</td>
+                                    <td>Q4</td>
+                                    <td>S2</td>
+                                    <td>T</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center font-italic">{{'present' | translate}}</td>
-                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReports">{{item?.presentCount !== null ? item?.presentCount : 0}}</td>
+                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReportsDataSet">{{item?.presentCount !== null ? item?.presentCount : 0}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-center font-italic">{{'absent' | translate}}</td>
-                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReports">{{item?.absencesCount !== null ? item?.absencesCount : 0}}</td>
+                                    <td class="text-center font-italic">{{'absences' | translate}}</td>
+                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReportsDataSet">{{item?.absencesCount !== null ? item?.absencesCount : 0}}</td>
                                 </tr>
                             </tbody>
                         </table>

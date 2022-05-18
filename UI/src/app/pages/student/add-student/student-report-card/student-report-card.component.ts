@@ -59,9 +59,10 @@ export class StudentReportCardComponent implements OnInit {
   pdfData;
   studentCreateMode;
   permissions: Permissions;
-  reportCardType = reportCardType;
+  reportCardType = JSON.parse(JSON.stringify(reportCardType));
   generatedReportCardData: any;
   halfLengthOfComment:number = 0;
+  halfLengthOfGradeList: number = 0;
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -80,6 +81,9 @@ export class StudentReportCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.defaultValuesService.getTenantName() !== 'fedsis' && this.defaultValuesService.getTenantName() !== 'misis') {
+      this.reportCardType.pop();
+    }
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllMarkingPeriodList();
     this.studentService.studentDetailsForViewedAndEdited.subscribe((res)=>{
@@ -243,15 +247,48 @@ export class StudentReportCardComponent implements OnInit {
 
     if (res.gradeList.length) {
       let sortedData = [];
-      const highetValue = 100;
+      const highestValue = 100;
       sortedData = res.gradeList.sort((a, b) => b.breakoff - a.breakoff);
       sortedData.map((item, index) => {
         if (index === 0) {
-          res.gradeList[index].breakoffData = `${item.breakoff}-${highetValue}`;
+          res.gradeList[index].breakoffData = `${item.breakoff}-${highestValue}`;
         } else {
           res.gradeList[index].breakoffData = `${item.breakoff}-${sortedData[index - 1].breakoff - 1}`;
         }
       });
+    }
+
+    if (res.gradeList.length) {
+      this.halfLengthOfGradeList = Math.floor(res.gradeList.length / 2);
+    }
+
+    if (res.attendanceDetailsViewforRMIReports.length) {
+      res.attendanceDetailsViewforRMIReportsDataSet = [{}, {}, {}, {}, {}, {}, {}];
+      res.attendanceDetailsViewforRMIReports.map(item => {
+        if (item.markingPeriodName.trim().toLowerCase() === 'q1') {
+          res.attendanceDetailsViewforRMIReportsDataSet[0] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q2') {
+          res.attendanceDetailsViewforRMIReportsDataSet[1] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 's1') {
+          res.attendanceDetailsViewforRMIReportsDataSet[2] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q3') {
+          res.attendanceDetailsViewforRMIReportsDataSet[3] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q4') {
+          res.attendanceDetailsViewforRMIReportsDataSet[4] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 's2') {
+          res.attendanceDetailsViewforRMIReportsDataSet[5] = item;
+        }
+      });
+
+      // For Present Count
+      res.attendanceDetailsViewforRMIReportsDataSet[2].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[0].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[1].presentCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[5].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[3].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[4].presentCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[6].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[2].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[5].presentCount;
+
+      // For Absent Count
+      res.attendanceDetailsViewforRMIReportsDataSet[2].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[0].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[1].absencesCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[5].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[3].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[4].absencesCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[6].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[2].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[5].absencesCount;
     }
   }
 
@@ -704,7 +741,8 @@ export class StudentReportCardComponent implements OnInit {
         .text-truncate {
           overflow: hidden;
           text-overflow: ellipsis;
-          white-space: nowrap
+          white-space: nowrap;
+          display : block;
         }
 
         .main-table {
