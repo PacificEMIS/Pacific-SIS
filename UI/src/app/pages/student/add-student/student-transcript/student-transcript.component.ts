@@ -109,10 +109,10 @@ export class StudentTranscriptComponent implements OnInit {
   pdfGenerateLoader: boolean = false;
   permissions: Permissions;
   generatedTranscriptData;
-  historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
-  historicalGradeList;
-  selectedHistoricalGradeList=[];
-  historicalGradeError:boolean;
+  // historicalGradeAddViewModel: HistoricalGradeAddViewModel = new HistoricalGradeAddViewModel();
+  // historicalGradeList;
+  // selectedHistoricalGradeList=[];
+  // historicalGradeError:boolean;
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllGradeLevel();
@@ -125,7 +125,7 @@ export class StudentTranscriptComponent implements OnInit {
         this.router.navigate(['/school', 'students', 'student-generalinfo']);
       }
     })
-    this.getAllHistoricalGradeList()
+    // this.getAllHistoricalGradeList()
   }
 
 
@@ -197,12 +197,12 @@ export class StudentTranscriptComponent implements OnInit {
     } else {
       this.gradeLevelError = false;
     }
-    if (!this.selectedHistoricalGradeList?.length) {
-      this.historicalGradeError = true;
-      return;
-    } else {
-      this.historicalGradeError = false;
-    }
+    // if (!this.selectedHistoricalGradeList?.length) {
+    //   this.historicalGradeError = true;
+    //   return;
+    // } else {
+    //   this.historicalGradeError = false;
+    // }
     if (!this.selectedStudents?.length) {
       this.snackbar.open('Select at least one student.', '', {
         duration: 3000
@@ -228,7 +228,7 @@ export class StudentTranscriptComponent implements OnInit {
   }
 
   getTranscriptForStudents() {
-    this.getStudentTranscriptModel.HistoricalGradeLavels=this.selectedHistoricalGradeList.toString();
+    // this.getStudentTranscriptModel.HistoricalGradeLavels=this.selectedHistoricalGradeList.toString();
     return new Promise((resolve, reject) => {
       this.transcriptService.getTranscriptForStudents(this.getStudentTranscriptModel).subscribe(res => {
         if (res._failure) {
@@ -255,32 +255,32 @@ export class StudentTranscriptComponent implements OnInit {
     });
   }
 
-  getAllHistoricalGradeList() {
-    this.historicalGradeAddViewModel.schoolId=this.defaultValuesService.getSchoolID();
-    this.historicalGradeAddViewModel.historicalGradeList=[];
-    this.historicalMarkingPeriodService.getAllHistoricalGradeList(this.historicalGradeAddViewModel).subscribe((res:any) => {
-      if (res._failure) {
-        this.commonService.checkTokenValidOrNot(res._message);
-        if (!res.gradeEquivalencies) {
-          this.snackbar.open(res._message, '', {
-            duration: 10000
-          });
-        }
-      }
-      else {
-        this.historicalGradeList = res.gradeEquivalencies;
-      }
-    })
-  }
-  onHistoricalGradeLChange(event, equivalencyId) {
-    if (event.checked) {
-      this.selectedHistoricalGradeList.push(equivalencyId);
-    } else {
-      this.selectedHistoricalGradeList = this.selectedHistoricalGradeList.filter(item => item !== equivalencyId);
-    }
-    this.selectedHistoricalGradeList?.length > 0 ? this.historicalGradeError = false : this.historicalGradeError = true;
+  // getAllHistoricalGradeList() {
+  //   this.historicalGradeAddViewModel.schoolId=this.defaultValuesService.getSchoolID();
+  //   this.historicalGradeAddViewModel.historicalGradeList=[];
+  //   this.historicalMarkingPeriodService.getAllHistoricalGradeList(this.historicalGradeAddViewModel).subscribe((res:any) => {
+  //     if (res._failure) {
+  //       this.commonService.checkTokenValidOrNot(res._message);
+  //       if (!res.gradeEquivalencies) {
+  //         this.snackbar.open(res._message, '', {
+  //           duration: 10000
+  //         });
+  //       }
+  //     }
+  //     else {
+  //       this.historicalGradeList = res.gradeEquivalencies;
+  //     }
+  //   })
+  // }
+  // onHistoricalGradeLChange(event, equivalencyId) {
+  //   if (event.checked) {
+  //     this.selectedHistoricalGradeList.push(equivalencyId);
+  //   } else {
+  //     this.selectedHistoricalGradeList = this.selectedHistoricalGradeList.filter(item => item !== equivalencyId);
+  //   }
+  //   this.selectedHistoricalGradeList?.length > 0 ? this.historicalGradeError = false : this.historicalGradeError = true;
 
-  }
+  // }
 
   // fetchTranscript() {
   //   this.pdfGenerateLoader = true;
