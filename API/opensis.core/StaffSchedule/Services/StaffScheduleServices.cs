@@ -244,5 +244,33 @@ namespace opensis.core.StaffSchedule.Services
             }
             return staffListView;
         }
+
+        /// <summary>
+        ///  Remove Staff Course
+        /// </summary>
+        /// <param name="removeStaffScheduleViewModel"></param>
+        /// <returns></returns>
+        public RemoveStaffScheduleViewModel RemoveStaffCourseSectionSchedule(RemoveStaffScheduleViewModel removeStaffScheduleViewModel)
+        {
+            RemoveStaffScheduleViewModel removeStaffScheduleView = new RemoveStaffScheduleViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(removeStaffScheduleViewModel._tenantName + removeStaffScheduleViewModel._userName, removeStaffScheduleViewModel._token))
+                {
+                    removeStaffScheduleView = this.staffScheduleRepository.RemoveStaffCourseSectionSchedule(removeStaffScheduleViewModel);
+                }
+                else
+                {
+                    removeStaffScheduleView._failure = true;
+                    removeStaffScheduleView._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                removeStaffScheduleView._failure = true;
+                removeStaffScheduleView._message = es.Message;
+            }
+            return removeStaffScheduleView;
+        }
     }
 }

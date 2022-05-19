@@ -222,7 +222,6 @@ namespace opensis.data.Repository
             try
             {
                 if (staffScheduleViewModel.staffScheduleViewList.Count() > 0)
-                
                 {
                     foreach (var staffSchedule in staffScheduleViewModel.staffScheduleViewList.ToList())
                     {
@@ -241,6 +240,8 @@ namespace opensis.data.Repository
                                 }
                                 else
                                 {
+                                    var primaryStaffinCourseSection = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseId == CourseSection.CourseId && x.CourseSectionId == CourseSection.CourseSectionId && x.IsPrimaryStaff == true);
+
                                     var staffCoursesectionSchedule = new StaffCoursesectionSchedule()
                                     {
                                         TenantId = staffScheduleViewModel.TenantId,
@@ -260,7 +261,8 @@ namespace opensis.data.Repository
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
                                         IsAssigned = true,
-                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear,
+                                        IsPrimaryStaff = primaryStaffinCourseSection == null ? true : false
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }
@@ -280,7 +282,7 @@ namespace opensis.data.Repository
                 {
                     staffScheduleViewModel._failure = true;
                     staffScheduleViewModel._message = "Select Staff For Teacher scheduled ";
-                }               
+                }
             }
             catch (Exception es)
             {
@@ -816,5 +818,42 @@ namespace opensis.data.Repository
             return staffListViewModel;
         }
 
+        /// <summary>
+        /// Remove Staff Course Section Schedule
+        /// </summary>
+        /// <param name="removestaffScheduleViewModel"></param>
+        /// <returns></returns>
+
+        public RemoveStaffScheduleViewModel RemoveStaffCourseSectionSchedule(RemoveStaffScheduleViewModel removeStaffScheduleViewModel)
+        {
+            if (removeStaffScheduleViewModel == null)
+            {
+                return removeStaffScheduleViewModel!;
+            }
+            try
+            {
+                var StaffScheduleCourseSectionData = this.context?.StaffCoursesectionSchedule.Where(x => x.TenantId == removeStaffScheduleViewModel.TenantId && x.SchoolId == removeStaffScheduleViewModel.SchoolId && x.StaffId == removeStaffScheduleViewModel.StaffId && x.CourseSectionId == removeStaffScheduleViewModel.CourseSectionId).FirstOrDefault();
+
+                if (StaffScheduleCourseSectionData != null)
+                {
+                    StaffScheduleCourseSectionData.IsDropped = true;
+                    StaffScheduleCourseSectionData.EffectiveDropDate = DateTime.UtcNow;
+                    this.context?.SaveChanges();
+                    removeStaffScheduleViewModel._failure = false;
+                    removeStaffScheduleViewModel._message = "Schudule Staff Remove Successfully";
+                }
+                else
+                {
+                    removeStaffScheduleViewModel._failure = true;
+                    removeStaffScheduleViewModel._message = "No Record Found";
+                }
+            }
+            catch (Exception es)
+            {
+                removeStaffScheduleViewModel._failure = true;
+                removeStaffScheduleViewModel._message = es.Message;
+            }
+            return removeStaffScheduleViewModel;
+        }
     }
 }
