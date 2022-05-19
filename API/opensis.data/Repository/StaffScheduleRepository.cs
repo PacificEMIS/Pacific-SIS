@@ -80,14 +80,14 @@ namespace opensis.data.Repository
 
                                     var calender = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CalenderId == courseSectionData.FirstOrDefault()!.CalendarId);
 
-                                    if(calender != null)
+                                    if (calender != null)
                                     {
                                         CourseSections.WeekDays = calender.Days;
                                     }
 
-                                    var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == getCourseSection.CourseSectionId && x.IsDropped!=true).ToList();
+                                    var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == getCourseSection.CourseSectionId && x.IsDropped != true).ToList();
 
-                                    if (staffSchedule!=null && staffSchedule.Any())
+                                    if (staffSchedule != null && staffSchedule.Any())
                                     {
                                         foreach (var staff in staffSchedule)
                                         {
@@ -108,10 +108,10 @@ namespace opensis.data.Repository
                                             var variableList = this.context?.CourseVariableSchedule.Include(x => x.BlockPeriod).Include(x => x.Rooms).Where(x => x.TenantId == variableSchedule.TenantId && x.SchoolId == variableSchedule.SchoolId && x.CourseSectionId == variableSchedule.CourseSectionId).Select(s => new CourseVariableSchedule { TenantId = s.TenantId, SchoolId = s.SchoolId, CourseId = s.CourseId, CourseSectionId = s.CourseSectionId, GradeScaleId = s.GradeScaleId, Serial = s.Serial, Day = s.Day, RoomId = s.RoomId, TakeAttendance = s.TakeAttendance, PeriodId = s.PeriodId, BlockId = s.BlockId, CreatedBy = s.CreatedBy, CreatedOn = s.CreatedOn, UpdatedBy = s.UpdatedBy, UpdatedOn = s.UpdatedOn, Rooms = new Rooms { Title = s.Rooms!.Title }, BlockPeriod = new BlockPeriod { PeriodTitle = s.BlockPeriod!.PeriodTitle } }).ToList();
                                             //CourseSections.courseVariableSchedule = variableList;
 
-                                            if (variableList!=null)
+                                            if (variableList != null)
                                             {
                                                 CourseSections.courseVariableSchedule = variableList;
-                                            }   
+                                            }
                                         }
                                     }
 
@@ -182,7 +182,7 @@ namespace opensis.data.Repository
                                         CourseSections.MeetingDays = concatDay;
                                         CourseSections.AttendanceTaken = courseSection.AttendanceTaken;
                                         teacherSchedules.courseSectionViewList.Add(CourseSections);
-                                    }                                 
+                                    }
                                 }
                             }
 
