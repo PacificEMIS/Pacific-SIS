@@ -129,7 +129,8 @@ export class ReportCardsComponent implements OnInit {
     private studentScheduleService: StudentScheduleService,
     public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
-    private commonFunction: SharedFunction
+    private commonFunction: SharedFunction,
+    private el: ElementRef
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
     this.advancedSearchExpansionModel.enrollmentInformation = false;
@@ -636,7 +637,14 @@ export class ReportCardsComponent implements OnInit {
   }
 
   generateReportCard() {
-    if (this.markingPeriods.length > 0) {
+      if (!this.markingPeriods?.length) {
+        this.markingPeriodError = true;
+        const invalidMarkingPeriod: HTMLElement = this.el.nativeElement.querySelector('.custom-scroll');
+        invalidMarkingPeriod.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        this.markingPeriodError = false;
+      }
       this.addAndGenerateReportCard().then((res: any) => {
         this.generatedReportCardData = res;
         if(this.addReportCardPdf?.templateType === 'default') {
@@ -661,9 +669,6 @@ export class ReportCardsComponent implements OnInit {
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
         }
       });
-    } else {
-      this.markingPeriodError = true;
-    }
   }
 
   backToList() {
