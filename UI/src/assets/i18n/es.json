@@ -1933,5 +1933,6 @@
     "fourthQuarter": "cuarto trimestre",
     "gpaConversion": "Conversión de promedio general",
     "overallGPA": "GPA general",
-    "subjectTeacherComments": "Comentarios del profesor de la materia"
+    "subjectTeacherComments": "Comentarios del profesor de la materia",
+    "custom":"Costumbre"
 }

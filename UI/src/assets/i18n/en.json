@@ -1934,5 +1934,6 @@
     "fourthQuarter": "Fourth Quarter",
     "gpaConversion": "Gpa Conversion",
     "overallGPA": "Overall GPA",
-    "subjectTeacherComments": "Subject Teacher Comments"
+    "subjectTeacherComments": "Subject Teacher Comments",
+    "custom":"Custom"
 }
