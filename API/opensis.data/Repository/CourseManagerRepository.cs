@@ -2724,6 +2724,7 @@ namespace opensis.data.Repository
                         CourseSectionName = s.CourseSectionName,
                         IsDropped = s.IsDropped,
                         MeetingDays = s.MeetingDays,
+                        IsPrimaryStaff = s.IsPrimaryStaff,
                         StaffMaster = new StaffMaster
                         {
                             TenantId = s.StaffMaster.TenantId,
