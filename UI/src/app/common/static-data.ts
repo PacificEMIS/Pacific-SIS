@@ -62,6 +62,10 @@ export const reportCardType = [
     reportCardType: 'yap',
     reportCardTypeName: 'Yap'
   },
+  {
+    reportCardType: 'RMI',
+    reportCardTypeName: 'RMI'
+  }
 ];
 
 export const uniqueColors = [

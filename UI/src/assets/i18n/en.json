@@ -1925,5 +1925,15 @@
     "immunizationComment": "Immunization Comment",
     "nurseVisitDate": "Nurse Visit Date",
     "nurseComment": "Nurse Comment",
+    "placementForTheNextSchoolYear": "Placement for the next school year",
+    "principalSignature": "Principal signature",
+    "parentGuardianSignature": "Parent/Guardian Signature",
+    "firstQuarter": "First Quarter",
+    "secondQuarter": "Second Quarter",
+    "thirdQuarter": "Third Quarter",
+    "fourthQuarter": "Fourth Quarter",
+    "gpaConversion": "Gpa Conversion",
+    "overallGPA": "Overall GPA",
+    "subjectTeacherComments": "Subject Teacher Comments",
     "custom":"Custom"
 }

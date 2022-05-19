@@ -28,10 +28,12 @@
                         </div>
                         <h4 class="text-green font-medium mb-2">{{ "includeOnReportCard" | translate }}</h4>
                         <div class="mb-2">
-                            <mat-radio-group color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
-                                <mat-radio-button [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
-                                <mat-radio-button [value]="false" style="margin-left: 10px;" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
-                              </mat-radio-group> <br><br>
+                            <div class="mb-3">
+                            <mat-radio-group *ngIf="this.addReportCardPdf.templateType!=='RMI'" color="primary" aria-label="Select an option" [(ngModel)]="addReportCardPdf.standardGrade">
+                                <mat-radio-button class="mr-4" [value]="true">{{'standardsGrade' | translate}}</mat-radio-button>
+                                <mat-radio-button [value]="false" *ngIf="defaultValuesService.getUserMembershipType() !== profiles.Teacher">{{'effortGrade' | translate}}</mat-radio-button>
+                            </mat-radio-group>
+                            </div>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
                                 [(ngModel)]="addReportCardPdf.teacherName">
                                 {{ "teacherName" | translate}}
@@ -51,19 +53,19 @@
                                 {{ "gpa" | translate}}
                             </mat-slide-toggle>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                [(ngModel)]="addReportCardPdf.yearToDateDailyAbsences" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                [(ngModel)]="addReportCardPdf.yearToDateDailyAbsences" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                 {{ "yearToDateDailyAbsences" | translate}}
                             </mat-slide-toggle>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                [(ngModel)]="addReportCardPdf.dailyAbsencesThisMarkingPeriod" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                [(ngModel)]="addReportCardPdf.dailyAbsencesThisMarkingPeriod" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                 {{ "dailyAbsencesThisMarkingPeriod" | translate}}
                             </mat-slide-toggle>
                             <span class="inline-block">
                                 <mat-slide-toggle class="mr-4 mb-2" color="primary"
-                                    [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                    [(ngModel)]="addReportCardPdf.otherAttendanceCodeYearToDate" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                     {{ "otherAttendanceCodeYearToDate" | translate}}
                                 </mat-slide-toggle>
-                                <div class="select-dropdown inline-block" *ngIf="this.addReportCardPdf.templateType==='default'">
+                                <div class="select-dropdown inline-block" *ngIf="this.addReportCardPdf.templateType==='default' || this.addReportCardPdf.templateType==='RMI'">
                                     <select>
                                         <option value="na" selected>EA(Excused Absence)</option>
                                     </select>
@@ -857,4 +859,403 @@
     </div>
 </div>
 </ng-container>
+
+<ng-container *ngIf="addReportCardPdf?.templateType === 'RMI'">
+    <div class="hidden" id="reportCardIdForRMI">
+        <div class="RMI-report-card" *ngFor="let student of generatedReportCardData?.studentsReportCardViewModelList">
+            <table cellpadding="0" cellspacing="0" class="main-table">
+                <tr>
+                    <td class="w-33 border-1 p-5">
+                        <table>
+                            <tr>
+                                <td class="student-details">
+                                    <div class="style-border">
+                                        <div>
+                                            <h4 class="text-uppercase underline text-center">{{'placementForTheNextSchoolYear' | translate}}</h4>
+                                            <div class="rounded-ruler"></div>
+                                            <p class="text-uppercase font-normal spacing-3 mb-40">{{'grade' | translate}}:<span></span>
+                                            </p>
+                                            <p class="text-uppercase font-normal spacing-3 mb-60">{{'principalSignature' | translate}}:<span></span></p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table class="text-center">
+                            <tr>
+                                <td class="grades-details">
+                                    <div class="heading">
+                                        {{'parentGuardianSignature' | translate}}
+                                    </div>
+                                    <h4 class="text-uppercase underline text-center">{{'firstQuarter' | translate}}</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">{{'secondQuarter' | translate}}</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">{{'thirdQuarter' | translate}}</h4>
+                                    <div class="rounded-ruler"></div>
+                                    <h4 class="text-uppercase underline text-center">{{'fourthQuarter' | translate}}</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33 border-1 p-5">
+                        <table>
+                            <tr>
+                                <td class="student-details student-info">
+                                    <div class="style-border">
+                                        <img [src]="student?.schoolLogo ? 'data:image/jpeg;base64,' + student?.schoolLogo : ''" class="logo">
+                                        <div class="heading text-uppercase text-center">{{'studentReportCard' | translate}}</div>
+                                        <h1 class="text-center">{{'schoolYear' | translate}}<br />{{student?.schoolYear}}</h1>
+                                        <h4 class="text-uppercase text-center">{{student?.schoolName}}</h4>
+                                        <p class="text-center">
+                                            <span>{{student?.homeAddressLineOne ? student?.homeAddressLineOne : ''}}</span><br />
+                                            <span>{{student?.homeAddressLineTwo ? student?.homeAddressLineTwo : ''}}</span><br />
+                                            <span>{{student?.homeAddressCity ? student?.homeAddressCity : ''}}{{student?.homeAddressCity ? student?.homeAddressState ? ', '+student?.homeAddressState : '' : student?.homeAddressState ? student?.homeAddressState : ''}}</span><br />
+                                            <span>{{student?.homeAddressZip ? student?.homeAddressZip : ''}}{{student?.homeAddressZip ? student?.homeAddressCountry ? ', '+student?.homeAddressCountry : '' : student?.homeAddressCountry ? student?.homeAddressCountry : ''}}</span>
+                                        </p>
+                                        <div class="rounded-ruler"></div>
+                                        <p class="font-normal spacing-3">{{'student' | translate}}: {{student?.firstGivenName}} {{student?.lastFamilyName}}<span></span></p>
+                                        <p class="font-normal spacing-3">{{'grade' | translate}}: {{student?.gradeTitle}}<span></span></p>
+                                        <p class="font-normal spacing-3">{{'homeroomTeacher' | translate}}:<span></span></p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="page-break-after: always;">&nbsp;</div>
+
+            <table cellpadding="0" cellspacing="0" class="main-table">
+                <tr>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black mb-5">{{'student' | translate}}: {{student?.firstGivenName}} {{student?.lastFamilyName}}</h1>
+                                    <h1 class="font-black">{{'schoolYear' | translate}}: {{student?.schoolYear}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td *ngFor="let markingPeriod of student?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Math</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.mathSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Science</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.scienceSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Social Studies</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.socialStudiesSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Health</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.healthSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:5">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="px-10">
+                                    <table class="report-card gpa-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black text-center text-uppercase" colspan="2">{{'gpaConversion' | translate}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p *ngFor="let grade of student?.gradeList | slice:0:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
+                                                        <span class="inline-block">{{grade?.title}}</span>
+                                                        <span class="inline-block ">{{grade?.breakoffData}}</span>
+                                                        <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p *ngFor="let grade of student?.gradeList | slice:(student?.gradeList?.length % 2 === 0 ? halfLengthOfGradeList : halfLengthOfGradeList)">
+                                                        <span class="inline-block ">{{grade?.title}}</span>
+                                                        <span class="inline-block">{{grade?.breakoffData}}</span>
+                                                        <span class="inline-block ">{{grade?.unweightedGpValue}}</span>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black text-center mt-20">{{student?.schoolName}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td *ngFor="let markingPeriod of student?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.markingPeriodName}}</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">Marshallese</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.MarshalleseSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:12">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">English</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.markingPeriodDetailsViewforRMIReports"></td>
+                                            </tr>
+                                            <tr *ngFor="let courseSection of student?.englishSubjectDataSet?.courseSectionDetailsViewforRMIReports | slice:0:10">
+                                                <td colspan="3"><span [class.text-truncate]="courseSection?.courseSectionName.length > 13">{{courseSection?.courseSectionName}}</span></td>
+                                                <td *ngFor="let markingPeriod of courseSection?.markingPeriodDetailsViewforRMIReports">{{markingPeriod?.grade ? markingPeriod?.grade : ''}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bg-slate font-black" colspan="3">{{'overallGPA' | translate}}</td>
+                                                <td class="bg-slate" *ngFor="let item of student?.overallGPAList"></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td *ngFor="let item of student?.overallGPAList">{{item?.gpa ? item?.gpa : ''}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p class="font-italic mt-100 f-s-28 text-center">Jeramon im Kate Yuk!</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td class="w-33">
+                        <table>
+                            <tr>
+                                <td>
+                                    <h1 class="font-black text-center">{{'subjectTeacherComments' | translate}}</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="report-card teacher-comment-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Math</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Science</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Social Studies</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">English</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Markshallese</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="bg-slate font-black text-uppercase">Health</td>
+                                                <td class="bg-slate" colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q1:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q2:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q3:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Q4:</td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td colspan="7"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="report-card attendance-table">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center text-uppercase font-black">{{'attendance' | translate}}</td>
+                                    <td>Q1</td>
+                                    <td>Q2</td>
+                                    <td>S1</td>
+                                    <td>Q3</td>
+                                    <td>Q4</td>
+                                    <td>S2</td>
+                                    <td>T</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-italic">{{'present' | translate}}</td>
+                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReportsDataSet">{{item?.presentCount !== null ? item?.presentCount : 0}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-italic">{{'absences' | translate}}</td>
+                                    <td *ngFor="let item of student?.attendanceDetailsViewforRMIReportsDataSet">{{item?.absencesCount !== null ? item?.absencesCount : 0}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                </tr>
+            </table>
+
+            <div style="page-break-after: always;">&nbsp;</div>
+        </div>
+    </div>
+</ng-container>
+
 
