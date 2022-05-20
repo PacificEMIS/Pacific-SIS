@@ -104,7 +104,7 @@
                     <li [ngClass]="selectedTab === 'scheduled_teachers'?'active' : ''"><a
                             class="cursor-pointer px-6 py-4 inline-block hover:bg-skyblue-light"
                             (click)="changeTab('scheduled_teachers')">{{'scheduledTeachers'|translate}}
-                            ({{selectedSectionDetails.totalStaffSchedule?selectedSectionDetails.totalStaffSchedule:0}})</a></li>
+                            ({{staffCount?staffCount:selectedSectionDetails.totalStaffSchedule?selectedSectionDetails.totalStaffSchedule:0}})</a></li>
                 </ul>
             </div>
 
@@ -381,7 +381,7 @@
             </div>
 
             <div *ngIf="selectedTab === 'scheduled_teachers'">
-                <vex-scheduled-teachers [courseSectionDetails]="selectedSectionDetails"></vex-scheduled-teachers>
+                <vex-scheduled-teachers [courseSectionDetails]="selectedSectionDetails" (staffCount)="staffCount=$event"></vex-scheduled-teachers>
             </div>
         </div>
     </div>

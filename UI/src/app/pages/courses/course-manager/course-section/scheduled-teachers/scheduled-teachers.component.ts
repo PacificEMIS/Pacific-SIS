@@ -22,11 +22,11 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import icEmail from '@iconify/icons-ic/twotone-email';
 import { CommonService } from 'src/app/services/common.service';
-import { ScheduledStaffForCourseSection } from '../../../../../models/course-section.model';
+import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from '../../../../../models/course-section.model';
 import { CourseSectionService } from '../../../../../services/course-section.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { ImageCropperService } from 'src/app/services/image-cropper.service';
@@ -35,16 +35,21 @@ import { SchoolCreate } from 'src/app/enums/school-create.enum';
 import { StaffService } from 'src/app/services/staff.service';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { Router } from '@angular/router';
+import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
+import icDelete from '@iconify/icons-ic/twotone-delete';
 @Component({
   selector: 'vex-scheduled-teachers',
   templateUrl: './scheduled-teachers.component.html',
   styleUrls: ['./scheduled-teachers.component.scss']
 })
 export class ScheduledTeachersComponent implements OnInit {
+  icDelete = icDelete;
   icEmail = icEmail;
   @Input() courseSectionDetails;
   moduleIdentifier=ModuleIdentifier;
   createMode=SchoolCreate;
+  removeStaffDetails : RemoveStaffCourseSectionSchedule = new RemoveStaffCourseSectionSchedule();
+  @Output() staffCount = new EventEmitter<any>();
   constructor(
     private courseSectionService:CourseSectionService,
     private snackbar:MatSnackBar,
@@ -54,6 +59,7 @@ export class ScheduledTeachersComponent implements OnInit {
     private staffService: StaffService,
     private pageRolePermission: PageRolesPermission,
     private router: Router,
+    private teacherScheduleService:TeacherScheduleService
     ) { } 
   scheduledTeacher:ScheduledStaffForCourseSection = new ScheduledStaffForCourseSection();
   
@@ -90,6 +96,7 @@ export class ScheduledTeachersComponent implements OnInit {
                             :item.staffMaster.personalEmail?item.staffMaster.personalEmail
                             :item.staffMaster.schoolEmail?item.staffMaster.schoolEmail:null
           })
+          this.staffCount.emit(this.scheduledTeacher.courseSectionsList[0]?.staffCoursesectionSchedule.length);
         }
       }
     })
@@ -116,4 +123,17 @@ export class ScheduledTeachersComponent implements OnInit {
         }
   }
 
+  removeTeacher(staffDetails: any) {
+    this.removeStaffDetails.schoolId = staffDetails.schoolId;
+    this.removeStaffDetails.staffId = staffDetails.staffId;
+    this.removeStaffDetails.courseSectionId = staffDetails.courseSectionId;
+    this.teacherScheduleService.removeStaffCourseSectionSchedule(this.removeStaffDetails).subscribe(res => {
+      if (res._failure)
+        this.snackbar.open(res._message, '', {
+          duration: 10000
+        });
+      else
+        this.getScheduledTeachers();
+    })
+  }
 }

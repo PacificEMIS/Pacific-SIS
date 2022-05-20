@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { ScheduledStaffForCourseSection } from '../models/course-section.model';
+import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from '../models/course-section.model';
 import { AllScheduledCourseSectionForStaffModel, StaffScheduleViewModel } from '../models/teacher-schedule.model';
 import { DefaultValuesService } from '../common/default-values.service';
 
@@ -64,5 +64,10 @@ export class TeacherScheduleService {
     return this.http.post<ScheduledStaffForCourseSection>(apiurl, reassignmentDetails,this.httpOptions)
   }
 
+  removeStaffCourseSectionSchedule(removeStaffDetails : RemoveStaffCourseSectionSchedule){
+    removeStaffDetails = this.defaultValuesService.getAllMandatoryVariable(removeStaffDetails);
+    let apiurl = this.apiUrl + removeStaffDetails._tenantName + "/StaffSchedule/removeStaffCourseSectionSchedule";
+    return this.http.post<RemoveStaffCourseSectionSchedule>(apiurl, removeStaffDetails,this.httpOptions)
+  }
 
 }
