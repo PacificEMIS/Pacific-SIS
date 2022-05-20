@@ -466,8 +466,7 @@ export class ProgressReportComponent implements OnInit {
             courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x => x.grade !== '*' && x.allowedMarks !== '*');
           }
           if(this.toggleMenu.excludeUngradedAssignmentsNotDue){
-            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x=> x.grade);
-            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x=> moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.commonFunction.formatDateSaveWithoutTime(x.dueDate)));
+            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x=> x.grade !== '*' && moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.commonFunction.formatDateSaveWithoutTime(x.dueDate)));
           }
           courseSection.gradeBookGradeListData.map((gradeDetails) => {
             // assignmentPoint should be null and due date future date
