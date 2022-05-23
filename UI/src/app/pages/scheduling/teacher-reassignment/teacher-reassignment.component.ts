@@ -109,7 +109,8 @@ export class TeacherReassignmentComponent implements OnInit {
   isAllCoursesChecked = true;
   allScheduledTeacherBasedOnCourse: ScheduledStaffForCourseSection = new ScheduledStaffForCourseSection();
   checkAvailibilityBasedOnCourse: ScheduledStaffForCourseSection = new ScheduledStaffForCourseSection();
-
+  scheduledTeachers=false;
+  scheduledCourse=false;
   disableMasterCheckboxBasedOnTeacherConflict = false;
   teacherReassigning = false;
   permissions: Permissions;
@@ -326,6 +327,9 @@ export class TeacherReassignmentComponent implements OnInit {
         return res;
       })
     ).subscribe((res) => {
+      this.scheduledTeachers=false;
+      this.scheduledCourse=true;
+      this.allScheduledTeacherBasedOnCourse.courseSectionsList = []
       if (typeof (res) == 'undefined') {
         this.snackbar.open('Scheduled Course Section Failed ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
@@ -333,7 +337,7 @@ export class TeacherReassignmentComponent implements OnInit {
       }
       else {
       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        
           this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = []
           if (!res.courseSectionViewList) {
             this.snackbar.open(res._message, '', {
@@ -342,9 +346,11 @@ export class TeacherReassignmentComponent implements OnInit {
           }
         } else {
           this.allScheduledCourseSectionBasedOnTeacher = res;
-          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.findMarkingPeriodTitleById(this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList);
-          this.teacherReassignmentBasedOnTeacher = true;
-          this.teacherReassignmentBasedOnCourse = false;
+          this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = this.findMarkingPeriodTitleById(this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.filter((x:any)=>x.isPrimaryStaff));
+          if(this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList.length){
+            this.teacherReassignmentBasedOnTeacher = true;
+            this.teacherReassignmentBasedOnCourse = false;
+          }
         }
       }
     })
@@ -362,6 +368,9 @@ export class TeacherReassignmentComponent implements OnInit {
         return res;
       })
     ).subscribe((res) => {
+      this.scheduledTeachers=true;
+      this.scheduledCourse=false;
+      this.allScheduledCourseSectionBasedOnTeacher.courseSectionViewList = []
       if (typeof (res) == 'undefined') {
         this.snackbar.open('Course Sections Failed ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
@@ -369,7 +378,7 @@ export class TeacherReassignmentComponent implements OnInit {
       }
       else {
       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        
           this.allScheduledTeacherBasedOnCourse.courseSectionsList = []
           if (!res.courseSectionsList) {
             this.snackbar.open(res._message, '', {
@@ -377,14 +386,24 @@ export class TeacherReassignmentComponent implements OnInit {
             });
           }
         } else {
-          this.allScheduledTeacherBasedOnCourse.courseSectionsList = res.courseSectionsList;
-          this.moveLanguageNames();
-          this.findMarkingPeriodTitle();
-
-          this.teacherReassignmentBasedOnCourse = this.allScheduledTeacherBasedOnCourse.courseSectionsList.some((item) => {
-            return item.staffCoursesectionSchedule.length
-          })
-          this.teacherReassignmentBasedOnTeacher = false;
+          let valueFlag=false;
+          res.courseSectionsList.map((value:any)=>{
+            value.staffCoursesectionSchedule = value.staffCoursesectionSchedule.filter((x:any)=>x.isPrimaryStaff);
+            if(value.staffCoursesectionSchedule.length)
+              valueFlag=true
+          });
+          if(valueFlag){
+            this.allScheduledTeacherBasedOnCourse.courseSectionsList = res.courseSectionsList;
+            console.log(this.allScheduledTeacherBasedOnCourse.courseSectionsList);
+            this.allScheduledTeacherBasedOnCourse.courseSectionsList = this.allScheduledTeacherBasedOnCourse.courseSectionsList.filter(x=>x.staffCoursesectionSchedule.length)
+            this.moveLanguageNames();
+            this.findMarkingPeriodTitle();
+            console.log(this.allScheduledTeacherBasedOnCourse.courseSectionsList);
+            this.teacherReassignmentBasedOnCourse = this.allScheduledTeacherBasedOnCourse.courseSectionsList.some((item) => {
+              return item.staffCoursesectionSchedule.length
+            })
+            this.teacherReassignmentBasedOnTeacher = false;
+          }
         }
       }
     })
