@@ -537,6 +537,7 @@ namespace opensis.data.Repository
                             CourseSections.MeetingDays = scheduledCourseSection.MeetingDays;
                             CourseSections.GradeScaleType = scheduledCourseSection.CourseSection.GradeScaleType;
                             CourseSections.UsedStandard = scheduledCourseSection.CourseSection.UseStandards;
+                            CourseSections.IsPrimaryStaff = scheduledCourseSection.IsPrimaryStaff;
 
                             scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
                         }
@@ -584,6 +585,7 @@ namespace opensis.data.Repository
                                 {
                                     StaffScheduleData.IsDropped = true;
                                     StaffScheduleData.EffectiveDropDate = DateTime.UtcNow;
+                                    StaffScheduleData.IsPrimaryStaff = false;
                                 }
                                 else
                                 {
@@ -592,10 +594,11 @@ namespace opensis.data.Repository
                                     return staffScheduleViewModel;
                                 }
                                 var StaffScheduleDataAlreadyExist = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.StaffId == staffSchedule.StaffId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId);
-                                if(StaffScheduleDataAlreadyExist!=null)
+                                if (StaffScheduleDataAlreadyExist != null)
                                 {
                                     StaffScheduleDataAlreadyExist.IsDropped = null;
                                     StaffScheduleDataAlreadyExist.EffectiveDropDate = null;
+                                    StaffScheduleDataAlreadyExist.IsPrimaryStaff = true;
                                 }
                                 else
                                 {
@@ -618,10 +621,11 @@ namespace opensis.data.Repository
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
                                         IsAssigned = true,
-                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear,
+                                        IsPrimaryStaff = true
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
-                                }      
+                                }
                             }
                             this.context?.SaveChanges();
                             staffScheduleViewModel._message = "Staff  Re-Schedule In CourseSection Successfully";
@@ -761,6 +765,7 @@ namespace opensis.data.Repository
                         {
                             StaffScheduleData.IsDropped = true;
                             StaffScheduleData.EffectiveDropDate = DateTime.UtcNow;
+                            StaffScheduleData.IsPrimaryStaff = false;
                         }
                         else
                         {
@@ -774,6 +779,7 @@ namespace opensis.data.Repository
                         {
                             StaffScheduleDataAlreadyExist.IsDropped = null;
                             StaffScheduleDataAlreadyExist.EffectiveDropDate = null;
+                            StaffScheduleDataAlreadyExist.IsPrimaryStaff = true;
                         }
                         else
                         {
@@ -795,7 +801,8 @@ namespace opensis.data.Repository
                                 MeetingDays = courseSection.StaffCoursesectionSchedule.FirstOrDefault()!.MeetingDays,
                                 CreatedBy = staffListViewModel.CreatedBy,
                                 CreatedOn = DateTime.UtcNow,
-                                IsAssigned = true
+                                IsAssigned = true,
+                                IsPrimaryStaff = true
                             };
                             this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                         }
