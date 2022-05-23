@@ -394,11 +394,9 @@ export class TeacherReassignmentComponent implements OnInit {
           });
           if(valueFlag){
             this.allScheduledTeacherBasedOnCourse.courseSectionsList = res.courseSectionsList;
-            console.log(this.allScheduledTeacherBasedOnCourse.courseSectionsList);
             this.allScheduledTeacherBasedOnCourse.courseSectionsList = this.allScheduledTeacherBasedOnCourse.courseSectionsList.filter(x=>x.staffCoursesectionSchedule.length)
             this.moveLanguageNames();
             this.findMarkingPeriodTitle();
-            console.log(this.allScheduledTeacherBasedOnCourse.courseSectionsList);
             this.teacherReassignmentBasedOnCourse = this.allScheduledTeacherBasedOnCourse.courseSectionsList.some((item) => {
               return item.staffCoursesectionSchedule.length
             })
