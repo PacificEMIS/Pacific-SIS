@@ -341,13 +341,19 @@ export class GradeDetailsComponent implements OnInit {
             item.studentFinalGradeComments = commentArray;
 
             let standardArray = [];
+            if(item.studentFinalGradeStandard.length>0) {
             item.studentFinalGradeStandard.map((subItem) => {
+             if(subItem.standardGradeScaleId && subItem.gradeObtained) {
               const standardData = {
                 standardGradeScaleId: subItem.standardGradeScaleId,
                 gradeObtained: subItem.gradeObtained,
               }
               standardArray.push(standardData);
+             }
             });
+            } else {
+               standardArray = [{standardGradeScaleId: null, gradeObtained: null}];
+            }
             item.studentFinalGradeStandard = standardArray;
           });
         }

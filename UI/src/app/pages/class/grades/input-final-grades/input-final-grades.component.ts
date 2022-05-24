@@ -236,6 +236,7 @@ export class InputFinalGradesComponent implements OnInit {
             item.studentFinalGradeComments = commentArray;
 
             let standardArray = [];
+            if(item.studentFinalGradeStandard.length>0) {
             item.studentFinalGradeStandard.map((subItem) => {
               if(subItem.standardGradeScaleId && subItem.gradeObtained) {
               const standardData = {
@@ -245,6 +246,9 @@ export class InputFinalGradesComponent implements OnInit {
               standardArray.push(standardData);
               }
             });
+            } else {
+              standardArray = [{standardGradeScaleId: null, gradeObtained: null}];
+            }
             item.studentFinalGradeStandard = standardArray;
           });
         }
