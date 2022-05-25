@@ -1828,18 +1828,19 @@ namespace opensis.data.Repository
 
                             scheduledCourseSectionView.courseSectionViewList = transactionIQ.ToList();
                             scheduledCourseSectionView.MissingAttendanceCount = totalCount;
-                            scheduledCourseSectionView._pageSize = pageResult.PageSize;
-                            scheduledCourseSectionView.PageNumber = pageResult.PageNumber;
-                            scheduledCourseSectionView.TenantId = pageResult.TenantId;
-                            scheduledCourseSectionView.SchoolId = pageResult.SchoolId;
-                            scheduledCourseSectionView.StaffId = pageResult.StaffId;
-                            scheduledCourseSectionView._failure = false;
-                            scheduledCourseSectionView._tenantName = pageResult._tenantName;
-                            scheduledCourseSectionView._token = pageResult._token;
-                            scheduledCourseSectionView._userName = pageResult._userName;
+                           
                         }
                     }
                 }
+                scheduledCourseSectionView._pageSize = pageResult.PageSize;
+                scheduledCourseSectionView.PageNumber = pageResult.PageNumber;
+                scheduledCourseSectionView.TenantId = pageResult.TenantId;
+                scheduledCourseSectionView.SchoolId = pageResult.SchoolId;
+                scheduledCourseSectionView.StaffId = pageResult.StaffId;
+                scheduledCourseSectionView._failure = false;
+                scheduledCourseSectionView._tenantName = pageResult._tenantName;
+                scheduledCourseSectionView._token = pageResult._token;
+                scheduledCourseSectionView._userName = pageResult._userName;
             }
             catch (Exception es)
             {
