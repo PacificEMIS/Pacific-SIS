@@ -183,14 +183,13 @@ export class ReportCardsComponent implements OnInit {
         if(this.isAdmin){
           Object.assign(this.getAllStudent, { filterParams: filterParams });
           this.getAllStudent.pageNumber = 1;
-          this.paginator.pageIndex = 0;
           this.getAllStudent.pageSize = this.pageSize;
         }else {
           Object.assign(this.scheduleStudentListViewModel, { filterParams: filterParams });
           this.scheduleStudentListViewModel.pageNumber = 1;
-          this.paginator.pageIndex = 0;
           this.scheduleStudentListViewModel.pageSize = this.pageSize;
         }
+        this.paginator.pageIndex = 0;
         this.getAllStudentList();
       }
       else {
