@@ -172,22 +172,44 @@ export class ReportCardsComponent implements OnInit {
           }
         ]
         if (this.sort.active != undefined && this.sort.direction != "") {
-          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          if(this.isAdmin){
+            this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+            this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          }else{
+            this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+            this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+          }
         }
-        Object.assign(this.getAllStudent, { filterParams: filterParams });
-        this.getAllStudent.pageNumber = 1;
+        if(this.isAdmin){
+          Object.assign(this.getAllStudent, { filterParams: filterParams });
+          this.getAllStudent.pageNumber = 1;
+          this.getAllStudent.pageSize = this.pageSize;
+        }else {
+          Object.assign(this.scheduleStudentListViewModel, { filterParams: filterParams });
+          this.scheduleStudentListViewModel.pageNumber = 1;
+          this.scheduleStudentListViewModel.pageSize = this.pageSize;
+        }
         this.paginator.pageIndex = 0;
-        this.getAllStudent.pageSize = this.pageSize;
         this.getAllStudentList();
       }
       else {
-        Object.assign(this.getAllStudent, { filterParams: null });
-        this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
-        this.getAllStudent.pageSize = this.pageSize;
+        if(this.isAdmin){
+          Object.assign(this.getAllStudent, { filterParams: null });
+          this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
+          this.getAllStudent.pageSize = this.pageSize;
+        }else {
+          Object.assign(this.scheduleStudentListViewModel, { filterParams: null });
+          this.scheduleStudentListViewModel.pageNumber = this.paginator.pageIndex + 1;
+          this.scheduleStudentListViewModel.pageSize = this.pageSize;
+        }
         if (this.sort.active != undefined && this.sort.direction != "") {
-          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          if(this.isAdmin){
+            this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+            this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          }else{
+            this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+            this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+          }
         }
         this.getAllStudentList();
       }
@@ -282,8 +304,13 @@ export class ReportCardsComponent implements OnInit {
   getPageEvent(event) {
     
     if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-      this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+      if (this.isAdmin) {
+        this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+        this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+      }else{
+        this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+        this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+      }
     }
     if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
       let filterParams = [
@@ -293,10 +320,18 @@ export class ReportCardsComponent implements OnInit {
           filterOption: 3
         }
       ]
-      Object.assign(this.getAllStudent, { filterParams: filterParams });
+      if(this.isAdmin)
+        Object.assign(this.getAllStudent, { filterParams: filterParams });
+      else
+        Object.assign(this.scheduleStudentListViewModel, { filterParams: filterParams });
     }
-    this.getAllStudent.pageNumber = event.pageIndex + 1;
-    this.getAllStudent.pageSize = event.pageSize;
+    if (this.isAdmin) {
+      this.getAllStudent.pageNumber = event.pageIndex + 1;
+      this.getAllStudent.pageSize = event.pageSize;
+    } else {
+      this.scheduleStudentListViewModel.pageNumber = event.pageIndex + 1;
+      this.scheduleStudentListViewModel.pageSize = event.pageSize;
+    }
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }
