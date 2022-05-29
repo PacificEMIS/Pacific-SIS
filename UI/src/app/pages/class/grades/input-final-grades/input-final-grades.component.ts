@@ -322,34 +322,6 @@ export class InputFinalGradesComponent implements OnInit {
     return gradeDataSet;
   }
 
-  searchScheduledStudentForGroupDropAPI(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
-    this.scheduleStudentListViewModel.profilePhoto = true;
-    this.scheduleStudentListViewModel.sortingModel = null;
-    this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
-      if (res) {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-          this.showMessage = 'noRecordFound';
-        } else {
-          this.studentMasterList = res.scheduleStudentForView;
-          if (this.studentMasterList) {
-            this.studentMasterList.map(item => {
-              item.gradeScaleList = this.getGradeScaleList(item);
-            });
-          }
-          this.totalCount = this.studentMasterList.length;
-          this.showCommentDetails(this.studentMasterList.length > 0 ? 0 : null);
-
-          if (this.studentMasterList.length === 0) {
-            this.showMessage = 'noRecordFound';
-          }
-        }
-      }
-    });
-  }
-
-
   getAllReportCardCommentsWithCategory(courseId) {
     this.reportCardComments = [];
     this.reportCardService.getAllCourseCommentCategory(this.getAllReportCardCommentsWithCategoryModel).subscribe((res) => {
