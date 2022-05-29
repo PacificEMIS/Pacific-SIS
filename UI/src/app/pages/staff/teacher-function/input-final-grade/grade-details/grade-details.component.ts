@@ -113,7 +113,7 @@ export class GradeDetailsComponent implements OnInit {
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();
   selectedMarkingPeriod;
   creditHours;
-
+  cloneAddUpdateStudentFinalGradeModel;
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
     private teacherReassignmentService: TeacherScheduleService,
@@ -250,9 +250,9 @@ export class GradeDetailsComponent implements OnInit {
     })
   }
 
-  changeMarkingPeriod(markingPerioTitle) {
-    if(markingPerioTitle) {
-    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === markingPerioTitle);
+  changeMarkingPeriod(markingPeriodTitle) {
+    if(markingPeriodTitle) {
+    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === markingPeriodTitle);
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
       this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
@@ -274,7 +274,7 @@ export class GradeDetailsComponent implements OnInit {
     this.finalGradeService.getAllStudentFinalGradeList(this.addUpdateStudentFinalGradeModel).subscribe((res) => {
       if (res) {
       if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
+        
           this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionDetails[0].courseId;
           this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionDetails[0].calendarId;
           this.getAllReportCardCommentsWithCategory(this.addUpdateStudentFinalGradeModel.courseId);
@@ -297,13 +297,13 @@ export class GradeDetailsComponent implements OnInit {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
             this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId);
           }
+          this.addUpdateStudentFinalGradeModel = res;
           this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionDetails[0].courseSectionId];
           this.scheduleStudentListViewModel.profilePhoto = true;
           this.scheduleStudentListViewModel.sortingModel = null;
           this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
             if (res) {
             if(res._failure){
-        this.commonService.checkTokenValidOrNot(res._message);
                 this.showMessage = 'noRecordFound';
               } else {
                 this.studentMasterList = res.scheduleStudentForView;
@@ -316,45 +316,9 @@ export class GradeDetailsComponent implements OnInit {
                 if (this.studentMasterList.length === 0) {
                   this.showMessage = 'noRecordFound';
                 }
+                this.calculateFinalGradeModel(markingPeriodDetails);
               }
             }
-          });
-          this.addUpdateStudentFinalGradeModel = res;
-
-          if(markingPeriodDetails.value === 'Custom') {
-            this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
-            this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
-          } else {
-          this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
-          }
-          this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
-
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
-            let commentArray = [];
-            item.studentFinalGradeComments.map((subItem) => {
-              const commentData = {
-                courseCommentId: subItem.courseCommentCategory.courseCommentId,
-                comments: subItem.courseCommentCategory.comments,
-              }
-              commentArray.push(commentData);
-            });
-            item.studentFinalGradeComments = commentArray;
-
-            let standardArray = [];
-            if(item.studentFinalGradeStandard.length>0) {
-            item.studentFinalGradeStandard.map((subItem) => {
-             if(subItem.standardGradeScaleId && subItem.gradeObtained) {
-              const standardData = {
-                standardGradeScaleId: subItem.standardGradeScaleId,
-                gradeObtained: subItem.gradeObtained,
-              }
-              standardArray.push(standardData);
-             }
-            });
-            } else {
-               standardArray = [{standardGradeScaleId: null, gradeObtained: null}];
-            }
-            item.studentFinalGradeStandard = standardArray;
           });
         }
       }
@@ -372,6 +336,61 @@ export class GradeDetailsComponent implements OnInit {
     this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
     this.selectedMarkingPeriod = undefined;
   }
+  }
+
+  calculateFinalGradeModel(markingPeriodDetails) {
+    if (markingPeriodDetails.value === 'Custom') {
+      this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+      this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
+    } else {
+      this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
+    }
+    this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
+
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
+      let commentArray = [];
+      item.studentFinalGradeComments.map((subItem) => {
+        const commentData = {
+          courseCommentId: subItem.courseCommentCategory.courseCommentId,
+          comments: subItem.courseCommentCategory.comments,
+        }
+        commentArray.push(commentData);
+      });
+      item.studentFinalGradeComments = commentArray;
+
+      let standardArray = [];
+      if (item.studentFinalGradeStandard.length > 0) {
+        item.studentFinalGradeStandard.map((subItem) => {
+          if (subItem.standardGradeScaleId && subItem.gradeObtained) {
+            const standardData = {
+              standardGradeScaleId: subItem.standardGradeScaleId,
+              gradeObtained: subItem.gradeObtained,
+            }
+            standardArray.push(standardData);
+          }
+        });
+      } else {
+        standardArray = [{ standardGradeScaleId: null, gradeObtained: null }];
+      }
+      item.studentFinalGradeStandard = standardArray;
+    });
+
+    this.studentMasterList.map((val,index)=>{
+      if(!this.matchStudentData(val.studentId)){
+        if(val.isDropped)
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,{percentMarks:'',gradeObtained:'',isDropped:true,});
+        else{
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,{percentMarks:'',gradeObtained:'',teacherComment:''})
+          this.initializeDefaultValues(val,index);
+        }
+      }
+    });
+  }
+
+  matchStudentData(studentId){
+    let isMatch=false;
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map(innerVal=> { if(innerVal.studentId === studentId) isMatch=true; });
+    return isMatch;
   }
 
   selectMarkingPeriod(data) {
@@ -594,10 +613,15 @@ if(courseSection) {
     // this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
     delete this.addUpdateStudentFinalGradeModel.academicYear;
     this.addUpdateStudentFinalGradeModel.creditHours = this.creditHours;
-    this.finalGradeService.addUpdateStudentFinalGrade(this.addUpdateStudentFinalGradeModel).subscribe((data) => {
+    let cloneModel=JSON.stringify(this.addUpdateStudentFinalGradeModel);
+    this.cloneAddUpdateStudentFinalGradeModel = JSON.parse(cloneModel)
+    this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.map((val,index)=>{
+      if(val.isDropped)
+        this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,1);
+    });
+    this.finalGradeService.addUpdateStudentFinalGrade(this.cloneAddUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
           this.snackbar.open(data._message, '', {
             duration: 10000
           });
@@ -646,5 +670,11 @@ if(courseSection) {
       });
     }    
     return gradeDataSet;
+  }
+
+  checkCommentAndSetNullData(selectedStudent) {
+    if(this.addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment === '') {
+      this.addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment = null;      
+    }
   }
 }
