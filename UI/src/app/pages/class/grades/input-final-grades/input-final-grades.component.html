@@ -29,7 +29,7 @@
                                     <th>{{ "studentDetails" | translate }}</th>
                                     <th width="25%"><span class="mr-4">{{ "percent" | translate }}</span></th>
                                     <th width="25%"
-                                        *ngIf="courseSectionData?.gradeScaleType !== 'Numeric' && courseSectionData?.gradeScaleType !== 'Teacher_Scale'"
+                                        *ngIf="courseSectionData?.gradeScaleType !== 'Numeric'"
                                         class="relative whitespace-nowrap">
                                         <span class="switch-wrap pr-4 absolute">
                                             <label class="switch">
@@ -66,7 +66,7 @@
                                         </div>
                                     </td>
                                     <ng-container
-                                        *ngIf="this.courseSectionData.gradeScaleType === 'Numeric' || this.courseSectionData.gradeScaleType === 'Teacher_Scale'">
+                                        *ngIf="this.courseSectionData.gradeScaleType === 'Numeric'">
                                         <td>
                                             <input
                                                 class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -76,7 +76,7 @@
                                         </td>
                                     </ng-container>
                                     <ng-container
-                                        *ngIf="this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale'">
+                                        *ngIf="this.courseSectionData.gradeScaleType !== 'Numeric'">
                                         <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
                                             addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks +
                                             "%" :

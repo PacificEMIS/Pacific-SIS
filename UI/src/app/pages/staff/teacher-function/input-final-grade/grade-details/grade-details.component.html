@@ -57,7 +57,7 @@
                             <th>{{ "studentDetails" | translate }}</th>
                             <th width="25%"><span class="mr-4">{{ "percent" | translate }}</span></th>
                             <th width="25%"
-                                *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric' && courseSectionDetails[0]?.gradeScaleType !== 'Teacher_Scale'"
+                                *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric'"
                                 class="relative whitespace-nowrap">
                                 <span class="switch-wrap absolute pr-2">
                                     <label class="switch">
@@ -93,7 +93,7 @@
                                 </div>
                             </td>
                             <ng-container
-                                *ngIf="this.courseSectionDetails[0].gradeScaleType === 'Numeric' || this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale'">
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType === 'Numeric'">
                                 <td>
                                     <input
                                         class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -103,7 +103,7 @@
                                 </td>
                             </ng-container>
                             <ng-container
-                                *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale'">
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric'">
                                 <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
                                     addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%" :
                                     ""}}</td>
