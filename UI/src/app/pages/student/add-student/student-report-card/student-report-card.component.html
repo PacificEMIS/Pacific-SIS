@@ -592,7 +592,7 @@
                                     <th>{{'course' | translate}}</th>
                                     <th>{{'teacher' | translate}}</th>
                                     <th>{{'grade' | translate}}</th>
-                                    <th>{{'gpa' | translate}}</th>
+                                    <th *ngIf="addReportCardPdf.gpa">{{'gpa' | translate}}</th>
                                     <th>{{'comments' | translate}}</th>
                                     <th>{{'teacherComments' | translate}}</th>
                                 </tr>
@@ -602,9 +602,9 @@
                                     *ngFor="let courseSection of markingPeriod?.courseSectionGradeDetailsForDefaultTemplates">
                                     <td>{{courseSection?.courseSectionName}}</td>
                                     <td>{{courseSection?.staffName}}</td>
-                                    <td>{{courseSection?.gradeObtained?courseSection?.gradeObtained:'-'}} {{courseSection?.percentMarks ? '(' +
+                                    <td>{{courseSection?.gradeObtained?courseSection?.gradeObtained:'-'}} {{courseSection?.percentMarks && addReportCardPdf.parcentage ? '(' +
                                         courseSection?.percentMarks + '%)' : ''}} </td>
-                                    <td>{{courseSection?.gpa?courseSection?.gpa:'-'}}</td>
+                                    <td *ngIf="addReportCardPdf.gpa">{{courseSection?.gpa?courseSection?.gpa:'-'}}</td>
                                     <td>{{courseSection?.comments}}</td>
                                     <td>{{courseSection?.teacherComments}}</td>
                                 </tr>
