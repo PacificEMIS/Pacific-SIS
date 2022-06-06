@@ -1256,14 +1256,22 @@ namespace opensis.data.Repository
         {
             try
             {
-                var gradeUsStandardDelete = this.context?.GradeUsStandard.FirstOrDefault(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard!.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId && x.StandardRefNo == gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
+                var gradeUsStandardDelete = this.context?.GradeUsStandard.Include(x => x.CourseStandard).FirstOrDefault(x => x.TenantId == gradeUsStandardAddViewModel.gradeUsStandard!.TenantId && x.SchoolId == gradeUsStandardAddViewModel.gradeUsStandard.SchoolId && x.StandardRefNo == gradeUsStandardAddViewModel.gradeUsStandard.StandardRefNo);
 
                 if (gradeUsStandardDelete != null)
                 {
-                    this.context?.GradeUsStandard.Remove(gradeUsStandardDelete);
-                    this.context?.SaveChanges();
-                    gradeUsStandardAddViewModel._failure = false;
-                    gradeUsStandardAddViewModel._message = "School Specific Standard Deleted Successfully";
+                    if (gradeUsStandardDelete?.CourseStandard.Any() == true)
+                    {
+                        gradeUsStandardAddViewModel._failure = true;
+                        gradeUsStandardAddViewModel._message = "School Specific Standard Can Not Be Deleted. Because It Has Association";
+                    }
+                    else
+                    {
+                        this.context?.GradeUsStandard.Remove(gradeUsStandardDelete!);
+                        this.context?.SaveChanges();
+                        gradeUsStandardAddViewModel._failure = false;
+                        gradeUsStandardAddViewModel._message = "School Specific Standard Deleted Successfully";
+                    }
                 }
                 else
                 {
