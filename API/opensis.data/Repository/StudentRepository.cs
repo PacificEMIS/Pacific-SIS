@@ -3744,7 +3744,7 @@ namespace opensis.data.Repository
 
                         if (gradeScaleData?.Any() == true)
                         {
-                            gradeDataList = gradeScaleData.SelectMany(x => x.Grade).Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
+                            gradeDataList = gradeScaleData.SelectMany(x => x.Grade).Where(x => x.TenantId == transcriptViewModel.TenantId && x.SchoolId == transcriptViewModel.SchoolId).Select(s => new Grade { GradeScaleId = s.GradeScaleId, GradeId = s.GradeId, Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue, WeightedGpValue = s.WeightedGpValue, Comment = s.Comment }).ToList();
                         }
                     }
 
@@ -3848,7 +3848,7 @@ namespace opensis.data.Repository
                                                 foreach (var prgsId in distinctPrgsIds)
                                                 {
                                                     var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
-                                                    decimal? prgsGPValue = 0.0m;
+                                                    //decimal? prgsGPValue = 0.0m;
                                                     decimal? prgsGPAValue = 0.0m;
                                                     decimal? prgsCreditAttemped = 0.0m;
                                                     decimal? prgsCreditEarned = 0.0m;
@@ -3857,6 +3857,7 @@ namespace opensis.data.Repository
 
                                                     foreach (var reportCard in MPWiseReportCardData)
                                                     {
+                                                        decimal? prgsGPValue = 0.0m;
                                                         var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
 
                                                         var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
@@ -3874,6 +3875,20 @@ namespace opensis.data.Repository
                                                                 if (gradeData != null)
                                                                 {
                                                                     prgsGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+                                                            else if (courseSectionData.GradeScaleType == "Teacher_Scale")
+                                                            {
+                                                                var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.AcademicYear == transcriptViewModel.AcademicYear).ToList();
+                                                                if (GradebookConfigurationGrade != null)
+                                                                {
+                                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= reportCard.PercentMarks);
+                                                                    var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                                                    if (gradeData != null)
+                                                                    {
+                                                                        reportCardDetailsForTranscript.Grade = gradeData.Title;
+                                                                        prgsGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    }
                                                                 }
                                                             }
 
@@ -3910,7 +3925,7 @@ namespace opensis.data.Repository
                                                 foreach (var qtrId in distinctQrtIds)
                                                 {
                                                     var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
-                                                    decimal? qtrGPValue = 0.0m;
+                                                    //decimal? qtrGPValue = 0.0m;
                                                     decimal? qtrGPAValue = 0.0m;
                                                     decimal? qtrCreditAttemped = 0.0m;
                                                     decimal? qtrCreditEarned = 0.0m;
@@ -3919,6 +3934,7 @@ namespace opensis.data.Repository
 
                                                     foreach (var reportCard in MPWiseReportCardData)
                                                     {
+                                                        decimal? qtrGPValue = 0.0m;
                                                         var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
 
                                                         var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
@@ -3936,6 +3952,20 @@ namespace opensis.data.Repository
                                                                 if (gradeData != null)
                                                                 {
                                                                     qtrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+                                                            else if (courseSectionData.GradeScaleType == "Teacher_Scale")
+                                                            {
+                                                                var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.AcademicYear == transcriptViewModel.AcademicYear).ToList();
+                                                                if (GradebookConfigurationGrade != null)
+                                                                {
+                                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= reportCard.PercentMarks);
+                                                                    var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                                                    if (gradeData != null)
+                                                                    {
+                                                                        reportCardDetailsForTranscript.Grade = gradeData.Title;
+                                                                        qtrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    }
                                                                 }
                                                             }
 
@@ -3971,7 +4001,7 @@ namespace opensis.data.Repository
                                                 foreach (var smstrId in distinctSmstrIds)
                                                 {
                                                     var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
-                                                    decimal? smstrGPValue = 0.0m;
+                                                    //decimal? smstrGPValue = 0.0m;
                                                     decimal? smstrGPAValue = 0.0m;
                                                     decimal? smstrCreditAttemped = 0.0m;
                                                     decimal? smstrCreditEarned = 0.0m;
@@ -3981,6 +4011,7 @@ namespace opensis.data.Repository
                                                     //this loop for multiple semester
                                                     foreach (var reportCard in MPWiseReportCardData)
                                                     {
+                                                        decimal? smstrGPValue = 0.0m;
                                                         var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
 
                                                         var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
@@ -3998,6 +4029,20 @@ namespace opensis.data.Repository
                                                                 if (gradeData != null)
                                                                 {
                                                                     smstrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+                                                            else if (courseSectionData.GradeScaleType == "Teacher_Scale")
+                                                            {
+                                                                var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.AcademicYear == transcriptViewModel.AcademicYear).ToList();
+                                                                if (GradebookConfigurationGrade != null)
+                                                                {
+                                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= reportCard.PercentMarks);
+                                                                    var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                                                    if (gradeData != null)
+                                                                    {
+                                                                        reportCardDetailsForTranscript.Grade = gradeData.Title;
+                                                                        smstrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    }
                                                                 }
                                                             }
 
@@ -4034,7 +4079,7 @@ namespace opensis.data.Repository
                                                 foreach (var yrId in distinctYrIds)
                                                 {
                                                     var markingPeriodDetailsForTranscript = new MarkingPeriodDetailsForTranscript();
-                                                    decimal? yrGPValue = 0.0m;
+                                                    //decimal? yrGPValue = 0.0m;
                                                     decimal? yrGPAValue = 0.0m;
                                                     decimal? yrCreditAttemped = 0.0m;
                                                     decimal? yrCreditEarned = 0.0m;
@@ -4043,6 +4088,7 @@ namespace opensis.data.Repository
 
                                                     foreach (var reportCard in MPWiseReportCardData)
                                                     {
+                                                        decimal? yrGPValue = 0.0m;
                                                         var reportCardDetailsForTranscript = new ReportCardDetailsForTranscript();
 
                                                         var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseId == reportCard.CourseId && x.CourseSectionId == reportCard.CourseSectionId);
@@ -4060,6 +4106,20 @@ namespace opensis.data.Repository
                                                                 if (gradeData != null)
                                                                 {
                                                                     yrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                }
+                                                            }
+                                                            else if (courseSectionData.GradeScaleType == "Teacher_Scale")
+                                                            {
+                                                                var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.CourseSectionId == reportCard.CourseSectionId && x.AcademicYear == transcriptViewModel.AcademicYear).ToList();
+                                                                if (GradebookConfigurationGrade != null)
+                                                                {
+                                                                    var ConfigurationGrade = GradebookConfigurationGrade.FirstOrDefault(x => x.BreakoffPoints <= reportCard.PercentMarks);
+                                                                    var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                                                    if (gradeData != null)
+                                                                    {
+                                                                        reportCardDetailsForTranscript.Grade = gradeData.Title;
+                                                                        yrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    }
                                                                 }
                                                             }
 
