@@ -1630,7 +1630,7 @@ namespace opensis.data.Repository
                 //if (studentdata.ToList().Count > 0)
                 if (studentdata?.ToList()!= null && studentdata.ToList().Any())
                 {
-                    var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.Include(o => o.CourseSection).Include(c=>c.StudentAttendance).ThenInclude(v=>v.StudentAttendanceComments).Include(p=>p.CourseSection.SchoolCalendars).Where(e => e.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && e.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && e.StudentId== student360ScheduleCourseSectionListViewModel.StudentId && (studentdata == null || (studentdata.Contains(e.CourseSectionId))) && e.IsDropped !=true).ToList();
+                    var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.Include(o => o.CourseSection).Include(x => x.CourseSection.StaffCoursesectionSchedule).Include(c=>c.StudentAttendance).ThenInclude(v=>v.StudentAttendanceComments).Include(p=>p.CourseSection.SchoolCalendars).Where(e => e.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && e.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && e.StudentId== student360ScheduleCourseSectionListViewModel.StudentId && (studentdata == null || (studentdata.Contains(e.CourseSectionId))) && e.IsDropped !=true).ToList();
 
                     var allBlockData = this.context?.Block.Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId).ToList();
 
@@ -1666,7 +1666,8 @@ namespace opensis.data.Repository
                                 //Semesters = Student.CourseSection.Semesters,
                                 //Quarters = Student.CourseSection.Quarters
                                 AttendanceCodeCategories = attendanceCategoriesData?.FirstOrDefault(z => z.AttendanceCategoryId == studentCourseSectionSchedule.CourseSection?.AttendanceCategoryId),
-                                WeekDays= studentCourseSectionSchedule.CourseSection?.SchoolCalendars?.Days
+                                WeekDays= studentCourseSectionSchedule.CourseSection?.SchoolCalendars?.Days,
+                                PrimaryStaffId = studentCourseSectionSchedule.CourseSection!.StaffCoursesectionSchedule.FirstOrDefault(x => x.IsDropped != true && x.IsPrimaryStaff != false)?.StaffId
                             };
 
                             if (studentCourseSectionSchedule.CourseSection?.ScheduleType == "Fixed Schedule (1)")
@@ -1746,7 +1747,7 @@ namespace opensis.data.Repository
 
                             if ( Student360ScheduleCourseSection.studentAttendanceList!=null)
                             {
-                                Student360ScheduleCourseSection.studentAttendanceList.ForEach(u => { u.AttendanceCodeNavigation.AttendanceCodeCategories = new(); u.BlockPeriod = new(); u.StudentCoursesectionSchedule = new(); });
+                                Student360ScheduleCourseSection.studentAttendanceList.ForEach(u => { u.AttendanceCodeNavigation.AttendanceCodeCategories = new(); u.BlockPeriod = new(); u.StudentCoursesectionSchedule = new(); u.StaffCoursesectionSchedule = new(); });
                             }
                             student360ScheduleCourseSectionForViewList.Add(Student360ScheduleCourseSection);
                         }

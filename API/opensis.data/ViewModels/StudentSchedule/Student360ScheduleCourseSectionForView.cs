@@ -67,7 +67,7 @@ namespace opensis.data.ViewModels.StudentSchedule
         public string? WeekDays { get; set; }
         public int? FullDayMinutes { get; set; }
         public int? HalfDayMinutes { get; set; }
-
+        public int? PrimaryStaffId { get; set; }
         public CourseFixedSchedule? courseFixedSchedule { get; set; }
         public List<CourseVariableSchedule> courseVariableScheduleList { get; set; }
         public List<CourseCalendarSchedule> courseCalendarScheduleList { get; set; }
