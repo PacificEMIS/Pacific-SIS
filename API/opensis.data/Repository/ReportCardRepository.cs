@@ -1587,6 +1587,12 @@ namespace opensis.data.Repository
                             studentsReportCard.LastFamilyName = studentData.LastFamilyName;
                             studentsReportCard.StudentInternalId = studentData.StudentInternalId;
                             studentsReportCard.GradeTitle = GradeLevelTitle;
+                            studentsReportCard.HomeAddressLineOne = schoolData.StreetAddress1;
+                            studentsReportCard.HomeAddressLineTwo = schoolData.StreetAddress2;
+                            studentsReportCard.HomeAddressCountry = schoolData.Country;
+                            studentsReportCard.HomeAddressState = schoolData.State;
+                            studentsReportCard.HomeAddressCity = schoolData.City;
+                            studentsReportCard.HomeAddressZip = schoolData.Zip;
 
                             var markingPeriodsData = reportCardViewModel.MarkingPeriods!.Split(",");
                             DateTime? startDate = null;
