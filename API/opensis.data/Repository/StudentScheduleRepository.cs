@@ -362,7 +362,7 @@ namespace opensis.data.Repository
                                                                                    //Join(this.context?.StudentCoursesectionSchedule,
                                                                                    Join(this.context.StudentCoursesectionSchedule,
                                                                                    acsv => acsv.CourseSectionId, scs => scs.CourseSectionId,
-                                                                                   (acsv, scs) => new { acsv, scs }).AsEnumerable().Where(x => x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && x.acsv.DurationEndDate > courseSectionAll.DurationStartDate && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true
+                                                                                   (acsv, scs) => new { acsv, scs }).AsEnumerable().Where(x => x.scs.TenantId == courseSection.TenantId && x.acsv.TenantId == courseSection.TenantId && x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && x.acsv.DurationEndDate > courseSectionAll.DurationStartDate && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true
                                                                                    &&
                                                                                    (
                                                                                    //courseSectionAll.FixedPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.FixedPeriodId || x.acsv.VarPeriodId == courseSectionAll.FixedPeriodId || x.acsv.CalPeriodId == courseSectionAll.FixedPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch(courseSectionAll.FixedDays.ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.CalDay.ToLower())))))
@@ -1277,7 +1277,7 @@ namespace opensis.data.Repository
             StudentScheduleReportViewModel studentScheduleReportView = new StudentScheduleReportViewModel();
             try
             {
-                var scheduleReport = this.context?.StudentScheduleView.Where(x => x.SchoolId == studentScheduleReportViewModel.SchoolId).ToPivotTable(
+                var scheduleReport = this.context?.StudentScheduleView.Where(x => x.TenantId == studentScheduleReportViewModel.TenantId && x.SchoolId == studentScheduleReportViewModel.SchoolId).ToPivotTable(
                     item => item.CourseSectionName,
                     item => new { item.StudentId, item.StudentName, item.StudentInternalId },
                     items => items.Any() ? items.First().Scheduled + " | " + items.First().ConflictComment : null);
