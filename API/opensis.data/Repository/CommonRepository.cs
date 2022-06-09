@@ -519,15 +519,13 @@ namespace opensis.data.Repository
             {
                 var getDpdownData = this.context?.DpdownValuelist.AsEnumerable().Where(x => String.Compare(x.LovColumnValue, dpdownValue.DropdownValue!.LovColumnValue, true) == 0 && String.Compare(x.LovName, dpdownValue.DropdownValue.LovName, true) == 0 && x.Id != dpdownValue.DropdownValue.Id && (x.SchoolId == dpdownValue.DropdownValue.SchoolId || x.SchoolId == null)).ToList();
 
-                if (getDpdownData !=null && getDpdownData.Any())
+                if (getDpdownData != null && getDpdownData.Any())
                 {
                     dpdownValue._message = "This Title Already Exist";
                     dpdownValue._failure = true;
                 }
                 else
                 {
-                    
-
                     var getDpdownValue = this.context?.DpdownValuelist.FirstOrDefault(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Id == dpdownValue.DropdownValue.Id);
 
                     if (getDpdownValue != null)
@@ -536,10 +534,11 @@ namespace opensis.data.Repository
                         switch (getDpdownValue.LovName)
                         {
                             case "Race":
-                                var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x =>String.Compare( x.Race, getDpdownValue.LovColumnValue,true)==0).ToList();
-                                var raceValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
+                                var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
+                                var raceValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (raceValueStaff !=null && raceValueStaff.Any())
+
+                                if (raceValueStaff != null && raceValueStaff.Any())
                                 {
                                     foreach (var staff in raceValueStaff)
                                     {
@@ -557,9 +556,9 @@ namespace opensis.data.Repository
                                 }
                                 break;
                             case "School Level":
-                                var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => String.Compare(x.SchoolLevel, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.SchoolLevel, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (schoolLevelValue!=null && schoolLevelValue.Any())
+                                if (schoolLevelValue != null && schoolLevelValue.Any())
                                 {
                                     foreach (var schoolLevel in schoolLevelValue)
                                     {
@@ -571,9 +570,9 @@ namespace opensis.data.Repository
 
                                 break;
                             case "School Classification":
-                                var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => String.Compare(x.SchoolClassification, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.SchoolClassification, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (schoolClassificationValue !=null && schoolClassificationValue.Any())
+                                if (schoolClassificationValue != null && schoolClassificationValue.Any())
                                 {
                                     foreach (var schoolClassification in schoolClassificationValue)
                                     {
@@ -584,9 +583,9 @@ namespace opensis.data.Repository
 
                                 break;
                             case "Female Toilet Type":
-                                var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.FemaleToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.FemaleToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (femaleToiletTypeValue !=null && femaleToiletTypeValue.Any())
+                                if (femaleToiletTypeValue != null && femaleToiletTypeValue.Any())
                                 {
                                     foreach (var femaleToilet in femaleToiletTypeValue)
                                     {
@@ -597,9 +596,9 @@ namespace opensis.data.Repository
 
                                 break;
                             case "Male Toilet Type":
-                                var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.MaleToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.MaleToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (maleToiletTypeValue!=null && maleToiletTypeValue.Any())
+                                if (maleToiletTypeValue != null && maleToiletTypeValue.Any())
                                 {
                                     foreach (var maleToilet in maleToiletTypeValue)
                                     {
@@ -610,9 +609,9 @@ namespace opensis.data.Repository
 
                                 break;
                             case "Common Toilet Type":
-                                var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.ComonToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.ComonToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (commonToiletTypeValue !=null && commonToiletTypeValue.Any())
+                                if (commonToiletTypeValue != null && commonToiletTypeValue.Any())
                                 {
                                     foreach (var ComonToilet in commonToiletTypeValue)
                                     {
@@ -623,10 +622,10 @@ namespace opensis.data.Repository
 
                                 break;
                             case "Ethnicity":
-                                var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => String.Compare( x.Ethnicity, getDpdownValue.LovColumnValue,true)==0).ToList();
-                                var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue, true) == 0).ToList();
+                                var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (ethnicityValueStaff !=null && ethnicityValueStaff.Any())
+                                if (ethnicityValueStaff != null && ethnicityValueStaff.Any())
                                 {
                                     foreach (var staff in ethnicityValueStaff)
                                     {
@@ -634,7 +633,7 @@ namespace opensis.data.Repository
                                     }
                                     this.context?.StaffMaster.UpdateRange(ethnicityValueStaff);
                                 }
-                                if (ethnicityValueStudent !=null && ethnicityValueStudent.Any())
+                                if (ethnicityValueStudent != null && ethnicityValueStudent.Any())
                                 {
                                     foreach (var student in ethnicityValueStudent)
                                     {
@@ -653,8 +652,6 @@ namespace opensis.data.Repository
                         dpdownValue._message = "Data Updated Successfully";
                         transaction?.Commit();
                     }
-
-                   
                 }
                 return dpdownValue;
             }
