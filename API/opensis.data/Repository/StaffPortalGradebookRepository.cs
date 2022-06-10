@@ -299,7 +299,7 @@ namespace opensis.data.Repository
                     {
                         if (courseSectionData.YrMarkingPeriodId != null || courseSectionData.DurationBasedOnPeriod == false)
                         {
-                            var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear).FirstOrDefault();
+                            var markingPeriodDataList = this.context?.SchoolYears.Include(x => x.Semesters).ThenInclude(p => p.Quarters).ThenInclude(a => a.ProgressPeriods).Where(x => x.SchoolId == finalGradingMarkingPeriodList.SchoolId && x.TenantId == finalGradingMarkingPeriodList.TenantId && x.AcademicYear == finalGradingMarkingPeriodList.AcademicYear && (x.MarkingPeriodId == courseSectionData.YrMarkingPeriodId || courseSectionData.DurationBasedOnPeriod == false)).FirstOrDefault();
 
                             if (markingPeriodDataList != null)
                             {
