@@ -8,8 +8,15 @@
 <mat-divider class="-mx-6 text-border"></mat-divider>
 
 <mat-dialog-content [formGroup]="form" fxLayout="column">
+    
+        <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+            <mat-label>{{'schoolYear' | translate}}</mat-label>
+            <input formControlName="academicYear" name="academicYear" type="text" pattern="[0-9]{4}[-][0-9]{4}" matInput required>
+            <mat-error *ngIf="form.get('academicYear').hasError('required')">{{'schoolYearIsRequired'|translate}}</mat-error>
+            <mat-error *ngIf="form.get('academicYear').hasError('pattern')">{{'patternInvalid'|translate}}</mat-error>
+        </mat-form-field>
 
-    <mat-form-field class="w-full mt-6" appearance="outline" color="primary">
+    <mat-form-field class="w-full" appearance="outline" color="primary">
         <mat-label>{{'markingPeriodName' | translate}}</mat-label>
         <input type="text" formControlName="title" name="title"  matInput required>
         <mat-error *ngIf="form.get('title').hasError('required')">{{'markingPeriodNameIsRequired'|translate}}</mat-error>
@@ -26,13 +33,6 @@
                         panelClass="example-month-picker">
         </mat-datepicker>
         <mat-error *ngIf="form.get('gradePostDate').hasError('required')">{{'gradePostDateIsRequired'|translate}}</mat-error>
-    </mat-form-field>
-
-    <mat-form-field class="w-full" appearance="outline" color="primary">
-        <mat-label>{{'schoolYear' | translate}}</mat-label>
-        <input formControlName="academicYear" name="academicYear" type="text" pattern="[0-9]{4}[-][0-9]{4}" matInput required>
-        <mat-error *ngIf="form.get('academicYear').hasError('required')">{{'schoolYearIsRequired'|translate}}</mat-error>
-        <mat-error *ngIf="form.get('academicYear').hasError('pattern')">{{'patternInvalid'|translate}}</mat-error>
     </mat-form-field>
 
 </mat-dialog-content>

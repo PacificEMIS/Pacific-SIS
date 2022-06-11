@@ -41,9 +41,9 @@ export class HistoricalMarkingPeriodsComponent implements OnInit {
   historicalMarkingPeriodAddViewModel: HistoricalMarkingPeriodAddViewModel = new HistoricalMarkingPeriodAddViewModel();
   markingPeriodList: MatTableDataSource<any> = new MatTableDataSource<any>();
   columns = [
+    { label: 'schoolYear', property: 'schoolYear', type: 'text', visible: true },
     { label: 'markingPeriodName', property: 'markingPeriodName', type: 'text', visible: true },
     { label: 'gradePostDate', property: 'gradePostDate', type: 'text', visible: true },
-    { label: 'schoolYear', property: 'schoolYear', type: 'text', visible: true },
     { label: 'action', property: 'action', type: 'text', visible: true }
   ];
   historicalMarkingPeriodListModel: HistoricalMarkingPeriodListModel = new HistoricalMarkingPeriodListModel();
