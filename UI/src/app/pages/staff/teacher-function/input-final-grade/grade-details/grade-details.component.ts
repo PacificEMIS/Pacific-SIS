@@ -316,12 +316,7 @@ export class GradeDetailsComponent implements OnInit {
             })
           }else
           this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
-
           this.addUpdateStudentFinalGradeModel = res;
-          this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionDetails[0].courseSectionId];
-          this.scheduleStudentListViewModel.profilePhoto = true;
-          this.scheduleStudentListViewModel.sortingModel = null;
-
         }
       }
       else {
@@ -339,6 +334,9 @@ export class GradeDetailsComponent implements OnInit {
   }
 
   searchScheduledStudentForGroupDropCall(markingPeriodDetails){
+    this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionDetails[0].courseSectionId];
+    this.scheduleStudentListViewModel.profilePhoto = true;
+    this.scheduleStudentListViewModel.sortingModel = null;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){

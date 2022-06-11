@@ -123,7 +123,7 @@
                                     <input
                                         class="border border-gray-light rounded p-2 w-24"
                                         (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" min="0" (ngModelChange)="gradeFromPercent($event ,i, student?.gradeScaleList)"
-                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()">
+                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()" [disabled]="student.isDropped">
                                 </td>
                                 <td *ngIf="isPercent">
                                     {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
