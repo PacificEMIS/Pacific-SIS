@@ -480,7 +480,7 @@ namespace opensis.data.Repository
                         }
 
                         //if school nmae change then change in also student enrollment table
-                        if (schoolMaster != null && String.Compare(schoolMaster.SchoolName, school.schoolMaster.SchoolName, true) == 0)
+                        if (schoolMaster != null && schoolMaster.SchoolName!.ToLower() != school.schoolMaster.SchoolName!.ToLower())
                         {
                             var EnrollmentSchoolNameData = this.context?.StudentEnrollment.AsEnumerable().Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == schoolMaster.SchoolId && String.Compare(x.SchoolName, schoolMaster.SchoolName, true) == 0).ToList();
 
