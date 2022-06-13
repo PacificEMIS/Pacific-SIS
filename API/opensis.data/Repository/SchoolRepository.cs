@@ -615,15 +615,15 @@ namespace opensis.data.Repository
                 }
                 try
                 {
-                    if (school.StartDate != null && school.EndDate != null)
+                    if (school.StartDate != null)
                     {
-                        if (school.EndDate > school.StartDate?.AddYears(+1))
-                        {
-                            school._failure = true;
-                            school._message = "End date should not be more then one year from start date.";
-                        }
-                        else
-                        {
+                        //if (school.EndDate > school.StartDate?.AddYears(+1))
+                        //{
+                        //    school._failure = true;
+                        //    school._message = "End date should not be more then one year from start date.";
+                        //}
+                        //else
+                        //{
                             //int? MasterSchoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
                             int? MasterSchoolId = 1;
 
@@ -1052,7 +1052,7 @@ namespace opensis.data.Repository
                                 }
                             }
 
-                            AddSchoolYearAndSchoolCalendar(school.schoolMaster.TenantId, school.schoolMaster.SchoolId, school.StartDate, school.EndDate, school.schoolMaster.CreatedBy);
+                            AddSchoolYearAndSchoolCalendar(school.schoolMaster.TenantId, school.schoolMaster.SchoolId, school.StartDate,/* school.EndDate,*/ school.schoolMaster.CreatedBy);
 
                             this.context?.SaveChanges();
                             transaction?.Commit();
@@ -1075,13 +1075,13 @@ namespace opensis.data.Repository
                             {
                                 school.schoolMaster.SchoolDetail.FirstOrDefault().SchoolMaster = null;
                             }*/
-                        }
+                        //}
 
                     }
                     else
                     {
                         school._failure = true;
-                        school._message = "Please provide start date and end date.";
+                        school._message = "Please provide start date";
                     }                    
                 }
                 catch (Exception es)
@@ -2528,9 +2528,11 @@ namespace opensis.data.Repository
             return userViewModel;
         }
 
-        private void AddSchoolYearAndSchoolCalendar(Guid tenantId, int schoolId, DateTime? startDate, DateTime? endDate, string? createdBy)
+        private void AddSchoolYearAndSchoolCalendar(Guid tenantId, int schoolId, DateTime? startDate, /*DateTime? endDate,*/ string? createdBy)
         {
             int? calenderId = 1;
+
+            DateTime sessionEndDate = startDate!.Value.Date.AddYears(+1);
 
             var schoolCalendar = new SchoolCalendars()
             {
@@ -2543,7 +2545,7 @@ namespace opensis.data.Repository
                 SessionCalendar = true,
                 Days = "12345",
                 StartDate = startDate,
-                EndDate = endDate,
+                EndDate = sessionEndDate.AddDays(-1),
                 CreatedBy = createdBy,
                 CreatedOn = DateTime.UtcNow,
             };
