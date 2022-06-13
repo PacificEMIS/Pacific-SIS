@@ -398,9 +398,22 @@ export class GradeDetailsComponent implements OnInit {
     }
     this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
 
+    this.studentMasterList?.map((val:any,index)=>{
+      if(!this.matchStudentData(val.studentId)){
+        if(val.isDropped)
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade());
+        else{
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade())
+          this.initializeDefaultValues(val,index);
+        }
+      }
+      if(this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale')
+        val.gradeScaleList=this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
+    });
+    
     this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
       let commentArray = [];
-      item.studentFinalGradeComments.map((subItem) => {
+      item.studentFinalGradeComments?.map((subItem) => {
         const commentData = {
           courseCommentId: subItem.courseCommentCategory.courseCommentId,
           comments: subItem.courseCommentCategory.comments,
@@ -408,7 +421,7 @@ export class GradeDetailsComponent implements OnInit {
         commentArray.push(commentData);
       });
       item.studentFinalGradeComments = commentArray;
-
+      let standardGradeScaleIdData;
       let standardArray = [];
       if (item.studentFinalGradeStandard.length > 0) {
         item.studentFinalGradeStandard.map((subItem) => {
@@ -417,6 +430,13 @@ export class GradeDetailsComponent implements OnInit {
               standardGradeScaleId: subItem.standardGradeScaleId,
               gradeObtained: subItem.gradeObtained,
             }
+            standardGradeScaleIdData=subItem.standardGradeScaleId;
+            standardArray.push(standardData);
+          }else{
+            const standardData = {
+              standardGradeScaleId: standardGradeScaleIdData,
+              gradeObtained: 0,
+            }
             standardArray.push(standardData);
           }
         });
@@ -424,19 +444,6 @@ export class GradeDetailsComponent implements OnInit {
         standardArray = [{ standardGradeScaleId: null, gradeObtained: null }];
       }
       item.studentFinalGradeStandard = standardArray;
-    });
-
-    this.studentMasterList.map((val:any,index)=>{
-      if(!this.matchStudentData(val.studentId)){
-        if(val.isDropped)
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,{percentMarks:'',gradeObtained:'',isDropped:true,});
-        else{
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,{percentMarks:'',gradeObtained:'',teacherComment:''})
-          this.initializeDefaultValues(val,index);
-        }
-      }
-      if(this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale')
-        val.gradeScaleList=this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
     });
   }
 
