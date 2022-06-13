@@ -1843,7 +1843,7 @@
     "didNotReceiveAnyMail": "Vous n'avez pas reçu de courrier ?",
     "resendEmail": "Ré-envoyer l'email",
     "weSentYouAnEmailToResetYourPassword": "Nous vous avons envoyé un e-mail pour réinitialiser votre mot de passe.",
-    "PleaseCheckAllInboxesIncludingSpamAndJunkFolderAsAutomatedEmailsOftenGetFilteredThere": "Veuillez vérifier toutes les boîtes de réception, y compris les spams et les courriers indésirables, car les e-mails automatisés y sont souvent filtrés.",
+    "PleaseCheckAllInboxesIncludingSpamAndJunkFolderAsAutomatedEmailsOftenGetFilteredThere": "Veuillez vérifier toutes les boîtes de réception, y compris les dossiers de spam et de courrier indésirable, car les e-mails automatisés y sont souvent filtrés.",
     "setNewPassword": "Definir un nouveau mot de passe",
     "confirmPassword": "Confirmar contraseña",
     "mustBeAtLeast8CharactersLong": "Doit avoir au moins 8 caractères",

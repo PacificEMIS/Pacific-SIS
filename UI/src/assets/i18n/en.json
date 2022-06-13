@@ -1841,7 +1841,7 @@
     "didNotReceiveAnyMail": "Did not receive any mail?",
     "resendEmail": "Resend email",
     "weSentYouAnEmailToResetYourPassword": "We sent you an email to reset your password.",
-    "PleaseCheckAllInboxesIncludingSpamAndJunkFolderAsAutomatedEmailsOftenGetFilteredThere": "Please check all inboxes including spam and junk folder as automatede emails often get filtered there.",
+    "PleaseCheckAllInboxesIncludingSpamAndJunkFolderAsAutomatedEmailsOftenGetFilteredThere": "Please check all inboxes including spam and junk folders as automated emails often get filtered there.",
     "setNewPassword": "Set new password",
     "confirmPassword": "Confirm Password",
     "mustBeAtLeast8CharactersLong": "Must be at least 8 characters long",
