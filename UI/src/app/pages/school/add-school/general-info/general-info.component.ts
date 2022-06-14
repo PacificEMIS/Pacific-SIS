@@ -553,7 +553,7 @@ export class GeneralInfoComponent implements OnInit, AfterViewInit, OnDestroy {
       this.invalidScroll();
       return;
     }    
-    if(!this.schoolAddViewModel.StartDate || !this.schoolAddViewModel.EndDate) {
+    if(!this.schoolAddViewModel.StartDate) {
       this.openCaptureDate();
       this.snackbar.open('Please enter start date and end date.', '', {
         duration: 10000
