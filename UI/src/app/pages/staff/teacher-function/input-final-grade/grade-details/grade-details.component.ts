@@ -289,15 +289,16 @@ export class GradeDetailsComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionDetails[0].gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId).then(() => {
-              this.viewGradebookConfiguration().then(()=>{
+          }
+          this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId).then(() => {
+            if (this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale') {
+              this.viewGradebookConfiguration().then(() => {
                 this.searchScheduledStudentForGroupDrop(this.courseSectionDetails[0].courseSectionId);
               })
-            });
-          }
-          else {
-            this.searchScheduledStudentForGroupDrop(this.courseSectionDetails[0].courseSectionId);
-          }
+            } else {
+              this.searchScheduledStudentForGroupDrop(this.courseSectionDetails[0].courseSectionId);
+            }
+          });
 
         }
         else {
@@ -305,6 +306,7 @@ export class GradeDetailsComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionDetails[0].gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
+          }
             this.getAllGradeScaleList(this.courseSectionDetails[0].standardGradeScaleId).then(()=>{
               if(this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale'){
                 this.viewGradebookConfiguration().then(()=>{
@@ -314,8 +316,6 @@ export class GradeDetailsComponent implements OnInit {
               else 
                 this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
             })
-          }else
-          this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
           this.addUpdateStudentFinalGradeModel = res;
         }
       }
