@@ -104,9 +104,7 @@
                             </ng-container>
                             <ng-container
                                 *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric'">
-                                <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
-                                    addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%" :
-                                    ""}}</td>
+                                <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%"}}</td>
                                 <td *ngIf="!isPercent">
                                     <!-- <label>{{'selectGrade'|translate}}</label>    -->
                                     <div class="select-dropdown" >
