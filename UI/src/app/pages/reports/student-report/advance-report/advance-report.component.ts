@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import icPrint from '@iconify/icons-ic/twotone-print';
 import icHome from '@iconify/icons-ic/twotone-home';
@@ -12,7 +12,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { IdentificationInformation } from 'src/app/enums/identificationInformation.enum';
@@ -25,6 +25,9 @@ import { stagger40ms } from 'src/@vex/animations/stagger.animation';
 import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import * as moment from 'moment';
+import { LanguageModel } from 'src/app/models/language.model';
+import { Subject } from 'rxjs/internal/Subject';
+import { LoginService } from 'src/app/services/login.service';
 
 
 export interface StudentListData {
@@ -83,7 +86,7 @@ export const generateStudentListData: GenerateStudentListData[] = [
     fadeInRight400ms
   ]
 })
-export class AdvanceReportComponent implements OnInit {
+export class AdvanceReportComponent implements OnInit, OnDestroy {
 
   icPrint = icPrint;
   icHome = icHome;
@@ -212,6 +215,10 @@ export class AdvanceReportComponent implements OnInit {
    ]
   }
   
+  languages: LanguageModel = new LanguageModel();
+  destroySubject$: Subject<void> = new Subject();
+  languageList: any[];
+
   constructor(
     public translateService: TranslateService,
     private studentService: StudentService,
@@ -222,6 +229,7 @@ export class AdvanceReportComponent implements OnInit {
     private reportService: ReportService,
     private excelService: ExcelService,
     private paginatorObj: MatPaginatorIntl,
+    private loginService: LoginService,
     ) { 
     this.advancedSearchExpansionModel.accessInformation = false;
     this.advancedSearchExpansionModel.enrollmentInformation = false;
@@ -238,6 +246,7 @@ export class AdvanceReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.GetAllLanguage();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
     this.getAllStudentList();
     this.searchCtrl = new FormControl();
@@ -580,6 +589,11 @@ export class AdvanceReportComponent implements OnInit {
             item.studentMaster.homeAddressCountry=item.homeAddressCountry;
             item.studentMaster.mailingAddressCountry=item.mailingAddressCountry;
 
+            item.studentMaster.dateOfBirth= item.studentMaster.dob ? moment(item.studentMaster.dob).format('MMM DD, YYYY') : null;
+            item.studentMaster.firstLanguage=this.findLanguagesById(item.studentMaster.firstLanguageId);
+            item.studentMaster.secondLanguage=this.findLanguagesById(item.studentMaster.secondLanguageId);
+            item.studentMaster.thirdLanguage=this.findLanguagesById(item.studentMaster.thirdLanguageId);
+
             item.studentMaster.criticalAlert = item.studentMaster.studentMedicalAlert.length ? item.studentMaster.studentMedicalAlert[0].alertType : null;
 
             if (item.studentMaster.studentMedicalNote.length) {
@@ -656,4 +670,44 @@ export class AdvanceReportComponent implements OnInit {
     // column.visible = !column.visible;
   }
 
+  GetAllLanguage() {
+    if (!this.languages.isLanguageAvailable) {
+      this.languages.isLanguageAvailable = true;
+
+      this.languages._tenantName=this.defaultValuesService.getTenantName();
+      this.loginService.getAllLanguage(this.languages).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+          if (res) {
+           if (res._failure) {
+              this.languageList = [];
+              if(!res.tableLanguage){
+                this.snackbar.open(res._message, '', {
+                  duration: 10000
+                });
+              }
+            } else {
+              this.languageList = res?.tableLanguage;
+            }
+          }
+          else {
+            this.languageList = [];
+          }
+        }
+      );
+    }
+  }
+
+  findLanguagesById(languageId: number) {
+    let templang = '';
+    this.languageList.map(val => {
+      if (val.langId === languageId) {
+        templang = val.locale;
+      }
+    });
+    return templang;
+  }
+
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
+  }
 }
