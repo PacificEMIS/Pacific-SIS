@@ -51,6 +51,7 @@ import { Subject } from 'rxjs';
 import { GetStudentListByCourseSectionModel } from 'src/app/models/report.model';
 import { ReportService } from 'src/app/services/report.service';
 import { ExcelService } from 'src/app/services/excel.service';
+import moment from 'moment';
 
 
 // export interface ClassListData {
@@ -450,6 +451,8 @@ export class ClassListComponent implements OnInit, AfterViewInit, OnDestroy {
                   const middleName = subItem.studentView?.middleName ? ' ' + subItem.studentView?.middleName + ' ' : ' ';
                   subItem.studentView.fullName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
                   subItem.studentView.studentName = subItem.studentView?.firstGivenName + middleName + subItem.studentView?.lastFamilyName;
+
+                  subItem.studentView.dateOfBirth = subItem.studentView?.dob ? moment(subItem.studentView?.dob).format('MMM DD, YYYY') : null;
 
                   subItem.studentView.section = subItem.studentView?.sectionName;
                   subItem.studentView.gradeLevel = subItem.studentView?.gradeLevelTitle;
