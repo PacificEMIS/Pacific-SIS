@@ -602,7 +602,7 @@
                                     *ngFor="let courseSection of markingPeriod?.courseSectionGradeDetailsForDefaultTemplates">
                                     <td>{{courseSection?.courseSectionName}}</td>
                                     <td>{{courseSection?.staffName}}</td>
-                                    <td>{{courseSection?.gradeObtained?courseSection?.gradeObtained:'-'}} {{courseSection?.percentMarks && addReportCardPdf.parcentage ? '(' +
+                                    <td>{{courseSection?.gradeObtained ? courseSection?.gradeObtained: courseSection?.percentMarks && addReportCardPdf.parcentage ? '':'-'}} {{courseSection?.percentMarks && addReportCardPdf.parcentage ? ' (' +
                                         courseSection?.percentMarks + '%)' : ''}} </td>
                                     <td *ngIf="addReportCardPdf.gpa">{{courseSection?.gpa?courseSection?.gpa:'-'}}</td>
                                     <td>{{courseSection?.comments}}</td>

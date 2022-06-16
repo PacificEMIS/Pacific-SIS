@@ -15,7 +15,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "course" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseId" name="courseId" >
-                    <mat-option></mat-option>
+                    <mat-option>All Course</mat-option>
                     <mat-option *ngFor="let course of courseList" [value]="course.course.courseId">
                         {{course.course.courseTitle}}
                     </mat-option>
@@ -26,7 +26,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "subject" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseSubject" name="courseSubject">
-                    <mat-option></mat-option>
+                    <mat-option>All Subject</mat-option>
                     <mat-option *ngFor="let subject of subjectList" [value]="subject.subjectName">
                         {{subject.subjectName}}
                     </mat-option>
@@ -37,7 +37,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "program" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.courseProgram" name="courseProgram">
-                    <mat-option></mat-option>
+                    <mat-option>All Program</mat-option>
                     <mat-option *ngFor="let program of programList" [value]="program.programName">
                         {{program.programName}}
                     </mat-option>
@@ -48,7 +48,7 @@
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "markingPeriod" | translate }}</mat-label>
                 <mat-select [(ngModel)]="courseSectionSearch.markingPeriodId" (selectionChange)="changeMarkingPeriod($event.value)" name="markingPeriodId">
-                    <mat-option></mat-option>
+                    <mat-option>All Marking Period</mat-option>
                     <mat-option *ngFor="let markingPeriod of getMarkingPeriodTitleListModel.getMarkingPeriodView" [value]='markingPeriod.value'>
                         {{markingPeriod.text}}
                     </mat-option>
