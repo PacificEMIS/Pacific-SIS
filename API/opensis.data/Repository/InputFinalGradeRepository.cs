@@ -485,12 +485,14 @@ namespace opensis.data.Repository
                 }
                 var studentFinalGradeAllData = this.context?.StudentFinalGrade.Include(x => x.StudentMaster).Where(e => e.SchoolId == studentReportCardGradesViewModel.SchoolId && e.TenantId == studentReportCardGradesViewModel.TenantId && e.StudentId == studentReportCardGradesViewModel.StudentId).ToList();
 
-                if (studentFinalGradeAllData!=null && studentFinalGradeAllData.Any())
+                if (studentFinalGradeAllData != null && studentFinalGradeAllData.Any())
                 {
                     decimal? Wgpa = 0.0m;
                     decimal? UNWgpa = 0.0m;
 
-                    var GradeLevelData = this.context?.Gradelevels.Where(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId).ToList();
+                    var gradeLevelDataList = this.context?.Gradelevels.Where(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId).ToList();
+                    var gradeScaleDataList = this.context?.Grade.Include(x => x.GradeScale).Where(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId && x.GradeScale.AcademicYear == studentReportCardGradesViewModel.AcademicYear && x.GradeScale.UseAsStandardGradeScale != true).ToList();
+                    var courseSectionDataList = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).Where(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId).ToList();
 
                     var studentFinalGradeData = studentFinalGradeAllData.Where(e => e.AcademicYear == studentReportCardGradesViewModel.AcademicYear && (YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
 
@@ -503,13 +505,13 @@ namespace opensis.data.Repository
                         decimal? WCScreditEarned = 0.0m;
                         decimal? UNWCScreditEarned = 0.0m;
 
-                        foreach (var studentFinalGrade in studentFinalGradeData)
+                        foreach (var studentFinalGrade in studentFinalGradeAllData)
                         {
                             decimal? WGPValue = 0.0m;
                             decimal? UNWGPValue = 0.0m;
                             CourseSectionWithGradesViewModel courseSectionWithGrades = new CourseSectionWithGradesViewModel();
 
-                            var courseSectionData = this.context?.CourseSection.Include(x => x.Course).Include(x => x.GradeScale).ThenInclude(x => x!.Grade).FirstOrDefault(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId && x.CourseId == studentFinalGrade.CourseId && x.CourseSectionId == studentFinalGrade.CourseSectionId);
+                            var courseSectionData = courseSectionDataList!.FirstOrDefault(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId && x.CourseId == studentFinalGrade.CourseId && x.CourseSectionId == studentFinalGrade.CourseSectionId);
 
                             if (courseSectionData != null)
                             {
@@ -533,20 +535,43 @@ namespace opensis.data.Repository
                                             UNWCSCount = UNWCSCount + 1;
                                         }
                                     }
-
-                                    courseSectionWithGrades.CourseSectionName = courseSectionData.CourseSectionName;
-                                    courseSectionWithGrades.GPValue = courseSectionData.IsWeightedCourse == true ? WGPValue : UNWGPValue;
-                                    courseSectionWithGrades.WeightedGP = courseSectionData.IsWeightedCourse == true ? "Yes" : "NO";
-                                    courseSectionWithGrades.GradeScaleName = courseSectionData.GradeScale.GradeScaleName;
-                                    courseSectionWithGrades.GradeScaleType = courseSectionData.GradeScaleType;
-                                    courseSectionWithGrades.GradeScaleValue = courseSectionData.GradeScale.GradeScaleValue;
-                                    courseSectionWithGrades.CreditAttempted = studentFinalGrade.CreditAttempted == null ? courseSectionData.CreditHours : studentFinalGrade.CreditAttempted;
-                                    courseSectionWithGrades.CreditEarned = studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours : studentFinalGrade.CreditEarned;
-                                    courseSectionWithGrades.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, studentReportCardGradesViewModel.TenantId, studentFinalGrade.CreatedBy);
-                                    courseSectionWithGrades.CreatedOn = studentFinalGrade.CreatedOn;
-                                    courseSectionWithGrades.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, studentReportCardGradesViewModel.TenantId, studentFinalGrade.UpdatedBy);
-                                    courseSectionWithGrades.UpdatedOn = studentFinalGrade.UpdatedOn;
                                 }
+                                else if (courseSectionData.GradeScaleType == "Teacher_Scale")
+                                {
+                                    var GradebookConfigurationGrade = this.context?.GradebookConfigurationGradescale.FirstOrDefault(x => x.TenantId == studentReportCardGradesViewModel.TenantId && x.SchoolId == studentReportCardGradesViewModel.SchoolId && x.CourseSectionId == studentFinalGrade.CourseSectionId && x.AcademicYear == studentReportCardGradesViewModel.AcademicYear && x.BreakoffPoints <= studentFinalGrade.PercentMarks);
+
+                                    var gradeData = gradeScaleDataList?.FirstOrDefault(x => x.GradeId == GradebookConfigurationGrade?.GradeId && x.GradeScaleId == GradebookConfigurationGrade.GradeScaleId);
+                                    if (gradeData != null)
+                                    {
+                                        if (courseSectionData.IsWeightedCourse == true)
+                                        {
+                                            WGPValue = studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours * gradeData.WeightedGpValue : studentFinalGrade.CreditEarned * gradeData.WeightedGpValue;
+                                            sumOfWGPValue += WGPValue;
+                                            WCScreditEarned += studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours : studentFinalGrade.CreditEarned;
+                                            WCSCount = WCSCount + 1;
+                                        }
+                                        else
+                                        {
+                                            UNWGPValue = studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours * gradeData.UnweightedGpValue : studentFinalGrade.CreditEarned * gradeData.UnweightedGpValue;
+                                            sumOfUNWGPValue += UNWGPValue;
+                                            UNWCScreditEarned += studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours : studentFinalGrade.CreditEarned;
+                                            UNWCSCount = UNWCSCount + 1;
+                                        }
+                                    }
+                                }
+
+                                courseSectionWithGrades.CourseSectionName = courseSectionData.CourseSectionName;
+                                courseSectionWithGrades.GPValue = courseSectionData.IsWeightedCourse == true ? WGPValue : UNWGPValue;
+                                courseSectionWithGrades.WeightedGP = courseSectionData.IsWeightedCourse == true ? "Yes" : "NO";
+                                courseSectionWithGrades.GradeScaleName = courseSectionData.GradeScale?.GradeScaleName;
+                                courseSectionWithGrades.GradeScaleType = courseSectionData.GradeScaleType;
+                                courseSectionWithGrades.GradeScaleValue = courseSectionData.GradeScale?.GradeScaleValue;
+                                courseSectionWithGrades.CreditAttempted = studentFinalGrade.CreditAttempted == null ? courseSectionData.CreditHours : studentFinalGrade.CreditAttempted;
+                                courseSectionWithGrades.CreditEarned = studentFinalGrade.CreditEarned == null ? courseSectionData.CreditHours : studentFinalGrade.CreditEarned;
+                                courseSectionWithGrades.CreatedBy = Utility.CreatedOrUpdatedBy(this.context, studentReportCardGradesViewModel.TenantId, studentFinalGrade.CreatedBy);
+                                courseSectionWithGrades.CreatedOn = studentFinalGrade.CreatedOn;
+                                courseSectionWithGrades.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context, studentReportCardGradesViewModel.TenantId, studentFinalGrade.UpdatedBy);
+                                courseSectionWithGrades.UpdatedOn = studentFinalGrade.UpdatedOn;
                             }
 
                             courseSectionWithGrades.CourseId = studentFinalGrade.CourseId;
@@ -570,16 +595,16 @@ namespace opensis.data.Repository
                             UNWgpa = sumOfUNWGPValue / UNWCScreditEarned;
                         }
                     }
+                    var studentData = studentFinalGradeAllData.FirstOrDefault()!.StudentMaster;
 
-                    studentReportCardGrades.FirstGivenName =  studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.FirstGivenName;
-                    studentReportCardGrades.MiddleName = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.MiddleName;
-                    studentReportCardGrades.LastFamilyName = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.LastFamilyName;
-                    studentReportCardGrades.StudentInternalId = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentInternalId;
-                    //studentReportCardGrades.StudentPhoto = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentPhoto;
-                    studentReportCardGrades.StudentPhoto = studentFinalGradeAllData?.FirstOrDefault()?.StudentMaster.StudentThumbnailPhoto;
+                    studentReportCardGrades.FirstGivenName = studentData.FirstGivenName;
+                    studentReportCardGrades.MiddleName = studentData.MiddleName;
+                    studentReportCardGrades.LastFamilyName = studentData.LastFamilyName;
+                    studentReportCardGrades.StudentInternalId = studentData.StudentInternalId;
+                    studentReportCardGrades.StudentPhoto = studentData.StudentThumbnailPhoto;
                     studentReportCardGrades.WeightedGPA = Wgpa;
                     studentReportCardGrades.UnWeightedGPA = UNWgpa;
-                    studentReportCardGrades.GredeLavel = (GradeLevelData!=null && GradeLevelData.Any()) ? GradeLevelData.FirstOrDefault(x => x.GradeId == studentFinalGradeAllData?.FirstOrDefault()?.GradeId)?.Title : null;
+                    studentReportCardGrades.GredeLavel = (gradeLevelDataList != null && gradeLevelDataList.Any()) ? gradeLevelDataList.FirstOrDefault(x => x.GradeId == studentFinalGradeAllData?.FirstOrDefault()?.GradeId)?.Title : null;
                 }
                 else
                 {
