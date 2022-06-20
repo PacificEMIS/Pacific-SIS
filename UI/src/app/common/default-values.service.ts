@@ -7,6 +7,7 @@ import { CryptoService } from '../services/Crypto.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as moment from "moment";
+import { SharedFunction } from '../pages/shared/shared-function';
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +29,7 @@ export class DefaultValuesService {
   constructor(
     public translateService: TranslateService,
     private cryptoService: CryptoService,
+    private commonFunction:SharedFunction,
   ) {
   }
 
@@ -410,6 +412,6 @@ export class DefaultValuesService {
 
 
   checkAcademicYear() {
-    return moment(new Date()).isBetween(this.getFullYearStartDate(), this.getFullYearEndDate());
+    return moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.getFullYearEndDate());
   }
 }
