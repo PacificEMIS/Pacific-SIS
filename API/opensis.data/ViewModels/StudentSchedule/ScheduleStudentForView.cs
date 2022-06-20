@@ -79,5 +79,6 @@ namespace opensis.data.ViewModels.StudentSchedule
         public string? UpdatedBy { get; set; }
         public bool? IsDropped { get; set; }
         public string? SchoolName { get; set; }
+        public DateTime? GradePostingEndDate { get; set; }
     }
 }
