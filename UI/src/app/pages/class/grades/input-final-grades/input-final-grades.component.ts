@@ -200,15 +200,17 @@ export class InputFinalGradesComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
-              this.viewGradebookConfiguration().then(()=>{
+          }
+          this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
+            if (this.courseSectionData.gradeScaleType === 'Teacher_Scale') {
+              this.viewGradebookConfiguration().then(() => {
                 this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
               })
-            });
-          }
-          else {
-            this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
-          }
+            } else {
+              this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
+            }
+          });
+          
 
         }
         else {
@@ -216,6 +218,7 @@ export class InputFinalGradesComponent implements OnInit {
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
           if (this.courseSectionData.gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
+          }
             this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(()=>{
               if(this.courseSectionData.gradeScaleType === 'Teacher_Scale'){
                 this.viewGradebookConfiguration().then(()=>{
@@ -225,8 +228,6 @@ export class InputFinalGradesComponent implements OnInit {
               else 
                 this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
             })
-          } else
-          this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
           this.addUpdateStudentFinalGradeModel = res;
         }
       }
@@ -317,7 +318,7 @@ export class InputFinalGradesComponent implements OnInit {
           this.initializeDefaultValues(val,index);
         }
       }
-      if(this.courseSectionDetails[0]?.gradeScaleType === 'Teacher_Scale')
+      if(this.courseSectionData.gradeScaleType === 'Teacher_Scale')
         val.gradeScaleList=this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
     });
 
