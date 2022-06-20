@@ -800,7 +800,17 @@ export class StudentCourseScheduleComponent implements OnInit {
         this.routineViewWithEvent.routineView.push(eachEvent);
       }
     });
-
+    let nameArr=[];
+    let cloneRoutineView = this.routineViewWithEvent.routineView;
+    this.routineViewWithEvent.routineView=[];
+    cloneRoutineView.map(x=>nameArr.push(x.periodStartTime));
+    nameArr=nameArr.sort();
+    nameArr.map(val=>{
+      cloneRoutineView.map(x=>{
+        if(val === x.periodStartTime)
+          this.routineViewWithEvent.routineView.push(x);
+      })
+    })
     this.filterEventsForRoutineView();
   }
 
