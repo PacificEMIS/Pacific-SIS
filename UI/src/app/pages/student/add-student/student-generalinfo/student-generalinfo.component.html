@@ -311,6 +311,8 @@
                                     {{'loginEmailAddressIsRequired'|translate}}</mat-error>
                                 <mat-error *ngIf="loginEmail.errors?.nomatch">
                                     {{'loginEmailAddressAlreadyExist'|translate}}</mat-error>
+                                <mat-error *ngIf="loginEmail.errors?.pattern">
+                                    {{'pleaseProvideAValidEmailAddress'|translate}}</mat-error>
                             </mat-form-field>
                         </li>
                         <li>
