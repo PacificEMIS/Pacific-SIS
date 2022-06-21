@@ -66,6 +66,7 @@ import { PageRolesPermission } from '../../../../common/page-roles-permissions.s
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { ActiveDeactiveUserModel } from 'src/app/models/common.model';
+import { ValidationService } from 'src/app/pages/shared/validation.service';
 @Component({
   selector: 'vex-student-generalinfo',
   templateUrl: './student-generalinfo.component.html',
@@ -190,7 +191,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     this.permissions = this.pageRolePermission.checkPageRolePermission();
 
     this.internalId = new FormControl('');
-    this.loginEmail = new FormControl('', Validators.required);
+    this.loginEmail = new FormControl('', ValidationService.emailValidator);
     if (this.studentCreateMode === this.studentCreate.ADD) {
 
       this.initializeDropdownsInAddMode();
@@ -447,8 +448,14 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
                 this.commonService.checkTokenValidOrNot(data._message);
               } else {
                 if (data.isValidEmailAddress) {
-                  this.loginEmail.setErrors(null);
-                  this.isUser = false;
+                  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(term)) {
+                    this.loginEmail.setErrors(null);
+                    this.isUser = false;
+                  } else {
+                    this.loginEmail.markAsTouched();
+                    this.loginEmail.setErrors({ pattern: true });
+                    this.isUser = false;
+                  }
                 }
                 else {
                   this.loginEmail.markAsTouched();
