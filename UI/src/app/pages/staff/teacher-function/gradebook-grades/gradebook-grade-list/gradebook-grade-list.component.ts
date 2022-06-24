@@ -59,6 +59,7 @@ export class GradebookGradeListComponent implements OnInit {
   markingPeriodId;
   isWeightedSection: boolean;
   maxAnomalousGrade;
+  includeInactiveFlag: false;
   constructor(
     public translateService: TranslateService,
     private dialog: MatDialog,
@@ -250,7 +251,7 @@ export class GradebookGradeListComponent implements OnInit {
     // return;
     this.viewGradebookGradeModel.courseSectionId = courseSection ? courseSection.value.courseSectionId : this.viewGradebookGradeModel.courseSectionId;
     this.viewGradebookGradeModel.SearchValue = SearchValue ? SearchValue : null;
-    this.viewGradebookGradeModel.includeInactive = includeInactive ? includeInactive.checked : false;
+    this.viewGradebookGradeModel.includeInactive = this.includeInactiveFlag ? this.includeInactiveFlag : false;
 
     // return;
     this.gradeBookConfigurationService.viewGradebookGrade(this.viewGradebookGradeModel).subscribe((res: any)=>{

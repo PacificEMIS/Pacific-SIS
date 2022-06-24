@@ -72,6 +72,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   markingPeriodId;
   isWeightedSection: boolean;
   maxAnomalousGrade;
+  includeInactiveFlag: false;
   @Output() isConfigUpdateFlag = new EventEmitter<boolean>()
   constructor(
     public translateService: TranslateService,
@@ -221,7 +222,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   getGradebookGrade(SearchValue?, includeInactive?) {
     this.viewGradebookGradeModel.courseSectionId = this.defaultValuesService.getSelectedCourseSection().courseSectionId;
     this.viewGradebookGradeModel.SearchValue = SearchValue ? SearchValue : null;
-    this.viewGradebookGradeModel.includeInactive = includeInactive ? includeInactive.checked : false;
+    this.viewGradebookGradeModel.includeInactive = this.includeInactiveFlag ? this.includeInactiveFlag : false;
 
     // return;
     this.gradeBookConfigurationService.viewGradebookGrade(this.viewGradebookGradeModel).subscribe((res: any)=>{
