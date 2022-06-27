@@ -310,7 +310,7 @@
     "pullDownAutoPullDownCodedPullDownSelectMultipleChoices":"Pull-Down/Auto Pull-Down/Coded Pull-Down/Select Multiple Choices",
     "oneItemPerLine":"One Item Per Line",
     "default":"Default",
-    "required":"required",
+    "required":"Required",
     "systemWide":"System Wide",
     "NoCalendarWereFound":"No Calendars Were Found",
     "defaultFieldHint":"** for long text it will be ignored",

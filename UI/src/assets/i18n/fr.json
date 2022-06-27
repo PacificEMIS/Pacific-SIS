@@ -310,7 +310,7 @@
     "pullDownAutoPullDownCodedPullDownSelectMultipleChoices": "Déroulement/Déroulement automatique/Déroulement codé/Sélection de plusieurs choix",
     "oneItemPerLine": "Un article par ligne",
     "default": "Défaut",
-    "required": "obligatoire",
+    "required": "Obligatoire",
     "systemWide": "À l'échelle du système",
     "NoCalendarWereFound": "Aucun calendrier n'a été trouvé",
     "defaultFieldHint": "** pour un texte long, il sera ignoré",
