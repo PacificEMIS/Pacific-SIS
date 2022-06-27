@@ -207,12 +207,12 @@ namespace opensis.data.Repository
                     if (semesterCheckingData.Title?.ToLower() == semester.tableSemesters?.Title?.ToLower())
                     {
                         semester._failure = true;
-                        semester._message = "Semester Title Already Exists";
+                        semester._message = "Semester Title already exists";
                     }
                     else
                     {
                         semester._failure = true;
-                        semester._message = "Semester ShortName Already Exists";
+                        semester._message = "Semester ShortName already exists";
                     }
                 }
                 else
@@ -243,7 +243,7 @@ namespace opensis.data.Repository
                             this.context?.Semesters.Add(semester.tableSemesters);
                             this.context?.SaveChanges();
                             semester._failure = false;
-                            semester._message = "Semester Added Successfully";
+                            semester._message = "Semester added successfully";
                         }
                         
                         //semester.tableSemesters.SchoolYears = null;
@@ -287,12 +287,12 @@ namespace opensis.data.Repository
                     if (semesterCheckingData.Title?.ToLower() == semester.tableSemesters?.Title?.ToLower())
                     {
                         semester._failure = true;
-                        semester._message = "Semester Title Already Exists";
+                        semester._message = "Semester Title already exists";
                     }
                     else
                     {
                         semester._failure = true;
-                        semester._message = "Semester ShortName Already Exists";
+                        semester._message = "Semester ShortName already exists";
                     }
                 }
                 else
@@ -411,7 +411,7 @@ namespace opensis.data.Repository
                         this.context?.Semesters.Remove(semesterDelete);
                         this.context?.SaveChanges();
                         semester._failure = false;
-                        semester._message = "Semester Deleted Successfully";
+                        semester._message = "Semester deleted successfullyy";
                     }
                 }
 
@@ -448,12 +448,12 @@ namespace opensis.data.Repository
                     if (String.Compare(progressPeriodCheckingData.Title , progressPeriod.tableProgressPeriods?.Title,true)==0)
                     {
                         progressPeriod._failure = true;
-                        progressPeriod._message = "Progress Period Title Already Exists";
+                        progressPeriod._message = "Progress Period Title already exists";
                     }
                     else
                     {
                         progressPeriod._failure = true;
-                        progressPeriod._message = "Progress Period ShortName Already Exists";
+                        progressPeriod._message = "Progress Period ShortName already exists";
                     }
                 }
                 else
@@ -480,7 +480,7 @@ namespace opensis.data.Repository
                             this.context?.ProgressPeriods.Add(progressPeriod.tableProgressPeriods);
                             this.context?.SaveChanges();
                             progressPeriod._failure = false;
-                            progressPeriod._message = "Progress Period Added Successfully";
+                            progressPeriod._message = "Progress Period added successfully";
                             //progressPeriod.tableProgressPeriods.Quarters = null;
                         }
                     }
@@ -521,12 +521,12 @@ namespace opensis.data.Repository
                     if (String.Compare(progressPeriodCheckingData.Title, progressPeriod.tableProgressPeriods?.Title,true)==0)
                     {
                         progressPeriod._failure = true;
-                        progressPeriod._message = "Progress Period Title Already Exists";
+                        progressPeriod._message = "Progress Period Title already exists";
                     }
                     else
                     {
                         progressPeriod._failure = true;
-                        progressPeriod._message = "Progress Period ShortName Already Exists";
+                        progressPeriod._message = "Progress Period ShortName already exists";
                     }
                 }
                 else
@@ -622,7 +622,7 @@ namespace opensis.data.Repository
                     this.context?.ProgressPeriods.Remove(progressPeriodDelete);
                     this.context?.SaveChanges();
                     progressPeriod._failure = false;
-                    progressPeriod._message = "Progress Period Deleted Successfully";
+                    progressPeriod._message = "Progress Period deleted successfullyy";
                 }
             }
 
@@ -653,7 +653,12 @@ namespace opensis.data.Repository
 
                 schoolYears.tableSchoolYears.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, schoolYears.tableSchoolYears.TenantId, schoolYears.tableSchoolYears.SchoolId);
 
-                var calendarData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
+                SchoolCalendars? calendarData;
+                calendarData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
+                if (calendarData == null)
+                {
+                    calendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.SessionCalendar == true).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                }
 
                 if (calendarData != null)
                 {
@@ -670,12 +675,12 @@ namespace opensis.data.Repository
                             if (String.Compare(schoolYearCheckingData.Title, schoolYears.tableSchoolYears?.Title,true)==0)
                             {
                                 schoolYears._failure = true;
-                                schoolYears._message = "School Year Title Already Exists";
+                                schoolYears._message = "School Year Title already exists";
                             }
                             else
                             {
                                 schoolYears._failure = true;
-                                schoolYears._message = "School Year ShortName Already Exists";
+                                schoolYears._message = "School Year ShortName already exists";
                             }
                         }
                         else
@@ -698,7 +703,7 @@ namespace opensis.data.Repository
                                 this.context?.SchoolYears.Add(schoolYears.tableSchoolYears);
                                 this.context?.SaveChanges();
                                 schoolYears._failure = false;
-                                schoolYears._message = "School Year Added Successfully";
+                                schoolYears._message = "School Year added successfully";
                             }
                         }
                     }
@@ -775,12 +780,12 @@ namespace opensis.data.Repository
                     if (String.Compare(schoolYearCheckingData.Title, schoolYears.tableSchoolYears?.Title,true)==0)
                     {
                         schoolYears._failure = true;
-                        schoolYears._message = "School Year Title Already Exists";
+                        schoolYears._message = "School Year Title already exists";
                     }
                     else
                     {
                         schoolYears._failure = true;
-                        schoolYears._message = "School Year ShortName Already Exists";
+                        schoolYears._message = "School Year ShortName already exists";
                     }
                 }
                 else
@@ -792,7 +797,13 @@ namespace opensis.data.Repository
                     //    schoolYears._failure = true;
                     //    schoolYears._message = "Start date cannot be changed because it has its association.";
                     //}
-                    var calendarData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
+                    SchoolCalendars? calendarData;
+                    calendarData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
+                    if (calendarData == null)
+                    {
+                        calendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.SessionCalendar == true).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                    }
+
 
                     if (calendarData != null && (calendarData.StartDate > schoolYears.tableSchoolYears?.StartDate || calendarData.EndDate < schoolYears.tableSchoolYears?.EndDate))
                     {
@@ -881,7 +892,7 @@ namespace opensis.data.Repository
                         this.context?.SchoolYears.Remove(deleteSchoolYear);
                         this.context?.SaveChanges();
                         schoolYears._failure = false;
-                        schoolYears._message = "School Year Deleted Successfully";
+                        schoolYears._message = "School Year deleted successfullyy";
                     }
                 }                
             }
@@ -915,12 +926,12 @@ namespace opensis.data.Repository
                     if (String.Compare(quarterCheckingData.Title, quarters.tableQuarter.Title,true)==0)
                     {
                         quarters._failure = true;
-                        quarters._message = "Quarter Title Already Exists";
+                        quarters._message = "Quarter Title already exists";
                     }
                     else
                     {
                         quarters._failure = true;
-                        quarters._message = "Quarter ShortName Already Exists";
+                        quarters._message = "Quarter ShortName already exists";
                     }
                 }
                 else
@@ -948,7 +959,7 @@ namespace opensis.data.Repository
                             this.context?.Quarters.Add(quarters.tableQuarter);
                             this.context?.SaveChanges();
                             quarters._failure = false;
-                            quarters._message = "Quarter Added Successfully";
+                            quarters._message = "Quarter added successfully";
                             //quarters.tableQuarter.Semesters = null;
                         }
                     }
@@ -1027,12 +1038,12 @@ namespace opensis.data.Repository
                     if (String.Compare(quarterCheckingData.Title,quarters.tableQuarter?.Title,true)==0)
                     {
                         quarters._failure = true;
-                        quarters._message = "Quarter Title Already Exists";
+                        quarters._message = "Quarter Title already exists";
                     }
                     else
                     {
                         quarters._failure = true;
-                        quarters._message = "Quarter ShortName Already Exists";
+                        quarters._message = "Quarter ShortName already exists";
                     }
                 }
                 else
@@ -1116,7 +1127,7 @@ namespace opensis.data.Repository
                         this.context?.Quarters.Remove(quarterDelete);
                         this.context?.SaveChanges();
                         quarter._failure = false;
-                        quarter._message = "Quarter Deleted Successfully";
+                        quarter._message = "Quarter deleted successfullyy";
                     }
                 }
             }

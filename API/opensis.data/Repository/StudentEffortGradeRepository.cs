@@ -183,7 +183,7 @@ namespace opensis.data.Repository
                                 studentEffortGradeList.Add(studentEffortGradeUpdate);
                                 studentEffortGradeSrlno++;
                             }
-                            studentEffortGradeListModel._message = "Student Effort Grade Updated Succsesfully.";
+                            studentEffortGradeListModel._message = "Student Effort Grade updated successfully.";
                         }
                         else
                         {

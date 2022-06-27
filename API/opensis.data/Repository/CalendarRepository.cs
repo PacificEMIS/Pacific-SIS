@@ -81,7 +81,7 @@ namespace opensis.data.Repository
             //context!.Entry(calendar.SchoolCalendar.SchoolMaster).State = EntityState.Unchanged;
             this.context?.SaveChanges();
             calendar._failure = false;
-            calendar._message = "Calendar Added Successfully";
+            calendar._message = "Calendar added successfully";
 
             return calendar;
         }
@@ -435,7 +435,7 @@ namespace opensis.data.Repository
                         this.context?.SchoolCalendars.Remove(calendarRepository);
                         this.context?.SaveChanges();
                         calendar._failure = false;
-                        calendar._message = "Calendar Deleted Successfully";
+                        calendar._message = "Calendar deleted successfullyy";
                     }
                 }
 

@@ -66,7 +66,7 @@ namespace opensis.data.Repository
                 if (checkGradeScaleName != null)
                 {
                     gradeScaleAddViewModel._failure = true;
-                    gradeScaleAddViewModel._message = "Grade Scale Name Already Exists";
+                    gradeScaleAddViewModel._message = "Grade Scale Name already exists";
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace opensis.data.Repository
                     //context!.Entry(gradeScaleAddViewModel.gradeScale.SchoolMaster).State = EntityState.Unchanged;
                     this.context?.SaveChanges();
                     gradeScaleAddViewModel._failure = false;
-                    gradeScaleAddViewModel._message = "Grade Scale Added Successfully";
+                    gradeScaleAddViewModel._message = "Grade Scale added successfully";
                 }                
             }
             catch (Exception es)
@@ -128,7 +128,7 @@ namespace opensis.data.Repository
                     if (checkGradeScaleName != null)
                     {
                         gradeScaleAddViewModel._failure = true;
-                        gradeScaleAddViewModel._message = "Grade Scale Name Already Exists";
+                        gradeScaleAddViewModel._message = "Grade Scale Name already exists";
                     }
                     else
                     {
@@ -184,7 +184,7 @@ namespace opensis.data.Repository
                         this.context?.GradeScale.Remove(gradeScaleDelete);
                         this.context?.SaveChanges();
                         gradeScaleAddViewModel._failure = false;
-                        gradeScaleAddViewModel._message = "Grade Scale Deleted Successfully";
+                        gradeScaleAddViewModel._message = "Grade Scale deleted successfullyy";
                     }
                 }
                 else
@@ -221,7 +221,7 @@ namespace opensis.data.Repository
                 if (checkGradeTitle != null)
                 {
                     gradeAddViewModel._failure = true;
-                    gradeAddViewModel._message = "Grade Title Already Exists";
+                    gradeAddViewModel._message = "Grade Title already exists";
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace opensis.data.Repository
                     this.context?.Grade.Add(gradeAddViewModel.grade);
                     this.context?.SaveChanges();
                     gradeAddViewModel._failure = false;
-                    gradeAddViewModel._message = "Grade Added Successfully";
+                    gradeAddViewModel._message = "Grade added successfully";
                 }                
             }
             catch (Exception es)
@@ -281,7 +281,7 @@ namespace opensis.data.Repository
                     if (checkGradeTitle != null)
                     {
                         gradeAddViewModel._failure = true;
-                        gradeAddViewModel._message = "Grade Title Already Exists";
+                        gradeAddViewModel._message = "Grade Title already exists";
                     }
                     else
                     {
@@ -327,7 +327,7 @@ namespace opensis.data.Repository
                         this.context?.Grade.Remove(gradeDelete);
                         this.context?.SaveChanges();
                         gradeAddViewModel._failure = false;
-                        gradeAddViewModel._message = "Grade Deleted Successfully";                    
+                        gradeAddViewModel._message = "Grade deleted successfullyy";                    
                 }
                 else
                 {
@@ -481,12 +481,12 @@ namespace opensis.data.Repository
                     this.context?.EffortGradeLibraryCategory.Add(effortGradeLibraryCategoryAddViewModel.EffortGradeLibraryCategory);
                     this.context?.SaveChanges();
                     effortGradeLibraryCategoryAddViewModel._failure = false;
-                    effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Added Successfully";
+                    effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category added successfully";
                 }
                 else
                 {
                     effortGradeLibraryCategoryAddViewModel._failure = true;
-                    effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Name Already Exists";
+                    effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Name already exists";
                 }
             }
             catch (Exception es)
@@ -519,7 +519,7 @@ namespace opensis.data.Repository
                     if (EffortGradeLibraryCategoryData!=null)
                     {
                         effortGradeLibraryCategoryAddViewModel._failure = true;
-                        effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Name Already Exists";
+                        effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Name already exists";
                     }
                     else
                     {
@@ -572,7 +572,7 @@ namespace opensis.data.Repository
                         this.context?.EffortGradeLibraryCategory.Remove(EffortGradeLibraryCategoryDelete);
                         this.context?.SaveChanges();
                         effortGradeLibraryCategoryAddViewModel._failure = false;
-                        effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category Deleted Successfully";
+                        effortGradeLibraryCategoryAddViewModel._message = "Effort Grade Library Category deleted successfullyy";
                     }
                     
                 }
@@ -632,12 +632,12 @@ namespace opensis.data.Repository
                     this.context?.EffortGradeLibraryCategoryItem.Add(effortGradeLibraryCategoryItemAddViewModel.EffortGradeLibraryCategoryItem);
                     this.context?.SaveChanges();
                     effortGradeLibraryCategoryItemAddViewModel._failure = false;
-                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Added Successfully";
+                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item added successfully";
                 }
                 else
                 {
                     effortGradeLibraryCategoryItemAddViewModel._failure = true;
-                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Name Already Exists";
+                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Name already exists";
                 }                
             }
             catch (Exception es)
@@ -671,7 +671,7 @@ namespace opensis.data.Repository
                     if (effortGradeLibraryCategoryItemList !=null)
                     {
                         effortGradeLibraryCategoryItemAddViewModel._failure = true;
-                        effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Name Already Exists";
+                        effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Name already exists";
                     }
                     else
                     {
@@ -718,7 +718,7 @@ namespace opensis.data.Repository
                     this.context?.EffortGradeLibraryCategoryItem.Remove(EffortGradeLibraryCategoryItemDelete);
                     this.context?.SaveChanges();
                     effortGradeLibraryCategoryItemAddViewModel._failure = false;
-                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item Deleted Successfully";
+                    effortGradeLibraryCategoryItemAddViewModel._message = "Effort Grade Library Category Item deleted successfullyy";
                 }
                 else
                 {
@@ -920,7 +920,7 @@ namespace opensis.data.Repository
                     this.context?.EffortGradeScale.Add(effortGradeScaleAddViewModel.EffortGradeScale);
                     this.context?.SaveChanges();
                     effortGradeScaleAddViewModel._failure = false;
-                    effortGradeScaleAddViewModel._message = "Effort Grade Scale Added Successfully";
+                    effortGradeScaleAddViewModel._message = "Effort Grade Scale added successfully";
                 }
                 else
                 {
@@ -1003,7 +1003,7 @@ namespace opensis.data.Repository
                     this.context?.EffortGradeScale.Remove(effortGradeScaleDelete);
                     this.context?.SaveChanges();
                     effortGradeScaleAddViewModel._failure = false;
-                    effortGradeScaleAddViewModel._message = "Effort Grade Scale Deleted Successfully";
+                    effortGradeScaleAddViewModel._message = "Effort Grade Scale deleted successfullyy";
                 }
                 else
                 {
@@ -1170,7 +1170,7 @@ namespace opensis.data.Repository
                     this.context?.GradeUsStandard.Add(gradeUsStandardAddViewModel.gradeUsStandard);
                     this.context?.SaveChanges();
                     gradeUsStandardAddViewModel._failure = false;
-                    gradeUsStandardAddViewModel._message = "School Specific Standard Added Successfully";
+                    gradeUsStandardAddViewModel._message = "School Specific Standard added successfully";
                 }
                 else
                 {
@@ -1270,7 +1270,7 @@ namespace opensis.data.Repository
                         this.context?.GradeUsStandard.Remove(gradeUsStandardDelete!);
                         this.context?.SaveChanges();
                         gradeUsStandardAddViewModel._failure = false;
-                        gradeUsStandardAddViewModel._message = "School Specific Standard Deleted Successfully";
+                        gradeUsStandardAddViewModel._message = "School Specific Standard deleted successfullyy";
                     }
                 }
                 else
@@ -1518,7 +1518,7 @@ namespace opensis.data.Repository
                 if (checkHonorRoll != null)
                 {
                     honorRollsAddViewModel._failure = false;
-                    honorRollsAddViewModel._message = "Honor Roll Already Exists";
+                    honorRollsAddViewModel._message = "Honor Roll already exists";
                 }
                 else
                 {
@@ -1536,7 +1536,7 @@ namespace opensis.data.Repository
                     this.context?.HonorRolls.Add(honorRollsAddViewModel.honorRolls);
                     this.context?.SaveChanges();
                     honorRollsAddViewModel._failure = false;
-                    honorRollsAddViewModel._message = "Honor Roll Added Successfully";
+                    honorRollsAddViewModel._message = "Honor Roll added successfully";
                 }
             }
             catch (Exception es)
@@ -1569,7 +1569,7 @@ namespace opensis.data.Repository
                     if (checkHonorRoll != null)
                     {
                         honorRollsAddViewModel._failure = true;
-                        honorRollsAddViewModel._message = "Honor Roll Already Exists";
+                        honorRollsAddViewModel._message = "Honor Roll already exists";
                     }
                     else
                     {
@@ -1696,7 +1696,7 @@ namespace opensis.data.Repository
                     this.context?.HonorRolls.Remove(honorRollDelete);
                     this.context?.SaveChanges();
                     honorRollsAddViewModel._failure = false;
-                    honorRollsAddViewModel._message = "Honor Roll Deleted Successfully";
+                    honorRollsAddViewModel._message = "Honor Roll deleted successfullyy";
                 }
                 else
                 {

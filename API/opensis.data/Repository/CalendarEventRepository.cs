@@ -68,7 +68,7 @@ namespace opensis.data.Repository
             this.context?.CalendarEvents.Add(calendarEvent.SchoolCalendarEvent);
             this.context?.SaveChanges();
             calendarEvent._failure = false;
-            calendarEvent._message = "Calendar Event Added Successfully";
+            calendarEvent._message = "Calendar Event added successfully";
             return calendarEvent;
         }
 
@@ -204,7 +204,7 @@ namespace opensis.data.Repository
                     this.context?.CalendarEvents.Remove(calendarEventRepository);
                     this.context?.SaveChanges();
                     calendarEvent._failure = false;
-                    calendarEvent._message = "Calendar Event Deleted Successfully";
+                    calendarEvent._message = "Calendar Event deleted successfullyy";
                 }
             }
             catch (Exception ex)

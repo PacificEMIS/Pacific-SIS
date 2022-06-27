@@ -83,7 +83,7 @@ namespace opensis.data.Repository
                 //context!.Entry(studentEnrollmentCodeAddViewModel.studentEnrollmentCode.SchoolMaster).State = EntityState.Unchanged;
                 this.context?.SaveChanges();
                 studentEnrollmentCodeAddViewModel._failure = false;
-                studentEnrollmentCodeAddViewModel._message = "Enrollment Code Added Successfully";
+                studentEnrollmentCodeAddViewModel._message = "Enrollment Code added successfully";
             }
             return studentEnrollmentCodeAddViewModel;
         }
@@ -156,7 +156,7 @@ namespace opensis.data.Repository
                                 this.context?.StudentEnrollmentCode.Remove(studentEnrollmentCodeDelete);
                                 this.context?.SaveChanges();
                                 studentEnrollmentCodeAddViewModel._failure = false;
-                                studentEnrollmentCodeAddViewModel._message = "Enrollment Code Deleted Successfully";
+                                studentEnrollmentCodeAddViewModel._message = "Enrollment Code deleted successfullyy";
                             }
                         }
                     }

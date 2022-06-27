@@ -229,7 +229,7 @@ namespace opensis.data.Repository
                                 studentFinalGradeList.Add(studentFinalGradeUpdate);
                                 studentFinalGradeSrlno++;
                             }
-                            studentFinalGradeListModel._message = "Student Final Grade Updated Succsesfully.";
+                            studentFinalGradeListModel._message = "Student final grade updated successfully.";
                         }
                         else
                         {
@@ -289,7 +289,7 @@ namespace opensis.data.Repository
                                 studentFinalGradeList.Add(studentFinalGradeAdd);
                                 studentFinalGradeSrlno++;
                             }
-                            studentFinalGradeListModel._message = "Student Final Grade Added succsesfully.";
+                            studentFinalGradeListModel._message = "Student final grade added successfully.";
                         }
 
                         this.context?.StudentFinalGrade.AddRange(studentFinalGradeList);
@@ -676,7 +676,7 @@ namespace opensis.data.Repository
                     }
                     this.context?.SaveChanges();
                     studentReportCardGradesViewModel._failure = false;
-                    studentReportCardGradesViewModel._message = "Updated successfully";
+                    studentReportCardGradesViewModel._message = "updated successfully";
                 }
                 else
                 {

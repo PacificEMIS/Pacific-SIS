@@ -1487,7 +1487,7 @@ namespace opensis.data.Repository
                         this.context?.StaffCertificateInfo.Remove(staffCertificateInfoDelete);
                         this.context?.SaveChanges();
                         staffCertificateInfoAddViewModel._failure = false;
-                        staffCertificateInfoAddViewModel._message = "Staff certificate deleted successfully";
+                        staffCertificateInfoAddViewModel._message = "Staff certificate deleted successfullyy";
                     }
                     else
                     {

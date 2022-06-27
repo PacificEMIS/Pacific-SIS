@@ -63,7 +63,7 @@ namespace opensis.data.Repository
                 if (checkGradelevelTitle !=null)
                 {
                     gradelevel._failure = true;
-                    gradelevel._message = "Grade Level Title Already Exists";
+                    gradelevel._message = "Grade Level Title already exists";
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace opensis.data.Repository
                     if (checkGradelevelTitle != null)
                     {
                         gradelevel._failure = true;
-                        gradelevel._message = "Grade Level Title Already Exists";
+                        gradelevel._message = "Grade Level Title already exists";
                     }
                     else
                     {

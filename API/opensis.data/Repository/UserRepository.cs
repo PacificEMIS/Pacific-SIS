@@ -656,7 +656,7 @@ namespace opensis.data.Repository
                             this.context?.UserAccessLog.RemoveRange(transactionIQ);
                             this.context?.SaveChanges();
                             userAccessLogListView._failure = false;
-                            userAccessLogListView._message = "Access log deleted successfully";
+                            userAccessLogListView._message = "Access log deleted successfullyy";
                             return userAccessLogListView;
                         }
                         else
@@ -715,7 +715,7 @@ namespace opensis.data.Repository
                         this.context?.UserAccessLog.RemoveRange(useraccessData);
                         this.context?.SaveChanges();
                         userAccessLogList._failure = false;
-                        userAccessLogList._message = "Access Log Deleted Successfully";
+                        userAccessLogList._message = "Access Log deleted successfullyy";
                     }
                     else
                     {

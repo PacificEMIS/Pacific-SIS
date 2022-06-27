@@ -71,7 +71,7 @@ namespace opensis.data.Repository
                             {
                                 if (AssociationshipData.Associationship)
                                 {
-                                    parentInfoAddViewModel._message = "Parent Already Exists For This Student";
+                                    parentInfoAddViewModel._message = "Parent already exists For This Student";
                                     parentInfoAddViewModel._failure = true;
                                     return parentInfoAddViewModel;
                                 }
@@ -185,7 +185,7 @@ namespace opensis.data.Repository
                     this.context?.SaveChanges();
                     transaction?.Commit();
                     parentInfoAddViewModel._failure = false;
-                    parentInfoAddViewModel._message = "Parent Added Successfully";
+                    parentInfoAddViewModel._message = "Parent added successfully";
                 }
                 catch (Exception es)
                 {
@@ -1034,7 +1034,7 @@ namespace opensis.data.Repository
                 this.context?.ParentInfo.Remove(ParentInfo!);
                 this.context?.SaveChanges();
                 parentInfoAddViewModel._failure = false;
-                parentInfoAddViewModel._message = "Parent Deleted Successfully";
+                parentInfoAddViewModel._message = "Parent deleted successfullyy";
             }
             catch (Exception es)
             {
@@ -1243,7 +1243,7 @@ namespace opensis.data.Repository
                 this.context?.ParentInfo.Add(parentInfoAddViewModel.parentInfo);
                 this.context?.SaveChanges();
                 parentInfoAddViewModel._failure = false;
-                parentInfoAddViewModel._message = "Parent Added Successfully";
+                parentInfoAddViewModel._message = "Parent added successfully";
             }
             catch (Exception es)
             {

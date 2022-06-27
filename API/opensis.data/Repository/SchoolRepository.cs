@@ -292,14 +292,18 @@ namespace opensis.data.Repository
                               SchoolId = e.SchoolId,
                               TenantId = e.TenantId,
                               SchoolName = e.SchoolName!.Trim(),
-                              DateSchoolOpened = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.StartDate,
-                              DateSchoolClosed = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.EndDate,
                               MembershipId = userMasterData.Membership.MembershipId,
                               MembershipType = userMasterData.Membership.ProfileType
                           }).ToList();
 
                         if (schoolList != null && schoolList.Any())
                         {
+
+                            schoolList.ForEach(c =>
+                            {
+                                c.DateSchoolOpened = AcademicStartDate(c.TenantId, c.SchoolId);
+                                c.DateSchoolClosed = AcademicEndDate(c.TenantId, c.SchoolId);
+                            });
                             schoolListModel.getSchoolForView = schoolList;
                         }
                     }
@@ -313,14 +317,17 @@ namespace opensis.data.Repository
                                         SchoolId = e.sm.SchoolId,
                                         TenantId = e.sm.TenantId,
                                         SchoolName = e.sm.SchoolName!.Trim(),
-                                        DateSchoolOpened = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.sm.TenantId && x.SchoolId == e.sm.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.StartDate,
-                                        DateSchoolClosed = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.sm.TenantId && x.SchoolId == e.sm.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.EndDate,
                                         MembershipId = e.ssi.MembershipId,
                                         MembershipType = e.ssi.Profile
                                     }).ToList();
 
                         if (schoolList != null && schoolList.Any())
                         {
+                            schoolList.ForEach(c =>
+                            {
+                                c.DateSchoolOpened = AcademicStartDate(c.TenantId, c.SchoolId);
+                                c.DateSchoolClosed = AcademicEndDate(c.TenantId, c.SchoolId);
+                            });
                             schoolListModel.getSchoolForView = schoolList;
                         }
                     }
@@ -1057,7 +1064,7 @@ namespace opensis.data.Repository
                             this.context?.SaveChanges();
                             transaction?.Commit();
                             school._failure = false;
-                            school._message = "School Added Successfully";
+                            school._message = "School added successfully";
 
                             school.schoolMaster.Membership = new HashSet<Membership>();
                             school.schoolMaster.DpdownValuelist = new HashSet<DpdownValuelist>();
@@ -2569,6 +2576,43 @@ namespace opensis.data.Repository
             //};
             //this.context?.SchoolYears.Add(schoolYear);
             //this.context?.SaveChanges();
+        }
+
+        private DateTime? AcademicStartDate(Guid? tenantId, int? schoolId)
+        {
+            DateTime? startDate = null;
+            SchoolCalendars? resultData;
+            resultData = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <=
+               DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date);
+            if (resultData != null)
+            {
+                startDate = resultData.StartDate;
+            }
+            else
+            {
+                resultData =
+              this.context.SchoolCalendars.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                startDate = resultData != null ? resultData.StartDate : null;
+            }
+            return startDate;
+        }
+        private DateTime? AcademicEndDate(Guid? tenantId, int? schoolId)
+        {
+            DateTime? endDate = null;
+            SchoolCalendars? resultData;
+            resultData = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <=
+               DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date);
+            if (resultData != null)
+            {
+                endDate = resultData.EndDate;
+            }
+            else
+            {
+                resultData =
+              this.context.SchoolCalendars.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                endDate = resultData != null ? resultData.EndDate : null;
+            }
+            return endDate;
         }
     }
 }
