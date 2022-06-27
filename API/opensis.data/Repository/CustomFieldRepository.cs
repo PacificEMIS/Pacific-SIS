@@ -68,7 +68,7 @@ namespace opensis.data.Repository
                         if (checkCustomFieldTitle != null)
                         {
                             customFieldAddViewModel._failure = true;
-                            customFieldAddViewModel._message = "Custom Field Title Already Exists";
+                            customFieldAddViewModel._message = "Custom Field Title already exists";
                         }
                         else
                         {
@@ -176,7 +176,7 @@ namespace opensis.data.Repository
                             this.context?.SaveChanges();
                             transaction?.Commit();
                             customFieldAddViewModel._failure = false;
-                            customFieldAddViewModel._message = "Custom Field Added Successfully";
+                            customFieldAddViewModel._message = "Custom Field added successfully";
                         }
                     }
                     else
@@ -220,7 +220,7 @@ namespace opensis.data.Repository
                         if (checkCustomFieldTitle != null)
                         {
                             customFieldAddViewModel._failure = true;
-                            customFieldAddViewModel._message = "Custom Field Title Already Exists";
+                            customFieldAddViewModel._message = "Custom Field Title already exists";
                         }
                         else
                         {
@@ -250,7 +250,7 @@ namespace opensis.data.Repository
                                             if (CheckCustomFieldTitle != null)
                                             {
                                                 customFieldAddViewModel._failure = true;
-                                                customFieldAddViewModel._message = "Custom Field Title Already Exists";
+                                                customFieldAddViewModel._message = "Custom Field Title already exists";
                                                 return customFieldAddViewModel;
                                             }
 
@@ -391,7 +391,7 @@ namespace opensis.data.Repository
                     this.context?.CustomFields.RemoveRange(customFieldList);
                     this.context?.SaveChanges();
                     customFieldAddViewModel._failure = false;
-                    customFieldAddViewModel._message = "Custom field deleted successfully";
+                    customFieldAddViewModel._message = "Custom field deleted successfullyy";
                 }
             }
             catch (Exception es)
@@ -853,7 +853,7 @@ namespace opensis.data.Repository
                         this.context?.FieldsCategory.RemoveRange(fieldsCategories);
                         this.context?.SaveChanges();
                         fieldsCategoryAddViewModel._failure = false;
-                        fieldsCategoryAddViewModel._message = "Field category deleted successfully";
+                        fieldsCategoryAddViewModel._message = "Field category deleted successfullyy";
                     }
                 }
             }

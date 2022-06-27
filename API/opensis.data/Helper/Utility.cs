@@ -599,6 +599,11 @@ namespace opensis.data.Helper
             {
                 AcademicYear = calendarData.AcademicYear;
             }
+            else
+            {
+                var lastAcademicData = cRMContext.SchoolCalendars.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true).OrderByDescending(x => x.StartDate).FirstOrDefault();
+                AcademicYear = lastAcademicData != null ? lastAcademicData.AcademicYear : null;
+            }
 
             return AcademicYear;
         }

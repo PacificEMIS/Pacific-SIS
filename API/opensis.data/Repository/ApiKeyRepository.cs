@@ -421,7 +421,7 @@ namespace opensis.data.Repository
                     this.context?.SaveChanges();
 
                     generateAPIKeyViewModel._failure = false;
-                    generateAPIKeyViewModel._message = "API key deleted successfully";
+                    generateAPIKeyViewModel._message = "API key deleted successfullyy";
                 }
                 else
                 {

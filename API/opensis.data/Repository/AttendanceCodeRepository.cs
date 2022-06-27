@@ -91,7 +91,7 @@ namespace opensis.data.Repository
             
             this.context?.SaveChanges();
             attendanceCodeAddViewModel._failure = false;
-            attendanceCodeAddViewModel._message = "Attendance Code Added Successfully";
+            attendanceCodeAddViewModel._message = "Attendance Code added successfully";
 
             return attendanceCodeAddViewModel;
         }
@@ -244,7 +244,7 @@ namespace opensis.data.Repository
                         this.context?.AttendanceCode.Remove(attendanceCodeDelete);
                         this.context?.SaveChanges();
                         attendanceCodeAddViewModel._failure = false;
-                        attendanceCodeAddViewModel._message = "Attendance Code Deleted Successfully";
+                        attendanceCodeAddViewModel._message = "Attendance Code deleted successfullyy";
                     }
                 }
                 else
@@ -284,7 +284,7 @@ namespace opensis.data.Repository
             //context!.Entry(attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.SchoolMaster).State = EntityState.Unchanged;
             this.context?.SaveChanges();
             attendanceCodeCategoriesAddViewModel._failure = false;
-            attendanceCodeCategoriesAddViewModel._message = "Attendance Category Added Successfully";
+            attendanceCodeCategoriesAddViewModel._message = "Attendance Category added successfully";
 
             return attendanceCodeCategoriesAddViewModel;
         }
@@ -408,7 +408,7 @@ namespace opensis.data.Repository
                         this.context?.AttendanceCodeCategories.Remove(attendanceCodeCategoriesDelete);
                         this.context?.SaveChanges();
                         attendanceCodeCategoriesAddViewModel._failure = false;
-                        attendanceCodeCategoriesAddViewModel._message = "Attendance Category Deleted Successfully";
+                        attendanceCodeCategoriesAddViewModel._message = "Attendance Category deleted successfullyy";
                     }
                 }                            
             }

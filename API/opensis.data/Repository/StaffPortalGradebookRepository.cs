@@ -160,7 +160,7 @@ namespace opensis.data.Repository
 
 
                             this.context?.SaveChanges();
-                            gradebookConfigurationAddViewModel._message = "Gradebook Configuration Updated Successfully";
+                            gradebookConfigurationAddViewModel._message = "Gradebook configuration updated successfully";
                         }
                         else
                         {
@@ -221,7 +221,7 @@ namespace opensis.data.Repository
                             gradebookConfigurationAddViewModel.gradebookConfiguration.CreatedOn = DateTime.UtcNow;
                             this.context?.GradebookConfiguration.Add(gradebookConfigurationAddViewModel.gradebookConfiguration);
                             this.context?.SaveChanges();
-                            gradebookConfigurationAddViewModel._message = "Gradebook Configuration Added Successfully";
+                            gradebookConfigurationAddViewModel._message = "Gradebook configuration added successfully";
 
                         }
                         transaction?.Commit();
@@ -659,7 +659,7 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
                     }
                     transaction?.Commit();
-                    gradebookGradeListViewModel._message = "Data Submitted Successfully";
+                    gradebookGradeListViewModel._message = "Data submitted successfully";
                 }
                 catch (Exception es)
                 {
@@ -1213,7 +1213,7 @@ namespace opensis.data.Repository
                     this.context?.GradebookGrades.AddRange(GradebookGradeList);
                     this.context?.SaveChanges();
                     transaction?.Commit();
-                    assignmentForStudentViewModel._message = "Data Submitted Successfully";
+                    assignmentForStudentViewModel._message = "Data submitted successfully";
                 }
                 catch (Exception es)
                 {
@@ -1505,7 +1505,7 @@ namespace opensis.data.Repository
                             this.context?.SaveChanges();
                         }
                         transaction?.Commit();
-                        studentListByAssignmentTpyeViewModel._message = "Data Submitted Successfully";
+                        studentListByAssignmentTpyeViewModel._message = "Data submitted successfully";
                     }
                     else
                     {

@@ -79,13 +79,13 @@ namespace opensis.data.Repository
                         this.context?.Block.Add(blockAddViewModel.block);
                         this.context?.SaveChanges();
                         blockAddViewModel._failure = false;
-                        blockAddViewModel._message = "Block Added Successfully";
+                        blockAddViewModel._message = "Block added successfully";
                     }
                 }
                 else
                 {
                     blockAddViewModel._failure = true;
-                    blockAddViewModel._message = "Block Title Already Exists";
+                    blockAddViewModel._message = "Block Title already exists";
                 }
             }
             catch (Exception es)
@@ -132,7 +132,7 @@ namespace opensis.data.Repository
                     else
                     {
                         blockAddViewModel._failure = true;
-                        blockAddViewModel._message = "Block Title Already Exists";
+                        blockAddViewModel._message = "Block Title already exists";
                     }
                 }
                 else
@@ -180,7 +180,7 @@ namespace opensis.data.Repository
                         this.context?.Block.Remove(blockDelete);
                         this.context?.SaveChanges();
                         blockAddViewModel._failure = false;
-                        blockAddViewModel._message = "Block Deleted Successfully";
+                        blockAddViewModel._message = "Block deleted successfullyy";
                     }
                 }
                 else
@@ -282,12 +282,12 @@ namespace opensis.data.Repository
                     }
                     //this.context?.SaveChanges();
                     blockPeriodAddViewModel._failure = false;
-                    blockPeriodAddViewModel._message = "Period Added Successfully";
+                    blockPeriodAddViewModel._message = "Period added successfully";
                 }
                 else
                 {
                     blockPeriodAddViewModel._failure = true;
-                    blockPeriodAddViewModel._message = "Period Title Already Exists";
+                    blockPeriodAddViewModel._message = "Period Title already exists";
                 }
             }
             catch (Exception es)
@@ -373,7 +373,7 @@ namespace opensis.data.Repository
                     else
                     {
                         blockPeriodAddViewModel._failure = true;
-                        blockPeriodAddViewModel._message = "Period Title Already Exists";
+                        blockPeriodAddViewModel._message = "Period Title already exists";
                     }
                 }
                 else
@@ -471,7 +471,7 @@ namespace opensis.data.Repository
                         //this.context?.BlockPeriod.Remove(blockPeriodDelete);
                         this.context?.SaveChanges();
                         blockPeriodAddViewModel._failure = false;
-                        blockPeriodAddViewModel._message = "Period Deleted Successfully";
+                        blockPeriodAddViewModel._message = "Period deleted successfullyy";
                     }
                     else
                     {

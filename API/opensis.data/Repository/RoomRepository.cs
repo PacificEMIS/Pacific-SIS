@@ -68,7 +68,7 @@ namespace opensis.data.Repository
                 if (checkRoomTitle !=null)
                 {
                     rooms._failure = true;
-                    rooms._message = "Room Title Already Exists";
+                    rooms._message = "Room Title already exists";
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace opensis.data.Repository
                         this.context?.Rooms.Add(rooms.tableRoom);
                         this.context?.SaveChanges();
                         rooms._failure = false;
-                        rooms._message = "Room Added Successfully";
+                        rooms._message = "Room added successfully";
                     }
                 }               
             }
@@ -162,7 +162,7 @@ namespace opensis.data.Repository
                     if (checkRoomTitle != null)
                     {
                         room._failure = true;
-                        room._message = "Room Title Already Exists";
+                        room._message = "Room Title already exists";
                     }
                     else
                     {
@@ -249,7 +249,7 @@ namespace opensis.data.Repository
                     if (checkRoomTitle != null)
                     {
                         room._failure = true;
-                        room._message = "Room Title Already Exists";
+                        room._message = "Room Title already exists";
                     }
                     else
                     {
@@ -377,13 +377,13 @@ namespace opensis.data.Repository
                         this.context?.Rooms.Remove(Room);
                         this.context?.SaveChanges();
                         room._failure = false;
-                        room._message = "Room Deleted Successfully";
+                        room._message = "Room deleted successfullyy";
                     }
                 }
                 //this.context?.Rooms.Remove(Room);
                 //this.context?.SaveChanges();
                 //room._failure = false;
-                //room._message = "Room Deleted Successfully";
+                //room._message = "Room deleted successfullyy";
             }
             catch (Exception es)
             {

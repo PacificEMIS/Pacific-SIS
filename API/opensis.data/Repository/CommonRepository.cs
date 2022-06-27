@@ -241,7 +241,7 @@ namespace opensis.data.Repository
                     this.context?.Language.Add(languageAdd.Language);
                     this.context?.SaveChanges();
                     languageAdd._failure = false;
-                    languageAdd._message = "Language Added Successfully";
+                    languageAdd._message = "Language added successfully";
                 }
             }
             catch (Exception es)
@@ -465,7 +465,7 @@ namespace opensis.data.Repository
                     this.context?.Language.Remove(getLanguageValue);
                     this.context?.SaveChanges();
                     deleteLanguageModel._failure = false;
-                    deleteLanguageModel._message = "Language Deleted Successfully";
+                    deleteLanguageModel._message = "Language deleted successfullyy";
                 }
             }
             catch (Exception ex)
@@ -504,7 +504,7 @@ namespace opensis.data.Repository
                 this.context?.DpdownValuelist.Add(dpdownValue.DropdownValue);
                 this.context?.SaveChanges();
                 dpdownValue._failure = false;
-                dpdownValue._message = "Data Added Successfully";
+                dpdownValue._message = "Data added successfully";
             }
             return dpdownValue;
         }
@@ -823,7 +823,7 @@ namespace opensis.data.Repository
                     this.context?.Country.Add(countryAddModel.Country);
                     this.context?.SaveChanges();
                     countryAddModel._failure = false;
-                    countryAddModel._message = "Country Added Successfully";
+                    countryAddModel._message = "Country added successfully";
                 }
             }
             catch (Exception es)
@@ -938,7 +938,7 @@ namespace opensis.data.Repository
                     this.context?.Country.Remove(getCountryValue);
                     this.context?.SaveChanges();
                     deleteCountryModel._failure = false;
-                    deleteCountryModel._message = "Country Deleted Successfully";
+                    deleteCountryModel._message = "Country deleted successfullyy";
 
                 }
 
@@ -1077,7 +1077,7 @@ namespace opensis.data.Repository
                     this.context?.DpdownValuelist.Remove(getDpValue);
                     this.context?.SaveChanges();
                     dropdownValueAddModel._failure = false;
-                    dropdownValueAddModel._message = "Data Deleted Successfully";
+                    dropdownValueAddModel._message = "Data deleted successfullyy";
                 }
 
             }
@@ -1230,7 +1230,7 @@ namespace opensis.data.Repository
                 if (checkFilterName != null)
                 {
                     searchFilterAddViewModel._failure = true;
-                    searchFilterAddViewModel._message = "Filter Name Already Exists";
+                    searchFilterAddViewModel._message = "Filter Name already exists";
                 }
                 else
                 {
@@ -1248,7 +1248,7 @@ namespace opensis.data.Repository
                     this.context?.SearchFilter.Add(searchFilterAddViewModel.SearchFilter);
                     this.context?.SaveChanges();
                     searchFilterAddViewModel._failure = false;
-                    searchFilterAddViewModel._message = "Search Filter Added Successfully";
+                    searchFilterAddViewModel._message = "Search Filter added successfully";
                 }
             }
             catch (Exception es)
@@ -1281,7 +1281,7 @@ namespace opensis.data.Repository
                     if (checkFilterName != null)
                     {
                         searchFilterAddViewModel._failure = true;
-                        searchFilterAddViewModel._message = "Filter Name Already Exists";
+                        searchFilterAddViewModel._message = "Filter Name already exists";
                     }
                     else
                     {
@@ -1326,7 +1326,7 @@ namespace opensis.data.Repository
                     this.context?.SearchFilter.Remove(searchFilterDelete);
                     this.context?.SaveChanges();
                     searchFilterAddViewModel._failure = false;
-                    searchFilterAddViewModel._message = "Search Filter Deleted Successfully";
+                    searchFilterAddViewModel._message = "Search Filter deleted successfullyy";
 
                 }
                 else
@@ -3114,7 +3114,7 @@ namespace opensis.data.Repository
                     //context!.Entry(schoolPreferenceAddViewModel.SchoolPreference.SchoolMaster).State = EntityState.Unchanged;
                     this.context?.SaveChanges();
                     schoolPreferenceAddViewModel._failure = false;
-                    schoolPreferenceAddViewModel._message = "School Preference Added Successfully";
+                    schoolPreferenceAddViewModel._message = "School Preference added successfully";
                 }
             }
             catch (Exception es)

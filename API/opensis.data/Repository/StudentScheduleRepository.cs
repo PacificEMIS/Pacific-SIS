@@ -569,7 +569,7 @@ namespace opensis.data.Repository
                         //}
                         this.context?.SaveChanges();
                         transaction?.Commit();
-                        studentCourseSectionScheduleAddViewModel._message = "Student Schedule Added Successfully";
+                        studentCourseSectionScheduleAddViewModel._message = "Student Schedule added successfully";
                         studentCourseSectionScheduleAddViewModel.ConflictMessage = conflictMessage;
                         studentCourseSectionScheduleAddViewModel._failure = false;
                     }
@@ -1316,7 +1316,7 @@ namespace opensis.data.Repository
                     this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
                     this.context?.SaveChanges();
                     studentCourseSectionScheduleAddViewModel._failure = false;
-                    studentCourseSectionScheduleAddViewModel._message = "Student Schedule Report Deleted Successfully";
+                    studentCourseSectionScheduleAddViewModel._message = "Student Schedule Report deleted successfullyy";
                 }
                 else
                 {

@@ -215,7 +215,7 @@ namespace opensis.data.Repository
                             }
                         }
                         student._failure = false;
-                        student._message = "Student Added Successfully";
+                        student._message = "Student added successfully";
                         transaction?.Commit();
                     }
                 }
@@ -904,7 +904,7 @@ namespace opensis.data.Repository
                 }
 
                 studentDocumentAddViewModel._failure = false;
-                studentDocumentAddViewModel._message = "Student Document Added Successfully";
+                studentDocumentAddViewModel._message = "Student Document added successfully";
             }
             catch (Exception es)
             {
@@ -1017,7 +1017,7 @@ namespace opensis.data.Repository
                         this.context?.StudentDocuments.Remove(studentDocumentDelete);
                         this.context?.SaveChanges();
                         studentDocumentAddViewModel._failure = false;
-                        studentDocumentAddViewModel._message = "Student Document Deleted Successfully";
+                        studentDocumentAddViewModel._message = "Student Document deleted successfullyy";
                     }
                     else
                     {
@@ -1109,7 +1109,7 @@ namespace opensis.data.Repository
                 this.context?.StudentComments.Add(studentCommentAddViewModel.studentComments);
                 this.context?.SaveChanges();
                 studentCommentAddViewModel._failure = false;
-                studentCommentAddViewModel._message = "Student Comment Added Successfully";
+                studentCommentAddViewModel._message = "Student Comment added successfully";
             }
             catch (Exception es)
             {
@@ -1209,7 +1209,7 @@ namespace opensis.data.Repository
                     this.context?.StudentComments.Remove(studentCommentDelete);
                     this.context?.SaveChanges();
                     studentCommentAddViewModel._failure = false;
-                    studentCommentAddViewModel._message = "Student Comment Deleted Successfully";
+                    studentCommentAddViewModel._message = "Student Comment deleted successfullyy";
                 }
                 
             }
@@ -1245,7 +1245,7 @@ namespace opensis.data.Repository
                 }
                 this.context?.SaveChanges();
                 studentEnrollmentListModel._failure = false;
-                studentEnrollmentListModel._message = "Student Enrollment Added Successfully";
+                studentEnrollmentListModel._message = "Student Enrollment added successfully";
             }
             catch (Exception es)
             {
@@ -2252,7 +2252,7 @@ namespace opensis.data.Repository
 
                         this.context?.SaveChanges();
                         siblingAddUpdateForStudentModel._failure = false;
-                        siblingAddUpdateForStudentModel._message = "Sibling Added Successfully";
+                        siblingAddUpdateForStudentModel._message = "Sibling added successfully";
                     }
                     else
                     {
@@ -2391,7 +2391,7 @@ namespace opensis.data.Repository
 
                 }
                 this.context?.SaveChanges();
-                siblingAddUpdateForStudentModel._message = "Sibling Deleted Successfully";
+                siblingAddUpdateForStudentModel._message = "Sibling deleted successfullyy";
             }
 
             catch (Exception es)
@@ -3143,7 +3143,7 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
                         transaction?.Commit();
                         studentListModel._failure = false;
-                        studentListModel._message = "Student Re-enrollment Added Successfully";
+                        studentListModel._message = "Student Re-enrollment added successfully";
                     }
                     else
                     {
@@ -3177,7 +3177,7 @@ namespace opensis.data.Repository
             if (studentListAddViewModel.studentAddViewModelList?.Any()==true)
             {
                 studentListAdd._failure = false;
-                studentListAdd._message = "Student Added Successfully";
+                studentListAdd._message = "Student added successfully";
                 int? MasterStudentId = 1;
 
                 var studentData = this.context?.StudentMaster.Where(x => x.SchoolId == studentListAddViewModel.SchoolId && x.TenantId == studentListAddViewModel.TenantId).OrderByDescending(x => x.StudentId).FirstOrDefault();
@@ -4430,7 +4430,7 @@ namespace opensis.data.Repository
                         i++;
                     }
                     this.context?.SaveChanges();
-                    transcriptAddViewModel._message = "Added Successfully";
+                    transcriptAddViewModel._message = "added successfully";
                 }
                 else
                 {
@@ -4585,7 +4585,7 @@ namespace opensis.data.Repository
                 this.context?.StudentMedicalAlert.Add(studentMedicalAlertAddViewModel.studentMedicalAlert);
                 this.context?.SaveChanges();
                 studentMedicalAlertAddViewModel._failure = false;
-                studentMedicalAlertAddViewModel._message = "Student Medical Alert Added Successfully";
+                studentMedicalAlertAddViewModel._message = "Student Medical Alert added successfully";
             }
             catch (Exception es)
             {
@@ -4647,7 +4647,7 @@ namespace opensis.data.Repository
                     this.context?.StudentMedicalAlert.Remove(studentMedicalAlertData);
                     this.context?.SaveChanges();
                     studentMedicalAlertAddViewModel._failure = false;
-                    studentMedicalAlertAddViewModel._message = "Student Medical Alert Deleted Successfully";
+                    studentMedicalAlertAddViewModel._message = "Student Medical Alert deleted successfullyy";
                 }
                 else
                 {
@@ -4684,7 +4684,7 @@ namespace opensis.data.Repository
                 this.context?.StudentMedicalNote.Add(studentMedicalNoteAddViewModel.studentMedicalNote);
                 this.context?.SaveChanges();
                 studentMedicalNoteAddViewModel._failure = false;
-                studentMedicalNoteAddViewModel._message = "Student Medical Note Added Successfully";
+                studentMedicalNoteAddViewModel._message = "Student Medical Note added successfully";
             }
             catch (Exception es)
             {
@@ -4745,7 +4745,7 @@ namespace opensis.data.Repository
                     this.context?.StudentMedicalNote.Remove(studentMedicalNoteData);
                     this.context?.SaveChanges();
                     studentMedicalNoteAddViewModel._failure = false;
-                    studentMedicalNoteAddViewModel._message = "Student Medical Note Deleted Successfully";
+                    studentMedicalNoteAddViewModel._message = "Student Medical Note deleted successfullyy";
                 }
                 else
                 {
@@ -4782,7 +4782,7 @@ namespace opensis.data.Repository
                 this.context?.StudentMedicalImmunization.Add(studentMedicalImmunizationAddViewModel.studentMedicalImmunization);
                 this.context?.SaveChanges();
                 studentMedicalImmunizationAddViewModel._failure = false;
-                studentMedicalImmunizationAddViewModel._message = "Student Medical Immunization Added Successfully";
+                studentMedicalImmunizationAddViewModel._message = "Student Medical Immunization added successfully";
             }
             catch (Exception es)
             {
@@ -4843,7 +4843,7 @@ namespace opensis.data.Repository
                     this.context?.StudentMedicalImmunization.Remove(studentMedicalImmunizationData);
                     this.context?.SaveChanges();
                     studentMedicalImmunizationAddViewModel._failure = false;
-                    studentMedicalImmunizationAddViewModel._message = "Student Medical Immunization Deleted Successfully";
+                    studentMedicalImmunizationAddViewModel._message = "Student Medical Immunization deleted successfullyy";
                 }
                 else
                 {
@@ -4880,7 +4880,7 @@ namespace opensis.data.Repository
                 this.context?.StudentMedicalNurseVisit.Add(studentMedicalNurseVisitAddViewModel.studentMedicalNurseVisit);
                 this.context?.SaveChanges();
                 studentMedicalNurseVisitAddViewModel._failure = false;
-                studentMedicalNurseVisitAddViewModel._message = "Student Medical Nurse Visit Added Successfully";
+                studentMedicalNurseVisitAddViewModel._message = "Student Medical Nurse Visit added successfully";
             }
             catch (Exception es)
             {
@@ -4941,7 +4941,7 @@ namespace opensis.data.Repository
                     this.context?.StudentMedicalNurseVisit.Remove(studentMedicalNurseVisitData);
                     this.context?.SaveChanges();
                     studentMedicalNurseVisitAddViewModel._failure = false;
-                    studentMedicalNurseVisitAddViewModel._message = "Student Medical Nurse Visit Deleted Successfully";
+                    studentMedicalNurseVisitAddViewModel._message = "Student Medical Nurse Visit deleted successfullyy";
                 }
                 else
                 {
@@ -5005,7 +5005,7 @@ namespace opensis.data.Repository
                     }
 
                     studentMedicalProviderAddViewModel._failure = false;
-                    studentMedicalProviderAddViewModel._message = "Student Medical Provider Added Successfully";
+                    studentMedicalProviderAddViewModel._message = "Student Medical Provider added successfully";
                     transaction?.Commit();
                 }
 
@@ -5104,7 +5104,7 @@ namespace opensis.data.Repository
                     this.context?.StudentMedicalProvider.Remove(studentMedicalProviderData);
                     this.context?.SaveChanges();
                     studentMedicalProviderAddViewModel._failure = false;
-                    studentMedicalProviderAddViewModel._message = "Student Medical Provider Deleted Successfully";
+                    studentMedicalProviderAddViewModel._message = "Student Medical Provider deleted successfullyy";
                 }
                 else
                 {
@@ -5575,7 +5575,7 @@ namespace opensis.data.Repository
                     }
                     this.context?.SaveChanges();
                     studentCommentAddViewModel._failure = false;
-                    studentCommentAddViewModel._message = "Student Comment Added Successfully For Selected Students";
+                    studentCommentAddViewModel._message = "Student Comment added successfully For Selected Students";
                 }
                 else
                 {
@@ -5628,7 +5628,7 @@ namespace opensis.data.Repository
                     }
                     this.context?.SaveChanges();
                     studentDocumentAddViewModel._failure = false;
-                    studentDocumentAddViewModel._message = "Student Document Added Successfully for Selected Students";
+                    studentDocumentAddViewModel._message = "Student Document added successfully for Selected Students";
                 }
                 else
                 {

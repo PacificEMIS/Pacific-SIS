@@ -170,7 +170,7 @@ namespace opensis.data.Repository
         //                id++;
         //                SortOrder++;
         //            }
-        //            reportCardCommentsAddViewModel._message = "Report Comments Updated succsesfully.";
+        //            reportCardCommentsAddViewModel._message = "Report Comments updated successfully.";
 
         //            this.context?.ReportCardComments.AddRange(reportCardComments);
         //            this.context?.SaveChanges();
@@ -205,7 +205,7 @@ namespace opensis.data.Repository
         //                this.context?.ReportCardComments.Remove(reportCardCommentDataExist);
         //                this.context?.SaveChanges();
         //                reportCardCommentsAddViewModel._failure = false;
-        //                reportCardCommentsAddViewModel._message = "Deleted Successfully";
+        //                reportCardCommentsAddViewModel._message = "deleted successfullyy";
         //            }
         //            else
         //            {
@@ -279,7 +279,7 @@ namespace opensis.data.Repository
         //        this.context?.CourseCommentCategory.AddRange(courseCommentCategoryList);
         //        this.context?.SaveChanges();
         //        courseCommentCategoryAddViewModel._failure = false;
-        //        courseCommentCategoryAddViewModel._message = "Course Comment Category Added Successfully";
+        //        courseCommentCategoryAddViewModel._message = "Course Comment Category added successfully";
 
         //    }
         //    catch (Exception es)
@@ -356,7 +356,7 @@ namespace opensis.data.Repository
                 this.context?.CourseCommentCategory.AddRange(courseCommentCategoryList);
                 this.context?.SaveChanges();
                 courseCommentCategoryAddViewModel._failure = false;
-                courseCommentCategoryAddViewModel._message = "Course Comment Category Added Successfully";
+                courseCommentCategoryAddViewModel._message = "Course Comment Category added successfully";
             }
             catch (Exception es)
             {
@@ -391,7 +391,7 @@ namespace opensis.data.Repository
                             this.context?.CourseCommentCategory.Remove(courseCommentData);
                             this.context?.SaveChanges();
                             courseCommentCategoryDeleteViewModel._failure = false;
-                            courseCommentCategoryDeleteViewModel._message = "Course Comments Deleted Successfully";
+                            courseCommentCategoryDeleteViewModel._message = "Course Comments deleted successfullyy";
                         }
 
                     }
@@ -413,7 +413,7 @@ namespace opensis.data.Repository
                             this.context?.CourseCommentCategory.RemoveRange(courseComments);
                             this.context?.SaveChanges();
                             courseCommentCategoryDeleteViewModel._failure = false;
-                            courseCommentCategoryDeleteViewModel._message = "Course Comments Deleted Successfully";
+                            courseCommentCategoryDeleteViewModel._message = "Course Comments deleted successfullyy";
                         }
                     }
                 }
@@ -433,7 +433,7 @@ namespace opensis.data.Repository
             //        this.context?.CourseCommentCategory.Remove(courseCommentData);
             //        this.context?.SaveChanges();
             //        courseCommentCategoryDeleteViewModel._failure = false;
-            //        courseCommentCategoryDeleteViewModel._message = "Course Comments Deleted Successfully";
+            //        courseCommentCategoryDeleteViewModel._message = "Course Comments deleted successfullyy";
             //    }
             //}
             //else
@@ -1007,7 +1007,7 @@ namespace opensis.data.Repository
                         }
                     }
                     this.context?.SaveChanges();
-                    reportCardViewModel._message = "Added Successfully";
+                    reportCardViewModel._message = "added successfully";
                 }
                 else
                 {
