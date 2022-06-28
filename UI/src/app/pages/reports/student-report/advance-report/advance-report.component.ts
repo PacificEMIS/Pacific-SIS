@@ -593,6 +593,10 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
             item.studentMaster.firstLanguage=this.findLanguagesById(item.studentMaster.firstLanguageId);
             item.studentMaster.secondLanguage=this.findLanguagesById(item.studentMaster.secondLanguageId);
             item.studentMaster.thirdLanguage=this.findLanguagesById(item.studentMaster.thirdLanguageId);
+            item.studentMaster.preferredCommonName = item.studentMaster.preferredName;
+            item.studentMaster.busNo = item.studentMaster.busNo;
+            item.studentMaster.busPickup = this.defaultValuesService.translateKey(item.studentMaster.schoolBusPickUp ? 'yes': 'no');
+            item.studentMaster.busDropoff = this.defaultValuesService.translateKey(item.studentMaster.schoolBusDropOff ? 'yes' : 'no');
 
             item.studentMaster.criticalAlert = item.studentMaster.studentMedicalAlert.length ? item.studentMaster.studentMedicalAlert[0].alertType : null;
 
