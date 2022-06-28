@@ -47,7 +47,7 @@
   (click)="checkPermissionAndExecute(fileUpload)">
   <div @fadeInRight class="inline-block align-top bg-white" [ngClass]="customCss"
     *ngIf="croppedImage=='' && preview=='' && (responseImage==null || responseImage.length==0)">
-    <img id="img1" src="../../../../assets/img/UploadPhoto.svg" width="160" class="rounded-full" alt="Upload Logo">
+    <img id="img1" [src]="sourceName && sourceName === 'school' ? '../../../../assets/img/upload-school-logo.svg' : '../../../../assets/img/UploadPhoto.svg'" width="160" class="rounded-full" alt="Upload Logo">
   </div>
   <div @fadeInRight class="inline-block align-top" [ngClass]="customCss" *ngIf="preview!='' && croppedImage==''">
     <img id="img2" [src]="preview" class="" width="160" alt="Profile picture"/>
