@@ -476,10 +476,10 @@ namespace opensis.data.Repository
 
                         if (parentInfoAddViewModel.parentAssociationship != null)
                         {
-                            var associationshipData = this.context?.ParentAssociationship.Where(x => x.TenantId == parentInfoAddViewModel.parentAssociationship.TenantId && x.ParentId == parentInfoAddViewModel.parentAssociationship.ParentId && x.StudentId == parentInfoAddViewModel.parentAssociationship.StudentId).Select(x => x.IsCustodian).FirstOrDefault();
+                            var associationshipData = this.context?.ParentAssociationship.Where(x => x.TenantId == parentInfoAddViewModel.parentAssociationship.TenantId && x.ParentId == parentInfoAddViewModel.parentAssociationship.ParentId && x.StudentId == parentInfoAddViewModel.parentAssociationship.StudentId).FirstOrDefault();
                             if (associationshipData != null)
                             {
-                                associationshipData = parentInfoAddViewModel.parentAssociationship.IsCustodian;
+                                associationshipData.IsCustodian = parentInfoAddViewModel.parentAssociationship.IsCustodian;
                             }
                         }
 
