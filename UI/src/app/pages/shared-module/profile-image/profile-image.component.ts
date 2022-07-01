@@ -83,6 +83,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   @Input() enableCropTool = true;
   @Input() customCss = 'rounded-full border-2 border-gray-light';
   @Input() responseImage;
+  @Input() sourceName: string;
   loading: boolean;
   staffAddModel: StaffAddModel = new StaffAddModel();
   studentAddModel: StudentAddModel = new StudentAddModel();

@@ -5,7 +5,7 @@
         <vex-scrollbar class="flex-auto vex-scrollbar">
             <div class="h-45 text-center sm:px-0 pt-5 pb-2">
                 <vex-profile-image [enableCropTool]="false" [customCss]="'rounded'"
-                    [responseImage]="schoolAddViewModel?.schoolMaster?.schoolDetail[0]?.schoolLogo" class="p-3 rounded"></vex-profile-image>
+                    [responseImage]="schoolAddViewModel?.schoolMaster?.schoolDetail[0]?.schoolLogo" [sourceName]="'school'" class="p-3 rounded"></vex-profile-image>
             </div>
             <div class="text-center px-4">
                 <h5 class="text-primary font-semibold mb-0">{{schoolAddViewModel?.schoolMaster?.schoolName ? schoolAddViewModel?.schoolMaster?.schoolName : 'Add School Information'}}</h5>
