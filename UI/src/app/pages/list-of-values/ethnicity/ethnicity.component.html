@@ -101,12 +101,11 @@
             <tr mat-header-row *matHeaderRowDef="visibleColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: visibleColumns" @fadeInUp></tr>
             <mat-footer-row *matFooterRowDef="['loading']" [class.hide]="!loading"></mat-footer-row>
-            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="listCount!=null"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount!=0"></tr>
 
         </table>
+        <mat-paginator #paginator [class.hide]="totalCount==0" [length]="totalCount" [pageSizeOptions]="[10, 20, 30, 40]" aria-label="Select page of periodic elements" showFirstLastButtons></mat-paginator>
     </div>
-    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
-    <!-- <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons (page)='getPageEvent($event)'></mat-paginator> -->
 </div>
 
 <mat-menu #columnFilterMenu="matMenu" xPosition="before" yPosition="below">

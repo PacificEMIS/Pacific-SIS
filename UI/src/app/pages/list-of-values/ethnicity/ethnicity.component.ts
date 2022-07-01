@@ -84,9 +84,10 @@ export class EthnicityComponent implements OnInit {
   ethnicityForExcel =[];
   loading: Boolean;
   listCount;
+  totalCount = 0;
   searchKey: string;
-  ethnicityListModel: MatTableDataSource<any>;
-  @ViewChild(MatPaginator) paginator: MatPaginator
+  ethnicityListModel: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   editPermission = false;
   deletePermission = false;
@@ -109,13 +110,13 @@ export class EthnicityComponent implements OnInit {
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
     });
+    this.getAllEthnicity();
   }
 
 
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission('/school/settings/lov-settings/ethnicity')
     
-    this.getAllEthnicity();
   }
 
   getAllEthnicity() {
@@ -132,21 +133,25 @@ export class EthnicityComponent implements OnInit {
         if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
             if (res.dropdownList == null) {
+              this.totalCount = 0;
               this.ethnicityListModel= new MatTableDataSource(null);
               this.listCount=this.ethnicityListModel.data;
               this.snackbar.open( res._message, '', {
                 duration: 10000
               });
             } else {
+              this.totalCount = 0;
               this.ethnicityListModel= new MatTableDataSource(null);
               this.listCount=this.ethnicityListModel.data;
             }
           }
           else {
+            this.totalCount = res.dropdownList.length;
             this.ethnicityListModel = new MatTableDataSource(res.dropdownList);
             this.ethnicityForExcel = res.dropdownList;
             this.listCount=this.ethnicityListModel.data;
             this.ethnicityListModel.sort = this.sort;
+            this.ethnicityListModel.paginator = this.paginator;
           }
         }
       })
