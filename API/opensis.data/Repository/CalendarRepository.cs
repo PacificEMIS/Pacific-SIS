@@ -253,7 +253,7 @@ namespace opensis.data.Repository
                         }
                         calendarRepository!.Title = calendar.SchoolCalendar!.Title;
                         calendarRepository!.VisibleToMembershipId = calendar.SchoolCalendar!.VisibleToMembershipId;
-                        calendar._message = "Calendar has association.Only Calendar name, visible to , start date, end date Updated Successfully";
+                        calendar._message = "Calendar has association.Only Calendar name, visible to , end date can be updated successfully";
                         this.context?.SaveChanges();
                         return calendar;
                     }
@@ -288,7 +288,7 @@ namespace opensis.data.Repository
                         }
                         calendarRepository!.Title = calendar.SchoolCalendar!.Title;
                         calendarRepository!.VisibleToMembershipId = calendar.SchoolCalendar!.VisibleToMembershipId;
-                        calendar._message = "Calendar has association.Only Calendar name, visible to , start date, end date can be Updated Successfully";
+                        calendar._message = "Calendar has association.Only Calendar name, visible to , end date can be updated successfully";
                         this.context?.SaveChanges();
                         return calendar;
                     }
