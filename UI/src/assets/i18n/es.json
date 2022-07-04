@@ -1934,5 +1934,9 @@
     "gpaConversion": "Conversión de promedio general",
     "overallGPA": "GPA general",
     "subjectTeacherComments": "Comentarios del profesor de la materia",
-    "custom":"Costumbre"
+    "custom":"Costumbre",
+    "cropImage": "Delimitar imagen",
+    "upload": "Subir",
+    "uploadPhoto": "Subir foto",
+    "uploadLogo": "Cargar logotipo"
 }

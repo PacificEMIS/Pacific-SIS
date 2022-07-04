@@ -1934,5 +1934,9 @@
     "gpaConversion": "Conversion GPa",
     "overallGPA": "GPA globale",
     "subjectTeacherComments": "Sujet Commentaires de l'enseignant",
-    "custom":"Coutume"
+    "custom":"Coutume",
+    "cropImage": "Recadrer l'image",
+    "upload": "Télécharger",
+    "uploadPhoto": "Envoyer la photo",
+    "uploadLogo": "Télécharger le logo"
 }
