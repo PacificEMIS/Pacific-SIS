@@ -24,7 +24,7 @@
       item.badge.value | translate }}</span>
     <mat-icon [icIcon]="icKeyboardArrowRight" class="item-dropdown-icon" fxFlex="none"></mat-icon>
   </div>
-  <div [@dropdown]="isOpen" class="item-dropdown">
+  <div [@dropdown]="isOpen" class="item-dropdown" *ngIf="isOpen">
     <vex-sidenav-item *ngFor="let subItem of item.children" [item]="subItem" [level]="level + 1"></vex-sidenav-item>
   </div>
 </ng-container>
