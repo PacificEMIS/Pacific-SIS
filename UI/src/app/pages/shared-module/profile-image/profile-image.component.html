@@ -1,7 +1,7 @@
 <div class="text-center" style="display:none" *ngIf="enableCropTool">
   <ng-template #mytemplate>
       <div class="flex justify-between">
-        <h2 class="text-center">Crop Image</h2>
+        <h2 class="text-center">{{'cropImage' | translate}}</h2>
         <button class="text-secondary" (click)="onClose()" mat-icon-button type="button">
           <mat-icon [icIcon]="icClose"></mat-icon>
         </button>
@@ -27,8 +27,8 @@
       <div class="flex justify-end">
 
       <button mat-raised-button (click)="cancelPhoto()"
-        *ngIf="!loading && moduleIdentifier !== modules.PARENT">Cancel</button>
-      <button mat-raised-button [disabled]="loading" color="primary" (click)="uploadPhotoDirectly()">Upload
+        *ngIf="!loading && moduleIdentifier !== modules.PARENT">{{'cancel' | translate}}</button>
+      <button mat-raised-button [disabled]="loading" color="primary" (click)="uploadPhotoDirectly()">{{'upload' | translate}}
         <mat-icon class="ml-2" *ngIf="loading">
           <mat-spinner color="primary" diameter="20">
           </mat-spinner>
@@ -55,12 +55,11 @@
   <div @fadeInRight *ngIf="responseImage" [ngClass]="customCss"
     class="profile-photo-wrapper inline-block align-top relative overflow-hidden">
     <img id="img3" @fadeInRight [src]="'data:image/jpeg;base64,'+responseImage" class="" width="160" alt="Profile picture"/>
-    <span href="" *ngIf="inputType=='file' && endEdit" class="absolute w-full pt-2 pb-4 upload-photo-link text-center">Upload
-      Photo</span>
+    <span href="" *ngIf="inputType=='file' && endEdit" class="absolute w-full pt-2 pb-4 upload-photo-link text-center">{{sourceName && sourceName === 'school' ? ('uploadLogo' | translate) : ('uploadPhoto' | translate)}}</span>
   </div>
   <div *ngIf="croppedImage!=''" [ngClass]="customCss"
     class="profile-photo-wrapper inline-block align-top relative overflow-hidden">
     <img id="img4" @fadeInRight [src]="croppedImage" class="" width="160" alt="Profile picture"/>
-    <span *ngIf="endEdit" href="" class="absolute w-full pt-2 pb-4 upload-photo-link text-center">Upload Photo</span>
+    <span *ngIf="endEdit" href="" class="absolute w-full pt-2 pb-4 upload-photo-link text-center">{{sourceName && sourceName === 'school' ? ('uploadLogo' | translate) : ('uploadPhoto' | translate)}}</span>
   </div>
 </div>

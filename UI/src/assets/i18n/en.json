@@ -1935,5 +1935,9 @@
     "gpaConversion": "Gpa Conversion",
     "overallGPA": "Overall GPA",
     "subjectTeacherComments": "Subject Teacher Comments",
-    "custom":"Custom"
+    "custom":"Custom",
+    "cropImage": "Crop Image",
+    "upload": "Upload",
+    "uploadPhoto": "Upload Photo",
+    "uploadLogo": "Upload Logo"
 }
