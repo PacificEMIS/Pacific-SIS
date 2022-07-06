@@ -41,6 +41,11 @@
 
     <div class="overflow-x-auto overflow-y-hidden">
         <table mat-table [dataSource]="markingPeriodList" class="mat-elevation-z8">
+            
+            <ng-container matColumnDef="schoolYear">
+                <th mat-header-cell *matHeaderCellDef> {{ 'schoolYear' | translate }} </th>
+                <td mat-cell *matCellDef="let element"> {{element.academicYear}} </td>
+            </ng-container>
 
             <ng-container matColumnDef="markingPeriodName">
                 <th mat-header-cell *matHeaderCellDef> {{ 'markingPeriodName' | translate }} </th>
@@ -50,11 +55,6 @@
             <ng-container matColumnDef="gradePostDate">
                 <th mat-header-cell *matHeaderCellDef> {{ 'gradePostDate' | translate }} </th>
                 <td mat-cell *matCellDef="let element"> {{element.gradePostDate| date: 'MMMM yyyy'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="schoolYear">
-                <th mat-header-cell *matHeaderCellDef> {{ 'schoolYear' | translate }} </th>
-                <td mat-cell *matCellDef="let element"> {{element.academicYear}} </td>
             </ng-container>
 
             <ng-container matColumnDef="action">

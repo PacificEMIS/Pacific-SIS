@@ -171,7 +171,7 @@ namespace opensis.data.Repository
                                         {
                                             var studentCourseSectionSchedule = this.context?.StudentCoursesectionSchedule.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
 
-                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && ((x.IsActive == true && x.ExitDate == null) || (x.ExitDate != null && x.ExitDate < courseSection.DurationStartDate)));
+                                            var studentEnrollmentData = this.context?.StudentEnrollment.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true);
 
                                             if (studentCourseSectionSchedule != null)
                                             {
@@ -202,8 +202,8 @@ namespace opensis.data.Repository
                                                 }
                                             }
 
-                                            //Student enrollment checking
-                                            else if (studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
+                                            //Student future enrollment checking
+                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
                                                 {
@@ -230,10 +230,10 @@ namespace opensis.data.Repository
                                                 {
                                                     conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
                                                 }
-
                                             }
 
-                                            else if (studentEnrollmentData.ExitDate != null && studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
+                                            //Student alredy inactive enrollment checking
+                                            else if (studentEnrollmentData == null || studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
                                             {
                                                 var conflictStudent = new StudentScheduleView()
                                                 {
@@ -362,7 +362,7 @@ namespace opensis.data.Repository
                                                                                    //Join(this.context?.StudentCoursesectionSchedule,
                                                                                    Join(this.context.StudentCoursesectionSchedule,
                                                                                    acsv => acsv.CourseSectionId, scs => scs.CourseSectionId,
-                                                                                   (acsv, scs) => new { acsv, scs }).AsEnumerable().Where(x => x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && x.acsv.DurationEndDate > courseSectionAll.DurationStartDate && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true
+                                                                                   (acsv, scs) => new { acsv, scs }).AsEnumerable().Where(x => x.scs.TenantId == courseSection.TenantId && x.acsv.TenantId == courseSection.TenantId && x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && x.acsv.DurationEndDate > courseSectionAll.DurationStartDate && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true
                                                                                    &&
                                                                                    (
                                                                                    //courseSectionAll.FixedPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.FixedPeriodId || x.acsv.VarPeriodId == courseSectionAll.FixedPeriodId || x.acsv.CalPeriodId == courseSectionAll.FixedPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch(courseSectionAll.FixedDays.ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.CalDay.ToLower())))))
@@ -569,7 +569,7 @@ namespace opensis.data.Repository
                         //}
                         this.context?.SaveChanges();
                         transaction?.Commit();
-                        studentCourseSectionScheduleAddViewModel._message = "Student Schedule Added Successfully";
+                        studentCourseSectionScheduleAddViewModel._message = "Student Schedule added successfully";
                         studentCourseSectionScheduleAddViewModel.ConflictMessage = conflictMessage;
                         studentCourseSectionScheduleAddViewModel._failure = false;
                     }
@@ -711,11 +711,13 @@ namespace opensis.data.Repository
                                     scs => scs.StudentId, sm => sm.StudentId,
                                     (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && (pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate == null || c.scs.EffectiveStartDate!.Value.Date <= pageResult.AttendanceDate.Value.Date) && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.IsDropped == true ? c.scs.IsDropped != true : true)).ToList();*/
 
+                var courseSectionData = this.context?.CourseSection.Include(x => x.SchoolYears).Include(x => x.Semesters).Include(x => x.Quarters).Include(x => x.ProgressPeriods).FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && (pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(x.CourseSectionId)) /*&& x.DurationEndDate < DateTime.Today.Date*/);
+
                 var scheduledData = this.context?.StudentCoursesectionSchedule.
                                   //Join(this.context?.StudentMaster,
                                   Join(this.context.StudentMaster,
                                   scs => scs.StudentId, sm => sm.StudentId,
-                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.AciveStudentInCourseSection == true ? c.scs.IsDropped != true : true))).ToList();
+                                  (scs, sm) => new { scs, sm }).Where(c => c.scs.TenantId == pageResult.TenantId && c.scs.SchoolId == pageResult.SchoolId && c.sm.SchoolId == pageResult.SchoolId && c.sm.TenantId == pageResult.TenantId && /*(pageResult.CourseSectionId == null || c.scs.CourseSectionId == pageResult.CourseSectionId)*/(pageResult.CourseSectionIds == null || pageResult.CourseSectionIds.ToList().Count == 0 || pageResult.CourseSectionIds.Contains(c.scs.CourseSectionId)) && (pageResult.AcademicYear == null || c.scs.AcademicYear == pageResult.AcademicYear) && (pageResult.AttendanceDate != null ? pageResult.AttendanceDate.Value.Date >= c.scs.EffectiveStartDate!.Value.Date && pageResult.AttendanceDate.Value.Date <= c.scs.EffectiveDropDate!.Value.Date : (pageResult.IncludeInactive == false || pageResult.IncludeInactive == null ? c.sm.IsActive != false : true) && (pageResult.AciveStudentInCourseSection == true ? (courseSectionData != null && (courseSectionData.DurationEndDate < DateTime.Today.Date && c.scs.EffectiveDropDate == courseSectionData.DurationEndDate) || (c.scs.IsDropped != true)) : true))).ToList();
 
                 if (pageResult.StaffId != null)
                 {
@@ -766,6 +768,7 @@ namespace opensis.data.Repository
                                         IsDropped = ssv.studentcss.scs.IsDropped,
                                         SchoolName = this.context?.SchoolMaster.Where(x => x.SchoolId == ssv.studentcss.sm.SchoolId).Select(x => x.SchoolName).FirstOrDefault(),
                                         Section = this.context?.Sections.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.SectionId == ssv.studentcss.sm.SectionId)?.Name,
+                                        GradePostingEndDate = courseSectionData?.SchoolYears != null ? courseSectionData?.SchoolYears.PostEndDate : courseSectionData?.Semesters != null ? courseSectionData?.Semesters.PostEndDate : courseSectionData?.Quarters != null ? courseSectionData?.Quarters.PostEndDate : courseSectionData?.ProgressPeriods != null ? courseSectionData?.ProgressPeriods.PostEndDate : null,
                                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                 }
                 else
@@ -820,6 +823,7 @@ namespace opensis.data.Repository
                         UpdatedOn = ssv.scs.UpdatedOn,
                         UpdatedBy = ssv.scs.UpdatedBy,
                         IsDropped = ssv.scs.IsDropped,
+                        GradePostingEndDate = courseSectionData?.SchoolYears != null ? courseSectionData?.SchoolYears.PostEndDate : courseSectionData?.Semesters != null ? courseSectionData?.Semesters.PostEndDate : courseSectionData?.Quarters != null ? courseSectionData?.Quarters.PostEndDate : courseSectionData?.ProgressPeriods != null ? courseSectionData?.ProgressPeriods.PostEndDate : null,
                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                 }
 
@@ -1277,7 +1281,7 @@ namespace opensis.data.Repository
             StudentScheduleReportViewModel studentScheduleReportView = new StudentScheduleReportViewModel();
             try
             {
-                var scheduleReport = this.context?.StudentScheduleView.Where(x => x.SchoolId == studentScheduleReportViewModel.SchoolId).ToPivotTable(
+                var scheduleReport = this.context?.StudentScheduleView.Where(x => x.TenantId == studentScheduleReportViewModel.TenantId && x.SchoolId == studentScheduleReportViewModel.SchoolId).ToPivotTable(
                     item => item.CourseSectionName,
                     item => new { item.StudentId, item.StudentName, item.StudentInternalId },
                     items => items.Any() ? items.First().Scheduled + " | " + items.First().ConflictComment : null);
@@ -1312,7 +1316,7 @@ namespace opensis.data.Repository
                     this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
                     this.context?.SaveChanges();
                     studentCourseSectionScheduleAddViewModel._failure = false;
-                    studentCourseSectionScheduleAddViewModel._message = "Student Schedule Report Deleted Successfully";
+                    studentCourseSectionScheduleAddViewModel._message = "Student Schedule Report deleted successfullyy";
                 }
                 else
                 {

@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="card mt-6 p-4" *ngIf="allScheduledCourseSectionBasedOnTeacher.courseSectionViewList?.length==0 || allScheduledTeacherBasedOnCourse.courseSectionsList?.length==0">
+        <div class="card mt-6 p-4" *ngIf="(allScheduledCourseSectionBasedOnTeacher.courseSectionViewList?.length==0 && scheduledCourse) || (allScheduledTeacherBasedOnCourse.courseSectionsList?.length==0 && scheduledTeachers)">
             <div class="text-center">
                 <p>{{'noRecordFound' | translate}}</p>
             </div>

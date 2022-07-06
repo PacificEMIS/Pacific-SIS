@@ -87,6 +87,7 @@ export class CourseSectionComponent implements OnInit,OnDestroy,AfterViewChecked
   courseDetails = 0;
   selectedTab = 'overview';
   @Input() courseDetailsFromParent;
+  @Input() staffCount;
   @Output() backToCourseFromCourseSection = new EventEmitter<CourseSectionDataTransferModel>();
   getAllCourseSectionModel:GetAllCourseSectionModel=new GetAllCourseSectionModel();
   cloneGetAllCourseSectionModel;

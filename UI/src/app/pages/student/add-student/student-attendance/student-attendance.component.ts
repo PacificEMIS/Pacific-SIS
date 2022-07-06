@@ -256,6 +256,10 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           item.courseBlockScheduleList[0].blockPeriod.periodEndTime
         );
         item.studentAttendanceList = this.findAttendanceList(item, periodRunningInMinutes);
+        item.studentAttendanceList.map(students=>{
+          students.fullDayMinutes=item.fullDayMinutes;
+          students.halfDayMinutes=item.halfDayMinutes;
+        })
         this.monthEvents.push(...item.studentAttendanceList);
       }
     }
@@ -292,6 +296,10 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           item.courseFixedSchedule.blockPeriod.periodEndTime
         );
         item.studentAttendanceList = this.findAttendanceList(item,periodRunningInMinutes);
+        item.studentAttendanceList.map(students=>{
+          students.fullDayMinutes=item.fullDayMinutes;
+          students.halfDayMinutes=item.halfDayMinutes;
+        })
         this.monthEvents.push(...item.studentAttendanceList);
       }
     }
@@ -344,6 +352,10 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
           item.courseVariableScheduleList[0].blockPeriod.periodEndTime
         );
         item.studentAttendanceList = this.findAttendanceList(item,periodRunningInMinutes)
+        item.studentAttendanceList.map(students=>{
+          students.fullDayMinutes=item.fullDayMinutes;
+          students.halfDayMinutes=item.halfDayMinutes;
+        })
         this.monthEvents.push(...item.studentAttendanceList);
       }
     }
@@ -375,6 +387,10 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
         item.courseCalendarScheduleList[0].blockPeriod.periodEndTime
       );
       item.studentAttendanceList = this.findAttendanceList(item,periodRunningInMinutes);
+      item.studentAttendanceList.map(students=>{
+        students.fullDayMinutes=item.fullDayMinutes;
+        students.halfDayMinutes=item.halfDayMinutes;
+      })
       this.monthEvents.push(...item.studentAttendanceList);
     }
   }
@@ -430,7 +446,56 @@ export class StudentAttendanceComponent implements OnInit, OnDestroy {
   }
 
   calculateAverageAttendance(){
-    this.monthEvents?.map((date)=>{
+    // date filter, allPeriodMins & halfPeriodMins wrt periods, totalMinsAttended, color
+    let listOfEventDatesWithAttendanceDateMinutesAndStatus = [];
+    let attendanceDateList = [];
+
+    //array of dates
+    this.monthEvents?.forEach(x=>{
+      attendanceDateList.push(x.attendanceDate);
+    })
+
+    //filtering unique attendance dates
+    attendanceDateList = attendanceDateList.filter((x, i, a) => a.indexOf(x) === i);
+
+    //filtering month events as per Date and courseSectionId
+    // this.monthEvents = this.monthEvents.filter((value, index, self) =>
+    //     index === self.findIndex((t) => (
+    //     t.attendanceDate === value.attendanceDate && t.courseSectionId === value.courseSectionId
+    //   ))
+    // )
+
+    //counting allPeriodMins, halfPeriodMins, totalPeriodAttendedMins and attendanceStatus for each month date
+    attendanceDateList.map(date=>{
+      let allPeriodMins = 0;
+      let totalPeriodAttendedMins = 0;
+      let attendanceStatus = '';
+      let fullDayMinutes=0;
+      let halfDayMinutes=0;
+      this.monthEvents.map((item:any)=>{
+        if (date == item.attendanceDate) {
+          allPeriodMins += item.periodRunningInMinutes;
+          fullDayMinutes = item.fullDayMinutes;
+          halfDayMinutes = item.halfDayMinutes;
+          if(item.attendanceStatus == 'Present') {
+            totalPeriodAttendedMins += item.periodRunningInMinutes;
+          } else if(item.attendanceStatus == 'Half Day') {
+            totalPeriodAttendedMins += item.periodRunningInMinutes/2;
+          }
+        }
+      })
+      if (totalPeriodAttendedMins >= fullDayMinutes) {
+        attendanceStatus = 'Present';
+      } else if(totalPeriodAttendedMins < fullDayMinutes && totalPeriodAttendedMins >= halfDayMinutes){
+        attendanceStatus = 'Half Day';
+      } else {
+        attendanceStatus = 'Absent';
+      }
+      listOfEventDatesWithAttendanceDateMinutesAndStatus.push({attendanceDate:date, attendanceStatus:attendanceStatus});
+    })
+
+    //Assigning attendanceStatus to dates where attendance is taken
+    listOfEventDatesWithAttendanceDateMinutesAndStatus?.map((date)=>{
         let index = this.events.findIndex((event)=>event.start.getTime()===new Date(date.attendanceDate).getTime());
         if(index!==-1){
           this.events[index]={

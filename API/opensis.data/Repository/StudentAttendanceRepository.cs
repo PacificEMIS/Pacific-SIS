@@ -185,7 +185,7 @@ namespace opensis.data.Repository
                                     studentMissingAttendances.Add(dataExitsInMA);
                                 }
 
-                                studentAttendanceAddViewModel._message = "Student Attendance Updated Succsesfully.";
+                                studentAttendanceAddViewModel._message = "Student attendance updated successfully.";
                             }
                             else
                             {
@@ -254,7 +254,7 @@ namespace opensis.data.Repository
                                     studentMissingAttendances.Add(dataExitsInMA);
                                 }
 
-                                studentAttendanceAddViewModel._message = "Student Attendance Added Succsesfully.";
+                                studentAttendanceAddViewModel._message = "Student attendance added successfully.";
                             }
                             this.context?.StudentAttendance.AddRange(studentAttendance);
                             this.context?.StudentAttendanceHistory.AddRange(studentAttendanceHistories);
@@ -644,7 +644,7 @@ namespace opensis.data.Repository
                                     studentMissingAttendances.Add(dataExitsInMA);
                                 }
                             }
-                            studentAttendanceAddViewModel._message = "Student Attendance updated succsesfully.";
+                            studentAttendanceAddViewModel._message = "Student attendance updated successfully.";
                         }
                         else
                         {
@@ -709,7 +709,7 @@ namespace opensis.data.Repository
                                     studentMissingAttendances.Add(dataExitsInMA);
                                 }
                             }
-                            studentAttendanceAddViewModel._message = "Student Attendance added succsesfully.";
+                            studentAttendanceAddViewModel._message = "Student attendance added successfully.";
                         }
 
                         studentAttendance.ToList().ForEach(x => x.StudentAttendanceComments.ToList().ForEach(x => { x.StudentAttendance = new(); x.Membership = null; }));
@@ -1828,18 +1828,19 @@ namespace opensis.data.Repository
 
                             scheduledCourseSectionView.courseSectionViewList = transactionIQ.ToList();
                             scheduledCourseSectionView.MissingAttendanceCount = totalCount;
-                            scheduledCourseSectionView._pageSize = pageResult.PageSize;
-                            scheduledCourseSectionView.PageNumber = pageResult.PageNumber;
-                            scheduledCourseSectionView.TenantId = pageResult.TenantId;
-                            scheduledCourseSectionView.SchoolId = pageResult.SchoolId;
-                            scheduledCourseSectionView.StaffId = pageResult.StaffId;
-                            scheduledCourseSectionView._failure = false;
-                            scheduledCourseSectionView._tenantName = pageResult._tenantName;
-                            scheduledCourseSectionView._token = pageResult._token;
-                            scheduledCourseSectionView._userName = pageResult._userName;
+                           
                         }
                     }
                 }
+                scheduledCourseSectionView._pageSize = pageResult.PageSize;
+                scheduledCourseSectionView.PageNumber = pageResult.PageNumber;
+                scheduledCourseSectionView.TenantId = pageResult.TenantId;
+                scheduledCourseSectionView.SchoolId = pageResult.SchoolId;
+                scheduledCourseSectionView.StaffId = pageResult.StaffId;
+                scheduledCourseSectionView._failure = false;
+                scheduledCourseSectionView._tenantName = pageResult._tenantName;
+                scheduledCourseSectionView._token = pageResult._token;
+                scheduledCourseSectionView._userName = pageResult._userName;
             }
             catch (Exception es)
             {
@@ -2746,12 +2747,12 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
 
                         transaction?.Commit();
-                        studentAttendanceAddViewModel._message = "Add Absences Added Successfully";
+                        studentAttendanceAddViewModel._message = "Add absences added successfully";
                     }
                     else
                     {
                         studentAttendanceAddViewModel._failure = true;
-                        studentAttendanceAddViewModel._message = "Please Select Student";
+                        studentAttendanceAddViewModel._message = "Please select student";
                     }
                 }
                 catch (Exception es)
@@ -2830,12 +2831,12 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
                         transaction?.Commit();
                         studentDailyAttendanceListViewModel._failure = false;
-                        studentDailyAttendanceListViewModel._message = "Student Daily Attendance Updated Successfully";
+                        studentDailyAttendanceListViewModel._message = "Student daily attendance updated successfully";
                     }
                     else
                     {
                         studentDailyAttendanceListViewModel._failure = true;
-                        studentDailyAttendanceListViewModel._message = "Please Select Student";
+                        studentDailyAttendanceListViewModel._message = "Please select student";
                     }
                 }
                 catch (Exception es)
@@ -2902,7 +2903,7 @@ namespace opensis.data.Repository
                         this.context?.Entry(studentAttendanceCommentUpdate).CurrentValues.SetValues(studentAttendanceCommentsAddViewModel.studentAttendanceComments);
                         this.context?.SaveChanges();
                         studentAttendanceCommentsAddViewModel._failure = false;
-                        studentAttendanceCommentsAddViewModel._message = "Student Attendance Comment Updated Successfully";
+                        studentAttendanceCommentsAddViewModel._message = "Student attendance comment updated successfully";
                     }
                     else
                     {
@@ -2947,7 +2948,7 @@ namespace opensis.data.Repository
                     this.context?.StudentAttendanceComments.Add(studentAttendanceCommentsAddViewModel.studentAttendanceComments);
                     this.context?.SaveChanges();
                     studentAttendanceCommentsAddViewModel._failure = false;
-                    studentAttendanceCommentsAddViewModel._message = "Student Attendance Comment Added Successfully";
+                    studentAttendanceCommentsAddViewModel._message = "Student attendance comment added successfully";
                 }
 
                 if (studentAttendanceCommentsAddViewModel.studentAttendanceComments.MembershipId != null)

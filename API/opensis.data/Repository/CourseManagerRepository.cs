@@ -133,7 +133,7 @@ namespace opensis.data.Repository
                             var program = this.context?.Programs.AsEnumerable().FirstOrDefault(x => x.TenantId == programLists.TenantId && x.SchoolId == programLists.SchoolId && x.ProgramId != programLists.ProgramId && String.Compare(x.ProgramName,programLists.ProgramName,true)==0);
                             if (program != null)
                             {
-                                programUpdateModel._message = "Program Name Already Exists";
+                                programUpdateModel._message = "Program Name already exists";
                                 programUpdateModel._failure = true;
                                 return programUpdateModel;
                             }
@@ -171,13 +171,13 @@ namespace opensis.data.Repository
                         if (program != null)
                         {
                             programUpdateModel._failure = true;
-                            programUpdateModel._message = "Program Name Already Exists";
+                            programUpdateModel._message = "Program Name already exists";
                             return programUpdateModel;
                         }
                         programLists.ProgramId = (int)ProgramId;
                         programLists.CreatedOn = DateTime.UtcNow;
                         this.context?.Programs.AddRange(programLists);
-                        programUpdateModel._message = "Program Added Successfully";
+                        programUpdateModel._message = "Program added successfully";
                     }
                 }
                 this.context?.SaveChanges();
@@ -220,7 +220,7 @@ namespace opensis.data.Repository
                     this.context?.Programs.Remove(programDelete);
                     this.context?.SaveChanges();
                     programAddViewModel._failure = false;
-                    programAddViewModel._message = "Program Deleted Successfully";
+                    programAddViewModel._message = "Program deleted successfullyy";
                 }
                 }
             }
@@ -362,7 +362,7 @@ namespace opensis.data.Repository
                             return subjectListViewModel;
                         }
 
-                        subjectListViewModel._message = "Subject Added Successfully";
+                        subjectListViewModel._message = "Subject added successfully";
                     }
                 }
                 this.context?.SaveChanges();
@@ -437,7 +437,7 @@ namespace opensis.data.Repository
                         this.context?.Subject.Remove(subjectDelete);
                         this.context?.SaveChanges();
                         subjectAddViewModel._failure = false;
-                        subjectAddViewModel._message = "Subject Deleted Successfully";
+                        subjectAddViewModel._message = "Subject deleted successfullyy";
                     }
                 }
             }
@@ -473,7 +473,7 @@ namespace opensis.data.Repository
                     if (programName != null)
                     {
                         courseAddViewModel._failure = true;
-                        courseAddViewModel._message = "Program Name Already Exists";
+                        courseAddViewModel._message = "Program Name already exists";
                         return courseAddViewModel;
                     }
                     var programAdd = new Programs() { TenantId = courseAddViewModel.Course!.TenantId, SchoolId = courseAddViewModel.Course.SchoolId, ProgramId = (int)ProgramId, ProgramName = courseAddViewModel.Course.CourseProgram, CreatedOn = DateTime.UtcNow, CreatedBy = courseAddViewModel.Course.CreatedBy };
@@ -494,7 +494,7 @@ namespace opensis.data.Repository
                     if (subjectName != null)
                     {
                         courseAddViewModel._failure = true;
-                        courseAddViewModel._message = "Subject Name Already Exists";
+                        courseAddViewModel._message = "Subject Name already exists";
                         return courseAddViewModel;
                     }
                     var subjectAdd = new Subject() { TenantId = courseAddViewModel.Course!.TenantId, SchoolId = courseAddViewModel.Course.SchoolId, SubjectId = (int)SubjectId, SubjectName = courseAddViewModel.Course.CourseSubject, CreatedOn = DateTime.UtcNow, CreatedBy = courseAddViewModel.Course.CreatedBy, AcademicYear = Utility.GetCurrentAcademicYear(this.context!, courseAddViewModel.Course.TenantId, courseAddViewModel.Course.SchoolId)};
@@ -533,7 +533,7 @@ namespace opensis.data.Repository
                 }
                 this.context?.SaveChanges();
                 courseAddViewModel._failure = false;
-                courseAddViewModel._message = "Course Added Successfully";
+                courseAddViewModel._message = "Course added successfully";
             }
             catch (Exception es)
             {
@@ -568,7 +568,7 @@ namespace opensis.data.Repository
                     if (programName != null)
                     {
                         courseAddViewModel._failure = true;
-                        courseAddViewModel._message = "Program Name Already Exists";
+                        courseAddViewModel._message = "Program Name already exists";
                         return courseAddViewModel;
                     }
 
@@ -591,7 +591,7 @@ namespace opensis.data.Repository
                     if (subjectName != null)
                     {
                         courseAddViewModel._failure = true;
-                        courseAddViewModel._message = "Subject Name Already Exists";
+                        courseAddViewModel._message = "Subject Name already exists";
                         return courseAddViewModel;
                     }
 
@@ -667,7 +667,7 @@ namespace opensis.data.Repository
                     this.context?.Course.Remove(courseDelete);
                     this.context?.SaveChanges();
                     courseAddViewModel._failure = false;
-                    courseAddViewModel._message = "Deleted Successfully";
+                    courseAddViewModel._message = "deleted successfullyy";
                 }
                 else
                 {
@@ -819,7 +819,7 @@ namespace opensis.data.Repository
                     if (checkCourseSectionName != null)
                     {
                         courseSectionAddViewModel._failure = true;
-                        courseSectionAddViewModel._message = "Course Section Name Already Exists";
+                        courseSectionAddViewModel._message = "Course Section Name already exists";
                         return courseSectionAddViewModel;
                     }
 
@@ -857,7 +857,7 @@ namespace opensis.data.Repository
                             courseSectionAddViewModel.CourseSection.PrgrsprdMarkingPeriodId = Convert.ToInt32(markingPeriodID[1]);
                         }
                     }
-                    courseSectionAddViewModel._message = "Course Section Added Successfully.";
+                    courseSectionAddViewModel._message = "Course Section added successfully.";
 
                     switch ((courseSectionAddViewModel.CourseSection.ScheduleType ?? "").ToLower())
                     {
@@ -1739,7 +1739,7 @@ namespace opensis.data.Repository
                                 if (courseSectionNameExists != null)
                                 {
                                     courseSectionAddViewModel._failure = true;
-                                    courseSectionAddViewModel._message = "Course Section Name Already Exists";
+                                    courseSectionAddViewModel._message = "Course Section Name already exists";
                                     return courseSectionAddViewModel;
                                 }
 
@@ -2432,7 +2432,7 @@ namespace opensis.data.Repository
                             this.context?.SaveChanges();
 
                             courseSectionAddViewModel._failure = false;
-                            courseSectionAddViewModel._message = "Course Section Deleted Successfully";
+                            courseSectionAddViewModel._message = "Course Section deleted successfullyy";
                         }
                         else
                         {
@@ -2531,7 +2531,7 @@ namespace opensis.data.Repository
         //        }
 
         //        this.context?.SaveChanges();
-        //        deleteScheduleViewModel._message = "Schedule Deleted Successfully";
+        //        deleteScheduleViewModel._message = "Schedule deleted successfullyy";
         //        deleteScheduleViewModel._failure = false;
 
         //    }
@@ -2724,6 +2724,7 @@ namespace opensis.data.Repository
                         CourseSectionName = s.CourseSectionName,
                         IsDropped = s.IsDropped,
                         MeetingDays = s.MeetingDays,
+                        IsPrimaryStaff = s.IsPrimaryStaff,
                         StaffMaster = new StaffMaster
                         {
                             TenantId = s.StaffMaster.TenantId,
@@ -2846,7 +2847,7 @@ namespace opensis.data.Repository
                     bellScheduleAddViewModel.BellSchedule!.CreatedOn = DateTime.UtcNow;
                     this.context?.BellSchedule.Add(bellScheduleAddViewModel.BellSchedule);
 
-                    bellScheduleAddViewModel._message = "Bell Schedule Added Successfully";
+                    bellScheduleAddViewModel._message = "Bell Schedule added successfully";
                 }
                 this.context?.SaveChanges();
                 bellScheduleAddViewModel._failure = false;

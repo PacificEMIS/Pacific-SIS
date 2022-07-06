@@ -72,6 +72,7 @@ namespace opensis.data.ViewModels.StaffSchedule
         public int? BlockId { get; set; }
         public int? PeriodId { get; set; }
         public bool? DurationBasedOnPeriod { get; set; }
+        public bool? IsPrimaryStaff { get; set; }
 
         public SchoolYears? SchoolYears { get; set; }
         public Semesters? Semesters { get; set; }

@@ -2,10 +2,10 @@ export enum CustomFieldOptionsEnum{
     "Dropdown"="Dropdown",
     "Text"="Text",
     "Checkbox"="Checkbox",
-    "number"="number",
-    "Multiple SelectBox"="Multiple SelectBox",
+    "number"="Number",
+    "Multiple SelectBox"="Multiple Select Box",
     "Date"="Date",
-    "Textarea"="Textarea",
+    "Textarea"="Long Text",
 }
 
            

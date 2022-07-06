@@ -395,3 +395,9 @@ export class ClassRoomURLInCourseSectionModel extends CommonField{
         this.courseSection = new CourseSection();
     }
 }
+
+export class RemoveStaffCourseSectionSchedule extends CommonField{
+    schoolId : number;
+    courseSectionId : number;
+    staffId : number;
+}

@@ -39,7 +39,7 @@
                                 <span>{{'pleaseAddGradeLevel'|translate}}</span>
                             </ng-container>
                         </div>
-                        <h4 class="text-green font-medium mb-2">{{ "historicalGradeLevels" | translate }}</h4>
+                        <!-- <h4 class="text-green font-medium mb-2">{{ "historicalGradeLevels" | translate }}</h4>
                         <div class="mb-4 custom-scroll">
                             <ng-container *ngFor="let checkBox of historicalGradeList">
                                 <mat-checkbox color="primary" class="mr-6"
@@ -49,9 +49,9 @@
                             <ng-container *ngIf="!historicalGradeList?.length">
                                 <span>{{'pleaseAddHistoricalGradeLevel'|translate}}</span>
                             </ng-container>
-                        </div>
+                        </div> -->
                         <mat-error *ngIf="gradeLevelError">{{'pleaseSelectAtLeastOneGradeLevel'|translate}}</mat-error>
-                        <mat-error *ngIf="historicalGradeError">{{'pleaseSelectAtLeastOneHistoricalGradeLevel'|translate}}</mat-error>
+                        <!-- <mat-error *ngIf="historicalGradeError">{{'pleaseSelectAtLeastOneHistoricalGradeLevel'|translate}}</mat-error> -->
                     </div>
                     <div class="card mb-8">
                         <div class="bg-white px-6 py-2 border-b sticky left-0" fxLayout="row"

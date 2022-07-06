@@ -40,5 +40,6 @@ namespace opensis.data.Interface
         public StaffScheduleViewModel AddStaffCourseSectionReSchedule(StaffScheduleViewModel staffScheduleViewModel);
         public StaffListViewModel checkAvailabilityStaffCourseSectionReSchedule(StaffListViewModel staffListViewModel);
         public StaffListViewModel AddStaffCourseSectionReScheduleByCourse(StaffListViewModel staffScheduleViewModel);
+        public RemoveStaffScheduleViewModel RemoveStaffCourseSectionSchedule(RemoveStaffScheduleViewModel removeStaffScheduleViewModel);
     }
 }

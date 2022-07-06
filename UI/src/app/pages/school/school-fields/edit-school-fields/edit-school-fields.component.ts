@@ -70,7 +70,7 @@ export class EditSchoolFieldsComponent implements OnInit {
   buttonType;
   checkSearchRecord: number = 0;
   fieldCategoryModule = FieldCategoryModuleEnum;
-  customFieldOptionsEnum = Object.keys(CustomFieldOptionsEnum);
+  customFieldOptionsEnum = Object.values(CustomFieldOptionsEnum).sort();
   customFieldAddView: CustomFieldAddView = new CustomFieldAddView();
   formfieldcheck = ['Dropdown', 'Editable Dropdown', 'Multiple SelectBox'];
   currentCategoryid;

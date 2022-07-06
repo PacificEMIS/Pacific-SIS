@@ -363,7 +363,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
         courseSection.durationStartDate = moment(new Date()).format('YYYY-MM-DD');
 
       if (courseSection?.staffName)                                                                            // splitting all staff names 
-        courseSection.staffNameList = this.cerateTeacherListArray(courseSection?.staffName.split(", "));
+        courseSection.staffNameList = this.cerateTeacherListArray(courseSection?.staffName.split("|"));
       if (courseSection?.scheduleType.includes('Fixed Schedule'))
         courseSection.meetingDays = this.findDaysBasedOnName(courseSection?.fixedDays.split("|"));
       else if (courseSection?.scheduleType.includes('Variable Schedule'))

@@ -101,7 +101,7 @@ namespace opensis.data.Repository
                     if (checkProfile != null)
                     {
                         membershipAddViewModel._failure = true;
-                        membershipAddViewModel._message = "Profile Already Exists";
+                        membershipAddViewModel._message = "Profile already exists";
                     }
                     else
                     {
@@ -172,7 +172,7 @@ namespace opensis.data.Repository
                             this.context?.Membership.Add(membershipAddViewModel.membership);
                             this.context?.SaveChanges();
                             membershipAddViewModel._failure = false;
-                            membershipAddViewModel._message = "Membership Added Successfully";
+                            membershipAddViewModel._message = "Membership added successfully";
                         }
                     }
                 }
@@ -213,7 +213,7 @@ namespace opensis.data.Repository
                     if (checkProfile != null)
                     {
                         membershipAddViewModel._failure = true;
-                        membershipAddViewModel._message = "Profile Title Already Exists";
+                        membershipAddViewModel._message = "Profile Title already exists";
                     }
                     else
                     {
@@ -284,7 +284,7 @@ namespace opensis.data.Repository
                         memeberShipData.IsActive = false;
                         this.context?.SaveChanges();
                         membershipAddViewModel._failure = false;
-                        membershipAddViewModel._message = "Membership Deleted Successfully";
+                        membershipAddViewModel._message = "Membership deleted successfullyy";
                     }
                 }
                 else

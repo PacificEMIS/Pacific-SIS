@@ -25,7 +25,7 @@ export class CaptureDateComponent implements OnInit {
   submit() {
     if(this.data.schoolAddViewModel.StartDate && this.data.schoolAddViewModel.EndDate) {
       this.data.schoolAddViewModel.StartDate = this.commonFunction.formatDateSaveWithoutTime(this.data.schoolAddViewModel.StartDate);
-      this.data.schoolAddViewModel.EndDate = this.commonFunction.formatDateSaveWithoutTime(this.data.schoolAddViewModel.EndDate);
+      this.data.schoolAddViewModel.EndDate = null;
       this.dialogRef.close(this.data.schoolAddViewModel);
     } else {
         this.snackbar.open('Please enter start date and end date.', '', {

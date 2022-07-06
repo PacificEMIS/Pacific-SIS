@@ -80,14 +80,14 @@ namespace opensis.data.Repository
 
                                     var calender = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CalenderId == courseSectionData.FirstOrDefault()!.CalendarId);
 
-                                    if(calender != null)
+                                    if (calender != null)
                                     {
                                         CourseSections.WeekDays = calender.Days;
                                     }
 
-                                    var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == getCourseSection.CourseSectionId && x.IsDropped!=true).ToList();
+                                    var staffSchedule = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == getCourseSection.CourseSectionId && x.IsDropped != true).ToList();
 
-                                    if (staffSchedule!=null && staffSchedule.Any())
+                                    if (staffSchedule != null && staffSchedule.Any())
                                     {
                                         foreach (var staff in staffSchedule)
                                         {
@@ -108,10 +108,10 @@ namespace opensis.data.Repository
                                             var variableList = this.context?.CourseVariableSchedule.Include(x => x.BlockPeriod).Include(x => x.Rooms).Where(x => x.TenantId == variableSchedule.TenantId && x.SchoolId == variableSchedule.SchoolId && x.CourseSectionId == variableSchedule.CourseSectionId).Select(s => new CourseVariableSchedule { TenantId = s.TenantId, SchoolId = s.SchoolId, CourseId = s.CourseId, CourseSectionId = s.CourseSectionId, GradeScaleId = s.GradeScaleId, Serial = s.Serial, Day = s.Day, RoomId = s.RoomId, TakeAttendance = s.TakeAttendance, PeriodId = s.PeriodId, BlockId = s.BlockId, CreatedBy = s.CreatedBy, CreatedOn = s.CreatedOn, UpdatedBy = s.UpdatedBy, UpdatedOn = s.UpdatedOn, Rooms = new Rooms { Title = s.Rooms!.Title }, BlockPeriod = new BlockPeriod { PeriodTitle = s.BlockPeriod!.PeriodTitle } }).ToList();
                                             //CourseSections.courseVariableSchedule = variableList;
 
-                                            if (variableList!=null)
+                                            if (variableList != null)
                                             {
                                                 CourseSections.courseVariableSchedule = variableList;
-                                            }   
+                                            }
                                         }
                                     }
 
@@ -182,7 +182,7 @@ namespace opensis.data.Repository
                                         CourseSections.MeetingDays = concatDay;
                                         CourseSections.AttendanceTaken = courseSection.AttendanceTaken;
                                         teacherSchedules.courseSectionViewList.Add(CourseSections);
-                                    }                                 
+                                    }
                                 }
                             }
 
@@ -222,7 +222,6 @@ namespace opensis.data.Repository
             try
             {
                 if (staffScheduleViewModel.staffScheduleViewList.Count() > 0)
-                
                 {
                     foreach (var staffSchedule in staffScheduleViewModel.staffScheduleViewList.ToList())
                     {
@@ -241,6 +240,8 @@ namespace opensis.data.Repository
                                 }
                                 else
                                 {
+                                    var primaryStaffinCourseSection = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseId == CourseSection.CourseId && x.CourseSectionId == CourseSection.CourseSectionId && x.IsPrimaryStaff == true);
+
                                     var staffCoursesectionSchedule = new StaffCoursesectionSchedule()
                                     {
                                         TenantId = staffScheduleViewModel.TenantId,
@@ -260,7 +261,8 @@ namespace opensis.data.Repository
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
                                         IsAssigned = true,
-                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == CourseSection.CourseSectionId)?.AcademicYear,
+                                        IsPrimaryStaff = primaryStaffinCourseSection == null ? true : false
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                                 }
@@ -280,7 +282,7 @@ namespace opensis.data.Repository
                 {
                     staffScheduleViewModel._failure = true;
                     staffScheduleViewModel._message = "Select Staff For Teacher scheduled ";
-                }               
+                }
             }
             catch (Exception es)
             {
@@ -394,7 +396,7 @@ namespace opensis.data.Repository
                                             {
                                                 foreach (var courseSectionData in courseSectionAllData)
                                                 {
-                                                    var checkForConflict = this.context?.AllCourseSectionView.Join(this.context.StaffCoursesectionSchedule, acsv => acsv.CourseSectionId, scss => scss.CourseSectionId, (acsv, scss) => new { acsv, scss }).AsEnumerable().Where(c => c.acsv.TenantId == staffScheduleViewModel.TenantId && c.acsv.SchoolId == staffScheduleViewModel.SchoolId && c.scss.StaffId == staff.StaffId &&
+                                                    var checkForConflict = this.context?.AllCourseSectionView.Join(this.context.StaffCoursesectionSchedule, acsv => acsv.CourseSectionId, scss => scss.CourseSectionId, (acsv, scss) => new { acsv, scss }).AsEnumerable().Where(c => c.acsv.TenantId == staffScheduleViewModel.TenantId && c.acsv.SchoolId == staffScheduleViewModel.SchoolId && c.scss.TenantId == staffScheduleViewModel.TenantId && c.scss.SchoolId == staffScheduleViewModel.SchoolId && c.scss.StaffId == staff.StaffId &&
 
                                     ((c.acsv.FixedPeriodId != null && ((c.acsv.FixedPeriodId == courseSectionData.FixedPeriodId &&( Regex.IsMatch((c.acsv.FixedDays ?? "").ToLower(), (courseSectionData.FixedDays ?? "").ToLower(), RegexOptions.IgnoreCase))) || (c.acsv.FixedPeriodId == courseSectionData.VarPeriodId && (c.acsv.FixedDays??"").ToLower().Contains((courseSectionData.VarDay??"").ToLower())) || (c.acsv.FixedPeriodId == courseSectionData.CalPeriodId && (c.acsv.FixedDays??"").ToLower().Contains((courseSectionData.CalDay??"").ToLower())))) ||
 
@@ -535,6 +537,7 @@ namespace opensis.data.Repository
                             CourseSections.MeetingDays = scheduledCourseSection.MeetingDays;
                             CourseSections.GradeScaleType = scheduledCourseSection.CourseSection.GradeScaleType;
                             CourseSections.UsedStandard = scheduledCourseSection.CourseSection.UseStandards;
+                            CourseSections.IsPrimaryStaff = scheduledCourseSection.IsPrimaryStaff;
 
                             scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
                         }
@@ -582,6 +585,7 @@ namespace opensis.data.Repository
                                 {
                                     StaffScheduleData.IsDropped = true;
                                     StaffScheduleData.EffectiveDropDate = DateTime.UtcNow;
+                                    StaffScheduleData.IsPrimaryStaff = false;
                                 }
                                 else
                                 {
@@ -590,10 +594,11 @@ namespace opensis.data.Repository
                                     return staffScheduleViewModel;
                                 }
                                 var StaffScheduleDataAlreadyExist = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.StaffId == staffSchedule.StaffId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId);
-                                if(StaffScheduleDataAlreadyExist!=null)
+                                if (StaffScheduleDataAlreadyExist != null)
                                 {
                                     StaffScheduleDataAlreadyExist.IsDropped = null;
                                     StaffScheduleDataAlreadyExist.EffectiveDropDate = null;
+                                    StaffScheduleDataAlreadyExist.IsPrimaryStaff = true;
                                 }
                                 else
                                 {
@@ -616,10 +621,11 @@ namespace opensis.data.Repository
                                         CreatedBy = staffScheduleViewModel.CreatedBy,
                                         CreatedOn = DateTime.UtcNow,
                                         IsAssigned = true,
-                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear
+                                        AcademicYear = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == staffScheduleViewModel.TenantId && x.SchoolId == staffScheduleViewModel.SchoolId && x.CourseSectionId == courseSection.CourseSectionId)?.AcademicYear,
+                                        IsPrimaryStaff = true
                                     };
                                     this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
-                                }      
+                                }
                             }
                             this.context?.SaveChanges();
                             staffScheduleViewModel._message = "Staff  Re-Schedule In CourseSection Successfully";
@@ -697,7 +703,7 @@ namespace opensis.data.Repository
 
                                             //(c.acsv.BlockPeriodId != null && (c.acsv.BlockPeriodId == courseSectionData.BlockPeriodId && c.acsv.BlockRoomId == courseSectionData.BlockRoomId && c.acsv.BlockId == courseSectionData.BlockId))) && c.acsv.DurationEndDate > courseSectionData.DurationStartDate && c.scss.IsDropped != true).ToList();
 
-                                            var checkForConflict = this.context?.AllCourseSectionView.Join(this.context.StaffCoursesectionSchedule, acsv => acsv.CourseSectionId, scss => scss.CourseSectionId, (acsv, scss) => new { acsv, scss }).AsEnumerable().Where(c => c.acsv.TenantId == staffListViewModel.TenantId && c.acsv.SchoolId == staffListViewModel.SchoolId && c.scss.StaffId == staffListViewModel.ReScheduleStaffId &&
+                                            var checkForConflict = this.context?.AllCourseSectionView.Join(this.context.StaffCoursesectionSchedule, acsv => acsv.CourseSectionId, scss => scss.CourseSectionId, (acsv, scss) => new { acsv, scss }).AsEnumerable().Where(c => c.acsv.TenantId == staffListViewModel.TenantId && c.acsv.SchoolId == staffListViewModel.SchoolId && c.scss.TenantId == staffListViewModel.TenantId && c.scss.SchoolId == staffListViewModel.SchoolId && c.scss.StaffId == staffListViewModel.ReScheduleStaffId &&
 
                                                    ((c.acsv.FixedPeriodId != null && ((c.acsv.FixedPeriodId == courseSectionData.FixedPeriodId && (Regex.IsMatch((courseSectionData.FixedDays??"").ToLower(),(c.acsv.FixedDays??"").ToLower(), RegexOptions.IgnoreCase))) || (c.acsv.FixedPeriodId == courseSectionData.VarPeriodId && (c.acsv.FixedDays ?? "").ToLower().Contains((courseSectionData.VarDay ?? "").ToLower())) || (c.acsv.FixedPeriodId == courseSectionData.CalPeriodId && (c.acsv.FixedDays ?? "").ToLower().Contains((courseSectionData.CalDay ?? "").ToLower())))) ||
 
@@ -759,6 +765,7 @@ namespace opensis.data.Repository
                         {
                             StaffScheduleData.IsDropped = true;
                             StaffScheduleData.EffectiveDropDate = DateTime.UtcNow;
+                            StaffScheduleData.IsPrimaryStaff = false;
                         }
                         else
                         {
@@ -772,6 +779,7 @@ namespace opensis.data.Repository
                         {
                             StaffScheduleDataAlreadyExist.IsDropped = null;
                             StaffScheduleDataAlreadyExist.EffectiveDropDate = null;
+                            StaffScheduleDataAlreadyExist.IsPrimaryStaff = true;
                         }
                         else
                         {
@@ -793,7 +801,8 @@ namespace opensis.data.Repository
                                 MeetingDays = courseSection.StaffCoursesectionSchedule.FirstOrDefault()!.MeetingDays,
                                 CreatedBy = staffListViewModel.CreatedBy,
                                 CreatedOn = DateTime.UtcNow,
-                                IsAssigned = true
+                                IsAssigned = true,
+                                IsPrimaryStaff = true
                             };
                             this.context?.StaffCoursesectionSchedule.Add(staffCoursesectionSchedule);
                         }
@@ -816,5 +825,42 @@ namespace opensis.data.Repository
             return staffListViewModel;
         }
 
+        /// <summary>
+        /// Remove Staff Course Section Schedule
+        /// </summary>
+        /// <param name="removestaffScheduleViewModel"></param>
+        /// <returns></returns>
+
+        public RemoveStaffScheduleViewModel RemoveStaffCourseSectionSchedule(RemoveStaffScheduleViewModel removeStaffScheduleViewModel)
+        {
+            if (removeStaffScheduleViewModel == null)
+            {
+                return removeStaffScheduleViewModel!;
+            }
+            try
+            {
+                var StaffScheduleCourseSectionData = this.context?.StaffCoursesectionSchedule.Where(x => x.TenantId == removeStaffScheduleViewModel.TenantId && x.SchoolId == removeStaffScheduleViewModel.SchoolId && x.StaffId == removeStaffScheduleViewModel.StaffId && x.CourseSectionId == removeStaffScheduleViewModel.CourseSectionId).FirstOrDefault();
+
+                if (StaffScheduleCourseSectionData != null)
+                {
+                    StaffScheduleCourseSectionData.IsDropped = true;
+                    StaffScheduleCourseSectionData.EffectiveDropDate = DateTime.UtcNow;
+                    this.context?.SaveChanges();
+                    removeStaffScheduleViewModel._failure = false;
+                    removeStaffScheduleViewModel._message = "Schudule Staff Remove Successfully";
+                }
+                else
+                {
+                    removeStaffScheduleViewModel._failure = true;
+                    removeStaffScheduleViewModel._message = "No Record Found";
+                }
+            }
+            catch (Exception es)
+            {
+                removeStaffScheduleViewModel._failure = true;
+                removeStaffScheduleViewModel._message = es.Message;
+            }
+            return removeStaffScheduleViewModel;
+        }
     }
 }

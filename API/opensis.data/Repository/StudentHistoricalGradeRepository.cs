@@ -214,7 +214,7 @@ namespace opensis.data.Repository
                     this.context?.HistoricalMarkingPeriod.Remove(historicalMarkingPeriodData);
                     this.context?.SaveChanges();
                     historicalMarkingPeriod._failure = false;
-                    historicalMarkingPeriod._message = "Historical marking period deleted successfully";
+                    historicalMarkingPeriod._message = "Historical marking period deleted successfullyy";
                 }
             }
             catch (Exception es)

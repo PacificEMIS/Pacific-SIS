@@ -241,7 +241,7 @@ namespace opensis.data.Repository
                     this.context?.Language.Add(languageAdd.Language);
                     this.context?.SaveChanges();
                     languageAdd._failure = false;
-                    languageAdd._message = "Language Added Successfully";
+                    languageAdd._message = "Language added successfully";
                 }
             }
             catch (Exception es)
@@ -465,7 +465,7 @@ namespace opensis.data.Repository
                     this.context?.Language.Remove(getLanguageValue);
                     this.context?.SaveChanges();
                     deleteLanguageModel._failure = false;
-                    deleteLanguageModel._message = "Language Deleted Successfully";
+                    deleteLanguageModel._message = "Language deleted successfullyy";
                 }
             }
             catch (Exception ex)
@@ -483,7 +483,13 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public DropdownValueAddModel AddDropdownValue(DropdownValueAddModel dpdownValue)
         {
-            var getDpvalue = this.context?.DpdownValuelist.AsEnumerable().FirstOrDefault(x => String.Compare(x.LovColumnValue, dpdownValue.DropdownValue!.LovColumnValue,true)==0 && String.Compare(x.LovName, dpdownValue.DropdownValue.LovName,true)==0  && (x.SchoolId == dpdownValue.DropdownValue.SchoolId || x.SchoolId == null));
+            if (dpdownValue.DropdownValue is null)
+            {
+                dpdownValue._failure = true;
+                return dpdownValue;
+            }
+
+            var getDpvalue = this.context?.DpdownValuelist.AsEnumerable().FirstOrDefault(x => x.TenantId == dpdownValue.DropdownValue.TenantId && (x.SchoolId == dpdownValue.DropdownValue.SchoolId || x.SchoolId == null) && String.Compare(x.LovName, dpdownValue.DropdownValue.LovName, true) == 0 && String.Compare(x.LovColumnValue, dpdownValue.DropdownValue!.LovColumnValue, true) == 0);
 
             if (getDpvalue != null)
             {
@@ -498,7 +504,7 @@ namespace opensis.data.Repository
                 this.context?.DpdownValuelist.Add(dpdownValue.DropdownValue);
                 this.context?.SaveChanges();
                 dpdownValue._failure = false;
-                dpdownValue._message = "Data Added Successfully";
+                dpdownValue._message = "Data added successfully";
             }
             return dpdownValue;
         }
@@ -517,132 +523,142 @@ namespace opensis.data.Repository
             using var transaction = this.context?.Database.BeginTransaction();
             try
             {
-                var getDpdownData = this.context?.DpdownValuelist.AsEnumerable().Where(x => String.Compare(x.LovColumnValue, dpdownValue.DropdownValue!.LovColumnValue, true) == 0 && String.Compare(x.LovName, dpdownValue.DropdownValue.LovName, true) == 0 && x.Id != dpdownValue.DropdownValue.Id && (x.SchoolId == dpdownValue.DropdownValue.SchoolId || x.SchoolId == null)).ToList();
+                var getDpdownData = this.context?.DpdownValuelist.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && (x.SchoolId == dpdownValue.DropdownValue.SchoolId || x.SchoolId == null) && x.Id != dpdownValue.DropdownValue.Id && String.Compare(x.LovName, dpdownValue.DropdownValue.LovName, true) == 0 && String.Compare(x.LovColumnValue, dpdownValue.DropdownValue!.LovColumnValue, true) == 0).FirstOrDefault();
 
-                if (getDpdownData !=null && getDpdownData.Any())
+                if (getDpdownData != null)
                 {
                     dpdownValue._message = "This Title Already Exist";
                     dpdownValue._failure = true;
                 }
                 else
                 {
-                    
-
                     var getDpdownValue = this.context?.DpdownValuelist.FirstOrDefault(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Id == dpdownValue.DropdownValue.Id);
 
                     if (getDpdownValue != null)
                     {
-
-                        switch (getDpdownValue.LovName)
+                        if ((dpdownValue.DropdownValue.LovColumnValue ?? "").ToLower() != (getDpdownValue.LovColumnValue ?? "").ToLower())
                         {
-                            case "Race":
-                                var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x =>String.Compare( x.Race, getDpdownValue.LovColumnValue,true)==0).ToList();
-                                var raceValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (raceValueStaff !=null && raceValueStaff.Any())
-                                {
-                                    foreach (var staff in raceValueStaff)
+                            switch (getDpdownValue.LovName)
+                            {
+                                case "Race":
+                                    //var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
+                                    //var raceValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Race, getDpdownValue.LovColumnValue, true) == 0).ToList();
+
+                                    var raceValueStaff = this.context?.StaffMaster.Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Race != null && (x.Race ?? "").ToLower() == (getDpdownValue.LovColumnValue ?? "").ToLower()).ToList();
+
+                                    var raceValueStudent = this.context?.StudentMaster.Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Race != null && (x.Race ?? "").ToLower() == (getDpdownValue.LovColumnValue ?? "").ToLower()).ToList();
+
+
+                                    if (raceValueStaff != null && raceValueStaff.Any())
                                     {
-                                        staff.Race = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var staff in raceValueStaff)
+                                        {
+                                            staff.Race = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.StaffMaster.UpdateRange(raceValueStaff);
                                     }
-                                    this.context?.StaffMaster.UpdateRange(raceValueStaff);
-                                }
-                                if (raceValueStudent != null && raceValueStudent.Any())
-                                {
-                                    foreach (var student in raceValueStudent)
+                                    if (raceValueStudent != null && raceValueStudent.Any())
                                     {
-                                        student.Race = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var student in raceValueStudent)
+                                        {
+                                            student.Race = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.StudentMaster.UpdateRange(raceValueStudent);
                                     }
-                                    this.context?.StudentMaster.UpdateRange(raceValueStudent);
-                                }
-                                break;
-                            case "School Level":
-                                var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => String.Compare(x.SchoolLevel, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                    break;
+                                case "School Level":
+                                    var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.SchoolLevel, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (schoolLevelValue!=null && schoolLevelValue.Any())
-                                {
-                                    foreach (var schoolLevel in schoolLevelValue)
+                                    if (schoolLevelValue != null && schoolLevelValue.Any())
                                     {
-                                        schoolLevel.SchoolLevel = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var schoolLevel in schoolLevelValue)
+                                        {
+                                            schoolLevel.SchoolLevel = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.SchoolMaster.UpdateRange(schoolLevelValue);
+
                                     }
-                                    this.context?.SchoolMaster.UpdateRange(schoolLevelValue);
 
-                                }
+                                    break;
+                                case "School Classification":
+                                    var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.SchoolClassification, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                break;
-                            case "School Classification":
-                                var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => String.Compare(x.SchoolClassification, getDpdownValue.LovColumnValue,true)==0).ToList();
-
-                                if (schoolClassificationValue !=null && schoolClassificationValue.Any())
-                                {
-                                    foreach (var schoolClassification in schoolClassificationValue)
+                                    if (schoolClassificationValue != null && schoolClassificationValue.Any())
                                     {
-                                        schoolClassification.SchoolClassification = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var schoolClassification in schoolClassificationValue)
+                                        {
+                                            schoolClassification.SchoolClassification = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.SchoolMaster.UpdateRange(schoolClassificationValue);
                                     }
-                                    this.context?.SchoolMaster.UpdateRange(schoolClassificationValue);
-                                }
 
-                                break;
-                            case "Female Toilet Type":
-                                var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.FemaleToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                    break;
+                                case "Female Toilet Type":
+                                    var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.FemaleToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (femaleToiletTypeValue !=null && femaleToiletTypeValue.Any())
-                                {
-                                    foreach (var femaleToilet in femaleToiletTypeValue)
+                                    if (femaleToiletTypeValue != null && femaleToiletTypeValue.Any())
                                     {
-                                        femaleToilet.FemaleToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var femaleToilet in femaleToiletTypeValue)
+                                        {
+                                            femaleToilet.FemaleToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.SchoolDetail.UpdateRange(femaleToiletTypeValue);
                                     }
-                                    this.context?.SchoolDetail.UpdateRange(femaleToiletTypeValue);
-                                }
 
-                                break;
-                            case "Male Toilet Type":
-                                var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.MaleToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                    break;
+                                case "Male Toilet Type":
+                                    var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.MaleToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (maleToiletTypeValue!=null && maleToiletTypeValue.Any())
-                                {
-                                    foreach (var maleToilet in maleToiletTypeValue)
+                                    if (maleToiletTypeValue != null && maleToiletTypeValue.Any())
                                     {
-                                        maleToilet.MaleToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var maleToilet in maleToiletTypeValue)
+                                        {
+                                            maleToilet.MaleToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.SchoolDetail.UpdateRange(maleToiletTypeValue);
                                     }
-                                    this.context?.SchoolDetail.UpdateRange(maleToiletTypeValue);
-                                }
 
-                                break;
-                            case "Common Toilet Type":
-                                var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => String.Compare( x.ComonToiletType, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                    break;
+                                case "Common Toilet Type":
+                                    var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.ComonToiletType, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (commonToiletTypeValue !=null && commonToiletTypeValue.Any())
-                                {
-                                    foreach (var ComonToilet in commonToiletTypeValue)
+                                    if (commonToiletTypeValue != null && commonToiletTypeValue.Any())
                                     {
-                                        ComonToilet.ComonToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var ComonToilet in commonToiletTypeValue)
+                                        {
+                                            ComonToilet.ComonToiletType = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.SchoolDetail.UpdateRange(commonToiletTypeValue);
                                     }
-                                    this.context?.SchoolDetail.UpdateRange(commonToiletTypeValue);
-                                }
 
-                                break;
-                            case "Ethnicity":
-                                var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => String.Compare( x.Ethnicity, getDpdownValue.LovColumnValue,true)==0).ToList();
-                                var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue,true)==0).ToList();
+                                    break;
+                                case "Ethnicity":
+                                    //var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue, true) == 0).ToList();
+                                    //var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && String.Compare(x.Ethnicity, getDpdownValue.LovColumnValue, true) == 0).ToList();
 
-                                if (ethnicityValueStaff !=null && ethnicityValueStaff.Any())
-                                {
-                                    foreach (var staff in ethnicityValueStaff)
+                                    var ethnicityValueStaff = this.context?.StaffMaster.Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Ethnicity != null && (x.Ethnicity ?? "").ToLower() == (getDpdownValue.LovColumnValue ?? "").ToLower()).ToList();
+
+                                    var ethnicityValueStudent = this.context?.StudentMaster.Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId && x.SchoolId == dpdownValue.DropdownValue.SchoolId && x.Ethnicity != null && (x.Ethnicity ?? "").ToLower() == (getDpdownValue.LovColumnValue ?? "").ToLower()).ToList();
+
+                                    if (ethnicityValueStaff != null && ethnicityValueStaff.Any())
                                     {
-                                        staff.Ethnicity = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var staff in ethnicityValueStaff)
+                                        {
+                                            staff.Ethnicity = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.StaffMaster.UpdateRange(ethnicityValueStaff);
                                     }
-                                    this.context?.StaffMaster.UpdateRange(ethnicityValueStaff);
-                                }
-                                if (ethnicityValueStudent !=null && ethnicityValueStudent.Any())
-                                {
-                                    foreach (var student in ethnicityValueStudent)
+                                    if (ethnicityValueStudent != null && ethnicityValueStudent.Any())
                                     {
-                                        student.Ethnicity = dpdownValue.DropdownValue.LovColumnValue;
+                                        foreach (var student in ethnicityValueStudent)
+                                        {
+                                            student.Ethnicity = dpdownValue.DropdownValue.LovColumnValue;
+                                        }
+                                        this.context?.StudentMaster.UpdateRange(ethnicityValueStudent);
                                     }
-                                    this.context?.StudentMaster.UpdateRange(ethnicityValueStudent);
-                                }
-                                break;
+                                    break;
+                            }
                         }
 
                         getDpdownValue.LovColumnValue = dpdownValue.DropdownValue.LovColumnValue;
@@ -653,8 +669,6 @@ namespace opensis.data.Repository
                         dpdownValue._message = "Data Updated Successfully";
                         transaction?.Commit();
                     }
-
-                   
                 }
                 return dpdownValue;
             }
@@ -809,7 +823,7 @@ namespace opensis.data.Repository
                     this.context?.Country.Add(countryAddModel.Country);
                     this.context?.SaveChanges();
                     countryAddModel._failure = false;
-                    countryAddModel._message = "Country Added Successfully";
+                    countryAddModel._message = "Country added successfully";
                 }
             }
             catch (Exception es)
@@ -924,7 +938,7 @@ namespace opensis.data.Repository
                     this.context?.Country.Remove(getCountryValue);
                     this.context?.SaveChanges();
                     deleteCountryModel._failure = false;
-                    deleteCountryModel._message = "Country Deleted Successfully";
+                    deleteCountryModel._message = "Country deleted successfullyy";
 
                 }
 
@@ -944,11 +958,11 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public DropdownValueAddModel DeleteDropdownValue(DropdownValueAddModel dpdownValue)
         {
-            if(dpdownValue.DropdownValue is null)
+            if (dpdownValue.DropdownValue is null)
             {
                 return dpdownValue;
             }
-            DropdownValueAddModel dropdownValueAddModel = new ();
+            DropdownValueAddModel dropdownValueAddModel = new();
             try
             {
                 var getDpValue = this.context?.DpdownValuelist.FirstOrDefault(x => x.Id == dpdownValue.DropdownValue.Id);
@@ -960,18 +974,21 @@ namespace opensis.data.Repository
                     {
                         case "Race":
 
-                            /*var raceValueStaff = this.context?.StaffMaster.Where(x => x.Race == getDpValue.LovColumnValue.ToLower() && x.SchoolId == getDpValue.SchoolId).ToList();*/
-                            var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.Race!=null && String.Compare(x.Race,getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
-                            if (raceValueStaff != null && raceValueStaff.Any())
+                            //var raceValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId&& x.SchoolId == getDpValue.SchoolId&&  x.Race != null && String.Compare(x.Race, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
+                            var raceValueStaff = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Race != null && (x.Race ?? "").ToLower() == (getDpValue.LovColumnValue ?? "").ToLower());
+
+                            if (raceValueStaff != null)
                             {
                                 dropdownValueAddModel._message = "Race cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
                                 return dropdownValueAddModel;
                             }
 
-                            var raceValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => String.Compare(x.Race, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            //var raceValueStudent = this.context?.StudentMaster.AsEnumerable().FirstOrDefault(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Race != null && String.Compare(x.Race, getDpValue.LovColumnValue, true) == 0);
 
-                            if (raceValueStudent!= null && raceValueStudent.Any())
+                            var raceValueStudent = this.context?.StudentMaster.FirstOrDefault(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Race != null && (x.Race ?? "").ToLower() == (getDpValue.LovColumnValue ?? "").ToLower());
+
+                            if (raceValueStudent != null)
                             {
                                 dropdownValueAddModel._message = "Race cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -981,9 +998,9 @@ namespace opensis.data.Repository
 
                             break;
                         case "School Level":
-                            var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => String.Compare( x.SchoolLevel, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            var schoolLevelValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && String.Compare(x.SchoolLevel, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
 
-                            if (schoolLevelValue !=null && schoolLevelValue.Any())
+                            if (schoolLevelValue != null)
                             {
                                 dropdownValueAddModel._message = "School Level cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -992,9 +1009,9 @@ namespace opensis.data.Repository
 
                             break;
                         case "School Classification":
-                            var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.SchoolClassification!=null && String.Compare(x.SchoolClassification, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            var schoolClassificationValue = this.context?.SchoolMaster.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.SchoolClassification != null && String.Compare(x.SchoolClassification, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
 
-                            if (schoolClassificationValue !=null && schoolClassificationValue.Any())
+                            if (schoolClassificationValue != null)
                             {
                                 dropdownValueAddModel._message = "School Classification cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -1003,9 +1020,9 @@ namespace opensis.data.Repository
 
                             break;
                         case "Female Toilet Type":
-                            var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.FemaleToiletType!=null && String.Compare(x.FemaleToiletType, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            var femaleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.FemaleToiletType != null && String.Compare(x.FemaleToiletType, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
 
-                            if (femaleToiletTypeValue !=null && femaleToiletTypeValue.Any())
+                            if (femaleToiletTypeValue != null)
                             {
                                 dropdownValueAddModel._message = "Female Toilet Type cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -1014,9 +1031,9 @@ namespace opensis.data.Repository
 
                             break;
                         case "Male Toilet Type":
-                            var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.MaleToiletType!=null && String.Compare(x.MaleToiletType, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            var maleToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.MaleToiletType != null && String.Compare(x.MaleToiletType, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
 
-                            if (maleToiletTypeValue !=null && maleToiletTypeValue.Any())
+                            if (maleToiletTypeValue != null)
                             {
                                 dropdownValueAddModel._message = "Male Toilet Type cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -1025,9 +1042,9 @@ namespace opensis.data.Repository
 
                             break;
                         case "Common Toilet Type":
-                            var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.ComonToiletType!=null && String.Compare(x.ComonToiletType, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            var commonToiletTypeValue = this.context?.SchoolDetail.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.ComonToiletType != null && String.Compare(x.ComonToiletType, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
 
-                            if (commonToiletTypeValue!=null && commonToiletTypeValue.Any())
+                            if (commonToiletTypeValue != null)
                             {
                                 dropdownValueAddModel._message = "Common Toilet Type cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -1036,16 +1053,19 @@ namespace opensis.data.Repository
 
                             break;
                         case "Ethnicity":
-                            var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.Ethnicity!=null && String.Compare(x.Ethnicity, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
-                            if (ethnicityValueStaff!=null && ethnicityValueStaff.Any())
+                            //var ethnicityValueStaff = this.context?.StaffMaster.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Ethnicity != null && String.Compare(x.Ethnicity, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
+                            var ethnicityValueStaff = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Ethnicity != null && (x.Ethnicity ?? "").ToLower() == (getDpValue.LovColumnValue ?? "").ToLower());
+
+                            if (ethnicityValueStaff != null)
                             {
                                 dropdownValueAddModel._message = "Ethnicity cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
                                 return dropdownValueAddModel;
                             }
-                            var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.Ethnicity!=null && String.Compare(x.Ethnicity, getDpValue.LovColumnValue,true)==0 && x.SchoolId == getDpValue.SchoolId).ToList();
+                            //var ethnicityValueStudent = this.context?.StudentMaster.AsEnumerable().Where(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Ethnicity != null && String.Compare(x.Ethnicity, getDpValue.LovColumnValue, true) == 0).FirstOrDefault();
+                            var ethnicityValueStudent = this.context?.StudentMaster.FirstOrDefault(x => x.TenantId == getDpValue.TenantId && x.SchoolId == getDpValue.SchoolId && x.Ethnicity != null && (x.Ethnicity ?? "").ToLower() == (getDpValue.LovColumnValue ?? "").ToLower());
 
-                            if (ethnicityValueStudent!=null && ethnicityValueStudent.Any())
+                            if (ethnicityValueStudent != null)
                             {
                                 dropdownValueAddModel._message = "Ethnicity cannot be deleted because it has its association";
                                 dropdownValueAddModel._failure = true;
@@ -1057,7 +1077,7 @@ namespace opensis.data.Repository
                     this.context?.DpdownValuelist.Remove(getDpValue);
                     this.context?.SaveChanges();
                     dropdownValueAddModel._failure = false;
-                    dropdownValueAddModel._message = "Data Deleted Successfully";
+                    dropdownValueAddModel._message = "Data deleted successfullyy";
                 }
 
             }
@@ -1210,7 +1230,7 @@ namespace opensis.data.Repository
                 if (checkFilterName != null)
                 {
                     searchFilterAddViewModel._failure = true;
-                    searchFilterAddViewModel._message = "Filter Name Already Exists";
+                    searchFilterAddViewModel._message = "Filter Name already exists";
                 }
                 else
                 {
@@ -1228,7 +1248,7 @@ namespace opensis.data.Repository
                     this.context?.SearchFilter.Add(searchFilterAddViewModel.SearchFilter);
                     this.context?.SaveChanges();
                     searchFilterAddViewModel._failure = false;
-                    searchFilterAddViewModel._message = "Search Filter Added Successfully";
+                    searchFilterAddViewModel._message = "Search Filter added successfully";
                 }
             }
             catch (Exception es)
@@ -1261,7 +1281,7 @@ namespace opensis.data.Repository
                     if (checkFilterName != null)
                     {
                         searchFilterAddViewModel._failure = true;
-                        searchFilterAddViewModel._message = "Filter Name Already Exists";
+                        searchFilterAddViewModel._message = "Filter Name already exists";
                     }
                     else
                     {
@@ -1306,7 +1326,7 @@ namespace opensis.data.Repository
                     this.context?.SearchFilter.Remove(searchFilterDelete);
                     this.context?.SaveChanges();
                     searchFilterAddViewModel._failure = false;
-                    searchFilterAddViewModel._message = "Search Filter Deleted Successfully";
+                    searchFilterAddViewModel._message = "Search Filter deleted successfullyy";
 
                 }
                 else
@@ -3094,7 +3114,7 @@ namespace opensis.data.Repository
                     //context!.Entry(schoolPreferenceAddViewModel.SchoolPreference.SchoolMaster).State = EntityState.Unchanged;
                     this.context?.SaveChanges();
                     schoolPreferenceAddViewModel._failure = false;
-                    schoolPreferenceAddViewModel._message = "School Preference Added Successfully";
+                    schoolPreferenceAddViewModel._message = "School Preference added successfully";
                 }
             }
             catch (Exception es)

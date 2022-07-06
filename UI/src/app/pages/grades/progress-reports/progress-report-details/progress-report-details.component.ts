@@ -11,6 +11,7 @@ import moment from 'moment';
 import { LoaderService } from 'src/app/services/loader.service';
 import { StudentService } from 'src/app/services/student.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { SharedFunction } from 'src/app/pages/shared/shared-function';
 
 @Component({
   selector: 'vex-progress-report-details',
@@ -41,7 +42,8 @@ export class ProgressReportDetailsComponent implements OnInit {
     private commonService: CommonService,
     private snackbar: MatSnackBar,
     private loaderService: LoaderService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private commonFunction: SharedFunction
   ) {
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
@@ -92,12 +94,12 @@ export class ProgressReportDetailsComponent implements OnInit {
           if (this.toggleMenu.excludeUngradedEcAssignments) {
             courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x => x.grade !== '*');
           }
+          if(this.toggleMenu.excludeUngradedAssignmentsNotDue){
+            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x=> x.grade);
+            courseSection.gradeBookGradeListData = courseSection.gradeBookGradeListData.filter(x=> moment(this.commonFunction.formatDateSaveWithoutTime(new Date())).isSameOrBefore(this.commonFunction.formatDateSaveWithoutTime(x.dueDate)));
+          }
 
           courseSection.gradeBookGradeListData.map((gradeDetails) => {
-            // assignmentPoint should be null and due date future date
-            if (this.toggleMenu.excludeUngradedAssignmentsNotDue && !gradeDetails?.assignmentPoint && moment(new Date()).isSameOrAfter(gradeDetails.assignmentDate)) {
-              gradeDetails.hide = true;
-            }
 
             totalAllowedMarks += gradeDetails.allowedMarks ? Number(gradeDetails.allowedMarks) : 0;
             totalAssignmentPoint += gradeDetails.assignmentPoint ? Number(gradeDetails.assignmentPoint) : 0;

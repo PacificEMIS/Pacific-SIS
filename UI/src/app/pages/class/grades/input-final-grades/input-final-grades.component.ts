@@ -49,6 +49,8 @@ import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { ReportCardService } from 'src/app/services/report-card.service';
 import { StudentScheduleService } from 'src/app/services/student-schedule.service';
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
+import { GradebookConfigurationAddViewModel } from 'src/app/models/gradebook-configuration.model';
+import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
 
 export interface Comment {
   name: string;
@@ -113,6 +115,8 @@ export class InputFinalGradesComponent implements OnInit {
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
   selectedMarkingPeriod: any;
   creditHours;
+  cloneAddUpdateStudentFinalGradeModel;
+  gradebookConfigurationAddViewModel: GradebookConfigurationAddViewModel = new GradebookConfigurationAddViewModel();
 
   constructor(
     public translateService: TranslateService,
@@ -127,6 +131,7 @@ export class InputFinalGradesComponent implements OnInit {
     private reportCardService: ReportCardService,
     public defaultValuesService: DefaultValuesService,
     private courseManager: CourseManagerService,
+    private gradeBookConfigurationService: GradeBookConfigurationService,
     private loaderService: LoaderService,
     private commonService: CommonService,
   ) {
@@ -170,7 +175,7 @@ export class InputFinalGradesComponent implements OnInit {
   changeMarkingPeriod(event) {
     if(event.value) {
     // this.addUpdateStudentFinalGradeModel.markingPeriodId = event.value;
-    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);    
+    const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);
     
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
@@ -188,65 +193,42 @@ export class InputFinalGradesComponent implements OnInit {
     this.finalGradeService.getAllStudentFinalGradeList(this.addUpdateStudentFinalGradeModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
+          
           this.addUpdateStudentFinalGradeModel.courseId = this.courseSectionData.courseId;
           this.addUpdateStudentFinalGradeModel.calendarId = this.courseSectionData.calendarId;
           this.getAllReportCardCommentsWithCategory(this.addUpdateStudentFinalGradeModel.courseId);
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
-          if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
+          if (this.courseSectionData.gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
+          }
+          this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
+            if (this.courseSectionData.gradeScaleType === 'Teacher_Scale') {
+              this.viewGradebookConfiguration().then(() => {
+                this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
+              })
+            } else {
               this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
-            });
-          }
-          else {
-            this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
-          }
+            }
+          });
+          
 
         }
         else {
           this.getAllReportCardCommentsWithCategory(this.addUpdateStudentFinalGradeModel.courseId);
           this.getAllCourseStandard(this.addUpdateStudentFinalGradeModel.courseId);
-          if (this.courseSectionData.gradeScaleType !== 'Numeric' && this.courseSectionData.gradeScaleType !== 'Teacher_Scale') {
+          if (this.courseSectionData.gradeScaleType !== 'Numeric') {
             this.addUpdateStudentFinalGradeModel.isPercent = false;
-            this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(() => {
-              this.searchScheduledStudentForGroupDropAPI(this.courseSectionData.courseSectionId);
-            });
-          } else {
-            this.searchScheduledStudentForGroupDropAPI(this.courseSectionData.courseSectionId);
           }
-
-          if(markingPeriodDetails.value === 'Custom') {
-            this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
-            this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
-          } else {
-          this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
-          }
-          this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
+            this.getAllGradeScaleList(this.courseSectionData.standardGradeScaleId).then(()=>{
+              if(this.courseSectionData.gradeScaleType === 'Teacher_Scale'){
+                this.viewGradebookConfiguration().then(()=>{
+                  this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
+                })
+              }
+              else 
+                this.searchScheduledStudentForGroupDropCall(markingPeriodDetails)
+            })
           this.addUpdateStudentFinalGradeModel = res;
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
-            let commentArray = [];
-            item.studentFinalGradeComments.map((subItem) => {
-              const commentData = {
-                courseCommentId: subItem.courseCommentCategory.courseCommentId,
-                comments: subItem.courseCommentCategory.comments,
-              }
-              commentArray.push(commentData);
-            });
-            item.studentFinalGradeComments = commentArray;
-
-            let standardArray = [];
-            item.studentFinalGradeStandard.map((subItem) => {
-              if(subItem.standardGradeScaleId && subItem.gradeObtained) {
-              const standardData = {
-                standardGradeScaleId: subItem.standardGradeScaleId,
-                gradeObtained: subItem.gradeObtained,
-              }
-              standardArray.push(standardData);
-              }
-            });
-            item.studentFinalGradeStandard = standardArray;
-          });
         }
       }
       else {
@@ -261,6 +243,125 @@ export class InputFinalGradesComponent implements OnInit {
     this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
     this.selectedMarkingPeriod = undefined;
   }
+  }
+
+  searchScheduledStudentForGroupDropCall(markingPeriodDetails){
+    this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionData.courseSectionId];
+    this.scheduleStudentListViewModel.profilePhoto = true;
+    this.scheduleStudentListViewModel.sortingModel = null;
+    this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
+      if (res) {
+      if(res._failure){
+  
+          this.showMessage = 'noRecordFound';
+        } else {
+          this.studentMasterList = res.scheduleStudentForView;
+          this.studentMasterList.map((item: any) => {
+            item.gradeScaleList = this.getGradeScaleList(item);
+          });
+          this.totalCount = this.studentMasterList.length;
+          this.showCommentDetails(this.studentMasterList.length > 0 ? 0 : null);
+
+          if (this.studentMasterList.length === 0) {
+            this.showMessage = 'noRecordFound';
+          }
+          this.calculateFinalGradeModel(markingPeriodDetails);
+        }
+      }
+    });
+  }
+
+  viewGradebookConfiguration() {
+    return new Promise((resolve,reject)=>{
+      this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseId = this.courseSectionData.courseId;;
+      this.gradebookConfigurationAddViewModel.gradebookConfiguration.courseSectionId = this.courseSectionData.courseSectionId;;
+      this.gradeBookConfigurationService.viewGradebookConfiguration(this.gradebookConfigurationAddViewModel).subscribe(
+        (res: GradebookConfigurationAddViewModel) => {
+          if (res) {
+            if (res._failure) {
+            }
+            else {
+              this.gradebookConfigurationAddViewModel = res;
+        
+              this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale.map((data, i) => {
+                this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale[i].title = this.gradeScaleList[0]?.grade[i].title;
+              })
+              this.gradeScaleList[0].grade=res.gradebookConfiguration.gradebookConfigurationGradescale;
+              resolve('');
+            }
+          }
+          else {
+            this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+              duration: 10000
+            });
+          }
+        }
+      );
+    })
+  }
+
+  calculateFinalGradeModel(markingPeriodDetails) {
+    if (markingPeriodDetails.value === 'Custom') {
+      this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
+      this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
+    } else {
+      this.addUpdateStudentFinalGradeModel.markingPeriodId = markingPeriodDetails.value;
+    }
+    this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
+
+    this.studentMasterList?.map((val:any,index)=>{
+      if(!this.matchStudentData(val.studentId)){
+        if(val.isDropped)
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade());
+        else{
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade())
+          this.initializeDefaultValues(val,index);
+        }
+      }
+      if(this.courseSectionData.gradeScaleType === 'Teacher_Scale')
+        val.gradeScaleList=this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
+    });
+
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
+      let commentArray = [];
+      item.studentFinalGradeComments?.map((subItem) => {
+        const commentData = {
+          courseCommentId: subItem.courseCommentCategory.courseCommentId,
+          comments: subItem.courseCommentCategory.comments,
+        }
+        commentArray.push(commentData);
+      });
+      item.studentFinalGradeComments = commentArray;
+      let standardGradeScaleIdData;
+      let standardArray = [];
+      if (item.studentFinalGradeStandard.length > 0) {
+        item.studentFinalGradeStandard.map((subItem) => {
+          if (subItem.standardGradeScaleId && subItem.gradeObtained) {
+            const standardData = {
+              standardGradeScaleId: subItem.standardGradeScaleId,
+              gradeObtained: subItem.gradeObtained,
+            }
+            standardGradeScaleIdData=subItem.standardGradeScaleId;
+            standardArray.push(standardData);
+          }else{
+            const standardData = {
+              standardGradeScaleId: standardGradeScaleIdData,
+              gradeObtained: 0,
+            }
+            standardArray.push(standardData);
+          }
+        });
+      } else {
+        standardArray = [{ standardGradeScaleId: null, gradeObtained: null }];
+      }
+      item.studentFinalGradeStandard = standardArray;
+    });
+  }
+
+  matchStudentData(studentId){
+    let isMatch=false;
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map(innerVal=> { if(innerVal.studentId === studentId) isMatch=true; });
+    return isMatch;
   }
 
   selectMarkingPeriod(data) {
@@ -278,34 +379,6 @@ export class InputFinalGradesComponent implements OnInit {
     }
     return gradeDataSet;
   }
-
-  searchScheduledStudentForGroupDropAPI(courseSectionId) {
-    this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
-    this.scheduleStudentListViewModel.profilePhoto = true;
-    this.scheduleStudentListViewModel.sortingModel = null;
-    this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
-      if (res) {
-        if (res._failure) {
-          this.commonService.checkTokenValidOrNot(res._message);
-          this.showMessage = 'noRecordFound';
-        } else {
-          this.studentMasterList = res.scheduleStudentForView;
-          if (this.studentMasterList) {
-            this.studentMasterList.map(item => {
-              item.gradeScaleList = this.getGradeScaleList(item);
-            });
-          }
-          this.totalCount = this.studentMasterList.length;
-          this.showCommentDetails(this.studentMasterList.length > 0 ? 0 : null);
-
-          if (this.studentMasterList.length === 0) {
-            this.showMessage = 'noRecordFound';
-          }
-        }
-      }
-    });
-  }
-
 
   getAllReportCardCommentsWithCategory(courseId) {
     this.reportCardComments = [];
@@ -358,7 +431,10 @@ export class InputFinalGradesComponent implements OnInit {
 
 
   selectedGrade(grade, index, student) {
-    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = student.filter(x => x.title === grade)[0].breakoff;
+    if (this.courseSectionData.gradeScaleType === 'Teacher_Scale')
+      this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = student.filter(x => x.title === grade)[0].breakoffPoints;
+    else
+      this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = student.filter(x => x.title === grade)[0].breakoff;
   }
 
   gradeFromPercent(percent, index, student) {
@@ -546,10 +622,16 @@ export class InputFinalGradesComponent implements OnInit {
     // this.addUpdateStudentFinalGradeModel.academicYear = this.defaultValuesService.getAcademicYear();
     delete this.addUpdateStudentFinalGradeModel.academicYear;
     this.addUpdateStudentFinalGradeModel.creditHours = this.creditHours;
-    this.finalGradeService.addUpdateStudentFinalGrade(this.addUpdateStudentFinalGradeModel).subscribe((data) => {
+    let cloneModel=JSON.stringify(this.addUpdateStudentFinalGradeModel);
+    this.cloneAddUpdateStudentFinalGradeModel = JSON.parse(cloneModel)
+    this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.map((val,index)=>{
+      if(val.isDropped)
+        this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,1);
+    });
+    this.finalGradeService.addUpdateStudentFinalGrade(this.cloneAddUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){
-        this.commonService.checkTokenValidOrNot(data._message);
+        
           this.snackbar.open(data._message, '', {
             duration: 10000
           });

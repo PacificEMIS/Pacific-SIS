@@ -38,6 +38,7 @@ import { Subject } from "rxjs";
 import { CourseSectionList } from "../../../../models/teacher-schedule.model";
 import { weeks } from "../../../../common/static-data";
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { ProfilesTypes } from "src/app/enums/profiles.enum";
 @Component({
   selector: "vex-add-days-schedule",
   templateUrl: "./add-days-schedule.component.html",
@@ -57,7 +58,7 @@ import { DefaultValuesService } from 'src/app/common/default-values.service';
 export class AddDaysScheduleComponent implements OnInit {
   icClose = icClose;
   scheduleDetails: CourseSectionList;
-  memberName: string;
+  profiles = ProfilesTypes;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public translateService: TranslateService,
@@ -76,7 +77,6 @@ export class AddDaysScheduleComponent implements OnInit {
         data.scheduleDetails.courseBlockScheduleList;
       this.checkScheduleType();
     }
-    this.memberName = this.defaultValuesService.getuserMembershipName();
   }
 
   view: CalendarView = CalendarView.Month;

@@ -102,7 +102,7 @@ export class ReportCardsComponent implements OnInit {
   loading: boolean;
   displayedColumns: string[] = ['studentSelected', 'studentName', 'studentId', 'alternateId', 'gradeLevelTitle', 'section', 'homePhone'];
   permissions: Permissions;
-  reportCardType = reportCardType;
+  reportCardType = JSON.parse(JSON.stringify(reportCardType));
   @ViewChild('printSectionId') printEl: ElementRef;
   generatedReportCardData;
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
@@ -113,6 +113,7 @@ export class ReportCardsComponent implements OnInit {
   halfLengthOfComment:number = 0;
   halfLengthOfStandardGradeComment:number = 0;
   halfLengthOfEffortGradeComment:number = 0;
+  halfLengthOfGradeList: number = 0;
   isFromAdvancedSearch: boolean = false;
   profiles = ProfilesTypes;
   constructor(
@@ -129,7 +130,8 @@ export class ReportCardsComponent implements OnInit {
     private studentScheduleService: StudentScheduleService,
     public defaultValuesService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
-    private commonFunction: SharedFunction
+    private commonFunction: SharedFunction,
+    private el: ElementRef
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
     this.advancedSearchExpansionModel.enrollmentInformation = false;
@@ -147,7 +149,9 @@ export class ReportCardsComponent implements OnInit {
 
 
   ngOnInit(): void {
-   
+    if (this.defaultValuesService.getTenantName() !== 'fedsis' && this.defaultValuesService.getTenantName() !== 'misis') {
+      this.reportCardType.pop();
+    }
 
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
@@ -168,22 +172,44 @@ export class ReportCardsComponent implements OnInit {
           }
         ]
         if (this.sort.active != undefined && this.sort.direction != "") {
-          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          if(this.isAdmin){
+            this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+            this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          }else{
+            this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+            this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+          }
         }
-        Object.assign(this.getAllStudent, { filterParams: filterParams });
-        this.getAllStudent.pageNumber = 1;
+        if(this.isAdmin){
+          Object.assign(this.getAllStudent, { filterParams: filterParams });
+          this.getAllStudent.pageNumber = 1;
+          this.getAllStudent.pageSize = this.pageSize;
+        }else {
+          Object.assign(this.scheduleStudentListViewModel, { filterParams: filterParams });
+          this.scheduleStudentListViewModel.pageNumber = 1;
+          this.scheduleStudentListViewModel.pageSize = this.pageSize;
+        }
         this.paginator.pageIndex = 0;
-        this.getAllStudent.pageSize = this.pageSize;
         this.getAllStudentList();
       }
       else {
-        Object.assign(this.getAllStudent, { filterParams: null });
-        this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
-        this.getAllStudent.pageSize = this.pageSize;
+        if(this.isAdmin){
+          Object.assign(this.getAllStudent, { filterParams: null });
+          this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
+          this.getAllStudent.pageSize = this.pageSize;
+        }else {
+          Object.assign(this.scheduleStudentListViewModel, { filterParams: null });
+          this.scheduleStudentListViewModel.pageNumber = this.paginator.pageIndex + 1;
+          this.scheduleStudentListViewModel.pageSize = this.pageSize;
+        }
         if (this.sort.active != undefined && this.sort.direction != "") {
-          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          if(this.isAdmin){
+            this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+            this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+          }else{
+            this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+            this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+          }
         }
         this.getAllStudentList();
       }
@@ -278,8 +304,13 @@ export class ReportCardsComponent implements OnInit {
   getPageEvent(event) {
     
     if (this.sort.active != undefined && this.sort.direction != "") {
-      this.getAllStudent.sortingModel.sortColumn = this.sort.active;
-      this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+      if (this.isAdmin) {
+        this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+        this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+      }else{
+        this.scheduleStudentListViewModel.sortingModel.sortColumn = this.sort.active;
+        this.scheduleStudentListViewModel.sortingModel.sortDirection = this.sort.direction;
+      }
     }
     if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
       let filterParams = [
@@ -289,10 +320,18 @@ export class ReportCardsComponent implements OnInit {
           filterOption: 3
         }
       ]
-      Object.assign(this.getAllStudent, { filterParams: filterParams });
+      if(this.isAdmin)
+        Object.assign(this.getAllStudent, { filterParams: filterParams });
+      else
+        Object.assign(this.scheduleStudentListViewModel, { filterParams: filterParams });
     }
-    this.getAllStudent.pageNumber = event.pageIndex + 1;
-    this.getAllStudent.pageSize = event.pageSize;
+    if (this.isAdmin) {
+      this.getAllStudent.pageNumber = event.pageIndex + 1;
+      this.getAllStudent.pageSize = event.pageSize;
+    } else {
+      this.scheduleStudentListViewModel.pageNumber = event.pageIndex + 1;
+      this.scheduleStudentListViewModel.pageSize = event.pageSize;
+    }
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }
@@ -336,6 +375,71 @@ export class ReportCardsComponent implements OnInit {
     return {courseSectionGradeDetailsForOtherTemplates: dataSetForMarkingPeriod, attendanceDetailsForOtherTemplates: dataSetForAttendance};
   }
 
+  modifyRMIDataSet(res) {
+    if (res.subjectDetailsForRMITemplates.length) {
+      res.subjectDetailsForRMITemplates.map(item => {
+        if (item.subjectName === "Math") {
+          res.mathSubjectDataSet = item;
+        } else if (item.subjectName === "Science") {
+          res.scienceSubjectDataSet = item;
+        } else if (item.subjectName === "Social Studies") {
+          res.socialStudiesSubjectDataSet = item;
+        } else if (item.subjectName === "Health") {
+          res.healthSubjectDataSet = item;
+        } else if (item.subjectName === "Marshallese") {
+          res.MarshalleseSubjectDataSet = item;
+        } else if (item.subjectName === "English") {
+          res.englishSubjectDataSet = item;
+        }
+      });
+    }
+
+    if (res.gradeList.length) {
+      let sortedData = [];
+      const highestValue = 100;
+      sortedData = res.gradeList.sort((a, b) => b.breakoff - a.breakoff);
+      sortedData.map((item, index) => {
+        if (index === 0) {
+          res.gradeList[index].breakoffData = `${item.breakoff}-${highestValue}`;
+        } else {
+          res.gradeList[index].breakoffData = `${item.breakoff}-${sortedData[index - 1].breakoff - 1}`;
+        }
+      });
+    }
+
+    if (res.gradeList.length) {
+      this.halfLengthOfGradeList = Math.floor(res.gradeList.length / 2);
+    }
+
+    if (res.attendanceDetailsViewforRMIReports.length) {
+      res.attendanceDetailsViewforRMIReportsDataSet = [{}, {}, {}, {}, {}, {}, {}];
+      res.attendanceDetailsViewforRMIReports.map(item => {
+        if (item.markingPeriodName.trim().toLowerCase() === 'q1') {
+          res.attendanceDetailsViewforRMIReportsDataSet[0] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q2') {
+          res.attendanceDetailsViewforRMIReportsDataSet[1] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 's1') {
+          res.attendanceDetailsViewforRMIReportsDataSet[2] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q3') {
+          res.attendanceDetailsViewforRMIReportsDataSet[3] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 'q4') {
+          res.attendanceDetailsViewforRMIReportsDataSet[4] = item;
+        } else if (item.markingPeriodName.trim().toLowerCase() === 's2') {
+          res.attendanceDetailsViewforRMIReportsDataSet[5] = item;
+        }
+      });
+
+      // For Present Count
+      res.attendanceDetailsViewforRMIReportsDataSet[2].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[0].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[1].presentCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[5].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[3].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[4].presentCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[6].presentCount = res.attendanceDetailsViewforRMIReportsDataSet[2].presentCount + res.attendanceDetailsViewforRMIReportsDataSet[5].presentCount;
+
+      // For Absent Count
+      res.attendanceDetailsViewforRMIReportsDataSet[2].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[0].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[1].absencesCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[5].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[3].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[4].absencesCount;
+      res.attendanceDetailsViewforRMIReportsDataSet[6].absencesCount = res.attendanceDetailsViewforRMIReportsDataSet[2].absencesCount + res.attendanceDetailsViewforRMIReportsDataSet[5].absencesCount;
+    }
+  }
 
   resetStudentList() {
     this.getAllStudent = new StudentListModel();
@@ -349,9 +453,9 @@ export class ReportCardsComponent implements OnInit {
 
   markingPeriodChecked(event, markingPeriod) {
     if (event.checked) {
-      this.markingPeriods.push(markingPeriod.value);
+      this.markingPeriods.push(markingPeriod);
     } else {
-      this.markingPeriods.splice(this.markingPeriods.findIndex(x => x === markingPeriod.value), 1);
+      this.markingPeriods.splice(this.markingPeriods.findIndex(x => x === markingPeriod), 1);
     }
     this.markingPeriodError = this.markingPeriods.length > 0 ? false : true;
   }
@@ -636,7 +740,14 @@ export class ReportCardsComponent implements OnInit {
   }
 
   generateReportCard() {
-    if (this.markingPeriods.length > 0) {
+      if (!this.markingPeriods?.length) {
+        this.markingPeriodError = true;
+        const invalidMarkingPeriod: HTMLElement = this.el.nativeElement.querySelector('.custom-scroll');
+        invalidMarkingPeriod.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      } else {
+        this.markingPeriodError = false;
+      }
       this.addAndGenerateReportCard().then((res: any) => {
         this.generatedReportCardData = res;
         if(this.addReportCardPdf?.templateType === 'default') {
@@ -652,6 +763,13 @@ export class ReportCardsComponent implements OnInit {
           setTimeout(() => {
             this.generatePdfForDefault();
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
+        } else if (this.addReportCardPdf?.templateType === 'RMI') {
+          this.generatedReportCardData.studentsReportCardViewModelList.map((res: any) => {
+            this.modifyRMIDataSet(res);
+          });
+          setTimeout(() => {
+            this.generatePdfForRMI();
+          }, 100 * this.generatedReportCardData.studentsReportCardViewModelList.length);
         } else {
           this.generatedReportCardData.studentsReportCardViewModelList.map((res: any)=>{
             Object.assign(res, this.modifyMarkingPeriodDataSet(res))
@@ -661,9 +779,6 @@ export class ReportCardsComponent implements OnInit {
             }, 100*this.generatedReportCardData.studentsReportCardViewModelList.length);
         }
       });
-    } else {
-      this.markingPeriodError = true;
-    }
   }
 
   backToList() {
@@ -933,5 +1048,361 @@ export class ReportCardsComponent implements OnInit {
     }
   }
 
+  generatePdfForRMI() {
+    let printContents, popupWin;
+    printContents = document.getElementById('reportCardIdForRMI').innerHTML;
+    document.getElementById('reportCardIdForRMI').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin === null || typeof (popupWin) === 'undefined') {
+      document.getElementById('reportCardIdForRMI').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            margin: 0;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact;
+            font-family: Arial;
+            background-color: #fff;
+            margin: 0;
+        }
+
+        .RMI-report-card {
+            width: 1024px;
+            margin: 20px auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table td {
+            vertical-align: top;
+        }
+
+        table h1 {
+            font-size:16px;
+            text-transform: uppercase;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .inline-block {
+            display: inline-block;
+        }
+
+        .border-table {
+            border: 1px solid #000;
+            border-top: none;
+        }
+
+        .clearfix::after {
+            display: block;
+            clear: both;
+            content: "";
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .bg-slate {
+            background-color: #E5E5E5;
+        }
+
+        .w-33 {
+            width: 33.33%;
+        }
+
+        .font-black {
+            font-weight: 800;
+        }
+
+        .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        .font-italic {
+            font-style: italic;
+        }
+
+        .px-10 {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .mt-100 {
+            margin-top: 100px;
+        }
+
+        .f-s-28 {
+            font-size: 28px;
+        }
+
+        .mb-5 {
+            margin-bottom: 5px;
+        }
+
+        .report-card {
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+
+        .report-card thead td:first-child {
+            /* width: 100px; */
+            border: none;
+        }
+
+        .report-card td {
+            padding: 8px 3px;
+            font-size: 14px;
+            vertical-align: bottom;
+        }
+
+        .report-card thead td {
+            padding: 10px 5px;
+            border: 1px solid #000;
+            border-top-width: 3px;
+            border-bottom-width: 3px;
+        }
+
+        .report-card thead td:last-child {
+            border-right-width: 3px;
+        }
+
+        .report-card thead td:nth-child(2) {
+            border-left-width: 3px;
+        }
+
+        .report-card tbody {
+            border: 2px solid #000;
+        }
+
+        .report-card tbody td {
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;
+            height: 30px;
+            min-width: 20px;
+        }
+
+        .report-card tbody td:last-child {
+            border-right: none;
+        }
+
+        .teacher-comment-table {
+            table-layout: unset;
+        }
+
+        .teacher-comment-table tbody, .attendance-table tbody, .gpa-table tbody {
+            border-width: 6px;
+        }
+
+        .teacher-comment-table tbody td.bg-slate {
+            padding-left: 5px;
+        }
+
+        .teacher-comment-table tbody td {
+            padding-left: 5px;
+            border-right: none;
+        }
+
+        .attendance-table {
+            margin-top: 5px;
+            table-layout: unset;
+        }
+
+        .attendance-table tbody td {
+            height: 40px;
+            vertical-align: middle;
+            font-size: 16px;
+        }
+
+        .gpa-table tbody td {
+            vertical-align: middle;
+        }
+
+        .gpa-table tbody p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .gpa-table tbody p span {
+            flex: 1;
+        }
+        .gpa-table tbody p span:first-child {
+            padding-left: 20px;
+        }
+
+        .gpa-table tbody p span:nth-child(2){
+            margin-left: -15px;
+        }
+
+        .gpa-table tbody p span:last-child {
+          margin-left: 10px;
+        }
+
+        .text-truncate {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display : block;
+        }
+
+        .main-table {
+            margin-bottom: 60px;
+        }
+
+        .main-table td.w-33:nth-child(2) {
+            padding: 0 15px;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        .border-1 {
+            border: 1px solid #000;
+        }
+        .p-5 {
+            padding: 5px;
+        }
+
+        .rounded-ruler {
+            width: 100%;
+            height: 4px;
+            background-color: #000;
+            border-radius: 2px;
+            margin: 20px 0;
+        }
+
+        .font-normal {
+            font-weight: 400;
+        }
+        
+        .spacing-3 {
+            letter-spacing: 3px;
+        }
+
+        .mb-40 {
+            margin-bottom: 40px;
+        }
+
+        .mb-60 {
+            margin-bottom: 60px;
+        }
+        .style-border {
+            border: 1px solid #000;
+            margin: -15px 0;
+            padding: 20px 10px;
+        }
+
+        .bg-black {
+            background-color: #000;
+        }
+
+        .text-white {
+            color: #fff;
+        }
+
+        .heading {
+            font-size: 20px;
+            background-color: #000;
+            color: #fff;
+            margin-bottom: 10px;
+            padding: 10px 8px;
+            letter-spacing: 1px;
+        }
+
+        .grades-details h4 {
+            margin-bottom: 180px;
+        }
+
+        .grades-details h4:last-child {
+            margin-bottom: 80px;
+        }
+
+        .grades-details .rounded-ruler {
+            margin-bottom: 10px;
+        }
+
+        .student-details .style-border {
+            height: 820px;
+        }
+
+        .student-details .style-border > div {
+            margin-top: 575px;
+        }
+
+        .student-info img {
+            width: 170px;
+            height: 170px;
+            display: block;
+            text-align: center;
+            border-radius: 50%;
+            margin: 40px auto 20px;
+            overflow: hidden;
+            border: 5px solid #000;
+        }
+
+        .student-details.student-info .style-border > div {
+            margin-top: 0px;
+        }
+
+        .student-details.student-info .heading {
+            margin: 0 -18px;
+        }
+
+        .student-details.student-info h1 {
+            font-size: 28px;
+            font-weight: normal;
+            margin: 40px 0 20px;
+        }
+
+        .student-details.student-info h4, .student-details.student-info p {
+            margin-bottom: 5px;
+        }
+
+        .student-details.student-info .style-border .rounded-ruler {
+            margin-top: 140px;
+            margin-bottom: 30px;
+        }
+
+        .student-details.student-info p.spacing-3 {
+            margin-bottom: 25px;
+        }
+    </style>
+        </head>
+    <body onload="window.print()">${printContents}</body>
+      </html>`
+      );
+      popupWin.document.close();
+      document.getElementById('reportCardIdForRMI').className = 'hidden';
+      return;
+    }
+  }
   
 }

@@ -57,7 +57,7 @@
                             <th>{{ "studentDetails" | translate }}</th>
                             <th width="25%"><span class="mr-4">{{ "percent" | translate }}</span></th>
                             <th width="25%"
-                                *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric' && courseSectionDetails[0]?.gradeScaleType !== 'Teacher_Scale'"
+                                *ngIf="courseSectionDetails[0]?.gradeScaleType !== 'Numeric'"
                                 class="relative whitespace-nowrap">
                                 <span class="switch-wrap absolute pr-2">
                                     <label class="switch">
@@ -83,7 +83,7 @@
                                         <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
                                             alt="Student photo" class="h-10 w-10 rounded-full" />
                                     </div>
-                                    <div class="ml-3 flex flex-col justify-center">
+                                    <div class="ml-3 flex flex-col justify-center" [ngClass]="student.isDropped ? 'text-gray' : '' " >
                                         <h6 class="text-sm font-semibold">{{student.firstGivenName+" "+
                                             student.lastFamilyName}}</h6>
                                         <div>
@@ -93,26 +93,24 @@
                                 </div>
                             </td>
                             <ng-container
-                                *ngIf="this.courseSectionDetails[0].gradeScaleType === 'Numeric' || this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale'">
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType === 'Numeric'">
                                 <td>
                                     <input
                                         class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         min="0" max="100" (keyup)="percentToGrade(i)" name="percentMarks"
                                         [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks"
-                                        type="number" [readonly]="!defaultValuesService.checkAcademicYear()">
+                                        type="number" [readonly]="!defaultValuesService.checkAcademicYear()" [disabled]="student.isDropped">
                                 </td>
                             </ng-container>
                             <ng-container
-                                *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric' && this.courseSectionDetails[0].gradeScaleType !== 'Teacher_Scale'">
-                                <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks?
-                                    addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%" :
-                                    ""}}</td>
-                                    <td *ngIf="!isPercent">
-                                        <!-- <label>{{'selectGrade'|translate}}</label>    -->
+                                *ngIf="this.courseSectionDetails[0].gradeScaleType !== 'Numeric'">
+                                <td *ngIf="!isPercent">{{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.percentMarks + "%"}}</td>
+                                <td *ngIf="!isPercent">
+                                    <!-- <label>{{'selectGrade'|translate}}</label>    -->
                                     <div class="select-dropdown" >
                                         <select (change)="selectedGrade($event.target.value ,i)" name="gradeObtained"
                                             [ngModel]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i]?.gradeObtained" (ngModelChange)="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained = $event" 
-                                            [disabled]="!this.defaultValuesService.checkAcademicYear()">
+                                            [disabled]="!this.defaultValuesService.checkAcademicYear() || student.isDropped">
                                             <option value=null disabled selected>{{'select'|translate}}</option>
                                             <option *ngFor="let report of student?.gradeScaleList" value={{report.title}}>
                                                 {{report.title}}</option>
@@ -123,7 +121,7 @@
                                     <input
                                         class="border border-gray-light rounded p-2 w-24"
                                         (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" min="0" (ngModelChange)="gradeFromPercent($event ,i, student?.gradeScaleList)"
-                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()">
+                                        [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()" [disabled]="student.isDropped">
                                 </td>
                                 <td *ngIf="isPercent">
                                     {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
@@ -145,9 +143,9 @@
                 <div class="w-full">
                     <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
                         <mat-label class="mb-2">{{ "searchAndSelectPredefinedComments" | translate }}</mat-label>
-                        <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!defaultValuesService.checkAcademicYear()">
+                        <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!defaultValuesService.checkAcademicYear() || addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.isDropped">
                             <mat-chip
-                                *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].studentFinalGradeComments"
+                                *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.studentFinalGradeComments"
                                 [selectable]="selectable" [removable]="removable"
                                 (removed)="removeComment(report.courseCommentId)">
                                 {{report.comments}}
@@ -191,7 +189,7 @@
                 <div class="w-full border rounded mb-2 p-2">
                     <textarea placeholder="Comments" name="teacherComment"
                         [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment"
-                        class="w-full" rows="3" [readonly]="!defaultValuesService.checkAcademicYear()"></textarea>
+                        class="w-full" rows="3" (ngModelChange)="checkCommentAndSetNullData(selectedStudent)" [readonly]="!defaultValuesService.checkAcademicYear() || addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.isDropped"></textarea>
                 </div>
                 <ng-container *ngIf="courseSectionDetails[0]?.standardGradeScaleId">
 

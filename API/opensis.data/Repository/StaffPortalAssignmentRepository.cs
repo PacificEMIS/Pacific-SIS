@@ -70,7 +70,7 @@ namespace opensis.data.Repository
                         if (checkAssignmentTypeTitle != null)
                         {
                             assignmentTypeAddViewModel._failure = true;
-                            assignmentTypeAddViewModel._message = "Title Already Exists";
+                            assignmentTypeAddViewModel._message = "Title already exists";
                         }
                         else
                         {
@@ -88,7 +88,7 @@ namespace opensis.data.Repository
                             this.context?.SaveChanges();
                             assignmentTypeAddViewModel._failure = false;
 
-                            assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                            assignmentTypeAddViewModel._message = "Assignment Type added successfully";
                         }
                     }
                     else
@@ -115,7 +115,7 @@ namespace opensis.data.Repository
                                     if (checkAssignmentTypeTitle != null)
                                     {
                                         assignmentTypeAddViewModel._failure = true;
-                                        assignmentTypeAddViewModel._message = "Title Already Exists";
+                                        assignmentTypeAddViewModel._message = "Title already exists";
                                     }
                                     else
                                     {
@@ -126,7 +126,7 @@ namespace opensis.data.Repository
                                         this.context?.SaveChanges();
                                         assignmentTypeAddViewModel._failure = false;
 
-                                        assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                        assignmentTypeAddViewModel._message = "Assignment Type added successfully";
                                     }
 
                                 }
@@ -141,7 +141,7 @@ namespace opensis.data.Repository
                                         if (checkAssignmentTypeTitle != null)
                                         {
                                             assignmentTypeAddViewModel._failure = true;
-                                            assignmentTypeAddViewModel._message = "Title Already Exists";
+                                            assignmentTypeAddViewModel._message = "Title already exists";
                                         }
                                         else
                                         {
@@ -152,7 +152,7 @@ namespace opensis.data.Repository
                                             this.context?.SaveChanges();
                                             assignmentTypeAddViewModel._failure = false;
 
-                                            assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                            assignmentTypeAddViewModel._message = "Assignment Type added successfully";
                                         }
                                     }
                                     else
@@ -166,7 +166,7 @@ namespace opensis.data.Repository
                                             if (checkAssignmentTypeTitle != null)
                                             {
                                                 assignmentTypeAddViewModel._failure = true;
-                                                assignmentTypeAddViewModel._message = "Title Already Exists";
+                                                assignmentTypeAddViewModel._message = "Title already exists";
                                             }
                                             else
                                             {
@@ -177,7 +177,7 @@ namespace opensis.data.Repository
                                                 this.context?.SaveChanges();
                                                 assignmentTypeAddViewModel._failure = false;
 
-                                                assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                                assignmentTypeAddViewModel._message = "Assignment Type added successfully";
                                             }
                                         }
                                         else
@@ -191,7 +191,7 @@ namespace opensis.data.Repository
                                                 if (checkAssignmentTypeTitle != null)
                                                 {
                                                     assignmentTypeAddViewModel._failure = true;
-                                                    assignmentTypeAddViewModel._message = "Title Already Exists";
+                                                    assignmentTypeAddViewModel._message = "Title already exists";
                                                 }
                                                 else
                                                 {
@@ -202,7 +202,7 @@ namespace opensis.data.Repository
                                                     this.context?.SaveChanges();
                                                     assignmentTypeAddViewModel._failure = false;
 
-                                                    assignmentTypeAddViewModel._message = "Assignment Type Added Successfully";
+                                                    assignmentTypeAddViewModel._message = "Assignment Type added successfully";
                                                 }
                                             }
                                         }
@@ -255,7 +255,7 @@ namespace opensis.data.Repository
                     if (checkAssignmentTypeTitle != null)
                     {
                         assignmentTypeAddViewModel._failure = true;
-                        assignmentTypeAddViewModel._message = "Title Already Exists";
+                        assignmentTypeAddViewModel._message = "Title already exists";
                     }
                     else
                     {
@@ -349,7 +349,7 @@ namespace opensis.data.Repository
                     if (checkAssignmentTitle != null)
                     {
                         assignmentAddViewModel._failure = true;
-                        assignmentAddViewModel._message = "Assignment Title Already Exists";
+                        assignmentAddViewModel._message = "Assignment Title already exists";
                     }
                     else
                     {
@@ -374,7 +374,7 @@ namespace opensis.data.Repository
                                     this.context?.Assignment.Add(assignmentAddViewModel.assignment);
                                     this.context?.SaveChanges();
                                     assignmentAddViewModel._failure = false;
-                                    assignmentAddViewModel._message = "Assignment Added Successfully";
+                                    assignmentAddViewModel._message = "Assignment added successfully";
                                 }
                                 else
                                 {
@@ -418,7 +418,7 @@ namespace opensis.data.Repository
                 if (checkAssignmentTitle != null)
                 {
                     assignmentAddViewModel._failure = true;
-                    assignmentAddViewModel._message = "Assignment Title Already Exists";
+                    assignmentAddViewModel._message = "Assignment Title already exists";
                 }
                 else
                 {
@@ -701,7 +701,7 @@ namespace opensis.data.Repository
                                     if (checkAssignmentTitle != null)
                                     {
                                         assignmentAddViewModel._failure = true;
-                                        assignmentAddViewModel._message = "Assignment Title Already Exists";
+                                        assignmentAddViewModel._message = "Assignment Title already exists";
                                         return assignmentAddViewModel;
                                     }
                                     else

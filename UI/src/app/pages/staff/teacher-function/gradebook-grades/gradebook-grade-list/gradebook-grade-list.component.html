@@ -32,7 +32,7 @@
                             </div>
                             <hr class="block lg:hidden -mx-4 mb-4"/>
                             <div class="mb-4 lg:mb-0">
-                                <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
+                                <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)" [(ngModel)]="includeInactiveFlag"><span class="hidden xl:inline-block">{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                                 </mat-slide-toggle>
                                 <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                                 </mat-slide-toggle>
@@ -200,7 +200,7 @@
                     </div>
                     <hr class="block lg:hidden -mx-4 mb-4"/>
                     <div class="mb-4 lg:mb-0">
-                        <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)"><span class="hidden xl:inline-block" >{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
+                        <mat-slide-toggle color="primary" class="mr-6" (change)="getGradebookGrade(null, $event)" [(ngModel)]="includeInactiveFlag"><span class="hidden xl:inline-block" >{{ 'includeInactiveStudents' | translate }}</span><span class="xl:hidden inline-block">{{ 'inactive' | translate }}</span>
                         </mat-slide-toggle>
                         <mat-slide-toggle color="primary" class="" (change)="showHideUngraded($event, addGradebookGradeByAssignmentTypeModel)"><span class="hidden xl:inline-block">{{ 'showUngradedOnly' | translate }}</span><span class="xl:hidden inline-block">{{ 'ungradedOnly' | translate }}</span>
                         </mat-slide-toggle>

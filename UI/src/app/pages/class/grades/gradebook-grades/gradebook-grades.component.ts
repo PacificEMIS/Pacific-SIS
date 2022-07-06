@@ -72,6 +72,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   markingPeriodId;
   isWeightedSection: boolean;
   maxAnomalousGrade;
+  includeInactiveFlag: false;
   @Output() isConfigUpdateFlag = new EventEmitter<boolean>()
   constructor(
     public translateService: TranslateService,
@@ -221,7 +222,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
   getGradebookGrade(SearchValue?, includeInactive?) {
     this.viewGradebookGradeModel.courseSectionId = this.defaultValuesService.getSelectedCourseSection().courseSectionId;
     this.viewGradebookGradeModel.SearchValue = SearchValue ? SearchValue : null;
-    this.viewGradebookGradeModel.includeInactive = includeInactive ? includeInactive.checked : false;
+    this.viewGradebookGradeModel.includeInactive = this.includeInactiveFlag ? this.includeInactiveFlag : false;
 
     // return;
     this.gradeBookConfigurationService.viewGradebookGrade(this.viewGradebookGradeModel).subscribe((res: any)=>{
@@ -251,7 +252,6 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         });
         this.isConfigUpdateFlag.emit(res?.configUpdateFlag)
         this.addGradebookGradeModel = res;
-        this.createDataSetForExcel();
         };
 
       })
@@ -320,7 +320,7 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  createDataSetForExcel() {
+  generateGradebookExcel() {
     this.studentListForGenerateExcel = [];
     this.addGradebookGradeModel.assignmentsListViewModels?.map((item)=>{
       item.studentsListViewModels.map((subItem)=>{
@@ -341,11 +341,10 @@ export class GradebookGradesComponent implements OnInit, AfterViewInit, OnDestro
         )
       });
     });
+    if(this.studentListForGenerateExcel)
+      this.excelService.exportAsExcelFile(this.studentListForGenerateExcel,'Gradebook_grades_');  
   }
 
-  generateGradebookExcel() {
-    this.excelService.exportAsExcelFile(this.studentListForGenerateExcel,'Gradebook_grades_');
-  }
 
   showHideUngraded(status, item) {
     if(item.assignmentsListViewModels) {

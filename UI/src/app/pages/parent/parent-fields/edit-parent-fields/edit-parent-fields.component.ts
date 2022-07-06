@@ -53,7 +53,7 @@ export class EditParentFieldsComponent implements OnInit {
   customFieldTitle;
   buttonType;
   fieldCategoryModule=FieldCategoryModuleEnum
-  customFieldOptionsEnum=Object.keys(CustomFieldOptionsEnum)
+  customFieldOptionsEnum=Object.values(CustomFieldOptionsEnum).sort();
   customFieldAddView:CustomFieldAddView= new CustomFieldAddView()
   formfieldcheck=['Dropdown','Editable Dropdown','Multiple SelectBox']
   currentCategoryid;

@@ -45,7 +45,7 @@
         </div>
         <mat-error *ngIf="gradeLevelError">{{'pleaseSelectAtLeastOneGradeLevel'|translate}}</mat-error>
     </div>
-    <p class="font-semibold">{{ "historicalGradeLevels" | translate }}</p>
+    <!-- <p class="font-semibold">{{ "historicalGradeLevels" | translate }}</p>
     <div class="flex justify-between items-center mb-2">
         <div>
                 <ng-container *ngFor="let checkBox of historicalGradeList">
@@ -59,7 +59,7 @@
                 </ng-container>
         </div>
         <mat-error *ngIf="historicalGradeError">{{'pleaseSelectAtLeastOneHistoricalGradeLevel'|translate}}</mat-error>
-    </div>
+    </div> -->
         <button mat-flat-button color="primary" (click)="generateTranscript()">
             <span class="ml-2 hidden md:inline-block">{{ 'generateTranscriptForSelectedStudents' | translate }}</span>
         </button>

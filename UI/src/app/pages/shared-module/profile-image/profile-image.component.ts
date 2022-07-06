@@ -50,6 +50,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { Router } from '@angular/router';
 import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'vex-profile-image',
@@ -83,13 +84,15 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
   @Input() enableCropTool = true;
   @Input() customCss = 'rounded-full border-2 border-gray-light';
   @Input() responseImage;
+  @Input() sourceName: string;
   loading: boolean;
   staffAddModel: StaffAddModel = new StaffAddModel();
   studentAddModel: StudentAddModel = new StudentAddModel();
   schoolAddModel: SchoolAddViewModel = new SchoolAddViewModel();
   AddParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   endEdit: boolean;
-  constructor(private dialog: MatDialog,
+  constructor(public translateService: TranslateService,
+    private dialog: MatDialog,
     private imageCropperService: ImageCropperService,
     private snackbar: MatSnackBar,
     private schoolService: SchoolService,

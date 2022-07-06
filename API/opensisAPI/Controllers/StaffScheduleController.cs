@@ -158,5 +158,22 @@ namespace opensisAPI.Controllers
             }
             return staffListView;
         }
+
+        [HttpPost("removeStaffCourseSectionSchedule")]
+        public ActionResult<RemoveStaffScheduleViewModel> RemoveStaffCourseSectionSchedule(RemoveStaffScheduleViewModel removeStaffScheduleViewModel)
+        {
+            RemoveStaffScheduleViewModel removeStaffScheduleView = new RemoveStaffScheduleViewModel();
+            try
+            {
+                removeStaffScheduleView = _staffScheduleService.RemoveStaffCourseSectionSchedule(removeStaffScheduleViewModel);
+            }
+            catch (Exception es)
+            {
+                removeStaffScheduleView._failure = true;
+                removeStaffScheduleView._message = es.Message;
+            }
+            return removeStaffScheduleView;
+
+        }
     }
 }

@@ -62,7 +62,7 @@ namespace opensis.data.Repository
                 if (checkSectionName != null)
                 {
                     section._failure = true;
-                    section._message = "Section Name Already Exists";
+                    section._message = "Section Name already exists";
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace opensis.data.Repository
                         this.context?.Sections.Add(section.tableSections);
                         this.context?.SaveChanges();
                         section._failure = false;
-                        section._message = "Section Added Successfully";
+                        section._message = "Section added successfully";
                     }
                 }                
             }
@@ -116,7 +116,7 @@ namespace opensis.data.Repository
                     if (checkSectionName != null)
                     {
                         section._failure = true;
-                        section._message = "Section Name Already Exists";
+                        section._message = "Section Name already exists";
                     }
                     else
                     {
@@ -247,7 +247,7 @@ namespace opensis.data.Repository
                     this.context?.Sections.Remove(sectionDel);
                     this.context?.SaveChanges();
                     section._failure = false;
-                    section._message = "Section Deleted Successfully";
+                    section._message = "Section deleted successfullyy";
                 }
             }
             catch (Exception es)
