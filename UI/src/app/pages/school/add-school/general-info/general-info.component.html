@@ -147,7 +147,7 @@
                             <mat-label>{{'dateSchoolFirstStarted'|translate}}</mat-label>
                             <input #date_school_opened="ngModel" (dateInput)="dateCompare()"
                                 [(ngModel)]="schoolAddViewModel.schoolMaster.schoolDetail[0].dateSchoolOpened"
-                                name="date_school_opened" [matDatepicker]="datepickerRef" matInput [disabled]="schoolAddViewModel?.isMarkingPeriod" required>
+                                name="date_school_opened" [matDatepicker]="datepickerRef" matInput required>
                             <mat-datepicker-toggle [for]="datepickerRef" matSuffix></mat-datepicker-toggle>
                             <mat-datepicker #datepickerRef></mat-datepicker>
                                 <mat-error *ngIf="date_school_opened.errors?.required">
