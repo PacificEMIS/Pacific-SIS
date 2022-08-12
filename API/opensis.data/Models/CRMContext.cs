@@ -8992,15 +8992,7 @@ namespace opensis.data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                string[] tenants = new string[] { "TenantA" };
-                string connectionString = "Server=SABYA\\SQLEXPRESS;Database={tenant};User Id=sa; Password=admin@123;MultipleActiveResultSets=true";
-                //string connectionString = "Server=DESKTOP-40434IR\\SQLEXPRESS;Database={tenant};User Id=sa; Password=os4ed;MultipleActiveResultSets=true";
-                optionsBuilder.UseSqlServer(connectionString.Replace("{tenant}", "opensisv2_dev"));
-
-                //foreach (string tenant in tenants)
-                //{
-                //    optionsBuilder.UseSqlServer(connectionString.Replace("{tenant}", "TenantA"));
-                //}
+                
             }
         }
     }
