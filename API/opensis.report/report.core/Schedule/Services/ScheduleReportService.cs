@@ -114,5 +114,56 @@ namespace opensis.report.report.core.Schedule.Services
             }
             return studentScheduledList;
         }
+        public SchoolwideScheduleReportViewModel GetSchoolwideScheduleReport(SchoolwideScheduleReportViewModel schoolwideScheduleViewModel)
+        {
+            SchoolwideScheduleReportViewModel schoolwideScheduleReport = new();
+            try
+            {
+                if (tokenManager.CheckToken(schoolwideScheduleViewModel._tenantName + schoolwideScheduleViewModel._userName, schoolwideScheduleViewModel._token))
+                {
+                    schoolwideScheduleReport = this.scheduleReportRepository.GetSchoolwideScheduleReport(schoolwideScheduleViewModel);
+                }
+                else
+                {
+                    schoolwideScheduleReport._failure = true;
+                    schoolwideScheduleReport._message = TOKENINVALID;
+                }
+
+            }
+            catch (Exception es)
+            {
+                schoolwideScheduleReport._failure = true;
+                schoolwideScheduleReport._message = es.Message;
+            }
+            return schoolwideScheduleReport;
+        }
+
+        /// <summary>
+        /// Get Print Schedule Report
+        /// </summary>
+        /// <param name="printScheduleReportViewModel"></param>
+        /// <returns></returns>
+        public PrintScheduleReportViewModel GetPrintScheduleReport(PrintScheduleReportViewModel printScheduleReportViewModel)
+        {
+            PrintScheduleReportViewModel printScheduleReport = new();
+            try
+            {
+                if (tokenManager.CheckToken(printScheduleReportViewModel._tenantName + printScheduleReportViewModel._userName, printScheduleReportViewModel._token))
+                {
+                    printScheduleReport = this.scheduleReportRepository.GetPrintScheduleReport(printScheduleReportViewModel);
+                }
+                else
+                {
+                    printScheduleReport._failure = true;
+                    printScheduleReport._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                printScheduleReport._failure = true;
+                printScheduleReport._message = es.Message;
+            }
+            return printScheduleReport;
+        }
     }
 }

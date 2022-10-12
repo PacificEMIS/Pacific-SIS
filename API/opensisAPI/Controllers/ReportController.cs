@@ -335,5 +335,37 @@ namespace opensisAPI.Controllers
             }
             return studentFinalGrade;
         }
+
+        [HttpPost("getSchoolwideScheduleReport")]
+        public ActionResult<SchoolwideScheduleReportViewModel> GetSchoolwideScheduleReport(SchoolwideScheduleReportViewModel schoolwideScheduleViewModel)
+        {
+            SchoolwideScheduleReportViewModel schoolwideScheduleReport = new();
+            try
+            {
+                schoolwideScheduleReport = _scheduleReportService.GetSchoolwideScheduleReport(schoolwideScheduleViewModel);
+            }
+            catch (Exception es)
+            {
+                schoolwideScheduleReport._failure = true;
+                schoolwideScheduleReport._message = es.Message;
+            }
+            return schoolwideScheduleReport;
+        }
+
+        [HttpPost("getPrintScheduleReport")]
+        public ActionResult<PrintScheduleReportViewModel> GetPrintScheduleReport(PrintScheduleReportViewModel printScheduleReportViewModel)
+        {
+            PrintScheduleReportViewModel printScheduleReport = new();
+            try
+            {
+                printScheduleReport = _scheduleReportService.GetPrintScheduleReport(printScheduleReportViewModel);
+            }
+            catch (Exception es)
+            {
+                printScheduleReport._failure = true;
+                printScheduleReport._message = es.Message;
+            }
+            return printScheduleReport;
+        }
     }
 }
