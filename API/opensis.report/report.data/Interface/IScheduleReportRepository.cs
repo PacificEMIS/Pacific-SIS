@@ -13,5 +13,7 @@ namespace opensis.report.report.data.Interface
         public AddDropScheduleReport GetScheduledAddDropReport(PageResult pageResult);
         public ScheduleClassList ScheduledCourseSectionList(ScheduleClassList courseSectionList);
         public StudentScheduledListModel GetStudentListByCourseSection(StudentScheduledListModel studentList);
+        public SchoolwideScheduleReportViewModel GetSchoolwideScheduleReport(SchoolwideScheduleReportViewModel schoolwideScheduleViewModel);
+        public PrintScheduleReportViewModel GetPrintScheduleReport(PrintScheduleReportViewModel printScheduleReportViewModel);
     }
 }
