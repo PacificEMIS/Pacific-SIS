@@ -1154,8 +1154,8 @@ namespace opensis.data.Repository
 
                 //dashboardView.TotalStaff = this.context?.StaffMaster.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId).Count();
 
-                dashboardView.TotalStaff = this.context?.StaffSchoolInfo.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolAttachedId == dashboardViewModel.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date)).Count();
-                
+                dashboardView.TotalStaff = this.context?.StaffSchoolInfo.Include(x => x.StaffMaster).Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolAttachedId == dashboardViewModel.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) && x.StaffMaster!.IsActive != false).Count();
+
                 dashboardView.TotalParent = this.context?.ParentAssociationship.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.Associationship == true).Select(x => x.ParentId).Distinct().Count();
 
                 var notice = this.context?.Notice.Where(x => x.TenantId == dashboardViewModel.TenantId && (x.SchoolId == dashboardViewModel.SchoolId || (x.SchoolId != dashboardViewModel.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
@@ -3446,19 +3446,35 @@ namespace opensis.data.Repository
             {
                 if (!string.IsNullOrEmpty(activeDeactiveUserViewModel.Module))
                 {
+
                     if (activeDeactiveUserViewModel.Module.ToLower() == "student")
                     {
-                        var StudentData = this.context?.StudentMaster.FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == e.SchoolId && e.StudentId==activeDeactiveUserViewModel.UserId);
-
+                        var StudentData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == activeDeactiveUserViewModel.SchoolId && e.StudentId == activeDeactiveUserViewModel.UserId);
                         if (StudentData != null)
                         {
-                            StudentData.IsActive = activeDeactiveUserViewModel.IsActive;
+                            if (activeDeactiveUserViewModel.IsActive == true)
+                            {
+                                var lastEnrollment = StudentData.StudentEnrollment.OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
+                                if ((lastEnrollment!.ExitDate != null && lastEnrollment.ExitDate < DateTime.Today.Date) || (lastEnrollment.EnrollmentDate > DateTime.Today.Date))
+                                {
+                                    activeDeactiveUserViewModel._failure = true;
+                                    activeDeactiveUserViewModel._message = "Student dropped out from the school, so can not upadte the status";
+                                    return activeDeactiveUserViewModel;
+                                }
+                                else
+                                {
+                                    StudentData.IsActive = activeDeactiveUserViewModel.IsActive;
+                                }
+                            }
+                            else
+                            {
+                                StudentData.IsActive = activeDeactiveUserViewModel.IsActive;
+                            }
                         }
-
                     }
                     else if (activeDeactiveUserViewModel.Module.ToLower() == "parent")
                     {
-                        var ParentData = this.context?.ParentInfo.FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == e.SchoolId && e.ParentId == activeDeactiveUserViewModel.UserId);
+                        var ParentData = this.context?.ParentInfo.FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == activeDeactiveUserViewModel.SchoolId && e.ParentId == activeDeactiveUserViewModel.UserId);
 
                         if (ParentData != null)
                         {
@@ -3467,28 +3483,46 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        var StaffData = this.context?.StaffMaster.FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.StaffId == activeDeactiveUserViewModel.UserId);
+                        var StaffData = this.context?.StaffMaster.Include(x => x.StaffSchoolInfo).FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.StaffId == activeDeactiveUserViewModel.UserId);
 
                         if (StaffData != null)
                         {
-                            StaffData.IsActive = activeDeactiveUserViewModel.IsActive;
-
-                            if (activeDeactiveUserViewModel.IsActive == true && !string.IsNullOrEmpty(activeDeactiveUserViewModel.LoginEmail))
+                            if (activeDeactiveUserViewModel.IsActive == true)
                             {
-                                var userMasterData = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == activeDeactiveUserViewModel.TenantId && x.UserId == activeDeactiveUserViewModel.UserId && x.EmailAddress == activeDeactiveUserViewModel.LoginEmail);
-                                if (userMasterData != null)
-                                {
-                                  userMasterData.LoginFailureCount = 0;
-                                  userMasterData.LoginAttemptDate = DateTime.UtcNow;
-                                }
-                                
 
+                                var staffSchoolInfo = StaffData.StaffSchoolInfo.FirstOrDefault(x => x.SchoolId == activeDeactiveUserViewModel.SchoolId);
+                                if (staffSchoolInfo!.EndDate != null && staffSchoolInfo.EndDate < DateTime.Today.Date)
+                                {
+                                    activeDeactiveUserViewModel._failure = true;
+                                    activeDeactiveUserViewModel._message = "Staff dropped out from the school, so can not upadte the status";
+                                    return activeDeactiveUserViewModel;
+                                }
+                                else
+                                {
+                                    StaffData.IsActive = activeDeactiveUserViewModel.IsActive;
+                                }
+                            }
+                            else
+                            {
+                                StaffData.IsActive = activeDeactiveUserViewModel.IsActive;
                             }
                         }
                     }
+
+                    //update in user master table
+                    if (activeDeactiveUserViewModel.IsActive == true && !string.IsNullOrEmpty(activeDeactiveUserViewModel.LoginEmail))
+                    {
+                        var userMasterData = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == activeDeactiveUserViewModel.TenantId && x.UserId == activeDeactiveUserViewModel.UserId && x.EmailAddress == activeDeactiveUserViewModel.LoginEmail);
+                        if (userMasterData != null)
+                        {
+                            userMasterData.LoginFailureCount = 0;
+                            userMasterData.LoginAttemptDate = DateTime.UtcNow;
+                        }
+                    }
+
                     this.context?.SaveChanges();
                     activeDeactiveUserViewModel._failure = false;
-                    activeDeactiveUserViewModel._message = "Updated successfully";
+                    activeDeactiveUserViewModel._message = "updated successfully";
                 }
                 else
                 {
