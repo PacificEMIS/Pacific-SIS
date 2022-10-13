@@ -1939,5 +1939,11 @@
     "cropImage": "Crop Image",
     "upload": "Upload",
     "uploadPhoto": "Upload Photo",
-    "uploadLogo": "Upload Logo"
+    "uploadLogo": "Upload Logo",
+    "studentScheduleReport": "Student Schedule Report",
+    "selectAtLeastOneStudent": "Select at least one student.",
+    "failedToPrintScheduledCourses": "No records found. Failed to print scheduled courses.",
+    "courseTeacher": "Course/Teacher",
+    "sunText": "Sun",
+    "satText": "Sat"
 }
