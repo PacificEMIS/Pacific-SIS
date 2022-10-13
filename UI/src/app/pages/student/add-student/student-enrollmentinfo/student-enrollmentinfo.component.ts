@@ -574,6 +574,8 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
     this.studentEnrollmentModel.schoolId = +this.defaultValueService.getSchoolID();
     this.studentEnrollmentModel._userName = this.defaultValueService.getUserName();
 
+    this.studentEnrollmentModel.studentEnrollments.map(item => item.updatedBy = this.defaultValuesService.getUserGuidId());
+
     this.studentService.updateStudentEnrollment(this.studentEnrollmentModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
