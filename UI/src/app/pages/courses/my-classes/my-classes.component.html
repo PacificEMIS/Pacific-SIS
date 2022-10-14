@@ -19,7 +19,7 @@
                     (click)="selectCourseSection(courseSection)" [routerLink]="['/school', 'class']">
                     <div class="flex justify-between items-center">
                         <h5 [ngClass]="courseSection.text" class="uppercase font-semibold">{{courseSection.courseSectionName}}</h5>
-                        <p>{{this.getPeriodStartTime(courseSection)|transformTimePipe}}</p>
+                        <p>{{this.getPeriodStartTime(courseSection) | date:'shortTime'}}</p>
                     </div>
                     <div class="flex justify-between items-center">
                         <div class="text-gray font-medium mb-2">
