@@ -2878,7 +2878,10 @@ namespace opensis.data.Repository
                 if (CalendarData?.Any()==true)
                 {
                     dashboardView.SchoolCalendar = CalendarData.FirstOrDefault(x => x.SchoolId == dashboardViewModel.SchoolId && x.AcademicYear == dashboardViewModel.AcademicYear && x.DefaultCalender == true);
-                    dashboardView.SchoolCalendar!.SchoolMaster = null!;
+                    if (dashboardView.SchoolCalendar != null)
+                    {
+                        dashboardView.SchoolCalendar!.SchoolMaster = null!;
+                    }
 
                     //var Events = this.context?.CalendarEvents.Where(x => ((x.TenantId == dashboardViewModel.TenantId /*&& x.SchoolId == calendarEventList.SchoolId*/ && x.AcademicYear == dashboardViewModel.AcademicYear && ((x.CalendarId == defaultCalendar.CalenderId /*&& x.SystemWideEvent == false */&& x.SchoolId == dashboardViewModel.SchoolId) || x.SystemWideEvent == true)) || x.TenantId == dashboardViewModel.TenantId && x.SystemWideEvent == true && x.AcademicYear == dashboardViewModel.AcademicYear) && x.VisibleToMembershipId.Contains(dashboardViewModel.MembershipId.ToString()) || (x.TenantId == dashboardViewModel.TenantId && x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true))).ToList();
 
