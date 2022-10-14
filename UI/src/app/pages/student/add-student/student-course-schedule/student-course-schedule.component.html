@@ -168,7 +168,7 @@
 			</div>
 		</div>
         <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-          <button mat-menu-item>
+          <button mat-menu-item (click)="printSchedule()">
             <i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate }}
           </button>
           <button mat-menu-item (click)="exportScheduledCourses()">
@@ -413,3 +413,102 @@
     </ng-template>
   </mat-card-content>
 </mat-card>
+
+<!-- Print Schedule section start here -->
+<div class="hidden" id="printSectionId">
+    <div class="student-information-report">
+        <ng-container *ngFor="let studentDetails of printScheduleReportData?.studentDetailsViewModelList; let last = last">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table class="report-header">
+                            <tr>
+                                <td class="header-left">
+                                    <div class="float-left school-logo">
+                                        <img *ngIf="printScheduleReportData?.schoolLogo" [src]="printScheduleReportData?.schoolLogo ? 'data:image/jpeg;base64,' + printScheduleReportData?.schoolLogo : ''">
+                                    </div>
+                                    <div class="float-left information">
+                                        <h4>{{printScheduleReportData?.schoolName}}</h4>
+                                        <p>{{printScheduleReportData?.streetAddress1 ? printScheduleReportData?.streetAddress1 : ''}}{{printScheduleReportData?.streetAddress2 ? ', '+printScheduleReportData?.streetAddress2 : ''}}{{printScheduleReportData?.city ? ', '+printScheduleReportData?.city : ''}}{{printScheduleReportData?.district ? ', '+printScheduleReportData?.district : ''}}{{printScheduleReportData?.state ? ', '+printScheduleReportData?.state : ''}}{{printScheduleReportData?.zip ? ', '+printScheduleReportData?.zip : ''}}</p>
+                                    </div>
+                                </td>
+                                <td class="header-right text-right">
+                                    <div class="text-center inline-block">{{'studentScheduleReport' | translate}}</div>
+                                    <p class="text-right">{{'poweredBy' | translate}} <b>openSIS</b></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="generate-date">
+                                    <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{today | date}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td *ngIf="studentDetails?.studentPhoto" class="student-logo width-160">
+                                    <div>
+                                        <img [src]="studentDetails?.studentPhoto ? 'data:image/jpeg;base64,' + studentDetails?.studentPhoto : ''" alt="Student Photo">
+                                    </div>
+                                </td>
+                                <td class="student-details information">
+                                    <h4 class="inline-block">{{studentDetails?.firstGivenName}} {{studentDetails?.middleName ? ''+studentDetails?.middleName+' ':''}} {{studentDetails?.lastFamilyName}}</h4><span class="inline-block" *ngIf="studentDetails?.homeAddressLineOne"> | </span>
+                                    <p class="inline-block">{{studentDetails?.homeAddressLineOne}}{{studentDetails?.homeAddressLineTwo ? ', ' + studentDetails?.homeAddressLineTwo : ''}}{{studentDetails?.homeAddressCity ? ', ' + studentDetails?.homeAddressCity : ''}}{{studentDetails?.homeAddressState ? ', ' + studentDetails?.homeAddressState : ''}}{{studentDetails?.homeAddressZip ? ', ' + studentDetails?.homeAddressZip : ''}}{{studentDetails?.homeAddressCountry ? ', ' + studentDetails?.homeAddressCountry : ''}}</p>
+                                    <table class="border-table">
+                                        <tbody>
+                                            <tr>
+                                                <td><b>{{'studentId' | translate}}</b> : <span>{{studentDetails?.studentInternalId}}</span></td>
+                                                <td><b>{{'alternateId' | translate}}</b> : <span>{{studentDetails?.alternateId}}</span></td>
+                                                <td><b>{{'dateOfBirth' | translate}}</b> : <span>{{studentDetails?.dob | date}}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>{{'grade' | translate}}</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
+                                                <td><b>{{'gender' | translate}}</b> : <span>{{studentDetails?.gender}}</span></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="student-details">
+                        <table class="border-table information-table">
+                            <thead>
+                                <tr>
+                                    <th class="bg-slate" width="12%"><strong>{{'date' | translate}}</strong></th>
+                                    <th class="bg-slate" width="12%"><strong>{{'day' | translate}}</strong></th>
+                                    <th class="bg-slate" width="10%"><strong>{{'period' | translate}}</strong></th>
+                                    <th class="bg-slate" width="25%"><strong>{{'courseSectionTeacher' | translate}}</strong></th>
+                                    <th class="bg-slate" width="10%"><strong>{{'room' | translate}}</strong></th>
+                                    <th class="bg-slate" width="15%"><strong>{{'course' | translate}}</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let courseDetails of studentDetails?.courseDetailsViewModelList">
+                                    <tr *ngFor="let dateDetails of courseDetails?.modifiedDataList; first as isFirst">
+                                        <td>{{dateDetails?.date | date}}</td>
+                                        <td *ngIf="dateDetails?.isFirst" [attr.rowspan]="dateDetails?.length">{{dateDetails?.dayName}}</td>
+                                        <td>{{dateDetails?.periodName}}</td>
+                                        <td>{{dateDetails?.courseSectionName}} {{dateDetails?.staffName ? '-' : ''}} {{dateDetails?.staffName}}</td>
+                                        <td>{{dateDetails?.roomName}}</td>
+                                        <td *ngIf="isFirst" [attr.rowspan]="courseDetails?.modifiedDataList?.length">{{dateDetails?.courseName}}</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <div *ngIf="!last" style="page-break-before:always">&nbsp;</div>
+        </ng-container>
+    </div>
+</div>
+<!-- Print Schedule section end here -->

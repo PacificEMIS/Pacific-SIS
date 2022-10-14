@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { AbsenceListByStudent, GetStudentAbsenceReport, StudentListForAbsenceSummary } from '../models/absence-summary.model';
-import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel, GetStudentFinalGradeReportModel} from '../models/report.model';
+import { GetScheduledAddDropReportModel, GetStudentAddDropReportModel , GetStudentAdvancedReportModel, GetStudentEnrollmentReportModel , GetStaffAdvancedReportModel, GetSchoolReportModel, GetStudentListByCourseSectionModel, GetStudentProgressReportModel, GetHonorRollReportModel, GetStudentFinalGradeReportModel, GetSchoolwideScheduleReportModel, GetPrintScheduleReportModel} from '../models/report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -109,5 +109,19 @@ export class ReportService {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/Report/getAbsenceListByStudent";
     return this.http.post<AbsenceListByStudent>(apiurl, obj, this.httpOptions)
+  }
+
+  getSchoolwideScheduleReport(obj: GetSchoolwideScheduleReportModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getSchoolwideScheduleReport";
+    return this.http.post<GetSchoolwideScheduleReportModel>(apiurl, obj, this.httpOptions);
+  }
+
+  getPrintScheduleReport(obj: GetPrintScheduleReportModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.academicYear = this.defaultValuesService.getAcademicYear();
+    let apiurl = this.apiUrl + obj._tenantName + "/Report/getPrintScheduleReport";
+    return this.http.post<GetPrintScheduleReportModel>(apiurl, obj, this.httpOptions);
   }
 }

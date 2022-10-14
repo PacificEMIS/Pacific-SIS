@@ -1,0 +1,41 @@
+.custom-tab {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+.schedule-table {
+    tr {
+        th,
+        td {
+            @apply border-r;
+            @apply border-b;
+            border-color: rgba(0, 0, 0, 0.1);
+            text-align: center;
+            @apply px-6;
+            @apply py-3;
+        }
+        td {
+            @apply py-5;
+        }
+        th:last-child,
+        td:last-child {
+            border-right: none;
+        }
+        th:first-child,
+        td:first-child {
+            text-align: left;
+        }
+    }
+}
+.schoolwide-schedule-report {
+    .mat-datepicker-toggle button {
+        display: none;
+    }
+
+    .mat-input-element:disabled,
+    .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+        @apply text-black font-medium;
+    }
+}

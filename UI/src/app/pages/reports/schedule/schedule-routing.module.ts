@@ -6,6 +6,7 @@ import { PrintSchedulesComponent } from './print-schedules/print-schedules.compo
 import { ScheduleReportDetailsComponent } from './schedule-report/schedule-report-details/schedule-report-details.component';
 import { ScheduleReportComponent } from './schedule-report/schedule-report.component';
 import { ScheduleComponent } from './schedule.component';
+import { SchoolwideScheduleReportComponent } from './schoolwide-schedule-report/schoolwide-schedule-report.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path:'schedule-report/schedule-report-details',
         component: ScheduleReportDetailsComponent
+      },
+      {
+        path: 'schoolwide-schedule-report',
+        component: SchoolwideScheduleReportComponent
       },
     ]
   }
