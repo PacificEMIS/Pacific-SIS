@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
+using opensis.data.ViewModels.Period;
 using opensis.report.report.data.Interface;
 using opensis.report.report.data.ViewModels.ScheduleReport;
 using System;
@@ -443,6 +444,375 @@ namespace opensis.report.report.data.Repository
             studentScheduledListModel.TotalStudents = studentCount;
 
             return studentScheduledListModel;
+        }
+
+        public SchoolwideScheduleReportViewModel GetSchoolwideScheduleReport(SchoolwideScheduleReportViewModel schoolwideScheduleViewModel)
+        {
+            SchoolwideScheduleReportViewModel schoolwideScheduleListModel = new();
+
+            try
+            {
+                int daydiff = (schoolwideScheduleViewModel.EndDate.Date - schoolwideScheduleViewModel.StartDate.Date).Days;
+                if (daydiff == 6 && schoolwideScheduleViewModel.StartDate.DayOfWeek.ToString().ToLower() == "sunday")
+                {
+                    //******PeriodData
+                    var blockDataList = this.context?.Block.Join(this.context?.BlockPeriod, blk => new { blk.TenantId, blk.SchoolId, blk.BlockId }, blkp => new { blkp.TenantId, blkp.SchoolId, blkp.BlockId }, (blk, blkp) => new
+                    {
+                        blk.TenantId,
+                        blk.SchoolId,
+                        blk.BlockId,
+                        blk.BlockTitle,
+                        blk.BlockSortOrder,
+                        blk.HalfDayMinutes,
+                        blk.FullDayMinutes,
+                        blk.AcademicYear,
+                        blkp.PeriodId,
+                        blkp.PeriodTitle,
+                        blkp.PeriodShortName,
+                        blkp.PeriodSortOrder,
+                        blkp.PeriodStartTime,
+                        blkp.PeriodEndTime
+                    }).Where(x => x.TenantId == schoolwideScheduleViewModel.TenantId && x.SchoolId == schoolwideScheduleViewModel.SchoolId && x.AcademicYear == schoolwideScheduleViewModel.AcademicYear).OrderBy(x => x.BlockSortOrder);
+
+                    var blockPeriodDataList = blockDataList.GroupBy(g => new
+                    {
+                        g.BlockId
+
+                    }).Select(b => new GetBlockListForView()
+                    {
+                        BlockId = b.Key.BlockId,
+                        BlockPeriod = b.Select(c => new BlockPeriod
+                        {
+                            PeriodId = c.PeriodId,
+                            PeriodTitle = c.PeriodTitle,
+                            PeriodShortName = c.PeriodShortName,
+                            PeriodSortOrder = c.PeriodSortOrder,
+                            PeriodStartTime = c.PeriodStartTime,
+                            PeriodEndTime = c.PeriodEndTime
+                        }).ToList()
+                    }).ToList();
+                    schoolwideScheduleListModel.BlockListForView = blockPeriodDataList;
+                    //*******calendar view
+                    var CalendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == schoolwideScheduleViewModel.TenantId && x.SchoolId == schoolwideScheduleViewModel.SchoolId && x.AcademicYear == schoolwideScheduleViewModel.AcademicYear && x.DefaultCalender == true)
+                        .Select(x => new CalendarDataView
+                        {
+                            CalendarId = x.CalenderId,
+                            StartDate = x.StartDate,
+                            EndDate = x.EndDate,
+                            Days = x.Days
+                        }).FirstOrDefault();
+
+                    var CalendarHolidayList = this.context?.CalendarEvents.Where(x => x.TenantId == schoolwideScheduleViewModel.TenantId && x.SchoolId == schoolwideScheduleViewModel.SchoolId && x.AcademicYear == schoolwideScheduleViewModel.AcademicYear && x.IsHoliday == true && x.CalendarId == CalendarData.CalendarId);
+                    CalendarData.CalendarEvents = CalendarHolidayList.ToList();
+                    schoolwideScheduleListModel.CalendarDataView = CalendarData;
+                    //********Course Data
+
+                    var data = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Join(this.context?.AllCourseSectionView, scs => new { scs.TenantId, scs.SchoolId, scs.CourseId, scs.CourseSectionId },
+                         acsv => new { acsv.TenantId, acsv.SchoolId, acsv.CourseId, acsv.CourseSectionId }, (scs, acsv) => new {
+                             acsv.AcademicYear,
+                             acsv.CourseId,
+                             acsv.CourseTitle,
+                             acsv.CourseSectionId,
+                             acsv.CourseSectionName,
+                             acsv.ScheduleType,
+                             acsv.FixedDays,
+                             acsv.FixedPeriodId,
+                             acsv.VarDay,
+                             acsv.VarPeriodId,
+                             acsv.CalDate,
+                             acsv.CalDay,
+                             acsv.CalPeriodId,
+                             scs.TenantId,
+                             scs.SchoolId,
+                             scs.DurationStartDate,
+                             scs.DurationEndDate,
+                             scs.StaffId,
+                             scs.IsPrimaryStaff,
+                             scs.StaffMaster.FirstGivenName,
+                             scs.StaffMaster.MiddleName,
+                             scs.StaffMaster.LastFamilyName
+                         }).Where(a => a.TenantId == schoolwideScheduleViewModel.TenantId && a.SchoolId == schoolwideScheduleViewModel.SchoolId && a.IsPrimaryStaff == true && a.AcademicYear == schoolwideScheduleViewModel.AcademicYear
+                          && ((a.DurationStartDate <= schoolwideScheduleViewModel.StartDate.Date
+                          && a.DurationEndDate >= schoolwideScheduleViewModel.EndDate.Date)
+                          || ((a.DurationStartDate >= schoolwideScheduleViewModel.StartDate.Date
+       && a.DurationStartDate <= schoolwideScheduleViewModel.EndDate.Date) || (a.DurationEndDate >= schoolwideScheduleViewModel.StartDate.Date
+       && a.DurationEndDate <= schoolwideScheduleViewModel.EndDate.Date)))
+
+                          && (a.CalDate == null || a.CalDate >= schoolwideScheduleViewModel.StartDate.Date
+       && a.CalDate <= schoolwideScheduleViewModel.EndDate.Date)
+                          );
+                    if (data != null && data.Any())
+                    {
+                        List<DateAndDayNameRange> dateAndDay = new();
+                        if (schoolwideScheduleViewModel.EndDate.Date > schoolwideScheduleViewModel.StartDate.Date)
+                        {
+                            var dateDayName = Enumerable.Range(0, 1 + (schoolwideScheduleViewModel.EndDate.Date - schoolwideScheduleViewModel.StartDate.Date).Days)
+                               .Select(i => new DateAndDayNameRange
+                               {
+                                   Date = schoolwideScheduleViewModel.StartDate.Date.AddDays(i),
+                                   DayName = schoolwideScheduleViewModel.StartDate.Date.AddDays(i).DayOfWeek
+                               })
+                               .ToList();
+
+                            dateAndDay.AddRange(dateDayName);
+                        }
+                        List<DayWithCourse> DayWiseCourseList = new();
+                        foreach (var item in dateAndDay)
+                        {
+                            DayWithCourse dayWithCourse = new();
+                            dayWithCourse.DayName = item.DayName.ToString();
+                            dayWithCourse.Date = item.Date;
+                            dayWithCourse.IsHoliday = CalendarHolidayList.Where(i => i.StartDate <= item.Date && i.EndDate >= item.Date).Select(i => i.IsHoliday).FirstOrDefault();
+
+                            var dayWiseCoureseData = data.Where(a => a.VarDay == dayWithCourse.DayName || a.CalDay == dayWithCourse.DayName || (a.FixedDays != null && a.FixedDays.Contains(dayWithCourse.DayName))).OrderBy(c => c.CourseId).ToList();
+                            //*check input-date with course section end-date**/
+                            dayWiseCoureseData = dayWiseCoureseData.Where(x => x.DurationEndDate >= item.Date).ToList();
+
+                            var resultData = dayWiseCoureseData.GroupBy(g => new
+                            {
+                                g.CourseId,
+                                g.CourseTitle
+                            }).Select(a => new ScheduleCourseViewModel
+                            {
+                                CourseId = a.Key.CourseId,
+                                CourseName = a.Key.CourseTitle,
+                                StaffListModels = a.GroupBy(s => new { s.StaffId, staffName = $"{s.FirstGivenName} {(s.MiddleName == null ? "" : $"{s.MiddleName} ")}{s.LastFamilyName}" })
+                                .Select(a => new ScheduleStaffDetails
+                                {
+                                    StaffId = a.Key.StaffId,
+                                    StaffName = a.Key.staffName,
+                                    CourseSectionListModels = a.Select(b => new ScheduleCourseSectionViewModel
+                                    {
+                                        CourSectionId = b.CourseSectionId,
+                                        CourseSectionName = b.CourseSectionName,
+                                        ScheduleType = b.ScheduleType,
+                                        DurationStartDate = b.DurationStartDate,
+                                        DurationEndDate = b.DurationEndDate,
+                                        PeriodId = (b.FixedPeriodId != null) ? b.FixedPeriodId : (b.VarPeriodId != null) ? b.VarPeriodId : b.CalPeriodId,
+                                    }).ToList()
+                                }).ToList()
+                            }).ToList();
+
+                            dayWithCourse.CourseListModel = resultData;
+                            DayWiseCourseList.Add(dayWithCourse);
+
+                        }
+                        schoolwideScheduleListModel.DayWithCourseList = DayWiseCourseList;
+                        schoolwideScheduleListModel._failure = false;
+
+                    }
+                    else
+                    {
+                        schoolwideScheduleListModel._failure = true;
+                        schoolwideScheduleListModel._message = NORECORDFOUND;
+                    }
+                }
+                else
+                {
+                    schoolwideScheduleListModel._failure = true;
+                    schoolwideScheduleListModel._message = "Date range are not match";
+                }
+
+
+
+            }
+            catch (Exception _ex)
+            {
+                schoolwideScheduleListModel._failure = true;
+                schoolwideScheduleListModel._message = _ex.Message.ToString();
+            }
+
+
+
+            ///final set
+            schoolwideScheduleListModel.TenantId = schoolwideScheduleViewModel.TenantId;
+            schoolwideScheduleListModel._token = schoolwideScheduleViewModel._token;
+
+            return schoolwideScheduleListModel;
+        }
+
+        /// <summary>
+        /// Get Print Schedule Report
+        /// </summary>
+        /// <param name="printScheduleReportViewModel"></param>
+        /// <returns></returns>
+        public PrintScheduleReportViewModel GetPrintScheduleReport(PrintScheduleReportViewModel printScheduleReportViewModel)
+        {
+            PrintScheduleReportViewModel printScheduleReport = new();
+            List<int> staffCourseSectionIds = new List<int>();
+            printScheduleReport._tenantName = printScheduleReportViewModel._tenantName;
+            printScheduleReport._token = printScheduleReportViewModel._token;
+            printScheduleReport.TenantId = printScheduleReportViewModel.TenantId;
+            printScheduleReport.SchoolId = printScheduleReportViewModel.SchoolId;
+            try
+            {
+                var schoolData = this.context?.SchoolMaster.Include(d => d.SchoolDetail).Include(x => x.Gradelevels).FirstOrDefault(x => x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId);
+
+                var ScheduledData = this.context?.StudentCoursesectionSchedule.Include(x => x.StudentMaster).Join(this.context?.AllCourseSectionView, scs => new { scs.TenantId, scs.SchoolId, scs.CourseId, scs.CourseSectionId },
+                       acsv => new { acsv.TenantId, acsv.SchoolId, acsv.CourseId, acsv.CourseSectionId }, (scs, acsv) => new { scs, acsv }).Where(a => a.scs.TenantId == printScheduleReportViewModel.TenantId && a.scs.SchoolId == printScheduleReportViewModel.SchoolId && a.acsv.TenantId == printScheduleReportViewModel.TenantId && a.acsv.SchoolId == printScheduleReportViewModel.SchoolId && a.acsv.AcademicYear == printScheduleReportViewModel.AcademicYear && printScheduleReportViewModel.StudentGuids.Contains(a.scs.StudentGuid) && (printScheduleReportViewModel.CourseSectionIds != null && printScheduleReportViewModel.CourseSectionIds.Length > 0 ? printScheduleReportViewModel.CourseSectionIds.Contains(a.scs.CourseSectionId) : ((a.acsv.DurationStartDate <= printScheduleReportViewModel.MarkingPeriodStartDate.Value.Date && a.acsv.DurationEndDate >= printScheduleReportViewModel.MarkingPeriodEndDate.Value.Date) || ((a.acsv.DurationStartDate >= printScheduleReportViewModel.MarkingPeriodStartDate.Value.Date && a.acsv.DurationStartDate <= printScheduleReportViewModel.MarkingPeriodEndDate.Value.Date) || (a.acsv.DurationEndDate >= printScheduleReportViewModel.MarkingPeriodStartDate.Value.Date && a.acsv.DurationEndDate <= printScheduleReportViewModel.MarkingPeriodEndDate.Value.Date))) && (a.acsv.CalDate == null || a.acsv.CalDate >= printScheduleReportViewModel.MarkingPeriodStartDate.Value.Date && a.acsv.CalDate <= printScheduleReportViewModel.MarkingPeriodEndDate.Value.Date))).ToList();
+
+                var staffScheduleData = this.context?.StaffCoursesectionSchedule.Include(s => s.StaffMaster).Where(x => printScheduleReportViewModel.StaffId != null ? x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.StaffId == printScheduleReportViewModel.StaffId && x.IsDropped != true : x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.IsPrimaryStaff == true);
+
+                if (staffScheduleData != null && printScheduleReportViewModel.StaffId != null) //For staff potral
+                {
+                    staffCourseSectionIds = staffScheduleData.Select(s => s.CourseSectionId).ToList();
+                    ScheduledData = ScheduledData.Where(x => staffCourseSectionIds.Contains(x.scs.CourseSectionId)).ToList();
+                }
+
+                if (ScheduledData?.Any() == true)
+                {
+                    var roomData = this.context?.Rooms.Where(x => x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.AcademicYear == printScheduleReportViewModel.AcademicYear);
+                    var periodData = this.context?.BlockPeriod.Where(x => x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.AcademicYear == printScheduleReportViewModel.AcademicYear);
+
+                    foreach (var studentGuid in printScheduleReportViewModel.StudentGuids)
+                    {
+                        StudentDetailsViewModel studentDetails = new StudentDetailsViewModel();
+                        var studentScheduleData = ScheduledData.Where(x => x.scs.StudentGuid == studentGuid);
+                        if (studentScheduleData?.Any() == true)
+                        {
+                            var studentData = studentScheduleData.FirstOrDefault().scs;
+                            studentDetails.StudentPhoto = studentData.StudentMaster.StudentThumbnailPhoto;
+                            studentDetails.FirstGivenName = studentData.StudentMaster.FirstGivenName;
+                            studentDetails.MiddleName = studentData.StudentMaster.MiddleName;
+                            studentDetails.LastFamilyName = studentData.StudentMaster.LastFamilyName;
+                            studentDetails.StudentInternalId = studentData.StudentMaster.StudentInternalId;
+                            studentDetails.Dob = studentData.StudentMaster.Dob;
+                            studentDetails.GradeLevelTitle = schoolData.Gradelevels.FirstOrDefault(d => d.GradeId == studentData.GradeId)?.Title;
+                            studentDetails.Gender = studentData.StudentMaster.Gender;
+                            studentDetails.HomeAddressLineOne = studentData.StudentMaster.HomeAddressLineOne;
+                            studentDetails.HomeAddressLineTwo = studentData.StudentMaster.HomeAddressLineTwo;
+                            studentDetails.HomeAddressCity = studentData.StudentMaster.HomeAddressCity;
+                            studentDetails.HomeAddressState = studentData.StudentMaster.HomeAddressState;
+                            studentDetails.HomeAddressCountry = studentData.StudentMaster.HomeAddressCountry;
+                            studentDetails.HomeAddressZip = studentData.StudentMaster.HomeAddressZip;
+
+                            var courseData = studentScheduleData.Select(s => s.acsv).GroupBy(g => new
+                            {
+                                g.CourseId,
+                                g.CourseTitle
+                            });
+
+                            foreach (var course in courseData)
+                            {
+                                CourseDetailsViewModel courseDetails = new();
+
+                                courseDetails.CourseId = course.Key.CourseId;
+                                courseDetails.CourseName = course.Key.CourseTitle;
+                                var courseSectionIds = course.Where(s => s.CourseId == course.Key.CourseId).Select(s => s.CourseSectionId).Distinct();
+
+                                foreach (var courseSectionId in courseSectionIds)
+                                {
+                                    CourseSectionDetailsViewModel courseSectionDetails = new CourseSectionDetailsViewModel();
+                                    string[] days = { };
+
+                                    var courseSectionData = course.Where(x => x.CourseSectionId == courseSectionId);
+                                    var courseSection = courseSectionData.FirstOrDefault();
+                                    courseSectionDetails.CourseSectionId = courseSectionId;
+                                    courseSectionDetails.CourseSectionName = courseSection.CourseSectionName;
+
+                                    var staffData = staffScheduleData.FirstOrDefault(x => x.CourseSectionId == courseSectionId);
+                                    if (staffData != null)
+                                    {
+                                        courseSectionDetails.StaffId = staffData.StaffId;
+                                        courseSectionDetails.StaffName = $"{staffData.StaffMaster.FirstGivenName} {(staffData.StaffMaster.MiddleName == null ? "" : $"{staffData.StaffMaster.MiddleName} ")}{staffData.StaffMaster.LastFamilyName}";
+                                    }
+
+                                    var startDate = printScheduleReportViewModel.MarkingPeriodStartDate != null ? printScheduleReportViewModel.MarkingPeriodStartDate.Value.Date : courseSection.DurationStartDate.Value.Date;
+                                    var endDate = printScheduleReportViewModel.MarkingPeriodEndDate != null ? printScheduleReportViewModel.MarkingPeriodEndDate.Value.Date : courseSection.DurationEndDate.Value.Date;
+
+                                    if (courseSection.ScheduleType == "Fixed Schedule (1)")
+                                    {
+                                        days = courseSection.FixedDays.Split("|");
+
+                                        foreach (var day in days)
+                                        {
+                                            DayDetailsViewModel dayDetails = new DayDetailsViewModel();
+
+                                            dayDetails.DayName = day;
+
+                                            var dateList = Enumerable.Range(0, 1 + endDate.Subtract(startDate).Days)
+                                                                    .Select(offset => startDate.AddDays(offset))
+                                                                    .Where(d => day == d.DayOfWeek.ToString())
+                                                                    .ToList();
+
+                                            dayDetails.DatePeriodRoomDetailsViewModelList.AddRange(dateList.Select(x => new DatePeriodRoomDetailsViewModel { Date = x.Date, PeriodId = courseSection.FixedPeriodId, PeriodName = periodData.FirstOrDefault(x => x.PeriodId == courseSection.FixedPeriodId).PeriodTitle, RoomId = courseSection.FixedRoomId, RoomName = roomData.FirstOrDefault(x => x.RoomId == courseSection.FixedRoomId).Title }));
+
+                                            courseSectionDetails.DayDetailsViewModelList.Add(dayDetails);
+                                        }
+                                    }
+                                    else if (courseSection.ScheduleType == "Variable Schedule (2)")
+                                    {
+                                        foreach (var cs in courseSectionData)
+                                        {
+                                            DayDetailsViewModel dayDetails = new DayDetailsViewModel();
+
+                                            dayDetails.DayName = cs.VarDay;
+
+                                            var dateList = Enumerable.Range(0, 1 + endDate.Subtract(startDate).Days)
+                                                                    .Select(offset => startDate.AddDays(offset))
+                                                                    .Where(d => cs.VarDay == d.DayOfWeek.ToString())
+                                                                    .ToList();
+
+                                            dayDetails.DatePeriodRoomDetailsViewModelList.AddRange(dateList.Select(x => new DatePeriodRoomDetailsViewModel { Date = x.Date, PeriodId = cs.VarPeriodId, PeriodName = periodData.FirstOrDefault(x => x.PeriodId == cs.VarPeriodId).PeriodTitle, RoomId = cs.VarRoomId, RoomName = roomData.FirstOrDefault(x => x.RoomId == cs.VarRoomId).Title }));
+                                            courseSectionDetails.DayDetailsViewModelList.Add(dayDetails);
+                                        }
+                                    }
+                                    else if (courseSection.ScheduleType == "Calendar Schedule (3)")
+                                    {
+                                        courseSectionDetails.DayDetailsViewModelList = courseSectionData.GroupBy(x => x.CalDay).Select(s => new DayDetailsViewModel { DayName = s.Key, DatePeriodRoomDetailsViewModelList = s.Select(cs => new DatePeriodRoomDetailsViewModel { Date = cs.CalDate.Value.Date, PeriodId = cs.CalPeriodId, PeriodName = periodData.FirstOrDefault(x => x.PeriodId == cs.CalPeriodId).PeriodTitle, RoomId = cs.CalRoomId, RoomName = roomData.FirstOrDefault(x => x.RoomId == cs.CalRoomId).Title }).ToList() }).ToList();
+                                    }
+                                    else if (courseSection.ScheduleType == "Block Schedule (4)")
+                                    {
+                                        var blockData = this.context?.Block.Where(x => x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.AcademicYear == printScheduleReportViewModel.AcademicYear);
+                                        var bellScheduleData = this.context?.BellSchedule.Where(x => x.TenantId == printScheduleReportViewModel.TenantId && x.SchoolId == printScheduleReportViewModel.SchoolId && x.AcademicYear == printScheduleReportViewModel.AcademicYear && x.BellScheduleDate >= startDate && x.BellScheduleDate <= endDate);
+
+                                        var blocks = courseSectionData.GroupBy(x => x.BlockId);
+                                        foreach (var block in blocks)
+                                        {
+                                            DayDetailsViewModel dayDetails = new DayDetailsViewModel();
+
+                                            dayDetails.DayName = blockData.FirstOrDefault(s => s.BlockId == block.Key)?.BlockTitle;
+                                            var dateList = bellScheduleData.Where(s => s.BlockId == block.Key).Select(s => s.BellScheduleDate).ToList();
+                                            var blockDetails = block.Select(s => new { s.BlockPeriodId, s.BlockRoomId });
+                                            foreach (var cs in blockDetails)
+                                            {
+                                                dayDetails.DatePeriodRoomDetailsViewModelList.AddRange(dateList.Select(x => new DatePeriodRoomDetailsViewModel { Date = x.Date, PeriodId = cs.BlockPeriodId, PeriodName = periodData.FirstOrDefault(x => x.BlockId == block.Key && x.PeriodId == cs.BlockPeriodId).PeriodTitle, RoomId = cs.BlockRoomId, RoomName = roomData.FirstOrDefault(x => x.RoomId == cs.BlockRoomId).Title }));
+                                            }
+                                            courseSectionDetails.DayDetailsViewModelList.Add(dayDetails);
+                                        }
+                                    }
+                                    courseDetails.CourseSectionDetailsViewModelList.Add(courseSectionDetails);
+                                }
+                                studentDetails.CourseDetailsViewModelList.Add(courseDetails);
+                            }
+                            printScheduleReport.StudentDetailsViewModelList.Add(studentDetails);
+                        }
+                    }
+
+                    //school details
+                    printScheduleReport.SchoolName = schoolData.SchoolName;
+                    printScheduleReport.SchoolLogo = schoolData.SchoolDetail.First().SchoolThumbnailLogo;
+                    printScheduleReport.StreetAddress1 = schoolData.StreetAddress1;
+                    printScheduleReport.StreetAddress2 = schoolData.StreetAddress2;
+                    printScheduleReport.State = schoolData.State;
+                    printScheduleReport.District = schoolData.District;
+                    printScheduleReport.City = schoolData.City;
+                    printScheduleReport.Country = schoolData.Country;
+                    printScheduleReport.Zip = schoolData.Zip;
+
+                }
+                else
+                {
+                    printScheduleReport._message = NORECORDFOUND;
+                    printScheduleReport._failure = true;
+                }
+            }
+            catch (Exception es)
+            {
+                printScheduleReport._message = es.Message;
+                printScheduleReport._failure = true;
+            }
+            return printScheduleReport;
         }
     }
 }

@@ -33,10 +33,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PrintSchedulesComponent } from './print-schedules/print-schedules.component';
 import { ScheduleReportComponent } from './schedule-report/schedule-report.component';
 import { ScheduleReportDetailsComponent } from './schedule-report/schedule-report-details/schedule-report-details.component';
+import { SchoolwideScheduleReportComponent } from './schoolwide-schedule-report/schoolwide-schedule-report.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { SearchStudentModule } from 'src/app/common/search-student/search-student.module';
 
 
 @NgModule({
-  declarations: [ScheduleComponent, AddDropReportComponent, ClassListComponent, PrintSchedulesComponent, ScheduleReportComponent, ScheduleReportDetailsComponent],
+  declarations: [ScheduleComponent, AddDropReportComponent, ClassListComponent, PrintSchedulesComponent, ScheduleReportComponent, ScheduleReportDetailsComponent, SchoolwideScheduleReportComponent],
   imports: [
     CommonModule,
     ScheduleRoutingModule,
@@ -65,7 +68,9 @@ import { ScheduleReportDetailsComponent } from './schedule-report/schedule-repor
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    FormsModule
+    FormsModule,
+    MatMenuModule,
+    SearchStudentModule
   ]
 })
 export class ScheduleModule { }

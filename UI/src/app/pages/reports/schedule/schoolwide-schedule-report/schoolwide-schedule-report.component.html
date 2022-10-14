@@ -1,0 +1,82 @@
+<vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+<div class="card p-4 mb-6 schoolwide-schedule-report">
+    <div>
+        <div class="flex justify-center items-center w-full pb-2">
+            <button (click)="changeWeek('prev')" *ngIf="isPreviousButtonEnabled" class="mx-2">
+                <mat-icon class="align-middle mt-0">west</mat-icon>
+            </button>
+            <div class="md:flex text-center items-center" (click)="startPicker.open()">
+                <p class="text-lg font-medium cursor-pointer">{{'sunText' | translate}},</p>
+                <input matInput [matDatepicker]="startPicker" class="text-lg cursor-pointer" [min]="calendarDataViewModel.startDate" [max]="calendarDataViewModel.endDate" [size]="calStartDate.value.length > 0 ? calStartDate.value.length: 1" (dateChange)="startDateChange()" disabled [(ngModel)]="startDate" #calStartDate>
+                <mat-datepicker-toggle matSuffix [for]="startPicker">
+                </mat-datepicker-toggle>
+                <mat-datepicker #startPicker disabled="false"></mat-datepicker>
+            </div>
+            <div class="font-medium mx-4">-</div>
+            <div class="md:flex text-center items-center" (click)="endPicker.open()">
+                <p class="text-lg font-medium cursor-pointer">{{'satText' | translate}},</p>
+                <input matInput [matDatepicker]="endPicker" class="text-lg cursor-pointer" [min]="calendarDataViewModel.startDate" [max]="calendarDataViewModel.endDate" [size]="calEndDate.value.length > 0 ? calEndDate.value.length: 1"  (dateChange)="endDateChange()" disabled [(ngModel)]="endDate" #calEndDate>
+                <mat-datepicker-toggle matSuffix [for]="endPicker">
+                </mat-datepicker-toggle>
+                <mat-datepicker #endPicker disabled="false"></mat-datepicker>
+            </div>
+            <button (click)="changeWeek('next')" *ngIf="isNextButtonEnabled" class="mx-2">
+                <mat-icon class="align-middle mt-0">east</mat-icon>
+            </button>
+        </div>
+    </div>
+    <mat-divider class="-mx-4 my-2 border-normal"></mat-divider>
+    <div>
+        <div class="custom-tab text-center">
+            <div class="inline-block items-center">
+                <ul class="flex flex-row text-center">
+                    <ng-container *ngFor="let day of currentWeek; let i = index">
+                        <li class="px-6 py-2 cursor-pointer" (click)="changeTab(days[i], i)" [class.active]="currentTab === days[i]"
+                            [ngClass]="currentTab === days[i] ? 'border-b-2 border-primary' : ''">
+                            <p class="text-base" [ngClass]="{'font-semibold': currentTab === days[i], 'text-black': weekDaysList.includes(i) && !holidayList[i], 'text-red': (weekDaysList.length && !weekDaysList.includes(i)) || holidayList[i]}">
+                                {{ days[i] }}</p>
+                            <p class="text-black opacity-50">{{day | date}}</p>
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <div class="overflow-x-auto overflow-y-hidden -mx-4">
+                <table class="w-full schedule-table">
+                    <thead>
+                        <tr>
+                            <th class="bg-red-light text-primary text-base whitespace-no-wrap">{{ 'courseTeacher' | translate }}</th>
+                            <th class="bg-primary-light whitespace-no-wrap" *ngFor="let period of periodList">
+                                <p class="text-primary font-medium text-base">{{period.periodTitle}}</p>
+                                <p>({{period.periodStartTime}} - {{period.periodEndTime}})</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="dayWithCourseList?.length && dayWithCourseList[dayIndex]?.courseListModel?.length">
+                            <ng-container *ngFor="let course of dayWithCourseList[dayIndex]?.courseListModel">
+                                <tr>
+                                    <td [attr.colspan]="periodList.length + 1" class="bg-green-light py-2">
+                                        <p class="text-green font-medium text-base">{{course?.courseName}}</p>
+                                    </td>
+                                </tr>
+                                <tr *ngFor="let staff of course?.staffListModels">
+                                    <td class="bg-red-light">
+                                        <p class="font-medium text-base">{{staff?.staffName}}</p>
+                                    </td>
+                                    <td class="bg-base" [ngClass]="courseSection.courseSectionName ? 'bg-base' : 'bg-white'" *ngFor="let courseSection of staff?.modiFiedcourseSectionListModels">
+                                        <p>{{courseSection.courseSectionName}}</p>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="(dayWithCourseList?.length && !dayWithCourseList[dayIndex]?.courseListModel?.length) || dayWithCourseList === null">
+                            <tr><td [attr.colspan]="periodList.length + 1"><p class="text-center text-base">{{'noRecordFound' | translate}}</p></td></tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
