@@ -471,7 +471,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
               if (report[key]?.split('|')[0].includes('False')) {
                 report[key] = report[key]?.split('|')[1].trim()
               } else if (report[key]?.split('|')[0].includes('True')) {
-                report[key] = ''
+                report[key] = report[key]?.split('|')[0].trim()
               }
             }
           }
