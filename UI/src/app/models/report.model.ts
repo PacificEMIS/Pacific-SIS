@@ -1,3 +1,4 @@
+import { CalendarEventModel } from "./calendar-event.model";
 import { CommonField } from "./common-field.model";
 import { StudentMasterModel } from "./student.model";
 
@@ -223,5 +224,38 @@ export class GetStudentFinalGradeReportModel extends CommonField {
         this.periodByPeriodAbsences = false;
         this.otherAttendanceCodeYearToDate = false;
         this.otherAttendanceCodeThisQuater = false;
+    }
+}
+
+export class GetSchoolwideScheduleReportModel extends CommonField {
+    academicYear: number;
+    startDate: string;
+    endDate: string;
+    calendarDataView: CalendarDataViewModel;
+    dayWithCourseList: any[];
+    blockListForView: any[];
+    constructor() {
+        super();
+    }
+}
+
+export class CalendarDataViewModel {
+    calendarId: number;
+    days: string;
+    startDate: string;
+    endDate: string;
+    calendarEvents: CalendarEventModel[];
+}
+
+export class GetPrintScheduleReportModel extends CommonField {
+    academicYear: number;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    studentGuids: string[];
+    studentDetailsViewModelList: any[];
+    staffId: number;
+    courseSectionIds: number[];
+    constructor() {
+        super();
     }
 }

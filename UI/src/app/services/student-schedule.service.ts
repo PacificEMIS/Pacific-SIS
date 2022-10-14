@@ -61,6 +61,7 @@ export class StudentScheduleService {
 
   scheduleCoursesForStudent360(Obj: ScheduleCoursesForStudent360Model){
     Obj = this.defaultValuesService.getAllMandatoryVariable(Obj);
+    Obj.academicYear = this.defaultValuesService.getAcademicYear();
     let apiurl = this.apiUrl + Obj._tenantName + '/StudentSchedule/scheduleCoursesForStudent360';
     return this.http.post<ScheduleCoursesForStudent360Model>(apiurl, Obj,this.httpOptions);
   }
