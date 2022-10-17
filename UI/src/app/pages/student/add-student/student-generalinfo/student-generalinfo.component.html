@@ -332,15 +332,25 @@
                             <p *ngIf="hidePasswordAccess" class="flex-none  mb-4"><a (click)="generate()"
                                     class="text-primary underline cursor-pointer">Auto Generate Password</a></p>
                         </li>
-                        <li *ngIf="studentCreateMode === studentCreate.EDIT">
+                        <!-- <li *ngIf="studentCreateMode === studentCreate.EDIT">
                             <mat-checkbox name="activeDeactiveUser" [checked]="studentAddModel?.studentMaster.isActive===false"
                                 (change)="activateUser($event.checked)" color="primary">
                                 {{'disableStudent'
                                 | translate}}
                             </mat-checkbox>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
+                <hr class="-mx-4 my-4" *ngIf="studentCreateMode === studentCreate.EDIT">
+                <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-gap-8 row-gap-0">
+                    <li *ngIf="studentCreateMode === studentCreate.EDIT">
+                        <mat-checkbox name="activeDeactiveUser" [checked]="studentAddModel?.studentMaster.isActive===false"
+                            (change)="activateUser($event.checked)" color="primary">
+                            {{'disableStudent'
+                            | translate}}
+                        </mat-checkbox>
+                    </li>
+                </ul>
             </div>
         </mat-card-content>
         <mat-card-actions>

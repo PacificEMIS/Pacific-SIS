@@ -97,6 +97,8 @@ export class StaffGeneralinfoComponent implements OnInit {
   maritalStatusList = [];
   disablity = WashInfoEnum;
   staffPortalAccess: string;
+  portalAccess: boolean;
+  cloneLoginEmailAddress;
   countryListArr = [];
   icAdd = icAdd;
   icEdit = icEdit;
@@ -154,11 +156,13 @@ export class StaffGeneralinfoComponent implements OnInit {
               private cd: ChangeDetectorRef,
               private imageCropperService: ImageCropperService,
               private commonLOV: CommonLOV,
-              private defaultValuesService: DefaultValuesService) {
+              public defaultValuesService: DefaultValuesService) {
     //translateService.use('en');
 
     this.staffService.getStaffDetailsForGeneral.pipe(takeUntil(this.destroySubject$)).subscribe((res: StaffAddModel) => {
       this.staffAddModel = res;
+      this.portalAccess = res.staffMaster?.portalAccess;
+      this.cloneLoginEmailAddress = res.staffMaster?.loginEmailAddress;
       this.data = this.staffAddModel?.staffMaster;
       this.cloneStaffAddModel=JSON.stringify(this.staffAddModel);
       this.staffInternalId = this.data.staffInternalId;
@@ -219,11 +223,12 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.cloneStaffAddModel=JSON.stringify(this.staffAddModel);
     } else if (this.staffCreateMode == this.staffCreate.EDIT && (this.staffDetailsForViewAndEdit != undefined || this.staffDetailsForViewAndEdit != null)) {
       this.staffAddModel = this.staffDetailsForViewAndEdit;
+      this.data = this.staffDetailsForViewAndEdit?.staffMaster;
       this.cloneStaffAddModel=JSON.stringify(this.staffAddModel);
       this.initializeDropdowns();
       this.staffService.changePageMode(this.staffCreateMode);
       this.saveAndNext = 'update';
-      if (this.staffAddModel?.staffMaster?.loginEmailAddress !== null) {
+      if (this.staffAddModel?.staffMaster?.loginEmailAddress !== null && this.staffAddModel?.staffMaster?.portalAccess) {
         this.hideAccess = true;
         this.fieldDisabled = true;
 
@@ -439,8 +444,14 @@ export class StaffGeneralinfoComponent implements OnInit {
               this.commonService.checkTokenValidOrNot(data._message);
             } else {
               if (data.isValidEmailAddress) {
-                this.loginEmail.setErrors(null);
-                this.isUser= false;
+                if (/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/.test(term)) {
+                  this.loginEmail.setErrors(null);
+                  this.isUser = false;
+                } else {
+                  this.loginEmail.markAsTouched();
+                  this.loginEmail.setErrors({ pattern: true });
+                  this.isUser = false;
+                }
               }
               else {
                 this.loginEmail.markAsTouched();
@@ -575,7 +586,7 @@ export class StaffGeneralinfoComponent implements OnInit {
 
   
   accessPortal() {
-    if (this.staffPortalId !== null && this.staffPortalId !== undefined) {
+    if (this.staffPortalId !== null && this.staffPortalId !== undefined && this.portalAccess) {
       this.hideAccess = true;
       this.fieldDisabled = true;
       this.hidePasswordAccess = false;
@@ -618,13 +629,16 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.hideAccess = false;
       this.hidePasswordAccess = false;
       this.staffAddModel.staffMaster.portalAccess = false;
+      if (this.cloneLoginEmailAddress) {
+        this.staffAddModel.staffMaster.loginEmailAddress = this.cloneLoginEmailAddress;
+      }
     }
   }
 
   activateUser(event) {
-    if (event === false) {
+    // if (event === false) {
       this.activeDeactiveUserModel.userId = this.staffAddModel.staffMaster.staffId;
-      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.isActive = !event;
       this.activeDeactiveUserModel.module = 'staff';
       this.activeDeactiveUserModel.loginEmail = this.staffAddModel.staffMaster.loginEmailAddress;
       this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
@@ -638,9 +652,9 @@ export class StaffGeneralinfoComponent implements OnInit {
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
-            this.staffAddModel.staffMaster.isActive = true;
+            this.staffAddModel.staffMaster.isActive = res.isActive;
             this.cloneStaffAddModel = JSON.parse(this.cloneStaffAddModel);
-            this.cloneStaffAddModel.staffMaster.isActive = true;
+            this.cloneStaffAddModel.staffMaster.isActive = res.isActive;
             this.cloneStaffAddModel = JSON.stringify(this.cloneStaffAddModel);
           }
         } else {
@@ -649,7 +663,7 @@ export class StaffGeneralinfoComponent implements OnInit {
           });
         }
       });
-    }
+    // }
   }
 
   editGeneralInfo() {
@@ -661,7 +675,7 @@ export class StaffGeneralinfoComponent implements OnInit {
     this.staffCreateMode = this.staffCreate.EDIT
     this.staffService.changePageMode(this.staffCreateMode);
     this.saveAndNext = 'update';
-    if (this.staffAddModel.staffMaster.loginEmailAddress !== null) {
+    if (this.staffAddModel.staffMaster.loginEmailAddress !== null && this.staffAddModel.staffMaster.portalAccess) {
       this.hideAccess = true;
       this.fieldDisabled = true;
 
@@ -675,7 +689,7 @@ export class StaffGeneralinfoComponent implements OnInit {
     this.staffCreateMode = this.staffCreate.EDIT
     this.staffService.changePageMode(this.staffCreateMode);
     this.saveAndNext = 'update';
-    if (this.staffAddModel.staffMaster.loginEmailAddress !== null) {
+    if (this.staffAddModel.staffMaster.loginEmailAddress !== null && this.staffAddModel.staffMaster.portalAccess) {
       this.hideAccess = true;
       this.fieldDisabled = true;
     }
@@ -692,7 +706,7 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.staffDetailsForViewAndEdit=JSON.parse(this.cloneStaffAddModel);
       this.staffService.sendDetails(JSON.parse(this.cloneStaffAddModel));
     }
-    // this.accessPortal();
+    this.accessPortal();
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
@@ -724,7 +738,11 @@ export class StaffGeneralinfoComponent implements OnInit {
     if (this.currentForm.controls.passwordHash !== undefined) {
       this.staffAddModel.passwordHash = this.currentForm.controls.passwordHash.value;
     }
-    if (this.currentForm.form.valid) {
+    let emailError;
+    if (this.staffAddModel.staffMaster.portalAccess && this.loginEmail.errors) {
+      emailError = true
+    }
+    if (this.currentForm.form.valid && !emailError) {
       if (this.staffAddModel.fieldsCategoryList !== null && this.categoryId) {
         this.staffAddModel.selectedCategoryId = this.staffAddModel.fieldsCategoryList[this.categoryId]?.categoryId;
         
@@ -859,6 +877,7 @@ export class StaffGeneralinfoComponent implements OnInit {
             this.hidePasswordAccess = false;
           }
           this.staffService.changePageMode(this.staffCreateMode);
+          this.cloneLoginEmailAddress = data.staffMaster.loginEmailAddress;
         }
       }
 

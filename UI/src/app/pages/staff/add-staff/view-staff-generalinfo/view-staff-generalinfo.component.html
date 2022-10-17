@@ -134,7 +134,7 @@
                 <label class="text-sm leading-5 text-gray">{{'portalAccess' | translate}}</label>
                 <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green whitespace-pre-wrap">{{staffViewDetails?.staffMaster?.portalAccess ? 'Yes' :'No'}}</p>
             </li>
-            <li>
+            <!-- <li>
                 <div class="mr-6"
                     *ngIf="staffViewDetails?.staffMaster?.isActive === true || staffViewDetails?.staffMaster?.isActive === null; else NotActive">
                     <mat-icon [icIcon]="icCheckboxOutline" class="inline-block align-middle mr-2"></mat-icon>
@@ -147,6 +147,10 @@
                         <span class="inline-block text-base align-middle">{{'disableStaff' |translate}}</span>
                     </div>
                 </ng-template>
+            </li> -->
+            <li>
+                <label class="text-sm leading-5 text-gray">{{'disableStaff' | translate}}</label>
+                <p class="mt-1 text-sm leading-5 sm:mt-0 sm:col-span-2 text-green whitespace-pre-wrap">{{(staffViewDetails?.staffMaster?.isActive === true || staffViewDetails?.staffMaster?.isActive === null) ? 'No' : 'Yes'}}</p>
             </li>
             <!-- <li>
                 <label class="text-sm leading-5 text-gray">{{'lastLogin' | translate}}</label>

@@ -23,8 +23,8 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy } from '@angular/core';
-import { FormBuilder, NgForm } from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef, Input, OnDestroy, AfterViewInit } from '@angular/core';
+import { FormBuilder, FormControl, NgForm, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../@vex/animations/stagger.animation';
 import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.animation';
@@ -47,7 +47,7 @@ import { AddSiblingComponent } from '../../../student/add-student/student-family
 import { ViewSiblingComponent } from '../../../student/add-student/student-familyinfo/view-sibling/view-sibling.component';
 import { ConfirmDialogComponent } from '../../../shared-module/confirm-dialog/confirm-dialog.component';
 import { StudentSiblingAssociation } from '../../../../models/student.model';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged, debounceTime  } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ImageCropperService } from 'src/app/services/image-cropper.service';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
@@ -65,6 +65,8 @@ import icCheckbox from '@iconify/icons-ic/baseline-check-box';
 import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
 import { GradeLevelService } from '../../../../services/grade-level.service';
 import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
+import { CheckUserEmailAddressViewModel } from 'src/app/models/user.model';
+import { LoginService } from 'src/app/services/login.service';
 
 
 @Component({
@@ -77,7 +79,7 @@ import { GetAllGradeLevelsModel } from '../../../../models/grade-level.model';
     fadeInRight400ms
   ]
 })
-export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
+export class EditparentGeneralinfoComponent implements OnInit,AfterViewInit, OnDestroy {
   schoolCreate = SchoolCreate;
   @Input() schoolCreateMode: SchoolCreate;
   @Input() parentDetailsForViewAndEdit;
@@ -103,6 +105,10 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   parentDetails;
   mode = "view";
   associateStudentMode = "";
+  parentPortalId;
+  cloneLoginEmailAddress;
+  isUser: boolean = false;
+  loginEmail: FormControl;
   addParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   duplicateAddParentInfoModel: AddParentInfoModel = new AddParentInfoModel();
   activeDeactiveUserModel: ActiveDeactiveUserModel = new ActiveDeactiveUserModel();
@@ -110,6 +116,7 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   lovList: LovList = new LovList();
   studentSiblingAssociation: StudentSiblingAssociation = new StudentSiblingAssociation();
   removeAssociateParent: RemoveAssociateParent = new RemoveAssociateParent();
+  checkUserEmailAddressViewModel: CheckUserEmailAddressViewModel = new CheckUserEmailAddressViewModel();
   parentInfo;
   studentInfo;
   salutationList;
@@ -136,9 +143,10 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     private imageCropperService: ImageCropperService,
     private commonService: CommonService,
     private commonLOV: CommonLOV,
+    private loginService: LoginService,
     private pageRolePermissions: PageRolesPermission,
     private cryptoService: CryptoService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private gradeLevelService: GradeLevelService,
 
   ) {
@@ -147,6 +155,7 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loginEmail = new FormControl('', Validators.required);
     this.parentInfoService.parentCreatedMode.subscribe((res)=>{
       this.parentCreateMode = res;
     });
@@ -171,6 +180,47 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     this.getRelationship();
     this.getGradeLevel();
   }
+
+  ngAfterViewInit(): void {
+    this.loginEmail.valueChanges
+      .pipe(debounceTime(600), distinctUntilChanged())
+      .subscribe(term => {
+        if (term) {
+          if (this.parentPortalId === term) {
+            this.loginEmail.setErrors(null);
+          }
+          else {
+            this.isUser = true;
+            this.checkUserEmailAddressViewModel.emailAddress = term;
+            this.loginService.checkUserLoginEmail(this.checkUserEmailAddressViewModel).subscribe(data => {
+              if (data._failure) {
+
+              } else {
+                if (data.isValidEmailAddress) {
+                  if (/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/.test(term)) {
+                    this.loginEmail.setErrors(null);
+                    this.isUser = false;
+                  } else {
+                    this.loginEmail.markAsTouched();
+                    this.loginEmail.setErrors({ pattern: true });
+                    this.isUser = false;
+                  }
+                }
+                else {
+                  this.loginEmail.markAsTouched();
+                  this.loginEmail.setErrors({ nomatch: true });
+                  this.isUser = false;
+                }
+              }
+            });
+          }
+        } else {
+          // this.loginEmail.markAsTouched();
+          this.isUser = false;
+        }
+      });
+  }
+
   getParentDetailsUsingId(){
     this.addParentInfoModel.parentInfo.parentId = this.parentInfoService.getParentId();
     this.parentInfoService.viewParentInfo(this.addParentInfoModel).subscribe(
@@ -181,6 +231,8 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
           }
           this.addParentInfoModel = res;
           this.duplicateAddParentInfoModel = JSON.parse(JSON.stringify(res));
+          this.cloneLoginEmailAddress = res?.parentInfo?.loginEmail;
+          this.parentPortalId = res?.parentInfo?.loginEmail;
           this.parentInfo = res.parentInfo;
           this.studentInfo = res.getStudentForView;
           this.parentInfoService.setParentDetailsForViewAndEdit(this.addParentInfoModel);
@@ -217,6 +269,9 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
     } else {
       this.isPortalUser = false;
       this.addParentInfoModel.parentInfo.isPortalUser = false;
+      if (this.cloneLoginEmailAddress) {
+        this.addParentInfoModel.parentInfo.loginEmail = this.cloneLoginEmailAddress;
+      }
     }
   }
 
@@ -245,9 +300,9 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
   }
 
   activateUser(event) {
-    if (event === false) {
+    // if (event === false) {
       this.activeDeactiveUserModel.userId = this.addParentInfoModel.parentInfo.parentId;
-      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.isActive = !event;
       this.activeDeactiveUserModel.module = 'parent';
       this.activeDeactiveUserModel.loginEmail = this.addParentInfoModel.parentInfo.loginEmail;
       this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
@@ -261,7 +316,8 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
-            // this.addParentInfoModel.parentInfo.isActive = true;
+            this.addParentInfoModel.parentInfo.isActive = res.isActive;
+            this.duplicateAddParentInfoModel.parentInfo.isActive = res.isActive;
           }
         } else {
           this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -269,7 +325,7 @@ export class EditparentGeneralinfoComponent implements OnInit, OnDestroy {
           });
         }
       });
-    }
+    // }
   }
 
   submit() {
