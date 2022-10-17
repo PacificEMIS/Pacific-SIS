@@ -3186,12 +3186,16 @@ namespace opensis.data.Repository
                 {
                     MasterStudentId = studentData.StudentId + 1;
                 }
+
+                var academicYear = Utility.GetCurrentAcademicYear(this.context!, studentListAddViewModel.TenantId, studentListAddViewModel.SchoolId);
+                
                 int? indexNo = -1;
                 foreach (var student in studentListAddViewModel.studentAddViewModelList)
                 {
                     if (student.studentMaster != null)
                     {
                         indexNo++;
+                        student.AcademicYear = academicYear.ToString();
 
                         //UserMaster userMaster = new UserMaster();
                         var StudentEnrollmentData = new StudentEnrollment();
