@@ -97,6 +97,8 @@ export class StaffCourseScheduleComponent implements OnInit {
     new ScheduledCourseSectionsForStaffModel();
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel =
     new GetMarkingPeriodTitleListModel();
+  viewStartTime;
+  viewEndTime;
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -581,7 +583,7 @@ export class StaffCourseScheduleComponent implements OnInit {
   }
   createDatasetForRoutine() {
     this.routineViewWithEvent.routineView = [];
-    this.events.map((item) => {
+    this.events.map((item,index) => {
       const foundIndex = this.routineViewWithEvent.routineView?.findIndex(
         (routine) => {
           return (
@@ -621,6 +623,13 @@ export class StaffCourseScheduleComponent implements OnInit {
         };
         eachEvent.events.push(event);
         this.routineViewWithEvent.routineView.push(eachEvent);
+      }
+      if (index === 0) {
+        this.viewStartTime = item.start.getHours();
+        this.viewEndTime = item.end.getHours();
+      } else {
+        if (this.viewStartTime > item.start.getHours())  this.viewStartTime = item.start.getHours();
+        if (this.viewEndTime < item.end.getHours()) this.viewEndTime = item.end.getHours();
       }
     });
 

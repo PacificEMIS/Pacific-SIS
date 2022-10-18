@@ -223,7 +223,7 @@
             </div>
             <div [ngSwitch]="view" class="-mx-4">
                 <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
-                   >
+                [dayStartHour]="viewStartTime" [dayEndHour]="viewEndTime">
                 </mwl-calendar-week-view>
                 <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
                    [cellTemplate]="customCellTemplate">
