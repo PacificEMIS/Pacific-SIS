@@ -107,6 +107,8 @@ export class StudentCourseScheduleComponent implements OnInit {
   showWeekendsRoutingView = true;
   permissions: Permissions
   profiles = ProfilesTypes;
+  viewStartTime;
+  viewEndTime;
   printScheduleReportData;
   courseSectionIds: number[] = [];
   constructor(
@@ -775,7 +777,7 @@ export class StudentCourseScheduleComponent implements OnInit {
   }
   createDatasetForRoutine() {
     this.routineViewWithEvent.routineView = [];
-    this.events.map((item) => {
+    this.events.map((item,index) => {
       const foundIndex = this.routineViewWithEvent.routineView?.findIndex((routine) => {
         return (routine.blockId === item.meta.periodDetails.blockId && routine.periodId === item.meta.periodDetails.periodId)
       });
@@ -808,6 +810,13 @@ export class StudentCourseScheduleComponent implements OnInit {
         };
         eachEvent.events.push(event);
         this.routineViewWithEvent.routineView.push(eachEvent);
+      }
+      if (index === 0) {
+        this.viewStartTime = item.start.getHours();
+        this.viewEndTime = item.end.getHours();
+      } else {
+        if (this.viewStartTime > item.start.getHours())  this.viewStartTime = item.start.getHours();
+        if (this.viewEndTime < item.end.getHours()) this.viewEndTime = item.end.getHours();
       }
     });
     let nameArr=[];

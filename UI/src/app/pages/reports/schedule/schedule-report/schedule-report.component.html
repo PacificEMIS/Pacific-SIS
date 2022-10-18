@@ -1,7 +1,8 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 
-<div class="md:flex">
-    <div class="card w-full md:w-6/12 md:mr-2">
+<div class="md:flex mt-6">
+    <div class="md:w-6/12 md:mr-2">
+    <div class="card w-full">
         <div class="">
             <h4 class="flex text-primary p-4 items-center">
                 <mat-icon [icIcon]="icMenuBook" class="align-middle"></mat-icon>
@@ -12,7 +13,7 @@
                 <div>
                     <p class="font-semibold">{{course.course.courseTitle}}</p>
                     <div class="flex items-center">
-                        <span>{{course.course.courseSubject}}</span><span class="dot-separator bg-black"></span><span>{{'seats' | translate }}</span> : <span>{{course.availableSeats}}/{{course.totalSeats}}</span>
+                        <span>{{course.course.courseSubject}}</span><span class="dot-separator bg-black"></span><span>{{('seats' | translate) + ' ' + ('available' | translate)}} : {{course.availableSeats}}/{{course.totalSeats}}</span>
                     </div>
                 </div>
                 <div class="cursor-pointer" (click)="viewDetails(course)">
@@ -20,6 +21,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 

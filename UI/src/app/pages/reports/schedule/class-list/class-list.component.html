@@ -251,7 +251,7 @@
                         </p>
                     </div>
                     <div>
-                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.totalSeats - courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{'seats' | translate }}</div>
+                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{('seats' | translate) + ' ' + ('available' | translate)}}</div>
                     </div>
                 </div>
                 <div class="overflow-x-auto overflow-y-hidden">

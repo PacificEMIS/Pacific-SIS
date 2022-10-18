@@ -125,13 +125,15 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
   searchScheduledStudentForGroupDrop() {
     this.getAllStudent.aciveStudentInCourseSection = true;
     this.getAllStudent.profilePhoto = true;
+    this.getAllStudent.pageNumber = 0;
+    this.getAllStudent._pageSize = 0;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.getAllStudent).subscribe(
       (res: ScheduleStudentListViewModel) => {
         if (res) {
           if (res._failure) {
             this.commonService.checkTokenValidOrNot(res._message);
             this.studentListView = res.scheduleStudentForView;
-            this.studentCount = this.studentListView.length;
+            this.studentCount = res.totalCount;
             if (!res.scheduleStudentForView) {
               this.snackbar.open(res._message, '', {
                 duration: 10000
@@ -139,7 +141,7 @@ export class ScheduleReportDetailsComponent implements OnInit, OnDestroy {
             }
           } else {
             this.studentListView = res.scheduleStudentForView;
-            this.studentCount = this.studentListView.length;
+            this.studentCount = res.totalCount;
           }
         }
         else {
