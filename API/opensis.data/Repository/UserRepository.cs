@@ -326,7 +326,7 @@ namespace opensis.data.Repository
                                     //ReturnModel.MembershipType = user?.Membership.ProfileType;
                                     //ReturnModel.MembershipId = user?.Membership.MembershipId;
                                     ReturnModel._failure = true;
-                                    ReturnModel._message = "Your default school is inactive, please contact to Administrator";
+                                    ReturnModel._message = "Your default school is inactive, please contact the Administrator";
                                     return ReturnModel;
                                 }
                                 else
@@ -378,7 +378,7 @@ namespace opensis.data.Repository
                                         //ReturnModel.MembershipType = user?.Membership.ProfileType;
                                         //ReturnModel.MembershipId = user?.Membership.MembershipId;
                                         ReturnModel._failure = true;
-                                        ReturnModel._message = "Your account is inactive, please contact to Administrator";
+                                        ReturnModel._message = "Your account is inactive, please contact the Administrator";
                                         return ReturnModel;
                                     }
                                 }
