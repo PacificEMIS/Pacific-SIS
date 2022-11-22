@@ -69,6 +69,7 @@ export class CommonStaffListComponent implements OnInit {
   showAdvanceSearchPanel: boolean = false;
   showSaveFilter: boolean = false;
   filterJsonParams;
+  filterParameters = [];
   showLoadFilter = true;
   toggleValues: any = null;
   moduleIdentifier = ModuleIdentifier;
@@ -308,6 +309,7 @@ export class CommonStaffListComponent implements OnInit {
     }
     this.getAllStaff.pageNumber = event.pageIndex + 1;
     this.getAllStaff.pageSize = event.pageSize;
+    this.getAllStaff.filterParams = this.filterParameters;
     this.callStaffList();
   }
 
@@ -599,6 +601,7 @@ export class CommonStaffListComponent implements OnInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStaff = new GetAllStaffModel();
     this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
