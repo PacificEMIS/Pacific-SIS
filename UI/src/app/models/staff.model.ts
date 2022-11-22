@@ -277,6 +277,7 @@ export class StaffSchoolInfoListModel extends CommonField {
     updatedOn: string;
     updatedBy: string;
     membershipId: number;
+    membership: any;
     constructor() {
         super();
         this._failure = false;
@@ -297,7 +298,8 @@ export class StaffSchoolInfoModel extends CommonField {
     otherSubjectTaught: string;
     fieldsCategoryList;
     selectedCategoryId;
-    staffSchoolInfoList: [StaffSchoolInfoListModel]
+    staffSchoolInfoList: [StaffSchoolInfoListModel];
+    isActive : boolean;
     constructor() {
         super();
         this.homeroomTeacher = false;
