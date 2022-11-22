@@ -355,6 +355,8 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     return value
   }
   updateSchoolInfo() {
+    this.staffSchoolInfoModel.profile = this.staffSchoolInfoModel.jobTitle;
+    this.staffSchoolInfoModel.isActive = true;
     this.staffSchoolInfoModel.staffSchoolInfoList.map((item)=>{
       item.updatedBy = this.defaultValuesService.getUserGuidId();
     })
@@ -384,6 +386,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       item.startDate = this.commonFunction.formatDateSaveWithoutTime(item.startDate);
       item.endDate = this.commonFunction.formatDateSaveWithoutTime(item.endDate)
       item.membershipId=this.setMembershipId(item);
+      item.membership = null;
     });
     this.staffService.updateStaffSchoolInfo(this.staffSchoolInfoModel).subscribe((res) => {
       if (typeof (res) == 'undefined') {
