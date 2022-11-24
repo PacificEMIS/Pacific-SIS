@@ -942,7 +942,7 @@ namespace opensis.data.Repository
                                 customFieldAdd.CustomFields.Module = customFieldAddViewModel.CustomFields.Module;
                                 customFieldAdd.CustomFields.IsSystemWideField = customFieldAddViewModel.CustomFields.IsSystemWideField;
                                 customFieldAdd.CustomFields.FieldName = FieldName;
-                                customFieldAdd.CustomFields.CustomFieldCode = customFieldAddViewModel.CustomFields.CustomFieldCode;
+                               
                                 customFieldList.Add(customFieldAdd.CustomFields);
                             }
                         }
