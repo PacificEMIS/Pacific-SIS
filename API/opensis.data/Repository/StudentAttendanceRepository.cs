@@ -27,11 +27,13 @@ using Microsoft.EntityFrameworkCore;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
+using opensis.data.ViewModels.Period;
 using opensis.data.ViewModels.Staff;
 using opensis.data.ViewModels.StaffSchedule;
 using opensis.data.ViewModels.StudentAttendances;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -2224,9 +2226,9 @@ namespace opensis.data.Repository
                         {
                             foreach (var studentAttendance in studentAttendanceAddViewModel.studentAttendance)
                             {
-                                int? blockIde = 1;
+                                int? blockIde = this.context?.Block.Where(b=>b.TenantId == studentAttendanceAddViewModel.TenantId && b.SchoolId == studentAttendanceAddViewModel.SchoolId && b.AcademicYear == Utility.GetCurrentAcademicYear(this.context!, studentAttendanceAddViewModel.TenantId, studentAttendanceAddViewModel.SchoolId)).FirstOrDefault()!.BlockId;
+                               /* blockPeriodAddViewModel.blockPeriod.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, blockPeriodAddViewModel.blockPeriod.TenantId, blockPeriodAddViewModel.blockPeriod.SchoolId);*/
                                 int? periodIde = null;
-
                                 if (allCsData.FirstOrDefault()!.ScheduleType == "Fixed Schedule (1)")
                                 {
                                     periodIde = allCsData.FirstOrDefault()!.FixedPeriodId;
