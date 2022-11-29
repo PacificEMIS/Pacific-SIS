@@ -21,7 +21,7 @@ import { ProfilesTypes } from 'src/app/enums/profiles.enum';
         <div class="w-1 h-1 bg-gray rounded-full ltr:mr-2 rtl:ml-2"></div>
         <vex-breadcrumb>
         <div *ngIf="last"><a>{{ crumb |translate }}</a></div>
-        <div *ngIf="!last"><a [routerLink]="['/school/' + crumb.replace(' ', '') |lowercase ]">{{ crumb |translate }}</a></div>
+        <div *ngIf="!last"><a [routerLink]="crumb === 'schoolInfo' ? ['/school/schoolinfo/generalinfo'] : path" [state]="{type: 2}">{{ crumb |translate }}</a></div>
         </vex-breadcrumb>
       </ng-container>
  
@@ -35,6 +35,8 @@ export class BreadcrumbsComponent implements OnInit {
   icHome = icHome;
   membershipType;
   profiles = ProfilesTypes;
+  schoolCount;
+  path;
 
   constructor(private translate:TranslateService,
     private defaultValuesService: DefaultValuesService) {
@@ -42,5 +44,7 @@ export class BreadcrumbsComponent implements OnInit {
 
   ngOnInit() {
     this.membershipType = this.defaultValuesService.getUserMembershipType();
+    this.schoolCount = parseInt(JSON.parse(localStorage.getItem("schoolCount")))
+    this.path = this.schoolCount > 0 ? ['/school/schoolinfo'] : ['/school/schoolinfo/generalinfo']
   }
 }
