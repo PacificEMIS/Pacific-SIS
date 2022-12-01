@@ -38,7 +38,8 @@
                                 [(ngModel)]="addReportCardPdf.teacherName">
                                 {{ "teacherName" | translate}}
                             </mat-slide-toggle>
-                            <mat-slide-toggle class="mr-4 mb-2" color="primary">
+                            <mat-slide-toggle class="mr-4 mb-2" color="primary"
+                                [(ngModel)]="addReportCardPdf.signatureLine">
                                 {{ "signatureLine" | translate}}
                             </mat-slide-toggle>
                             <mat-slide-toggle class="mr-4 mb-2" color="primary"
@@ -688,7 +689,7 @@
                                             <td>{{'yearToDateAttendancePercent' |translate}}</td>
                                             <td><b>{{grade?.yearToDateAttendencePercent}}</b></td>
                                         </tr>
-                                        <tr>
+                                        <tr *ngIf="addReportCardPdf.yearToDateDailyAbsences">
                                             <td>{{'yearToDateAbsencesInDays'|translate}}</td>
                                             <td><b>{{grade?.yearToDateAbsencesInDays}}</b></td>
                                         </tr>
@@ -709,21 +710,21 @@
                         <thead>
                             <tr>
                                 <th>{{'course'|translate}}</th>
-                                <th>{{'teacher'|translate}}</th>
-                                <th>{{'grade'|translate}}</th>
+                                <th *ngIf="addReportCardPdf.teacherName">{{'teacher'|translate}}</th>
+                                <th *ngIf="addReportCardPdf.parcentage">{{'grade'|translate}}</th>
                                 <th *ngIf="addReportCardPdf.gpa">{{'gpa'|translate}}</th>
                                 <th>{{'comments'|translate}}</th>
-                                <th>{{'teacherComments'|translate}}</th>
+                                <th *ngIf="addReportCardPdf.teacherComments">{{'teacherComments'|translate}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let courseSection of markingPeriod?.courseSectionGradeDetailsForDefaultTemplates">
                                 <td>{{courseSection?.courseSectionName}}</td>
-                                <td>{{courseSection?.staffName}}</td>
-                                <td>{{courseSection?.gradeObtained?courseSection?.gradeObtained: courseSection?.percentMarks && addReportCardPdf.parcentage ? '':'-'}} {{courseSection?.percentMarks && addReportCardPdf.parcentage ? ' (' + courseSection?.percentMarks + '%)' : ''}} </td>
+                                <td *ngIf="addReportCardPdf.teacherName">{{courseSection?.staffName}}</td>
+                                <td *ngIf="addReportCardPdf.parcentage">{{courseSection?.gradeObtained?courseSection?.gradeObtained: courseSection?.percentMarks && addReportCardPdf.parcentage ? '':'-'}} {{courseSection?.percentMarks && addReportCardPdf.parcentage ? ' (' + courseSection?.percentMarks + '%)' : ''}} </td>
                                 <td *ngIf="addReportCardPdf.gpa">{{courseSection?.gpa?courseSection?.gpa:'-'}}</td>
                                 <td>{{courseSection?.comments}}</td>
-                                <td>{{courseSection?.teacherComments}}</td>
+                                <td *ngIf="addReportCardPdf.teacherComments">{{courseSection?.teacherComments}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -775,7 +776,7 @@
                     </td>
                 </tr>
             </ng-template>
-            <tr>
+            <tr *ngIf="addReportCardPdf.signatureLine">
                 <td class="signature-table">
                     <table cell-padding="10">
                         <tr>
