@@ -88,9 +88,10 @@ export class StaffFieldsCategoryComponent implements OnInit {
     if(this.form.valid){
       this.checkSearchRecord = 1;
       if(this.form.controls.categoryId.value==0){
-        this.fieldsCategoryAddView.fieldsCategory.title=this.form.controls.title.value;
+        this.fieldsCategoryAddView.fieldsCategory.title=this.form.controls.title.value.trim();
         this.fieldsCategoryAddView.fieldsCategory.sortOrder=this.form.controls.sortOrder.value;
         this.fieldsCategoryAddView.fieldsCategory.module=this.fieldCategoryModuleEnum.Staff
+        this.fieldsCategoryAddView.fieldsCategory.createdBy = this.defaultValuesService.getUserGuidId();
         this.customFieldService.addFieldsCategory(this.fieldsCategoryAddView).subscribe(
           (res:FieldsCategoryAddView)=>{
             if(typeof(res)=='undefined'){
@@ -121,7 +122,7 @@ export class StaffFieldsCategoryComponent implements OnInit {
       }
       else{
         this.fieldsCategoryAddView.fieldsCategory.categoryId=this.form.controls.categoryId.value;
-        this.fieldsCategoryAddView.fieldsCategory.title=this.form.controls.title.value;
+        this.fieldsCategoryAddView.fieldsCategory.title=this.form.controls.title.value.trim();
         this.fieldsCategoryAddView.fieldsCategory.sortOrder=this.form.controls.sortOrder.value;
         this.customFieldService.updateFieldsCategory(this.fieldsCategoryAddView).subscribe(
           (res:FieldsCategoryAddView)=>{
