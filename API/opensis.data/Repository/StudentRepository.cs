@@ -2170,30 +2170,29 @@ namespace opensis.data.Repository
             SiblingSearchForStudentListModel StudentSiblingList = new SiblingSearchForStudentListModel();
             try
             {
-                int resultData;              
+                int resultData;
+
                 var studentData = this.context?.StudentMaster
-                    .Include(s => s.StudentEnrollment).Where(x => x.FirstGivenName == studentSiblingListViewModel.FirstGivenName && x.LastFamilyName == studentSiblingListViewModel.LastFamilyName && x.TenantId == studentSiblingListViewModel.TenantId
-                    && (studentSiblingListViewModel.SchoolId == null || (x.SchoolId == studentSiblingListViewModel.SchoolId)) && (studentSiblingListViewModel.Dob == null || (x.Dob == studentSiblingListViewModel.Dob)) && (string.IsNullOrEmpty(studentSiblingListViewModel.StudentInternalId) || (
-                    (x.StudentInternalId??"").ToLower().Trim() == studentSiblingListViewModel.StudentInternalId.ToLower().Trim() ))
-                && (string.IsNullOrEmpty(studentSiblingListViewModel.GradeLevelTitle)|| (x.StudentEnrollment.Any(s=>s.IsActive==true && s.GradeLevelTitle==studentSiblingListViewModel.GradeLevelTitle)))).Select(s => new GetStudentForView
+                    .Include(s => s.StudentEnrollment).Where(x => x.IsActive == true && x.FirstGivenName == studentSiblingListViewModel.FirstGivenName && x.LastFamilyName == studentSiblingListViewModel.LastFamilyName && x.TenantId == studentSiblingListViewModel.TenantId
+                        && (studentSiblingListViewModel.SchoolId == null || (x.SchoolId == studentSiblingListViewModel.SchoolId)) && (studentSiblingListViewModel.Dob == null || (x.Dob == studentSiblingListViewModel.Dob)) && (string.IsNullOrEmpty(studentSiblingListViewModel.StudentInternalId) || (
+                        (x.StudentInternalId ?? "").ToLower().Trim() == studentSiblingListViewModel.StudentInternalId.ToLower().Trim()))
+                    && (string.IsNullOrEmpty(studentSiblingListViewModel.GradeLevelTitle) || (x.StudentEnrollment.Any(s => s.IsActive == true && s.GradeLevelTitle == studentSiblingListViewModel.GradeLevelTitle)))).Select(s => new GetStudentForView
+                    {
+                        FirstGivenName = s.FirstGivenName,
+                        LastFamilyName = s.LastFamilyName,
+                        Dob = s.Dob,
+                        StudentId = s.StudentId,
+                        StudentInternalId = s.StudentInternalId,
+                        SchoolId = s.SchoolId,
+                        TenantId = s.TenantId,
+                        SchoolName = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.SchoolName).FirstOrDefault(),
+                        Address = ToFullAddress(s.HomeAddressLineOne, s.HomeAddressLineTwo, s.HomeAddressCity, s.HomeAddressState,
+                                   int.TryParse(s.HomeAddressCountry, out resultData) == true ? this.context.Country.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCountry)).FirstOrDefault()!.Name : string.Empty, s.HomeAddressZip),
+                        GradeLevelTitle = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
+                    }).ToList();
+                if (studentData != null && studentData?.Any() == true)
                 {
-                    FirstGivenName = s.FirstGivenName,
-                    LastFamilyName = s.LastFamilyName,
-                    Dob = s.Dob,
-                    StudentId = s.StudentId,
-                    StudentInternalId = s.StudentInternalId,
-                    SchoolId = s.SchoolId,
-                    TenantId = s.TenantId,
-                    SchoolName = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.SchoolName).FirstOrDefault(),
-                    Address = ToFullAddress(s.HomeAddressLineOne, s.HomeAddressLineTwo,
-                        int.TryParse(s.HomeAddressCity, out resultData) == true ? this.context.City.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCity)).FirstOrDefault()!.Name : s.HomeAddressCity,
-                        int.TryParse(s.HomeAddressState, out resultData) == true ? this.context.State.Where(x => x.Id == Convert.ToInt32(s.HomeAddressState)).FirstOrDefault()!.Name : s.HomeAddressState,
-                        int.TryParse(s.HomeAddressCountry, out resultData) == true ? this.context.Country.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCountry)).FirstOrDefault()!.Name : string.Empty, s.HomeAddressZip),
-                    GradeLevelTitle = s.StudentEnrollment.Where(s=>s.IsActive==true).Select(s=>s.GradeLevelTitle).FirstOrDefault()
-                }).ToList();
-                if (studentData != null && studentData?.Any()==true)
-                {
-                    
+
                     StudentSiblingList.getStudentForView = studentData;
                     StudentSiblingList._tenantName = studentSiblingListViewModel._tenantName;
                     StudentSiblingList._token = studentSiblingListViewModel._token;
