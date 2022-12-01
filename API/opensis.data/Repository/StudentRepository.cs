@@ -2234,7 +2234,19 @@ namespace opensis.data.Repository
                     {
                         if (studentAssociateTo.Associationship != null)
                         {
-                            studentAssociateTo.Associationship = studentAssociateTo.Associationship + " | " + siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.SchoolId + "#" + siblingAddUpdateForStudentModel.StudentId;
+                            var associationData = siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.SchoolId + "#" + siblingAddUpdateForStudentModel.StudentId;
+
+                            var checkAssociation = studentAssociateTo.Associationship.Contains(associationData);
+                            if (checkAssociation)
+                            {
+                                siblingAddUpdateForStudentModel._failure = true;
+                                siblingAddUpdateForStudentModel._message = "Sibling already added";
+                                return siblingAddUpdateForStudentModel;
+                            }
+                            else
+                            {
+                                studentAssociateTo.Associationship = studentAssociateTo.Associationship + " | " + associationData;
+                            }
                         }
                         else
                         {
@@ -2243,7 +2255,19 @@ namespace opensis.data.Repository
 
                         if (studentAssociateBy.Associationship != null)
                         {
-                            studentAssociateBy.Associationship = studentAssociateBy.Associationship + " | " + siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.studentMaster.SchoolId + "#" + siblingAddUpdateForStudentModel.studentMaster.StudentId;
+                            var associationData = siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.studentMaster.SchoolId + "#" + siblingAddUpdateForStudentModel.studentMaster.StudentId;
+
+                            var checkAssociation = studentAssociateTo.Associationship.Contains(associationData);
+                            if (checkAssociation)
+                            {
+                                siblingAddUpdateForStudentModel._failure = true;
+                                siblingAddUpdateForStudentModel._message = "Sibling already added";
+                                return siblingAddUpdateForStudentModel;
+                            }
+                            else
+                            {
+                                studentAssociateBy.Associationship = studentAssociateBy.Associationship + " | " + associationData;
+                            }
                         }
                         else
                         {
@@ -2257,7 +2281,7 @@ namespace opensis.data.Repository
                     else
                     {
                         siblingAddUpdateForStudentModel._failure = true;
-                        siblingAddUpdateForStudentModel._message = "Please Select a Valid Student";
+                        siblingAddUpdateForStudentModel._message = "Please select a valid student";
                     }
                 }
             }
