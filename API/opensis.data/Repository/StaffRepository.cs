@@ -150,7 +150,7 @@ namespace opensis.data.Repository
                     //Insert data into StaffSchoolInfo table            
                     int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
                     var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
-                    var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId, Id = (int)Id!, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher", MembershipId = 4 };
+                    var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId,/* Id = (int)Id!*/Id=0, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher", MembershipId = 4 };
                     this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
                     this.context?.SaveChanges();
 
@@ -1161,7 +1161,7 @@ namespace opensis.data.Repository
                         Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
                         foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
                         {
-                            staffSchoolInfo.Id = (int)Id!;
+                            staffSchoolInfo.Id = 0;
                             //staffSchoolInfo.Id = Id != null ? (int)Id : 0;
                             staffSchoolInfo.UpdatedOn = DateTime.UtcNow;
                             staffSchoolInfo.StaffMaster = null;
