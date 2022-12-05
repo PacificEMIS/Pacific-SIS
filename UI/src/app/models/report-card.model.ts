@@ -93,6 +93,7 @@ export class AddReportCardPdf extends CommonField{
     markingPeriods: string;
     teacherName: boolean;
     teacherComments: boolean;
+    signatureLine: boolean;
     parcentage: boolean;
     gpa: boolean;
     standardGrade: boolean;
@@ -112,6 +113,7 @@ export class AddReportCardPdf extends CommonField{
         this.studentsReportCardViewModelList = [];
         this.teacherName = true;
         this.teacherComments = true;
+        this.signatureLine = true;
         this.parcentage = true;
         this.gpa = true;
         this.yearToDateDailyAbsences = true;
