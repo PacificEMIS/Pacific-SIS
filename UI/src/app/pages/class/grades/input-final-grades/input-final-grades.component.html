@@ -39,6 +39,7 @@
                                         </span>
                                         <span class="ml-6">{{ "letterGrade" | translate }}</span>
                                     </th>
+                                    <th width="25%"><span class="">{{ "creditHours" | translate }}</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,6 +103,14 @@
                                             {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
                                         </td>
                                     </ng-container>
+                                    <ng-container>
+                                        <td>
+                                            <input type="text" class="border border-gray-light rounded p-2 w-24"  
+                                            [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].creditEarned" 
+                                            (keypress)="omitSpecialChar($event)"
+                                            (paste)="$event.preventDefault()">
+                                        </td>
+                                    </ng-container>   
                                 </tr>
 
                             </tbody>
