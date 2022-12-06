@@ -190,6 +190,7 @@ export class AdministrationSettingsComponent implements OnInit, AfterContentChec
   }
   deleteProfile(id) {
     this.addMembershipModel.membership.membershipId = id;
+    this.addMembershipModel.membership.profile="";
     this.membershipService.deleteMembership(this.addMembershipModel).subscribe(
       (res) => {
         if (typeof (res) == 'undefined') {
