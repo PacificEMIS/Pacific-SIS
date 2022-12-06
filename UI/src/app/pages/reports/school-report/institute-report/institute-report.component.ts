@@ -19,6 +19,7 @@ import { ReportService } from 'src/app/services/report.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import icCheckboxChecked from '@iconify/icons-ic/check-box';
 import icCheckboxUnchecked from '@iconify/icons-ic/check-box-outline-blank';
+import { PageRolesPermission } from 'src/app/common/page-roles-permissions.service';
 
 @Component({
   selector: 'vex-institute-report',
@@ -58,7 +59,8 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
     private loaderService: LoaderService,
     private reportService: ReportService,
     private domSanitizer: DomSanitizer,
-    private paginatorObj: MatPaginatorIntl) {
+    private paginatorObj: MatPaginatorIntl,
+    private pageRolePermission: PageRolesPermission,) {
       paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -236,6 +238,22 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
     this.selectedSchools = this.selectedSchools.filter((item) => item.checked);
   }
 
+  checkViewPermission(category) {
+    let permittedTabs = this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo/generalinfo');
+    let filteredCategory = [];
+    for (const item of category) {
+      for (const permission of permittedTabs) {
+        if (
+          item.title.toLowerCase() ===
+          permission.title.toLowerCase()
+        ) {
+          filteredCategory.push(item)
+        }
+      }
+    }
+    return filteredCategory;
+  }
+
   generateInstituteReport() {
     if (!this.getSchoolReportModel.isGeneralInfo && !this.getSchoolReportModel.isAddressInfo && !this.getSchoolReportModel.isContactInfo && !this.getSchoolReportModel.isWashInfo && !this.getSchoolReportModel.isCustomCategory) {
       this.snackbar.open('Please select any option to generate report.', '', {
@@ -252,7 +270,8 @@ export class InstituteReportComponent implements OnInit, OnDestroy, AfterViewIni
     this.getSchoolReport().then((res: any) => {
       res?.schoolViewForReports?.map((item: any) => {
         item.schoolMaster.fieldsCategoryForPDF = [];
-        item?.schoolMaster?.fieldsCategory?.map(subItem => {
+        let permittedFieldsCategory = this.checkViewPermission(item?.schoolMaster?.fieldsCategory);
+        permittedFieldsCategory?.map(subItem => {
           if (!subItem?.isSystemCategory && subItem?.customFields?.length) {
             item.schoolMaster.fieldsCategoryForPDF.push(subItem);
           }
