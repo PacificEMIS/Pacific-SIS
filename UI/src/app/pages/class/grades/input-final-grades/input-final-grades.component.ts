@@ -583,7 +583,8 @@ export class InputFinalGradesComponent implements OnInit {
     this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained = null;
     this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i].teacherComment = null;
     this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i].studentFinalGradeComments = [];
-
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i].creditAttempted = this.creditHours; 
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i].creditEarned = this.creditHours;
   }
 
   setValue(standardGradeScaleId, gradeObtained, i) {
