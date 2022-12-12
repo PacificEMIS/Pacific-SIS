@@ -760,6 +760,7 @@ namespace opensis.data.Repository
                                         PersonalEmail = ssv.studentcss.sm.PersonalEmail,
                                         SchoolEmail = ssv.studentcss.sm.SchoolEmail,
                                         GradeLevel = this.context.Gradelevels.FirstOrDefault(c => c.TenantId == ssv.studentcss.sm.TenantId && c.SchoolId == ssv.studentcss.sm.SchoolId && c.GradeId == ssv.studentcss.scs.GradeId)?.Title,
+                                        GradeId = ssv.studentcss.scs.GradeId,
                                         IsActive = ssv.studentcss.sm.IsActive,
                                         CreatedOn = ssv.studentcss.scs.CreatedOn,
                                         CreatedBy = ssv.studentcss.scs.CreatedBy,
