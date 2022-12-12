@@ -496,20 +496,10 @@ namespace opensis.data.Repository
                     else
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        var ColumnvalueForName = Regex.Replace(Columnvalue, @"\s+", "");
                         if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                         {
-                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) ||
-                                                                        x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.AlternateId != null && x.AlternateId.Contains(Columnvalue) ||
-                                                                        x.HomePhone != null && x.HomePhone.Contains(Columnvalue) ||
-                                                                        x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue) ||
-                                                                        x.PersonalEmail != null && x.PersonalEmail.Contains(Columnvalue) ||
-                                                                        x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
-                                                                        x.GradeLevelTitle != null && x.GradeLevelTitle.Contains(Columnvalue) ||
-                                                                        x.SectionName != null && x.SectionName.Contains(Columnvalue));
+                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.AlternateId != null && x.AlternateId.ToLower().Contains(Columnvalue.ToLower()) || x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower()) || x.MobilePhone != null && x.MobilePhone.ToLower().Contains(Columnvalue.ToLower()) || x.PersonalEmail != null && x.PersonalEmail.ToLower().Contains(Columnvalue.ToLower()) || x.SchoolEmail != null && x.SchoolEmail.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SectionName != null && x.SectionName.ToLower().Contains(Columnvalue.ToLower()));
                         }
                         else
                         {
@@ -5813,20 +5803,10 @@ namespace opensis.data.Repository
                     else
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        var ColumnvalueForName = Regex.Replace(Columnvalue, @"\s+", "");
                         if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                         {
-                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) ||
-                                                                        x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.AlternateId != null && x.AlternateId.Contains(Columnvalue) ||
-                                                                        x.HomePhone != null && x.HomePhone.Contains(Columnvalue) ||
-                                                                        x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue) ||
-                                                                        x.PersonalEmail != null && x.PersonalEmail.Contains(Columnvalue) ||
-                                                                        x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
-                                                                        x.GradeLevelTitle != null && x.GradeLevelTitle.Contains(Columnvalue) ||
-                                                                        x.SectionName != null && x.SectionName.Contains(Columnvalue));
+                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.AlternateId != null && x.AlternateId.ToLower().Contains(Columnvalue.ToLower()) || x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower()) || x.MobilePhone != null && x.MobilePhone.ToLower().Contains(Columnvalue.ToLower()) || x.PersonalEmail != null && x.PersonalEmail.ToLower().Contains(Columnvalue.ToLower()) || x.SchoolEmail != null && x.SchoolEmail.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SectionName != null && x.SectionName.ToLower().Contains(Columnvalue.ToLower()));
                         }
                         else
                         {
