@@ -505,7 +505,7 @@ namespace opensis.data.Repository
                         decimal? WCScreditEarned = 0.0m;
                         decimal? UNWCScreditEarned = 0.0m;
 
-                        foreach (var studentFinalGrade in studentFinalGradeAllData)
+                        foreach (var studentFinalGrade in studentFinalGradeData)
                         {
                             decimal? WGPValue = 0.0m;
                             decimal? UNWGPValue = 0.0m;
