@@ -66,11 +66,20 @@ namespace opensis.data.Repository
         public LoginViewModel ValidateUserLogin(LoginViewModel objModel)
         {
             LoginViewModel ReturnModel = new LoginViewModel();
+            string decrypted = "";
             try
             {
                 UserMaster userMaster = new UserMaster();
+                if (objModel.IsMobileLogin==true)
+                {
+                    decrypted = Utility.DecryptString(objModel.Password!);
 
-                var decrypted = Utility.Decrypt(objModel.Password!);
+                }
+                else
+                {
+                    decrypted = Utility.Decrypt(objModel.Password!);
+
+                }
 
                 string passwordHash = Utility.GetHashedPassword(decrypted);
                 ReturnModel._tenantName = objModel._tenantName;

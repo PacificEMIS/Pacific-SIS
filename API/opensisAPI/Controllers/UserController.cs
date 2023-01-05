@@ -529,5 +529,19 @@ namespace opensisAPI.Controllers
             }
             return registrationViewModel;
         }
+        [HttpPost("getEncryptPassword")]
+        public IActionResult GetEncryptPWD(string password)
+        {
+            string passwordHash = null;
+            try
+            {
+                passwordHash = Utility.EncryptString(password);
+            }
+            catch (Exception es)
+            {
+                return Ok(es.Message);
+            }
+            return Ok(passwordHash);
+        }
     }
 }
