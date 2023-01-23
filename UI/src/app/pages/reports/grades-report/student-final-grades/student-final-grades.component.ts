@@ -664,7 +664,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
     }
 
     if (!this.selectedStudents.length) {
-      this.snackbar.open('Select at least one student.', '', {
+      this.snackbar.open(this.defaultValuesService.translateKey('selectAtLeastOneStudent'), '', {
         duration: 3000
       });
       return;

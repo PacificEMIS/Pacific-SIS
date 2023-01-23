@@ -113,6 +113,7 @@ export class AddSiblingComponent implements OnInit {
       if (this.studentSiblingSearch.studentInternalId === '') {
         this.studentSiblingSearch.studentInternalId = null;
       }
+      delete this.studentSiblingSearch['getStudentForView'];
       this.studentSiblingSearch.dob = this.commonFunction.formatDateSaveWithoutTime(this.studentSiblingSearch.dob);
       this.studentService.siblingSearch(this.studentSiblingSearch, this.studentSiblingSearch.schoolId).subscribe((res) => {
         if (res) {

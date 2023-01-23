@@ -112,6 +112,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   showSaveFilter: boolean = false;
   allStudentList = [];
   isAdvance:boolean;
+  filterParameters = [];
   destroySubject$: Subject<void> = new Subject();
   getAllStudent: StudentListModel = new StudentListModel();
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
@@ -215,6 +216,7 @@ export class StudentComponent implements OnInit, OnDestroy {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
@@ -739,6 +741,7 @@ export class StudentComponent implements OnInit, OnDestroy {
       }
       this.getAllStudent.pageNumber = event.pageIndex + 1;
       this.getAllStudent.pageSize = event.pageSize;
+      this.getAllStudent.filterParams = this.filterParameters;
       this.defaultValuesService.setPageSize(event.pageSize);
       this.callAllStudent();
     }

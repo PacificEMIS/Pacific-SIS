@@ -1938,5 +1938,11 @@
     "cropImage": "Recadrer l'image",
     "upload": "Télécharger",
     "uploadPhoto": "Envoyer la photo",
-    "uploadLogo": "Télécharger le logo"
+    "uploadLogo": "Télécharger le logo",
+    "studentScheduleReport": "Rapport sur l'emploi du temps des étudiants",
+    "selectAtLeastOneStudent": "Sélectionnez au moins un élève.",
+    "failedToPrintScheduledCourses": "Aucun enregistrement trouvé. Échec de l'impression des cours programmés.",
+    "courseTeacher": "Cours/Enseignant",
+    "sunText": "Soleil",
+    "satText": "Assis"
 }

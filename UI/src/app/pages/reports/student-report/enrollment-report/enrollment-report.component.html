@@ -268,8 +268,8 @@
                     <td>
                         <table>
                             <tr>
-                                <td class="student-logo width-160">
-                                    <div *ngIf="studentDetails?.studentPhoto">
+                                <td *ngIf="studentDetails?.studentPhoto" class="student-logo width-160">
+                                    <div>
                                         <img [src]="studentDetails?.studentPhoto ? 'data:image/jpeg;base64,' + studentDetails?.studentPhoto : ''"
                                             alt="Student Photo">
                                     </div>

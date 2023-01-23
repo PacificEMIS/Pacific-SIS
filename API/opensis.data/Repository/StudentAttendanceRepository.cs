@@ -27,11 +27,13 @@ using Microsoft.EntityFrameworkCore;
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
+using opensis.data.ViewModels.Period;
 using opensis.data.ViewModels.Staff;
 using opensis.data.ViewModels.StaffSchedule;
 using opensis.data.ViewModels.StudentAttendances;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -2224,9 +2226,9 @@ namespace opensis.data.Repository
                         {
                             foreach (var studentAttendance in studentAttendanceAddViewModel.studentAttendance)
                             {
-                                int? blockIde = 1;
+                                int? blockIde = this.context?.Block.Where(b=>b.TenantId == studentAttendanceAddViewModel.TenantId && b.SchoolId == studentAttendanceAddViewModel.SchoolId && b.AcademicYear == Utility.GetCurrentAcademicYear(this.context!, studentAttendanceAddViewModel.TenantId, studentAttendanceAddViewModel.SchoolId)).FirstOrDefault()!.BlockId;
+                               /* blockPeriodAddViewModel.blockPeriod.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, blockPeriodAddViewModel.blockPeriod.TenantId, blockPeriodAddViewModel.blockPeriod.SchoolId);*/
                                 int? periodIde = null;
-
                                 if (allCsData.FirstOrDefault()!.ScheduleType == "Fixed Schedule (1)")
                                 {
                                     periodIde = allCsData.FirstOrDefault()!.FixedPeriodId;
@@ -2790,33 +2792,42 @@ namespace opensis.data.Repository
 
                                 if (studentDailyAttendance.AttendanceCode != null)
                                 {
-                                    //var AttendanceCodeId = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && x.Title.ToLower() == studentDailyAttendance.AttendanceCode.ToLower())?.AttendanceCode1;
-                                    var AttendanceCodeId = this.context?.AttendanceCode.AsEnumerable().FirstOrDefault(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && String.Compare(x.Title, studentDailyAttendance.AttendanceCode, true) == 0)?.AttendanceCode1;
-                                    if (AttendanceCodeId != null)
+                                    var AttendanceCodeData = this.context?.AttendanceCode.AsEnumerable().FirstOrDefault(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && String.Compare(x.Title, studentDailyAttendance.AttendanceCode, true) == 0);
+                                    if (AttendanceCodeData != null)
                                     {
-                                        if (studentDailyAttendance.AttendanceCode.ToLower() != "absent")
+                                        if (AttendanceCodeData.StateCode != "Absent")
                                         {
                                             var StudentAttendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && x.StudentId == studentDailyAttendance.StudentId && x.AttendanceDate == studentDailyAttendanceListViewModel.AttendanceDate).ToList();
 
                                             if (StudentAttendanceData?.Any() == true)
                                             {
                                                 var blockData = this.context?.Block.FirstOrDefault(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && x.BlockId == StudentAttendanceData.FirstOrDefault()!.BlockId);
-                                                StudentAttendanceData.ToList().ForEach(x => x.AttendanceCode = (int)AttendanceCodeId);
+                                                StudentAttendanceData.ToList().ForEach(x => x.AttendanceCode = (int)AttendanceCodeData.AttendanceCode1);
 
-                                                studentDailyAttendanceData.AttendanceMinutes = blockData?.FullDayMinutes;
+                                                if (AttendanceCodeData.StateCode != "Present")
+                                                {
+                                                    //this block for half day
+                                                    var halfDatMin = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(blockData?.FullDayMinutes) / 2));
+                                                    studentDailyAttendanceData.AttendanceMinutes = halfDatMin;
+                                                }
+                                                else
+                                                {
+                                                    //this block for present
+                                                    studentDailyAttendanceData.AttendanceMinutes = blockData?.FullDayMinutes;
+                                                }
+
                                             }
-
                                         }
                                         else
                                         {
+                                            //this block for absent
                                             var StudentAttendanceData = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).Where(x => x.TenantId == studentDailyAttendanceListViewModel.TenantId && x.SchoolId == studentDailyAttendanceListViewModel.SchoolId && x.StudentId == studentDailyAttendance.StudentId && x.AttendanceDate == studentDailyAttendanceListViewModel.AttendanceDate).ToList();
 
                                             if (StudentAttendanceData?.Any() == true)
                                             {
-                                                StudentAttendanceData.ToList().ForEach(x => x.AttendanceCode = (int)AttendanceCodeId);
+                                                StudentAttendanceData.ToList().ForEach(x => x.AttendanceCode = (int)AttendanceCodeData.AttendanceCode1);
 
                                                 studentDailyAttendanceData.AttendanceMinutes = 0;
-
                                             }
                                         }
                                     }

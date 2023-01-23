@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
   tenantName: any;
   tenantFooter: string;
   favIcon: HTMLLinkElement = document.querySelector('#appFavicon');
-
+  rememberMeFlag: boolean = false;
   constructor(
     private router: Router,
     private Activeroute: ActivatedRoute,
@@ -169,16 +169,10 @@ export class LoginComponent implements OnInit {
 
   rememberMe(event) {
     if (!event) {
-      this.expiredDate = new Date();
-      this.expiredDate.setDate(this.expiredDate.getDate() + 7);
-      this.cookieService.set('userDetails', JSON.stringify(this.form.value), this.expiredDate,null,null,true);
-
+      this.rememberMeFlag = true;
     }
     else {
-      if (this.cookieService.get('userDetails') !== null && this.cookieService.get('userDetails') !== "") {
-
-        this.cookieService.delete('userDetails');
-      }
+      this.rememberMeFlag = false;
     }
 
   }
@@ -231,6 +225,16 @@ export class LoginComponent implements OnInit {
             this.defaultValuesService.setuserMembershipName(data.membershipName);
             this.callRolePermissions();
             
+            if (this.rememberMeFlag) {
+              this.expiredDate = new Date();
+              this.expiredDate.setDate(this.expiredDate.getDate() + 7);
+              this.cookieService.set('userDetails', JSON.stringify(this.form.value), this.expiredDate,null,null,true);
+            }
+            else {
+              if (this.cookieService.get('userDetails') !== null && this.cookieService.get('userDetails') !== "") {
+                this.cookieService.delete('userDetails');
+              }
+            }
           }
         }
       })

@@ -10,7 +10,7 @@ namespace opensis.catelogdb.Models
     public class AvailableTenants
     {
         [Key]
-        public int? Id { get; set; }
+        public long? Id { get; set; }
         [Column("tenant_id")]
         public Guid? TenantId { get; set; }
         [Column("tenant_name")]

@@ -150,6 +150,7 @@ export class ScheduleCoursesForStudent360Model extends CommonField {
   scheduleCourseSectionForView: ScheduleCourseSectionForViewModel[];
   studentId: number;
   isDropped: boolean;
+  academicYear: number;
   constructor() {
     super();
   }

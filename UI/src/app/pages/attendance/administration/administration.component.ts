@@ -311,7 +311,7 @@ export class AdministrationComponent implements OnInit {
   }
 
   onAttendanceSelected(attendance, element) {
-    this.attendanceNoToString=(attendance==1) ? 'Present' : (attendance==2) ? 'Absent' : 'Half Day';
+    const attendanceCodeDetails = this.attendanceCodeList.find(x=> x.attendanceCode1 == element.studentAttendanceList[0].attendanceCode);
     if (this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.length > 1) {
       let index = this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.findIndex(x => x.studentId == element.studentId);
       if (index > 0) {
@@ -322,7 +322,7 @@ export class AdministrationComponent implements OnInit {
           studentId: element.studentId,
           gradeId: element.gradeId,
           sectionId: element.sectionId,
-          attendanceCode: this.attendanceNoToString,
+          attendanceCode: attendanceCodeDetails.title,
           attendanceDate: this.getAllStudent.attendanceDate,
           attendanceMinutes: null,
           attendanceComment: element.attendanceComment,
@@ -341,7 +341,7 @@ export class AdministrationComponent implements OnInit {
             studentId: element.studentId,
             gradeId: element.gradeId,
             sectionId: element.sectionId,
-            attendanceCode: this.attendanceNoToString,
+            attendanceCode: attendanceCodeDetails.title,
             attendanceDate: this.getAllStudent.attendanceDate,
             attendanceMinutes: null,
             attendanceComment: element.attendanceComment,
@@ -362,7 +362,7 @@ export class AdministrationComponent implements OnInit {
           studentId: element.studentId,
           gradeId: element.gradeId,
           sectionId: element.sectionId,
-          attendanceCode: this.attendanceNoToString,
+          attendanceCode: attendanceCodeDetails.title,
           attendanceDate: this.getAllStudent.attendanceDate,
           attendanceMinutes: null,
           attendanceComment: element.attendanceComment,

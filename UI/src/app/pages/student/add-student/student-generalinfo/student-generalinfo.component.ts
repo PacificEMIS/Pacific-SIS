@@ -44,7 +44,6 @@ import { MY_FORMATS } from '../../../shared/format-datepicker';
 import { SharedFunction } from '../../../shared/shared-function';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import icEdit from '@iconify/icons-ic/edit';
-import { Subject } from 'rxjs/internal/Subject';
 import { auditTime, debounceTime, distinctUntilChanged, takeUntil, shareReplay, take } from 'rxjs/operators';
 import icVisibility from '@iconify/icons-ic/twotone-visibility';
 import icVisibilityOff from '@iconify/icons-ic/twotone-visibility-off';
@@ -60,7 +59,7 @@ import { CryptoService } from '../../../../services/Crypto.service';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import { Router } from '@angular/router';
 import { DefaultValuesService } from '../../../../common/default-values.service';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -91,6 +90,8 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   categoryId = 0;
   @ViewChild('f') currentForm: NgForm;
   data;
+  portalAccess: boolean;
+  cloneLoginEmailAddress;
   moduleIdentifier = ModuleIdentifier;
   nameOfMiscValuesForView: MiscModel = new MiscModel(); // This Object contains Section Name, Nationality, Country, languages for View Mode.
   countryListArr = [];
@@ -155,7 +156,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     private loginService: LoginService,
     private commonFunction: SharedFunction,
     private sectionService: SectionService,
-    private defaultValuesService: DefaultValuesService,
+    public defaultValuesService: DefaultValuesService,
     private cd: ChangeDetectorRef,
     private router: Router,
     private imageCropperService: ImageCropperService,
@@ -180,6 +181,8 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     this.studentService.studentDetailsForViewedAndEdited.subscribe((res)=>{
       if(res){
       this.studentDetailsForViewAndEdit = res;
+      this.portalAccess = this.studentDetailsForViewAndEdit?.portalAccess;
+      this.cloneLoginEmailAddress = this.studentDetailsForViewAndEdit?.loginEmail;
       this.studentAddModel = this.studentDetailsForViewAndEdit;
       this.countryOfBirthCtrl.setValue(res?.studentMaster?.countryOfBirth);
       this.nationalityCtrl.setValue(res?.studentMaster?.nationality);
@@ -191,7 +194,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
     this.permissions = this.pageRolePermission.checkPageRolePermission();
 
     this.internalId = new FormControl('');
-    this.loginEmail = new FormControl('', ValidationService.emailValidator);
+    this.loginEmail = new FormControl('', Validators.required);
     if (this.studentCreateMode === this.studentCreate.ADD) {
 
       this.initializeDropdownsInAddMode();
@@ -223,7 +226,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.accessPortal();
       this.initializeDropdownsInAddMode();
       this.saveAndNext = 'update';
-      if (this.studentAddModel.studentMaster.studentPortalId) {
+      if (this.studentAddModel.studentMaster.studentPortalId && this.studentAddModel.portalAccess) {
         this.hideAccess = true;
         this.fieldDisabled = true;
       }
@@ -448,7 +451,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
                 this.commonService.checkTokenValidOrNot(data._message);
               } else {
                 if (data.isValidEmailAddress) {
-                  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(term)) {
+                  if (/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/.test(term)) {
                     this.loginEmail.setErrors(null);
                     this.isUser = false;
                   } else {
@@ -473,7 +476,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   }
 
   accessPortal() {
-    if (this.data?.studentPortalId) {
+    if (this.data?.studentPortalId && this.portalAccess) {
       this.hideAccess = true;
       this.fieldDisabled = true;
       this.hidePasswordAccess = false;
@@ -509,6 +512,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
       this.hideAccess = false;
       this.hidePasswordAccess = false;
       this.studentAddModel.portalAccess = false;
+      if (this.cloneLoginEmailAddress) {
+        this.studentAddModel.loginEmail = this.cloneLoginEmailAddress;
+      }
     }
   }
 
@@ -662,9 +668,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
   }
 
   activateUser(event) {
-    if (event === false) {
+    // if (event === false) {
       this.activeDeactiveUserModel.userId = this.studentAddModel.studentMaster.studentId;
-      this.activeDeactiveUserModel.isActive = true;
+      this.activeDeactiveUserModel.isActive = !event;
       this.activeDeactiveUserModel.module = 'student';
       this.activeDeactiveUserModel.loginEmail = this.studentAddModel.loginEmail;
       this.commonService.activeDeactiveUser(this.activeDeactiveUserModel).subscribe(res => {
@@ -678,7 +684,10 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
-            // this.studentAddModel.studentMaster.isActive = true;
+            this.studentAddModel.studentMaster.isActive = res.isActive;
+            this.cloneStudentModel = JSON.parse(this.cloneStudentModel);
+            this.cloneStudentModel.studentMaster.isActive = res.isActive;
+            this.cloneStudentModel = JSON.stringify(this.cloneStudentModel);
           }
         } else {
           this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
@@ -686,7 +695,7 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
           });
         }
       });
-    }
+    // }
   }
 
   submit() {
@@ -751,7 +760,9 @@ export class StudentGeneralinfoComponent implements OnInit, AfterViewInit, OnDes
           this.studentCreateMode = this.studentCreate.VIEW;
           this.studentService.changePageMode(this.studentCreateMode);
           this.studentAddModel.loginEmail = data.studentMaster.studentPortalId;
-          this.accessPortal();
+          this.cloneLoginEmailAddress = data.loginEmail;
+          this.studentAddModel.studentMaster.isActive = data.studentMaster.isActive;
+          // this.accessPortal();
         }
       } else {
         this.snackbar.open(this.defaultValuesService.translateKey('studentUpdateFailed') + this.defaultValuesService.getHttpError(), '', {

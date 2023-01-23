@@ -381,9 +381,16 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
         let index = this.blockListViewModel.getBlockListForView[0].blockPeriod.findIndex(item => item.periodId == this.courseCalendarSchedule.periodId);
         this.periodTitle.push(this.blockListViewModel.getBlockListForView[0].blockPeriod[index].periodTitle);
       }
+
+      const courseCalendarStartEndDate = new Date(this.courseCalendarSchedule.date);
+      let courseSectionStartEndDate = new Date(courseCalendarStartEndDate.getTime() + courseCalendarStartEndDate.getTimezoneOffset() * 60 * 1000);
+      var offset = courseCalendarStartEndDate.getTimezoneOffset() / 60;
+      var hours = courseCalendarStartEndDate.getHours();
+      courseSectionStartEndDate.setHours(hours - offset);
+
       this.events.push({
-        start: new Date(this.courseCalendarSchedule.date),
-        end: new Date(this.courseCalendarSchedule.date),
+        start: courseSectionStartEndDate,
+        end: courseSectionStartEndDate,
         title: this.periodTitle[this.periodTitle.length - 1],
         color: null,
         actions: null,

@@ -90,9 +90,10 @@ export class SchoolFieldsCategoryComponent implements OnInit {
     if (this.form.valid){
       this.checkSearchRecord = 1;
       if (this.form.controls.categoryId.value === 0){
-        this.fieldsCategoryAddView.fieldsCategory.title = this.form.controls.title.value;
+        this.fieldsCategoryAddView.fieldsCategory.title = this.form.controls.title.value.trim();
         this.fieldsCategoryAddView.fieldsCategory.sortOrder = this.form.controls.sortOrder.value;
         this.fieldsCategoryAddView.fieldsCategory.module = this.fieldCategoryModuleEnum.School;
+        this.fieldsCategoryAddView.fieldsCategory.createdBy = this.defaultValuesService.getUserGuidId();
         this.customFieldService.addFieldsCategory(this.fieldsCategoryAddView).subscribe(
           (res: FieldsCategoryAddView) => {
             if (typeof(res) === 'undefined'){
@@ -122,7 +123,7 @@ export class SchoolFieldsCategoryComponent implements OnInit {
 
       }
       else{
-        this.fieldsCategoryAddView.fieldsCategory.categoryId=this.form.controls.categoryId.value;
+        this.fieldsCategoryAddView.fieldsCategory.categoryId=this.form.controls.categoryId.value.trim();
         this.fieldsCategoryAddView.fieldsCategory.title=this.form.controls.title.value;
         this.fieldsCategoryAddView.fieldsCategory.sortOrder=this.form.controls.sortOrder.value;
         this.customFieldService.updateFieldsCategory(this.fieldsCategoryAddView).subscribe(

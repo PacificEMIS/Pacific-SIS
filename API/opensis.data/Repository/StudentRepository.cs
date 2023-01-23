@@ -146,7 +146,7 @@ namespace opensis.data.Repository
                             gradeId = gradeLevel.GradeId;
                         }
 
-                        var StudentEnrollmentData = new StudentEnrollment() { TenantId = student.studentMaster.TenantId, SchoolId = student.studentMaster.SchoolId, StudentId = student.studentMaster.StudentId, EnrollmentId = 1, SchoolName = schoolName, RollingOption = "Next grade at current school", EnrollmentCode = enrollmentCode, CalenderId = calenderId, GradeLevelTitle = (gradeLevel != null) ? gradeLevel.Title : null, EnrollmentDate = DateTime.UtcNow, StudentGuid = GuidId, IsActive = true, GradeId = gradeId };
+                        var StudentEnrollmentData = new StudentEnrollment() { TenantId = student.studentMaster.TenantId, SchoolId = student.studentMaster.SchoolId, StudentId = student.studentMaster.StudentId, EnrollmentId = 1, SchoolName = schoolName, RollingOption = "Next grade at current school", EnrollmentCode = enrollmentCode, CalenderId = calenderId, GradeLevelTitle = (gradeLevel != null) ? gradeLevel.Title : null, EnrollmentDate = DateTime.UtcNow, StudentGuid = GuidId, IsActive = true, GradeId = gradeId, CreatedBy = student.studentMaster.CreatedBy, CreatedOn = DateTime.UtcNow };
 
                         //Add student portal access
                         if (!string.IsNullOrWhiteSpace(student.PasswordHash) && !string.IsNullOrWhiteSpace(student.LoginEmail))
@@ -496,20 +496,10 @@ namespace opensis.data.Repository
                     else
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        var ColumnvalueForName = Regex.Replace(Columnvalue, @"\s+", "");
                         if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                         {
-                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) ||
-                                                                        x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.AlternateId != null && x.AlternateId.Contains(Columnvalue) ||
-                                                                        x.HomePhone != null && x.HomePhone.Contains(Columnvalue) ||
-                                                                        x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue) ||
-                                                                        x.PersonalEmail != null && x.PersonalEmail.Contains(Columnvalue) ||
-                                                                        x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
-                                                                        x.GradeLevelTitle != null && x.GradeLevelTitle.Contains(Columnvalue) ||
-                                                                        x.SectionName != null && x.SectionName.Contains(Columnvalue));
+                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.AlternateId != null && x.AlternateId.ToLower().Contains(Columnvalue.ToLower()) || x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower()) || x.MobilePhone != null && x.MobilePhone.ToLower().Contains(Columnvalue.ToLower()) || x.PersonalEmail != null && x.PersonalEmail.ToLower().Contains(Columnvalue.ToLower()) || x.SchoolEmail != null && x.SchoolEmail.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SectionName != null && x.SectionName.ToLower().Contains(Columnvalue.ToLower()));
                         }
                         else
                         {
@@ -2170,30 +2160,29 @@ namespace opensis.data.Repository
             SiblingSearchForStudentListModel StudentSiblingList = new SiblingSearchForStudentListModel();
             try
             {
-                int resultData;              
+                int resultData;
+
                 var studentData = this.context?.StudentMaster
-                    .Include(s => s.StudentEnrollment).Where(x => x.FirstGivenName == studentSiblingListViewModel.FirstGivenName && x.LastFamilyName == studentSiblingListViewModel.LastFamilyName && x.TenantId == studentSiblingListViewModel.TenantId
-                    && (studentSiblingListViewModel.SchoolId == null || (x.SchoolId == studentSiblingListViewModel.SchoolId)) && (studentSiblingListViewModel.Dob == null || (x.Dob == studentSiblingListViewModel.Dob)) && (string.IsNullOrEmpty(studentSiblingListViewModel.StudentInternalId) || (
-                    (x.StudentInternalId??"").ToLower().Trim() == studentSiblingListViewModel.StudentInternalId.ToLower().Trim() ))
-                && (string.IsNullOrEmpty(studentSiblingListViewModel.GradeLevelTitle)|| (x.StudentEnrollment.Any(s=>s.IsActive==true && s.GradeLevelTitle==studentSiblingListViewModel.GradeLevelTitle)))).Select(s => new GetStudentForView
+                    .Include(s => s.StudentEnrollment).Where(x => x.IsActive == true && x.FirstGivenName == studentSiblingListViewModel.FirstGivenName && x.LastFamilyName == studentSiblingListViewModel.LastFamilyName && x.TenantId == studentSiblingListViewModel.TenantId
+                        && (studentSiblingListViewModel.SchoolId == null || (x.SchoolId == studentSiblingListViewModel.SchoolId)) && (studentSiblingListViewModel.Dob == null || (x.Dob == studentSiblingListViewModel.Dob)) && (string.IsNullOrEmpty(studentSiblingListViewModel.StudentInternalId) || (
+                        (x.StudentInternalId ?? "").ToLower().Trim() == studentSiblingListViewModel.StudentInternalId.ToLower().Trim()))
+                    && (string.IsNullOrEmpty(studentSiblingListViewModel.GradeLevelTitle) || (x.StudentEnrollment.Any(s => s.IsActive == true && s.GradeLevelTitle == studentSiblingListViewModel.GradeLevelTitle)))).Select(s => new GetStudentForView
+                    {
+                        FirstGivenName = s.FirstGivenName,
+                        LastFamilyName = s.LastFamilyName,
+                        Dob = s.Dob,
+                        StudentId = s.StudentId,
+                        StudentInternalId = s.StudentInternalId,
+                        SchoolId = s.SchoolId,
+                        TenantId = s.TenantId,
+                        SchoolName = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.SchoolName).FirstOrDefault(),
+                        Address = ToFullAddress(s.HomeAddressLineOne, s.HomeAddressLineTwo, s.HomeAddressCity, s.HomeAddressState,
+                                   int.TryParse(s.HomeAddressCountry, out resultData) == true ? this.context.Country.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCountry)).FirstOrDefault()!.Name : string.Empty, s.HomeAddressZip),
+                        GradeLevelTitle = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault()
+                    }).ToList();
+                if (studentData != null && studentData?.Any() == true)
                 {
-                    FirstGivenName = s.FirstGivenName,
-                    LastFamilyName = s.LastFamilyName,
-                    Dob = s.Dob,
-                    StudentId = s.StudentId,
-                    StudentInternalId = s.StudentInternalId,
-                    SchoolId = s.SchoolId,
-                    TenantId = s.TenantId,
-                    SchoolName = s.StudentEnrollment.Where(s => s.IsActive == true).Select(s => s.SchoolName).FirstOrDefault(),
-                    Address = ToFullAddress(s.HomeAddressLineOne, s.HomeAddressLineTwo,
-                        int.TryParse(s.HomeAddressCity, out resultData) == true ? this.context.City.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCity)).FirstOrDefault()!.Name : s.HomeAddressCity,
-                        int.TryParse(s.HomeAddressState, out resultData) == true ? this.context.State.Where(x => x.Id == Convert.ToInt32(s.HomeAddressState)).FirstOrDefault()!.Name : s.HomeAddressState,
-                        int.TryParse(s.HomeAddressCountry, out resultData) == true ? this.context.Country.Where(x => x.Id == Convert.ToInt32(s.HomeAddressCountry)).FirstOrDefault()!.Name : string.Empty, s.HomeAddressZip),
-                    GradeLevelTitle = s.StudentEnrollment.Where(s=>s.IsActive==true).Select(s=>s.GradeLevelTitle).FirstOrDefault()
-                }).ToList();
-                if (studentData != null && studentData?.Any()==true)
-                {
-                    
+
                     StudentSiblingList.getStudentForView = studentData;
                     StudentSiblingList._tenantName = studentSiblingListViewModel._tenantName;
                     StudentSiblingList._token = studentSiblingListViewModel._token;
@@ -2234,7 +2223,19 @@ namespace opensis.data.Repository
                     {
                         if (studentAssociateTo.Associationship != null)
                         {
-                            studentAssociateTo.Associationship = studentAssociateTo.Associationship + " | " + siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.SchoolId + "#" + siblingAddUpdateForStudentModel.StudentId;
+                            var associationData = siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.SchoolId + "#" + siblingAddUpdateForStudentModel.StudentId;
+
+                            var checkAssociation = studentAssociateTo.Associationship.Contains(associationData);
+                            if (checkAssociation)
+                            {
+                                siblingAddUpdateForStudentModel._failure = true;
+                                siblingAddUpdateForStudentModel._message = "Sibling already added";
+                                return siblingAddUpdateForStudentModel;
+                            }
+                            else
+                            {
+                                studentAssociateTo.Associationship = studentAssociateTo.Associationship + " | " + associationData;
+                            }
                         }
                         else
                         {
@@ -2243,7 +2244,19 @@ namespace opensis.data.Repository
 
                         if (studentAssociateBy.Associationship != null)
                         {
-                            studentAssociateBy.Associationship = studentAssociateBy.Associationship + " | " + siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.studentMaster.SchoolId + "#" + siblingAddUpdateForStudentModel.studentMaster.StudentId;
+                            var associationData = siblingAddUpdateForStudentModel.studentMaster.TenantId + "#" + siblingAddUpdateForStudentModel.studentMaster.SchoolId + "#" + siblingAddUpdateForStudentModel.studentMaster.StudentId;
+
+                            var checkAssociation = studentAssociateTo.Associationship.Contains(associationData);
+                            if (checkAssociation)
+                            {
+                                siblingAddUpdateForStudentModel._failure = true;
+                                siblingAddUpdateForStudentModel._message = "Sibling already added";
+                                return siblingAddUpdateForStudentModel;
+                            }
+                            else
+                            {
+                                studentAssociateBy.Associationship = studentAssociateBy.Associationship + " | " + associationData;
+                            }
                         }
                         else
                         {
@@ -2257,7 +2270,7 @@ namespace opensis.data.Repository
                     else
                     {
                         siblingAddUpdateForStudentModel._failure = true;
-                        siblingAddUpdateForStudentModel._message = "Please Select a Valid Student";
+                        siblingAddUpdateForStudentModel._message = "Please select a valid student";
                     }
                 }
             }
@@ -3186,12 +3199,16 @@ namespace opensis.data.Repository
                 {
                     MasterStudentId = studentData.StudentId + 1;
                 }
+
+                var academicYear = Utility.GetCurrentAcademicYear(this.context!, studentListAddViewModel.TenantId, studentListAddViewModel.SchoolId);
+                
                 int? indexNo = -1;
                 foreach (var student in studentListAddViewModel.studentAddViewModelList)
                 {
                     if (student.studentMaster != null)
                     {
                         indexNo++;
+                        student.AcademicYear = academicYear.ToString();
 
                         //UserMaster userMaster = new UserMaster();
                         var StudentEnrollmentData = new StudentEnrollment();
@@ -5786,20 +5803,10 @@ namespace opensis.data.Repository
                     else
                     {
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
-                        Columnvalue = Regex.Replace(Columnvalue, @"\s+", "");
+                        var ColumnvalueForName = Regex.Replace(Columnvalue, @"\s+", "");
                         if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
                         {
-                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.MiddleName != null && x.MiddleName.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(Columnvalue.ToLower()) ||
-                                                                        x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) ||
-                                                                        x.AlternateId != null && x.AlternateId.Contains(Columnvalue) ||
-                                                                        x.HomePhone != null && x.HomePhone.Contains(Columnvalue) ||
-                                                                        x.MobilePhone != null && x.MobilePhone.Contains(Columnvalue) ||
-                                                                        x.PersonalEmail != null && x.PersonalEmail.Contains(Columnvalue) ||
-                                                                        x.SchoolEmail != null && x.SchoolEmail.Contains(Columnvalue) ||
-                                                                        x.GradeLevelTitle != null && x.GradeLevelTitle.Contains(Columnvalue) ||
-                                                                        x.SectionName != null && x.SectionName.Contains(Columnvalue));
+                            transactionIQ = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.AlternateId != null && x.AlternateId.ToLower().Contains(Columnvalue.ToLower()) || x.HomePhone != null && x.HomePhone.ToLower().Contains(Columnvalue.ToLower()) || x.MobilePhone != null && x.MobilePhone.ToLower().Contains(Columnvalue.ToLower()) || x.PersonalEmail != null && x.PersonalEmail.ToLower().Contains(Columnvalue.ToLower()) || x.SchoolEmail != null && x.SchoolEmail.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SectionName != null && x.SectionName.ToLower().Contains(Columnvalue.ToLower()));
                         }
                         else
                         {

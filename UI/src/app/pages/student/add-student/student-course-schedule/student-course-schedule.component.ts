@@ -63,6 +63,9 @@ import { Permissions } from "../../../../models/roll-based-access.model";
 import { CommonService } from "../../../../services/common.service";
 import { CourseManagerService } from "../../../../services/course-manager.service";
 import { GetAllCourseListModel, GetAllProgramModel, GetAllSubjectModel } from "../../../../models/course-manager.model";
+import { GetPrintScheduleReportModel } from "src/app/models/report.model";
+import { ReportService } from "src/app/services/report.service";
+import { ProfilesTypes } from "src/app/enums/profiles.enum";
 @Component({
   selector: "vex-student-course-schedule",
   templateUrl: "./student-course-schedule.component.html",
@@ -88,12 +91,13 @@ export class StudentCourseScheduleComponent implements OnInit {
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   getAllCourseListModel: GetAllCourseListModel = new GetAllCourseListModel();
   scheduleCoursesForStudent360Model: ScheduleCoursesForStudent360Model = new ScheduleCoursesForStudent360Model();
+  getPrintScheduleReportModel: GetPrintScheduleReportModel = new GetPrintScheduleReportModel();
   showDropCourse: boolean = false;
   getMarkingPeriodTitleListModel: GetMarkingPeriodTitleListModel = new GetMarkingPeriodTitleListModel();
   disableUpdateCourseSection = true;
   selectionForDropDateUpdate: ScheduleCourseSectionForViewModel[] = [new ScheduleCourseSectionForViewModel()];
   todayDate = new Date().toISOString().split('T')[0];
-
+  today: Date = new Date();
   routineViewBasedOn = "0" // 0 for Period base, 1 for Time base
   currentWeek = [];
   days = days;
@@ -102,6 +106,11 @@ export class StudentCourseScheduleComponent implements OnInit {
   routineViewWithEvent: RoutineViewModel = new RoutineViewModel();
   showWeekendsRoutingView = true;
   permissions: Permissions
+  profiles = ProfilesTypes;
+  viewStartTime;
+  viewEndTime;
+  printScheduleReportData;
+  courseSectionIds: number[] = [];
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -115,6 +124,7 @@ export class StudentCourseScheduleComponent implements OnInit {
     private excelService: ExcelService,
     private pageRolePermissions: PageRolesPermission,
     private commonService: CommonService,
+    private reportService: ReportService
   ) {
     // translateService.use("en");
     this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToGeneralInfo() : !this.defaultService.checkAcademicYear() && !this.studentService.getStudentId() ? this.studentService.redirectToStudentList() : '';
@@ -246,8 +256,10 @@ export class StudentCourseScheduleComponent implements OnInit {
             } else {
               this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView = [];
             }
+            this.courseSectionIds = [];
           } else {
             this.scheduleCoursesForStudent360Model = res;
+            this.courseSectionIds = this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView.map(item => item.courseSectionId);
             this.selectionForDropDateUpdate
             = JSON.parse(JSON.stringify(this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView));
             this.scheduleCoursesForStudent360Model.scheduleCourseSectionForView = this.findMarkingPeriodTitleById(
@@ -765,7 +777,7 @@ export class StudentCourseScheduleComponent implements OnInit {
   }
   createDatasetForRoutine() {
     this.routineViewWithEvent.routineView = [];
-    this.events.map((item) => {
+    this.events.map((item,index) => {
       const foundIndex = this.routineViewWithEvent.routineView?.findIndex((routine) => {
         return (routine.blockId === item.meta.periodDetails.blockId && routine.periodId === item.meta.periodDetails.periodId)
       });
@@ -798,6 +810,13 @@ export class StudentCourseScheduleComponent implements OnInit {
         };
         eachEvent.events.push(event);
         this.routineViewWithEvent.routineView.push(eachEvent);
+      }
+      if (index === 0) {
+        this.viewStartTime = item.start.getHours();
+        this.viewEndTime = item.end.getHours();
+      } else {
+        if (this.viewStartTime > item.start.getHours())  this.viewStartTime = item.start.getHours();
+        if (this.viewEndTime < item.end.getHours()) this.viewEndTime = item.end.getHours();
       }
     });
     let nameArr=[];
@@ -892,6 +911,271 @@ export class StudentCourseScheduleComponent implements OnInit {
       this.snackbar.open('No Records Found. Failed to Export Scheduled Courses', '', {
         duration: 5000
       });
+    }
+  }
+
+  getPrintScheduleReport() {
+    return new Promise((resolve, reject) => {
+      this.reportService.getPrintScheduleReport(this.getPrintScheduleReportModel).subscribe(res => {
+        if (res) {
+          if (res._failure) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            resolve(res);
+          }
+        } else {
+          this.snackbar.open(this.defaultService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+    });
+  }
+
+  printSchedule() {
+    if (!this.courseSectionIds.length) {
+      this.snackbar.open(this.defaultService.translateKey('failedToPrintScheduledCourses'), '', {
+        duration: 5000
+      });
+      return;
+    }
+
+    this.getPrintScheduleReportModel.courseSectionIds = this.courseSectionIds;
+
+    this.getPrintScheduleReportModel.studentGuids = [this.studentService.getStudentGuid()];
+
+    this.getPrintScheduleReport().then((res: GetPrintScheduleReportModel) => {
+      res.studentDetailsViewModelList.map(studentDetails => {
+        studentDetails?.courseDetailsViewModelList?.map(courseDetails => {
+          courseDetails.modifiedDataList = [];
+          courseDetails?.courseSectionDetailsViewModelList?.map(courseSectionDetails => {
+            courseSectionDetails?.dayDetailsViewModelList?.map(dayDetails => {
+              dayDetails?.datePeriodRoomDetailsViewModelList?.map((datePeriodRoomDetails, datePeriodRoomDetailsIndex) => {
+                courseDetails.modifiedDataList.push({ date: datePeriodRoomDetails?.date, periodName: datePeriodRoomDetails?.periodName, roomName: datePeriodRoomDetails?.roomName, dayName: dayDetails?.dayName, courseSectionName: courseSectionDetails?.courseSectionName, staffName: courseSectionDetails?.staffName, courseName: courseDetails?.courseName, isFirst: datePeriodRoomDetailsIndex === 0 ? true : false, length: dayDetails?.datePeriodRoomDetailsViewModelList?.length });
+              });
+            });
+          });
+        });
+      });
+
+      this.printScheduleReportData = res;
+
+      setTimeout(() => {
+        this.generatePDF();
+      }, 100 * this.printScheduleReportData.studentDetailsViewModelList.length);
+    });
+  }
+
+  // For open the print window
+  generatePDF() {
+    let printContents, popupWin;
+    printContents = document.getElementById('printSectionId').innerHTML;
+    document.getElementById('printSectionId').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin === null || typeof (popupWin) === 'undefined') {
+      document.getElementById('printSectionId').className = 'hidden';
+      this.snackbar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          p {
+            margin: 0;
+          }
+          body {
+            -webkit-print-color-adjust: exact;
+            font-family: Arial;
+            background-color: #fff;
+          }
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          .student-information-report {
+              width: 1024px;
+              margin: auto;
+          }
+          .float-left {
+            float: left;
+          }
+          .text-center {
+            text-align: center;
+          }
+          .text-right {
+            text-align: right;
+          }
+          .inline-block {
+              display: inline-block;
+          }
+          .border-table {
+              border: 1px solid #000;
+              border-top: none;
+          }
+          .clearfix::after {
+              display: block;
+              clear: both;
+              content: "";
+            }
+          .report-header {
+              padding: 20px 0;
+              border-bottom: 2px solid #000;
+          }
+          .school-logo {
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              border: 2px solid #cacaca;
+              margin-right: 20px;
+              text-align: center;
+              overflow: hidden;
+          }
+          .school-logo img {
+              width: 100%;
+              overflow: hidden;
+          }
+          .report-header td {
+              padding: 20px;
+              padding-bottom: 10px;
+          }
+          .report-header td.generate-date {
+              padding: 0;
+          }
+          .report-header .information h4 {
+              font-size: 20px;
+              font-weight: 600;
+              padding: 10px 0;
+          }
+          .report-header .information p, .header-right p {
+              font-size: 16px;
+          }
+          .header-right div {
+              background-color: #000;
+              color: #fff;
+              font-size: 20px;
+              padding: 5px 20px;
+              font-weight: 600;
+              margin-bottom: 8px;
+          }
+          .student-logo {
+              padding: 20px;
+          }
+          .student-logo div {
+              width: 100%;
+              height: 100%;
+              border: 1px solid rgb(136, 136, 136);
+              border-radius: 3px;
+          }
+          .student-logo img {
+              width: 100%;
+          }
+          .student-details {
+              padding: 20px;
+              vertical-align: top;
+          }
+          .student-details h4 {
+              font-size: 22px;
+              font-weight: 600;
+              margin-bottom: 10px;
+          }
+          .student-details span {
+              color: #817e7e;
+              padding: 0 15px;
+              font-size: 20px;
+          }
+          .student-details p {
+              color: #121212;
+              font-size: 16px;
+          }
+          .student-details table {
+              border-collapse: separate;
+              border-spacing:0;
+              border-radius: 10px;
+          }
+          .student-details table td, .student-details table th {
+              border-left: 1px solid #000;
+              border-top: 1px solid #000;
+              padding: 8px 10px;
+              text-align: left;
+          }
+          .information.student-details table td {
+              width: 33.33%;
+          }
+          .information.student-details .border-table {
+            border-top: 1px solid #000;
+          }
+          .information.student-details table tr:first-child td {
+              border-top: none;
+          }
+          .student-details table td b, .student-details table span {
+              color: #000;
+              font-size: 16px;
+          }
+          .student-details table td b {
+              font-weight: 600;
+          }
+          .student-details table td:first-child, .student-details table th:first-child {
+              border-left: none;
+          }
+          .student-details table tr:first-child td {
+              border-bottom: none;
+          }
+          .student-details table th:first-child {
+              border-top-left-radius: 10px;
+          }
+          .student-details table th:last-child {
+              border-top-right-radius: 10px;
+          }
+          .p-b-8 {
+              padding-bottom: 8px;
+          }
+          .width-160 {
+              width: 160px;
+          }
+          .m-b-15 {
+              margin-bottom: 15px;
+          }
+          .bg-black {
+              background-color: #000;
+          }
+          .bg-slate {
+              background-color: #E5E5E5;
+          }
+          .information-table td {
+              font-size: 16px;
+          }
+          table td {
+              vertical-align: middle;
+          }
+          .report-header .header-left {
+            width: 65%;
+          }
+          .report-header .header-right {
+            width: 35%;
+          }
+          .report-header .information {
+            width: calc(100% - 110px);
+          }
+          </style>
+        </head>
+        <body onload="window.print()">${printContents}</body>
+      </html>`
+      );
+      popupWin.document.close();
+      document.getElementById('printSectionId').className = 'hidden';
+      return;
     }
   }
 }

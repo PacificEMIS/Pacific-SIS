@@ -62,5 +62,6 @@ namespace opensis.data.ViewModels.User
         public List<RolePermissionViewModel>? PermissionList { get; set; }
         public UserAccessLog? userAccessLog { get; set; }
         public string? UserGuid { get; set; }
+        public bool? IsMobileLogin { get; set; }
     }
 }

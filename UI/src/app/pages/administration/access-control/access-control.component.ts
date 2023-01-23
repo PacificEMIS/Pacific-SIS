@@ -685,13 +685,13 @@ export class AccessControlComponent implements OnInit {
                 falseFlagSubCategoryCanView = true;
               }
             });
-            if (falseFlagSubCategoryCanEdit === false) {
-              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canEdit = false;
-              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = false;
-            }
-            if (falseFlagSubCategoryCanView === false) {
-              this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canView = false;
-            }
+            // if (falseFlagSubCategoryCanEdit === false) {
+            //   this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canEdit = false;
+            //   this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canAdd = false;
+            // }
+            // if (falseFlagSubCategoryCanView === false) {
+            //   this.permissionGroupListViewModel.permissionGroupList[i].permissionCategory[j].rolePermission[0].canView = false;
+            // }
           }
         });
 

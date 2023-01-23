@@ -68,7 +68,7 @@
             </ul>
             </form>
             <mat-divider></mat-divider>
-            <h4 class="px-6 py-2 text-primary font-semibold">{{'found' | translate}} {{totalCount}} {{(totalCount>1?'coursePeriods':'coursePeriod') | translate}}</h4>
+            <h4 class="px-6 py-2 text-primary font-semibold">{{'found' | translate}} {{totalCount}} {{(totalCount>1?'courseSections':'courseSection') | translate}}</h4>
             <div class="overflow-x-auto overflow-y-hidden border-t">
                 <table mat-table [dataSource]="classLists" class="mat-elevation-z8">
 
@@ -251,7 +251,7 @@
                         </p>
                     </div>
                     <div>
-                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.totalSeats - courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{'seats' | translate }}</div>
+                        <div class="inline-block px-4 py-1 bg-green text-white"><span class="font-semibold text-lg">{{courseSection?.availableSeat}}</span> / {{courseSection?.totalSeats}} {{('seats' | translate) + ' ' + ('available' | translate)}}</div>
                     </div>
                 </div>
                 <div class="overflow-x-auto overflow-y-hidden">

@@ -1,7 +1,8 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <!-- Schedule reports Details -->
 <div class="md:flex mt-6">
-    <div class="card w-full md:w-6/12 md:ml-2">
+    <div class="md:w-6/12 md:mr-2">
+    <div class="card w-full">
         <div class="flex p-4" [routerLink]="['/school', 'reports', 'schedule', 'schedule-report']">
             <span class="text-primary cursor-pointer">
                 <mat-icon class="align-middle">west</mat-icon>
@@ -24,7 +25,7 @@
                 </div>
             </div>
             <div>
-                <p><span class="text-green font-semibold">{{item.availableSeat}}</span> / <span
+                <p matTooltip="{{item.availableSeat + ' ' + ('seats' | translate) + ' ' + ('available' | translate)}}"><span class="text-green font-semibold">{{item.availableSeat}}</span> / <span
                         class="text-gray">{{item.courseSection.seats}}</span></p>
             </div>
         </div>
@@ -32,7 +33,9 @@
             <p style="display: table; margin: 0 auto;padding: 10px;">{{ loading?('fetchingData'|translate):('noData' | translate) }}</p>
         </div>
     </div>
-    <div class="card w-full md:w-6/12 md:ml-2" *ngIf="courseListCount">
+    </div>
+    <div class="md:w-6/12 md:ml-2">
+    <div class="card w-full" *ngIf="courseListCount">
         <div class="flex justify-between p-4">
             <div>
                 <h4 class="font-semibold">{{selectedCourseName}}</h4>
@@ -71,11 +74,12 @@
                     </tr> -->
                 </tbody>
             </table>
-            <div *ngIf="studentCount === 0"> 
+            <div *ngIf="!studentCount"> 
                 <p style="display: table; margin: 0 auto;">{{ loading?('fetchingData'|translate):('noData' | translate) }}</p>
             </div>
         </div>
 
+    </div>
     </div>
 </div>
 
