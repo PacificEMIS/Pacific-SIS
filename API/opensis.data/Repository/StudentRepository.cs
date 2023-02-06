@@ -2907,17 +2907,9 @@ namespace opensis.data.Repository
                 {
                     if (studentListModel.studentMaster?.Any() == true)
                     {
-                        //for insert in job fetch max id.
-                        long? Id = 1;
-                        var dataExits = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId);
-                        if (dataExits?.Any() == true)
-                        {
-                            var scheduledJobData = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId).Max(x => x.JobId);
-                            if (scheduledJobData != null)
-                            {
-                                Id = scheduledJobData + 1;
-                            }
-                        }
+                        bool atleastOneStudentReEnroll = false;
+                        studentListModel._failure = false;
+                        studentListModel._message = "Student re-enrollment added successfully";
 
                         studentListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentListModel.TenantId, studentListModel.SchoolId).ToString(); //fetch current academic year
 
@@ -2933,204 +2925,217 @@ namespace opensis.data.Repository
 
                         foreach (var studentData in studentListModel.studentMaster)
                         {
-                            var activeEnrollment = this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true).FirstOrDefault();
+                            var activeStudentEnrollment = this.context?.StudentEnrollment.Where(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
 
-                            this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true && x.ExitDate != null).ToList().ForEach(x => { x.IsActive = false; /*x.ExitCode = activeEnrollment.EnrollmentCode; x.ExitDate = studentListModel.EnrollmentDate;*/ });
-
-                            int? EnrollmentId = 1;
-                            //EnrollmentId = Utility.GetMaxPK(this.context, new Func<StudentEnrollment, int>(x => x.EnrollmentId));
-
-                            var studentEnrollmentData = this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
-
-                            if (studentEnrollmentData != null)
+                            if (activeStudentEnrollment != null && (activeStudentEnrollment.ExitDate == null || activeStudentEnrollment.ExitDate > DateTime.Today.Date)) //this for students already enrolled in this school in future date
                             {
-                                EnrollmentId = studentEnrollmentData.EnrollmentId + 1;
-                            }
-
-                            var existingStudentData = this.context?.StudentMaster.FirstOrDefault(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid); //check student exists in school or not.
-
-                            if (existingStudentData != null)
-                            {
-                                //if student re enroll today
-                                if (studentListModel.EnrollmentDate == DateTime.Today)
-                                {
-                                    existingStudentData.IsActive = true;
-                                }
-
-                                var StudentEnrollmentData = new StudentEnrollment()
-                                {
-                                    TenantId = studentData.TenantId,
-                                    SchoolId = (int)studentListModel.SchoolId!,
-                                    StudentId = existingStudentData.StudentId,
-                                    EnrollmentId = (int)EnrollmentId,
-                                    EnrollmentCode = enrollmenttitle,
-                                    EnrollmentDate = studentListModel.EnrollmentDate,
-                                    GradeLevelTitle = studentListModel.GradeLevelTitle,
-                                    GradeId = studentListModel.GradeId,
-                                    UpdatedOn = DateTime.UtcNow,
-                                    RollingOption = "Next Grade at Current School",
-                                    StudentGuid = studentData.StudentGuid,
-                                    IsActive = true,
-                                    SchoolName = this.context?.SchoolMaster.FirstOrDefault(x => x.SchoolId == studentListModel.SchoolId)?.SchoolName,
-                                    UpdatedBy = studentListModel.UpdatedBy,
-                                    CalenderId = calenderId
-                                };
-                                this.context?.StudentEnrollment.Add(StudentEnrollmentData);
+                                //studentListModel._failure = false;
+                                //studentListModel._message = "One or more students already enrolled in this school";
+                                studentListModel.ConflictStudentsName.Add($"{studentData.FirstGivenName} { (studentData.MiddleName == null ? " " : $"{studentData.MiddleName} ")}{studentData.LastFamilyName}");
                             }
                             else
                             {
-                                var studentInfo = this.context?.StudentMaster.FirstOrDefault(x => x.StudentGuid == studentData.StudentGuid);
+                                var lastStudentEnrollment = this.context?.StudentEnrollment.Where(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid && s.IsActive == true).FirstOrDefault();
 
-                                int? MasterStudentId = 1;
-
-                                var studentId = this.context?.StudentMaster.Where(x => x.SchoolId == studentListModel.SchoolId && x.TenantId == studentListModel.TenantId).OrderByDescending(x => x.StudentId).FirstOrDefault();
-
-                                if (studentId != null)
+                                if (lastStudentEnrollment != null && lastStudentEnrollment.ExitDate != null && lastStudentEnrollment.ExitDate.Value.Date > studentListModel.EnrollmentDate!.Value.Date) // this for students last enrolled exit date grater then now enrolled date
                                 {
-                                    MasterStudentId = studentId.StudentId + 1;
+                                    studentListModel.ConflictStudentsName.Add($"{studentData.FirstGivenName} { (studentData.MiddleName == null ? " " : $"{studentData.MiddleName} ")}{studentData.LastFamilyName}");
                                 }
 
-                                var StudentMasterData = new StudentMaster()
-                                {
-                                    TenantId = studentInfo!.TenantId,
-                                    SchoolId = (int)studentListModel!.SchoolId!,
-                                    StudentId = (int)MasterStudentId,
-                                    AlternateId = studentInfo.AlternateId,
-                                    DistrictId = studentInfo.DistrictId,
-                                    StateId = studentInfo.StateId,
-                                    AdmissionNumber = studentInfo.AdmissionNumber,
-                                    RollNumber = studentInfo.RollNumber,
-                                    Salutation = studentInfo.Salutation,
-                                    FirstGivenName = studentInfo.FirstGivenName,
-                                    MiddleName = studentInfo.MiddleName,
-                                    LastFamilyName = studentInfo.LastFamilyName,
-                                    Suffix = studentInfo.Suffix,
-                                    PreferredName = studentInfo.PreferredName,
-                                    PreviousName = studentInfo.PreviousName,
-                                    SocialSecurityNumber = studentInfo.SocialSecurityNumber,
-                                    OtherGovtIssuedNumber = studentInfo.OtherGovtIssuedNumber,
-                                    StudentPhoto = studentInfo.StudentPhoto,
-                                    StudentThumbnailPhoto = studentInfo.StudentThumbnailPhoto,
-                                    Dob = studentInfo.Dob,
-                                    Gender = studentInfo.Gender,
-                                    Race = studentInfo.Race,
-                                    Ethnicity = studentInfo.Ethnicity,
-                                    MaritalStatus = studentInfo.MaritalStatus,
-                                    CountryOfBirth = studentInfo.CountryOfBirth,
-                                    Nationality = studentInfo.Nationality,
-                                    FirstLanguageId = studentInfo.FirstLanguageId,
-                                    SecondLanguageId = studentInfo.SecondLanguageId,
-                                    ThirdLanguageId = studentInfo.ThirdLanguageId,
-                                    HomePhone = studentInfo.HomePhone,
-                                    MobilePhone = studentInfo.MobilePhone,
-                                    PersonalEmail = studentInfo.PersonalEmail,
-                                    SchoolEmail = studentInfo.SchoolEmail,
-                                    Twitter = studentInfo.Twitter,
-                                    Facebook = studentInfo.Facebook,
-                                    Instagram = studentInfo.Instagram,
-                                    Youtube = studentInfo.Youtube,
-                                    Linkedin = studentInfo.Linkedin,
-                                    HomeAddressLineOne = studentInfo.HomeAddressLineOne,
-                                    HomeAddressLineTwo = studentInfo.HomeAddressLineTwo,
-                                    HomeAddressCountry = studentInfo.HomeAddressCountry,
-                                    HomeAddressState = studentInfo.HomeAddressState,
-                                    HomeAddressCity = studentInfo.HomeAddressCity,
-                                    HomeAddressZip = studentInfo.HomeAddressZip,
-                                    BusNo = studentInfo.BusNo,
-                                    SchoolBusPickUp = studentInfo.SchoolBusPickUp,
-                                    SchoolBusDropOff = studentInfo.SchoolBusDropOff,
-                                    MailingAddressSameToHome = studentInfo.MailingAddressSameToHome,
-                                    MailingAddressLineOne = studentInfo.MailingAddressLineOne,
-                                    MailingAddressLineTwo = studentInfo.MailingAddressLineTwo,
-                                    MailingAddressCountry = studentInfo.MailingAddressCountry,
-                                    MailingAddressState = studentInfo.MailingAddressState,
-                                    MailingAddressCity = studentInfo.MailingAddressCity,
-                                    MailingAddressZip = studentInfo.MailingAddressZip,
-                                    StudentPortalId = studentInfo.StudentPortalId,
-                                    AlertDescription = studentInfo.AlertDescription,
-                                    CriticalAlert = studentInfo.CriticalAlert,
-                                    Dentist = studentInfo.Dentist,
-                                    DentistPhone = studentInfo.DentistPhone,
-                                    InsuranceCompany = studentInfo.InsuranceCompany,
-                                    InsuranceCompanyPhone = studentInfo.InsuranceCompanyPhone,
-                                    MedicalFacility = studentInfo.MedicalFacility,
-                                    MedicalFacilityPhone = studentInfo.MedicalFacilityPhone,
-                                    PolicyHolder = studentInfo.PolicyHolder,
-                                    PolicyNumber = studentInfo.PolicyNumber,
-                                    PrimaryCarePhysician = studentInfo.PrimaryCarePhysician,
-                                    PrimaryCarePhysicianPhone = studentInfo.PrimaryCarePhysicianPhone,
-                                    Vision = studentInfo.Vision,
-                                    VisionPhone = studentInfo.VisionPhone,
-                                    Associationship = studentInfo.Associationship,
-                                    EconomicDisadvantage = studentInfo.EconomicDisadvantage,
-                                    Eligibility504 = studentInfo.Eligibility504,
-                                    EstimatedGradDate = studentInfo.EstimatedGradDate,
-                                    FreeLunchEligibility = studentInfo.FreeLunchEligibility,
-                                    LepIndicator = studentInfo.LepIndicator,
-                                    SectionId = null,
-                                    SpecialEducationIndicator = studentInfo.SpecialEducationIndicator,
-                                    StudentInternalId = studentInfo.StudentInternalId,
-                                    UpdatedOn = DateTime.UtcNow,
-                                    UpdatedBy = studentInfo.UpdatedBy,
-                                    EnrollmentType = "Internal",
-                                    IsActive = studentListModel.EnrollmentDate == DateTime.Today ? true : false,
-                                    StudentGuid = studentData.StudentGuid
+                                this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid && x.IsActive == true && x.ExitDate != null).ToList().ForEach(x => { x.IsActive = false; });
 
-                                };
-                                this.context?.StudentMaster.Add(StudentMasterData);
+                                int? EnrollmentId = 1;
 
-                                var StudentEnrollmentData = new StudentEnrollment()
-                                {
-                                    TenantId = studentData.TenantId,
-                                    SchoolId = (int)studentListModel.SchoolId,
-                                    StudentId = (int)MasterStudentId,
-                                    EnrollmentId = (int)EnrollmentId,
-                                    EnrollmentCode = enrollmenttitle,
-                                    EnrollmentDate = studentListModel.EnrollmentDate,
-                                    GradeLevelTitle = studentListModel.GradeLevelTitle,
-                                    UpdatedOn = DateTime.UtcNow,
-                                    RollingOption = "Next Grade at Current School",
-                                    StudentGuid = studentData.StudentGuid,
-                                    IsActive = true,
-                                    SchoolName = this.context?.SchoolMaster.FirstOrDefault(x => x.SchoolId == studentListModel.SchoolId)?.SchoolName,
-                                    UpdatedBy = studentListModel.UpdatedBy,
-                                    GradeId = studentListModel.GradeId,
-                                    CalenderId = calenderId
-                                };
-                                this.context?.StudentEnrollment.Add(StudentEnrollmentData);
+                                var studentEnrollmentData = this.context?.StudentEnrollment.Where(x => x.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
 
-                                /* //Student Protal Access
-                                if (studentData.StudentPortalId != null)
+                                if (studentEnrollmentData != null)
                                 {
-                                    var userMasterData = this.context?.UserMaster.FirstOrDefault(x => x.EmailAddress == studentData.StudentPortalId && x.TenantId == studentData.TenantId);
-                                    if (userMasterData != null)
+                                    EnrollmentId = studentEnrollmentData.EnrollmentId + 1;
+                                }
+
+                                var existingStudentData = this.context?.StudentMaster.FirstOrDefault(s => s.TenantId == studentListModel.TenantId && s.SchoolId == studentListModel.SchoolId && s.StudentGuid == studentData.StudentGuid); //check student exists in school or not.
+
+                                if (existingStudentData != null)
+                                {
+                                    //if student re enroll today or previous date
+                                    if (studentListModel.EnrollmentDate != null && studentListModel.EnrollmentDate.Value.Date <= DateTime.Today.Date)
                                     {
-                                        userMasterData.IsActive = false;
-
-                                        UserMaster userMaster = new UserMaster();
-                                        userMaster.TenantId = studentData.TenantId;
-                                        userMaster.SchoolId = (int)studentListModel.SchoolId;
-                                        userMaster.UserId = (int)MasterStudentId;
-                                        userMaster.Name = userMasterData.Name;
-                                        userMaster.EmailAddress = userMasterData.EmailAddress;
-                                        userMaster.PasswordHash = userMasterData.PasswordHash;
-                                        userMaster.LangId = userMasterData.LangId;
-                                        var membershipsId = this.context?.Membership.Where(x => x.SchoolId == (int)studentListModel.SchoolId && x.TenantId == studentListModel.TenantId && x.Profile == "Student").Select(x => x.MembershipId).FirstOrDefault();
-                                        userMaster.MembershipId = (int)membershipsId!;
-                                        userMaster.UpdatedOn = DateTime.UtcNow;
-                                        userMaster.UpdatedBy = studentListModel.UpdatedBy;
-                                        userMaster.IsActive = studentListModel.EnrollmentDate == DateTime.Today ? true : false;
-
-                                        this.context?.UserMaster.Add(userMaster);
+                                        existingStudentData.IsActive = true;
                                     }
-                                }*/
-                            }
 
-                            this.context?.SaveChanges();
+                                    var StudentEnrollmentData = new StudentEnrollment()
+                                    {
+                                        TenantId = studentData.TenantId,
+                                        SchoolId = (int)studentListModel.SchoolId!,
+                                        StudentId = existingStudentData.StudentId,
+                                        EnrollmentId = (int)EnrollmentId,
+                                        EnrollmentCode = enrollmenttitle,
+                                        EnrollmentDate = studentListModel.EnrollmentDate,
+                                        GradeLevelTitle = studentListModel.GradeLevelTitle,
+                                        GradeId = studentListModel.GradeId,
+                                        UpdatedOn = DateTime.UtcNow,
+                                        RollingOption = "Next Grade at Current School",
+                                        StudentGuid = studentData.StudentGuid,
+                                        IsActive = true,
+                                        SchoolName = this.context?.SchoolMaster.FirstOrDefault(x => x.TenantId == studentListModel.TenantId && x.SchoolId == studentListModel.SchoolId)?.SchoolName,
+                                        UpdatedBy = studentListModel.UpdatedBy,
+                                        CalenderId = calenderId
+                                    };
+                                    this.context?.StudentEnrollment.Add(StudentEnrollmentData);
+                                    atleastOneStudentReEnroll = true;
+                                }
+                                else
+                                {
+                                    var studentInfo = this.context?.StudentMaster.FirstOrDefault(x => x.StudentGuid == studentData.StudentGuid);
+
+                                    int? MasterStudentId = 1;
+
+                                    var studentId = this.context?.StudentMaster.Where(x => x.SchoolId == studentListModel.SchoolId && x.TenantId == studentListModel.TenantId).OrderByDescending(x => x.StudentId).FirstOrDefault();
+
+                                    if (studentId != null)
+                                    {
+                                        MasterStudentId = studentId.StudentId + 1;
+                                    }
+
+                                    var StudentMasterData = new StudentMaster()
+                                    {
+                                        TenantId = studentInfo!.TenantId,
+                                        SchoolId = (int)studentListModel!.SchoolId!,
+                                        StudentId = (int)MasterStudentId,
+                                        AlternateId = studentInfo.AlternateId,
+                                        DistrictId = studentInfo.DistrictId,
+                                        StateId = studentInfo.StateId,
+                                        AdmissionNumber = studentInfo.AdmissionNumber,
+                                        RollNumber = studentInfo.RollNumber,
+                                        Salutation = studentInfo.Salutation,
+                                        FirstGivenName = studentInfo.FirstGivenName,
+                                        MiddleName = studentInfo.MiddleName,
+                                        LastFamilyName = studentInfo.LastFamilyName,
+                                        Suffix = studentInfo.Suffix,
+                                        PreferredName = studentInfo.PreferredName,
+                                        PreviousName = studentInfo.PreviousName,
+                                        SocialSecurityNumber = studentInfo.SocialSecurityNumber,
+                                        OtherGovtIssuedNumber = studentInfo.OtherGovtIssuedNumber,
+                                        StudentPhoto = studentInfo.StudentPhoto,
+                                        StudentThumbnailPhoto = studentInfo.StudentThumbnailPhoto,
+                                        Dob = studentInfo.Dob,
+                                        Gender = studentInfo.Gender,
+                                        Race = studentInfo.Race,
+                                        Ethnicity = studentInfo.Ethnicity,
+                                        MaritalStatus = studentInfo.MaritalStatus,
+                                        CountryOfBirth = studentInfo.CountryOfBirth,
+                                        Nationality = studentInfo.Nationality,
+                                        FirstLanguageId = studentInfo.FirstLanguageId,
+                                        SecondLanguageId = studentInfo.SecondLanguageId,
+                                        ThirdLanguageId = studentInfo.ThirdLanguageId,
+                                        HomePhone = studentInfo.HomePhone,
+                                        MobilePhone = studentInfo.MobilePhone,
+                                        PersonalEmail = studentInfo.PersonalEmail,
+                                        SchoolEmail = studentInfo.SchoolEmail,
+                                        Twitter = studentInfo.Twitter,
+                                        Facebook = studentInfo.Facebook,
+                                        Instagram = studentInfo.Instagram,
+                                        Youtube = studentInfo.Youtube,
+                                        Linkedin = studentInfo.Linkedin,
+                                        HomeAddressLineOne = studentInfo.HomeAddressLineOne,
+                                        HomeAddressLineTwo = studentInfo.HomeAddressLineTwo,
+                                        HomeAddressCountry = studentInfo.HomeAddressCountry,
+                                        HomeAddressState = studentInfo.HomeAddressState,
+                                        HomeAddressCity = studentInfo.HomeAddressCity,
+                                        HomeAddressZip = studentInfo.HomeAddressZip,
+                                        BusNo = studentInfo.BusNo,
+                                        SchoolBusPickUp = studentInfo.SchoolBusPickUp,
+                                        SchoolBusDropOff = studentInfo.SchoolBusDropOff,
+                                        MailingAddressSameToHome = studentInfo.MailingAddressSameToHome,
+                                        MailingAddressLineOne = studentInfo.MailingAddressLineOne,
+                                        MailingAddressLineTwo = studentInfo.MailingAddressLineTwo,
+                                        MailingAddressCountry = studentInfo.MailingAddressCountry,
+                                        MailingAddressState = studentInfo.MailingAddressState,
+                                        MailingAddressCity = studentInfo.MailingAddressCity,
+                                        MailingAddressZip = studentInfo.MailingAddressZip,
+                                        StudentPortalId = studentInfo.StudentPortalId,
+                                        AlertDescription = studentInfo.AlertDescription,
+                                        CriticalAlert = studentInfo.CriticalAlert,
+                                        Dentist = studentInfo.Dentist,
+                                        DentistPhone = studentInfo.DentistPhone,
+                                        InsuranceCompany = studentInfo.InsuranceCompany,
+                                        InsuranceCompanyPhone = studentInfo.InsuranceCompanyPhone,
+                                        MedicalFacility = studentInfo.MedicalFacility,
+                                        MedicalFacilityPhone = studentInfo.MedicalFacilityPhone,
+                                        PolicyHolder = studentInfo.PolicyHolder,
+                                        PolicyNumber = studentInfo.PolicyNumber,
+                                        PrimaryCarePhysician = studentInfo.PrimaryCarePhysician,
+                                        PrimaryCarePhysicianPhone = studentInfo.PrimaryCarePhysicianPhone,
+                                        Vision = studentInfo.Vision,
+                                        VisionPhone = studentInfo.VisionPhone,
+                                        Associationship = studentInfo.Associationship,
+                                        EconomicDisadvantage = studentInfo.EconomicDisadvantage,
+                                        Eligibility504 = studentInfo.Eligibility504,
+                                        EstimatedGradDate = studentInfo.EstimatedGradDate,
+                                        FreeLunchEligibility = studentInfo.FreeLunchEligibility,
+                                        LepIndicator = studentInfo.LepIndicator,
+                                        SectionId = null,
+                                        SpecialEducationIndicator = studentInfo.SpecialEducationIndicator,
+                                        StudentInternalId = studentInfo.StudentInternalId,
+                                        UpdatedOn = DateTime.UtcNow,
+                                        UpdatedBy = studentInfo.UpdatedBy,
+                                        EnrollmentType = "Internal",
+                                        IsActive = studentListModel.EnrollmentDate != null && studentListModel.EnrollmentDate.Value.Date <= DateTime.Today.Date ? true : false,
+                                        StudentGuid = studentData.StudentGuid
+
+                                    };
+                                    this.context?.StudentMaster.Add(StudentMasterData);
+
+                                    var StudentEnrollmentData = new StudentEnrollment()
+                                    {
+                                        TenantId = studentData.TenantId,
+                                        SchoolId = (int)studentListModel.SchoolId,
+                                        StudentId = (int)MasterStudentId,
+                                        EnrollmentId = (int)EnrollmentId,
+                                        EnrollmentCode = enrollmenttitle,
+                                        EnrollmentDate = studentListModel.EnrollmentDate,
+                                        GradeLevelTitle = studentListModel.GradeLevelTitle,
+                                        UpdatedOn = DateTime.UtcNow,
+                                        RollingOption = "Next Grade at Current School",
+                                        StudentGuid = studentData.StudentGuid,
+                                        IsActive = true,
+                                        SchoolName = this.context?.SchoolMaster.FirstOrDefault(x => x.TenantId == studentListModel.TenantId && x.SchoolId == studentListModel.SchoolId)?.SchoolName,
+                                        UpdatedBy = studentListModel.UpdatedBy,
+                                        GradeId = studentListModel.GradeId,
+                                        CalenderId = calenderId
+                                    };
+                                    this.context?.StudentEnrollment.Add(StudentEnrollmentData);
+                                    atleastOneStudentReEnroll = true;
+                                }
+
+                                if (studentListModel.EnrollmentDate != null && studentListModel.EnrollmentDate.Value.Date <= DateTime.Today.Date)
+                                {
+                                    //update StudentCoursesectionSchedule data if exits.
+                                    var studentCourseSection = this.context?.StudentCoursesectionSchedule.Include(s => s.CourseSection).Where(x => x.TenantId == studentListModel.TenantId && x.SchoolId == studentListModel.SchoolId && x.StudentGuid == studentData.StudentGuid && x.IsDropped == true && x.AcademicYear.ToString() == studentListModel.AcademicYear).ToList();
+                                    if (studentCourseSection?.Any() == true)
+                                    {
+                                        studentCourseSection.ForEach(s => { s.IsDropped = null; s.EffectiveDropDate = s.CourseSection.DurationEndDate; });
+                                    }
+                                }
+
+                                this.context?.SaveChanges();
+                            }
                         }
 
-                        if (studentListModel.EnrollmentDate != DateTime.Today)
+                        if (studentListModel.EnrollmentDate != null && studentListModel.EnrollmentDate.Value.Date > DateTime.Today.Date && atleastOneStudentReEnroll == true)
                         {
+                            //for insert in job fetch max id.
+                            long? Id = 1;
+                            var dataExits = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId);
+                            if (dataExits?.Any() == true)
+                            {
+                                var scheduledJobData = this.context?.ScheduledJobs.Where(x => x.TenantId == studentListModel.TenantId).Max(x => x.JobId);
+                                if (scheduledJobData != null)
+                                {
+                                    Id = scheduledJobData + 1;
+                                }
+                            }
+
                             // if student re enroll future date & this block for add this req as a job
                             var scheduledJob = new ScheduledJob
                             {
@@ -3150,18 +3155,20 @@ namespace opensis.data.Repository
                                 CreatedOn = DateTime.UtcNow
                             };
                             this.context?.ScheduledJobs.Add(scheduledJob);
-                            Id++;
                         }
 
                         this.context?.SaveChanges();
                         transaction?.Commit();
-                        studentListModel._failure = false;
-                        studentListModel._message = "Student Re-enrollment added successfully";
+
+                        if (studentListModel.ConflictStudentsName?.Any() == true)
+                        {
+                            studentListModel._failure = true;
+                        }
                     }
                     else
                     {
                         studentListModel._failure = true;
-                        studentListModel._message = "Atleast Select One Student";
+                        studentListModel._message = "Atleast select one student";
                     }
                 }
                 catch (Exception es)
