@@ -1067,6 +1067,11 @@ namespace opensis.data.Repository
             try
             {
                 List<StudentCoursesectionSchedule> studentCoursesectionScheduleList = new List<StudentCoursesectionSchedule>();
+
+                List<StudentAttendance> studentAttendanceList = new List<StudentAttendance>();
+                List<StudentAttendanceComments> studentAttendanceCommentsList = new List<StudentAttendanceComments>();
+                List<StudentAttendanceHistory> studentAttendanceHistoryList = new List<StudentAttendanceHistory>();
+
                 var currentDate = DateTime.UtcNow.Date;
 
                 if (scheduledStudentDropModel.studentCoursesectionScheduleList.Count > 0)
@@ -1090,6 +1095,10 @@ namespace opensis.data.Repository
 
                     if (!string.IsNullOrEmpty(scheduledStudentDropModel.StudentId.ToString()) && scheduledStudentDropModel.StudentId > 0)
                     {
+                        var attendanceDataList = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId).ToList();
+
+                        var studentAttendanceHistoryDataList = this.context?.StudentAttendanceHistory.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId).ToList();
+
                         //this blok for student 360 screen
                         foreach (var scheduledStudent in scheduledStudentDropModel.studentCoursesectionScheduleList)
                         {
@@ -1099,11 +1108,16 @@ namespace opensis.data.Repository
 
                             if (studentData != null && studentData.CourseSection.DurationEndDate is not null && studentEnrollmentData != null)
                             {
+                                if (scheduledStudent.EffectiveDropDate == null)
+                                {
+                                    scheduledStudent.EffectiveDropDate = studentData.CourseSection.DurationEndDate;//for sefty EffectiveDropDate null update we assign course section end date
+                                }
+
                                 if (scheduledStudent.EffectiveStartDate >= studentEnrollmentData.EnrollmentDate)
                                 {
-                                    if (studentData.CourseSection.DurationEndDate >= scheduledStudent.EffectiveDropDate && currentDate <= scheduledStudent.EffectiveDropDate)
+                                    if (studentData.CourseSection.DurationEndDate >= scheduledStudent.EffectiveDropDate /*&& currentDate <= scheduledStudent.EffectiveDropDate*/ && studentData.CourseSection.DurationStartDate <= scheduledStudent.EffectiveDropDate)
                                     {
-                                        if (currentDate == scheduledStudent.EffectiveDropDate.Value.Date)
+                                        if (scheduledStudent.EffectiveDropDate.Value.Date == currentDate)
                                         {
                                             //this blok for when user drop student instantly
                                             studentData.EffectiveDropDate = scheduledStudent.EffectiveDropDate;
@@ -1112,6 +1126,38 @@ namespace opensis.data.Repository
                                             studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
                                             studentData.UpdatedOn = DateTime.UtcNow;
                                             studentCoursesectionScheduleList.Add(studentData);
+                                        }
+                                        else if (scheduledStudent.EffectiveDropDate.Value.Date < currentDate)
+                                        {
+                                            //this blok for when user drop student in previous date
+                                            studentData.EffectiveDropDate = scheduledStudent.EffectiveDropDate;
+                                            studentData.EffectiveStartDate = scheduledStudent.EffectiveStartDate;
+                                            studentData.IsDropped = true;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+
+                                            if (attendanceDataList?.Any() == true)
+                                            {
+                                                var attendanceData = attendanceDataList.Where(x => x.CourseId == scheduledStudent.CourseId && x.CourseSectionId == scheduledStudent.CourseSectionId && x.AttendanceDate >= scheduledStudent.EffectiveDropDate).ToList();
+
+                                                if (attendanceData?.Any() == true)
+                                                {
+                                                    studentAttendanceList.AddRange(attendanceData);
+
+                                                    studentAttendanceCommentsList.AddRange(attendanceData.SelectMany(x => x.StudentAttendanceComments).ToList());
+                                                }
+                                            }
+
+                                            if (studentAttendanceHistoryDataList?.Any() == true)
+                                            {
+                                                var studentAttendanceHistoryData = studentAttendanceHistoryDataList.Where(x => x.CourseId == scheduledStudent.CourseId && x.CourseSectionId == scheduledStudent.CourseSectionId && x.AttendanceDate >= scheduledStudent.EffectiveDropDate).ToList();
+
+                                                if (studentAttendanceHistoryData?.Any() == true)
+                                                {
+                                                    studentAttendanceHistoryList.AddRange(studentAttendanceHistoryData);
+                                                }
+                                            }
                                         }
                                         else
                                         {
@@ -1150,14 +1196,14 @@ namespace opensis.data.Repository
                                     else
                                     {
                                         scheduledStudentDropModel._failure = true;
-                                        scheduledStudentDropModel._message = "Effective Drop Date Must Be Equal or Lower Than Course Section End Date And Equal or Greater Than Current Date";
+                                        scheduledStudentDropModel._message = "Effective drop date must be equal or lower than course section end date and equal or greater than course section start date";
                                         return scheduledStudentDropModel;
                                     }
                                 }
                                 else
                                 {
                                     scheduledStudentDropModel._failure = true;
-                                    scheduledStudentDropModel._message = "Effective start Date Must Be Equal or Greater than Student Enrollment Start Date";
+                                    scheduledStudentDropModel._message = "Effective start date must be equal or greater than student enrollment start date";
                                     return scheduledStudentDropModel;
                                 }
                             }
@@ -1168,7 +1214,7 @@ namespace opensis.data.Repository
                                 return scheduledStudentDropModel;
                             }
                         }
-                        scheduledStudentDropModel._message = "Updated Successfully";
+                        scheduledStudentDropModel._message = "Updated successfully";
                     }
                     else
                     {
@@ -1177,15 +1223,19 @@ namespace opensis.data.Repository
                         {
                             return scheduledStudentDropModel;
                         }
-                        if (!string.IsNullOrEmpty(scheduledStudentDropModel.EffectiveDropDate.ToString()) && scheduledStudentDropModel.EffectiveDropDate.Value.Date >= currentDate)
+                        if (!string.IsNullOrEmpty(scheduledStudentDropModel.EffectiveDropDate.ToString()) /*&& scheduledStudentDropModel.EffectiveDropDate.Value.Date >= currentDate*/)
                         {
+                            var attendanceDataList = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.CourseSectionId == scheduledStudentDropModel.CourseSectionId).ToList();
+
+                            var studentAttendanceHistoryDataList = this.context?.StudentAttendanceHistory.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.CourseSectionId == scheduledStudentDropModel.CourseSectionId).ToList();
+
                             foreach (var scheduledStudent in scheduledStudentDropModel.studentCoursesectionScheduleList)
                             {
                                 var studentData = this.context?.StudentCoursesectionSchedule.Include(c => c.CourseSection).FirstOrDefault(x => x.SchoolId == scheduledStudent.SchoolId && x.TenantId == scheduledStudent.TenantId && x.StudentId == scheduledStudent.StudentId && x.CourseSectionId == scheduledStudentDropModel.CourseSectionId);
 
                                 if (studentData != null)
                                 {
-                                    if (studentData.CourseSection.DurationEndDate >= scheduledStudentDropModel.EffectiveDropDate)
+                                    if (studentData.CourseSection.DurationEndDate >= scheduledStudentDropModel.EffectiveDropDate && studentData.CourseSection.DurationStartDate <= scheduledStudentDropModel.EffectiveDropDate)
                                     {
                                         if (currentDate == scheduledStudentDropModel.EffectiveDropDate.Value.Date)
                                         {
@@ -1196,6 +1246,37 @@ namespace opensis.data.Repository
                                             studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
                                             studentData.UpdatedOn = DateTime.UtcNow;
                                             studentCoursesectionScheduleList.Add(studentData);
+                                        }
+                                        else if (scheduledStudentDropModel.EffectiveDropDate.Value.Date < currentDate)
+                                        {
+                                            //this blok for when user drop student in previous date
+                                            studentData.EffectiveDropDate = scheduledStudentDropModel.EffectiveDropDate;
+                                            studentData.IsDropped = true;
+                                            studentData.UpdatedBy = scheduledStudentDropModel.UpdatedBy;
+                                            studentData.UpdatedOn = DateTime.UtcNow;
+                                            studentCoursesectionScheduleList.Add(studentData);
+
+                                            if (attendanceDataList?.Any() == true)
+                                            {
+                                                var attendanceData = attendanceDataList.Where(x => x.StudentId == scheduledStudent.StudentId && x.AttendanceDate >= scheduledStudentDropModel.EffectiveDropDate).ToList();
+
+                                                if (attendanceData?.Any() == true)
+                                                {
+                                                    studentAttendanceList.AddRange(attendanceData);
+
+                                                    studentAttendanceCommentsList.AddRange(attendanceData.SelectMany(x => x.StudentAttendanceComments).ToList());
+                                                }
+                                            }
+
+                                            if (studentAttendanceHistoryDataList?.Any() == true)
+                                            {
+                                                var studentAttendanceHistoryData = studentAttendanceHistoryDataList.Where(x => x.StudentId == scheduledStudent.StudentId && x.AttendanceDate >= scheduledStudentDropModel.EffectiveDropDate).ToList();
+
+                                                if (studentAttendanceHistoryData?.Any() == true)
+                                                {
+                                                    studentAttendanceHistoryList.AddRange(studentAttendanceHistoryData);
+                                                }
+                                            }
                                         }
                                         else
                                         {
@@ -1234,7 +1315,7 @@ namespace opensis.data.Repository
                                     else
                                     {
                                         scheduledStudentDropModel._failure = true;
-                                        scheduledStudentDropModel._message = "Effective Drop Date Must Be Equal or Lower Than Course Section End Date";
+                                        scheduledStudentDropModel._message = "Effective drop date must be equal or lower than course section end date and equal or greater than course section start date";
                                         return scheduledStudentDropModel;
                                     }
                                 }
@@ -1249,18 +1330,24 @@ namespace opensis.data.Repository
                         }
                         else
                         {
-                            scheduledStudentDropModel._message = "Effective Drop Date Must Be Equal or Greater Than Current Date";
+                            scheduledStudentDropModel._message = "Please pass effective drop date";
                             scheduledStudentDropModel._failure = true;
                             return scheduledStudentDropModel;
                         }
                     }
+
+                    this.context?.StudentAttendanceComments.RemoveRange(studentAttendanceCommentsList);
+                    this.context?.StudentAttendanceHistory.RemoveRange(studentAttendanceHistoryList);
+                    this.context?.StudentAttendance.RemoveRange(studentAttendanceList);
                     this.context?.StudentCoursesectionSchedule.UpdateRange(studentCoursesectionScheduleList);
+
                     this.context?.SaveChanges();
+
                     scheduledStudentDropModel._failure = false;
                 }
                 else
                 {
-                    scheduledStudentDropModel._message = "Select Atleast One Student";
+                    scheduledStudentDropModel._message = "Select atleast one student";
                     scheduledStudentDropModel._failure = true;
                 }
             }
