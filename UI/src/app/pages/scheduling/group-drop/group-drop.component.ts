@@ -223,7 +223,8 @@ export class GroupDropComponent implements OnInit, OnDestroy {
     }).afterClosed().subscribe((data) => {
       this.courseSectionData = data;
       if (this.courseSectionData !== '' && this.courseSectionData !== undefined && this.courseSectionData !== null) {
-        this.startDate = new Date();
+        // this.startDate = new Date();
+        this.startDate = this.courseSectionData.durationStartDate;
         this.endDate = this.courseSectionData.durationEndDate;
         this.showcourseSectionCount = true;
         this.searchScheduledStudentForGroupDrop(this.courseSectionData.courseSectionId);
