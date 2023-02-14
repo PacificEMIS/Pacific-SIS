@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace opensis.backgroundjob.Models
 {
     public class TableContext : DbContext
     {
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var tenant = "opensis";
-                string connectionString = $"server=159.89.143.110;port=3306;database={tenant};user=opensisadmin;password=Opens1s@2021;default command timeout=1200";
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+                string connectionString = configuration.GetConnectionString("DefaultConnection");
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
         }
@@ -38,6 +41,7 @@ namespace opensis.backgroundjob.Models
         public virtual DbSet<BellSchedule> BellSchedule { get; set; } = null!;
         public virtual DbSet<SchoolMaster> SchoolMaster { get; set; } = null!;
         public virtual DbSet<SchoolCalendars> SchoolCalendars { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci");
