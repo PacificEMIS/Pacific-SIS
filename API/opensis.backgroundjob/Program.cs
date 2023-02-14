@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using opensis.backgroundjob.Models;
 using opensis.backgroundjob.ViewModels;

@@ -10,15 +10,14 @@ namespace opensis.backgroundjob.Models
 {
     public class TableContext : DbContext
     {
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
                 IConfigurationRoot configuration = new ConfigurationBuilder()
-          .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-          .AddJsonFile("appsettings.json")
-          .Build();
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
                 string connectionString = configuration.GetConnectionString("DefaultConnection");
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
@@ -42,6 +41,7 @@ namespace opensis.backgroundjob.Models
         public virtual DbSet<BellSchedule> BellSchedule { get; set; } = null!;
         public virtual DbSet<SchoolMaster> SchoolMaster { get; set; } = null!;
         public virtual DbSet<SchoolCalendars> SchoolCalendars { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseCollation("utf8mb4_general_ci");
