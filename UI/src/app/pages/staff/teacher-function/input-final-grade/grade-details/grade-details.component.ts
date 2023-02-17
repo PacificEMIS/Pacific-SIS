@@ -337,6 +337,8 @@ export class GradeDetailsComponent implements OnInit {
     this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionDetails[0].courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.scheduleStudentListViewModel.sortingModel = null;
+    this.scheduleStudentListViewModel._pageSize = 0;
+    this.scheduleStudentListViewModel.pageNumber = 0;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -619,6 +621,8 @@ if(courseSection) {
     this.scheduleStudentListViewModel.sortingModel = null;
     this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
+    this.scheduleStudentListViewModel._pageSize = 0;
+    this.scheduleStudentListViewModel.pageNumber = 0;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
