@@ -282,6 +282,8 @@ namespace opensis.data.Repository
             {
                 var userMasterData = this.context?.UserMaster.Include(c=>c.Membership).FirstOrDefault(x => x.TenantId == school.TenantId && x.EmailAddress == school.EmailAddress);
 
+                var membershipData = this.context?.Membership.Where(x => x.TenantId == school.TenantId).ToList();
+
                 if (userMasterData != null)
                 {
                     if (userMasterData.Membership!=null && String.Compare(userMasterData.Membership.ProfileType, "Super Administrator", true) == 0)
@@ -293,6 +295,7 @@ namespace opensis.data.Repository
                               TenantId = e.TenantId,
                               SchoolName = e.SchoolName!.Trim(),
                               MembershipId = userMasterData.Membership.MembershipId,
+                              MembershipName = userMasterData.Membership.Profile,
                               MembershipType = userMasterData.Membership.ProfileType
                           }).ToList();
 
@@ -307,6 +310,32 @@ namespace opensis.data.Repository
                             schoolListModel.getSchoolForView = schoolList;
                         }
                     }
+                    else if (userMasterData.Membership != null && String.Compare(userMasterData.Membership.ProfileType, "Student", true) == 0)
+                    {
+                        var StudentData = this.context?.StudentMaster.Where(x => x.TenantId == school.TenantId && x.StudentPortalId == userMasterData.EmailAddress).FirstOrDefault();
+
+                        var StudentSchooldata = this.context?.StudentMaster.Include(x => x.SchoolMaster).Where(x => x.TenantId == school.TenantId && x.StudentGuid == StudentData!.StudentGuid && x.IsActive == true)
+                            .Select(e => new GetSchoolForView()
+                            {
+                                SchoolId = e.SchoolId,
+                                TenantId = e.TenantId,
+                                SchoolName = e.SchoolMaster.SchoolName!.Trim(),
+                                StudentId = e.StudentId,
+                                MembershipId = userMasterData.Membership.MembershipId,
+                                MembershipName = userMasterData.Membership.Profile,
+                                MembershipType = userMasterData.Membership.ProfileType
+                            }).ToList();
+
+                        if (StudentSchooldata != null && StudentSchooldata.Any())
+                        {
+                            StudentSchooldata.ForEach(c =>
+                            {
+                                c.DateSchoolOpened = AcademicStartDate(c.TenantId, c.SchoolId);
+                                c.DateSchoolClosed = AcademicEndDate(c.TenantId, c.SchoolId);
+                            });
+                            schoolListModel.getSchoolForView = StudentSchooldata;
+                        }
+                    }
                     else
                     {
                         var schoolList = this.context?.SchoolMaster.
@@ -318,13 +347,14 @@ namespace opensis.data.Repository
                                         TenantId = e.sm.TenantId,
                                         SchoolName = e.sm.SchoolName!.Trim(),
                                         MembershipId = e.ssi.MembershipId,
-                                        MembershipType = e.ssi.Profile
+                                        MembershipName = e.ssi.Profile
                                     }).ToList();
 
                         if (schoolList != null && schoolList.Any())
                         {
                             schoolList.ForEach(c =>
                             {
+                                c.MembershipType = membershipData!.FirstOrDefault(x => x.SchoolId == c.SchoolId && x.MembershipId == c.MembershipId) != null ? membershipData!.FirstOrDefault(x => x.SchoolId == c.SchoolId && x.MembershipId == c.MembershipId)!.ProfileType : null;
                                 c.DateSchoolOpened = AcademicStartDate(c.TenantId, c.SchoolId);
                                 c.DateSchoolClosed = AcademicEndDate(c.TenantId, c.SchoolId);
                             });
