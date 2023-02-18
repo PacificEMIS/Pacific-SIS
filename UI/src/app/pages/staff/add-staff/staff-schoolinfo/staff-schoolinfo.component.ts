@@ -98,6 +98,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   destroySubject$: Subject<void> = new Subject();
   today : Date
   customValid=false;
+  profileListArray : Array<any> =[];
   
   constructor(public translateService: TranslateService,
     private snackbar: MatSnackBar,
@@ -140,7 +141,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       this.getAllGradeLevel();
       this.callAllSchool();
       this.getAllStaffSchoolInfo();
-      this.getAllMembership();
+      // this.getAllMembership();
       this.getAllSubjectList();
     } else if (this.staffCreateMode == this.staffCreate.VIEW) {
       // this.staffService.changePageMode(this.staffCreateMode);
@@ -186,6 +187,13 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
         this.commonService.checkTokenValidOrNot(data._message);
       }
       this.getSchoolList.getSchoolForView = data.getSchoolForView;
+      this.setProfileListForSchools();
+    });
+  }
+
+  private setProfileListForSchools() : void{
+    this.staffSchoolInfoModel.staffSchoolInfoList.forEach((school : any)=>{
+      this.getAllMembership(school.schoolAttachedId);
     });
   }
 
@@ -210,6 +218,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
       this.staffSchoolInfoModel.staffSchoolInfoList[indexOfDynamicRow].schoolAttachedName = this.getSchoolList.getSchoolForView[index].schoolName;
       this.selectedSchoolId[indexOfDynamicRow] = +schoolId;
     }
+    this.getAllMembership(schoolId, indexOfDynamicRow);
   }
 
   setOtherSubjectList(item){
@@ -221,6 +230,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
 
   addMoreSchoolInfo() {
     this.staffSchoolInfoModel.staffSchoolInfoList.push(new StaffSchoolInfoListModel);
+    this.profileListArray.push([]);
     this.divCount.push(2);
   }
 
@@ -320,8 +330,9 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     };
   }
 
-  getAllMembership() {
-    this.membershipService.getAllMembers(this.getAllMembersList).subscribe((res) => {
+  getAllMembership(schoolId?: any, indexOfDynamicRow?: any) {
+    this.getAllMembersList.schoolId = schoolId;
+    this.membershipService.getAllMembersBySchool(this.getAllMembersList).subscribe((res) => {
       if (typeof (res) == 'undefined') {
         this.snackbar.open('Membership List failed. ' + this.defaultValuesService.getHttpError(), '', {
           duration: 10000
@@ -342,6 +353,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
             return (item.profileType == 'School Administrator' || item.profileType == 'Admin Assistant'
               || item.profileType == 'Teacher' || item.profileType == 'Homeroom Teacher')
           });
+          indexOfDynamicRow ? this.profileListArray[indexOfDynamicRow]=this.getAllMembersList.getAllMemberList : this.profileListArray.push(this.getAllMembersList.getAllMemberList);
         }
       }
     })
