@@ -1348,27 +1348,31 @@ namespace opensis.data.Repository
                                     {
                                         //This block for student drop(transfer) & enroll(transfer) new school
 
-                                        //insert job
-                                        var scheduledJob = new ScheduledJob
+                                        if (studentEnrollmentList.ExitDate != null
+                                               && studentEnrollmentList.ExitDate.Value.Date >= DateTime.UtcNow.Date)
                                         {
-                                            TenantId = studentEnrollmentList.TenantId,
-                                            SchoolId = studentEnrollmentList.SchoolId,
-                                            JobId = (long)Id,
-                                            AcademicYear = studentEnrollmentList.AcademicYear,
-                                            JobTitle = "StudentEnrollmentDropTransferStudent",
-                                            JobScheduleDate = studentEnrollmentList.ExitDate!.Value.AddDays(1),
-                                            ApiTitle = "UpdateStudentEnrollment",
-                                            ControllerPath = studentEnrollmentListModel._tenantName + "/Student",
-                                            TaskJson = JsonConvert.SerializeObject(studentEnrollmentListModel),
-                                            LastRunStatus = null,
-                                            LastRunTime = null,
-                                            IsActive = true,
-                                            CreatedBy = studentEnrollmentList.UpdatedBy,
-                                            CreatedOn = DateTime.UtcNow
-                                        };
-                                        this.context?.ScheduledJobs.Add(scheduledJob);
-                                        Id++;
-                                        this.context?.SaveChanges();
+                                            //insert job if date today or in future
+                                            var scheduledJob = new ScheduledJob
+                                            {
+                                                TenantId = studentEnrollmentList.TenantId,
+                                                SchoolId = studentEnrollmentList.SchoolId,
+                                                JobId = (long)Id,
+                                                AcademicYear = studentEnrollmentList.AcademicYear,
+                                                JobTitle = "StudentEnrollmentDropTransferStudent",
+                                                JobScheduleDate = studentEnrollmentList.ExitDate!.Value.AddDays(1),
+                                                ApiTitle = "UpdateStudentEnrollment",
+                                                ControllerPath = studentEnrollmentListModel._tenantName + "/Student",
+                                                TaskJson = JsonConvert.SerializeObject(studentEnrollmentListModel),
+                                                LastRunStatus = null,
+                                                LastRunTime = null,
+                                                IsActive = true,
+                                                CreatedBy = studentEnrollmentList.UpdatedBy,
+                                                CreatedOn = DateTime.UtcNow
+                                            };
+                                            this.context?.ScheduledJobs.Add(scheduledJob);
+                                            Id++;
+                                            this.context?.SaveChanges();
+                                        }
 
                                         //update student's existing enrollment details 
                                         studentEnrollmentUpdate.ExitCode = studentExitCode.Title;
