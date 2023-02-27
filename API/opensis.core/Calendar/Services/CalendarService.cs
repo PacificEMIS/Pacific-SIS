@@ -176,5 +176,34 @@ namespace opensis.core.Calender.Services
 
             return calendarDelete;
         }
+
+        /// <summary>
+        /// Get Calendar And Holiday List
+        /// </summary>
+        /// <param name="calendar"></param>
+        /// <returns></returns>
+        public CalendarAddViewModel GetCalendarAndHolidayList(CalendarAddViewModel calendar)
+        {
+            CalendarAddViewModel calendarData = new CalendarAddViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(calendar._tenantName + calendar._userName, calendar._token))
+                {
+                    calendarData = this.calendarRepository.GetCalendarAndHolidayList(calendar);
+                }
+                else
+                {
+                    calendarData._failure = true;
+                    calendarData._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                calendarData._failure = true;
+                calendarData._message = es.Message;
+            }
+
+            return calendarData;
+        }
     }
 }

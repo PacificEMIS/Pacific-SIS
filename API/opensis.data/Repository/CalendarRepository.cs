@@ -449,5 +449,45 @@ namespace opensis.data.Repository
             }
             return calendar;
         }
+
+        /// <summary>
+        /// Get Calendar And Holiday List
+        /// </summary>
+        /// <param name="calendar"></param>
+        /// <returns></returns>
+        public CalendarAddViewModel GetCalendarAndHolidayList(CalendarAddViewModel calendar)
+        {
+            CalendarAddViewModel calendarAddViewModel = new CalendarAddViewModel();
+            try
+            {
+                var sessionCalendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == calendar.SchoolCalendar!.TenantId && x.SchoolId == calendar.SchoolCalendar.SchoolId /*&& x.AcademicYear == calendar.SchoolCalendar.AcademicYear*/ && x.SessionCalendar == true).OrderByDescending(x => x.AcademicYear).FirstOrDefault();
+
+                if (sessionCalendarData != null)
+                {
+                    var holidayEventList = this.context?.CalendarEvents.Where(x => x.TenantId == calendar.SchoolCalendar!.TenantId && (x.SchoolId == calendar.SchoolCalendar.SchoolId || x.ApplicableToAllSchool == true) && x.AcademicYear == sessionCalendarData.AcademicYear && x.IsHoliday == true).ToList();
+
+                    if (holidayEventList?.Any() == true)
+                    {
+                        calendarAddViewModel.HolidayList.AddRange(holidayEventList);
+                    }
+
+                    calendarAddViewModel.SchoolCalendar = sessionCalendarData;
+                    calendarAddViewModel._tenantName = calendar._tenantName;
+                    calendarAddViewModel._failure = false;
+                }
+                else
+                {
+                    calendarAddViewModel._failure = true;
+                    calendarAddViewModel._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                calendarAddViewModel._failure = true;
+                calendarAddViewModel._message = es.Message;
+            }
+
+            return calendarAddViewModel;
+        }
     }
 }
