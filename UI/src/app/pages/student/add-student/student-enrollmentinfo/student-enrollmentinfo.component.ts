@@ -32,7 +32,7 @@ import icAdd from '@iconify/icons-ic/baseline-add';
 import icClear from '@iconify/icons-ic/baseline-clear';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { RollingOptionsEnum } from '../../../../enums/rolling-retention-option.enum';
-import { CalendarListModel } from '../../../../models/calendar.model';
+import { CalendarListModel, GetCalendarAndHolidayListModel } from '../../../../models/calendar.model';
 import { CalendarService } from '../../../../services/calendar.service';
 import { StudentEnrollmentDetails, StudentEnrollmentModel, StudentEnrollmentSchoolListModel } from '../../../../models/student.model';
 import { StudentService } from '../../../../services/student.service';
@@ -127,6 +127,7 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
   module = Module.STUDENT;
   categoryId = 1;
   customValid=false;
+  getAllCalendarHoliday: GetCalendarAndHolidayListModel = new GetCalendarAndHolidayListModel();
   constructor(
     private dialog: MatDialog,
     private calendarService: CalendarService,
@@ -185,7 +186,29 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
     this.selectedSchoolIndex[indexOfDynamicRow] = index;
 
     this.cloneStudentEnrollment.studentEnrollments[indexOfDynamicRow].schoolName = this.schoolListWithGradeLevelsAndEnrollCodes[index].schoolName;
+    this.getCalendarAndHolidayList(schoolId);
   }
+
+  getCalendarAndHolidayList(schoolId: any) {
+    this.getAllCalendarHoliday._tenantName = this.defaultValuesService.getDefaultTenant();
+    this.getAllCalendarHoliday._token = this.defaultValuesService.getToken();
+    this.getAllCalendarHoliday._userName = this.defaultValuesService.getUserName();
+    this.getAllCalendarHoliday.schoolCalendar.academicYear = this.defaultValuesService.getAcademicYear();
+    this.getAllCalendarHoliday.schoolCalendar.schoolId = schoolId;
+    this.calendarService.GetCalendarAndHolidayList(this.getAllCalendarHoliday).subscribe((res: any) => {
+      if (res._failure) {
+      }
+      else {
+        this.schoolListWithGradeLevelsAndEnrollCodes.forEach(item => {
+          if (item.schoolId == schoolId) {
+            item.exitStartDate = new Date(res?.schoolCalendar?.startDate);
+            item.exitEndDate = new Date(res?.schoolCalendar?.endDate);
+          }
+        });
+      }
+    })
+  }
+
 
   onTransferredSchoolChange(transferredSchoolId, indexOfDynamicRow) {
     const index = this.schoolListWithGradeLevelsAndEnrollCodes.findIndex((x) => {
@@ -271,6 +294,12 @@ export class StudentEnrollmentinfoComponent implements OnInit, OnDestroy {
           this.commonService.checkTokenValidOrNot(res._message);
         } else {
           this.schoolListWithGradeLevelsAndEnrollCodes = res.schoolMaster.filter(item => item);
+          this.schoolListWithGradeLevelsAndEnrollCodes.forEach(item => {
+            if (item.schoolId == this.defaultValuesService.getSchoolID()) {
+              item.exitStartDate = new Date(this.defaultValuesService.getFullYearStartDate());
+              item.exitEndDate = new Date(this.defaultValuesService.getFullYearEndDate());
+            }
+          });
           for (let i = 0; i < this.cloneStudentEnrollment.studentEnrollments.length; i++) {
             this.selectedSchoolIndex[i] = this.schoolListWithGradeLevelsAndEnrollCodes.findIndex((x) => {
               return x.schoolId === +this.cloneStudentEnrollment.studentEnrollments[i].schoolId;

@@ -185,7 +185,8 @@
                                                 color="primary" floatLabel="never">
                                                 <mat-label>{{'exitDate'|translate}}</mat-label>
                                                 <input #exit_date="ngModel" name="{{'exitDate'+index}}" matInput
-                                                    [matDatepicker]="endDate" [min]="minExitDate"
+                                                    [matDatepicker]="endDate" [min]="schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.exitStartDate"
+                                                    [max]="schoolListWithGradeLevelsAndEnrollCodes[selectedSchoolIndex[index]]?.exitEndDate"
                                                     [(ngModel)]="this.cloneStudentEnrollment.studentEnrollments[index].exitDate"
                                                     [required]="this.cloneStudentEnrollment.studentEnrollments[index].exitCode">
                                                 <mat-datepicker-toggle matSuffix [for]="endDate">
