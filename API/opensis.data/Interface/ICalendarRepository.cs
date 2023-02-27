@@ -37,6 +37,7 @@ namespace opensis.data.Interface
         CalendarAddViewModel UpdateCalendar(CalendarAddViewModel calendar);
         CalendarListModel GetAllCalendar(CalendarListModel calendarList);
         CalendarAddViewModel DeleteCalendar(CalendarAddViewModel calendar);
+        CalendarAddViewModel GetCalendarAndHolidayList(CalendarAddViewModel calendar);
 
     }
 }
