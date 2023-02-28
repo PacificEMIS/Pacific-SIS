@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CalendarAddViewModel, CalendarListModel } from '../models/calendar.model';
+import { CalendarAddViewModel, CalendarListModel, GetCalendarAndHolidayListModel } from '../models/calendar.model';
 import { DefaultValuesService } from '../common/default-values.service';
 
 @Injectable({
@@ -66,6 +66,12 @@ export class CalendarService {
     }
     getCalendarId() {
         return this.calendarId;
+    }
+    GetCalendarAndHolidayList(calendar: GetCalendarAndHolidayListModel) {
+        // calendar = this.defaultValuesService.getAllMandatoryVariable(calendar);
+        calendar.schoolCalendar.tenantId= this.defaultValuesService.getTenantID();
+        let apiurl = this.apiUrl + calendar._tenantName + "/Calendar/getCalendarAndHolidayList";
+        return this.http.post<GetCalendarAndHolidayListModel>(apiurl, calendar, this.httpOptions)
     }
 
 }
