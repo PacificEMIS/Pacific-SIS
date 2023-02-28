@@ -54,6 +54,8 @@ import { ImageCropperService } from '../../../services/image-cropper.service';
 import { ModuleIdentifier } from '../../../enums/module-identifier.enum';
 import { SchoolCreate } from '../../../enums/school-create.enum';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
+import { CalendarService } from 'src/app/services/calendar.service';
+import { GetCalendarAndHolidayListModel } from 'src/app/models/calendar.model';
 @Component({
   selector: 'vex-student-re-enroll',
   templateUrl: './student-re-enroll.component.html',
@@ -119,6 +121,7 @@ export class StudentReEnrollComponent implements OnInit {
     { label: 'exitDate', property: 'exitDate', type: 'text', visible: true },
     { label: 'exitCode', property: 'exitCode', type: 'text', visible: true }
   ];
+  getAllCalendarHoliday: GetCalendarAndHolidayListModel = new GetCalendarAndHolidayListModel();
 
   constructor(public translateService: TranslateService, private router: Router,
     private studentService: StudentService,
@@ -133,6 +136,7 @@ export class StudentReEnrollComponent implements OnInit {
     private rollBasedAccessService: RollBasedAccessService,
     private imageCropperService: ImageCropperService,
     private paginatorObj: MatPaginatorIntl,
+    private calendarService: CalendarService,
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
     this.advancedSearchExpansionModel.searchBirthdays = false;
@@ -395,7 +399,29 @@ export class StudentReEnrollComponent implements OnInit {
     this.enrollmentCodelist = this.schoolListWithGradeLevelsAndEnrollCodes.filter(x => x.schoolId === +schoolId)[0].studentEnrollmentCode.filter(x => x.title === 'New' || x.title === 'Transferred In' || x.title === 'Rolled Over');
 
     this.gradeLavelList = this.schoolListWithGradeLevelsAndEnrollCodes.filter(x => x.schoolId === +schoolId)[0]?.gradelevels;
+    this.getCalendarAndHolidayList(schoolId);
   }
+
+  getCalendarAndHolidayList(schoolId: any) {
+    this.getAllCalendarHoliday._tenantName = this.defaultValuesService.getDefaultTenant();
+    this.getAllCalendarHoliday._token = this.defaultValuesService.getToken();
+    this.getAllCalendarHoliday._userName = this.defaultValuesService.getUserName();
+    this.getAllCalendarHoliday.schoolCalendar.academicYear = this.defaultValuesService.getAcademicYear();
+    this.getAllCalendarHoliday.schoolCalendar.schoolId= schoolId;
+    this.calendarService.GetCalendarAndHolidayList(this.getAllCalendarHoliday).subscribe((res: any) => {
+    if (res._failure) {
+      // this.snackbar.open('' + res._message, '', {
+      //   duration: 10000
+      // });
+      this.enrollmentDate = null;
+    }
+    else {
+      this.enrollmentDate = new Date();
+      this.startDate = res?.schoolCalendar?.startDate;
+      // this.endDate = res?.schoolCalendar?.endDate;
+    }
+  })
+}
 
   changeGrade(gradeId) {
     this.gradeLevelTitle = this.schoolListWithGradeLevelsAndEnrollCodes.filter(x => x.schoolId == +this.selectedSchoolId)[0]?.gradelevels.filter(x => x.gradeId === +gradeId)[0]?.title;
