@@ -350,6 +350,14 @@ namespace opensis.data.Repository
 
                                         if (loginInfoData != null)
                                         {
+                                            var loginInfoDataForRemove = loginInfoData;
+
+                                            if (loginInfoDataForRemove != null)
+                                            {
+                                                this.context?.UserMaster.Remove(loginInfoDataForRemove);
+                                                this.context?.SaveChanges();
+                                            }
+
                                             loginInfoData.EmailAddress = parentInfoAddViewModel.parentInfo.LoginEmail;
                                             loginInfoData.IsActive = parentInfoAddViewModel.parentInfo.IsPortalUser;
 
