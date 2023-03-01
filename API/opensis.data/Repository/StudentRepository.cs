@@ -291,8 +291,6 @@ namespace opensis.data.Repository
                                     student.studentMaster.StudentInternalId = studentUpdate.StudentInternalId;
                                 }
 
-
-
                                 //Add or Update student portal access
                                 if (studentUpdate.StudentPortalId != null)
                                 {
@@ -313,8 +311,17 @@ namespace opensis.data.Repository
                                             else
                                             {
                                                 var loginInfoData = this.context?.UserMaster.FirstOrDefault(x => x.TenantId == student.studentMaster.TenantId && x.EmailAddress == studentUpdate.StudentPortalId);
+
                                                 if (loginInfoData != null)
                                                 {
+                                                    var loginInfoDataForRemove = loginInfoData;
+
+                                                    if (loginInfoDataForRemove != null)
+                                                    {
+                                                        this.context?.UserMaster.Remove(loginInfoDataForRemove);
+                                                        this.context?.SaveChanges();
+                                                    }
+
                                                     loginInfoData.EmailAddress = student.LoginEmail;
                                                     loginInfoData.IsActive = student.PortalAccess;
 
@@ -324,7 +331,6 @@ namespace opensis.data.Repository
                                                     //Update StudentPortalId in Studentmaster table
                                                     student.studentMaster.StudentPortalId = student.LoginEmail;
                                                 }
-
                                             }
                                         }
                                         else
