@@ -172,7 +172,7 @@ export class SelectBarComponent implements OnInit {
     this.defaultValuesService.setSchoolID(details.schoolId);
     this.defaultValuesService.setSchoolOpened(details.dateSchoolOpened);
     this.defaultValuesService.setSchoolClosed(details.dateSchoolClosed);
-    this.defaultValuesService.setuserMembershipName(details.membershipType)
+    this.defaultValuesService.setuserMembershipName(details.membershipName)
     this.defaultValuesService.setUserMembershipType(details.membershipType)
     this.defaultValuesService.setUserMembershipID(details.membershipId.toString())
     this.callAcademicYearsOnSchoolSelect();
