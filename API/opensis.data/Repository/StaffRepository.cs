@@ -1164,6 +1164,8 @@ namespace opensis.data.Repository
                             staffSchoolInfo.Id = 0;
                             //staffSchoolInfo.Id = Id != null ? (int)Id : 0;
                             staffSchoolInfo.UpdatedOn = DateTime.UtcNow;
+                            staffSchoolInfo.CreatedOn = DateTime.UtcNow;
+                            staffSchoolInfo.CreatedBy = staffSchoolInfo.UpdatedBy;
                             staffSchoolInfo.StaffMaster = null;
                             this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
                             Id++;
