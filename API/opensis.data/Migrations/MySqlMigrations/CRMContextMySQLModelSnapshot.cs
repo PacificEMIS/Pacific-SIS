@@ -9749,7 +9749,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId", "SchoolId", "MembershipId");
+                    b.HasIndex("TenantId", "SchoolAttachedId", "MembershipId");
 
                     b.HasIndex(new[] { "TenantId", "StaffId" }, "IX_staff_school_info_tenant_id_staff_id");
 
@@ -13900,7 +13900,7 @@ namespace opensis.data.Migrations.MySqlMigrations
 
                     b.HasOne("opensis.data.Models.Membership", "Membership")
                         .WithMany("StaffSchoolInfos")
-                        .HasForeignKey("TenantId", "SchoolId", "MembershipId")
+                        .HasForeignKey("TenantId", "SchoolAttachedId", "MembershipId")
                         .HasConstraintName("staff_school_info$FK_membership");
 
                     b.Navigation("Membership");

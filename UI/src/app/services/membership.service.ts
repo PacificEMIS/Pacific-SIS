@@ -53,4 +53,13 @@ export class MembershipService {
     return this.http.post<AddMembershipModel>(apiurl, obj,this.httpOptions);
   }
 
+  getAllMembersBySchool(obj: GetAllMembersList) {
+    obj._tenantName = this.defaultValuesService.getDefaultTenant();
+    obj._userName = this.defaultValuesService.getUserName();
+    obj._token = this.defaultValuesService.getToken();
+    obj.tenantId = this.defaultValuesService.getTenantID();
+    let apiurl = this.apiUrl + obj._tenantName + '/Membership/getAllMembers';
+    return this.http.post<GetAllMembersList>(apiurl, obj,this.httpOptions);
+  }
+
 }

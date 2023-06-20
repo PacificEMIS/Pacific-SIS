@@ -38,6 +38,8 @@ namespace opensis.data.ViewModels.School
         public DateTime? DateSchoolOpened { get; set; }
         public DateTime? DateSchoolClosed { get; set; }
         public int? MembershipId { get; set; }
+        public int? StudentId { get; set; }
+        public string? MembershipName { get; set; }
         public string? MembershipType { get; set; }
         //public string? StreetAddress1 { get; set; }
         //public string? NameOfPrincipal { get; set; }
