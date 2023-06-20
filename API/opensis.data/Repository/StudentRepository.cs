@@ -2626,84 +2626,22 @@ namespace opensis.data.Repository
             IQueryable<StudentMaster>? transactionIQ = null;
             try
             {
-                var studentDataList = this.context?.StudentMaster.Include(x => x.StudentEnrollment).Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).AsNoTracking().Select(e => new StudentMaster
-                {
-                    TenantId = e.TenantId,
-                    SchoolId = e.SchoolId,
-                    StudentId = e.StudentId,
-                    FirstGivenName = e.FirstGivenName,
-                    MiddleName = e.MiddleName,
-                    LastFamilyName = e.LastFamilyName,
-                    AlternateId = e.AlternateId,
-                    StudentInternalId = e.StudentInternalId,
-                    MobilePhone = e.MobilePhone,
-                    HomePhone = e.HomePhone,
-                    PersonalEmail = e.PersonalEmail,
-                    SchoolEmail = e.SchoolEmail,
-                    StudentGuid = e.StudentGuid,
-                    AdmissionNumber = e.AdmissionNumber,
-                    RollNumber = e.RollNumber,
-                    Dob = e.Dob,
-                    Gender = e.Gender,
-                    Race = e.Race,
-                    Ethnicity = e.Ethnicity,
-                    MaritalStatus = e.MaritalStatus,
-                    CountryOfBirth = e.CountryOfBirth,
-                    Nationality = e.Nationality,
-                    FirstLanguage = e.FirstLanguage,
-                    SecondLanguage = e.SecondLanguage,
-                    ThirdLanguage = e.ThirdLanguage,
-                    HomeAddressLineOne = e.HomeAddressLineOne,
-                    HomeAddressLineTwo = e.HomeAddressLineTwo,
-                    HomeAddressCity = e.HomeAddressCity,
-                    HomeAddressCountry = e.HomeAddressCountry,
-                    HomeAddressState = e.HomeAddressState,
-                    HomeAddressZip = e.HomeAddressZip,
-                    BusNo = e.BusNo,
-                    FirstLanguageId = e.FirstLanguageId,
-                    SectionId = e.SectionId,
-                    UpdatedBy = e.UpdatedBy,
-                    CreatedBy = e.CreatedBy,
-                    UpdatedOn = e.UpdatedOn,
-                    CreatedOn = e.CreatedOn,
-                    StudentEnrollment = e.StudentEnrollment.Where(d => d.IsActive == false).OrderByDescending(a => a.EnrollmentDate).Select(s => new StudentEnrollment
-                    {
-                        EnrollmentDate = s.EnrollmentDate,
-                        GradeLevelTitle = s.GradeLevelTitle,
-                        CalenderId = s.CalenderId,
-                        TenantId = s.TenantId,
-                        SchoolId = s.SchoolId,
-                        StudentId = s.StudentId,
-                        EnrollmentId = s.EnrollmentId,
-                        StudentGuid = s.StudentGuid,
-                        GradeId = s.GradeId,
-                        ExitDate = s.ExitDate,
-                        ExitCode = s.ExitCode,
-                        UpdatedOn = s.UpdatedOn,
-                        CreatedOn = s.CreatedOn,
-                        CreatedBy = s.CreatedBy,
-                        UpdatedBy = s.UpdatedBy
-                        //AcademicYear = (this.context.SchoolCalendars.FirstOrDefault(z => z.SchoolId == s.SchoolId && ((s.CalenderId != null) ? z.CalenderId == s.CalenderId : z.DefaultCalender == true))) != null ? (this.context.SchoolCalendars.FirstOrDefault(z => z.SchoolId == s.SchoolId && ((s.CalenderId != null) ? z.CalenderId == s.CalenderId : z.DefaultCalender == true))).AcademicYear : null,
-                    }).ToList()
-                }).ToList();
+                var studentDataList = this.context?.StudentMaster.Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).ToList();
 
                 if (studentDataList?.Any() == true)
                 {
-                    Guid studentGuidData = new Guid();
+                    List<Guid>? studentGuids = new();
+
                     foreach (var studentData in studentDataList)
                     {
-                        if (studentData.StudentGuid != studentGuidData)
+                        if (!studentGuids.Contains(studentData.StudentGuid)) //for duplicate checking in search all school time
                         {
-                            var checkEnrolledStudent = this.context?.StudentMaster.FirstOrDefault(c => c.SchoolId == pageResult.SchoolId && c.StudentGuid == studentData.StudentGuid && c.IsActive == true);
+                            var checkEnrolledStudent = this.context?.StudentEnrollment.Where(x => x.TenantId == pageResult.TenantId && x.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
 
-                            if (checkEnrolledStudent == null)
+                            if (checkEnrolledStudent != null && checkEnrolledStudent.ExitCode == "Dropped Out" && checkEnrolledStudent.ExitDate != null && checkEnrolledStudent.ExitDate < DateTime.Today.Date)
                             {
                                 Student.Add(studentData);
-                                studentGuidData = studentData.StudentGuid;
-                            }
-                            else
-                            {
-                                studentGuidData = studentData.StudentGuid;
+                                studentGuids.Add(studentData.StudentGuid);
                             }
                         }
                     }
@@ -2732,7 +2670,6 @@ namespace opensis.data.Repository
                         if (studentEnrollmentFilter.ToList()?.Any() == true)
                         {
                             transactionIQ = transactionIQ.AsNoTracking().ToList().Concat(studentEnrollmentFilter).AsQueryable();
-                            //transactionIQ = gradeLevelFilter;
                         }
                     }
                     else
@@ -2760,7 +2697,7 @@ namespace opensis.data.Repository
                                         }
                                         if (columnName.ToLower() == "exitcode")
                                         {
-                                            enrollmentData = enrollmentData.AsQueryable().AsNoTracking().ToList().Where(x => /*x.StudentEnrollment.FirstOrDefault()!.ExitCode.ToLower() == filterValue.ToString().ToLower()*/
+                                            enrollmentData = enrollmentData.AsQueryable().AsNoTracking().ToList().Where(x =>
                                             String.Compare(x.StudentEnrollment.FirstOrDefault()!.ExitCode, filterValue, true) == 0
                                             ).AsQueryable();
                                         }
@@ -2779,53 +2716,6 @@ namespace opensis.data.Repository
                                 transactionIQ = enrollmentData;
                             }
                         }
-
-                        //    if (pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "enrollmentdate"))
-                        //    {
-                        //        var filterValue = Convert.ToDateTime(pageResult.FilterParams.Where(x => x.ColumnName.ToLower() == "enrollmentdate").Select(x => x.FilterValue).FirstOrDefault());
-
-                        //        var studentEnrollmentData = Student.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.FirstOrDefault().EnrollmentDate == filterValue).AsQueryable();
-                        //        var indexValue = pageResult.FilterParams.FindIndex(x => x.ColumnName.ToLower() == "enrollmentdate");
-                        //        pageResult.FilterParams.RemoveAt(indexValue);
-
-                        //        if (studentEnrollmentData.ToList()?.Any()==true)
-                        //        {
-                        //            transactionIQ = studentEnrollmentData.AsNoTracking().ToList().AsQueryable();
-
-                        //        }
-                        //    }
-                        //    if (pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "exitdate"))
-                        //    {
-                        //        var filterValue = Convert.ToDateTime(pageResult.FilterParams.Where(x => x.ColumnName.ToLower() == "exitdate").Select(x => x.FilterValue).FirstOrDefault());
-
-                        //        var studentExitDate = Student.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.FirstOrDefault().ExitDate == filterValue).AsQueryable();
-                        //        var indexValue = pageResult.FilterParams.FindIndex(x => x.ColumnName.ToLower() == "exitdate");
-                        //        pageResult.FilterParams.RemoveAt(indexValue);
-
-                        //        if (studentExitDate.ToList()?.Any()==true)
-                        //        {
-                        //            transactionIQ = studentExitDate.AsNoTracking().ToList().AsQueryable();
-
-                        //        }
-                        //    }
-                        //    if (pageResult.FilterParams.Any(x => x.ColumnName.ToLower() == "exitcode"))
-                        //    {
-                        //        var filterValue = pageResult.FilterParams.Where(x => x.ColumnName.ToLower() == "exitcode").Select(x => x.FilterValue).FirstOrDefault();
-
-                        //        var studentEnrollmentCode = Student.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.FirstOrDefault().ExitCode.ToLower() == filterValue.ToLower()).AsQueryable();
-                        //        var indexValue = pageResult.FilterParams.FindIndex(x => x.ColumnName.ToLower() == "exitcode");
-                        //        pageResult.FilterParams.RemoveAt(indexValue);
-
-                        //        if (studentEnrollmentCode.ToList()?.Any()==true)
-                        //        {
-                        //            transactionIQ = studentEnrollmentCode.AsNoTracking().ToList().AsQueryable();
-                        //        }
-                        //    }
-                        //    if (transactionIQ != null && pageResult.FilterParams?.Any()==true)
-                        //    {
-                        //        transactionIQ = Utility.FilteredData(pageResult.FilterParams, transactionIQ).AsQueryable();
-                        //    }
-                        //}
                         else
                         {
                             transactionIQ = Utility.FilteredData(pageResult.FilterParams!, Student).AsQueryable();
@@ -2834,7 +2724,8 @@ namespace opensis.data.Repository
                             var studentGuids = transactionIQ.Select(s => s.StudentGuid).ToList();
                             if (studentGuids.Count > 0)
                             {
-                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, pageResult.SchoolId, studentGuids);
+                                int? schoolId = pageResult.SearchAllSchool == true ? null : pageResult.SchoolId;
+                                var filterStudentIds = Utility.MedicalAdvancedSearch(this.context!, pageResult.FilterParams!, pageResult.TenantId, schoolId, studentGuids);
 
                                 if (filterStudentIds?.Count > 0)
                                 {
@@ -2915,6 +2806,18 @@ namespace opensis.data.Repository
                                 }
                                 break;
 
+                            case "lastfamilyname":
+
+                                if (pageResult.SortingModel.SortDirection?.ToLower() == "asc")
+                                {
+                                    transactionIQ = transactionIQ?.OrderBy(a => a.LastFamilyName).ThenBy(a => (a.PreferredName != null && a.PreferredName != "") ? a.PreferredName : a.FirstGivenName);
+                                }
+                                else
+                                {
+                                    transactionIQ = transactionIQ?.OrderByDescending(a => a.LastFamilyName).ThenByDescending(a => (a.PreferredName != null && a.PreferredName != "") ? a.PreferredName : a.FirstGivenName);
+                                }
+                                break;
+
                             default:
                                 transactionIQ = Utility.Sort(transactionIQ, pageResult.SortingModel.SortColumn ?? "", pageResult.SortingModel.SortDirection.ToLower());
                                 break;
@@ -2924,7 +2827,6 @@ namespace opensis.data.Repository
 
                 if (transactionIQ != null)
                 {
-                    //transactionIQ = transactionIQ.Distinct();
                     int totalCount = transactionIQ.AsNoTracking().ToList().Count();
                     if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
                     {
@@ -2935,7 +2837,6 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    //studentListModel.studentMaster = null;
                     studentListModel.TotalCount = 0;
                 }
 
