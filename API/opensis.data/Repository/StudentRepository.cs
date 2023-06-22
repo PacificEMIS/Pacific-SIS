@@ -1350,7 +1350,7 @@ namespace opensis.data.Repository
                                     //This block for Roll Over,Drop (Transfer),Enroll (Transfer)
                                     var studentExitCode = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentList.TenantId && x.SchoolId == studentEnrollmentList.SchoolId && x.EnrollmentCode.ToString() == studentEnrollmentList.ExitCode); //fetching enrollemnt code type 
 
-                                    if (studentExitCode!.Type!.ToLower() == "Drop (Transfer)".ToLower())
+                                    if (studentExitCode != null && studentExitCode.Type!.ToLower() == "Drop (Transfer)".ToLower())
                                     {
                                         //This block for student drop(transfer) & enroll(transfer) new school
 
@@ -1643,6 +1643,7 @@ namespace opensis.data.Repository
                                             studentEnrollmentUpdate.ExitCode = studentExitCode.Title;
                                             studentEnrollmentUpdate.ExitDate = studentEnrollmentList.ExitDate;
                                             studentEnrollmentUpdate.TransferredGrade = studentEnrollmentList.GradeLevelTitle;
+                                            studentEnrollmentUpdate.RollingOption = studentEnrollmentListModel.RollingOption;
                                             studentEnrollmentUpdate.UpdatedOn = DateTime.UtcNow;
                                             studentEnrollmentUpdate.UpdatedBy = studentEnrollmentList.UpdatedBy;
                                             studentEnrollmentUpdate.IsActive = true;
