@@ -2872,26 +2872,32 @@ namespace opensis.data.Repository
         public DashboardViewModel GetDashboardViewForCalendarView(DashboardViewModel dashboardViewModel)
         {
             DashboardViewModel dashboardView = new DashboardViewModel();
+
             try
             {
-                var CalendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear).ToList();
-                if (CalendarData?.Any()==true)
+                List<CalendarEvents>? Events = new();
+
+                var CalendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.AcademicYear == dashboardViewModel.AcademicYear).ToList();
+                if (CalendarData?.Any() == true)
                 {
-                    dashboardView.SchoolCalendar = CalendarData.FirstOrDefault(x => x.SchoolId == dashboardViewModel.SchoolId && x.AcademicYear == dashboardViewModel.AcademicYear && x.DefaultCalender == true);
+                    dashboardView.SchoolCalendar = CalendarData.FirstOrDefault(x => x.DefaultCalender == true);
                     if (dashboardView.SchoolCalendar != null)
                     {
                         dashboardView.SchoolCalendar!.SchoolMaster = null!;
                     }
 
-                    //var Events = this.context?.CalendarEvents.Where(x => ((x.TenantId == dashboardViewModel.TenantId /*&& x.SchoolId == calendarEventList.SchoolId*/ && x.AcademicYear == dashboardViewModel.AcademicYear && ((x.CalendarId == defaultCalendar.CalenderId /*&& x.SystemWideEvent == false */&& x.SchoolId == dashboardViewModel.SchoolId) || x.SystemWideEvent == true)) || x.TenantId == dashboardViewModel.TenantId && x.SystemWideEvent == true && x.AcademicYear == dashboardViewModel.AcademicYear) && x.VisibleToMembershipId.Contains(dashboardViewModel.MembershipId.ToString()) || (x.TenantId == dashboardViewModel.TenantId && x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true))).ToList();
+                    Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && ((x.StartDate <= DateTime.Today.Date && DateTime.Today.Date <= x.EndDate) || (x.StartDate >= DateTime.Today.Date)) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true)).ToList();
 
-                    //var Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true) || (x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true))).ToList();
+                    //for fetch holiday
+                    var holidays = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && ((x.StartDate <= DateTime.Today.Date && DateTime.Today.Date <= x.EndDate) || (x.StartDate >= DateTime.Today.Date)) && x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true)).ToList();
 
-                    var Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && ((x.StartDate <= DateTime.UtcNow && DateTime.UtcNow <= x.EndDate) || (x.StartDate >= DateTime.UtcNow)) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true || (x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true)))).ToList();
+                    if (holidays?.Any() == true)
+                    {
+                        Events?.AddRange(holidays);
+                    }
 
                     if (Events != null && Events.Any())
                     {
-                        //dashboardView.calendarEventList = Events;
                         var EventList = Events.OrderBy(x => x.StartDate).ToList();
                         foreach (var events in EventList)
                         {
