@@ -134,7 +134,7 @@ export class ReportCardsComponent implements OnInit {
     private el: ElementRef
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
-    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = true;
     this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");

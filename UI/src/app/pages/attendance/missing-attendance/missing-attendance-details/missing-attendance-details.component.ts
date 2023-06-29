@@ -34,7 +34,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
 import { AllCourseSectionView } from "src/app/models/course-manager.model";
 import { LoaderService } from "src/app/services/loader.service";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { Router } from "@angular/router";
 import { fadeInUp400ms } from "src/@vex/animations/fade-in-up.animation";
@@ -79,6 +79,7 @@ export class MissingAttendanceDetailsComponent implements OnInit ,AfterViewInit,
     { label: 'action', property: 'action', type: 'text', visible: true },
     
   ];
+  missingAttendanceListSubject$: Subject<void> = new Subject();
 
   constructor(public translateService: TranslateService,
     private snackbar:MatSnackBar,
@@ -137,6 +138,7 @@ this.searchCtrl= new FormControl();
         this.callWithoutFilterValue()
       }
     });
+    this.getMissingAttendanceListBySearch();
   }
 
   getPageEvent(event) {
@@ -176,7 +178,11 @@ this.searchCtrl= new FormControl();
     this.getAllStaffModel.pageNumber = 1;
     this.paginator.pageIndex = 0;
     this.getAllStaffModel.pageSize = this.pageSize;
-    this.getMissingAttendanceList();
+    this.getAllStaffModel.sortingModel = null;
+    this.getAllStaffModel.staffId = this.staffDetails.staffId;
+    this.getAllStaffModel.dobStartDate = this.staffDetails.startDate;
+    this.getAllStaffModel.dobEndDate = this.staffDetails.endDate;
+    this.missingAttendanceListSubject$.next();
   }
 
   callWithoutFilterValue() {
@@ -187,7 +193,11 @@ this.searchCtrl= new FormControl();
     //   this.getAllStaffModel.sortingModel.sortColumn = this.sort.active;
     //   this.getAllStaffModel.sortingModel.sortDirection = this.sort.direction;
     // }
-    this.getMissingAttendanceList();
+    this.getAllStaffModel.sortingModel = null;
+    this.getAllStaffModel.staffId = this.staffDetails.staffId;
+    this.getAllStaffModel.dobStartDate = this.staffDetails.startDate;
+    this.getAllStaffModel.dobEndDate = this.staffDetails.endDate;
+    this.missingAttendanceListSubject$.next();
   }
 
   toggleColumnVisibility(column, event) {
@@ -198,6 +208,33 @@ this.searchCtrl= new FormControl();
 
   get visibleColumns() {
     return this.columns.filter(column => column.visible).map(column => column.property);
+  }
+
+  getMissingAttendanceListBySearch() {
+    this.missingAttendanceListSubject$.pipe(switchMap(() => this.studentAttendanceService.missingAttendanceList(this.getAllStaffModel))).subscribe((res: ScheduledCourseSectionViewModel) => {
+      if (res) {
+        if (res._failure) {
+
+          this.courseSectionViewList = new MatTableDataSource([]);
+          if (!res.courseSectionViewList) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.totalCount = res.missingAttendanceCount;
+          this.pageNumber = res.pageNumber;
+          this.pageSize = res._pageSize;
+          this.courseSectionViewList = new MatTableDataSource(res.courseSectionViewList);
+        }
+      }
+      else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
   }
 
   getMissingAttendanceList(){
@@ -240,6 +277,7 @@ this.searchCtrl= new FormControl();
   ngOnDestroy() {
     this.destroySubject$.next();
     this.destroySubject$.complete();
+    this.missingAttendanceListSubject$.unsubscribe();
   }
 
 }

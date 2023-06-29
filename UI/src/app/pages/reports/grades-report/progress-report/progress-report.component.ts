@@ -135,7 +135,7 @@ export class ProgressReportComponent implements OnInit {
     private commonFunction: SharedFunction
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
-    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = true;
     this.advancedSearchExpansionModel.searchAllSchools = false;
     this.loaderService.isLoading.subscribe((val) => {
       this.loading = val;
