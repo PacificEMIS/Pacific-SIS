@@ -218,6 +218,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
   languages: LanguageModel = new LanguageModel();
   destroySubject$: Subject<void> = new Subject();
   languageList: any[];
+  filterParameters = [];
 
   constructor(
     public translateService: TranslateService,
@@ -362,6 +363,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListByDateRangeModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
@@ -440,6 +442,7 @@ export class AdvanceReportComponent implements OnInit, OnDestroy {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }

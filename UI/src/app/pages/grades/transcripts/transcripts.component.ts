@@ -109,6 +109,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   // selectedHistoricalGradeList=[];
   // historicalGradeError:boolean;
   isFromAdvancedSearch: boolean = false;
+  filterParameters = [];
   constructor(
     public translateService: TranslateService,
     private gradeLevelService: GradeLevelService,
@@ -125,7 +126,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     private commonFunction: SharedFunction
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
-    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = true;
     this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     // translateService.use("en");
@@ -277,6 +278,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.callAllStudent();
   }
 
@@ -333,6 +335,7 @@ export class TranscriptsComponent implements OnInit, OnDestroy {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;

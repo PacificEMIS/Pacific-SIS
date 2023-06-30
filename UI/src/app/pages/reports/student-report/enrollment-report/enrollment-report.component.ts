@@ -121,6 +121,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     { label: 'Enrollment Date', property: 'enrollmentDate', type: 'text', visible: true },
     { label: 'Status', property: 'status', type: 'text', visible: false },
   ];
+  filterParameters = [];
 
   constructor(public translateService: TranslateService,
     private commonService: CommonService,
@@ -267,6 +268,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
     }
     this.studentInfoReportModel.pageNumber = event.pageIndex + 1;
     this.studentInfoReportModel.pageSize = event.pageSize;
+    this.studentInfoReportModel.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getStudentEnrollmentList();
   }
@@ -275,6 +277,7 @@ export class EnrollmentReportComponent implements OnInit, AfterViewInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.studentInfoReportModel.filterParams = []
     this.isFromAdvancedSearch = true;
     this.studentInfoReportModel = new GetStudentEnrollmentReportModel();
