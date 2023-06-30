@@ -129,6 +129,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     { name: 'Friday', id: 5 },
     { name: 'Saturday', id: 6 }
   ];
+  filterParameters = [];
 
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentAttendanceService: StudentAttendanceService,
@@ -317,6 +318,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   getPageEvent(event) {
     this.scheduleStudentListViewModel.pageNumber = event.pageIndex + 1;
     this.scheduleStudentListViewModel._pageSize = event.pageSize;
+    this.scheduleStudentListViewModel.filterParams = this.filterParameters;
     this.getStudentListByCourseSection(this.courseSectionData.courseSectionId);
   }
 
@@ -495,6 +497,7 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     NOTE: We just get the filterParams Array from Search component
     */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
     this.scheduleStudentListViewModel.pageSize = this.defaultValueService.getPageSize() ? this.defaultValueService.getPageSize() : 10;

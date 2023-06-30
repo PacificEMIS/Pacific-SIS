@@ -118,6 +118,7 @@ export class ProgressReportComponent implements OnInit {
   isFromAdvancedSearch: boolean = false;
   scheduleStudentListViewModel: ScheduleStudentListViewModel = new ScheduleStudentListViewModel();
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  filterParameters = [];
   
   constructor(
     public translateService: TranslateService,
@@ -251,6 +252,7 @@ export class ProgressReportComponent implements OnInit {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }
@@ -356,6 +358,7 @@ export class ProgressReportComponent implements OnInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();

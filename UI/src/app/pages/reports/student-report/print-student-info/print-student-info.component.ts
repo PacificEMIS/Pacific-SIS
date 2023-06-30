@@ -93,6 +93,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   homeAddressLogo: any;
   mailAddressLogo: any;
   isFromAdvancedSearch: boolean = false;
+  filterParameters = [];
 
 
   constructor(
@@ -211,6 +212,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }
@@ -316,6 +318,7 @@ export class PrintStudentInfoComponent implements OnInit, AfterViewInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListByDateRangeModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;

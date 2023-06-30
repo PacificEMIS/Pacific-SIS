@@ -116,6 +116,7 @@ export class ReportCardsComponent implements OnInit {
   halfLengthOfGradeList: number = 0;
   isFromAdvancedSearch: boolean = false;
   profiles = ProfilesTypes;
+  filterParameters = [];
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -328,9 +329,11 @@ export class ReportCardsComponent implements OnInit {
     if (this.isAdmin) {
       this.getAllStudent.pageNumber = event.pageIndex + 1;
       this.getAllStudent.pageSize = event.pageSize;
+      this.getAllStudent.filterParams = this.filterParameters;
     } else {
       this.scheduleStudentListViewModel.pageNumber = event.pageIndex + 1;
       this.scheduleStudentListViewModel.pageSize = event.pageSize;
+      this.scheduleStudentListViewModel.filterParams = this.filterParameters;
     }
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
@@ -480,6 +483,7 @@ export class ReportCardsComponent implements OnInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.scheduleStudentListViewModel = new ScheduleStudentListViewModel();
