@@ -1074,7 +1074,6 @@ namespace opensis.data.Repository
                     List<StudentAttendanceComments> studentAttendanceCommentsList = new List<StudentAttendanceComments>();
                     List<StudentAttendanceHistory> studentAttendanceHistoryList = new List<StudentAttendanceHistory>();
                     List<StudentMissingAttendance> studentMissingAttendanceList = new List<StudentMissingAttendance>();
-                    List<MoodleCourseScheduleViewModel> ListMCourseSchedule = new List<MoodleCourseScheduleViewModel>();
                     var currentDate = DateTime.UtcNow.Date;
                     bool? isPreviousDate = false;
 

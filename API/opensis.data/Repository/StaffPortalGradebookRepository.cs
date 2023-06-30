@@ -59,6 +59,7 @@ namespace opensis.data.Repository
                 {
                     if (gradebookConfigurationAddViewModel.gradebookConfiguration != null)
                     {
+
                         gradebookConfigurationAddViewModel.gradebookConfiguration.AcademicYear = (decimal)Utility.GetCurrentAcademicYear(this.context!, gradebookConfigurationAddViewModel.gradebookConfiguration!.TenantId, gradebookConfigurationAddViewModel.gradebookConfiguration.SchoolId)!;
 
                         var GradebookConfigurationData = this.context?.GradebookConfiguration.Include(x => x.GradebookConfigurationGradescale).Include(x => x.GradebookConfigurationYear).Include(x => x.GradebookConfigurationSemester).Include(x => x.GradebookConfigurationQuarter).Include(x => x.GradebookConfigurationProgressPeriods).FirstOrDefault(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId && x.SchoolId == gradebookConfigurationAddViewModel.gradebookConfiguration.SchoolId && x.CourseId == gradebookConfigurationAddViewModel.gradebookConfiguration.CourseId && x.CourseSectionId == gradebookConfigurationAddViewModel.gradebookConfiguration.CourseSectionId && x.AcademicYear == gradebookConfigurationAddViewModel.gradebookConfiguration.AcademicYear);
@@ -83,6 +84,7 @@ namespace opensis.data.Repository
                             if (GradebookConfigurationData.GradebookConfigurationGradescale.Count > 0)
                             {
                                 this.context?.GradebookConfigurationGradescale.RemoveRange(GradebookConfigurationData.GradebookConfigurationGradescale);
+
                             }
                             if (GradebookConfigurationData.GradebookConfigurationYear.Count > 0)
                             {
@@ -95,6 +97,7 @@ namespace opensis.data.Repository
                             if (GradebookConfigurationData.GradebookConfigurationQuarter.Count > 0)
                             {
                                 this.context?.GradebookConfigurationQuarter.RemoveRange(GradebookConfigurationData.GradebookConfigurationQuarter);
+
                             }
                             if (GradebookConfigurationData.GradebookConfigurationProgressPeriods.Count > 0)
                             {
@@ -104,58 +107,39 @@ namespace opensis.data.Repository
 
                             gradebookConfigurationAddViewModel.gradebookConfiguration.CreatedBy = GradebookConfigurationData.CreatedBy;
                             gradebookConfigurationAddViewModel.gradebookConfiguration.CreatedOn = GradebookConfigurationData.CreatedOn;
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.UpdatedBy = gradebookConfigurationAddViewModel.gradebookConfiguration.UpdatedBy;
                             gradebookConfigurationAddViewModel.gradebookConfiguration.UpdatedOn = DateTime.UtcNow;
                             gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId;
+
+                            //*************
                             this.context?.Entry(GradebookConfigurationData).CurrentValues.SetValues(gradebookConfigurationAddViewModel.gradebookConfiguration);
 
 
-                            int? gcgsId = 1;
-                            var GradebookConfigurationGradescaleData = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationGradescaleData != null)
-                            {
-                                gcgsId = GradebookConfigurationGradescaleData.Id + 1;
-                            }
+                            int? gcgsId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationGradescale, int>(x => x.Id));
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationGradescale.ToList().ForEach(x => { x.Id = (int)gcgsId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationGradescale.ToList().ForEach(x => { x.Id = (int)gcgsId!++; x.TenantId = GradebookConfigurationData.TenantId; x.SchoolId = GradebookConfigurationData.SchoolId; x.CourseId = GradebookConfigurationData.CourseId; x.CourseSectionId = GradebookConfigurationData.CourseSectionId; x.AcademicYear = GradebookConfigurationData.AcademicYear; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; x.GradebookConfiguration = null!; });
+
+
+
                             this.context?.GradebookConfigurationGradescale.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationGradescale);
 
-                            int? gcyId = 1;
-                            var GradebookConfigurationYearData = this.context?.GradebookConfigurationYear.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationYearData != null)
-                            {
-                                gcyId = GradebookConfigurationYearData.Id + 1;
-                            }
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationYear.ToList().ForEach(x => { x.Id = (int)gcyId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; });
+                            int? gcyId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationYear, int>(x => x.Id));
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationYear.ToList().ForEach(x => { x.Id = (int)gcyId!++; x.TenantId = GradebookConfigurationData.TenantId; x.SchoolId = GradebookConfigurationData.SchoolId; x.CourseId = GradebookConfigurationData.CourseId; x.CourseSectionId = GradebookConfigurationData.CourseSectionId; x.AcademicYear = GradebookConfigurationData.AcademicYear; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; x.GradebookConfiguration = null!; });
                             this.context?.GradebookConfigurationYear.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationYear);
 
-                            int? gcsId = 1;
-                            var GradebookConfigurationSemesterData = this.context?.GradebookConfigurationSemester.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationSemesterData != null)
-                            {
-                                gcsId = GradebookConfigurationSemesterData.Id + 1;
-                            }
+                            int? gcsId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationSemester, int>(x => x.Id));
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationSemester.ToList().ForEach(x => { x.Id = (int)gcsId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationSemester.ToList().ForEach(x => { x.Id = (int)gcsId!++; x.TenantId = GradebookConfigurationData.TenantId; x.SchoolId = GradebookConfigurationData.SchoolId; x.CourseId = GradebookConfigurationData.CourseId; x.CourseSectionId = GradebookConfigurationData.CourseSectionId; x.AcademicYear = GradebookConfigurationData.AcademicYear; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; x.GradebookConfiguration = null!; });
                             this.context?.GradebookConfigurationSemester.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationSemester);
 
-                            int? gcqId = 1;
-                            var GradebookConfigurationQuarterData = this.context?.GradebookConfigurationQuarter.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationQuarterData != null)
-                            {
-                                gcqId = GradebookConfigurationQuarterData.Id + 1;
-                            }
+                            int? gcqId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationQuarter, int>(x => x.Id)); ;
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow;});
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId!++; x.TenantId = GradebookConfigurationData.TenantId; x.SchoolId = GradebookConfigurationData.SchoolId; x.CourseId = GradebookConfigurationData.CourseId; x.CourseSectionId = GradebookConfigurationData.CourseSectionId; x.AcademicYear = GradebookConfigurationData.AcademicYear; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; x.GradebookConfiguration = null!; });
                             this.context?.GradebookConfigurationQuarter.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter);
 
-                            int? gcppId = 1;
-                            var GradebookConfigurationProgressPeriodData = this.context?.GradebookConfigurationProgressPeriods.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationProgressPeriodData != null)
-                            {
-                                gcppId = GradebookConfigurationProgressPeriodData.Id + 1;
-                            }
+                            int? gcppId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationProgressPeriod, int>(x => x.Id));
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationProgressPeriods.ToList().ForEach(x => { x.Id = (int)gcppId++; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationProgressPeriods.ToList().ForEach(x => { x.Id = (int)gcppId!++; x.TenantId = GradebookConfigurationData.TenantId; x.SchoolId = GradebookConfigurationData.SchoolId; x.CourseId = GradebookConfigurationData.CourseId; x.CourseSectionId = GradebookConfigurationData.CourseSectionId; x.AcademicYear = GradebookConfigurationData.AcademicYear; x.GradebookConfigurationId = GradebookConfigurationData.GradebookConfigurationId; x.CreatedBy = GradebookConfigurationData.CreatedBy; x.CreatedOn = GradebookConfigurationData.CreatedOn; x.UpdatedOn = DateTime.UtcNow; x.GradebookConfiguration = null!; });
                             this.context?.GradebookConfigurationProgressPeriods.AddRange(gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationProgressPeriods);
 
 
@@ -165,11 +149,7 @@ namespace opensis.data.Repository
                         else
                         {
                             int? gcId = 1;
-                            int? gcgsId = 1;
-                            int? gcyId = 1;
-                            int? gcsId = 1;
-                            int? gcqId = 1;
-                            int? gcppId = 1;
+
 
                             var GradebookData = this.context?.GradebookConfiguration.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId && x.SchoolId == gradebookConfigurationAddViewModel.gradebookConfiguration.SchoolId).OrderByDescending(x => x.GradebookConfigurationId).FirstOrDefault();
                             if (GradebookData != null)
@@ -177,56 +157,42 @@ namespace opensis.data.Repository
                                 gcId = GradebookData.GradebookConfigurationId + 1;
                             }
 
-                            var GradebookConfigurationGradescaleData = this.context?.GradebookConfigurationGradescale.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationGradescaleData != null)
-                            {
-                                gcgsId = GradebookConfigurationGradescaleData.Id + 1;
-                            }
 
-                            var GradebookConfigurationYearData = this.context?.GradebookConfigurationYear.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationYearData != null)
-                            {
-                                gcyId = GradebookConfigurationYearData.Id + 1;
-                            }
+                            int? gcgsId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationGradescale, int>(x => x.Id));
+                            int? gcyId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationYear, int>(x => x.Id));
+                            int? gcsId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationSemester, int>(x => x.Id));
+                            int? gcqId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationQuarter, int>(x => x.Id));
+                            int? gcppId = Utility.GetMaxPK(this.context, new Func<GradebookConfigurationProgressPeriod, int>(x => x.Id));
 
-                            var GradebookConfigurationSemesterData = this.context?.GradebookConfigurationSemester.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationSemesterData != null)
-                            {
-                                gcsId = GradebookConfigurationSemesterData.Id + 1;
-                            }
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationGradescale.ToList().ForEach(x => { x.Id = (int)gcgsId!++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
 
-                            var GradebookConfigurationQuarterData = this.context?.GradebookConfigurationQuarter.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationQuarterData != null)
-                            {
-                                gcqId = GradebookConfigurationQuarterData.Id + 1;
-                            }
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationYear.ToList().ForEach(x => { x.Id = (int)gcyId!++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
 
-                            var GradebookConfigurationProgressPeriodData = this.context?.GradebookConfigurationProgressPeriods.Where(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration.TenantId).OrderByDescending(x => x.Id).FirstOrDefault();
-                            if (GradebookConfigurationProgressPeriodData != null)
-                            {
-                                gcppId = GradebookConfigurationProgressPeriodData.Id + 1;
-                            }
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationSemester.ToList().ForEach(x => { x.Id = (int)gcsId!++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationGradescale.ToList().ForEach(x => { x.Id = (int)gcgsId++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId!++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
 
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationYear.ToList().ForEach(x => { x.Id = (int)gcyId++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
-
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationSemester.ToList().ForEach(x => { x.Id = (int)gcsId++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
-
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationQuarter.ToList().ForEach(x => { x.Id = (int)gcqId++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
-
-                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationProgressPeriods.ToList().ForEach(x => { x.Id = (int)gcppId++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
+                            gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationProgressPeriods.ToList().ForEach(x => { x.Id = (int)gcppId!++; x.CreatedOn = DateTime.UtcNow; x.GradebookConfigurationId = (int)gcId; });
 
                             gradebookConfigurationAddViewModel.gradebookConfiguration.GradebookConfigurationId = (int)gcId;
                             gradebookConfigurationAddViewModel.gradebookConfiguration.CreatedOn = DateTime.UtcNow;
+                            
                             this.context?.GradebookConfiguration.Add(gradebookConfigurationAddViewModel.gradebookConfiguration);
                             this.context?.SaveChanges();
                             gradebookConfigurationAddViewModel._message = "Gradebook configuration added successfully";
 
                         }
-                        transaction?.Commit();
+
                         gradebookConfigurationAddViewModel._failure = false;
                     }
+                    //***********return view******************
+                    var GradebookConfigurationReturnData = this.context?.GradebookConfiguration.Include(x => x.GradebookConfigurationGradescale).Include(x => x.GradebookConfigurationYear).Include(x => x.GradebookConfigurationSemester).Include(x => x.GradebookConfigurationQuarter).Include(x => x.GradebookConfigurationProgressPeriods).FirstOrDefault(x => x.TenantId == gradebookConfigurationAddViewModel.gradebookConfiguration!.TenantId && x.SchoolId == gradebookConfigurationAddViewModel.gradebookConfiguration.SchoolId && x.CourseId == gradebookConfigurationAddViewModel.gradebookConfiguration.CourseId && x.CourseSectionId == gradebookConfigurationAddViewModel.gradebookConfiguration.CourseSectionId && x.AcademicYear == gradebookConfigurationAddViewModel.gradebookConfiguration.AcademicYear);
+                    if (GradebookConfigurationReturnData != null)
+                    {
+                        gradebookConfigurationAddViewModel.gradebookConfiguration = GradebookConfigurationReturnData;
+                    }
+
+                    transaction?.Commit();
                 }
                 catch (Exception es)
                 {
@@ -263,7 +229,6 @@ namespace opensis.data.Repository
                     }
                     gradebookConfigurationView._tenantName = gradebookConfigurationAddViewModel._tenantName;
                     gradebookConfigurationView._token = gradebookConfigurationAddViewModel._token;
-
                 }
             }
             catch (Exception es)

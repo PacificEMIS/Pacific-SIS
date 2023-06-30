@@ -170,8 +170,9 @@ namespace opensis.data.Repository
                                 userMaster.EmailAddress = student.LoginEmail;
                                 userMaster.PasswordHash = passwordHash;
                                 userMaster.Name = student.studentMaster.FirstGivenName ?? "";
-                                userMaster.UpdatedOn = DateTime.UtcNow;
                                 userMaster.IsActive = student.PortalAccess;
+                                userMaster.CreatedBy = student.studentMaster.CreatedBy;
+                                userMaster.CreatedOn = DateTime.UtcNow;
                                 student.studentMaster.StudentPortalId = student.LoginEmail;
                                 this.context?.UserMaster.Add(userMaster);
                                 this.context?.SaveChanges();
@@ -207,6 +208,10 @@ namespace opensis.data.Repository
                                         customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = student.studentMaster.SchoolId;
                                         customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = student.studentMaster.TenantId;
                                         customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = student.studentMaster.StudentId;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.CreatedBy = student.studentMaster.CreatedBy;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.UpdatedBy = student.studentMaster.CreatedBy;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.CreatedOn = DateTime.UtcNow;
+                                        customFields.CustomFieldsValue.FirstOrDefault()!.UpdateOn = DateTime.UtcNow;
                                         this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
                                         this.context?.SaveChanges();
                                     }
@@ -324,7 +329,8 @@ namespace opensis.data.Repository
 
                                                     loginInfoData.EmailAddress = student.LoginEmail;
                                                     loginInfoData.IsActive = student.PortalAccess;
-
+                                                    loginInfoData.UpdatedBy = student.studentMaster.UpdatedBy;
+                                                    loginInfoData.UpdatedOn = DateTime.UtcNow;
                                                     this.context?.UserMaster.Add(loginInfoData);
                                                     this.context?.SaveChanges();
 
@@ -340,6 +346,8 @@ namespace opensis.data.Repository
                                             if (loginInfo != null)
                                             {
                                                 loginInfo.IsActive = student.PortalAccess;
+                                                loginInfo.UpdatedBy = student.studentMaster.UpdatedBy;
+                                                loginInfo.UpdatedOn = DateTime.UtcNow;
                                             }
 
                                             this.context?.SaveChanges();
@@ -372,7 +380,8 @@ namespace opensis.data.Repository
                                             userMaster.EmailAddress = student.LoginEmail;
                                             userMaster.PasswordHash = passwordHash;
                                             userMaster.Name = student.studentMaster.FirstGivenName ?? "";
-                                            userMaster.UpdatedOn = DateTime.UtcNow;
+                                            userMaster.CreatedOn = DateTime.UtcNow;
+                                            userMaster.CreatedBy = student.studentMaster.UpdatedBy;
                                             userMaster.IsActive = student.PortalAccess;
 
                                             this.context?.UserMaster.Add(userMaster);
@@ -430,6 +439,10 @@ namespace opensis.data.Repository
                                             customFields.CustomFieldsValue.FirstOrDefault()!.SchoolId = student.studentMaster.SchoolId;
                                             customFields.CustomFieldsValue.FirstOrDefault()!.TenantId = student.studentMaster.TenantId;
                                             customFields.CustomFieldsValue.FirstOrDefault()!.TargetId = student.studentMaster.StudentId;
+                                            customFields.CustomFieldsValue.FirstOrDefault()!.CreatedBy = student.studentMaster.UpdatedBy;
+                                            customFields.CustomFieldsValue.FirstOrDefault()!.UpdatedBy = student.studentMaster.UpdatedBy;
+                                            customFields.CustomFieldsValue.FirstOrDefault()!.CreatedOn = DateTime.UtcNow;
+                                            customFields.CustomFieldsValue.FirstOrDefault()!.UpdateOn = DateTime.UtcNow;
                                             this.context?.CustomFieldsValue.AddRange(customFields.CustomFieldsValue);
                                             this.context?.SaveChanges();
                                         }
