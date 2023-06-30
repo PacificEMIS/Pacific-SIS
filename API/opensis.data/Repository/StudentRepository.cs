@@ -5709,6 +5709,23 @@ namespace opensis.data.Repository
                             {
                                 studentEnrollmentData.GradeId = studentEnrollmentAssignModel.studentEnrollments.GradeId;
                                 studentEnrollmentData.GradeLevelTitle = studentEnrollmentAssignModel.studentEnrollments.GradeLevelTitle;
+
+                                //for update related table
+                                var academicYear = Utility.GetCurrentAcademicYear(this.context!, studentEnrollmentAssignModel.TenantId, studentEnrollmentAssignModel.SchoolId);
+
+                                var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(x => x.TenantId == studentEnrollmentAssignModel.TenantId && x.SchoolId == studentEnrollmentAssignModel.SchoolId && x.StudentId == studentId && x.AcademicYear == academicYear).ToList();
+
+                                if (studentCourseSectionScheduleData?.Any() != null)
+                                {
+                                    studentCourseSectionScheduleData.ForEach(x => x.GradeId = studentEnrollmentAssignModel.studentEnrollments.GradeId);
+                                }
+
+                                var studentInputFinalGradeData = this.context?.StudentFinalGrade.Where(x => x.TenantId == studentEnrollmentAssignModel.TenantId && x.SchoolId == studentEnrollmentAssignModel.SchoolId && x.StudentId == studentId && x.AcademicYear == academicYear).ToList();
+
+                                if (studentInputFinalGradeData?.Any() != null)
+                                {
+                                    studentInputFinalGradeData.ForEach(x => x.GradeId = studentEnrollmentAssignModel.studentEnrollments.GradeId);
+                                }
                             }
 
                             studentEnrollmentData.UpdatedBy = studentEnrollmentAssignModel.studentEnrollments?.UpdatedBy;

@@ -59,14 +59,14 @@ namespace opensis.report.report.data.Repository
                         Latitude = x.Latitude,
                         StudentMasterData = x.StudentMaster.Select(e => new StudentMasterData()
                         {
-                            TenantId= e.TenantId,
-                            SchoolId= e.SchoolId,
+                            TenantId = e.TenantId,
+                            SchoolId = e.SchoolId,
                             StudentId = e.StudentId,
                             StudentGuid = e.StudentGuid,
                             AlternateId = e.AlternateId,
                             DistrictId = e.DistrictId,
                             StateId = e.StateId,
-                            GradeLevelTitle = e.StudentEnrollment.Where(x=>x.TenantId== e.TenantId && x.SchoolId== e.SchoolId && x.StudentId== e.StudentId && x.IsActive==true).FirstOrDefault().GradeLevelTitle,
+                            GradeLevelTitle = e.StudentEnrollment.Where(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.StudentId == e.StudentId && x.IsActive == true).FirstOrDefault().GradeLevelTitle,
                             AdmissionNumber = e.AdmissionNumber,
                             RollNumber = e.RollNumber,
                             Salutation = e.Salutation,
@@ -87,10 +87,10 @@ namespace opensis.report.report.data.Repository
                             Ethnicity = e.Ethnicity,
                             MaritalStatus = e.MaritalStatus,
                             CountryOfBirth = e.CountryOfBirth,
-                            Nationality = e.Nationality != null ? this.context!.Country.FirstOrDefault(x => x.Id == Convert.ToInt32(e.Nationality))!.Name : null,
-                            FirstLanguage = e.FirstLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(e.FirstLanguageId))!.Locale : null,
-                            SecondLanguageId = e.SecondLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(e.SecondLanguageId))!.Locale : null,
-                            ThirdLanguageId = e.ThirdLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == Convert.ToInt32(e.ThirdLanguageId))!.Locale : null,
+                            Nationality = e.Nationality != null ? this.context!.Country.FirstOrDefault(x => x.Id == e.Nationality)!.Name : null,
+                            FirstLanguage = e.FirstLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == e.FirstLanguageId)!.Locale : null,
+                            SecondLanguageId = e.SecondLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == e.SecondLanguageId)!.Locale : null,
+                            ThirdLanguageId = e.ThirdLanguageId != null ? this.context!.Language.FirstOrDefault(x => x.LangId == e.ThirdLanguageId)!.Locale : null,
                             SectionId = e.SectionId,
                             EstimatedGradDate = e.EstimatedGradDate,
                             Twitter = e.Twitter,
@@ -132,7 +132,7 @@ namespace opensis.report.report.data.Repository
                                 EndYear = y.EnrollmentDate == null ? (y.ExitDate != null ? this.context.SchoolYears.FirstOrDefault(z => z.TenantId == y.TenantId && z.SchoolId == y.SchoolId && z.StartDate <= y.ExitDate && z.EndDate >= y.ExitDate).EndDate.Value.Year.ToString() : null) : (this.context.SchoolCalendars.FirstOrDefault(z => z.TenantId == y.TenantId && z.SchoolId == y.SchoolId && z.SessionCalendar == true && z.StartDate <= y.EnrollmentDate && z.EndDate >= y.EnrollmentDate).EndDate!.Value.Year.ToString() ?? null),
 
                                 IsActive = y.IsActive,
-                            }).ToList():null,
+                            }).ToList() : null,
                             StudentMedicalAlert = studentInfoReport.IsMedicalInfo ? !e.StudentMedicalAlert!.Any() ? null! : e.StudentMedicalAlert.Where(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.StudentId == e.StudentId).ToList() : null,
                             StudentMedicalImmunization = studentInfoReport.IsMedicalInfo ? !e.StudentMedicalImmunization!.Any() ? null! : e.StudentMedicalImmunization.Where(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.StudentId == e.StudentId).ToList() : null,
                             StudentMedicalNote = studentInfoReport.IsMedicalInfo ? !e.StudentMedicalNote!.Any() ? null! : e.StudentMedicalNote.Where(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.StudentId == e.StudentId).ToList() : null,
@@ -140,7 +140,7 @@ namespace opensis.report.report.data.Repository
                             StudentMedicalProvider = studentInfoReport.IsMedicalInfo ? !e.StudentMedicalProvider!.Any() ? null! : e.StudentMedicalProvider.Where(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.StudentId == e.StudentId).ToList() : null,
                             Contacts = studentInfoReport.IsFamilyInfo ? _parentInfoRepository.ViewParentListForStudent(new ParentInfoListModel() { SchoolId = e.SchoolId, StudentId = e.StudentId, TenantId = e.TenantId, IsShowParentPhoto = true, IsReport = true }) : null,
 
-                        }).Where(st => studentInfoReport!.StudentGuids!.Contains(st.StudentGuid) && st.SchoolId== x.SchoolId && st.TenantId == x.TenantId).ToList()
+                        }).Where(st => studentInfoReport!.StudentGuids!.Contains(st.StudentGuid) && st.SchoolId == x.SchoolId && st.TenantId == x.TenantId).ToList()
 
                     }).ToList();
                 }
