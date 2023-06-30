@@ -183,6 +183,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   studentMedicalCustomFields=[];
   studentMultiSelectValue;
   isFromAdvancedSearch: boolean = false
+  filterParameters = [];
 
   constructor(
     public translateService: TranslateService,
@@ -771,6 +772,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
       }
       this.getAllStudent.pageNumber = event.pageIndex + 1;
       this.getAllStudent.pageSize = event.pageSize;
+      this.getAllStudent.filterParams = this.filterParameters;
       this.defaultValuesService.setPageSize(event.pageSize);
       this.callAllStudent();
     }
@@ -848,6 +850,7 @@ export class GroupAssignStudentInfoComponent implements OnInit, OnDestroy{
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;

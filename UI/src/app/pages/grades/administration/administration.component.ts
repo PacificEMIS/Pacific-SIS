@@ -85,6 +85,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   histStudentDetails;
   studentPhoto: string;
   isFromAdvancedSearch: boolean = false;
+  filterParameters = [];
 
   constructor(public translateService: TranslateService,
     private finalGradeService: FinalGradeService,
@@ -318,6 +319,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
       }
       this.getAllStudentListForFinalGradeModel.pageNumber = event.pageIndex + 1;
       this.getAllStudentListForFinalGradeModel.pageSize = event.pageSize;
+      this.getAllStudentListForFinalGradeModel.filterParams = this.filterParameters;
       this.defaultValuesService.setPageSize(event.pageSize);
       this.getAllStudentListForFinalGrade();
     
@@ -336,6 +338,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.callAllStudent();
   }
@@ -396,6 +399,7 @@ export class AdministrationComponent implements OnInit, OnDestroy,AfterViewInit 
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;

@@ -95,6 +95,7 @@ export class AdministrationComponent implements OnInit {
   attendanceNoToString:string;
   cloneStudentlist;
   isFromAdvancedSearch: boolean = false;
+  filterParameters = [];
   constructor(
     private dialog: MatDialog,
     private loaderService: LoaderService,
@@ -228,6 +229,7 @@ export class AdministrationComponent implements OnInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentAttendanceListViewModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
@@ -283,6 +285,7 @@ export class AdministrationComponent implements OnInit {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.getAllStudentAttendanceListForAdministration();
   }
 

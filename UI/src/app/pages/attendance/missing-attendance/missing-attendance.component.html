@@ -14,7 +14,7 @@
                     <li>
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "from" | translate }}</mat-label>
-                            <input matInput (dateChange)="getStaffListByDateRange()" [(ngModel)]="getAllStaffModel.dobStartDate" [matDatepicker]="fromDate">
+                            <input matInput (dateChange)="getStaffListByDateRange(true)" [(ngModel)]="getAllStaffModel.dobStartDate" [matDatepicker]="fromDate">
                             <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
                             <mat-datepicker #fromDate></mat-datepicker>
                         </mat-form-field>
@@ -22,7 +22,7 @@
                     <li>
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                             <mat-label>{{ "to" | translate }}</mat-label>
-                            <input matInput [max]="maxDate" (dateChange)="getStaffListByDateRange()" [(ngModel)]="getAllStaffModel.dobEndDate" [matDatepicker]="toDate">
+                            <input matInput [max]="maxDate" (dateChange)="getStaffListByDateRange(true)" [(ngModel)]="getAllStaffModel.dobEndDate" [matDatepicker]="toDate">
                             <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
                             <mat-datepicker #toDate></mat-datepicker>
                             

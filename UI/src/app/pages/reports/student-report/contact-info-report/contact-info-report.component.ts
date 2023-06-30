@@ -83,6 +83,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   searchFilterAddViewModel: SearchFilterAddViewModel = new SearchFilterAddViewModel();
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
   isFromAdvancedSearch: boolean = false;
+  filterParameters = [];
 
 
 
@@ -185,6 +186,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   NOTE: We just get the filterParams Array from Search component
   */
   filterData(res) {
+    this.filterParameters = res.filterParams;
     this.isFromAdvancedSearch = true;
     this.getAllStudent = new StudentListByDateRangeModel();
     this.getAllStudent.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
@@ -289,7 +291,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
   // }
 
   getPageEvent(event) {
-    if (this.sort.active && this.sort.direction) {
+    if (this.sort?.active && this.sort.direction) {
       this.getAllStudent.sortingModel.sortColumn = this.sort.active;
       this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
     }
@@ -306,6 +308,7 @@ export class ContactInfoReportComponent implements OnInit, AfterViewInit {
     }
     this.getAllStudent.pageNumber = event.pageIndex + 1;
     this.getAllStudent.pageSize = event.pageSize;
+    this.getAllStudent.filterParams = this.filterParameters;
     this.defaultValuesService.setPageSize(event.pageSize);
     this.getAllStudentList();
   }

@@ -118,7 +118,7 @@ export class StudentFinalGradesComponent implements OnInit, AfterViewInit, OnDes
     private commonFunction: SharedFunction
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
-    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = true;
     this.advancedSearchExpansionModel.searchAllSchools = false;
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.defaultValuesService.setReportCompoentTitle.next("Student Final Grades");
