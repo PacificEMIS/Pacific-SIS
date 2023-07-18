@@ -21,12 +21,16 @@ namespace opensis.data.Migrations.MySqlMigrations
                 table: "staff_school_info",
                 columns: new[] { "tenant_id", "school_attached_id", "membership_id" });
 
+            migrationBuilder.Sql(@"SET FOREIGN_KEY_CHECKS = 0;");
+
             migrationBuilder.AddForeignKey(
                 name: "staff_school_info$FK_membership",
                 table: "staff_school_info",
                 columns: new[] { "tenant_id", "school_attached_id", "membership_id" },
                 principalTable: "membership",
                 principalColumns: new[] { "tenant_id", "school_id", "membership_id" });
+
+            migrationBuilder.Sql(@"SET FOREIGN_KEY_CHECKS = 1;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
