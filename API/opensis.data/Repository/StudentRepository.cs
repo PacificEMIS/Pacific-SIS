@@ -2640,7 +2640,7 @@ namespace opensis.data.Repository
             IQueryable<StudentMaster>? transactionIQ = null;
             try
             {
-                var studentDataList = this.context?.StudentMaster.Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).ToList();
+                var studentDataList = this.context?.StudentMaster.Include(y => y.SchoolMaster).Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).ToList();
 
                 if (studentDataList?.Any() == true)
                 {
@@ -2684,6 +2684,15 @@ namespace opensis.data.Repository
                         if (studentEnrollmentFilter.ToList()?.Any() == true)
                         {
                             transactionIQ = transactionIQ.AsNoTracking().ToList().Concat(studentEnrollmentFilter).AsQueryable();
+                        }
+
+                        //for school name Searching
+
+                        var schoolNameFilter = Student.Where(x => x.SchoolMaster != null ? (x.SchoolMaster.SchoolName != null && (x.SchoolMaster.SchoolName).ToLower().Contains(Columnvalue.ToLower())) : string.Empty.Contains(Columnvalue)).AsQueryable();
+
+                        if (schoolNameFilter.ToList()?.Any() == true)
+                        {
+                            transactionIQ = transactionIQ.AsNoTracking().ToList().Concat(schoolNameFilter).AsQueryable();
                         }
                     }
                     else
@@ -2760,6 +2769,21 @@ namespace opensis.data.Repository
                     {
                         switch ((pageResult.SortingModel.SortColumn ?? "").ToLower())
                         {
+                            //For Schoolname Sorting
+                            case "schoolname":
+
+                                if (pageResult.SortingModel.SortDirection.ToLower() == "asc")
+                                {
+
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderBy(a => a.SchoolMaster != null ? a.SchoolMaster.SchoolName : null).AsQueryable();
+                                }
+                                else
+                                {
+
+                                    transactionIQ = transactionIQ.AsNoTracking().ToList().OrderByDescending(a => a.SchoolMaster != null ? a.SchoolMaster.SchoolName : null).AsQueryable();
+                                }
+                                break;
+
                             //For GradeLevel Sorting
                             case "gradeleveltitle":
 
@@ -2847,6 +2871,7 @@ namespace opensis.data.Repository
                         transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                     }
                     studentListModel.studentMaster = transactionIQ.ToList();
+                    studentListModel.studentMaster.ForEach(x => x.SchoolMaster.StudentMaster = new HashSet<StudentMaster>());
                     studentListModel.TotalCount = totalCount;
                 }
                 else
