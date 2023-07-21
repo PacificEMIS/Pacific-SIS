@@ -56,6 +56,7 @@ import { SchoolCreate } from '../../../enums/school-create.enum';
 import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { GetCalendarAndHolidayListModel } from 'src/app/models/calendar.model';
+import { MatSort } from '@angular/material/sort';
 @Component({
   selector: 'vex-student-re-enroll',
   templateUrl: './student-re-enroll.component.html',
@@ -108,15 +109,17 @@ export class StudentReEnrollComponent implements OnInit {
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild('masterCheckBox') private masterCheckBox: MatCheckbox;
+  @ViewChild(MatSort) sort: MatSort;
   permissions: Permissions;
   isFromAdvancedSearch: boolean = false;
   columns = [
     { label: 'studentCheck', property: 'studentCheck', type: 'text', visible: true },
-    { label: 'name', property: 'studentName', type: 'text', visible: true },
+    { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
     { label: 'studentID', property: 'studentId', type: 'text', visible: true },
-    { label: 'lastGradeLevel', property: 'lastGradeLevel', type: 'text', visible: true },
-    { label: 'mobilePhone', property: 'mobilePhone', type: 'text', visible: true },
-    { label: 'personalEmail', property: 'personalEmail', type: 'text', visible: true },
+    { label: 'lastGradeLevel', property: 'gradeLevelTitle', type: 'text', visible: true },
+    // { label: 'mobilePhone', property: 'mobilePhone', type: 'text', visible: true },
+    // { label: 'personalEmail', property: 'personalEmail', type: 'text', visible: true },
+    { label: 'schoolName', property: 'schoolName', type: 'text', visible: true },
     { label: 'enrollmentDate', property: 'enrollmentDate', type: 'text', visible: true },
     { label: 'exitDate', property: 'exitDate', type: 'text', visible: true },
     { label: 'exitCode', property: 'exitCode', type: 'text', visible: true }
@@ -162,6 +165,34 @@ export class StudentReEnrollComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+
+    //  Sorting
+    this.getAllStudent = new StudentListModel();
+    this.sort.sortChange.subscribe((res) => {
+      this.getAllStudent.pageNumber = this.pageNumber
+      this.getAllStudent.pageSize = this.pageSize;
+      this.getAllStudent.sortingModel.sortColumn = res.active;
+      if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
+        let filterParams = [
+          {
+            columnName: null,
+            filterValue: this.searchCtrl.value,
+            filterOption: 3
+          }
+        ]
+        Object.assign(this.getAllStudent, { filterParams: filterParams });
+      }
+      if (res.direction == "") {
+        this.getAllStudent.sortingModel = null;
+        this.searchForReEnrollStudent();
+        this.getAllStudent = new StudentListModel();
+        this.getAllStudent.sortingModel = null;
+      } else {
+        this.getAllStudent.sortingModel.sortDirection = res.direction;
+        this.searchForReEnrollStudent();
+      }
+    });
+
     //  Searching
     this.searchCtrl.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((term) => {
       if (term != '') {
@@ -172,6 +203,10 @@ export class StudentReEnrollComponent implements OnInit {
             filterOption: 3
           }
         ]
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+        }
         if (this.showAllSchools) {
           this.getAllStudent.schoolId = 0;
         }
@@ -196,7 +231,10 @@ export class StudentReEnrollComponent implements OnInit {
         Object.assign(this.getAllStudent, { filterParams: null });
         this.getAllStudent.pageNumber = this.paginator.pageIndex + 1;
         this.getAllStudent.pageSize = this.pageSize;
-
+        if (this.sort.active != undefined && this.sort.direction != "") {
+          this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+          this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+        }
         this.searchForReEnrollStudent();
       }
     })
@@ -236,7 +274,10 @@ export class StudentReEnrollComponent implements OnInit {
   }
   
   getPageEvent(event) {
-
+    if (this.sort.active != undefined && this.sort.direction != "") {
+      this.getAllStudent.sortingModel.sortColumn = this.sort.active;
+      this.getAllStudent.sortingModel.sortDirection = this.sort.direction;
+    }
     if (this.searchCtrl.value != null && this.searchCtrl.value != "") {
       let filterParams = [
         {
@@ -337,6 +378,13 @@ export class StudentReEnrollComponent implements OnInit {
 
       if (this.getAllStudent.sortingModel?.sortColumn == "") {
         this.getAllStudent.sortingModel = null
+      }
+      if (this.showAllSchools) {
+        this.getAllStudent.schoolId = 0;
+      }
+      else {
+      
+        this.getAllStudent.schoolId=this.defaultValuesService.getSchoolID();
       }
       this.studentService.searchStudentListForReenroll(this.getAllStudent, this.getAllStudent.schoolId).subscribe(data => {
         if (data._failure) {
