@@ -110,7 +110,7 @@
                 </div>
             </div>
             <div class="overflow-x-auto overflow-y-hidden">
-                <table mat-table [dataSource]="studentReenrollList" class="mat-elevation-z8 shadow-none">
+                <table mat-table [dataSource]="studentReenrollList" class="mat-elevation-z8 shadow-none" matSort>
                     <ng-container matColumnDef="studentCheck">
                         <th [class.hide]="totalCount==0" mat-header-cell *matHeaderCellDef>
                             <mat-checkbox [disabled]="!this.defaultValuesService.checkAcademicYear()" color="primary" #masterCheckBox [indeterminate]="someComplete()"
@@ -122,42 +122,46 @@
                             </mat-checkbox>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="studentName">
-                        <th mat-header-cell *matHeaderCellDef>{{ "studentName" | translate }}</th>
+                    <ng-container matColumnDef="lastFamilyName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "studentName" | translate }}</th>
                         <td mat-cell *matCellDef="let element">
                             <a class="text-blue cursor-pointer" (click)="showStudentDetails(element)" >{{ element.firstGivenName }} {{ element.lastFamilyName
                                 }}</a>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="studentId">
-                        <th mat-header-cell *matHeaderCellDef>{{ "studentId" | translate }}</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "studentId" | translate }}</th>
                         <td mat-cell *matCellDef="let element">
                             {{ element.studentInternalId }}
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="lastGradeLevel">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'lastGradeLevel' | translate }}</th>
+                    <ng-container matColumnDef="gradeLevelTitle">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'lastGradeLevel' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.studentEnrollment[0]?.gradeLevelTitle }}</td>
                     </ng-container>
-                    <ng-container matColumnDef="mobilePhone">
+                    <!-- <ng-container matColumnDef="mobilePhone">
                         <th mat-header-cell *matHeaderCellDef>{{ 'mobilePhone' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.mobilePhone }}</td>
                     </ng-container>
                     <ng-container matColumnDef="personalEmail">
                         <th mat-header-cell *matHeaderCellDef>{{ 'personalEmail' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.personalEmail }}</td>
+                    </ng-container> -->
+                    <ng-container matColumnDef="schoolName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'schoolName' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">{{ element?.schoolMaster?.schoolName }}</td>
                     </ng-container>
                     <ng-container matColumnDef="enrollmentDate">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'enrollmentDate' | translate }}</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'enrollmentDate' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.studentEnrollment[0]?.enrollmentDate | date }}
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="exitDate">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'exitDate' | translate }}</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'exitDate' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.studentEnrollment[0]?.exitDate | date}}</td>
                     </ng-container>
                     <ng-container matColumnDef="exitCode">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'exitCode' | translate }}</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'exitCode' | translate }}</th>
                         <td mat-cell *matCellDef="let element">{{ element.studentEnrollment[0]?.exitCode }}</td>
                     </ng-container>
 
