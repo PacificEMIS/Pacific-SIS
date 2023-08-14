@@ -38,5 +38,6 @@ namespace opensis.data.ViewModels
         public DateTimeOffset _tokenExpiry { get; set; }
         public bool _failure { get; set; }
         public string? _message { get; set; }
+        public decimal? _academicYear { get; set; }
     }
 }

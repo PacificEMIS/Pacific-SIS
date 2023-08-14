@@ -59,15 +59,31 @@ namespace opensis.data.Repository
                 }
                 try
                 {
+
+
                     var sessionCalendar = this.context?.SchoolCalendars.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.SessionCalendar == true).OrderByDescending(x => x.AcademicYear).FirstOrDefault();
 
-                    if(rolloverViewModel.SchoolRollover.SchoolBeginDate <= sessionCalendar!.EndDate)
+                    if (rolloverViewModel.SchoolRollover.SchoolBeginDate <= sessionCalendar!.EndDate)
                     {
                         rolloverViewModel._failure = true;
                         rolloverViewModel._message = "School begin date should be greater than previous school year end date";
 
                         return rolloverViewModel;
                     }
+
+                    //Create 365 days session calendar
+                    var sessionCalendarStartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
+                    var dateAfterOneYear = sessionCalendarStartDate!.Value.Date.AddYears(+1);
+                    var sessionCalendarEndDate = dateAfterOneYear!.AddDays(-1);
+
+                    if (rolloverViewModel.SchoolRollover.SchoolBeginDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolBeginDate > sessionCalendarEndDate || rolloverViewModel.SchoolRollover.SchoolEndDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolEndDate > sessionCalendarEndDate)
+                    {
+                        rolloverViewModel._failure = true;
+                        rolloverViewModel._message = "School begin date and end date should be between academic calendar's start date & end date";
+
+                        return rolloverViewModel;
+                    }
+                    //*****//
 
                     var rolloverExist = this.context?.SchoolRollover.Where(x => x.ReenrollmentDate == rolloverViewModel.SchoolRollover.ReenrollmentDate && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.TenantId == rolloverViewModel.SchoolRollover.TenantId).ToList();
                     if (rolloverExist?.Any() == true)
@@ -121,8 +137,8 @@ namespace opensis.data.Repository
                             schoolYears.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                             this.context?.SchoolYears.Add(schoolYears);
 
-                            //Insert Calendar
-                            SchoolCalendars schoolCalendars = new();
+                            //Insert session calendar
+                            SchoolCalendars schoolSessionCalendar = new();
                             int? calenderId = 1;
 
                             var calendarData = this.context?.SchoolCalendars.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.CalenderId).FirstOrDefault();
@@ -132,26 +148,27 @@ namespace opensis.data.Repository
                                 calenderId = calendarData.CalenderId + 1;
                             }
 
-                            schoolCalendars.TenantId = rolloverViewModel.SchoolRollover.TenantId;
-                            schoolCalendars.SchoolId = rolloverViewModel.SchoolRollover.SchoolId;
-                            schoolCalendars.CalenderId = (int)calenderId;
-                            schoolCalendars.Title = "Default Calendar";
-                            schoolCalendars.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
-                            schoolCalendars.DefaultCalender = true;
-                            schoolCalendars.SessionCalendar = true;
-                            schoolCalendars.Days = "12345";
-                            schoolCalendars.RolloverId = rolloverId;
-                            schoolCalendars.StartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
-                            schoolCalendars.EndDate = rolloverViewModel.SchoolRollover.SchoolEndDate;
-                            schoolCalendars.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
-                            schoolCalendars.CreatedOn = DateTime.UtcNow;
+                            schoolSessionCalendar.TenantId = rolloverViewModel.SchoolRollover.TenantId;
+                            schoolSessionCalendar.SchoolId = rolloverViewModel.SchoolRollover.SchoolId;
+                            schoolSessionCalendar.CalenderId = (int)calenderId;
+                            schoolSessionCalendar.Title = "Default Calendar";
+                            schoolSessionCalendar.AcademicYear = sessionCalendarStartDate != null ? Convert.ToDecimal(sessionCalendarStartDate.Value.Year) : 0;
+                            schoolSessionCalendar.DefaultCalender = true;
+                            schoolSessionCalendar.SessionCalendar = true;
+                            schoolSessionCalendar.Days = "12345";
+                            schoolSessionCalendar.RolloverId = rolloverId;
+                            schoolSessionCalendar.StartDate = sessionCalendarStartDate;
+                            schoolSessionCalendar.EndDate = sessionCalendarEndDate;
+                            schoolSessionCalendar.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
+                            schoolSessionCalendar.CreatedOn = DateTime.UtcNow;
 
-                            this.context?.SchoolCalendars.Add(schoolCalendars);
+                            this.context?.SchoolCalendars.Add(schoolSessionCalendar);
+                            //*****//
 
                             //Insert Subject
                             var subjectList = this.context?.Subject.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.AcademicYear == sessionCalendar!.AcademicYear).ToList();
 
-                            if(subjectList?.Any() == true)
+                            if (subjectList?.Any() == true)
                             {
                                 int? subjectId = 1;
 
@@ -197,6 +214,15 @@ namespace opensis.data.Repository
                                     courseId = courseData.CourseId + 1;
                                 }
 
+                                int? courseCommentCategoryId = 1;
+
+                                var courseCommentCategoryData = this.context?.CourseCommentCategory.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.CourseCommentId).FirstOrDefault();
+
+                                if (courseCommentCategoryData != null)
+                                {
+                                    courseCommentCategoryId = courseCommentCategoryData.CourseCommentId + 1;
+                                }
+
                                 List<Course> courses = new();
 
                                 foreach (var courseListData in courseList)
@@ -229,15 +255,6 @@ namespace opensis.data.Repository
 
                                     if (courseCommentCategoryList?.Any() == true)
                                     {
-                                        int? courseCommentCategoryId = 1;
-
-                                        var courseCommentCategoryData = this.context?.CourseCommentCategory.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.CourseCommentId).FirstOrDefault();
-
-                                        if (courseCommentCategoryData != null)
-                                        {
-                                            courseCommentCategoryId = courseCommentCategoryData.CourseCommentId + 1;
-                                        }
-
                                         List<CourseCommentCategory> courseCommentCategorys = new();
 
                                         foreach (var courseCommentCategoryListData in courseCommentCategoryList)
@@ -264,11 +281,11 @@ namespace opensis.data.Repository
                                     }
                                     courseId++;
                                 }
-                                this.context?.Course.AddRange(courses);                                
+                                this.context?.Course.AddRange(courses);
                             }
 
                             //Insert GradeScale
-                            var gradeScaleList = this.context?.GradeScale.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.AcademicYear == sessionCalendar!.AcademicYear).ToList();
+                            var gradeScaleList = this.context?.GradeScale.Include(d => d.Grade).Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.AcademicYear == sessionCalendar!.AcademicYear).ToList();
 
                             if (gradeScaleList?.Any() == true)
                             {
@@ -279,6 +296,14 @@ namespace opensis.data.Repository
                                 if (gradeScaleData != null)
                                 {
                                     gradeScaleId = gradeScaleData.GradeScaleId + 1;
+                                }
+
+                                int? gradeId = 1;
+                                var gradeData = this.context?.Grade.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.GradeId).FirstOrDefault();
+
+                                if (gradeData != null)
+                                {
+                                    gradeId = gradeData.GradeId + 1;
                                 }
 
                                 List<GradeScale> gradeScales = new();
@@ -302,6 +327,34 @@ namespace opensis.data.Repository
                                     gradeScale.CreatedOn = DateTime.UtcNow;
 
                                     gradeScales.Add(gradeScale);
+
+                                    //Insert Grade
+                                    if (gradeScaleListData.Grade?.Any() == true)
+                                    {
+                                        List<Grade> grades = new();
+
+                                        foreach (var grdData in gradeScaleListData.Grade)
+                                        {
+                                            Grade grade = new Grade();
+
+                                            grade.TenantId = grdData.TenantId;
+                                            grade.SchoolId = grdData.SchoolId;
+                                            grade.GradeScaleId = (int)gradeScaleId;
+                                            grade.GradeId = (int)gradeId;
+                                            grade.Title = grdData.Title;
+                                            grade.Breakoff = grdData.Breakoff;
+                                            grade.WeightedGpValue = grdData.WeightedGpValue;
+                                            grade.UnweightedGpValue = grdData.UnweightedGpValue;
+                                            grade.Comment = grdData.Comment;
+                                            grade.SortOrder = grdData.SortOrder;
+                                            grade.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
+                                            grade.CreatedOn = DateTime.UtcNow;
+
+                                            grades.Add(grade);
+                                            gradeId++;
+                                        }
+                                        this.context?.Grade.AddRange(grades);
+                                    }
                                     gradeScaleId++;
                                 }
                                 this.context?.GradeScale.AddRange(gradeScales);
@@ -364,7 +417,7 @@ namespace opensis.data.Repository
 
                                 foreach (var blockListData in blockList)
                                 {
-                                    Block block= new();
+                                    Block block = new();
 
                                     block.TenantId = blockListData.TenantId;
                                     block.SchoolId = blockListData.SchoolId;
@@ -406,7 +459,7 @@ namespace opensis.data.Repository
                                             blockPeriod.BlockId = (int)blockId;
                                             blockPeriod.PeriodTitle = blockPeriodListData.PeriodTitle;
                                             blockPeriod.PeriodShortName = blockPeriodListData.PeriodShortName;
-                                            blockPeriod.PeriodStartTime = blockPeriodListData.PeriodEndTime;
+                                            blockPeriod.PeriodStartTime = blockPeriodListData.PeriodStartTime;
                                             blockPeriod.PeriodEndTime = blockPeriodListData.PeriodEndTime;
                                             blockPeriod.PeriodSortOrder = blockPeriodListData.PeriodSortOrder;
                                             blockPeriod.CalculateAttendance = blockPeriodListData.CalculateAttendance;
@@ -833,7 +886,7 @@ namespace opensis.data.Repository
                                             studentEnrollment.EnrollmentCode = studentRollOver?.Title;
                                             studentEnrollment.SchoolName = studentEnrollmentData.SchoolName;
                                             studentEnrollment.GradeLevelTitle = studentEnrollmentData.GradeLevelTitle;
-                                            studentEnrollment.GradeId = studentEnrollmentData.GradeId; ;
+                                            studentEnrollment.GradeId = studentEnrollmentData.GradeId;
                                             studentEnrollment.CalenderId = calenderId;
                                             studentEnrollment.RollingOption = studentEnrollmentData.RollingOption;
                                             studentEnrollment.UpdatedOn = DateTime.UtcNow;
