@@ -1184,7 +1184,7 @@ namespace opensis.data.Repository
             SchoolListViewModel schoolListView = new();
             try
             {
-                var schoolListWithGradeLevel = this.context?.SchoolMaster.Include(x => x.Gradelevels).Include(x => x.StudentEnrollmentCode).Where(x => x.TenantId == schoolListViewModel.TenantId && x.SchoolDetail.FirstOrDefault()!.Status == true).ToList();
+                var schoolListWithGradeLevel = this.context?.SchoolMaster.Include(x => x.Gradelevels).Include(x => x.StudentEnrollmentCode.Where(d => d.AcademicYear == schoolListViewModel._academicYear)).Where(x => x.TenantId == schoolListViewModel.TenantId && x.SchoolDetail.FirstOrDefault()!.Status == true).ToList();
 
                 if(schoolListWithGradeLevel?.Any()==true)
                 {
