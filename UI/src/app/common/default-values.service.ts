@@ -162,6 +162,7 @@ export class DefaultValuesService {
     obj._tenantName = this.getDefaultTenant();
     obj._userName = this.getUserName();
     obj._token = this.getToken();
+    obj._academicYear = this.getAcademicYear();
     obj.tenantId = this.getTenantID();
     obj.schoolId = this.getSchoolID();
     return obj;
