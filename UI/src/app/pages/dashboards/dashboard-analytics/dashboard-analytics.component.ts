@@ -239,25 +239,24 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   }
 
   checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
-    let result = false
-    let maxArr = []
     this.getAcademicYears.schoolId = this.defaultValuesService.getSchoolID();
     this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res:any) => {
       if(res._failure) {
 
       } else {
-        res.academicYears.forEach(element => {
-          maxArr.push(element.academyYear)
-        });
-      }
-      let maxYear = Math.max(...maxArr)
-      if(selectedYear = maxYear || selectedYear < maxYear) {
-        res.academicYears.forEach(value => {
-          if(maxYear==value.academyYear) {
-            result = moment(new Date()).isBetween(value.startDate, value.endDate)
-            this.showRollOver = !result;
-          }
-        })
+        const maxYearStartDate = new Date(Math.max(...res.academicYears.map(e => new Date(e.startDate))));
+        const maxYearEndDate = new Date(Math.max(...res.academicYears.map(e => new Date(e.endDate))));
+        const selectedAcademicYearStartDate = moment(this.defaultValuesService.getFullYearStartDate()).format("YYYY-MM-DD");
+        const selectedAcademicYearEndDate = moment(this.defaultValuesService.getFullYearEndDate()).format("YYYY-MM-DD");
+        
+        let endDate = this.defaultValuesService.getFullYearEndDate();
+        let rollOverDate = moment(endDate).subtract(15, "days").format("YYYY-MM-DD");
+        if (new Date() >= new Date(rollOverDate) && moment(maxYearStartDate).format("YYYY-MM-DD") === selectedAcademicYearStartDate && moment(maxYearEndDate).format("YYYY-MM-DD") === selectedAcademicYearEndDate) {
+          this.showRollOver = true;
+        }
+        else{
+          this.showRollOver = false;
+        }
       }
     })
   }
