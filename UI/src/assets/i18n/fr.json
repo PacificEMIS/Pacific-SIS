@@ -1944,5 +1944,6 @@
     "failedToPrintScheduledCourses": "Aucun enregistrement trouvé. Échec de l'impression des cours programmés.",
     "courseTeacher": "Cours/Enseignant",
     "sunText": "Soleil",
-    "satText": "Assis"
+    "satText": "Assis",
+    "theSchoolYearBeginAndEndDateShouldBeBetween": "La date de début et de fin de l'année scolaire doit être comprise entre"
 }

@@ -33,6 +33,12 @@
             </ul>
             <mat-divider class="-mx-6 mb-4"></mat-divider>
             <p class="text-blue text-base">{{ 'enterNextSchoolYearsBeginAndEndDates' | translate }}</p>
+            <div class="bg-skyblue text-center text-blue px-2 py-1 rounded mb-2 mt-5">
+                <div>
+                    <p>{{'theSchoolYearBeginAndEndDateShouldBeBetween' | translate}} <b>{{ minSchoolBeginDateVal |
+                            date }}</b> and <b>{{ maxSchoolEndDateVal | date }}</b></p>
+                </div>
+            </div>
             <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
@@ -47,7 +53,7 @@
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ "schoolEndDate" | translate }}</mat-label>
-                        <input matInput #school_End_Date="ngModel" [min]="getMinDateValue()" [matDatepicker]="endDate" name="schoolEndDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolEndDate" required>
+                        <input matInput #school_End_Date="ngModel" [min]="getMinDateValue()" [max]="maxSchoolEndDateVal" [matDatepicker]="endDate" name="schoolEndDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolEndDate" required>
                         <mat-datepicker-toggle matSuffix [for]="endDate" ></mat-datepicker-toggle>
                         <mat-datepicker #endDate ></mat-datepicker>
                         <mat-error *ngIf="school_End_Date.errors?.required">
