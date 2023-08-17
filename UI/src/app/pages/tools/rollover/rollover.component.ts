@@ -27,6 +27,7 @@ export class RolloverComponent implements OnInit {
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
   minSchoolBeginDateVal: Date;  
+  maxSchoolEndDateVal: Date;
   getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
   showRollOver: boolean = false;
   finalGradingMarkingPeriodList: FinalGradingMarkingPeriodList = new FinalGradingMarkingPeriodList();
@@ -48,6 +49,8 @@ export class RolloverComponent implements OnInit {
   ngOnInit(): void {
     this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
     this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(1, 'days').toDate();
+    this.maxSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(366, 'days').toDate(); 
+    //366 days because in begin date calculation starting from after 1 day
   }
 
   checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
