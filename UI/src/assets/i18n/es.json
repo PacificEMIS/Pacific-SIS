@@ -1944,5 +1944,6 @@
     "failedToPrintScheduledCourses": "No se encontraron registros. No se pudieron imprimir los cursos programados.",
     "courseTeacher": "Curso / Profesor",
     "sunText": "Sol",
-    "satText": "Se sentó"
+    "satText": "Se sentó",
+    "theSchoolYearBeginAndEndDateShouldBeBetween": "La fecha de inicio y fin del año escolar debe estar entre"
 }

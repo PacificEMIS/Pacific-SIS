@@ -77,3 +77,19 @@ export class CalendarListModel extends CommonField {
         this.calendarList = [];
     }
 }
+
+export class GetCalendarAndHolidayListModel {
+    public _tenantName: string;
+    public _userName: string;
+    public _token: string;
+    public schoolCalendar: SchoolCalendar;
+    constructor() {
+        this.schoolCalendar = new SchoolCalendar();
+    }
+}
+
+class SchoolCalendar {
+    schoolId: number;
+    tenantId: string;
+    academicYear: number
+}

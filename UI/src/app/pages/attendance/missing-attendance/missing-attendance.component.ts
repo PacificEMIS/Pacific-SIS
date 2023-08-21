@@ -27,7 +27,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular
 import { TranslateService } from "@ngx-translate/core";
 import icSearch from "@iconify/icons-ic/search";
 import { LoaderService } from "../../../services/loader.service";
-import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { fadeInUp400ms } from "src/@vex/animations/fade-in-up.animation";
 import { stagger40ms } from "src/@vex/animations/stagger.animation";
@@ -90,6 +90,9 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   searchFilter: SearchFilter= new SearchFilter();
   toggleValues: any = null;
   filterParams;
+  staffListSubject$: Subject<void> = new Subject();
+  staffListByDateRangeSubject$: Subject<void> = new Subject();
+  defaultDateRangeChanged = false;
   constructor(
     public translateService: TranslateService,
     private loaderService: LoaderService,
@@ -106,8 +109,10 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     // translateService.use("en");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
-      this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
-      this.getAllStaffModel.dobStartDate=this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodStartDate())
+      if (this.defaultDateRangeChanged === false) {
+        this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
+        this.getAllStaffModel.dobStartDate=this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodStartDate())
+      }
     });
   }
   ngOnInit(): void {
@@ -159,6 +164,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
         this.callWithoutFilterValue()
       }
     });
+    this.getStaffListByDateRangeBySearch();
   }
 
   getPageEvent(event) {
@@ -198,7 +204,17 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     this.getAllStaffModel.pageNumber = 1;
     this.paginator.pageIndex = 0;
     this.getAllStaffModel.pageSize = this.pageSize;
-    this.getStaffListByDateRange();
+    if (this.getAllStaffModel.dobStartDate && this.getAllStaffModel.dobEndDate) {
+      this.getAllStaffModel.sortingModel = null;
+      this.getAllStaffModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.getAllStaffModel.dobStartDate);
+      this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.getAllStaffModel.dobEndDate);
+      this.staffListByDateRangeSubject$.next();
+    } else {
+      this.getAllStaffModel.sortingModel = null;
+      this.getAllStaffModel.dobStartDate = null;
+      this.getAllStaffModel.dobEndDate = null;
+      this.staffListSubject$.next();
+    }
   }
 
   callWithoutFilterValue() {
@@ -209,7 +225,17 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
       this.getAllStaffModel.sortingModel.sortColumn = this.sort.active;
       this.getAllStaffModel.sortingModel.sortDirection = this.sort.direction;
     }
-    this.getStaffListByDateRange();
+    if (this.getAllStaffModel.dobStartDate && this.getAllStaffModel.dobEndDate) {
+      this.getAllStaffModel.sortingModel = null;
+      this.getAllStaffModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.getAllStaffModel.dobStartDate);
+      this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(this.getAllStaffModel.dobEndDate);
+      this.staffListByDateRangeSubject$.next();
+    } else {
+      this.getAllStaffModel.sortingModel = null;
+      this.getAllStaffModel.dobStartDate = null;
+      this.getAllStaffModel.dobEndDate = null;
+      this.staffListSubject$.next();
+    }
   }
 
   toggleColumnVisibility(column, event) {
@@ -222,7 +248,75 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
     return this.columns.filter(column => column.visible).map(column => column.property);
   }
 
-  getStaffListByDateRange() {
+  getStaffListByDateRangeBySearch() {
+    this.staffListByDateRangeSubject$.pipe(switchMap(() => this.studentAttendanceService.staffListForMissingAttendance(this.getAllStaffModel))).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+
+          this.staffList = new MatTableDataSource([]);
+          if (!res.staffMaster) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+          }
+        }
+        else {
+          this.totalCount = res.totalCount;
+          this.pageNumber = res.pageNumber;
+          this.pageSize = res._pageSize;
+          this.staffList = new MatTableDataSource(res.staffMaster);
+          //this.getAllStaffModel = new GetAllStaffModel();
+        }
+      }
+      else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+
+    this.staffListSubject$.pipe(switchMap(() => this.studentAttendanceService.staffListForMissingAttendance(this.getAllStaffModel))).subscribe((res) => {
+      if (res) {
+        if (res._failure) {
+
+          if (res.staffMaster == null) {
+            this.snackbar.open(res._message, '', {
+              duration: 10000
+            });
+            this.staffList = new MatTableDataSource([]);
+          } else {
+            this.staffList = new MatTableDataSource([]);
+          }
+        }
+        else {
+          this.totalCount = res.totalCount;
+          this.pageNumber = res.pageNumber;
+          this.pageSize = res._pageSize;
+          this.staffList = new MatTableDataSource(res.staffMaster);
+          this.missingAttendanceDateList = res.missingAttendanceDateList;
+          this.minDate = null;
+          for (var i = 0; i < this.missingAttendanceDateList.length; i++) {
+            var current = this.missingAttendanceDateList[i];
+            if (this.minDate === null || current < this.minDate) {
+              this.minDate = current;
+            }
+            this.getAllStaffModel.dobStartDate = this.minDate;
+            //this.getAllStaffModel= new GetAllStaffModel();
+          }
+        }
+      }
+      else {
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+    });
+  }
+
+  getStaffListByDateRange(datePickerChanged = false) {
+    if (datePickerChanged)
+      this.defaultDateRangeChanged = true;
+
     if (this.getAllStaffModel.dobStartDate && this.getAllStaffModel.dobEndDate) {
       this.getAllStaffModel.sortingModel = null;
       this.getAllStaffModel.dobStartDate = this.commonFunction.formatDateSaveWithoutTime(this.getAllStaffModel.dobStartDate);
@@ -411,5 +505,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   ngOnDestroy() {
     this.destroySubject$.next();
     this.destroySubject$.complete();
+    this.staffListSubject$.unsubscribe();
+    this.staffListByDateRangeSubject$.unsubscribe();
   }
 }

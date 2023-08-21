@@ -1945,5 +1945,6 @@
     "failedToPrintScheduledCourses": "No records found. Failed to print scheduled courses.",
     "courseTeacher": "Course/Teacher",
     "sunText": "Sun",
-    "satText": "Sat"
+    "satText": "Sat",
+    "theSchoolYearBeginAndEndDateShouldBeBetween": "The School Year Begin and End date should be between"
 }

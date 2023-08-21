@@ -85,7 +85,7 @@
                     <li>
                         <p>{{grade?.title}}</p>
                         <mat-form-field appearance="outline" color="primary" class="w-full">
-                            <input [(ngModel)]="grade.breakoffPoints" matInput type="number">
+                            <input [(ngModel)]="grade.breakoffPoints" (keypress)="omitSpecialChar($event)" min="0" matInput type="number">
                         </mat-form-field>
                     </li>
                 </ul>

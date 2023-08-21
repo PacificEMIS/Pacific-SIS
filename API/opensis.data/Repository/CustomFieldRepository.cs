@@ -406,7 +406,7 @@ namespace opensis.data.Repository
                                     Required = fieldsCategoryAddViewModel?.FieldsCategory?.Required,
                                     SortOrder = fieldsCategoryAddViewModel?.FieldsCategory?.SortOrder,
                                     Title = fieldsCategoryAddViewModel?.FieldsCategory?.Title,
-                                    CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory?.UpdatedBy,
+                                    CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory?.CreatedBy,
                                     CreatedOn = DateTime.UtcNow
                                 };
 
@@ -475,7 +475,7 @@ namespace opensis.data.Repository
                                                 EnableAdd = true,
                                                 EnableEdit = true,
                                                 EnableDelete = true,
-                                                CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
+                                                CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.CreatedBy,
                                                 CreatedOn = DateTime.UtcNow,
                                                 IsActive = true,
                                                 SortOrder = PermissionSubCategorySortOrder,
@@ -510,7 +510,7 @@ namespace opensis.data.Repository
                                                         CanAdd = true,
                                                         CanEdit = true,
                                                         CanDelete = true,
-                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
+                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.CreatedBy,
                                                         CreatedOn = DateTime.UtcNow,
                                                         MembershipId = membership.MembershipId
                                                     };
@@ -530,7 +530,7 @@ namespace opensis.data.Repository
                                                         CanAdd = false,
                                                         CanEdit = false,
                                                         CanDelete = false,
-                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.UpdatedBy,
+                                                        CreatedBy = fieldsCategoryAddViewModel?.FieldsCategory.CreatedBy,
                                                         CreatedOn = DateTime.UtcNow,
                                                         MembershipId = membership.MembershipId
                                                     };

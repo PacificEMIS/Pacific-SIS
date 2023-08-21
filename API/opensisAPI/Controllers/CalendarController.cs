@@ -124,5 +124,21 @@ namespace opensisAPI.Controllers
             }
             return deleteCalendar;
         }
+
+        [HttpPost("getCalendarAndHolidayList")]
+        public ActionResult<CalendarAddViewModel> GetCalendarAndHolidayList(CalendarAddViewModel calendar)
+        {
+            CalendarAddViewModel calendarData = new CalendarAddViewModel();
+            try
+            {
+                calendarData = _calendarService.GetCalendarAndHolidayList(calendar);
+            }
+            catch (Exception es)
+            {
+                calendarData._message = es.Message;
+                calendarData._failure = true;
+            }
+            return calendarData;
+        }
     }
 }

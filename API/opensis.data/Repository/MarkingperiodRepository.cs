@@ -1688,16 +1688,19 @@ namespace opensis.data.Repository
 
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
-                                        var prgrsPrd = new GetMarkingPeriodView
+                                        if (progressPeriods.DoesGrades == true)
                                         {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName,
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            CreditHours = prgsCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                            var prgrsPrd = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                                Text = progressPeriods.ShortName,
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                CreditHours = prgsCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                        }
 
                                         if (progressPeriods.DoesExam == true)
                                         {
@@ -1725,16 +1728,19 @@ namespace opensis.data.Repository
 
                                     foreach (var quater in quaterData)
                                     {
-                                        var qtr = new GetMarkingPeriodView
+                                        if (quater.DoesGrades == true)
                                         {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName,
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            CreditHours = qtrCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                            var qtr = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId,
+                                                Text = quater.ShortName,
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                CreditHours = qtrCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                        }
 
                                         if (quater.DoesExam == true)
                                         {
@@ -1762,16 +1768,19 @@ namespace opensis.data.Repository
 
                                     foreach (var semester in semesterData)
                                     {
-                                        var sem = new GetMarkingPeriodView
+                                        if (semester.DoesGrades == true)
                                         {
-                                            Value = "1" + "_" + semester.MarkingPeriodId,
-                                            Text = semester.ShortName,
-                                            StartDate = semester.StartDate,
-                                            EndDate = semester.EndDate,
-                                            FullName = semester.Title,
-                                            CreditHours = semCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+                                            var sem = new GetMarkingPeriodView
+                                            {
+                                                Value = "1" + "_" + semester.MarkingPeriodId,
+                                                Text = semester.ShortName,
+                                                StartDate = semester.StartDate,
+                                                EndDate = semester.EndDate,
+                                                FullName = semester.Title,
+                                                CreditHours = semCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+                                        }
 
                                         if (semester.DoesExam == true)
                                         {
@@ -1790,16 +1799,19 @@ namespace opensis.data.Repository
                                     }
                                     foreach (var markingPeriod in markingPeriodData)
                                     {
-                                        var schoolYear = new GetMarkingPeriodView
+                                        if (markingPeriod.DoesGrades == true)
                                         {
-                                            Value = "0" + "_" + markingPeriod.MarkingPeriodId,
-                                            Text = markingPeriod.ShortName,
-                                            StartDate = markingPeriod.StartDate,
-                                            EndDate = markingPeriod.EndDate,
-                                            FullName = markingPeriod.Title,
-                                            CreditHours = courseSectionData.CreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
+                                            var schoolYear = new GetMarkingPeriodView
+                                            {
+                                                Value = "0" + "_" + markingPeriod.MarkingPeriodId,
+                                                Text = markingPeriod.ShortName,
+                                                StartDate = markingPeriod.StartDate,
+                                                EndDate = markingPeriod.EndDate,
+                                                FullName = markingPeriod.Title,
+                                                CreditHours = courseSectionData.CreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
+                                        }
 
                                         if (markingPeriod.DoesExam == true)
                                         {
@@ -1838,16 +1850,19 @@ namespace opensis.data.Repository
 
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
-                                        var prgrsPrd = new GetMarkingPeriodView
+                                        if (progressPeriods.DoesGrades == true)
                                         {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName,
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            CreditHours = prgsCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                            var prgrsPrd = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                                Text = progressPeriods.ShortName,
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                CreditHours = prgsCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                        }
 
                                         if (progressPeriods.DoesExam == true)
                                         {
@@ -1875,16 +1890,19 @@ namespace opensis.data.Repository
 
                                     foreach (var quater in quaterData)
                                     {
-                                        var qtr = new GetMarkingPeriodView
+                                        if (quater.DoesGrades == true)
                                         {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName,
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            CreditHours = qtrCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                            var qtr = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId,
+                                                Text = quater.ShortName,
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                CreditHours = qtrCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                        }
 
                                         if (quater.DoesExam == true)
                                         {
@@ -1904,16 +1922,19 @@ namespace opensis.data.Repository
                                     var semesterData = markingPeriodData.ToList();
                                     foreach (var semester in semesterData)
                                     {
-                                        var sem = new GetMarkingPeriodView
+                                        if (semester.DoesGrades == true)
                                         {
-                                            Value = "1" + "_" + semester.MarkingPeriodId,
-                                            Text = semester.ShortName,
-                                            StartDate = semester.StartDate,
-                                            EndDate = semester.EndDate,
-                                            FullName = semester.Title,
-                                            CreditHours = courseSectionData.CreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+                                            var sem = new GetMarkingPeriodView
+                                            {
+                                                Value = "1" + "_" + semester.MarkingPeriodId,
+                                                Text = semester.ShortName,
+                                                StartDate = semester.StartDate,
+                                                EndDate = semester.EndDate,
+                                                FullName = semester.Title,
+                                                CreditHours = courseSectionData.CreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
+                                        }
 
                                         if (semester.DoesExam == true)
                                         {
@@ -1952,16 +1973,19 @@ namespace opensis.data.Repository
 
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
-                                        var prgrsPrd = new GetMarkingPeriodView
+                                        if (progressPeriods.DoesGrades == true)
                                         {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName,
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            CreditHours = prgsCreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                            var prgrsPrd = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                                Text = progressPeriods.ShortName,
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                CreditHours = prgsCreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                        }
 
                                         if (progressPeriods.DoesExam == true)
                                         {
@@ -1981,16 +2005,19 @@ namespace opensis.data.Repository
                                     var quaterData = markingPeriodData.ToList();
                                     foreach (var quater in quaterData)
                                     {
-                                        var qtr = new GetMarkingPeriodView
+                                        if (quater.DoesGrades == true)
                                         {
-                                            Value = "2" + "_" + quater.MarkingPeriodId,
-                                            Text = quater.ShortName,
-                                            StartDate = quater.StartDate,
-                                            EndDate = quater.EndDate,
-                                            FullName = quater.Title,
-                                            CreditHours = courseSectionData.CreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                            var qtr = new GetMarkingPeriodView
+                                            {
+                                                Value = "2" + "_" + quater.MarkingPeriodId,
+                                                Text = quater.ShortName,
+                                                StartDate = quater.StartDate,
+                                                EndDate = quater.EndDate,
+                                                FullName = quater.Title,
+                                                CreditHours = courseSectionData.CreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
+                                        }
 
                                         if (quater.DoesExam == true)
                                         {
@@ -2021,16 +2048,19 @@ namespace opensis.data.Repository
                                     var progressPeriodData = markingPeriodData.ToList();
                                     foreach (var progressPeriods in progressPeriodData)
                                     {
-                                        var prgrsPrd = new GetMarkingPeriodView
+                                        if (progressPeriods.DoesGrades == true)
                                         {
-                                            Value = "3" + "_" + progressPeriods.MarkingPeriodId,
-                                            Text = progressPeriods.ShortName,
-                                            StartDate = progressPeriods.StartDate,
-                                            EndDate = progressPeriods.EndDate,
-                                            FullName = progressPeriods.Title,
-                                            CreditHours = courseSectionData.CreditHours
-                                        };
-                                        markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                            var prgrsPrd = new GetMarkingPeriodView
+                                            {
+                                                Value = "3" + "_" + progressPeriods.MarkingPeriodId,
+                                                Text = progressPeriods.ShortName,
+                                                StartDate = progressPeriods.StartDate,
+                                                EndDate = progressPeriods.EndDate,
+                                                FullName = progressPeriods.Title,
+                                                CreditHours = courseSectionData.CreditHours
+                                            };
+                                            markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
+                                        }
 
                                         if (progressPeriods.DoesExam == true)
                                         {

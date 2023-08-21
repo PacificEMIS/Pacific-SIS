@@ -5736,7 +5736,7 @@ namespace opensis.data.Models
                     .HasConstraintName("staff_school_info$FK_master");
                 entity.HasOne(d => d.Membership)
                    .WithMany(p => p.StaffSchoolInfos)
-                   .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.MembershipId })
+                   .HasForeignKey(d => new { d.TenantId, d.SchoolAttachedId, d.MembershipId })
                    .HasConstraintName("staff_school_info$FK_membership");
             });
 
@@ -8992,7 +8992,7 @@ namespace opensis.data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                
+               
             }
         }
     }

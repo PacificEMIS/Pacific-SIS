@@ -36,6 +36,7 @@ namespace opensis.data.ViewModels.Student
             getStudentListForViews = new List<GetStudentListForView>();
             studentMaster = new List<StudentMaster>();
             studentListViews = new List<StudentListView>();
+            ConflictStudentsName = new List<string>();
         }
         public List<GetStudentListForView> getStudentListForViews { get; set; }
         public List<StudentMaster> studentMaster { get; set; }
@@ -53,6 +54,6 @@ namespace opensis.data.ViewModels.Student
         public int? PageNumber { get; set; }
         public int? _pageSize { get; set; }
         public bool IsShowPicture { get; set; } = true;
-
+        public List<string> ConflictStudentsName { get; set; }
     }
 }
