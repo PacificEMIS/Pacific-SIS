@@ -28,7 +28,7 @@
                    <input  formControlName="email"  name="email"   matInput  required >
 
               <mat-error *ngIf="form.get('email').hasError('required')">{{'emailAddressIsRequired'|translate}}</mat-error>
-              <mat-error *ngIf="!form.get('email').hasError('required') && form.get('email').hasError('invalidEmailAddress')">{{'invalidEmailAddress'|translate}}</mat-error>            
+              <!-- <mat-error *ngIf="!form.get('email').hasError('required') && form.get('email').hasError('invalidEmailAddress')">{{'invalidEmailAddress'|translate}}</mat-error>             -->
             </mat-form-field>
             
             <mat-form-field appearance="outline" class="vex-flex-form-field" color="primary">

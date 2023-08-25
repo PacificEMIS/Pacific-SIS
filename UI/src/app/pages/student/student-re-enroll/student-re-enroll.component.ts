@@ -384,7 +384,7 @@ export class StudentReEnrollComponent implements OnInit {
       }
       else {
       
-        this.getAllStudent.schoolId=this.defaultValuesService.getSchoolID();
+        this.getAllStudent.schoolId = this.defaultValuesService.getSchoolID();
       }
       this.studentService.searchStudentListForReenroll(this.getAllStudent, this.getAllStudent.schoolId).subscribe(data => {
         if (data._failure) {
@@ -566,6 +566,7 @@ export class StudentReEnrollComponent implements OnInit {
       this.getAllStudent.filterParams = res.filterParams;
       this.getAllStudent.includeInactive = res.inactiveStudents;
       this.getAllStudent.schoolId = res.searchAllSchool ? 0 : this.defaultValuesService.getSchoolID();
+      this.showAllSchools = res.searchAllSchool;
       this.searchForReEnrollStudent();
     }
   }
