@@ -121,7 +121,7 @@ export class LoginComponent implements OnInit {
      /**10_8 */
     this.GetAllLanguage();
     this.form = this.fb.group({
-      email: ['', [Validators.required, ValidationService.emailValidator]],
+      email: ['', [Validators.required]],
       password: ['', Validators.required],
       language:['en', Validators.required]
     });
@@ -187,7 +187,7 @@ export class LoginComponent implements OnInit {
     if (this.form.dirty && this.form.valid) {
       this.UserModel._tenantName = this.tenant;
       this.UserModel.password = this.form.value.password;
-      this.UserModel.email = this.form.value.email;
+      this.UserModel.email = this.form.value.email.trim().toLowerCase();;
       this.UserModel.userAccessLog.ipaddress=this.ipAdd.ip;
       this.UserModel.schoolId=this.defaultValuesService.getSchoolID();
       this.loginService.ValidateLogin(this.UserModel).subscribe(data => {
