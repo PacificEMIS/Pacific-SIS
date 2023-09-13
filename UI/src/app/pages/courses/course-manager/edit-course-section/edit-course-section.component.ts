@@ -172,6 +172,7 @@ export class EditCourseSectionComponent implements OnInit {
         attendanceCategoryId: [''],
         allowStudentConflict:[false],
         allowTeacherConflict:[false],
+        allowRoomConflict: [false],
         isWeightedCourse: [false],
         affectsClassRank: [false],
         affectsHonorRoll: [false],
@@ -220,6 +221,7 @@ export class EditCourseSectionComponent implements OnInit {
       seats: this.data.courseSectionDetails.courseSection.seats,
       allowStudentConflict: this.data.courseSectionDetails.courseSection.allowStudentConflict,
       allowTeacherConflict: this.data.courseSectionDetails.courseSection.allowTeacherConflict,
+      allowRoomConflict: this.data.courseSectionDetails.courseSection.allowRoomConflict,
       isWeightedCourse: this.data.courseSectionDetails.courseSection.isWeightedCourse,
       affectsClassRank: this.data.courseSectionDetails.courseSection.affectsClassRank,
       affectsHonorRoll: this.data.courseSectionDetails.courseSection.affectsHonorRoll,
@@ -457,6 +459,7 @@ export class EditCourseSectionComponent implements OnInit {
     this.courseSection.seats = this.form.value.seats;
     this.courseSection.allowStudentConflict = this.form.value.allowStudentConflict;
     this.courseSection.allowTeacherConflict = this.form.value.allowTeacherConflict;
+    this.courseSection.allowRoomConflict = this.form.value.allowRoomConflict;
     this.courseSection.isWeightedCourse = this.form.value.isWeightedCourse;
     this.courseSection.affectsClassRank = this.form.value.affectsClassRank;
     this.courseSection.affectsHonorRoll = this.form.value.affectsHonorRoll;

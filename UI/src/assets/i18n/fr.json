@@ -1945,5 +1945,6 @@
     "courseTeacher": "Cours/Enseignant",
     "sunText": "Soleil",
     "satText": "Assis",
-    "theSchoolYearBeginAndEndDateShouldBeBetween": "La date de début et de fin de l'année scolaire doit être comprise entre"
+    "theSchoolYearBeginAndEndDateShouldBeBetween": "La date de début et de fin de l'année scolaire doit être comprise entre",
+    "allowRoomConflict": "Autoriser les conflits de salle"
 }
