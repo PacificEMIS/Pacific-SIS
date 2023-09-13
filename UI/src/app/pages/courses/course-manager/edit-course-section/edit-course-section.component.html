@@ -87,6 +87,9 @@
                     <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="allowTeacherConflict" name="allowTeacherConflict" class="mb-3" color="primary">{{'allowTeacherConflict' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">
+                    <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="allowRoomConflict" name="allowRoomConflict" class="mb-3" color="primary">{{'allowRoomConflict' | translate}}</mat-slide-toggle>
+                </span>
+                <span class="mr-6">
                     <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" formControlName="isWeightedCourse" name="isWeightedCourse" class="mb-3" color="primary">{{'courseIsWeighted' | translate}}</mat-slide-toggle>
                 </span>
                 <span class="mr-6">

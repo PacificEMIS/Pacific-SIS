@@ -1946,5 +1946,6 @@
     "courseTeacher": "Course/Teacher",
     "sunText": "Sun",
     "satText": "Sat",
-    "theSchoolYearBeginAndEndDateShouldBeBetween": "The School Year Begin and End date should be between"
+    "theSchoolYearBeginAndEndDateShouldBeBetween": "The School Year Begin and End date should be between",
+    "allowRoomConflict": "Allow Room Conflict"
 }
