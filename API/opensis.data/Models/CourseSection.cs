@@ -57,6 +57,7 @@ namespace opensis.data.Models
         public int? Seats { get; set; }
         public bool? AllowStudentConflict { get; set; }
         public bool? AllowTeacherConflict { get; set; }
+        public bool? AllowRoomConflict { get; set; }
         public bool? IsWeightedCourse { get; set; }
         public bool? AffectsClassRank { get; set; }
         public bool? AffectsHonorRoll { get; set; }
