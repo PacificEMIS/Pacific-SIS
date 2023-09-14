@@ -1338,6 +1338,8 @@ namespace opensis.data.Models
 
                 entity.Property(e => e.AllowTeacherConflict).HasColumnName("allow_teacher_conflict");
 
+                entity.Property(e => e.AllowRoomConflict).HasColumnName("allow_room_conflict");
+
                 entity.Property(e => e.AttendanceCategoryId).HasColumnName("attendance_category_id");
 
                 entity.Property(e => e.AttendanceTaken).HasColumnName("attendance_taken");
