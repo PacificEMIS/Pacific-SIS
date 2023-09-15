@@ -161,6 +161,12 @@
                             </span>
                             <span class="mr-5 mb-4">
                                 <mat-icon
+                                    [icIcon]="selectedSectionDetails.courseSection.allowRoomConflict?icCheckboxChecked:icCheckboxUnchecked"
+                                    class="inline-block align-middle mr-1">
+                                </mat-icon> {{'allowRoomConflict' | translate}}
+                            </span>
+                            <span class="mr-5 mb-4">
+                                <mat-icon
                                     [icIcon]="selectedSectionDetails.courseSection.isWeightedCourse?icCheckboxChecked:icCheckboxUnchecked"
                                     class="inline-block align-middle mr-1">
                                 </mat-icon> {{'courseIsWeighted' | translate}}
