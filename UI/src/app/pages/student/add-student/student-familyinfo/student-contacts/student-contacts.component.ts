@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
@@ -104,8 +104,15 @@ export class StudentContactsComponent implements OnInit {
     // if(this.parentListArray.length === 0) {
     //   this.viewParentListForStudent();
     // }
-    this.parentListArray = this.parentInfoListForView;
+    // this.parentListArray = this.parentInfoListForView;
     this.checkAndValidateData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {    
+    if (changes.parentInfoListForView && changes.parentInfoListForView.currentValue) {
+      this.parentListArray = [];
+      this.parentListArray = changes.parentInfoListForView.currentValue;
+    }
   }
 
   openAddNew(ctype) {
