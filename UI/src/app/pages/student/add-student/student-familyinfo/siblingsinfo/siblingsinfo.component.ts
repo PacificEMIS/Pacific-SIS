@@ -23,7 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fadeInUp400ms } from '../../../../../../@vex/animations/fade-in-up.animation';
 import { stagger60ms } from '../../../../../../@vex/animations/stagger.animation';
@@ -88,7 +88,14 @@ export class SiblingsinfoComponent implements OnInit {
     // if(!this.studentViewSibling.studentMaster) {
     //   this.getAllSiblings();
     // }
-    this.studentViewSibling.studentMaster = this.siblings;
+    // this.studentViewSibling.studentMaster = this.siblings;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {    
+    if (changes.siblings && changes.siblings.currentValue) {
+      this.studentViewSibling.studentMaster = [];
+      this.studentViewSibling.studentMaster = changes.siblings.currentValue;
+    }
   }
 
   openAddNew() {
