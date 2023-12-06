@@ -115,6 +115,9 @@ export class TeacherFunctionComponent implements OnInit {
       if(this.router.url == '/school/staff/teacher-functions/progress-report'){
         this.activeMenu = 'progressReport';
       }
+      if(this.router.url == '/school/staff/teacher-functions/missing-attendance'){
+        this.activeMenu = 'missingAttendance';
+      }
       this.secondarySidebar = 0;
   });
   }
