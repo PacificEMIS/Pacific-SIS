@@ -34,6 +34,7 @@ import { SharedFunction } from '../../../shared/shared-function';
 import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } from '../../../../models/roll-based-access.model';
 import icCheckbox from '@iconify/icons-ic/baseline-check-box';
 import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
+import { StaffService } from 'src/app/services/staff.service';
 @Component({
   selector: 'vex-view-staff-generalinfo',
   templateUrl: './view-staff-generalinfo.component.html',
@@ -55,7 +56,8 @@ export class ViewStaffGeneralinfoComponent implements OnInit {
   constructor(public translateService: TranslateService,
               private commonFunction: SharedFunction,
               private dialog: MatDialog,
-              private pageRolePermissions: PageRolesPermission
+              private pageRolePermissions: PageRolesPermission,
+              private staffService: StaffService,
               ) {
     //translateService.use('en');
   }
@@ -76,10 +78,15 @@ export class ViewStaffGeneralinfoComponent implements OnInit {
 
   // This openResetPassword method is used for open Reset Password dialog.
   openResetPassword() {
-    this.dialog.open(ResetPasswordComponent, {
-      width: '500px',
-      data: { userId: this.staffViewDetails.staffMaster.staffId, emailAddress: this.staffViewDetails.staffMaster.loginEmailAddress }
-    });
+    if (this.staffViewDetails.staffMaster.profile !== 'Super Administrator') {
+      this.staffService.checkExternalSchoolId(this.staffViewDetails, this.categoryId).then((res: any) => {
+        this.dialog.open(ResetPasswordComponent, {
+          width: '500px',
+          data: { userId: this.staffViewDetails.staffMaster.staffId, emailAddress: this.staffViewDetails.staffMaster.loginEmailAddress }
+        });
+      });
+    }
+    
   }
 
   getAge(birthDate) {
