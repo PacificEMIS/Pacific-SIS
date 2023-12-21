@@ -113,7 +113,7 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
     private reportService: ReportService
   ) {
     this.advancedSearchExpansionModel.accessInformation = false;
-    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = true;
     this.advancedSearchExpansionModel.searchAllSchools = false;
     this.defaultValuesService.setReportCompoentTitle.next("Print Schedules");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
