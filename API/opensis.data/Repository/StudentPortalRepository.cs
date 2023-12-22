@@ -50,7 +50,6 @@ namespace opensis.data.Repository
         {
             ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewForStudent = new();
             List<StudentCoursesectionSchedule> studentCoursesectionScheduleList = new();
-            List<AllCourseSectionView>? allCourseSectionVewList = new();
             //CourseFixedSchedule fixedData = new();
             List<CourseVariableSchedule>? variableData = new();
             List<CourseCalendarSchedule>? calenderData = new();
@@ -256,11 +255,12 @@ namespace opensis.data.Repository
                                         CourseSection.PrgrsprdMarkingPeriodId = scheduledCourseSection.acsv.PrgrsprdMarkingPeriodId;
                                         CourseSection.DurationStartDate = scheduledCourseSection.acsv.DurationStartDate;
                                         CourseSection.DurationEndDate = scheduledCourseSection.acsv.DurationEndDate;
-                                        //CourseSection.MeetingDays = scheduledCourseSection.MeetingDays;
+                                        //CourseSection.MeetingDays = scheduledCourseSection.scs.CourseSection.MeetingDays;
                                         CourseSection.AttendanceTaken = scheduledCourseSection.scs.CourseSection.AttendanceTaken;
                                         CourseSection.WeekDays = scheduledCourseSection.scs.CourseSection.SchoolCalendars!.Days;
 
                                         scheduledCourseSectionViewForStudent.courseSectionViewList.Add(CourseSection);
+
 
                                     }
                                 }
