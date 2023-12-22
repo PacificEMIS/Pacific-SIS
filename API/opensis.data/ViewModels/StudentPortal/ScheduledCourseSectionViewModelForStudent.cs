@@ -38,6 +38,7 @@ namespace opensis.data.ViewModels.StudentPortal
             courseSectionViewList = new List<CourseSectionViewList>();
             NotificationList = new List<string>();
             NoticeList = new List<Models.Notice>();
+            AssignmentList = new List<AssignmentDetails>();
         }
         public List<CourseSectionViewList> courseSectionViewList { get; set; }
         public Guid? TenantId { get; set; }
@@ -51,8 +52,30 @@ namespace opensis.data.ViewModels.StudentPortal
         public int? _pageSize { get; set; }
         public List<opensis.data.Models.Notice> NoticeList { get; set; }
         public List<string> NotificationList { get; set; }
+        public List<AssignmentDetails> AssignmentList { get; set; }
         public decimal? AcademicYear { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
         public DateTime? MarkingPeriodEndDate { get; set; }
+
+        public string? StudentInternalId { get; set; }
+        public string? FirstGivenName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastFamilyName { get; set; }
+        public string? GradeLevel { get; set; }
+        public string? Section { get; set; }
+        public byte[]? StudentPhoto { get; set; }
+    }
+
+    public class AssignmentDetails
+    {
+        public int? AssignmentTypeId { get; set; }
+        public int? AssignmentId { get; set; }
+        public int? CourseSectionId { get; set; }
+        public string? CourseSectionTitle { get; set; }
+        public string? AssignmentTypeTitle { get; set; }
+        public string? AssignmentTitle { get; set; }
+        public DateTime? AssignmentDate { get; set; }
+        public DateTime? DueDate { get; set; }
+        public string? AssignmentDescription { get; set; }
     }
 }
