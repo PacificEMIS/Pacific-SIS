@@ -377,5 +377,152 @@ namespace opensis.data.Repository
             }
             return scheduledCourseSectionViewForStudent;
         }
+        public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult)
+        {
+            StudentGradebookViewModel studentGradebook = new StudentGradebookViewModel();
+            List<StudentGradebookGradeDetails> studentGradeList = new();
+            IQueryable<StudentGradebookGradeDetails>? transactionIQ = null;
+
+            studentGradebook._tenantName = pageResult._tenantName;
+            studentGradebook._token = pageResult._token;
+            studentGradebook._userName = pageResult._userName;
+            try
+            {
+                var coursesection = this.context?.StudentCoursesectionSchedule.Include(x => x.CourseSection).ThenInclude(y => y.StaffCoursesectionSchedule).ThenInclude(z => z.StaffMaster).Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StudentId == pageResult.StudentId && x.AcademicYear == pageResult.AcademicYear && (x.CourseSection.DurationBasedOnPeriod == false || ((pageResult.MarkingPeriodStartDate >= x.CourseSection.DurationStartDate && pageResult.MarkingPeriodStartDate <= x.CourseSection.DurationEndDate) && (pageResult.MarkingPeriodEndDate >= x.CourseSection.DurationStartDate && pageResult.MarkingPeriodEndDate <= x.CourseSection.DurationEndDate)))).ToList();
+
+                if (coursesection != null)
+                {
+                    foreach (var section in coursesection)
+                    {
+                        StudentGradebookGradeDetails studentGrade = new();
+
+                        var AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).ThenInclude(x => x.GradebookGrades).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == section.CourseSectionId && x.AcademicYear == pageResult.AcademicYear).ToList();
+
+                        if (AssignmentTypeData?.Any() == true)
+                        {
+                            if (AssignmentTypeData.FirstOrDefault()!.PrgrsprdMarkingPeriodId != null)
+                            {
+                                var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                                if (progressPeriodsData != null)
+                                {
+                                    AssignmentTypeData = AssignmentTypeData?.Where(x => x.PrgrsprdMarkingPeriodId == progressPeriodsData.MarkingPeriodId).ToList();
+
+                                }
+
+                                else if (AssignmentTypeData?.FirstOrDefault()!.QtrMarkingPeriodId != null)
+                                {
+                                    var quartersData = this.context?.Quarters.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                                    if (quartersData != null)
+                                    {
+                                        AssignmentTypeData = AssignmentTypeData.Where(x => x.QtrMarkingPeriodId == quartersData.MarkingPeriodId).ToList();
+
+                                    }
+                                }
+                                else if (AssignmentTypeData?.FirstOrDefault()!.SmstrMarkingPeriodId != null)
+                                {
+                                    var semestersData = this.context?.Semesters.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                                    if (semestersData != null)
+                                    {
+                                        AssignmentTypeData = AssignmentTypeData.Where(x => x.SmstrMarkingPeriodId == semestersData.MarkingPeriodId).ToList();
+
+                                    }
+                                }
+                                else if (AssignmentTypeData?.FirstOrDefault()!.YrMarkingPeriodId != null)
+                                {
+                                    var yearsData = this.context?.SchoolYears.Where(x => x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.StartDate == pageResult.MarkingPeriodStartDate && x.EndDate == pageResult.MarkingPeriodEndDate && x.AcademicYear == pageResult.AcademicYear).FirstOrDefault();
+
+                                    if (yearsData != null)
+                                    {
+                                        AssignmentTypeData = AssignmentTypeData.Where(x => x.YrMarkingPeriodId == yearsData.MarkingPeriodId).ToList();
+                                    }
+                                }
+                            }
+                        }
+
+                        var staffData = section.CourseSection.StaffCoursesectionSchedule.Where(x => x.IsDropped != true).FirstOrDefault();
+
+                        if (AssignmentTypeData?.SelectMany(x => x.Assignment).Any() == true)
+                        {
+                            var gradebookData = AssignmentTypeData?.SelectMany(x => x.Assignment).SelectMany(x => x.GradebookGrades).Where(x => x.StudentId == pageResult.StudentId).FirstOrDefault();
+
+                            studentGrade.Ungraded = AssignmentTypeData?.SelectMany(x => x.Assignment)?.Where(x => x.DueDate > DateTime.UtcNow.Date && x.GradebookGrades.Any(x => x.StudentId == pageResult.StudentId && x.AcademicYear == pageResult.AcademicYear) != true).Count();
+
+                            studentGrade.StaffFirstName = staffData?.StaffMaster.FirstGivenName;
+
+                            studentGrade.StaffMiddleName = staffData?.StaffMaster.MiddleName;
+
+                            studentGrade.StaffLastName = staffData?.StaffMaster.LastFamilyName;
+
+                            studentGrade.Percent = gradebookData?.Percentage;
+
+                            studentGrade.Letter = gradebookData?.LetterGrade;
+
+                            studentGrade.CourseSectionName = section.CourseSectionName;
+
+                            studentGrade.CourseSectionId = section.CourseSectionId;
+
+                            studentGrade.LowestGrade = AssignmentTypeData?.SelectMany(x => x.Assignment)?.SelectMany(x => x.GradebookGrades).OrderBy(x => Convert.ToDecimal(x.RunningAvg)).FirstOrDefault()?.RunningAvg;
+
+                            studentGrade.HighestGrade = AssignmentTypeData?.SelectMany(x => x.Assignment)?.SelectMany(x => x.GradebookGrades).OrderByDescending(x => Convert.ToDecimal(x.RunningAvg)).FirstOrDefault()?.RunningAvg;
+                        }
+                        else
+                        {
+                            studentGrade.Ungraded = 0;
+
+                            studentGrade.StaffFirstName = staffData?.StaffMaster.FirstGivenName;
+
+                            studentGrade.StaffMiddleName = staffData?.StaffMaster.MiddleName;
+
+                            studentGrade.StaffLastName = staffData?.StaffMaster.LastFamilyName;
+
+                            studentGrade.Percent = "0";
+
+                            studentGrade.Letter = "Not Graded";
+
+                            studentGrade.CourseSectionName = section.CourseSectionName;
+
+                            studentGrade.CourseSectionId = section.CourseSectionId;
+                        }
+
+                        studentGradeList.Add(studentGrade);
+                    }
+                }
+                if (studentGradeList.Count() > 0)
+                {
+                    transactionIQ = studentGradeList.AsQueryable();
+
+                    if (transactionIQ != null)
+                    {
+                        int? totalCount = transactionIQ.Count();
+                        if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                        {
+                            transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
+                            studentGradebook.PageNumber = pageResult.PageNumber;
+                            studentGradebook._pageSize = pageResult.PageSize;
+                        }
+                        studentGradebook.studentGradebookGradeDetails = transactionIQ.ToList();
+                        studentGradebook.TotalCount = totalCount;
+                    }
+                    else
+                    {
+                        studentGradebook.TotalCount = 0;
+                    }
+                }
+                else
+                {
+                    studentGradebook._failure = true;
+                    studentGradebook._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception ex)
+            {
+                studentGradebook._failure = true;
+                studentGradebook._message = ex.Message;
+            }
+            return studentGradebook;
+        }
     }
 }

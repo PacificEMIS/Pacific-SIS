@@ -22,6 +22,7 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentPortal;
 using System;
 using System.Collections.Generic;
@@ -34,5 +35,8 @@ namespace opensis.core.StudentPortal.Interface
     public interface IStudentPortalService
     {
         public ScheduledCourseSectionViewModelForStudent GetStudentDashboard(ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewModelForStudent);
+        public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult);
+
+
     }
 }

@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.StudentPortal.Interface;
+using opensis.data.Models;
 using opensis.data.ViewModels.StudentPortal;
 using System;
 
@@ -55,6 +56,21 @@ namespace opensisAPI.Controllers
                 scheduledCourseSectionViewModelForStudent._failure = true;
             }
             return scheduledCourseSectionViewModelForStudent;
+        }
+        [HttpPost("getStudentGradebookGrades")]
+        public ActionResult<StudentGradebookViewModel> GetStudentGradebookGrades(PageResult pageResult)
+        {
+            StudentGradebookViewModel studentGradebook = new StudentGradebookViewModel();
+            try
+            {
+                studentGradebook = _studentPortalService.GetStudentGradebookGrades(pageResult);
+            }
+            catch (Exception ex)
+            {
+                studentGradebook._message = ex.Message;
+                studentGradebook._failure = true;
+            }
+            return studentGradebook;
         }
     }
 }

@@ -31,6 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 using opensis.data.Interface;
 using opensis.data.ViewModels.StudentPortal;
+using opensis.data.Models;
 
 namespace opensis.core.StudentPortal.Services
 {
@@ -73,6 +74,28 @@ namespace opensis.core.StudentPortal.Services
                 scheduledCourseSectionViewForStudent._message = ex.Message;
             }
             return scheduledCourseSectionViewForStudent;
+        }
+        public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult)
+        {
+            StudentGradebookViewModel studentGradebook = new StudentGradebookViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    studentGradebook = this.studentPortalRepository.GetStudentGradebookGrades(pageResult);
+                }
+                else
+                {
+                    studentGradebook._failure = true;
+                    studentGradebook._message = TOKENINVALID;
+                }
+            }
+            catch (Exception ex)
+            {
+                studentGradebook._failure = true;
+                studentGradebook._message = ex.Message;
+            }
+            return studentGradebook;
         }
     }
 }
