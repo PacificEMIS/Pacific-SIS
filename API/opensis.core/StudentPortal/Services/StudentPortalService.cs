@@ -48,33 +48,40 @@ namespace opensis.core.StudentPortal.Services
             this.studentPortalRepository = studentPortalRepository;
             this.tokenManager = checkLoginSession;
         }
+
         /// <summary>
         /// Get Student Dashboard
         /// </summary>
-        /// <param name="scheduledCourseSectionViewModelForStudent"></param>
+        /// <param name="studentDashboardViewModel"></param>
         /// <returns></returns>
-        public ScheduledCourseSectionViewModelForStudent GetStudentDashboard(ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewModelForStudent)
+        public StudentDashboardViewModel GetStudentDashboard(StudentDashboardViewModel studentDashboardViewModel)
         {
-            ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewForStudent = new ScheduledCourseSectionViewModelForStudent();
+            StudentDashboardViewModel studentDashboard = new StudentDashboardViewModel();
             try
             {
-                if(tokenManager.CheckToken(scheduledCourseSectionViewModelForStudent._tenantName+scheduledCourseSectionViewModelForStudent._userName,scheduledCourseSectionViewModelForStudent._token))
+                if (tokenManager.CheckToken(studentDashboardViewModel._tenantName + studentDashboardViewModel._userName, studentDashboardViewModel._token))
                 {
-                    scheduledCourseSectionViewForStudent = this.studentPortalRepository.GetStudentDashboard(scheduledCourseSectionViewModelForStudent);
+                    studentDashboard = this.studentPortalRepository.GetStudentDashboard(studentDashboardViewModel);
                 }
                 else
                 {
-                    scheduledCourseSectionViewForStudent._failure=true;
-                    scheduledCourseSectionViewForStudent._message = TOKENINVALID;
+                    studentDashboard._failure = true;
+                    studentDashboard._message = TOKENINVALID;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                scheduledCourseSectionViewForStudent._failure = true;
-                scheduledCourseSectionViewForStudent._message = ex.Message;
+                studentDashboard._failure = true;
+                studentDashboard._message = ex.Message;
             }
-            return scheduledCourseSectionViewForStudent;
+            return studentDashboard;
         }
+
+        /// <summary>
+        /// Get Student Gradebook Grades
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
         public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult)
         {
             StudentGradebookViewModel studentGradebook = new StudentGradebookViewModel();

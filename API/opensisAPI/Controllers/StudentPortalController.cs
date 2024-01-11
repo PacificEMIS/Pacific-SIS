@@ -42,21 +42,23 @@ namespace opensisAPI.Controllers
         {
             _studentPortalService = studentPortalService;
         }
+
         [HttpPost("getStudentDashboard")]
-        public ActionResult<ScheduledCourseSectionViewModelForStudent> GetStudentDashboard(ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewModelForStudent)
+        public ActionResult<StudentDashboardViewModel> GetStudentDashboard(StudentDashboardViewModel studentDashboardViewModel)
         {
-            ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewForStudent = scheduledCourseSectionViewModelForStudent;
+            StudentDashboardViewModel studentDashboard = studentDashboardViewModel;
             try
             {
-                scheduledCourseSectionViewModelForStudent = _studentPortalService.GetStudentDashboard(scheduledCourseSectionViewModelForStudent);
+                studentDashboard = _studentPortalService.GetStudentDashboard(studentDashboardViewModel);
             }
             catch (Exception ex)
             {
-                scheduledCourseSectionViewModelForStudent._message = ex.Message;
-                scheduledCourseSectionViewModelForStudent._failure = true;
+                studentDashboard._message = ex.Message;
+                studentDashboard._failure = true;
             }
-            return scheduledCourseSectionViewModelForStudent;
+            return studentDashboard;
         }
+
         [HttpPost("getStudentGradebookGrades")]
         public ActionResult<StudentGradebookViewModel> GetStudentGradebookGrades(PageResult pageResult)
         {

@@ -34,7 +34,7 @@ namespace opensis.core.StudentPortal.Interface
 {
     public interface IStudentPortalService
     {
-        public ScheduledCourseSectionViewModelForStudent GetStudentDashboard(ScheduledCourseSectionViewModelForStudent scheduledCourseSectionViewModelForStudent);
+        public StudentDashboardViewModel GetStudentDashboard(StudentDashboardViewModel studentDashboardViewModel);
         public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult);
 
 

@@ -31,9 +31,9 @@ using System.Threading.Tasks;
 
 namespace opensis.data.ViewModels.StudentPortal
 {
-    public class ScheduledCourseSectionViewModelForStudent:CommonFields
+    public class StudentDashboardViewModel:CommonFields
     {
-        public ScheduledCourseSectionViewModelForStudent() 
+        public StudentDashboardViewModel() 
         {
             courseSectionViewList = new List<CourseSectionViewList>();
             NotificationList = new List<string>();
