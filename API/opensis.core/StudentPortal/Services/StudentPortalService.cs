@@ -104,5 +104,32 @@ namespace opensis.core.StudentPortal.Services
             }
             return studentGradebook;
         }
+        /// <summary>
+        /// Get Student Gradebook Grades by CourseSection
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentGradebookGradesByCourseSection GetStudentGradebookGradesByCourseSection(PageResult pageResult)
+        {
+            StudentGradebookGradesByCourseSection studentGradebook = new StudentGradebookGradesByCourseSection();
+            try
+            {
+                if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                {
+                    studentGradebook = this.studentPortalRepository.GetStudentGradebookGradesByCourseSection(pageResult);
+                }
+                else
+                {
+                    studentGradebook._failure = true;
+                    studentGradebook._message = TOKENINVALID;
+                }
+            }
+            catch (Exception ex)
+            {
+                studentGradebook._failure = true;
+                studentGradebook._message = ex.Message;
+            }
+            return studentGradebook;
+        }
     }
 }

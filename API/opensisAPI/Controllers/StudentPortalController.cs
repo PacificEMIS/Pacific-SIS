@@ -74,5 +74,20 @@ namespace opensisAPI.Controllers
             }
             return studentGradebook;
         }
+        [HttpPost("getStudentGradebookGradesByCourseSection")]
+        public ActionResult<StudentGradebookGradesByCourseSection> GetStudentGradebookGradesByCourseSection(PageResult pageResult)
+        {
+            StudentGradebookGradesByCourseSection studentGradebook = new StudentGradebookGradesByCourseSection();
+            try
+            {
+                studentGradebook = _studentPortalService.GetStudentGradebookGradesByCourseSection(pageResult);
+            }
+            catch (Exception ex)
+            {
+                studentGradebook._message = ex.Message;
+                studentGradebook._failure = true;
+            }
+            return studentGradebook;
+        }
     }
 }

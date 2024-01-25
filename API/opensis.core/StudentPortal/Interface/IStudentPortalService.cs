@@ -36,7 +36,6 @@ namespace opensis.core.StudentPortal.Interface
     {
         public StudentDashboardViewModel GetStudentDashboard(StudentDashboardViewModel studentDashboardViewModel);
         public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult);
-
-
+        public StudentGradebookGradesByCourseSection GetStudentGradebookGradesByCourseSection(PageResult pageResult);
     }
 }
