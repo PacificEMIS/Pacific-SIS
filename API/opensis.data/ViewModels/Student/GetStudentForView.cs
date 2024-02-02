@@ -36,6 +36,7 @@ namespace opensis.data.ViewModels.Student
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StudentId { get; set; }
+        public Guid? StudentGuid { get; set; }
         public string? StudentInternalId { get; set; }
         public string? AdmissionNumber { get; set; }
         public string? RollNumber { get; set; }
