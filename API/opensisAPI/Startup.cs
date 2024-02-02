@@ -110,6 +110,8 @@ using opensis.report.report.core.Grade.Services;
 using opensis.report.report.core.Grade.Interfaces;
 using opensis.core.StudentPortal.Interface;
 using opensis.core.StudentPortal.Services;
+using opensis.core.ParentPortal.Interface;
+using opensis.core.ParentPortal.Services;
 
 namespace opensisAPI
 {
@@ -239,6 +241,9 @@ namespace opensisAPI
 
             services.AddScoped<IStudentPortalRepository, StudentPortalRepository>();
             services.AddScoped<IStudentPortalService, StudentPortalService>();
+
+            services.AddScoped<IParentPortalRepository, ParentPortalRepository>();
+            services.AddScoped<IParentPortalService, ParentPortalService>();
 
             if (Configuration["dbtype"] == "sqlserver")
             {

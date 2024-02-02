@@ -22,28 +22,40 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-
-using opensis.data.Models;
-using opensis.data.ViewModels.Student;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using opensis.core.ParentPortal.Interface;
+using opensis.data.ViewModels.ParentInfos;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace opensis.data.ViewModels.ParentInfos
+namespace opensisAPI.Controllers
 {
-    public class ParentInfoAddViewModel : CommonFields
+    [EnableCors("AllowOrigin")]
+    [Route("{tenant}/ParentPortal")]
+    [ApiController]
+    public class ParentPortalController : ControllerBase
     {
-        public ParentInfoAddViewModel()
+        private IParentPortalService _parentPortalService;
+        public ParentPortalController(IParentPortalService parentPortalService)
         {
-            getStudentForView = new List<GetStudentForView>();
+            _parentPortalService = parentPortalService;
         }
-        public ParentInfo? parentInfo { get; set; }
-        public ParentAssociationship? parentAssociationship { get;set; }
-        public string? PasswordHash { get; set; }
-        public string? UrlKey { get; set; }
-        public bool? setPassword { get; set; } = false;
-        public List<GetStudentForView> getStudentForView { get; set; }
-        public bool? SsoEnabled { get; set; }
-        public bool? SendMailForPassword { get; set; }
+        [HttpPost("getStudentListForParent")]
+        public ActionResult<ParentInfoAddViewModel> GetStudentListForParent(ParentInfoAddViewModel parentInfoAddViewModel)
+        {
+            ParentInfoAddViewModel parentInfoAdd = new ParentInfoAddViewModel();
+            try
+            {
+                parentInfoAdd = _parentPortalService.GetStudentListForParent(parentInfoAddViewModel);
+            }
+            catch (Exception ex)
+            {
+                parentInfoAdd._message = ex.Message;
+                parentInfoAdd._failure = true;
+            }
+            return parentInfoAdd;
+        }
+
     }
 }
