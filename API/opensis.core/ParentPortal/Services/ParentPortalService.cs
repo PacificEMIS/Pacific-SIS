@@ -26,6 +26,7 @@ using opensis.core.helper.Interfaces;
 using opensis.core.ParentPortal.Interface;
 using opensis.data.Interface;
 using opensis.data.ViewModels.ParentInfos;
+using opensis.data.ViewModels.School;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,28 @@ namespace opensis.core.ParentPortal.Services
                 parentInfoViewModel._message = ex.Message;
             }
             return parentInfoViewModel;
+        }
+        public SchoolListModel GetAllSchoolsByStudentId(SchoolListModel school)
+        {
+            SchoolListModel schoolListModel = new SchoolListModel();
+            try
+            {
+                if (tokenManager.CheckToken(school._tenantName + school._userName, school._token))
+                {
+                    schoolListModel = this.parentPortalRepository.GetAllSchoolsByStudentId(school);
+                }
+                else
+                {
+                    schoolListModel._failure = true;
+                    schoolListModel._message = TOKENINVALID;
+                }
+            }
+            catch (Exception ex)
+            {
+                schoolListModel._failure = true;
+                schoolListModel._message = ex.Message;
+            }
+            return schoolListModel;
         }
     }
 }

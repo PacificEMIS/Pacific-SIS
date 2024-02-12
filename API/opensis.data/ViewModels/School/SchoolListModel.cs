@@ -40,7 +40,9 @@ namespace opensis.data.ViewModels.School
         public List<GetSchoolForView> getSchoolForView { get; set; }
         public List<SchoolMaster> schoolMaster { get; set; }
         public Guid? TenantId { get; set; }
+        public Guid? StudentGuid { get; set; }
         public string? EmailAddress { get; set; }
+        public int? MembershipId { get; set; }
         public int? TotalCount { get; set; }
         public int? PageNumber { get; set; }
         public int? _pageSize { get; set; }

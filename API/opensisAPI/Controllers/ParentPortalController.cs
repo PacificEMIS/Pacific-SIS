@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using opensis.core.ParentPortal.Interface;
 using opensis.data.ViewModels.ParentInfos;
+using opensis.data.ViewModels.School;
 using System;
 
 namespace opensisAPI.Controllers
@@ -56,6 +57,21 @@ namespace opensisAPI.Controllers
             }
             return parentInfoAdd;
         }
+        [HttpPost("getAllSchoolsByStudentId")]
 
+        public ActionResult<SchoolListModel> GetAllSchoolsByStudentId(SchoolListModel school)
+        {
+            SchoolListModel schoolListModel = new SchoolListModel();
+            try
+            {
+                schoolListModel = _parentPortalService.GetAllSchoolsByStudentId(school);
+            }
+            catch (Exception ex)
+            {
+                schoolListModel._message = ex.Message;
+                schoolListModel._failure = true;
+            }
+            return schoolListModel;
+        }
     }
 }
