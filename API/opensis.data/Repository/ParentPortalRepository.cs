@@ -26,6 +26,7 @@ using Microsoft.EntityFrameworkCore;
 using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.data.ViewModels.ParentInfos;
+using opensis.data.ViewModels.School;
 using opensis.data.ViewModels.Student;
 using System;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace opensis.data.Repository
 
                         if (student != null)
                         {
-                            var studentForView = new GetStudentForView()
+                             var studentForView = new GetStudentForView()
                             {
                                 TenantId = student.TenantId,
                                 SchoolId = student.SchoolId,
@@ -99,6 +100,54 @@ namespace opensis.data.Repository
                 return parentInfoViewModel;
             }
             return parentInfoViewModel;
+        }
+        /// <summary>
+        /// Get All Schools By StudentId
+        /// </summary>
+        /// <param name="school"></param>
+        /// <returns></returns>
+        public SchoolListModel GetAllSchoolsByStudentId(SchoolListModel school)
+        {
+            SchoolListModel schoolListModel = new();
+            schoolListModel.PageNumber = null;
+            schoolListModel._pageSize = null;
+            schoolListModel._tenantName = school._tenantName;
+            schoolListModel._token = school._token;
+
+            try
+            {
+                var membershipData = this.context?.Membership.FirstOrDefault(x => x.TenantId == school.TenantId && x.MembershipId == school.MembershipId);
+
+                var schoolList = this.context?.StudentMaster.Include(x => x.SchoolMaster).ThenInclude(x => x.SchoolDetail).Where(x => x.TenantId == school.TenantId && x.StudentGuid == school.StudentGuid && x.SchoolMaster.SchoolDetail.FirstOrDefault()!.Status != false).OrderBy(x => x.SchoolMaster.SchoolName).Select(e => new GetSchoolForView()
+                {
+                    SchoolId = e.SchoolId,
+                    TenantId = e.TenantId,
+                    StudentId = e.StudentId,
+                    SchoolName = e.SchoolMaster.SchoolName!.Trim(),
+                    DateSchoolOpened = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.StartDate,
+                    DateSchoolClosed = this.context!.SchoolCalendars.FirstOrDefault(x => x.TenantId == e.TenantId && x.SchoolId == e.SchoolId && x.SessionCalendar == true && x.StartDate!.Value.Date <= DateTime.UtcNow.Date && x.EndDate!.Value.Date >= DateTime.UtcNow.Date)!.EndDate,
+                    MembershipId = membershipData!.MembershipId,
+                    MembershipType = membershipData!.ProfileType
+                }).ToList();
+
+                if (schoolList != null && schoolList.Any())
+                {
+                    schoolListModel.getSchoolForView = schoolList;
+                    schoolListModel._failure = false;
+                }
+                else
+                {
+                    schoolListModel.schoolMaster = new();
+                    schoolListModel._failure = true;
+                    schoolListModel._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                schoolListModel._message = es.Message;
+                schoolListModel._failure = true;
+            }
+            return schoolListModel;
         }
     }
 }

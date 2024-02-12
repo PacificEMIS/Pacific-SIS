@@ -29,11 +29,13 @@ using System.Text;
 using System.Threading.Tasks;
 using opensis.data.Models;
 using opensis.data.ViewModels.ParentInfos;
+using opensis.data.ViewModels.School;
 
 namespace opensis.data.Interface
 {
     public interface IParentPortalRepository
     {
         public ParentInfoAddViewModel GetStudentListForParent(ParentInfoAddViewModel parentInfoAddViewModel);
+        public SchoolListModel GetAllSchoolsByStudentId(SchoolListModel school);
     }
 }

@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 using opensis.data.ViewModels.ParentInfos;
+using opensis.data.ViewModels.School;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,5 +35,6 @@ namespace opensis.core.ParentPortal.Interface
     public interface IParentPortalService
     {
         public ParentInfoAddViewModel GetStudentListForParent(ParentInfoAddViewModel parentInfoAddViewModel);
+        public SchoolListModel GetAllSchoolsByStudentId(SchoolListModel school);
     }
 }
