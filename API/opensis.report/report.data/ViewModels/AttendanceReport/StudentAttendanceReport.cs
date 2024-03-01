@@ -14,9 +14,11 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
         public StudentAttendanceReport()
         {
             studendAttendanceAdministrationList = new List<StudendAttendanceViewModelForReport>();
+            blockPeriods = new List<BlockPeriod>();
         }
         public List<StudendAttendanceViewModelForReport> studendAttendanceAdministrationList { get; set; }
         public DataTable? StudentAttendanceReportForExcel { get; set; }
+        public List<BlockPeriod> blockPeriods { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
@@ -42,20 +44,24 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
         public string? FirstGivenName { get; set; }
         public string? MiddleName { get; set; }
         public string? LastFamilyName { get; set; }
+        public string? PreferredName { get; set; }
         public string? GradeLevelTitle { get; set; }
+        public int? PeriodId { get; set; }
         public string? PeriodsName { get; set; }
         public List<StudentAttendance> studentAttendanceList { get; set; }
     }
 
     public class AttendanceExcelReport
     {
-        public int StudentId { get; set; }
+        public int SId { get; set; }
         public DateTime? AttendanceDate { get; set; }
-        public string? StudentInternalId { get; set; }
+        public string? StudentId { get; set; }
         public string? StudentName { get; set; }
         public string? PeriodName { get; set; }
         public string? AttendanceCode { get; set; }
-        public string? GradeLevelTitle { get; set; }
+        public string? GradeLevel { get; set; }
+        public int? PeriodSortOrder { get; set; }
+        public string? PreferredName { get; set; }
     }
 
     public class StudentAttendanceViewForReport
@@ -77,6 +83,7 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
         public string? FirstGivenName { get; set; }
         public string? MiddleName { get; set; }
         public string? LastFamilyName { get; set; }
+        public string? PreferredName { get; set; }
         public string? GradeLevelTitle { get; set; }
     }
 }

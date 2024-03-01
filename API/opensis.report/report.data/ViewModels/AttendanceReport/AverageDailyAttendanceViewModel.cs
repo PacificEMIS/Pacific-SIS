@@ -53,6 +53,7 @@ namespace opensis.report.report.data.ViewModels.AttendanceReport
     {
         public DateTime? Date { get; set; }
         public string? GradeLevel { get; set; }
+        public int? GradeLevelSortOrder { get; set; }
         public int? Students { get; set; }
         public int? DaysPossible { get; set; }
         public int? AttendancePossible { get; set; }
