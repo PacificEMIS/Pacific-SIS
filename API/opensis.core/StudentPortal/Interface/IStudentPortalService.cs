@@ -22,28 +22,20 @@ Copyright (c) Open Solutions for Education, Inc.
 
 All rights reserved.
 ***********************************************************************************/
-
 using opensis.data.Models;
-using opensis.data.ViewModels.Student;
+using opensis.data.ViewModels.StudentPortal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace opensis.data.ViewModels.ParentInfos
+namespace opensis.core.StudentPortal.Interface
 {
-    public class ParentInfoAddViewModel : CommonFields
+    public interface IStudentPortalService
     {
-        public ParentInfoAddViewModel()
-        {
-            getStudentForView = new List<GetStudentForView>();
-        }
-        public ParentInfo? parentInfo { get; set; }
-        public ParentAssociationship? parentAssociationship { get;set; }
-        public string? PasswordHash { get; set; }
-        public string? UrlKey { get; set; }
-        public bool? setPassword { get; set; } = false;
-        public List<GetStudentForView> getStudentForView { get; set; }
-        public bool? SsoEnabled { get; set; }
-        public bool? SendMailForPassword { get; set; }
+        public StudentDashboardViewModel GetStudentDashboard(StudentDashboardViewModel studentDashboardViewModel);
+        public StudentGradebookViewModel GetStudentGradebookGrades(PageResult pageResult);
+        public StudentGradebookGradesByCourseSection GetStudentGradebookGradesByCourseSection(PageResult pageResult);
     }
 }

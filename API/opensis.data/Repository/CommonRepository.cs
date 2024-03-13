@@ -2052,6 +2052,7 @@ namespace opensis.data.Repository
                 scheduledCourseSectionView.AllCourse = scheduledCourseSectionViewModel.AllCourse;
 
                 var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Include(x => x.CourseSection.Course).Include(x => x.CourseSection.SchoolCalendars).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
+                
 
                 if (scheduledCourseSectionData != null && scheduledCourseSectionData.Any())
                 {

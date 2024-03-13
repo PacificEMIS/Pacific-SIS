@@ -158,13 +158,13 @@ export class StudentFamilyinfoComponent implements OnInit {
 
   changeTab(status){
     if(status === 'siblingInfo') {
-      if(!this.studentViewSibling.studentMaster) {
-        this.getAllSiblings();
-      }
+      this.getAllSiblings();
+      // if(!this.studentViewSibling.studentMaster) {
+      // }
     } else {
-      if(!this.parentListArray) {
-        this.viewParentListForStudent();
-      }
+      this.viewParentListForStudent();
+      // if(!this.parentListArray) {
+      // }
     }
     this.currentTab = status;
   }

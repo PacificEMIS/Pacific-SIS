@@ -224,7 +224,10 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
           this.weekDaysList = this.calendarDataViewModel ? this.calendarDataViewModel?.days?.split('')?.map(item => +item) : [];
           this.isPreviousButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.startDate));
           this.isNextButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.endDate));
-          this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
+          // if (res?.blockListForView.length> 0 && !!res?.blockListForView?.filter(item => item.blockId === 1)[0]) {
+          //   this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
+          // }
+          this.periodList = res?.blockListForView.length > 0 ? res?.blockListForView?.[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
           this.dayWithCourseList = res.dayWithCourseList.length ? this.modifyDataSet(res) : null;
           !this.dayWithCourseList ? this.modifyHolidayList() : '';
         } else {
@@ -232,7 +235,10 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
           this.weekDaysList = this.calendarDataViewModel ? this.calendarDataViewModel?.days?.split('')?.map(item => +item) : [];
           this.isPreviousButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.startDate));
           this.isNextButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.endDate));
-          this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
+          // if (res?.blockListForView.length> 0 && !!res?.blockListForView?.filter(item => item.blockId === 1)[0]) {
+          //   this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
+          // }
+          this.periodList = res?.blockListForView.length > 0 ? res?.blockListForView?.[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
           this.dayWithCourseList = res.dayWithCourseList.length ? this.modifyDataSet(res) : null;
           !this.dayWithCourseList ? this.modifyHolidayList() : '';
         }
@@ -251,15 +257,17 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
             if (course?.staffListModels?.length) {
               course?.staffListModels?.map(staff => {
                 staff.modiFiedcourseSectionListModels = [];
-                this.periodList.map(item => staff.modiFiedcourseSectionListModels?.push({ courseSectionName: '' }));
-                if (staff?.courseSectionListModels?.length) {
-                  staff?.courseSectionListModels?.map(courseSection => {
-                    this.periodList.map((period, index) => {
-                      if (period.periodId === courseSection.periodId) {
-                        staff.modiFiedcourseSectionListModels[index].courseSectionName = staff.modiFiedcourseSectionListModels[index].courseSectionName ? staff.modiFiedcourseSectionListModels[index].courseSectionName + ", " + courseSection.courseSectionName : courseSection.courseSectionName;
-                      }
+                if (this.periodList.length > 0) {
+                  this.periodList.map(item => staff.modiFiedcourseSectionListModels?.push({ courseSectionName: '' }));
+                  if (staff?.courseSectionListModels?.length) {
+                    staff?.courseSectionListModels?.map(courseSection => {
+                      this.periodList.map((period, index) => {
+                        if (period.periodId === courseSection.periodId) {
+                          staff.modiFiedcourseSectionListModels[index].courseSectionName = staff.modiFiedcourseSectionListModels[index].courseSectionName ? staff.modiFiedcourseSectionListModels[index].courseSectionName + ", " + courseSection.courseSectionName : courseSection.courseSectionName;
+                        }
+                      });
                     });
-                  });
+                  }
                 }
               });
             }

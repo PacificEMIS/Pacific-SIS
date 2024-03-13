@@ -185,6 +185,7 @@ export class CourseSection {
     public seats: number;
     public allowStudentConflict: boolean;
     public allowTeacherConflict: boolean;
+    public allowRoomConflict: boolean;
     public isWeightedCourse: boolean;
     public affectsClassRank: boolean;
     public affectsHonorRoll: boolean;

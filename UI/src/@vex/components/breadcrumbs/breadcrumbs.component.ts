@@ -45,6 +45,30 @@ export class BreadcrumbsComponent implements OnInit {
   ngOnInit() {
     this.membershipType = this.defaultValuesService.getUserMembershipType();
     this.schoolCount = parseInt(JSON.parse(localStorage.getItem("schoolCount")))
-    this.path = this.schoolCount > 0 ? ['/school/schoolinfo'] : ['/school/schoolinfo/generalinfo']
+    // this.path = this.schoolCount > 0 ? ['/school/schoolinfo'] : ['/school/schoolinfo/generalinfo']
+    if (this.crumbs.includes('staff')) {
+      if (this.membershipType === this.profiles.SuperAdmin || this.membershipType === this.profiles.SchoolAdmin || this.membershipType === this.profiles.AdminAssitant)
+        this.path = ['/school/staff']
+      else
+        this.path = ['/school/staff/staff-generalinfo']
+    }
+    else if (this.crumbs.includes('school')) {
+      this.path = this.schoolCount > 1 ? ['/school/schoolinfo'] : ['/school/schoolinfo/generalinfo'];
+    }
+    else if (this.crumbs.includes('schoolInfo')) {
+      this.path = ['/school/schoolinfo/generalinfo'];
+    }
+    else if (this.crumbs.includes('students')) {
+      if (this.membershipType === this.profiles.Student)
+        this.path = ['/school/students/student-generalinfo'];
+      else
+        this.path = ['/school/students'];
+    }
+    else if (this.crumbs.includes('reports')) {
+      this.path = ['/school/reports'];
+    }
+    else if (this.crumbs.includes('settings')) {
+      this.path = ['/school/settings'];
+    }
   }
 }

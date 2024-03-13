@@ -211,7 +211,7 @@ export class AverageAttendanceByDayComponent implements OnInit, AfterViewInit {
         this.snackbar.open(this.averageAttendanceByDay._message, '', {
           duration: 10000
         });
-        this.averageAttendanceByDayTable = new MatTableDataSource([this.averageAttendanceByDay.averageDailyAttendanceReport])
+        this.averageAttendanceByDayTable = new MatTableDataSource([])
         this.totalCount = 0;
       } else {
         this.isVisible = true;
