@@ -29,6 +29,7 @@ export class TeacherScheduleService {
   
   addStaffCourseSectionSchedule(teacherSchedule: StaffScheduleViewModel){
     teacherSchedule = this.defaultValuesService.getAllMandatoryVariable(teacherSchedule);
+    teacherSchedule.createdBy = this.defaultValuesService.getUserGuidId();
     let apiurl = this.apiUrl + teacherSchedule._tenantName + "/StaffSchedule/addStaffCourseSectionSchedule";
     return this.http.post<StaffScheduleViewModel>(apiurl, teacherSchedule,this.httpOptions);
   }
