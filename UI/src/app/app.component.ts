@@ -659,7 +659,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   setCOnfigAndStartTimer() {
     this.userIdle.setConfigValues({
-      idle: 20 * 60,
+      idle: 23 * 20 * 60,
       timeout: 0,
       ping: this.tokenEndTime
     });
