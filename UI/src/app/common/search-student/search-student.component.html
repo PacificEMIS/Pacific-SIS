@@ -57,6 +57,18 @@
                             <input [(ngModel)]="studentMasterSearchModel.rollNumber" name="rollNumber" matInput>
                         </mat-form-field>
                     </li>
+                    <li>
+                        <mat-form-field appearance="outline" color="primary">
+                            <mat-label>{{'districtID' | translate}}</mat-label>
+                            <input [(ngModel)]="studentMasterSearchModel.districtId" name="districtId" matInput>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field appearance="outline" color="primary">
+                            <mat-label>{{'stateID' | translate}}</mat-label>
+                            <input [(ngModel)]="studentMasterSearchModel.stateId" name="stateId" matInput>
+                        </mat-form-field>
+                    </li>
                 </ul>
 
             </mat-expansion-panel>
@@ -139,6 +151,16 @@
                                 <mat-option></mat-option>
                                 <mat-option *ngFor="let enrollment of enrollmentList" [value]="enrollment.title">
                                     {{enrollment.title}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field appearance="outline" color="primary">
+                            <mat-label>{{'gradeLevel' | translate}}</mat-label>
+                            <mat-select name="gradeId" [(ngModel)]="studentMasterSearchModel.gradeId">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let gradeLevel of this.getAllGradeLevelsModel.tableGradelevelList" value="{{gradeLevel.gradeId}}">
+                                    {{gradeLevel.title}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </li>
