@@ -46,6 +46,7 @@ import { LoaderService } from '../../../../services/loader.service';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 @Component({
   selector: 'vex-edit-notice',
@@ -78,6 +79,7 @@ export class EditNoticeComponent implements OnInit {
   loading: boolean = false;
   schoolVisibility = false;
   profileError: boolean;
+  profiles = ProfilesTypes;
   @ViewChild('scrollBottom') private scrollBottom: ElementRef;
 
   constructor(
@@ -88,7 +90,7 @@ export class EditNoticeComponent implements OnInit {
               public translateService: TranslateService, private snackbar: MatSnackBar,
               private commonFunction: SharedFunction,
               private loaderService: LoaderService,
-              private defaultValuesService: DefaultValuesService,
+              public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
     private el: ElementRef
     ) {
