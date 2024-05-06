@@ -50,6 +50,7 @@ import { CryptoService } from '../../../../services/Crypto.service';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 
 
 @Component({
@@ -96,6 +97,7 @@ export class AddEventComponent implements OnInit {
   icDone = icDone;
   form: FormGroup;
   permissions: Permissions;
+  profiles = ProfilesTypes
   constructor(
     private dialog: MatDialog,
     private commonFunction: SharedFunction,
