@@ -102,15 +102,15 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'districtID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="studentAddModel.studentMaster.districtId"
-                                name="districtId" matInput>
+                            <input [(ngModel)]="studentAddModel.studentMaster.districtId"
+                                name="districtId" matInput maxlength="50">
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="studentAddModel.studentMaster.stateId" name="stateId"
-                                matInput>
+                            <input [(ngModel)]="studentAddModel.studentMaster.stateId" name="stateId"
+                                matInput maxlength="50">
                         </mat-form-field>
                     </li>
                     <li>
