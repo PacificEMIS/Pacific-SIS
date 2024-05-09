@@ -85,15 +85,15 @@
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'districtID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.districtId" name="districtId" [disabled]="isReadOnly"
-                                matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.districtId" name="districtId" [disabled]="isReadOnly"
+                                matInput maxlength="50">
                         </mat-form-field>
                     </li>
                     <li>
                         <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
                             <mat-label>{{'stateID'|translate}}</mat-label>
-                            <input type="number" [(ngModel)]="staffAddModel.staffMaster.stateId" name="stateId" [disabled]="isReadOnly"
-                                matInput>
+                            <input [(ngModel)]="staffAddModel.staffMaster.stateId" name="stateId" [disabled]="isReadOnly"
+                                matInput maxlength="50">
                         </mat-form-field>
                     </li>
                     <li>
