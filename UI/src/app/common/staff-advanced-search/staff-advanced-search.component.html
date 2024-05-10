@@ -380,7 +380,7 @@
         </mat-accordion>
         <div class="px-6 py-4">
             <mat-slide-toggle color="primary" class="mr-5" (change)="searchAllSchools($event)" [checked]="searchAllSchool" *ngIf="parentComponent !== 'staff_advanced_report'">{{'searchAllSchools' | translate}}</mat-slide-toggle>
-            <mat-slide-toggle color="primary" (change)="includeInactiveStaff($event)" [checked]="inactiveStaff" *ngIf="parentComponent !== 'takeAttendence'">
+            <mat-slide-toggle color="primary" (change)="includeInactiveStaff($event)" [checked]="inactiveStaff">
                 {{'includeInactiveStaff' | translate}}</mat-slide-toggle>
         </div>
     </div>

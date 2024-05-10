@@ -171,6 +171,7 @@ export class GetAllStaffModel {
         this.filterParams = [];
         this._failure = false;
         this._message = "";
+        this.includeInactive = false;
     }
 }
 
