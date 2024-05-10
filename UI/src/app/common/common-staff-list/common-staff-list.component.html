@@ -11,7 +11,7 @@
                 </button>
                 <a (click)="showAdvanceSearch()" [class.disabled]="totalCount == null"
                     [class.text-gray-light]="totalCount == null" [class.text-primary]="totalCount != null"
-                    class=" cursor-pointer ml-3" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence'">
+                    class=" cursor-pointer ml-3" *ngIf="parentComponent === 'staffInfo' || parentComponent === 'takeAttendence' || parentComponent === 'gradebookGrades' || parentComponent === 'inputEffortGrade' || parentComponent === 'inputFinalGrade' || parentComponent === 'missingAttendance'">
                     <mat-icon aria-hidden="false" class="md:mr-2 align-middle">tune</mat-icon><span
                         class="hidden md:inline-block">{{'advanceSearch'
                         | translate}}</span>
