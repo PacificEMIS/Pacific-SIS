@@ -131,6 +131,8 @@ namespace opensis.data.Repository
                             //userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
                             userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName ?? "";
                             userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                            userMaster.CreatedBy = staffAddViewModel.staffMaster.CreatedBy;
+                            userMaster.CreatedOn = DateTime.UtcNow;
 
                             this.context?.UserMaster.Add(userMaster);
                             this.context?.SaveChanges();
@@ -780,8 +782,9 @@ namespace opensis.data.Repository
                                                 userMaster.PasswordHash = passwordHash;
                                                 //userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName;
                                                 userMaster.Name = staffAddViewModel.staffMaster.FirstGivenName != null ? staffAddViewModel.staffMaster.FirstGivenName : "";
-                                                userMaster.UpdatedOn = DateTime.UtcNow;
                                                 userMaster.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                                userMaster.CreatedBy = staffAddViewModel.staffMaster.UpdatedBy;
+                                                userMaster.CreatedOn = DateTime.UtcNow;
 
                                                 this.context?.UserMaster.Add(userMaster);
                                                 this.context?.SaveChanges();
