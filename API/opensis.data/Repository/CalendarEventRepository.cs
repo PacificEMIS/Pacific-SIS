@@ -115,10 +115,23 @@ namespace opensis.data.Repository
         {
             try
             {
-                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/ && x.EventId == calendarEvent.SchoolCalendarEvent.EventId);
-
-                if (calendarEventRepository!=null)
+                if (calendarEvent.ProfileType == null || calendarEvent.ProfileType == "")
                 {
+                    calendarEvent._failure = true;
+                    calendarEvent._message = "Please pass profile type";
+
+                    return calendarEvent;
+                }
+
+                var calendarEventRepository = this.context?.CalendarEvents.FirstOrDefault(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId && x.EventId == calendarEvent.SchoolCalendarEvent.EventId);
+
+                if (calendarEventRepository != null)
+                {
+                    if (calendarEvent.ProfileType != null && calendarEvent.ProfileType.ToLower() != "Super Administrator")
+                    {
+                        calendarEvent.SchoolCalendarEvent!.ApplicableToAllSchool = calendarEventRepository.ApplicableToAllSchool;
+                        calendarEvent.SchoolCalendarEvent!.SystemWideEvent = calendarEventRepository.SystemWideEvent;
+                    }
                     calendarEvent.SchoolCalendarEvent!.AcademicYear = calendarEventRepository.AcademicYear;
                     calendarEvent.SchoolCalendarEvent!.UpdatedOn = DateTime.Now;
                     calendarEvent.SchoolCalendarEvent.CreatedBy = calendarEventRepository.CreatedBy;
@@ -128,20 +141,26 @@ namespace opensis.data.Repository
                     context?.Entry(calendarEventRepository).CurrentValues.SetValues(calendarEvent.SchoolCalendarEvent);
                     this.context?.SaveChanges();
                     calendarEvent._failure = false;
-                    calendarEvent._message = "Calendar Event Updated Successfully";
+                    if (calendarEvent.SchoolCalendarEvent.IsHoliday == true)
+                    {
+                        calendarEvent._message = "Calendar holiday updated successfully";
+                    }
+                    else
+                    {
+                        calendarEvent._message = "Calendar event updated successfully";
+                    }
                 }
                 else
                 {
                     calendarEvent.SchoolCalendarEvent = null;
                     calendarEvent._failure = false;
                     calendarEvent._message = NORECORDFOUND;
-                }    
+                }
             }
             catch (Exception ex)
-            {                
+            {
                 calendarEvent._failure = true;
                 calendarEvent._message = ex.Message;
-                //return calendarEvent;
             }
             return calendarEvent;
         }

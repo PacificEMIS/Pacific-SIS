@@ -32,5 +32,6 @@ namespace opensis.data.ViewModels.CalendarEvents
     public class CalendarEventAddViewModel : CommonFields
     {
         public opensis.data.Models.CalendarEvents? SchoolCalendarEvent { get; set; }
+        public string? ProfileType { get; set; }
     }
 }

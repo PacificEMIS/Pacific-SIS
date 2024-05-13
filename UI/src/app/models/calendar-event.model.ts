@@ -21,7 +21,7 @@ export class CalendarEventModel {
     public systemWideEvent :boolean;
     public startDate :string;
     public endDate : string;
-   
+    public profileType: string;
     constructor() {
       
     }

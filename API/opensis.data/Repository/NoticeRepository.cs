@@ -167,14 +167,26 @@ namespace opensis.data.Repository
             {
                 return notice;
             }
+            if (notice.ProfileType == null || notice.ProfileType == "")
+            {
+                notice._failure = true;
+                notice._message = "Please pass profile type";
+
+                return notice;
+            }
             try
             {
                 var noticeRepository = this.context?.Notice.FirstOrDefault(x => x.TenantId == notice.Notice.TenantId && x.SchoolId == notice.Notice.SchoolId && x.NoticeId == notice.Notice.NoticeId);
 
                 if (noticeRepository != null)
                 {
-                    if(notice.Notice != null)
+                    if (notice.Notice != null)
                     {
+                        if (notice.ProfileType != null && notice.ProfileType.ToLower() != "Super Administrator")
+                        {
+                            notice.Notice.VisibleToAllSchool = noticeRepository.VisibleToAllSchool;
+                        }
+
                         notice.Notice.Isactive = true;
                         notice.Notice.CreatedBy = noticeRepository.CreatedBy;
                         notice.Notice.CreatedOn = noticeRepository.CreatedOn;
@@ -182,9 +194,9 @@ namespace opensis.data.Repository
                         this.context?.Entry(noticeRepository).CurrentValues.SetValues(notice.Notice);
                         this.context?.SaveChanges();
                         notice._failure = false;
-                        notice._message = "Notice Updated Successfully";
+                        notice._message = "Notice updated successfully";
                     }
-                    
+
                     return notice;
                 }
                 else

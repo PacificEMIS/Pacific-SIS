@@ -15,6 +15,7 @@ export class NoticeModel {
     public createdOn: string;
     public updatedOn: string;
     public updatedBy: string;
+    public profileType: string;
     constructor(){
         this.visibleToAllSchool = false;
     }

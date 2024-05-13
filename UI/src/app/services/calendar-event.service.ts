@@ -48,6 +48,7 @@ export class CalendarEventService {
         calendarEvent.schoolCalendarEvent.schoolId = this.defaultValuesService.getSchoolID();
         calendarEvent.schoolCalendarEvent.tenantId = this.defaultValuesService.getTenantID();
         calendarEvent.schoolCalendarEvent.updatedBy = this.defaultValuesService.getUserGuidId();
+        calendarEvent.schoolCalendarEvent.profileType = this.defaultValuesService.getUserMembershipType();
         let apiurl = this.apiUrl + calendarEvent._tenantName + "/CalendarEvent/updateCalendarEvent";
         return this.http.put<CalendarEventAddViewModel>(apiurl, calendarEvent,this.httpOptions)
     }

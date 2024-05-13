@@ -40,6 +40,8 @@
                     <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                         <mat-icon>search</mat-icon>
                     </button>
+                    <mat-slide-toggle color="primary" (change)="includeInactiveStaff($event)" [checked]="inactiveStaff" class="ml-4">
+                        {{'includeInactiveStaff' | translate}}</mat-slide-toggle>
                 </div>
             </div>
             <hr class="-mx-4 block md:hidden" />

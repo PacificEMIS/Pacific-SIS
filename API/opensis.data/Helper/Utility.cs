@@ -405,9 +405,15 @@ namespace opensis.data.Helper
                 int index = 0;
                 foreach (var key in keyRow)
                 {
-                    string keyValue = key.Replace("}", "").Split('=')[1].Trim();
-                    items.Insert(index, keyValue);
-                    index++;
+                    string keyValue = string.Empty;
+                    //string? keyValue = key.Replace("}", "").Split('=')[1].Trim();
+                    var keyValues = key.Replace("}", "").Split('=');
+                    if (keyValues.Length == 2)
+                    {
+                        keyValue = keyValues[1].Trim();
+                        items.Insert(index, keyValue);
+                        index++;
+                    }
                 }
                 dataRow.ItemArray = items.ToArray();
                 table.Rows.Add(dataRow);

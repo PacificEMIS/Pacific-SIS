@@ -82,3 +82,46 @@ export class AbsenceStudentModel {
     adminComment: string;
     teacherComment: string;
 }
+
+export class GetStudentAbsenceReportForSearch {
+    schoolId: number;
+    pageSize: number;
+    pageNumber: number;
+    studentId: number;
+    markingPeriodStartDate: string;
+    markingPeriodEndDate: string;
+    academicYear: string;
+    periodId: number|string;
+    courseSectionId: number;
+    membershipType: string;
+    _tenantName: string;
+    _userName: string;
+    _token: string;
+    filterParams: filterParams[];
+    customFieldFilter: customFieldFilter[];
+    sortingModel: sortingModel;
+    constructor() {
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.periodId='';
+        this.sortingModel = new sortingModel();
+    }
+}
+
+class sortingModel {
+    sortColumn: string;
+    sortDirection: string;
+    constructor() {
+        this.sortColumn = 'lastFamilyName';
+        this.sortDirection = 'asc';
+    }
+}
+
+export class customFieldFilter {
+    customFieldTitle: string;
+    customFieldValue: string;
+    constructor() {
+      this.customFieldTitle = null;
+      this.customFieldValue = null;
+    }
+  }

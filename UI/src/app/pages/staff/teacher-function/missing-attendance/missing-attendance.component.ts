@@ -80,6 +80,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
   staffList: MatTableDataSource<any>;
   pageNumber: number;
   searchCtrl: FormControl;
+  inactiveStaff: boolean = false;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
@@ -321,6 +322,19 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
           }
         });
     }
+  }
+  
+  includeInactiveStaff(event) {
+    if (event.checked) {
+      this.inactiveStaff = true;
+      this.getAllStaffModel.includeInactive = true;
+    }
+    else {
+      this.inactiveStaff = false;
+      this.getAllStaffModel.includeInactive = false;
+    }
+    // this.staffListByDateRangeSubject$.next();
+    this.callWithoutFilterValue()
   }
 
   exportStaffListToExcel(){

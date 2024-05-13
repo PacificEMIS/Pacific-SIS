@@ -74,6 +74,7 @@ export class CommonStaffListComponent implements OnInit {
   toggleValues: any = null;
   moduleIdentifier = ModuleIdentifier;
   createMode = SchoolCreate;
+  inactiveStaff = false;
   columns = [
     { label: 'name', property: 'lastFamilyName', type: 'text', visible: true },
     { label: 'staffId', property: 'staffInternalId', type: 'text', visible: true },
@@ -185,7 +186,7 @@ export class CommonStaffListComponent implements OnInit {
     if (this.getAllStaff.sortingModel?.sortColumn == "") {
       this.getAllStaff.sortingModel = null
     }
-    if (this.parentComponent === "inputEffortGrage")
+    if (this.parentComponent === "inputEffortGrade")
       this.getAllStaff.isHomeRoomTeacher = true;
     this.staffService.getAllStaffList(this.getAllStaff).subscribe(res => {
       if (res._failure) {
@@ -257,11 +258,11 @@ export class CommonStaffListComponent implements OnInit {
       if (element.status === "active") {
         if (!this.permissions?.edit) return;
         const staffFullName = `${element.firstGivenName} ${element.middleName ? element.middleName + ' ' : ''}${element.lastFamilyName}`;
-        if(this.parentComponent === "inputFinalGrage" || this.parentComponent === "inputEffortGrage" || this.parentComponent === "gradebookGrades")
+        if(this.parentComponent === "inputFinalGrade" || this.parentComponent === "inputEffortGrade" || this.parentComponent === "gradebookGrades")
           this.finalGradeService.setStaffDetails({ staffId: element.staffId, staffFullName });
-        if (this.parentComponent === "inputFinalGrage")
+        if (this.parentComponent === "inputFinalGrade")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-final-grade', 'final-grade-details']);
-        else if (this.parentComponent === "inputEffortGrage")
+        else if (this.parentComponent === "inputEffortGrade")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'input-effort-grade', 'effort-grade-details']);
         else if (this.parentComponent === "gradebookGrades")
           this.router.navigate(['/school', 'staff', 'teacher-functions', 'gradebook-grades', 'gradebook-grade-list']);
@@ -341,6 +342,19 @@ export class CommonStaffListComponent implements OnInit {
       this.getAllStaff.sortingModel.sortDirection = this.sort.direction;
     }
     this.callStaffList();
+  }
+
+  includeInactiveStaff(event) {
+    if (event.checked) {
+      this.inactiveStaff = true;
+      this.defaultValuesService.sendIncludeInactiveFlag(true);
+      this.callStaffList();
+    }
+    else {
+      this.inactiveStaff = false;
+      this.defaultValuesService.sendIncludeInactiveFlag(false);
+      this.callStaffList();
+    }
   }
 
   showAdvanceSearch() {

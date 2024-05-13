@@ -46,7 +46,7 @@
                         type="number" min="1" matInput>
                 </mat-form-field>
             </div>
-            <div class="flex flex-1 mx-6 md:w-1/2 md:mt-4">
+            <div class="flex flex-1 mx-6 md:w-1/2 md:mt-4" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
                 <mat-checkbox [checked]="schoolVisibility" (change)="schoolVisibilityCheck($event) " color="primary">{{'visibleToAllSchool' | translate}}</mat-checkbox>
             </div>
         </div>

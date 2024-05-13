@@ -1,7 +1,25 @@
 <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
 <div class="card">
     <div class="px-6 py-4">
-        <ul class="grid grid-cols-1 md:grid-cols-4 col-gap-6 row-gap-2 px-6 py-4">
+        <ul class="grid grid-cols-1 md:grid-cols-5 col-gap-6 row-gap-2 items-center">
+            <li *ngIf="membershipType != profiles.Parent || membershipType != profiles.Student">
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "course" | translate }}</mat-label>
+                    <mat-select [(ngModel)]="course" (selectionChange)="courseChanged($event)">
+                        <mat-option *ngFor="let course of courses" [value]="course.courseId">{{course.courseTitle}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </li>
+            <li *ngIf="membershipType != profiles.Parent || membershipType != profiles.Student">
+                <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                    <mat-label>{{ "courseSection" | translate }}</mat-label>
+                    <mat-select [(ngModel)]="courseSection">
+                        <mat-option *ngFor="let courseSection of courseSections" [value]="courseSection.courseSectionId">{{courseSection.courseSectionName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </li>
             <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "showReportBy" | translate }}</mat-label>
@@ -32,27 +50,29 @@
                     </mat-form-field>
                 </li>
             </ng-container>
-            <li>
+            <!-- <li>
                 <mat-form-field class="w-full m-0" appearance="outline" color="primary">
                     <mat-label>{{ "period" | translate }}</mat-label>
                     <mat-select name="period" [(ngModel)]="getStudentAbsenceReportModel.periodId" (selectionChange)="selectedPeriod($event)">
-                        <mat-option value="daily">{{'daily'|translate}}</mat-option>
-                        <mat-option *ngFor="let period of periodList" [value]="period.periodId">{{period.periodTitle}}
-                        </mat-option>
+                        <mat-option value="">{{'daily'|translate}}</mat-option>
+                        <ng-container *ngFor="let period of periodList">
+                        <mat-option  [value]="period.periodId" *ngIf="period.calculateAttendance">{{period.periodTitle}} ({{ period.periodShortName }})</mat-option>
+                        </ng-container>
                     </mat-select>
                 </mat-form-field>
-            </li>
-            <li>
+            </li> -->
+            <li class="flex md:block md:flex-none justify-end md:justify-start mt-1 md:mt-0">
                 <button mat-raised-button color="primary" (click)="onSearch()">{{'search' | translate }}</button>
             </li>
         </ul>
     </div>
     <mat-divider></mat-divider>
-    <div *ngIf="totalCount>0" class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
+    <ng-container *ngIf="isVisible">
+    <div class="bg-white px-6 md:h-14 border-b sticky left-0" fxLayout="row" fxLayoutAlign="start center">
         <div class="md:flex w-full justify-between items-center">
             <div class="py-2" fxLayout="row" fxLayoutAlign="start center">
-                <div class="md:flex w-full items-center">
-                    <input class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="Search..."
+                <div class="flex w-full items-center">
+                    <input class="py-3 border-0 outline-none w-full bg-transparent table-search" placeholder="{{'search' | translate}}..."
                         type="search" [formControl]="searchCtrl">
                     <img *ngIf="loading" src="assets/img/icons/loading-process.svg" class="animate-spin w-5"
                         alt="Loader icon">
@@ -67,21 +87,23 @@
                     </a>
                 </div>
             </div>
-            <hr class="-mx-4 block md:hidden" />
-            <div class="py-2 md:pt-2 items-center">
-                <a class="cursor-pointer inline-block align-middle ml-4" (click)="exportToExcel()" matTooltip="{{'exportToExcel' | translate}}">
+            <hr class="-mx-6 block md:hidden" />
+            <div class="py-3 md:py-0 flex justify-end items-center">
+                <a class="cursor-pointer inline-block align-middle md:ml-4" (click)="exportToExcel()" matTooltip="{{'exportToExcel' | translate}}">
                     <img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="24">
                 </a>
             </div>
         </div>
     </div>
-    <div *ngIf="totalCount>0" class="overflow-x-auto overflow-y-hidden border-t">
+    <div class="overflow-x-auto overflow-y-hidden border-t">
         <table mat-table [dataSource]="studentLists" class="mat-elevation-z8">
 
             <ng-container matColumnDef="studentName">
                 <th mat-header-cell *matHeaderCellDef>{{'studentName' | translate }}</th>
                 <td mat-cell *matCellDef="let element" class="text-primary cursor-pointer"
-                    (click)="viewAttendanceSummaryDetails(element)"> {{element.firstGivenName + ' ' + element.lastFamilyName }}
+                    (click)="viewAttendanceSummaryDetails(element)"> 
+                    {{element.firstGivenName + ' ' + element.lastFamilyName }}
+                    <!-- {{element | UserPreferredNameFormatPipe}} -->
                 </td>
             </ng-container>
 
@@ -108,15 +130,16 @@
                 <td mat-cell *matCellDef="let element"> {{element.homePhone?element.homePhone:'-' }} </td>
             </ng-container>
 
-            <ng-container matColumnDef="absent">
-                <th mat-header-cell *matHeaderCellDef>{{'absent' | translate }}</th>
-                <td mat-cell *matCellDef="let element"> {{element.absentCount}} </td>
+            <ng-container *ngFor="let att of attendanceListForColumn; let i = index" matColumnDef="{{att.shortName}}">
+                <th mat-header-cell *matHeaderCellDef><span class="cursor-default" matTooltip="{{att.title}}">{{att.shortName}}</span></th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="rounded px-3 py-1 inline-block text-white" [ngClass]="element.attendanceCodes[i].attendanceCount>0?element.attendanceCodes[i].attendanceStateCode==='Present'?'bg-green':element.attendanceCodes[i].attendanceStateCode==='Absent'?'bg-red':'bg-orange':'bg-gray-light'" matTooltip="{{element.attendanceCodes[i].attendanceTitle}}">
+                        <span class="cursor-default">{{element.attendanceCodes[i].attendanceCount}}</span>
+                        <!-- <span class="cursor-default">10</span> -->
+                    </span>
+                </td>
             </ng-container>
 
-            <ng-container matColumnDef="halfDay">
-                <th mat-header-cell *matHeaderCellDef>{{'halfDay' | translate }}</th>
-                <td mat-cell *matCellDef="let element"> {{element.halfDayCount}} </td>
-            </ng-container>
             <ng-container matColumnDef="noData">
                 <td mat-footer-cell *matFooterCellDef colspan="7">
                     {{studentLists?.length == 0 ?('noData' | translate):'' }}
@@ -125,15 +148,16 @@
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount >0">
+            <tr mat-footer-row *matFooterRowDef="['noData']" [class.hide]="totalCount !== 0 && totalCount !== null">
             </tr>
 
         </table>
     </div>
-    <mat-paginator *ngIf="totalCount>0" [length]="totalCount" [pageSize]="pageSize"
-        aria-label="Select page" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons
+    <mat-paginator [class.hide]="totalCount === 0 || totalCount === null" [length]="totalCount" [pageSize]="pageSize"
+        aria-label="Select page" [pageSizeOptions]="[10, 20, 30, 40, 100]" showFirstLastButtons
         (page)='getPageEvent($event)'>
     </mat-paginator>
+    </ng-container>
 </div>
 
 <div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">

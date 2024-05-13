@@ -130,9 +130,9 @@
                             </li>
 
                         </ul>
-                        <div class="mb-4 mt-4">
+                        <div class="mb-4 mt-4" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
                             <mat-slide-toggle color="primary" formControlName="systemWideEvent">
-                                {{'showEventsSystemWide' | translate}}
+                                {{'applyToAllSchools' | translate}}
                             </mat-slide-toggle>
                         </div>
 
@@ -188,7 +188,7 @@
                             <mat-label>{{'notes' | translate}}</mat-label>
                             <textarea formControlName="notes" name="notes" cdkFocusInitial matInput></textarea>
                         </mat-form-field>
-                        <div class="my-2">
+                        <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
                             <mat-slide-toggle color="primary" formControlName="applicableToAllSchool">
                                 {{'applyToAllSchools' | translate}}
                             </mat-slide-toggle>
@@ -256,7 +256,7 @@
                         <mat-label>{{'notes' | translate}}</mat-label>
                         <textarea formControlName="notes" name="notes" cdkFocusInitial matInput></textarea>
                     </mat-form-field>
-                    <div class="my-2">
+                    <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
                         <mat-slide-toggle color="primary" formControlName="applicableToAllSchool">
                             {{'applyToAllSchools' | translate}}
                         </mat-slide-toggle>
@@ -341,7 +341,7 @@
                     </ul>
                     <div class="mb-4 mt-4">
                         <mat-slide-toggle color="primary" formControlName="systemWideEvent">
-                            {{'showEventsSystemWide' | translate}}
+                            {{'applyToAllSchools' | translate}}
                         </mat-slide-toggle>
                     </div>
 

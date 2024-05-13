@@ -34,6 +34,6 @@ namespace opensis.data.ViewModels.Notice
     public class NoticeAddViewModel : CommonFields
     {
         public opensis.data.Models.Notice? Notice { get; set; }
-
+        public string? ProfileType { get; set; }
     }
 }
