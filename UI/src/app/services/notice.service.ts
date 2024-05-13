@@ -36,7 +36,7 @@ export class NoticeService {
     notice = this.defaultValuesService.getAllMandatoryVariable(notice);
     notice.notice.tenantId = this.defaultValuesService.getTenantID();
     notice.notice.updatedBy = this.defaultValuesService.getUserGuidId();
-    notice.notice.profileType = this.defaultValuesService.getUserMembershipType();
+    notice.profileType = this.defaultValuesService.getUserMembershipType();
     let apiurl = this.apiUrl + notice._tenantName + '/Notice/updateNotice';
     return this.http.post<NoticeAddViewModel>(apiurl, notice,this.httpOptions);
   }

@@ -330,7 +330,7 @@
                             (click)="updateCheck($event)" [hidden]="membercount==0">{{'selectAll' | translate}}
                         </mat-checkbox>
                     </div>
-                    <ul class="mt-3 md:grid md:grid-cols-3 md:col-gap-10 md:row-gap-3">
+                    <ul class="mt-3 md:grid md:grid-cols-2 md:col-gap-10 md:row-gap-3">
                         <li *ngFor="let member of getAllMembersList.getAllMemberList">
 
                             <mat-checkbox [checked]="memberArray.indexOf(member.membershipId) != -1"

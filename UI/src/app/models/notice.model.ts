@@ -15,7 +15,6 @@ export class NoticeModel {
     public createdOn: string;
     public updatedOn: string;
     public updatedBy: string;
-    public profileType: string;
     constructor(){
         this.visibleToAllSchool = false;
     }
@@ -23,6 +22,7 @@ export class NoticeModel {
 
 export class NoticeAddViewModel extends CommonField {
     public notice: NoticeModel;
+    public profileType: string;
     constructor() {
         super();
         this.notice = new NoticeModel();

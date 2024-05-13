@@ -20,8 +20,7 @@ export class CalendarEventModel {
     public applicableToAllSchool :boolean;
     public systemWideEvent :boolean;
     public startDate :string;
-    public endDate : string;
-    public profileType: string;
+    public endDate : string;  
     constructor() {
       
     }
@@ -29,6 +28,7 @@ export class CalendarEventModel {
 
 export class CalendarEventAddViewModel extends CommonField {
     public schoolCalendarEvent: CalendarEventModel;
+    public profileType: string;
     constructor() {
         super();
         this.schoolCalendarEvent = new CalendarEventModel();
