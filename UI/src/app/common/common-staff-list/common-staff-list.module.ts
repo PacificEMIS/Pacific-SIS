@@ -18,6 +18,7 @@ import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.mo
 import { StaffAdvancedSearchModule } from '../staff-advanced-search/staff-advanced-search.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 
@@ -43,6 +44,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     StaffAdvancedSearchModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatSlideToggleModule
   ],
   exports:[CommonStaffListComponent]
 })

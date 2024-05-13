@@ -145,6 +145,8 @@ namespace opensis.data.Repository
                                 userMaster.PasswordHash = passwordHash;
                                 userMaster.Name = parentInfoAddViewModel.parentInfo.Firstname!;
                                 userMaster.IsActive = parentInfoAddViewModel.parentInfo.IsPortalUser;
+                                userMaster.CreatedBy = parentInfoAddViewModel.parentInfo.CreatedBy;
+                                userMaster.CreatedOn = DateTime.UtcNow;
 
                                 parentInfoAddViewModel.parentInfo.LoginEmail = parentInfoAddViewModel.parentInfo.LoginEmail;
 
@@ -404,8 +406,9 @@ namespace opensis.data.Repository
                                     userMaster.EmailAddress = parentInfoAddViewModel.parentInfo.LoginEmail;
                                     userMaster.PasswordHash = passwordHash;
                                     userMaster.Name = parentInfoAddViewModel.parentInfo.Firstname ?? "";
-                                    userMaster.UpdatedOn = DateTime.UtcNow;
                                     userMaster.IsActive = parentInfoAddViewModel.parentInfo.IsPortalUser;
+                                    userMaster.CreatedBy = parentInfoAddViewModel.parentInfo.UpdatedBy;
+                                    userMaster.CreatedOn = DateTime.UtcNow;
 
                                     this.context?.UserMaster.Add(userMaster);
                                     this.context?.SaveChanges();
