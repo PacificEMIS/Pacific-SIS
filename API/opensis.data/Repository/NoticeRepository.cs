@@ -182,7 +182,7 @@ namespace opensis.data.Repository
                 {
                     if (notice.Notice != null)
                     {
-                        if (notice.ProfileType != null && notice.ProfileType.ToLower() != "Super Administrator")
+                        if (notice.ProfileType != null && notice.ProfileType.ToLower() != "Super Administrator".ToLower())
                         {
                             notice.Notice.VisibleToAllSchool = noticeRepository.VisibleToAllSchool;
                         }
