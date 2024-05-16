@@ -127,7 +127,7 @@ namespace opensis.data.Repository
 
                 if (calendarEventRepository != null)
                 {
-                    if (calendarEvent.ProfileType != null && calendarEvent.ProfileType.ToLower() != "Super Administrator")
+                    if (calendarEvent.ProfileType != null && calendarEvent.ProfileType.ToLower() != "Super Administrator".ToLower())
                     {
                         calendarEvent.SchoolCalendarEvent!.ApplicableToAllSchool = calendarEventRepository.ApplicableToAllSchool;
                         calendarEvent.SchoolCalendarEvent!.SystemWideEvent = calendarEventRepository.SystemWideEvent;

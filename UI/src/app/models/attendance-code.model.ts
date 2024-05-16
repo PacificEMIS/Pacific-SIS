@@ -73,7 +73,24 @@ export class GetStudentAttendanceReport {
         this.pageSize = 10;
     }
 }
-
+export class GetStudentAttendanceReportExport {
+    schoolId:number;
+    pageSize: number;
+    pageNumber: number;
+    markingPeriodStartDate:string;
+    markingPeriodEndDate:string;
+    gradeLevel: string;
+    academicYear: number;
+    _tenantName: string;
+    _userName: string;
+    _token: string;
+    filterParams: filterParams[];
+    constructor() {
+        this.pageNumber = 1;
+        this.pageSize = 10;
+        this.gradeLevel = null;
+    }
+}
 export class AverageDailyAttendanceReportModel extends CommonField{
     tenantId:string;
     schoolId:number;
