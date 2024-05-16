@@ -26,7 +26,7 @@ All rights reserved.
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
-import { GetAllAttendanceCodeModel, GetStudentAttendanceReport } from 'src/app/models/attendance-code.model';
+import { GetAllAttendanceCodeModel, GetStudentAttendanceReport, GetStudentAttendanceReportExport } from 'src/app/models/attendance-code.model';
 import { SharedFunction } from 'src/app/pages/shared/shared-function';
 import { AttendanceCodeService } from 'src/app/services/attendance-code.service';
 import { MatPaginator } from "@angular/material/paginator";
@@ -42,6 +42,8 @@ import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { MarkingPeriodService } from 'src/app/services/marking-period.service';
 import { MarkingPeriodListModel } from 'src/app/models/marking-period.model';
+import { UserPreferredNameFormatPipe } from 'src/app/pages/shared-module/user-define-pipe/user-preferred-name-format.pipe';
+import { DatePipe } from '@angular/common';
 import moment from 'moment';
 
 export interface StudentListData {
@@ -61,7 +63,7 @@ export interface StudentListData {
 })
 export class AttendanceReportComponent implements OnInit {
   getStudentAttendanceReportModel: GetStudentAttendanceReport = new GetStudentAttendanceReport();
-
+  getStudentAttendanceReportExportModel: GetStudentAttendanceReportExport = new GetStudentAttendanceReportExport();
   displayedColumns: string[] = ['date', 'studentName', 'studentId', 'grade', 'periodAttendanceStatus'];
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   searchCtrl: FormControl;
@@ -101,6 +103,7 @@ export class AttendanceReportComponent implements OnInit {
     private gradeLevelService: GradeLevelService,
     private markingPeriodService: MarkingPeriodService,
     private excelService: ExcelService,
+    public datepipe: DatePipe
   ) {
     this.defaultValuesService.setReportCompoentTitle.next("Attendance Report");
     // translateService.use("en");
@@ -340,32 +343,45 @@ export class AttendanceReportComponent implements OnInit {
   }
 
   exportAccessLogListToExcel() {
-    this.getStudentAttendanceReportModel.pageNumber = 0
-    this.getStudentAttendanceReportModel.pageSize = 0
+    this.getStudentAttendanceReportExportModel.gradeLevel = this.getStudentAttendanceReportModel.gradeLevel;
+    this.getStudentAttendanceReportExportModel.filterParams = this.getStudentAttendanceReportModel.filterParams;
+    this.getStudentAttendanceReportExportModel.markingPeriodStartDate = this.getStudentAttendanceReportModel.markingPeriodStartDate;
+    this.getStudentAttendanceReportExportModel.markingPeriodEndDate = this.getStudentAttendanceReportModel.markingPeriodEndDate;
+    this.getStudentAttendanceReportExportModel.pageNumber = 0;
+    this.getStudentAttendanceReportExportModel.pageSize = 0;
     if (this.totalCount > 0) {
-      this.attendanceCodeService.getStudentAttendanceExcelReport(this.getStudentAttendanceReportModel).subscribe((res: any) => {
+      this.attendanceCodeService.getStudentAttendanceReport(this.getStudentAttendanceReportExportModel).subscribe((res: any) => {
         if (res) {
           if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
+            
             this.snackbar.open(res._message, '', {
               duration: 10000
             });
           }
           else {
-            if (res.studentAttendanceReportForExcel.length > 0) {
-              let object = {}, studentList = [];
-              res.studentAttendanceReportForExcel.map(item => {
-                for (let objectVal in item) {
-                  Object.assign(object, {
-                    [this.defaultValuesService.translateKey(objectVal)]: objectVal === "attendanceDate" ?
-                      this.commonFunction.formatDateYearAtLast(item[objectVal]) : item[objectVal] ? item[objectVal] : objectVal === "attendanceDate" ||
-                        objectVal === "studentName" || objectVal === "studentInternalId" || objectVal === "gradeLevelTitle" ? '-' : 'X'
-                  });
-                }
-                studentList.push(JSON.parse(JSON.stringify(object)));
+            if (res.studendAttendanceAdministrationList.length > 0) {
+              let exportList = [];
+              exportList = res.studendAttendanceAdministrationList.map((item) => {
+                if(res.blockPeriods?.length > 0){
+                  let periods = res.blockPeriods.sort((a, b) => a.periodSortOrder < b.periodSortOrder ? -1 : 1);
+                  let periodList = [];
+                  periods.forEach((i, index) => {
+                    // let periodAtt = item[i.periodTitle.toLowerCase()]?item[i.periodTitle.toLowerCase()]:'X'
+                    let periodAtt = this.decidePeriodAttendance(item.periodsName, i.periodTitle);
+                    periodList = {...periodList, [i.periodTitle]: periodAtt};
+                  });                 
 
-              })
-              this.excelService.exportAsExcelFile(studentList, 'Student_Attendance_Report');
+                  return {
+                    [this.defaultValuesService.translateKey('attendanceDate')]: this.datepipe.transform(item.attendanceDate, 'MMM d, y'),
+                    [this.defaultValuesService.translateKey('gradeLevel')]: item.gradeLevelTitle,
+                    [this.defaultValuesService.translateKey('studentName')]: UserPreferredNameFormatPipe.prototype.transform(item),
+                    [this.defaultValuesService.translateKey('studentId')]: item.studentId,
+                    ...periodList
+                  }
+                }
+              });
+
+              this.excelService.exportAsExcelFile(exportList, 'Student_Attendance_Report');
             }
           }
         }
@@ -377,10 +393,26 @@ export class AttendanceReportComponent implements OnInit {
       })
     }
   }
+  decidePeriodAttendance(periodList, periodTitle){
+    let periodListArray = periodList.split(',');
+    for(var i = 0; i < periodListArray.length; i++) {
+      periodListArray[i] = periodListArray[i].replace(/^\s*/, "").replace(/\s*$/, "");
 
+      let splitPeriod = periodListArray[i].split('|');
+      if(splitPeriod[0] === periodTitle){
+        if(splitPeriod[1]){
+          return splitPeriod[1];
+        } else {
+          return 'X';
+        }
+      }
+    }
+    return 'X';
+  }
   ngOnDestroy() {
     this.destroySubject$.next();
     this.destroySubject$.complete();
+    
   }
 
 }
