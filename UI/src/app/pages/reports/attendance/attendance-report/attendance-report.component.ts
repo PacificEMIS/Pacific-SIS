@@ -115,6 +115,8 @@ export class AttendanceReportComponent implements OnInit {
 
     this.selectOptions[1].startDate = moment().startOf('month').format('YYYY-MM-DD');
     this.selectOptions[1].endDate = moment().endOf('month').format('YYYY-MM-DD');
+    this.getStudentAttendanceReportModel.academicYear = this.defaultValuesService.getAcademicYear();
+    this.getStudentAttendanceReportExportModel.academicYear = this.defaultValuesService.getAcademicYear();
     this.selectedReportBy = this.defaultValuesService.getMarkingPeriodTitle();
     this.getMarkingPeriod();
     this.getAllGradeLevelList()
@@ -372,16 +374,18 @@ export class AttendanceReportComponent implements OnInit {
                   });                 
 
                   return {
-                    [this.defaultValuesService.translateKey('attendanceDate')]: this.datepipe.transform(item.attendanceDate, 'MMM d, y'),
-                    [this.defaultValuesService.translateKey('gradeLevel')]: item.gradeLevelTitle,
-                    [this.defaultValuesService.translateKey('studentName')]: UserPreferredNameFormatPipe.prototype.transform(item),
-                    [this.defaultValuesService.translateKey('studentId')]: item.studentId,
+                    [this.defaultValuesService.translateKey('attendanceDate')]: `${item.attendanceDate?this.datepipe.transform(item.attendanceDate, 'MMM d, y'):''}`,
+                    [this.defaultValuesService.translateKey('gradeLevel')]: `${item.gradeLevelTitle?item.gradeLevelTitle:''}`,
+                    [this.defaultValuesService.translateKey('studentName')]: `${UserPreferredNameFormatPipe.prototype.transform(item)}`,
+                    [this.defaultValuesService.translateKey('studentId')]: `${item.studentId?item.studentId:''}`,
                     ...periodList
                   }
                 }
               });
 
-              this.excelService.exportAsExcelFile(exportList, 'Student_Attendance_Report');
+              if(exportList.length > 0){
+                this.excelService.exportAsExcelFile(exportList, 'Student_Attendance_Report');
+              }
             }
           }
         }

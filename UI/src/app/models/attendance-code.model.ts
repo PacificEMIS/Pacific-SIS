@@ -64,6 +64,7 @@ export class GetStudentAttendanceReport {
     markingPeriodStartDate:string;
     markingPeriodEndDate:string;
     gradeLevel: string;
+    academicYear: number;
     _tenantName: string;
     _userName: string;
     _token: string;
