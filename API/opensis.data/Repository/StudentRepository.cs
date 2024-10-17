@@ -2640,7 +2640,7 @@ namespace opensis.data.Repository
             IQueryable<StudentMaster>? transactionIQ = null;
             try
             {
-                var studentDataList = this.context?.StudentMaster.Include(y => y.SchoolMaster).Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).ToList();
+                var studentDataList = this.context?.StudentMaster.Include(y => y.SchoolMaster).Include(z => z.StudentEnrollment).Where(x => (pageResult.SchoolId > 0) ? x.SchoolId == pageResult.SchoolId && x.TenantId == pageResult.TenantId && x.IsActive == false : x.TenantId == pageResult.TenantId && x.IsActive == false).ToList();
 
                 if (studentDataList?.Any() == true)
                 {
@@ -2650,9 +2650,12 @@ namespace opensis.data.Repository
                     {
                         if (!studentGuids.Contains(studentData.StudentGuid)) //for duplicate checking in search all school time
                         {
-                            var checkEnrolledStudent = this.context?.StudentEnrollment.Where(x => x.TenantId == pageResult.TenantId && x.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
+                            studentData.StudentEnrollment = studentData.StudentEnrollment.OrderByDescending(x => x.EnrollmentId).Take(1).ToList();
+                            //var checkEnrolledStudent = this.context?.StudentEnrollment?.Where(x => x.TenantId == pageResult.TenantId && x.StudentGuid == studentData.StudentGuid).OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
 
-                            if (checkEnrolledStudent != null && checkEnrolledStudent.ExitCode == "Dropped Out" && checkEnrolledStudent.ExitDate != null && checkEnrolledStudent.ExitDate < DateTime.Today.Date)
+                            var checkEnrolledStudent = studentData.StudentEnrollment.FirstOrDefault();
+
+                            if (checkEnrolledStudent != null && checkEnrolledStudent.ExitCode != null && checkEnrolledStudent.ExitCode == "Dropped Out" && checkEnrolledStudent.ExitDate != null && checkEnrolledStudent.ExitDate < DateTime.Today.Date)
                             {
                                 Student.Add(studentData);
                                 studentGuids.Add(studentData.StudentGuid);
@@ -2697,13 +2700,13 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        if (pageResult.FilterParams!.Any(x => x.ColumnName.ToLower() == "enrollmentdate" || x.ColumnName.ToLower() == "exitdate" || x.ColumnName.ToLower() == "exitcode"))
+                        if (pageResult.FilterParams!.Any(x => x.ColumnName.ToLower() == "enrollmentdate" || x.ColumnName.ToLower() == "exitdate" || x.ColumnName.ToLower() == "exitcode" || x.ColumnName.ToLower() == "gradeid"))
                         {
 
                             var enrollmentData = Student.AsQueryable();
                             foreach (var filterParam in pageResult.FilterParams!)
                             {
-                                if (filterParam.ColumnName.ToLower() == "enrollmentdate" || filterParam.ColumnName.ToLower() == "exitdate" || filterParam.ColumnName.ToLower() == "exitcode")
+                                if (filterParam.ColumnName.ToLower() == "enrollmentdate" || filterParam.ColumnName.ToLower() == "exitdate" || filterParam.ColumnName.ToLower() == "exitcode" || filterParam.ColumnName.ToLower() == "gradeid")
                                 {
                                     var columnName = filterParam.ColumnName;
                                     string filterValue = filterParam.FilterValue;
@@ -2724,11 +2727,15 @@ namespace opensis.data.Repository
                                             String.Compare(x.StudentEnrollment.FirstOrDefault()!.ExitCode, filterValue, true) == 0
                                             ).AsQueryable();
                                         }
+                                        if (columnName.ToLower() == "gradeid")
+                                        {
+                                            enrollmentData = enrollmentData.AsQueryable().AsNoTracking().ToList().Where(x => x.StudentEnrollment.FirstOrDefault()!.GradeId == Convert.ToInt32(filterValue)).AsQueryable();
+                                        }
                                     }
                                 }
                             }
 
-                            pageResult.FilterParams.RemoveAll(x => x.ColumnName.ToLower() == "enrollmentdate" || x.ColumnName.ToLower() == "exitdate" || x.ColumnName.ToLower() == "exitcode");
+                            pageResult.FilterParams.RemoveAll(x => x.ColumnName.ToLower() == "enrollmentdate" || x.ColumnName.ToLower() == "exitdate" || x.ColumnName.ToLower() == "exitcode" || x.ColumnName.ToLower() == "gradeid");
 
                             if (pageResult.FilterParams?.Any() == true)
                             {
@@ -2762,6 +2769,8 @@ namespace opensis.data.Repository
                         }
                     }
                 }
+
+                
 
                 if (transactionIQ != null)
                 {
@@ -2861,6 +2870,10 @@ namespace opensis.data.Repository
                                 break;
                         }
                     }
+                    else
+                    {
+                        transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(a => (a.PreferredName != null && a.PreferredName != "") ? a.PreferredName : a.FirstGivenName);
+                    }
                 }
 
                 if (transactionIQ != null)
@@ -2871,7 +2884,9 @@ namespace opensis.data.Repository
                         transactionIQ = transactionIQ.Skip((pageResult.PageNumber - 1) * pageResult.PageSize).Take(pageResult.PageSize);
                     }
                     studentListModel.studentMaster = transactionIQ.ToList();
+
                     studentListModel.studentMaster.ForEach(x => x.SchoolMaster.StudentMaster = new HashSet<StudentMaster>());
+
                     studentListModel.TotalCount = totalCount;
                 }
                 else
