@@ -726,6 +726,8 @@ namespace opensis.data.Repository
                                                 {
                                                     loginInfoData.EmailAddress = staffAddViewModel.staffMaster.LoginEmailAddress;
                                                     loginInfoData.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                                    loginInfoData.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
+                                                    loginInfoData.UpdatedOn = DateTime.UtcNow;
                                                     this.context?.UserMaster.Add(loginInfoData);
                                                     this.context?.SaveChanges();
                                                 }
@@ -744,6 +746,8 @@ namespace opensis.data.Repository
                                             if (loginInfo != null)
                                             {
                                                 loginInfo.IsActive = staffAddViewModel.staffMaster.PortalAccess;
+                                                loginInfo.UpdatedBy = staffAddViewModel.staffMaster.UpdatedBy;
+                                                loginInfo.UpdatedOn = DateTime.UtcNow;
                                                 this.context?.SaveChanges();
                                             }
                                                 
