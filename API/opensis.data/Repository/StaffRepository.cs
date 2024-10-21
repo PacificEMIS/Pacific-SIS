@@ -2307,5 +2307,169 @@ namespace opensis.data.Repository
             }
             return staffListModel;
         }
+
+        /// <summary>
+        /// Delete Staff
+        /// </summary>
+        /// <param name="staffDeleteViewModel"></param>
+        /// <returns></returns>
+        public StaffDeleteViewModel DeleteStaff(StaffDeleteViewModel staffDeleteViewModel)
+        {
+            StaffDeleteViewModel staffDelete = new()
+            {
+                TenantId = staffDeleteViewModel.TenantId,
+                SchoolId = staffDeleteViewModel.SchoolId,
+                _userName = staffDeleteViewModel._userName,
+                _tenantName = staffDeleteViewModel._tenantName,
+                _token = staffDeleteViewModel._token
+            };
+
+            bool allSccuss = true;
+            List<string> deletedStaffName = new();
+            string? staffName = string.Empty;
+            List<StaffMaster> staffMasters = new List<StaffMaster>();
+            List<StaffCertificateInfo> staffCertificateInfos = new List<StaffCertificateInfo>();
+            List<StaffSchoolInfo> staffSchoolInfos = new List<StaffSchoolInfo>();
+            List<CustomFieldsValue> customFieldsValues = new List<CustomFieldsValue>();
+            List<UserMaster> userMasters = new List<UserMaster>();
+            List<StaffCoursesectionSchedule> staffCoursesectionSchedules = new List<StaffCoursesectionSchedule>();
+
+            try
+            {
+                if (staffDeleteViewModel.staffMasters?.Any() == true)
+                {
+                    var staffIds = staffDeleteViewModel.staffMasters.Select(s => s.StaffId).ToList();
+
+                    var staffMasterData = this.context?.StaffMaster.Include(s => s.StaffSchoolInfo).Include(s => s.StaffCertificateInfo).Include(s => s.StaffCoursesectionSchedule).Where(x => x.TenantId == staffDeleteViewModel.TenantId /*&& x.SchoolId == staffDeleteViewModel.SchoolId*/ && staffIds.Contains(x.StaffId)).ToList();
+
+                    var customFieldsValueData = this.context?.CustomFieldsValue.Where(x => x.TenantId == staffDeleteViewModel.TenantId /*&& x.SchoolId == staffDeleteViewModel.SchoolId*/ && x.Module == "Staff" && staffIds.Contains(x.TargetId)).ToList();
+
+                    var userMasterData = this.context?.UserMaster.Where(x => x.TenantId == staffDeleteViewModel.TenantId && x.SchoolId == staffDeleteViewModel.SchoolId).ToList();
+                    var schoolMasterData = this.context?.SchoolMaster.Where(x => x.TenantId == staffDeleteViewModel.TenantId).Select(s => new { s.SchoolId, s.SchoolName }).ToList();
+
+                    foreach (var staff in staffDeleteViewModel.staffMasters)
+                    {
+                        var staffData = staffMasterData?.FirstOrDefault(s => s.StaffId == staff.StaffId);
+                        if (staffData != null)
+                        {
+                            var checkCourseSectionSchedule = staffData.StaffCoursesectionSchedule.Where(x => x.IsDropped != true).ToList();
+
+                            if (/*staffData.StaffCoursesectionSchedule.Count == 0 &&*/ checkCourseSectionSchedule.Any() != true)
+                            {
+                                bool hasAssociation = false;
+                                if (staffData.StaffCoursesectionSchedule.Count == 0)
+                                {
+                                    hasAssociation = false;
+                                }
+                                else
+                                {
+                                    var staffDroppedCS = staffData.StaffCoursesectionSchedule.Where(x => x.IsDropped == true).ToList();
+                                    if (staffDroppedCS?.Any() == true)
+                                    {
+                                        var staffDroppedCSIds = staffDroppedCS.Select(s => s.CourseSectionId).ToList();
+
+                                        var StudentAttendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == staffDeleteViewModel.TenantId /*&& x.SchoolId == staffDeleteViewModel.SchoolId*/ && x.StaffId == staff.StaffId && staffDroppedCSIds.Contains(x.CourseSectionId)).FirstOrDefault();
+
+                                        var AssignmentData = this.context?.Assignment.Where(x => x.TenantId == staffDeleteViewModel.TenantId /*&& x.SchoolId == staffDeleteViewModel.SchoolId*/ && x.StaffId == staff.StaffId && x.CourseSectionId != null && staffDroppedCSIds.Contains((int)x.CourseSectionId)).FirstOrDefault();
+
+                                        if (StudentAttendanceData != null || AssignmentData != null)
+                                        {
+                                            hasAssociation = true;
+                                            allSccuss = false;
+                                            if (StudentAttendanceData != null)
+                                            {
+                                                var schoolName = schoolMasterData?.FirstOrDefault(s => s.SchoolId == StudentAttendanceData.SchoolId)?.SchoolName;
+                                                staffDelete._message = "Staff record can not be deleted due to staff has attendance records in " + schoolName;
+                                            }
+                                            else if (AssignmentData != null)
+                                            {
+                                                var schoolName = schoolMasterData?.FirstOrDefault(s => s.SchoolId == AssignmentData.SchoolId)?.SchoolName;
+                                                staffDelete._message = "Staff record can not be deleted due to staff has assignment records in " + schoolName;
+                                            }
+
+                                            staffDelete.staffMasters.Add(staff);
+                                        }
+                                        else
+                                        {
+                                            hasAssociation = false;
+                                            staffCoursesectionSchedules.AddRange(staffDroppedCS);
+                                        }
+                                    }
+                                    //else
+                                    //{
+                                    //    hasAssociation = true;
+                                    //    allSccuss = false;
+                                    //    staffDelete._message = "Staff record can not be deleted due to staff has active course section.";
+                                    //    staffDelete.staffMasters.Add(staff);
+                                    //}
+                                }
+
+                                if (!hasAssociation)
+                                {
+                                    staffMasters.Add(staffData);
+                                    staffCertificateInfos.AddRange(staffData.StaffCertificateInfo);
+                                    staffSchoolInfos.AddRange(staffData.StaffSchoolInfo);
+
+                                    deletedStaffName.Add(staffData.FirstGivenName + " " + staffData.MiddleName + " " + staffData.LastFamilyName);
+
+
+                                    var UserMaster = userMasterData?.FirstOrDefault(x => x.TenantId == staffDeleteViewModel.TenantId /*&& x.SchoolId == staffDeleteViewModel.SchoolId*/ && x.EmailAddress == staffData.LoginEmailAddress);
+                                    if (UserMaster != null)
+                                    {
+                                        userMasters.Add(UserMaster);
+                                    }
+
+                                    var customFieldsValue = customFieldsValueData?.Where(s => s.TargetId == staff.StaffId).ToList();
+                                    if (customFieldsValue?.Any() == true)
+                                    {
+                                        customFieldsValues.AddRange(customFieldsValue);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                allSccuss = false;
+                                staffDelete.staffMasters.Add(staff);
+                                if (checkCourseSectionSchedule != null && checkCourseSectionSchedule.Any())
+                                {
+                                    var schoolName = schoolMasterData?.FirstOrDefault(s => s.SchoolId == checkCourseSectionSchedule?.FirstOrDefault()?.SchoolId)?.SchoolName;
+                                    staffDelete._message = "Staff record can not be deleted due to staff has course section " + checkCourseSectionSchedule?.FirstOrDefault()?.CourseSectionName + "  asociation in " + schoolName;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            allSccuss = false;
+                            staffDelete._message = "Staff record can not be deleted due to this school not a staff's home school.";
+                            staffDelete.staffMasters.Add(staff);
+                        }
+                    }
+
+                    if (allSccuss)
+                    {
+                        this.context?.UserMaster.RemoveRange(userMasters);
+                        this.context?.CustomFieldsValue.RemoveRange(customFieldsValues);
+                        this.context?.StaffCertificateInfo.RemoveRange(staffCertificateInfos);
+                        this.context?.StaffCoursesectionSchedule.RemoveRange(staffCoursesectionSchedules);
+                        this.context?.StaffSchoolInfo.RemoveRange(staffSchoolInfos);
+                        this.context?.StaffMaster.RemoveRange(staffMasters);
+                        this.context?.SaveChanges();
+
+                        staffDelete._message = "Staff deleted successfully";
+                    }
+                }
+                else
+                {
+                    staffDelete._message = "Please select staff";
+                    staffDelete._failure = false;
+                }
+            }
+            catch (Exception es)
+            {
+                staffDelete._failure = true;
+                staffDelete._message = es.Message;
+            }
+            return staffDelete;
+        }
     }
 }
