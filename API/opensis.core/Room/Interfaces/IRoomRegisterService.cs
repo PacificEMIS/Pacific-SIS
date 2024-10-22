@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.AspNetCore.Mvc;
 using opensis.data.Models;
 using opensis.data.ViewModels.Room;
 using System;
@@ -40,6 +41,7 @@ namespace opensis.core.Room.Interfaces
         public RoomAddViewModel UpdateRoom(RoomAddViewModel room);
         public RoomListModel GetAllRoom(RoomListModel roomList);
         public RoomAddViewModel DeleteRoom(RoomAddViewModel room);
+        public RoomSortOrderViewModel UpdateRoomSortOrder(RoomSortOrderViewModel roomSortOrderViewModel);
 
     }
 }

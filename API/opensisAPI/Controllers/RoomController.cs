@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Mvc.RazorPages;
 using opensis.core.Room.Interfaces;
 using opensis.data.Models;
+using opensis.data.ViewModels.Period;
 using opensis.data.ViewModels.Room;
 using opensis.data.ViewModels.School;
 
@@ -177,6 +178,22 @@ namespace opensisAPI.Controllers
                 roomlDelete._message = es.Message;
             }
             return roomlDelete;
+        }
+
+        [HttpPut("updateRoomSortOrder")]
+        public ActionResult<RoomSortOrderViewModel> UpdateRoomSortOrder(RoomSortOrderViewModel roomSortOrderViewModel)
+        {
+            RoomSortOrderViewModel roomSortOrderUpdate = new RoomSortOrderViewModel();
+            try
+            {
+                roomSortOrderUpdate = _roomRegisterService.UpdateRoomSortOrder(roomSortOrderViewModel);
+            }
+            catch (Exception es)
+            {
+                roomSortOrderUpdate._failure = true;
+                roomSortOrderUpdate._message = es.Message;
+            }
+            return roomSortOrderUpdate;
         }
     }
 }
