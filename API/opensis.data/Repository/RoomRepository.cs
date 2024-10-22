@@ -26,7 +26,6 @@ All rights reserved.
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
-using opensis.data.ViewModels.Period;
 using opensis.data.ViewModels.Room;
 using System;
 using System.Collections.Generic;

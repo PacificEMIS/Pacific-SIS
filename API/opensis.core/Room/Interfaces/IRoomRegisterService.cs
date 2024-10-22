@@ -23,7 +23,6 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-using Microsoft.AspNetCore.Mvc;
 using opensis.data.Models;
 using opensis.data.ViewModels.Room;
 using System;

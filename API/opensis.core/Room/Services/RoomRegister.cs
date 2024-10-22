@@ -23,7 +23,6 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-using Microsoft.AspNetCore.Mvc;
 using opensis.core.helper;
 using opensis.core.helper.Interfaces;
 using opensis.core.Room.Interfaces;

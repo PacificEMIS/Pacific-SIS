@@ -33,7 +33,6 @@ using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Mvc.RazorPages;
 using opensis.core.Room.Interfaces;
 using opensis.data.Models;
-using opensis.data.ViewModels.Period;
 using opensis.data.ViewModels.Room;
 using opensis.data.ViewModels.School;
 
