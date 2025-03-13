@@ -1401,7 +1401,7 @@
     "EnableAdd": true,
     "EnableEdit": true,
     "EnableDelete": true,
-    "IsActive": true,
+    "IsActive": false,
     "SortOrder": "3",
     "IsSystem": true
   },
