@@ -61,22 +61,34 @@ namespace opensis.data.Repository
                 }
                 try
                 {
-
-
                     var sessionCalendar = this.context?.SchoolCalendars.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.SessionCalendar == true).OrderByDescending(x => x.AcademicYear).FirstOrDefault();
 
-                    if (rolloverViewModel.SchoolRollover.SchoolBeginDate <= sessionCalendar!.EndDate)
+                    //if (rolloverViewModel.SchoolRollover.SchoolBeginDate <= sessionCalendar!.EndDate)
+                    //{
+                    //    rolloverViewModel._failure = true;
+                    //    rolloverViewModel._message = "School begin date should be greater than previous school year end date";
+
+                    //    return rolloverViewModel;
+                    //}
+
+                    //Create 365 days session calendar
+                    //var sessionCalendarStartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
+                    //var dateAfterOneYear = sessionCalendarStartDate!.Value.Date.AddYears(+1);
+                    //var sessionCalendarEndDate = dateAfterOneYear!.AddDays(-1);
+
+                    if (rolloverViewModel.SchoolRollover.SchoolBeginDate is null)
                     {
                         rolloverViewModel._failure = true;
-                        rolloverViewModel._message = "School begin date should be greater than previous school year end date";
-
+                        rolloverViewModel._message = "School begin date required.";
                         return rolloverViewModel;
                     }
 
-                    //Create 365 days session calendar
-                    var sessionCalendarStartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
-                    var dateAfterOneYear = sessionCalendarStartDate!.Value.Date.AddYears(+1);
-                    var sessionCalendarEndDate = dateAfterOneYear!.AddDays(-1);
+                    var month = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Month;
+                    var year = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year;
+
+                    var sessionCalendarStartDate = new DateTime(month, year, 1);
+                    var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
+                    var sessionCalendarEndDate = dateAfterOneYear.AddDays(-1);
 
                     if (rolloverViewModel.SchoolRollover.SchoolBeginDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolBeginDate > sessionCalendarEndDate || rolloverViewModel.SchoolRollover.SchoolEndDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolEndDate > sessionCalendarEndDate)
                     {
@@ -154,7 +166,8 @@ namespace opensis.data.Repository
                             schoolSessionCalendar.SchoolId = rolloverViewModel.SchoolRollover.SchoolId;
                             schoolSessionCalendar.CalenderId = (int)calenderId;
                             schoolSessionCalendar.Title = "Default Calendar";
-                            schoolSessionCalendar.AcademicYear = sessionCalendarStartDate != null ? Convert.ToDecimal(sessionCalendarStartDate.Value.Year) : 0;
+                            //schoolSessionCalendar.AcademicYear = sessionCalendarStartDate != null ? Convert.ToDecimal(sessionCalendarStartDate.Value.Year) : 0;
+                            schoolSessionCalendar.AcademicYear = sessionCalendarStartDate.Year;
                             schoolSessionCalendar.DefaultCalender = true;
                             schoolSessionCalendar.SessionCalendar = true;
                             schoolSessionCalendar.Days = "12345";
