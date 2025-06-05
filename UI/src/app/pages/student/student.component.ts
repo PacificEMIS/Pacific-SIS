@@ -1101,7 +1101,8 @@ export class StudentComponent implements OnInit, OnDestroy {
           }
         }
         if (!isIdIncludesInSelectedList) {
-          if (item.isCurrentSchool && item.isActive) this.selectedStudents.push(item);
+          // if (item.isCurrentSchool && item.isActive) this.selectedStudents.push(item);
+          this.selectedStudents.push(item);
         }
       } else {
         for (let selectedUser of this.selectedStudents) {
