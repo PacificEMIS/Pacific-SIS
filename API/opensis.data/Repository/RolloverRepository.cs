@@ -107,6 +107,27 @@ namespace opensis.data.Repository
                     }
                     else
                     {
+                        //set academic year
+                        var baseYear = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year;
+                        decimal academicYear = Convert.ToDecimal(baseYear);
+                        bool exists = true;
+                        int counter = 0;
+
+                        while (exists)
+                        {
+                            var academicYearExist = this.context?.SchoolCalendars.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.SessionCalendar == true && x.AcademicYear == academicYear).FirstOrDefault();
+
+                            if (academicYearExist == null)
+                            {
+                                exists = false;
+                            }
+                            else
+                            {
+                                counter++;
+                                academicYear = Convert.ToDecimal($"{baseYear}.{counter}");
+                            }
+                        }
+
                         int? rolloverId = 1;
 
                         var maxRolloverId = this.context?.SchoolRollover.Where(x => x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.TenantId == rolloverViewModel.SchoolRollover.TenantId).OrderByDescending(x => x.RolloverId).FirstOrDefault();
@@ -138,7 +159,7 @@ namespace opensis.data.Repository
                             schoolYears.TenantId = rolloverViewModel.SchoolRollover.TenantId;
                             schoolYears.SchoolId = rolloverViewModel.SchoolRollover.SchoolId;
                             schoolYears.MarkingPeriodId = (int)yearId;
-                            schoolYears.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate.HasValue == true ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : (decimal?)null;
+                            schoolYears.AcademicYear = /*rolloverViewModel.SchoolRollover.SchoolBeginDate.HasValue == true ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : (decimal?)null*/ academicYear;
                             schoolYears.Title = rolloverViewModel.FullYearName;
                             schoolYears.ShortName = rolloverViewModel.FullYearShortName;
                             schoolYears.StartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
@@ -167,7 +188,7 @@ namespace opensis.data.Repository
                             schoolSessionCalendar.CalenderId = (int)calenderId;
                             schoolSessionCalendar.Title = "Default Calendar";
                             //schoolSessionCalendar.AcademicYear = sessionCalendarStartDate != null ? Convert.ToDecimal(sessionCalendarStartDate.Value.Year) : 0;
-                            schoolSessionCalendar.AcademicYear = sessionCalendarStartDate.Year;
+                            schoolSessionCalendar.AcademicYear = academicYear;
                             schoolSessionCalendar.DefaultCalender = true;
                             schoolSessionCalendar.SessionCalendar = true;
                             schoolSessionCalendar.Days = "12345";
@@ -205,7 +226,7 @@ namespace opensis.data.Repository
                                     subject.SubjectId = (int)subjectId;
                                     subject.SubjectName = subjectListData.SubjectName;
                                     subject.RolloverId = rolloverId;
-                                    subject.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    subject.AcademicYear = academicYear;
                                     subject.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     subject.CreatedOn = DateTime.UtcNow;
 
@@ -259,7 +280,7 @@ namespace opensis.data.Repository
                                     course.CourseDescription = courseListData.CourseDescription;
                                     course.IsCourseActive = courseListData.IsCourseActive;
                                     course.RolloverId = rolloverId;
-                                    course.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    course.AcademicYear = academicYear;
                                     course.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     course.CreatedOn = DateTime.UtcNow;
 
@@ -285,7 +306,7 @@ namespace opensis.data.Repository
                                             courseCommentCategory.Comments = courseCommentCategoryListData.Comments;
                                             courseCommentCategory.SortOrder = courseCommentCategoryListData.SortOrder;
                                             courseCommentCategory.RolloverId = rolloverId;
-                                            courseCommentCategory.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                            courseCommentCategory.AcademicYear = academicYear;
                                             courseCommentCategory.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                             courseCommentCategory.CreatedOn = DateTime.UtcNow;
 
@@ -337,7 +358,7 @@ namespace opensis.data.Repository
                                     gradeScale.UseAsStandardGradeScale = gradeScaleListData.UseAsStandardGradeScale;
                                     gradeScale.SortOrder = gradeScaleListData.SortOrder;
                                     gradeScale.RolloverId = rolloverId;
-                                    gradeScale.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    gradeScale.AcademicYear = academicYear;
                                     gradeScale.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     gradeScale.CreatedOn = DateTime.UtcNow;
 
@@ -404,7 +425,7 @@ namespace opensis.data.Repository
                                     room.SortOrder = roomListData.SortOrder;
                                     room.IsActive = roomListData.IsActive;
                                     room.RolloverId = rolloverId;
-                                    room.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    room.AcademicYear = academicYear;
                                     room.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     room.CreatedOn = DateTime.UtcNow;
 
@@ -442,7 +463,7 @@ namespace opensis.data.Repository
                                     block.FullDayMinutes = blockListData.FullDayMinutes;
                                     block.HalfDayMinutes = blockListData.HalfDayMinutes;
                                     block.RolloverId = rolloverId;
-                                    block.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    block.AcademicYear = academicYear;
                                     block.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     block.CreatedOn = DateTime.UtcNow;
 
@@ -479,7 +500,7 @@ namespace opensis.data.Repository
                                             blockPeriod.PeriodSortOrder = blockPeriodListData.PeriodSortOrder;
                                             blockPeriod.CalculateAttendance = blockPeriodListData.CalculateAttendance;
                                             blockPeriod.RolloverId = rolloverId;
-                                            blockPeriod.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                            blockPeriod.AcademicYear = academicYear;
                                             blockPeriod.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                             blockPeriod.CreatedOn = DateTime.UtcNow;
 
@@ -521,7 +542,7 @@ namespace opensis.data.Repository
                                     studentEnrollmentCode.SortOrder = studentEnrollmentCodeListData.SortOrder;
                                     studentEnrollmentCode.Type = studentEnrollmentCodeListData.Type;
                                     studentEnrollmentCode.RolloverId = rolloverId;
-                                    studentEnrollmentCode.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    studentEnrollmentCode.AcademicYear = academicYear;
                                     studentEnrollmentCode.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     studentEnrollmentCode.CreatedOn = DateTime.UtcNow;
 
@@ -531,44 +552,44 @@ namespace opensis.data.Repository
                                 this.context?.StudentEnrollmentCode.AddRange(studentEnrollmentCodes);
                             }
 
-                            //Insert HistoricalMarkingPeriod
-                            var historicalMarkingPeriodList = this.context?.HistoricalMarkingPeriod.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).ToList();
+                            ////Insert HistoricalMarkingPeriod
+                            //var historicalMarkingPeriodList = this.context?.HistoricalMarkingPeriod.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).ToList();
 
-                            if (historicalMarkingPeriodList?.Any() == true)
-                            {
-                                int? historicalMarkingPeriodId = 1;
+                            //if (historicalMarkingPeriodList?.Any() == true)
+                            //{
+                            //    int? historicalMarkingPeriodId = 1;
 
-                                var historicalMarkingPeriodData = historicalMarkingPeriodList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.HistMarkingPeriodId).FirstOrDefault();
+                            //    var historicalMarkingPeriodData = historicalMarkingPeriodList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.HistMarkingPeriodId).FirstOrDefault();
 
-                                if (historicalMarkingPeriodData != null)
-                                {
-                                    historicalMarkingPeriodId = historicalMarkingPeriodData.HistMarkingPeriodId + 1;
-                                }
+                            //    if (historicalMarkingPeriodData != null)
+                            //    {
+                            //        historicalMarkingPeriodId = historicalMarkingPeriodData.HistMarkingPeriodId + 1;
+                            //    }
 
-                                List<HistoricalMarkingPeriod> historicalMarkingPeriods = new();
+                            //    List<HistoricalMarkingPeriod> historicalMarkingPeriods = new();
 
-                                foreach (var historicalMarkingPeriodListData in historicalMarkingPeriodList)
-                                {
-                                    HistoricalMarkingPeriod historicalMarkingPeriod = new();
+                            //    foreach (var historicalMarkingPeriodListData in historicalMarkingPeriodList)
+                            //    {
+                            //        HistoricalMarkingPeriod historicalMarkingPeriod = new();
 
-                                    historicalMarkingPeriod.TenantId = historicalMarkingPeriodListData.TenantId;
-                                    historicalMarkingPeriod.SchoolId = historicalMarkingPeriodListData.SchoolId;
-                                    historicalMarkingPeriod.HistMarkingPeriodId = (int)historicalMarkingPeriodId;
-                                    historicalMarkingPeriod.Title = historicalMarkingPeriodListData.Title;
-                                    historicalMarkingPeriod.GradePostDate = historicalMarkingPeriodListData.GradePostDate;
-                                    historicalMarkingPeriod.DoesGrades = historicalMarkingPeriodListData.DoesGrades;
-                                    historicalMarkingPeriod.DoesExam = historicalMarkingPeriodListData.DoesExam;
-                                    historicalMarkingPeriod.DoesComments = historicalMarkingPeriodListData.DoesComments;
-                                    historicalMarkingPeriod.RolloverId = rolloverId;
-                                    historicalMarkingPeriod.AcademicYear = historicalMarkingPeriodListData.AcademicYear;
-                                    historicalMarkingPeriod.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
-                                    historicalMarkingPeriod.CreatedOn = DateTime.UtcNow;
+                            //        historicalMarkingPeriod.TenantId = historicalMarkingPeriodListData.TenantId;
+                            //        historicalMarkingPeriod.SchoolId = historicalMarkingPeriodListData.SchoolId;
+                            //        historicalMarkingPeriod.HistMarkingPeriodId = (int)historicalMarkingPeriodId;
+                            //        historicalMarkingPeriod.Title = historicalMarkingPeriodListData.Title;
+                            //        historicalMarkingPeriod.GradePostDate = historicalMarkingPeriodListData.GradePostDate;
+                            //        historicalMarkingPeriod.DoesGrades = historicalMarkingPeriodListData.DoesGrades;
+                            //        historicalMarkingPeriod.DoesExam = historicalMarkingPeriodListData.DoesExam;
+                            //        historicalMarkingPeriod.DoesComments = historicalMarkingPeriodListData.DoesComments;
+                            //        historicalMarkingPeriod.RolloverId = rolloverId;
+                            //        historicalMarkingPeriod.AcademicYear = historicalMarkingPeriodListData.AcademicYear;
+                            //        historicalMarkingPeriod.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
+                            //        historicalMarkingPeriod.CreatedOn = DateTime.UtcNow;
 
-                                    historicalMarkingPeriods.Add(historicalMarkingPeriod);
-                                    historicalMarkingPeriodId++;
-                                }
-                                this.context?.HistoricalMarkingPeriod.AddRange(historicalMarkingPeriods);
-                            }
+                            //        historicalMarkingPeriods.Add(historicalMarkingPeriod);
+                            //        historicalMarkingPeriodId++;
+                            //    }
+                            //    this.context?.HistoricalMarkingPeriod.AddRange(historicalMarkingPeriods);
+                            //}
 
                             //Insert AttendanceCodeCategories
                             var attendanceCodeCategorieList = this.context?.AttendanceCodeCategories.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.AcademicYear == sessionCalendar!.AcademicYear).ToList();
@@ -595,7 +616,7 @@ namespace opensis.data.Repository
                                     attendanceCodeCategorie.AttendanceCategoryId = (int)attendanceCodeCategorieId;
                                     attendanceCodeCategorie.Title = attendanceCodeCategorieListData.Title;
                                     attendanceCodeCategorie.RolloverId = rolloverId;
-                                    attendanceCodeCategorie.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    attendanceCodeCategorie.AcademicYear = academicYear;
                                     attendanceCodeCategorie.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     attendanceCodeCategorie.CreatedOn = DateTime.UtcNow;
 
@@ -633,7 +654,7 @@ namespace opensis.data.Repository
                                             attendanceCode.AllowEntryBy = attendanceCodeeListData.AllowEntryBy;
                                             attendanceCode.SortOrder = attendanceCodeeListData.SortOrder;
                                             attendanceCode.RolloverId = rolloverId;
-                                            attendanceCode.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                            attendanceCode.AcademicYear = academicYear;
                                             attendanceCode.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                             attendanceCode.CreatedOn = DateTime.UtcNow;
 
@@ -673,7 +694,7 @@ namespace opensis.data.Repository
                                     honorRoll.HonorRoll = honorRollsListData.HonorRoll;
                                     honorRoll.Breakoff = honorRollsListData.Breakoff;
                                     honorRoll.RolloverId = rolloverId;
-                                    honorRoll.AcademicYear = rolloverViewModel.SchoolRollover.SchoolBeginDate != null ? Convert.ToDecimal(rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year) : 0;
+                                    honorRoll.AcademicYear = academicYear;
                                     honorRoll.CreatedBy = rolloverViewModel.SchoolRollover.CreatedBy;
                                     honorRoll.CreatedOn = DateTime.UtcNow;
 
