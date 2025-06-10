@@ -57,6 +57,7 @@ import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { CalendarService } from 'src/app/services/calendar.service';
 import { GetCalendarAndHolidayListModel } from 'src/app/models/calendar.model';
 import { MatSort } from '@angular/material/sort';
+import moment from 'moment';
 @Component({
   selector: 'vex-student-re-enroll',
   templateUrl: './student-re-enroll.component.html',
@@ -125,7 +126,8 @@ export class StudentReEnrollComponent implements OnInit {
     { label: 'exitCode', property: 'exitCode', type: 'text', visible: true }
   ];
   getAllCalendarHoliday: GetCalendarAndHolidayListModel = new GetCalendarAndHolidayListModel();
-
+  schoolYearStartDate:any;
+  schoolYearEndDate:any;
   constructor(public translateService: TranslateService, private router: Router,
     private studentService: StudentService,
     private snackbar: MatSnackBar,
@@ -162,6 +164,8 @@ export class StudentReEnrollComponent implements OnInit {
     this.searchCtrl = new FormControl();
     this.searchForReEnrollStudent();
     this.getAllSchoolListWithGradeLevelsAndEnrollCodes();
+    this.schoolYearStartDate = this.defaultValuesService.getFullYearStartDate();
+    this.schoolYearEndDate = this.defaultValuesService.getFullYearEndDate();
   }
 
   ngAfterViewInit() {
@@ -601,5 +605,14 @@ export class StudentReEnrollComponent implements OnInit {
     this.showAdvanceSearchPanel = false;
 
   }
+
+  checkEnrollmentInSchoolYear(): boolean {
+    const enrollmentDate = this.enrollmentDate;
+    const startDate = this.schoolYearStartDate;
+    const endDate = this.schoolYearEndDate;
+    const isInRange = moment(enrollmentDate).isBetween(startDate, endDate, undefined, '[]');
+    return !isInRange;
+  }
+
 
 }
