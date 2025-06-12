@@ -3486,7 +3486,7 @@ namespace opensis.data.Repository
                                 if ((lastEnrollment!.ExitDate != null && lastEnrollment.ExitDate < DateTime.Today.Date) || (lastEnrollment.EnrollmentDate > DateTime.Today.Date))
                                 {
                                     activeDeactiveUserViewModel._failure = true;
-                                    activeDeactiveUserViewModel._message = "Student dropped out from the school, so can not upadte the status";
+                                    activeDeactiveUserViewModel._message = "The status can not be updated because the student was dropped out of the school. If you wanted to make the student Active, use the Re-enroll Student functionality.";
                                     return activeDeactiveUserViewModel;
                                 }
                                 else
@@ -3522,7 +3522,7 @@ namespace opensis.data.Repository
                                 if (staffSchoolInfo!.EndDate != null && staffSchoolInfo.EndDate < DateTime.Today.Date)
                                 {
                                     activeDeactiveUserViewModel._failure = true;
-                                    activeDeactiveUserViewModel._message = "Staff dropped out from the school, so can not upadte the status";
+                                    activeDeactiveUserViewModel._message = "The status can not be updated because the staff was dropped out of the school.";
                                     return activeDeactiveUserViewModel;
                                 }
                                 else
@@ -3550,7 +3550,7 @@ namespace opensis.data.Repository
 
                     this.context?.SaveChanges();
                     activeDeactiveUserViewModel._failure = false;
-                    activeDeactiveUserViewModel._message = "updated successfully";
+                    activeDeactiveUserViewModel._message = "Status updated successfully";
                 }
                 else
                 {

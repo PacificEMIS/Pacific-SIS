@@ -1041,13 +1041,15 @@ namespace opensis.data.Repository
 
                         //totalStudent = this.context.StudentCoursesectionSchedule.Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true ).ToList().Count;
 
-                        totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true /*&& (x.EffectiveDropDate == null || x.EffectiveDropDate.Value.Date >= DateTime.Today.Date)*/&& x.StudentMaster.IsActive == true).ToList().Count;                        
+                        //totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true /*&& (x.EffectiveDropDate == null || x.EffectiveDropDate.Value.Date >= DateTime.Today.Date)*/&& x.StudentMaster.IsActive == true).ToList().Count;                        
+
+                        totalStudent = ActiveStudentInCourseSection(courseSection);
 
                         var staffData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true).ToList();
-                        if (staffData!=null && staffData.Any())
+                        if (staffData != null && staffData.Any())
                         {
-                          
-                            staffFullName = $"{staffData!.FirstOrDefault()!.StaffMaster.FirstGivenName} { (staffData!.FirstOrDefault()!.StaffMaster.MiddleName == null ? " " : $"{staffData!.FirstOrDefault()!.StaffMaster.MiddleName} ")}{staffData!.FirstOrDefault()!.StaffMaster.LastFamilyName}";
+
+                            staffFullName = $"{staffData!.FirstOrDefault()!.StaffMaster.FirstGivenName} {(staffData!.FirstOrDefault()!.StaffMaster.MiddleName == null ? " " : $"{staffData!.FirstOrDefault()!.StaffMaster.MiddleName} ")}{staffData!.FirstOrDefault()!.StaffMaster.LastFamilyName}";
                             totalStaff = staffData.Count;
                         }
 
@@ -3293,6 +3295,16 @@ namespace opensis.data.Repository
                 courseSectionAssignment._message = es.Message;
             }
             return courseSectionAssignment;
+        }
+
+        private int? ActiveStudentInCourseSection(CourseSection courseSection)
+        {
+            int? studentCount = 0;
+            if (courseSection != null)
+            {
+                studentCount = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.StudentMaster.IsActive == true && ((courseSection.DurationEndDate < DateTime.Today.Date && x.EffectiveDropDate == courseSection.DurationEndDate) || x.IsDropped != true)).ToList().Count;
+            }
+            return studentCount;
         }
     }
 }
