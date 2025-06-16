@@ -216,7 +216,7 @@ namespace opensis.data.Repository
                                                     StudentInternalId = student.StudentInternalId,
                                                     StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
                                                     Scheduled = false,
-                                                    ConflictComment = "Student enrollment date is grater than scheduled course section date"
+                                                    ConflictComment = "Student enrollment date is greater than scheduled course section date"
                                                 };
                                                 studentCourseSectionScheduleAddViewModel._conflictFailure = true;
                                                 //this.context.StudentScheduleView.Add(conflictStudent);
