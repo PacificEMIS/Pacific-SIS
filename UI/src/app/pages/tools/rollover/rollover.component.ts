@@ -27,7 +27,11 @@ export class RolloverComponent implements OnInit {
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
   minSchoolBeginDateVal: Date;  
+  maxSchoolBeginDateVal: Date;  
+  minSchoolEndDateVal1: Date;  
+  minSchoolEndDateVal2: Date;  
   maxSchoolEndDateVal: Date;
+  currentSchoolEndDateVal: Date;
   getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
   showRollOver: boolean = false;
   finalGradingMarkingPeriodList: FinalGradingMarkingPeriodList = new FinalGradingMarkingPeriodList();
@@ -48,9 +52,19 @@ export class RolloverComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkCurrentAcademicYearIsMaxOrNot(this.defaultValuesService.getAcademicYear())
-    this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(1, 'days').toDate();
-    this.maxSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(366, 'days').toDate(); 
+    // this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(1, 'days').toDate();
+    // this.maxSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(366, 'days').toDate(); 
     //366 days because in begin date calculation starting from after 1 day
+    
+    this.currentSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).toDate();
+    this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).subtract(2, 'months').toDate();
+    this.minSchoolEndDateVal1 = moment(this.minSchoolBeginDateVal).add(365, 'days').toDate(); 
+    this.maxSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(2, 'months').toDate();
+    this.minSchoolEndDateVal2 = moment(this.maxSchoolBeginDateVal).add(365, 'days').toDate(); 
+  }
+
+  schoolBeginDateChange(){
+    this.maxSchoolEndDateVal = moment(this.rolloverViewModel.schoolRollover.schoolBeginDate).add(365, 'days').toDate(); 
   }
 
   checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
