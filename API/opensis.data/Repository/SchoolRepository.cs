@@ -2570,12 +2570,15 @@ namespace opensis.data.Repository
         {
             int? calenderId = 1;
 
-            //DateTime sessionEndDate = startDate!.Value.Date.AddYears(+1);
-            var month = startDate!.Value.Month;
-            var year = startDate.Value.Year;
-            var sessionCalendarStartDate = new DateTime(month, year, 1);
-            var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
-            var sessionEndDate = dateAfterOneYear.AddDays(-1);
+            DateTime sessionEndDate = startDate!.Value.Date.AddYears(+1);
+            sessionEndDate = sessionEndDate.AddDays(-1);
+            var year = startDate?.Year;
+
+            //var month = startDate!.Value.Month;
+            //var year = startDate.Value.Year;
+            //var sessionCalendarStartDate = new DateTime(month, year, 1);
+            //var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
+            //var sessionEndDate = dateAfterOneYear.AddDays(-1);
 
             //set academic year
             decimal academicYear = Convert.ToDecimal(year);
@@ -2607,7 +2610,7 @@ namespace opensis.data.Repository
                 DefaultCalender = true,
                 SessionCalendar = true,
                 Days = "12345",
-                StartDate = sessionCalendarStartDate,
+                StartDate = startDate,
                 EndDate = sessionEndDate,
                 CreatedBy = createdBy,
                 CreatedOn = DateTime.UtcNow,

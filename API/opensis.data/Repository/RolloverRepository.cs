@@ -71,11 +71,6 @@ namespace opensis.data.Repository
                     //    return rolloverViewModel;
                     //}
 
-                    //Create 365 days session calendar
-                    //var sessionCalendarStartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
-                    //var dateAfterOneYear = sessionCalendarStartDate!.Value.Date.AddYears(+1);
-                    //var sessionCalendarEndDate = dateAfterOneYear!.AddDays(-1);
-
                     if (rolloverViewModel.SchoolRollover.SchoolBeginDate is null)
                     {
                         rolloverViewModel._failure = true;
@@ -83,12 +78,16 @@ namespace opensis.data.Repository
                         return rolloverViewModel;
                     }
 
-                    var month = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Month;
-                    var year = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year;
+                    //Create 365 days session calendar
+                    var sessionCalendarStartDate = rolloverViewModel.SchoolRollover.SchoolBeginDate;
+                    var dateAfterOneYear = sessionCalendarStartDate!.Value.Date.AddYears(+1);
+                    var sessionCalendarEndDate = dateAfterOneYear!.AddDays(-1);
 
-                    var sessionCalendarStartDate = new DateTime(month, year, 1);
-                    var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
-                    var sessionCalendarEndDate = dateAfterOneYear.AddDays(-1);
+                    //var month = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Month;
+                    //var year = rolloverViewModel.SchoolRollover.SchoolBeginDate.Value.Year;
+                    //var sessionCalendarStartDate = new DateTime(month, year, 1);
+                    //var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
+                    //var sessionCalendarEndDate = dateAfterOneYear.AddDays(-1);
 
                     if (rolloverViewModel.SchoolRollover.SchoolBeginDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolBeginDate > sessionCalendarEndDate || rolloverViewModel.SchoolRollover.SchoolEndDate < sessionCalendarStartDate || rolloverViewModel.SchoolRollover.SchoolEndDate > sessionCalendarEndDate)
                     {
@@ -97,7 +96,6 @@ namespace opensis.data.Repository
 
                         return rolloverViewModel;
                     }
-                    //*****//
 
                     var rolloverExist = this.context?.SchoolRollover.Where(x => x.ReenrollmentDate == rolloverViewModel.SchoolRollover.ReenrollmentDate && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId && x.TenantId == rolloverViewModel.SchoolRollover.TenantId).ToList();
                     if (rolloverExist?.Any() == true)
