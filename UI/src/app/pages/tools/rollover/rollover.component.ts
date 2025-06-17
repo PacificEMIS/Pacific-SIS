@@ -60,8 +60,8 @@ export class RolloverComponent implements OnInit {
     const startDate = moment(this.defaultValuesService.getFullYearStartDate()).add(365, 'days').toDate();
     const fullYearEndDate = moment(this.defaultValuesService.getFullYearEndDate()).toDate();
     const diffDays = Math.abs(moment(fullYearEndDate).diff(moment(startDate), 'days'));
-    this.minSchoolBeginDateVal = moment(startDate).subtract(diffDays > 60 ? diffDays : 60, 'days').toDate();
-    this.maxSchoolBeginDateVal = moment(startDate).add(1, 'month').toDate();
+    this.minSchoolBeginDateVal = moment(moment(startDate).subtract(diffDays > 60 ? diffDays : 60, 'days').toDate()).startOf('month').toDate();
+    this.maxSchoolBeginDateVal = moment(moment(startDate).add(1, 'month').toDate()).endOf('month').toDate();
     this.minSchoolEndDateVal1 = moment(this.minSchoolBeginDateVal).add(364, 'days').toDate();
     this.minSchoolEndDateVal2 = moment(this.maxSchoolBeginDateVal).add(364, 'days').toDate();
   }
