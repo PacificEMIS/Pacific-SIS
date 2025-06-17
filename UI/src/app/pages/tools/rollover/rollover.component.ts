@@ -26,10 +26,10 @@ export class RolloverComponent implements OnInit {
   loading: boolean;
   @ViewChild('f') currentForm: NgForm;
   f: NgForm;
-  minSchoolBeginDateVal: Date;  
-  maxSchoolBeginDateVal: Date;  
-  minSchoolEndDateVal1: Date;  
-  minSchoolEndDateVal2: Date;  
+  minSchoolBeginDateVal: Date;
+  maxSchoolBeginDateVal: Date;
+  minSchoolEndDateVal1: Date;
+  minSchoolEndDateVal2: Date;
   maxSchoolEndDateVal: Date;
   currentSchoolEndDateVal: Date;
   getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
@@ -55,35 +55,38 @@ export class RolloverComponent implements OnInit {
     // this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(1, 'days').toDate();
     // this.maxSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(366, 'days').toDate(); 
     //366 days because in begin date calculation starting from after 1 day
-    
+
     this.currentSchoolEndDateVal = moment(this.defaultValuesService.getFullYearEndDate()).toDate();
-    this.minSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).subtract(2, 'months').toDate();
-    this.minSchoolEndDateVal1 = moment(this.minSchoolBeginDateVal).add(365, 'days').toDate(); 
-    this.maxSchoolBeginDateVal = moment(this.defaultValuesService.getFullYearEndDate()).add(2, 'months').toDate();
-    this.minSchoolEndDateVal2 = moment(this.maxSchoolBeginDateVal).add(365, 'days').toDate(); 
+    const startDate = moment(this.defaultValuesService.getFullYearStartDate()).add(365, 'days').toDate();
+    const fullYearEndDate = moment(this.defaultValuesService.getFullYearEndDate()).toDate();
+    const diffDays = Math.abs(moment(fullYearEndDate).diff(moment(startDate), 'days'));
+    this.minSchoolBeginDateVal = moment(startDate).subtract(diffDays > 60 ? diffDays : 60, 'days').toDate();
+    this.maxSchoolBeginDateVal = moment(startDate).add(1, 'month').toDate();
+    this.minSchoolEndDateVal1 = moment(this.minSchoolBeginDateVal).add(364, 'days').toDate();
+    this.minSchoolEndDateVal2 = moment(this.maxSchoolBeginDateVal).add(364, 'days').toDate();
   }
 
-  schoolBeginDateChange(){
-    this.maxSchoolEndDateVal = moment(this.rolloverViewModel.schoolRollover.schoolBeginDate).add(365, 'days').toDate(); 
+  schoolBeginDateChange() {
+    this.maxSchoolEndDateVal = moment(this.rolloverViewModel.schoolRollover.schoolBeginDate).add(364, 'days').toDate();
   }
 
-  checkCurrentAcademicYearIsMaxOrNot(selectedYear:any) {
+  checkCurrentAcademicYearIsMaxOrNot(selectedYear: any) {
     let maxArr = []
     this.getAcademicYears.schoolId = this.defaultValuesService.getSchoolID();
-    this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res:any) => {
-    if(res._failure) { } 
-    else
-      res.academicYears.forEach(element => {
-        maxArr.push(element.academyYear)
-      });
-    let maxYear = Math.max(...maxArr)
-    if(selectedYear = maxYear || selectedYear < maxYear)
-      res.academicYears.forEach(value => {
-        if(maxYear==value.academyYear) 
-          this.showRollOver = !moment(new Date()).isBetween(value.startDate, value.endDate);
+    this.markingPeriodService.getAcademicYearList(this.getAcademicYears).subscribe((res: any) => {
+      if (res._failure) { }
+      else
+        res.academicYears.forEach(element => {
+          maxArr.push(element.academyYear)
+        });
+      let maxYear = Math.max(...maxArr)
+      if (selectedYear = maxYear || selectedYear < maxYear)
+        res.academicYears.forEach(value => {
+          if (maxYear == value.academyYear)
+            this.showRollOver = !moment(new Date()).isBetween(value.startDate, value.endDate);
         })
-    if(this.showRollOver)
-      this.populateFinalGrading();
+      if (this.showRollOver)
+        this.populateFinalGrading();
     })
   }
 
@@ -163,8 +166,8 @@ export class RolloverComponent implements OnInit {
               })
               this.rolloverViewModel.semesters.shift();
             }
-            else{
-              this.rolloverViewModel.semesters=[];
+            else {
+              this.rolloverViewModel.semesters = [];
             }
           }
         }
