@@ -19,6 +19,8 @@ export class SessionService {
   }
 
   RefreshToken(obj: UserViewModel) {
+    console.log('called');
+    
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.email = this.defaultValuesService.getEmailId();
     let apiurl = this.apiUrl + obj._tenantName + "/User/RefreshToken";

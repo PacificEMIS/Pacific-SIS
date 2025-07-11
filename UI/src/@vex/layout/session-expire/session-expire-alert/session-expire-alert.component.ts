@@ -78,6 +78,8 @@ export class SessionExpireAlertComponent implements OnInit, OnDestroy {
   }
 
   continue() {
+    console.log(1);
+    
     this.sessionRenewLoader = true;
     const loginViewModel: UserViewModel = new UserViewModel();
     this.sessionService.RefreshToken(loginViewModel).subscribe(res => {

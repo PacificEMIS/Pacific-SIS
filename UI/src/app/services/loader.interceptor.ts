@@ -31,6 +31,8 @@ export class LoaderInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(1);
+    
     if (req.url !== this.apiUrl + this.tenant + "/User/checkUserLoginEmail" && req.url !== this.apiUrl + this.tenant + "/Student/checkStudentInternalId"  && req.url !== this.apiUrl + this.tenant + "/Staff/checkStaffInternalId" 
     && req.url !== this.apiUrl + this.tenant + "/School/checkSchoolInternalId" && req.url !== this.apiUrl + this.tenant + "/User/RefreshToken" && req.url !== this.apiUrl + this.tenant +"/Grade/checkStandardRefNo") {
       this.requests.push(req);

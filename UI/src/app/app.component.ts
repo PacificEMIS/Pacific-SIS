@@ -80,12 +80,14 @@ export class AppComponent implements OnInit, OnDestroy {
   private timerStartSubscription: Subscription;
   private timeoutSubscription: Subscription;
   private pingSubscription: Subscription;
+  private isRefreshingToken = false;
   count = 0;
   refreshTokenTimer = 0;
   minutes: number;
   tokenEndTime;
   tokenExpired: boolean;
   timer: boolean;
+  
   
   constructor(private configService: ConfigService,
     private styleService: StyleService,
@@ -646,12 +648,22 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     } );
     });
-
+    //  console.log('this.tokenExpired',this.tokenExpired);
   this.pingSubscription =  this.userIdle.ping$.subscribe(() => {
     this.tokenDetails();
+    // console.log('this.defaultValueService.getToken()',this.defaultValueService.getToken());
+    // console.log('this.tokenExpired',this.tokenExpired);
+    
     if(this.defaultValueService.getToken()) {
-      this.getRefreshToken();
+      console.log('getRefreshToken called');
+      
+      // if (!this.isRefreshingToken && this.tokenExpired) {
+        this.getRefreshToken();
+        this.isRefreshingToken = true;
+      // }
     } else {
+      console.log('storage clear');
+      
       this.commonService.clearStorage();
     }
   });
@@ -684,6 +696,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getRefreshToken() {
+    console.log(2);
+    
     const loginViewModel: UserViewModel = new UserViewModel();
   
     this.sessionService.RefreshToken(loginViewModel).subscribe(res => {
