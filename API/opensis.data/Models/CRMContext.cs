@@ -2368,7 +2368,7 @@ namespace opensis.data.Models
 
             modelBuilder.Entity<GradebookConfigurationProgressPeriod>(entity =>
             {
-                entity.ToTable("gradebook_configuration_progressPeriod");
+                entity.ToTable("gradebook_configuration_progressperiod");
 
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
