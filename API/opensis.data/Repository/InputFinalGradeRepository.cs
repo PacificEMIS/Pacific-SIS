@@ -878,6 +878,8 @@ namespace opensis.data.Repository
 
             try
             {
+                var AssignmentTypeData = new List<AssignmentType>();
+                var gradeDataList = new List<Grade>();
                 int? YrMarkingPeriodId = 0;
                 int? SmstrMarkingPeriodId = 0;
                 int? QtrMarkingPeriodId = 0;
@@ -903,15 +905,27 @@ namespace opensis.data.Repository
                     {
                         YrMarkingPeriodId = Int32.Parse(markingPeriodid.ElementAt(1));
                     }
+
+                    AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).ThenInclude(x => x.GradebookGrades).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId && (YrMarkingPeriodId > 0 && x.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && x.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
+                }
+                else
+                {
+                    AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).ThenInclude(x => x.GradebookGrades).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId && x.YrMarkingPeriodId == null && x.SmstrMarkingPeriodId == null && x.QtrMarkingPeriodId == null && x.PrgrsprdMarkingPeriodId == null).ToList();
+                }
+
+                var gradeScaleData = this.context?.GradeScale.Include(x => x.Grade).FirstOrDefault(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.AcademicYear == gardeBookGradeViewModel.AcademicYear && x.UseAsStandardGradeScale != true);
+
+                if (gradeScaleData != null)
+                {
+                    gradeDataList = gradeScaleData.Grade.OrderByDescending(s => s.Breakoff).Select(s => new Grade { GradeScaleId = s.GradeScaleId, GradeId = s.GradeId, Breakoff = s.Breakoff, Title = s.Title, UnweightedGpValue = s.UnweightedGpValue != null ? s.UnweightedGpValue : 0, WeightedGpValue = s.WeightedGpValue != null ? s.WeightedGpValue : 0, Comment = s.Comment }).ToList();
                 }
 
                 var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Include(x => x.CourseSection).ThenInclude(x => x.GradeScale).ThenInclude(x => x!.Grade).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId).ToList();
 
-                var GradebookConfigurationData = this.context?.GradebookConfiguration.Include(x => x.GradebookConfigurationYear).Include(x => x.GradebookConfigurationSemester).Include(x => x.GradebookConfigurationQuarter).Include(x => x.GradebookConfigurationProgressPeriods).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId && x.AcademicYear == gardeBookGradeViewModel.AcademicYear).ToList();
+                var GradebookConfigurationData = this.context?.GradebookConfiguration.Include(x => x.GradebookConfigurationYear).Include(x => x.GradebookConfigurationSemester).Include(x => x.GradebookConfigurationQuarter).Include(x => x.GradebookConfigurationProgressPeriods).Include(x => x.GradebookConfigurationGradescale).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId && x.AcademicYear == gardeBookGradeViewModel.AcademicYear).ToList();
 
-                var AssignmentTypeData = this.context?.AssignmentType.Include(x => x.Assignment).ThenInclude(x => x.GradebookGrades).Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId && (YrMarkingPeriodId > 0 && x.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && x.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)).ToList();
 
-                var StudentFinalGradeData = this.context?.StudentFinalGrade.Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId /*&& (YrMarkingPeriodId > 0 && x.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && x.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && x.QtrMarkingPeriodId == QtrMarkingPeriodId || PrgrsprdMarkingPeriodId > 0 && x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId)*/).ToList();
+                var StudentFinalGradeData = this.context?.StudentFinalGrade.Where(x => x.TenantId == gardeBookGradeViewModel.TenantId && x.SchoolId == gardeBookGradeViewModel.SchoolId && x.CourseSectionId == gardeBookGradeViewModel.CourseSectionId).ToList();
 
                 if (StudentCoursesectionScheduleData?.Count > 0)
                 {
@@ -919,63 +933,617 @@ namespace opensis.data.Repository
                     if (GradebookConfigurationData?.Any() == true)
                     {
                         scoreRounding = GradebookConfigurationData.FirstOrDefault()!.ScoreRounding ?? "".ToLower();
-                    }
 
-                    if (PrgrsprdMarkingPeriodId > 0)
+                        if (PrgrsprdMarkingPeriodId > 0)
+                        {
+                            //this block for if progress period is last level of marking period.
+                            foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
+                            {
+                                StudentWithGradeBookViewModel studentWithGradeBook = new();
+                                decimal? prgsPercentage = 0.0m;
+                                decimal? prgsGrade = 0.0m;
+                                decimal? prgsGradeExam = 0.0m;
+
+                                var prgsConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationProgressPeriods).Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
+
+                                if (prgsConfigData != null)
+                                {
+                                    //fetch student running avg. from gradebook grade
+                                    var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+                                    if (gradebookGrades != null)
+                                    {
+                                        if (prgsConfigData.GradingPercentage > 0)
+                                        {
+                                            if (scoreRounding == "up")
+                                            {
+                                                var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                runningAvg = Math.Ceiling(runningAvg);
+                                                gradebookGrades.RunningAvg = runningAvg.ToString();
+                                            }
+                                            else if (scoreRounding == "down")
+                                            {
+                                                var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                runningAvg = Math.Floor(runningAvg);
+                                                gradebookGrades.RunningAvg = runningAvg.ToString();
+                                            }
+                                            else if (scoreRounding == "normal")
+                                            {
+                                                var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                runningAvg = Math.Round(runningAvg);
+                                                gradebookGrades.RunningAvg = runningAvg.ToString();
+                                            }
+
+                                            //this for none also
+                                            prgsGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(prgsConfigData.GradingPercentage) / 100);
+
+                                        }
+                                    }
+                                    //fetch student Exam grade from input final grade
+                                    var studentExamData = StudentFinalGradeData?.Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+                                    if (studentExamData != null)
+                                    {
+                                        if (prgsConfigData.ExamPercentage > 0)
+                                        {
+                                            prgsGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(prgsConfigData.ExamPercentage) / 100);
+                                        }
+                                    }
+                                    prgsPercentage = Math.Round((decimal)(prgsGrade + prgsGradeExam), 2);
+                                }
+                                studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
+                                studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
+                                studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
+                                studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
+                                studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
+                                studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
+                                studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
+                                studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
+
+                                studentWithGradeBook.Percentage = prgsPercentage;
+
+                                if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                                {
+                                    studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= prgsPercentage)?.Title ?? "";
+                                }
+                                else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScaleType == "Teacher_Scale")
+                                {
+                                    var GradebookConfigurationGrade = GradebookConfigurationData?.SelectMany(x => x.GradebookConfigurationGradescale).ToList();
+
+                                    if (GradebookConfigurationGrade?.Any() == true)
+                                    {
+                                        var ConfigurationGrade = GradebookConfigurationGrade.OrderByDescending(s => s.BreakoffPoints).FirstOrDefault(x => x.BreakoffPoints <= prgsPercentage);
+                                        var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                        if (gradeData != null)
+                                        {
+                                            studentWithGradeBook.Grade = gradeData.Title;
+                                        }
+                                    }
+                                }
+                                //else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                                //{
+                                //    var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= prgsPercentage);
+
+                                //    if (gradeData != null)
+                                //    {
+                                //        studentWithGradeBook.Grade = gradeData.Title;
+                                //    }
+                                //}
+
+                                gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
+                            }
+                        }
+
+                        else if (QtrMarkingPeriodId > 0)
+                        {
+                            var configurationQuartersData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationQuarter).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList();
+
+                            if (configurationQuartersData?.Count > 0)
+                            {
+                                var prgsIds = configurationQuartersData.Where(x => x.PrgrsprdMarkingPeriodId != null).Select(s => s.PrgrsprdMarkingPeriodId).ToList();
+
+                                foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
+                                {
+                                    StudentWithGradeBookViewModel studentWithGradeBook = new();
+                                    decimal? qtrPercentage = 0.0m;
+                                    decimal? qtrGradeExam = 0.0m;
+
+                                    if (prgsIds?.Count > 0)
+                                    {
+                                        //this block for first fetch progress period's grade then calculate quater grade.
+                                        foreach (var prgsId in prgsIds)
+                                        {
+                                            var studentPrgsGradeData = StudentFinalGradeData?.Where(x => x.PrgrsprdMarkingPeriodId == prgsId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+                                            if (studentPrgsGradeData != null)
+                                            {
+                                                var configData = configurationQuartersData.FirstOrDefault(x => x.PrgrsprdMarkingPeriodId == prgsId);
+                                                if (configData?.GradingPercentage > 0)
+                                                {
+                                                    qtrPercentage += studentPrgsGradeData.PercentMarks * (Convert.ToDecimal(configData.GradingPercentage) / 100);
+                                                }
+                                            }
+                                        }
+                                        //fetch quater exam grade.
+                                        var studentExamData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+                                        if (studentExamData != null)
+                                        {
+                                            var qtrConfigData = configurationQuartersData.FirstOrDefault(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.ExamPercentage > 0);
+                                            if (qtrConfigData?.ExamPercentage > 0)
+                                            {
+                                                qtrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(qtrConfigData.ExamPercentage) / 100);
+                                            }
+                                        }
+                                        qtrPercentage = qtrPercentage + qtrGradeExam;
+                                        qtrPercentage = Math.Round((decimal)qtrPercentage, 2);
+                                    }
+                                    else
+                                    {
+                                        //this block for if quater is last level of marking period.
+                                        decimal? qtrGrade = 0.0m;
+
+                                        var qtrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationQuarter).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
+
+                                        if (qtrConfigData != null)
+                                        {
+                                            //fetch student running avg. from gradebook grade
+                                            var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+
+                                            if (gradebookGrades != null)
+                                            {
+                                                if (qtrConfigData.GradingPercentage > 0)
+                                                {
+                                                    if (scoreRounding == "up")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Ceiling(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "down")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Floor(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "normal")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Round(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+
+                                                    //this for none also
+                                                    qtrGrade = (Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(qtrConfigData.GradingPercentage) / 100));
+                                                }
+                                            }
+                                            //fetch student Exam grade from input final grade
+                                            var studentExamData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+
+                                            if (studentExamData != null)
+                                            {
+                                                if (qtrConfigData.ExamPercentage > 0)
+                                                {
+                                                    qtrGradeExam = (Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(qtrConfigData.ExamPercentage) / 100));
+                                                }
+                                            }
+                                            qtrPercentage = Math.Round((decimal)(qtrGrade + qtrGradeExam), 2);
+                                        }
+                                    }
+                                    studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
+                                    studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
+                                    studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
+                                    studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
+                                    studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
+                                    studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
+                                    studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
+                                    studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
+
+                                    studentWithGradeBook.Percentage = qtrPercentage;
+
+                                    if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                                    {
+                                        studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= qtrPercentage)?.Title ?? "";
+                                    }
+                                    else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScaleType == "Teacher_Scale")
+                                    {
+                                        var GradebookConfigurationGrade = GradebookConfigurationData?.SelectMany(x => x.GradebookConfigurationGradescale).ToList();
+
+                                        if (GradebookConfigurationGrade?.Any() == true)
+                                        {
+                                            var ConfigurationGrade = GradebookConfigurationGrade.OrderByDescending(s => s.BreakoffPoints).FirstOrDefault(x => x.BreakoffPoints <= qtrPercentage);
+                                            var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                            if (gradeData != null)
+                                            {
+                                                studentWithGradeBook.Grade = gradeData.Title;
+                                            }
+                                        }
+                                    }
+                                    //else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                                    //{
+                                    //    var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= qtrPercentage);
+
+                                    //    if (gradeData != null)
+                                    //    {
+                                    //        studentWithGradeBook.Grade = gradeData.Title;
+                                    //    }
+                                    //}
+
+                                    gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
+                                }
+                            }
+                        }
+
+                        else if (SmstrMarkingPeriodId > 0)
+                        {
+                            var configurationSemesterData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationSemester).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch congigration data for this semester.
+
+                            if (configurationSemesterData?.Count > 0)
+                            {
+                                var qtrIds = configurationSemesterData.Where(x => x.QtrMarkingPeriodId != null).Select(s => s.QtrMarkingPeriodId).ToList();
+
+                                foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
+                                {
+                                    StudentWithGradeBookViewModel studentWithGradeBook = new();
+                                    decimal? smstrPercentage = 0.0m;
+                                    decimal? smstrGradeExam = 0.0m;
+
+                                    if (qtrIds?.Count > 0)
+                                    {
+                                        //this block for first fetch quater's grade then calculate semester grade.
+                                        foreach (var qtrId in qtrIds)
+                                        {
+                                            var studentQtrGradeData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == qtrId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+                                            if (studentQtrGradeData != null)
+                                            {
+                                                var configData = configurationSemesterData.FirstOrDefault(x => x.QtrMarkingPeriodId == qtrId);
+                                                if (configData?.GradingPercentage > 0)
+                                                {
+                                                    smstrPercentage += Convert.ToDecimal(studentQtrGradeData.PercentMarks) * (Convert.ToDecimal(configData.GradingPercentage) / 100);
+                                                }
+                                            }
+                                        }
+                                        //fetch semester exam grade.
+                                        var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+                                        if (studentExamData != null)
+                                        {
+                                            var smstrConfigData = configurationSemesterData.FirstOrDefault(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.ExamPercentage > 0);
+                                            if (smstrConfigData?.ExamPercentage > 0)
+                                            {
+                                                smstrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(smstrConfigData.ExamPercentage) / 100);
+                                            }
+                                        }
+                                        smstrPercentage = smstrPercentage + smstrGradeExam;
+                                        smstrPercentage = Math.Round((decimal)smstrPercentage, 2);
+                                    }
+                                    else
+                                    {
+                                        //this block for if semester is last level of marking period.
+                                        decimal? smstrGrade = 0.0m;
+
+                                        var smstrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationSemester).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
+
+                                        if (smstrConfigData != null)
+                                        {
+                                            //fetch student running avg. from gradebook grade
+                                            var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+
+                                            if (gradebookGrades != null)
+                                            {
+                                                if (smstrConfigData.GradingPercentage > 0)
+                                                {
+                                                    if (scoreRounding == "up")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Ceiling(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "down")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Floor(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "normal")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Round(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+
+                                                    smstrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(smstrConfigData.GradingPercentage) / 100);
+                                                }
+                                            }
+                                            //fetch student Exam grade from input final grade
+                                            var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+
+                                            if (studentExamData != null)
+                                            {
+                                                if (smstrConfigData.ExamPercentage > 0)
+                                                {
+                                                    smstrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(smstrConfigData.ExamPercentage) / 100);
+                                                }
+                                            }
+                                            smstrPercentage = Math.Round((decimal)(smstrGrade + smstrGradeExam), 2);
+                                        }
+                                    }
+                                    studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
+                                    studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
+                                    studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
+                                    studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
+                                    studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
+                                    studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
+                                    studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
+                                    studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
+
+                                    studentWithGradeBook.Percentage = smstrPercentage;
+
+                                    if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                                    {
+                                        studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= smstrPercentage)?.Title ?? "";
+                                    }
+                                    else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScaleType == "Teacher_Scale")
+                                    {
+                                        var GradebookConfigurationGrade = GradebookConfigurationData?.SelectMany(x => x.GradebookConfigurationGradescale).ToList();
+
+                                        if (GradebookConfigurationGrade?.Any() == true)
+                                        {
+                                            var ConfigurationGrade = GradebookConfigurationGrade.OrderByDescending(s => s.BreakoffPoints).FirstOrDefault(x => x.BreakoffPoints <= smstrPercentage);
+                                            var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                            if (gradeData != null)
+                                            {
+                                                studentWithGradeBook.Grade = gradeData.Title;
+                                            }
+                                        }
+                                    }
+                                    //else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                                    //{
+                                    //    var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= smstrPercentage);
+
+                                    //    if (gradeData != null)
+                                    //    {
+                                    //        studentWithGradeBook.Grade = gradeData.Title;
+                                    //    }
+                                    //}
+
+                                    gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
+                                }
+                            }
+                        }
+
+                        else if (YrMarkingPeriodId > 0)
+                        {
+                            var configurationYrData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationYear).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch full year congigration data.
+
+                            if (configurationYrData?.Count > 0)
+                            {
+                                var smstrIds = configurationYrData.Where(x => x.SmstrMarkingPeriodId != null).Select(s => s.SmstrMarkingPeriodId).ToList();
+
+                                foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
+                                {
+                                    StudentWithGradeBookViewModel studentWithGradeBook = new();
+                                    decimal? yrPercentage = 0.0m;
+                                    decimal? yrGradeExam = 0.0m;
+
+                                    if (smstrIds?.Count > 0)
+                                    {
+                                        //this block for first fetch semester's grade then calculate full year exam grade.
+                                        foreach (var smstrId in smstrIds)
+                                        {
+                                            var studentsmstrGradeData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == smstrId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+                                            if (studentsmstrGradeData != null)
+                                            {
+                                                var configData = configurationYrData.FirstOrDefault(x => x.SmstrMarkingPeriodId == smstrId);
+                                                if (configData?.GradingPercentage > 0)
+                                                {
+                                                    yrPercentage += Convert.ToDecimal(studentsmstrGradeData.PercentMarks) * (Convert.ToDecimal(configData.GradingPercentage) / 100);
+                                                }
+                                            }
+                                        }
+                                        //fetch full year exam grade.
+                                        var studentExamData = StudentFinalGradeData?.Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+                                        if (studentExamData != null)
+                                        {
+                                            var yrConfigData = configurationYrData.FirstOrDefault(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.ExamPercentage > 0);
+                                            if (yrConfigData?.ExamPercentage > 0)
+                                            {
+                                                yrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(yrConfigData.ExamPercentage) / 100);
+                                            }
+                                        }
+                                        yrPercentage = yrPercentage + yrGradeExam;
+                                        yrPercentage = Math.Round((decimal)yrPercentage, 2);
+                                    }
+                                    else
+                                    {
+                                        //this block for if full year is last level of marking period.
+                                        decimal? yrGrade = 0.0m;
+
+                                        var yrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationYear).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
+
+                                        if (yrConfigData != null)
+                                        {
+                                            //fetch student running avg. from gradebook grade
+                                            var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+
+                                            if (gradebookGrades != null)
+                                            {
+                                                if (yrConfigData.GradingPercentage > 0)
+                                                {
+                                                    if (scoreRounding == "up")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Ceiling(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "down")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Floor(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+                                                    else if (scoreRounding == "normal")
+                                                    {
+                                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                                        runningAvg = Math.Round(runningAvg);
+                                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                                    }
+
+                                                    yrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(yrConfigData.GradingPercentage) / 100);
+                                                }
+                                            }
+                                            //fetch student Exam grade from input final grade
+                                            var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
+
+                                            if (studentExamData != null)
+                                            {
+                                                if (yrConfigData.ExamPercentage > 0)
+                                                {
+                                                    yrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(yrConfigData.ExamPercentage) / 100);
+                                                }
+                                            }
+                                            yrPercentage = Math.Round((decimal)(yrGrade + yrGradeExam), 2);
+                                        }
+                                    }
+                                    studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
+                                    studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
+                                    studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
+                                    studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
+                                    studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
+                                    studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
+                                    studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
+                                    studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
+
+                                    studentWithGradeBook.Percentage = yrPercentage;
+
+                                    if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                                    {
+                                        studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= yrPercentage)?.Title ?? "";
+                                    }
+                                    else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScaleType == "Teacher_Scale")
+                                    {
+                                        var GradebookConfigurationGrade = GradebookConfigurationData?.SelectMany(x => x.GradebookConfigurationGradescale).ToList();
+
+                                        if (GradebookConfigurationGrade?.Any() == true)
+                                        {
+                                            var ConfigurationGrade = GradebookConfigurationGrade.OrderByDescending(s => s.BreakoffPoints).FirstOrDefault(x => x.BreakoffPoints <= yrPercentage);
+                                            var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                            if (gradeData != null)
+                                            {
+                                                studentWithGradeBook.Grade = gradeData.Title;
+                                            }
+                                        }
+                                    }
+                                    //else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                                    //{
+                                    //    var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= yrPercentage);
+
+                                    //    if (gradeData != null)
+                                    //    {
+                                    //        studentWithGradeBook.Grade = gradeData.Title;
+                                    //    }
+                                    //}
+
+                                    gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
+                                }
+                            }
+                        }
+
+                        else if (gardeBookGradeViewModel.MarkingPeriodId == null)
+                        {
+                            //this block for custom date range.
+                            foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
+                            {
+                                StudentWithGradeBookViewModel studentWithGradeBook = new();
+                                decimal? custmPercentage = 0.0m;
+                                decimal? custmGrade = 0.0m;
+
+                                //fetch student running avg. from gradebook grade
+                                var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.YrMarkingPeriodId == null && x.SmstrMarkingPeriodId == null && x.QtrMarkingPeriodId == null && x.PrgrsprdMarkingPeriodId == null && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
+                                if (gradebookGrades != null)
+                                {
+                                    if (scoreRounding == "up")
+                                    {
+                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                        runningAvg = Math.Ceiling(runningAvg);
+                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                    }
+                                    else if (scoreRounding == "down")
+                                    {
+                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                        runningAvg = Math.Floor(runningAvg);
+                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                    }
+                                    else if (scoreRounding == "normal")
+                                    {
+                                        var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                        runningAvg = Math.Round(runningAvg);
+                                        gradebookGrades.RunningAvg = runningAvg.ToString();
+                                    }
+
+                                    //this for none also
+                                    custmGrade = Convert.ToDecimal(gradebookGrades.RunningAvg);
+                                }
+
+                                custmPercentage = Math.Round((decimal)(custmGrade), 2);
+
+                                studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
+                                studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
+                                studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
+                                studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
+                                studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
+                                studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
+                                studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
+                                studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
+
+                                studentWithGradeBook.Percentage = custmPercentage;
+
+                                if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                                {
+                                    studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= custmPercentage)?.Title ?? "";
+                                }
+                                else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScaleType == "Teacher_Scale")
+                                {
+                                    var GradebookConfigurationGrade = GradebookConfigurationData?.SelectMany(x => x.GradebookConfigurationGradescale).ToList();
+
+                                    if (GradebookConfigurationGrade?.Any() == true)
+                                    {
+                                        var ConfigurationGrade = GradebookConfigurationGrade.OrderByDescending(s => s.BreakoffPoints).FirstOrDefault(x => x.BreakoffPoints <= custmPercentage);
+                                        var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                        if (gradeData != null)
+                                        {
+                                            studentWithGradeBook.Grade = gradeData.Title;
+                                        }
+                                    }
+                                }
+                                //else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                                //{
+                                //    var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= custmPercentage);
+
+                                //    if (gradeData != null)
+                                //    {
+                                //        studentWithGradeBook.Grade = gradeData.Title;
+                                //    }
+                                //}
+
+                                gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
+                            }
+                        }
+                    }
+                    else
                     {
-                        //this block for if progress period is last level of marking period.
+                        //this block for when user not set gradebook configuration
                         foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
                         {
                             StudentWithGradeBookViewModel studentWithGradeBook = new();
-                            decimal? prgsPercentage = 0.0m;
-                            decimal? prgsGrade = 0.0m;
-                            decimal? prgsGradeExam = 0.0m;
+                            decimal? percentage = 0.0m;
+                            decimal? grade = 0.0m;
 
-                            var prgsConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationProgressPeriods).Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
+                            //fetch student running avg. from gradebook grade
+                            var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
 
-                            if (prgsConfigData != null)
+                            if (gradebookGrades != null)
                             {
-                                //fetch student running avg. from gradebook grade
-                                var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-                                if (gradebookGrades != null)
-                                {
-                                    if (prgsConfigData.GradingPercentage > 0)
-                                    {
-                                        if (scoreRounding == "up")
-                                        {
-                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                            runningAvg = Math.Ceiling(runningAvg);
-                                            gradebookGrades.RunningAvg = runningAvg.ToString();
-                                        }
-                                        else if (scoreRounding == "down")
-                                        {
-                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                            runningAvg = Math.Floor(runningAvg);
-                                            gradebookGrades.RunningAvg = runningAvg.ToString();
-                                        }
-                                        else if (scoreRounding == "normal")
-                                        {
-                                            var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                            runningAvg = Math.Round(runningAvg);
-                                            gradebookGrades.RunningAvg = runningAvg.ToString();
-                                        }
-
-                                        //this for none also
-                                        prgsGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(prgsConfigData.GradingPercentage) / 100);
-
-                                    }
-                                }
-                                //fetch student Exam grade from input final grade
-                                var studentExamData = StudentFinalGradeData?.Where(x => x.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-                                if (studentExamData != null)
-                                {
-                                    if (prgsConfigData.ExamPercentage > 0)
-                                    {
-                                        prgsGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(prgsConfigData.ExamPercentage) / 100);
-                                    }
-                                }
-                                prgsPercentage = Math.Round((decimal)(prgsGrade + prgsGradeExam), 2);
+                                grade = Convert.ToDecimal(gradebookGrades.RunningAvg);
                             }
+
+                            percentage = Math.Round((decimal)(grade), 2);
+
                             studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
                             studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
                             studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
@@ -985,341 +1553,24 @@ namespace opensis.data.Repository
                             studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
                             studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
 
-                            studentWithGradeBook.Percentage = prgsPercentage;
-                            studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= studentWithGradeBook.Percentage)?.Title ?? "";
+                            studentWithGradeBook.Percentage = percentage;
+
+                            if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale != null)
+                            {
+                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderByDescending(s => s.Breakoff).FirstOrDefault(x => x.Breakoff <= percentage)?.Title ?? "";
+                            }
+
+                            else if (StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection?.GradeScaleType == "Numeric")
+                            {
+                                var gradeData = gradeDataList?.FirstOrDefault(x => x.Breakoff <= percentage);
+
+                                if (gradeData != null)
+                                {
+                                    studentWithGradeBook.Grade = gradeData.Title;
+                                }
+                            }
 
                             gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
-                        }
-                    }
-
-                    else if (QtrMarkingPeriodId > 0)
-                    {
-                        var configurationQuartersData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationQuarter).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList();
-
-                        if (configurationQuartersData?.Count > 0)
-                        {
-                            var prgsIds = configurationQuartersData.Where(x => x.PrgrsprdMarkingPeriodId != null).Select(s => s.PrgrsprdMarkingPeriodId).ToList();
-
-                            foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
-                            {
-                                StudentWithGradeBookViewModel studentWithGradeBook = new();
-                                decimal? qtrPercentage = 0.0m;
-                                decimal? qtrGradeExam = 0.0m;
-
-                                if (prgsIds?.Count > 0)
-                                {
-                                    //this block for first fetch progress period's grade then calculate quater grade.
-                                    foreach (var prgsId in prgsIds)
-                                    {
-                                        var studentPrgsGradeData = StudentFinalGradeData?.Where(x => x.PrgrsprdMarkingPeriodId == prgsId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-                                        if (studentPrgsGradeData != null)
-                                        {
-                                            var configData = configurationQuartersData.FirstOrDefault(x => x.PrgrsprdMarkingPeriodId == prgsId);
-                                            if (configData?.GradingPercentage > 0)
-                                            {
-                                                qtrPercentage += studentPrgsGradeData.PercentMarks * (Convert.ToDecimal(configData.GradingPercentage) / 100);
-                                            }
-                                        }
-                                    }
-                                    //fetch quater exam grade.
-                                    var studentExamData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-                                    if (studentExamData != null)
-                                    {
-                                        var qtrConfigData = configurationQuartersData.FirstOrDefault(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.ExamPercentage > 0);
-                                        if (qtrConfigData?.ExamPercentage > 0)
-                                        {
-                                            qtrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(qtrConfigData.ExamPercentage) / 100);
-                                        }
-                                    }
-                                    qtrPercentage = qtrPercentage + qtrGradeExam;
-                                    qtrPercentage = Math.Round((decimal)qtrPercentage, 2);
-                                }
-                                else
-                                {
-                                    //this block for if quater is last level of marking period.
-                                    decimal? qtrGrade = 0.0m;
-
-                                    var qtrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationQuarter).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
-
-                                    if (qtrConfigData != null)
-                                    {
-                                        //fetch student running avg. from gradebook grade
-                                        var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-
-                                        if (gradebookGrades != null)
-                                        {
-                                            if (qtrConfigData.GradingPercentage > 0)
-                                            {
-                                                if (scoreRounding == "up")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Ceiling(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "down")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Floor(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "normal")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Round(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-
-                                                //this for none also
-                                                qtrGrade = (Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(qtrConfigData.GradingPercentage) / 100));
-                                            }
-                                        }
-                                        //fetch student Exam grade from input final grade
-                                        var studentExamData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == QtrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-
-                                        if (studentExamData != null)
-                                        {
-                                            if (qtrConfigData.ExamPercentage > 0)
-                                            {
-                                                qtrGradeExam = (Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(qtrConfigData.ExamPercentage) / 100));
-                                            }
-                                        }
-                                        qtrPercentage = Math.Round((decimal)(qtrGrade + qtrGradeExam), 2);
-                                    }
-                                }
-                                studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
-                                studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
-                                studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
-                                studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
-                                studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
-                                studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
-                                studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
-                                studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
-
-                                studentWithGradeBook.Percentage = qtrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= qtrPercentage)?.Title ?? "";
-
-                                gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
-                            }
-                        }
-                    }
-
-                    else if (SmstrMarkingPeriodId > 0)
-                    {
-                        var configurationSemesterData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationSemester).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch congigration data for this semester.
-
-                        if (configurationSemesterData?.Count > 0)
-                        {
-                            var qtrIds = configurationSemesterData.Where(x => x.QtrMarkingPeriodId != null).Select(s => s.QtrMarkingPeriodId).ToList();
-
-                            foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
-                            {
-                                StudentWithGradeBookViewModel studentWithGradeBook = new();
-                                decimal? smstrPercentage = 0.0m;
-                                decimal? smstrGradeExam = 0.0m;
-
-                                if (qtrIds?.Count > 0)
-                                {
-                                    //this block for first fetch quater's grade then calculate semester grade.
-                                    foreach (var qtrId in qtrIds)
-                                    {
-                                        var studentQtrGradeData = StudentFinalGradeData?.Where(x => x.QtrMarkingPeriodId == qtrId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-                                        if (studentQtrGradeData != null)
-                                        {
-                                            var configData = configurationSemesterData.FirstOrDefault(x => x.QtrMarkingPeriodId == qtrId);
-                                            if (configData?.GradingPercentage > 0)
-                                            {
-                                                smstrPercentage += Convert.ToDecimal(studentQtrGradeData.PercentMarks) * (Convert.ToDecimal(configData.GradingPercentage) / 100);
-                                            }
-                                        }
-                                    }
-                                    //fetch semester exam grade.
-                                    var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-                                    if (studentExamData != null)
-                                    {
-                                        var smstrConfigData = configurationSemesterData.FirstOrDefault(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.ExamPercentage > 0);
-                                        if (smstrConfigData?.ExamPercentage > 0)
-                                        {
-                                            smstrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(smstrConfigData.ExamPercentage) / 100);
-                                        }
-                                    }
-                                    smstrPercentage = smstrPercentage + smstrGradeExam;
-                                    smstrPercentage = Math.Round((decimal)smstrPercentage, 2);
-                                }
-                                else
-                                {
-                                    //this block for if semester is last level of marking period.
-                                    decimal? smstrGrade = 0.0m;
-
-                                    var smstrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationSemester).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
-
-                                    if (smstrConfigData != null)
-                                    {
-                                        //fetch student running avg. from gradebook grade
-                                        var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-
-                                        if (gradebookGrades != null)
-                                        {
-                                            if (smstrConfigData.GradingPercentage > 0)
-                                            {
-                                                if (scoreRounding == "up")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Ceiling(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "down")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Floor(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "normal")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Round(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-
-                                                smstrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(smstrConfigData.GradingPercentage) / 100);
-                                            }
-                                        }
-                                        //fetch student Exam grade from input final grade
-                                        var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-
-                                        if (studentExamData != null)
-                                        {
-                                            if (smstrConfigData.ExamPercentage > 0)
-                                            {
-                                                smstrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(smstrConfigData.ExamPercentage) / 100);
-                                            }
-                                        }
-                                        smstrPercentage = Math.Round((decimal)(smstrGrade + smstrGradeExam), 2);
-                                    }
-                                }
-                                studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
-                                studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
-                                studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
-                                studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
-                                studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
-                                studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
-                                studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
-                                studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
-
-                                studentWithGradeBook.Percentage = smstrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= smstrPercentage)?.Title ?? "";
-
-                                gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
-                            }
-                        }
-                    }
-
-                    else if (YrMarkingPeriodId > 0)
-                    {
-                        var configurationYrData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationYear).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).ToList(); //fetch full year congigration data.
-
-                        if (configurationYrData?.Count > 0)
-                        {
-                            var smstrIds = configurationYrData.Where(x => x.SmstrMarkingPeriodId != null).Select(s => s.SmstrMarkingPeriodId).ToList();
-
-                            foreach (var StudentCoursesectionSchedule in StudentCoursesectionScheduleData)
-                            {
-                                StudentWithGradeBookViewModel studentWithGradeBook = new();
-                                decimal? yrPercentage = 0.0m;
-                                decimal? yrGradeExam = 0.0m;
-
-                                if (smstrIds?.Count > 0)
-                                {
-                                    //this block for first fetch semester's grade then calculate full year exam grade.
-                                    foreach (var smstrId in smstrIds)
-                                    {
-                                        var studentsmstrGradeData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == smstrId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-                                        if (studentsmstrGradeData != null)
-                                        {
-                                            var configData = configurationYrData.FirstOrDefault(x => x.SmstrMarkingPeriodId == smstrId);
-                                            if (configData?.GradingPercentage > 0)
-                                            {
-                                                yrPercentage += Convert.ToDecimal(studentsmstrGradeData.PercentMarks) * (Convert.ToDecimal(configData.GradingPercentage) / 100);
-                                            }
-                                        }
-                                    }
-                                    //fetch full year exam grade.
-                                    var studentExamData = StudentFinalGradeData?.Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-                                    if (studentExamData != null)
-                                    {
-                                        var yrConfigData = configurationYrData.FirstOrDefault(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.ExamPercentage > 0);
-                                        if (yrConfigData?.ExamPercentage > 0)
-                                        {
-                                            yrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(yrConfigData.ExamPercentage) / 100);
-                                        }
-                                    }
-                                    yrPercentage = yrPercentage + yrGradeExam;
-                                    yrPercentage = Math.Round((decimal)yrPercentage, 2);
-                                }
-                                else
-                                {
-                                    //this block for if full year is last level of marking period.
-                                    decimal? yrGrade = 0.0m;
-
-                                    var yrConfigData = GradebookConfigurationData?.SelectMany(s => s.GradebookConfigurationYear).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && (x.GradingPercentage > 0 || x.ExamPercentage > 0)).FirstOrDefault();
-
-                                    if (yrConfigData != null)
-                                    {
-                                        //fetch student running avg. from gradebook grade
-                                        var gradebookGrades = AssignmentTypeData?.SelectMany(s => s.Assignment).SelectMany(s => s.GradebookGrades).Where(x => x.YrMarkingPeriodId == YrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId).FirstOrDefault();
-
-                                        if (gradebookGrades != null)
-                                        {
-                                            if (yrConfigData.GradingPercentage > 0)
-                                            {
-                                                if (scoreRounding == "up")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Ceiling(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "down")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Floor(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-                                                else if (scoreRounding == "normal")
-                                                {
-                                                    var runningAvg = Convert.ToDecimal(gradebookGrades.RunningAvg);
-                                                    runningAvg = Math.Round(runningAvg);
-                                                    gradebookGrades.RunningAvg = runningAvg.ToString();
-                                                }
-
-                                                yrGrade = Convert.ToDecimal(gradebookGrades.RunningAvg) * (Convert.ToDecimal(yrConfigData.GradingPercentage) / 100);
-                                            }
-                                        }
-                                        //fetch student Exam grade from input final grade
-                                        var studentExamData = StudentFinalGradeData?.Where(x => x.SmstrMarkingPeriodId == SmstrMarkingPeriodId && x.StudentId == StudentCoursesectionSchedule.StudentId && x.IsExamGrade == true).FirstOrDefault();
-
-                                        if (studentExamData != null)
-                                        {
-                                            if (yrConfigData.ExamPercentage > 0)
-                                            {
-                                                yrGradeExam = Convert.ToDecimal(studentExamData.PercentMarks) * (Convert.ToDecimal(yrConfigData.ExamPercentage) / 100);
-                                            }
-                                        }
-                                        yrPercentage = Math.Round((decimal)(yrGrade + yrGradeExam), 2);
-                                    }
-                                }
-                                studentWithGradeBook.TenantId = StudentCoursesectionSchedule.TenantId;
-                                studentWithGradeBook.SchoolId = StudentCoursesectionSchedule.SchoolId;
-                                studentWithGradeBook.StudentId = StudentCoursesectionSchedule.StudentId;
-                                studentWithGradeBook.StudentInternalId = StudentCoursesectionSchedule.StudentInternalId;
-                                studentWithGradeBook.StudentGuid = StudentCoursesectionSchedule.StudentGuid;
-                                studentWithGradeBook.FirstGivenName = StudentCoursesectionSchedule.FirstGivenName;
-                                studentWithGradeBook.MiddleName = StudentCoursesectionSchedule.MiddleName;
-                                studentWithGradeBook.LastFamilyName = StudentCoursesectionSchedule.LastFamilyName;
-
-                                studentWithGradeBook.Percentage = yrPercentage;
-                                studentWithGradeBook.Grade = StudentCoursesectionScheduleData.FirstOrDefault()!.CourseSection.GradeScale?.Grade.OrderBy(x => x.SortOrder).FirstOrDefault(x => x.Breakoff <= yrPercentage)?.Title ?? "";
-
-                                gardeBookGrade.studentWithGradeBookViewModelList.Add(studentWithGradeBook);
-                            }
                         }
                     }
                 }
