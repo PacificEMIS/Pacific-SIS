@@ -655,472 +655,355 @@ namespace opensis.data.Repository
                 {
                     if (school.StartDate != null)
                     {
-                        //if (school.EndDate > school.StartDate?.AddYears(+1))
-                        //{
-                        //    school._failure = true;
-                        //    school._message = "End date should not be more then one year from start date.";
-                        //}
-                        //else
-                        //{
-                            //int? MasterSchoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
-                            int? MasterSchoolId = 1;
+                        int? MasterSchoolId = 1;
 
-                            var schoolData = this.context?.SchoolMaster.Where(x => x.TenantId == school.schoolMaster.TenantId).OrderByDescending(x => x.SchoolId).FirstOrDefault();
+                        var schoolData = this.context?.SchoolMaster.Where(x => x.TenantId == school.schoolMaster.TenantId).OrderByDescending(x => x.SchoolId).FirstOrDefault();
 
-                            if (schoolData != null)
+                        if (schoolData != null)
+                        {
+                            MasterSchoolId = schoolData.SchoolId + 1;
+                        }
+                        school.schoolMaster.SchoolId = (int)MasterSchoolId;
+                        Guid GuidId = Guid.NewGuid();
+                        var GuidIdExist = this.context?.SchoolMaster.FirstOrDefault(x => x.SchoolGuid == GuidId);
+                        if (GuidIdExist != null)
+                        {
+                            school._failure = true;
+                            school._message = "Guid is already exist, Please try again.";
+                            return school;
+                        }
+                        school.schoolMaster.SchoolGuid = GuidId;
+
+                        if (school.schoolMaster.SchoolDetail.ToList().Count > 0)
+                        {
+                            school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id))!);
+                        }
+                        school.schoolMaster.CreatedOn = DateTime.UtcNow;
+                        school.schoolMaster.TenantId = school.schoolMaster.TenantId;
+
+                        if (!string.IsNullOrEmpty(school.schoolMaster.SchoolInternalId))
+                        {
+                            bool checkInternalID = CheckInternalID(school.schoolMaster.TenantId, school.schoolMaster.SchoolInternalId);
+                            if (checkInternalID == false)
                             {
-                                MasterSchoolId = schoolData.SchoolId + 1;
-                            }
-                            //int? MemberShipId = Utility.GetMaxPK(this.context, new Func<Membership, int>(x => x.MembershipId));
-                            //int? CategoryId = Utility.GetMaxPK(this.context, new Func<FieldsCategory, int>(x => x.CategoryId));
-                            school.schoolMaster.SchoolId = (int)MasterSchoolId;
-                            Guid GuidId = Guid.NewGuid();
-                            var GuidIdExist = this.context?.SchoolMaster.FirstOrDefault(x => x.SchoolGuid == GuidId);
-                            if (GuidIdExist != null)
-                            {
+                                school.schoolMaster = null;
                                 school._failure = true;
-                                school._message = "Guid is already exist, Please try again.";
+                                school._message = "School InternalID Already Exist";
                                 return school;
                             }
-                            school.schoolMaster.SchoolGuid = GuidId;
+                        }
+                        else
+                        {
+                            school.schoolMaster.SchoolInternalId = MasterSchoolId.ToString();
+                        }
 
-                            if (school.schoolMaster.SchoolDetail.ToList().Count > 0)
+                        //insert seeding
+                        string dataSchoolSeedingValue = System.IO.File.ReadAllText(@"SchoolSeedingData.json");
+                        JsonSerializerSettings settingSSD = new JsonSerializerSettings();
+                        SchoolSeedingDataViewModel objSchoolSeeding = JsonConvert.DeserializeObject<SchoolSeedingDataViewModel>(dataSchoolSeedingValue, settingSSD);
+                        if (objSchoolSeeding != null)
+                        {
+                            var seedingMembershipData = objSchoolSeeding.MemberShip;
+                            foreach (var item in seedingMembershipData)
                             {
-                                school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id))!);
+                                item.TenantId = school.schoolMaster.TenantId;
+                                item.SchoolId = school.schoolMaster.SchoolId;
+                                item.CreatedBy = school.schoolMaster.CreatedBy;
+                                item.CreatedOn = school.schoolMaster.CreatedOn;
+                                school.schoolMaster.Membership.Add(item);
                             }
-                            school.schoolMaster.CreatedOn = DateTime.UtcNow;
-                            school.schoolMaster.TenantId = school.schoolMaster.TenantId;
-
-                            if (!string.IsNullOrEmpty(school.schoolMaster.SchoolInternalId))
+                            var seedingFieldsCategoryData = objSchoolSeeding.FieldsCategory;
+                            foreach (var item in seedingFieldsCategoryData)
                             {
-                                bool checkInternalID = CheckInternalID(school.schoolMaster.TenantId, school.schoolMaster.SchoolInternalId);
-                                if (checkInternalID == false)
-                                {
-                                    school.schoolMaster = null;
-                                    school._failure = true;
-                                    school._message = "School InternalID Already Exist";
-                                    return school;
-                                }
+                                item.TenantId = school.schoolMaster.TenantId;
+                                item.SchoolId = school.schoolMaster.SchoolId;
+                                item.CreatedBy = school.schoolMaster.CreatedBy;
+                                item.CreatedOn = school.schoolMaster.CreatedOn;
+                                school.schoolMaster.FieldsCategory.Add(item);
                             }
-                            else
+                            var seedingStudentEnrollmentCodeData = objSchoolSeeding.StudentEnrollmentCode;
+                            foreach (var item in seedingStudentEnrollmentCodeData)
                             {
-                                school.schoolMaster.SchoolInternalId = MasterSchoolId.ToString();
+                                item.TenantId = school.schoolMaster.TenantId;
+                                item.SchoolId = school.schoolMaster.SchoolId;
+                                item.AcademicYear = Convert.ToDecimal(school.StartDate?.Year);
+                                item.CreatedBy = school.schoolMaster.CreatedBy;
+                                item.CreatedOn = school.schoolMaster.CreatedOn;
+                                school.schoolMaster.StudentEnrollmentCode.Add(item);
                             }
-
-                            school.schoolMaster.Membership = new List<Membership>() {
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Super Administrator", IsActive= true, IsSuperadmin= true, IsSystem= true, MembershipId= 1, ProfileType= "Super Administrator"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "School Administrator", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 2, ProfileType= "School Administrator"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Admin Assistant", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 3, ProfileType= "Admin Assistant"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Teacher", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 4, ProfileType= "Teacher"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Homeroom Teacher", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 5, ProfileType= "Homeroom Teacher"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Parent", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 6, ProfileType= "Parent"},
-                    new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Student", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 7, ProfileType= "Student"},
-                };
-
-                            long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
-
-                            school.schoolMaster.DpdownValuelist = new List<DpdownValuelist>() {
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="PK",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId!},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="K",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+1},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="1",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+2},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="2",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+3},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="3",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+4},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="4",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+5},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="5",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+6},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="6",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+7},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="7",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+8},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="8",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+9},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="9",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+10},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="10",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+11},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="11",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+12},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="12",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+13},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="13",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+14},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="14",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+15},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="15",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+16},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="16",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+17},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="17",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+18},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="18",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+19},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="19",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+20},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="20",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+21},
-
-
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="School Gender",LovColumnValue="Boys",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+22},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="School Gender",LovColumnValue="Girls",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+23},
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="School Gender",LovColumnValue="Mixed",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+24},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Mr.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+25},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Miss.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+26},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Mrs.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+27},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Ms.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+28},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Dr.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+29},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Rev.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+30},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Prof.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+31},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Sir.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+32},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Salutation",LovColumnValue="Lord ",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+33},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="Jr.",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+34},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="Sr",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+35},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="II",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+37},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="III",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+38},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="IV",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+39},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="V",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+40},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Suffix",LovColumnValue="PhD",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+41},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Gender",LovColumnValue="Male",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+42},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Gender",LovColumnValue="Female",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+43},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Gender",LovColumnValue="Other",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+44},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Marital Status",LovColumnValue="Single",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+45},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Marital Status",LovColumnValue="Married",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+46},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Marital Status",LovColumnValue="Partnered",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+47},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Rolling/Retention Option",LovColumnValue="Next grade at current school",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+48},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Rolling/Retention Option",LovColumnValue="Retain",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+49},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Rolling/Retention Option",LovColumnValue="Do not enroll after this school year",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+50},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Relationship",LovColumnValue="Mother",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+51},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Relationship",LovColumnValue="Father",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+52},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Relationship",LovColumnValue="Legal Guardian",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+53},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Relationship",LovColumnValue="Other",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+54},
-
-
-                    new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Enrollment Type",LovColumnValue="Add",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+55},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Enrollment Type",LovColumnValue="Drop",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+56},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Enrollment Type",LovColumnValue="Rolled Over",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+57},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Enrollment Type",LovColumnValue="Drop (Transfer)",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+58},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Enrollment Type",LovColumnValue="Enroll (Transfer)",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+59},
-
-
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Dropdown",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+60},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Editable Dropdown",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+61},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Text",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+62},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Checkbox",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+63},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Number",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+64},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Multiple SelectBox",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+65},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Date",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+66},
-                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Field Type",LovColumnValue="Textarea",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+67},
-                     //new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="School Level",LovColumnValue=school.schoolMaster.SchoolLevel!,CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+68},
-                     //new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="School Classification",LovColumnValue=school.schoolMaster.SchoolClassification!,CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId+69}
-                };
-
-                            school.schoolMaster.FieldsCategory = new List<FieldsCategory>()
-                {
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="General Information",Module="School",SortOrder=1,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=1},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Wash Information",Module="School",SortOrder=2,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=2},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="General Info",Module="Student",SortOrder=1,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=3},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Enrollment Info",Module="Student",SortOrder=2,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=4},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Address & Contact",Module="Student",SortOrder=3,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=5},
-
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Family Info",Module="Student",SortOrder=4,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=6},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Medical Info",Module="Student",SortOrder=5,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=7},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Comments",Module="Student",SortOrder=6,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=8},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Documents",Module="Student",SortOrder=7,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=9},
-
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="General Info",Module="Parent",SortOrder=1,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=10},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Address Info",Module="Parent",SortOrder=2,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=11},
-
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="General Info",Module="Staff",SortOrder=1,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=12},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="School Info",Module="Staff",SortOrder=2,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=13},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Address & Contact",Module="Staff",SortOrder=3,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=14},
-                    new FieldsCategory(){ TenantId=school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,IsSystemCategory=true,Search=true, Title="Certification Info",Module="Staff",SortOrder=4,Required=true,Hide=false,CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy,CategoryId=15}
-                };
-
-                            school.schoolMaster.StudentEnrollmentCode = new List<StudentEnrollmentCode>()
-                {
-                     new StudentEnrollmentCode(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, EnrollmentCode=1, Title="New", ShortName="NEW", SortOrder=1, Type="Add", AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy },
-                     new StudentEnrollmentCode(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, EnrollmentCode=2, Title="Dropped Out", ShortName="DROP", SortOrder=2, Type="Drop", AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy },
-                     new StudentEnrollmentCode(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, EnrollmentCode=3, Title="Rolled Over", ShortName="ROLL", SortOrder=3, Type="Rolled Over", AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy },
-                     new StudentEnrollmentCode(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, EnrollmentCode=4, Title="Transferred In", ShortName="TRAN", SortOrder=4, Type="Enroll (Transfer)", AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy },
-                     new StudentEnrollmentCode(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, EnrollmentCode=5, Title="Transferred Out", ShortName="TRAN", SortOrder=5, Type="Drop (Transfer)", AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy }
-                };
-
                             school.schoolMaster.Block = new List<Block>()
-                {
-                     new Block(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=DateTime.UtcNow, CreatedBy=school.schoolMaster.CreatedBy }
-                };
-
-                            ReleaseNumber releaseNumber = new();
                             {
-                                releaseNumber.TenantId = school.schoolMaster.TenantId;
-                                releaseNumber.SchoolId = school.schoolMaster.SchoolId;
-                                releaseNumber.ReleaseNumber1 = "1.0.0";
-                                releaseNumber.ReleaseDate = DateTime.UtcNow;
-                                releaseNumber.CreatedBy = school.schoolMaster.CreatedBy;
-                                releaseNumber.CreatedOn = DateTime.UtcNow;
+                                    new Block(){TenantId=school.schoolMaster.TenantId, SchoolId=school.schoolMaster.SchoolId, BlockId=1, BlockTitle="All Day", BlockSortOrder=1, AcademicYear=Convert.ToDecimal(school.StartDate?.Year), CreatedOn=school.schoolMaster.CreatedOn, CreatedBy=school.schoolMaster.CreatedBy }
+                            };
+
+                            school.schoolMaster.AttendanceCodeCategories = new List<AttendanceCodeCategories>() {
+                     new AttendanceCodeCategories(){CreatedOn=school.schoolMaster.CreatedOn,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,AttendanceCategoryId= 1, AcademicYear=Convert.ToDecimal(school.StartDate?.Year) ,Title= "Student Attendance" }};
+
+                            var seedingAttendanceCodeData = objSchoolSeeding.AttendanceCode;
+                            foreach (var item in seedingAttendanceCodeData)
+                            {
+                                item.TenantId = school.schoolMaster.TenantId;
+                                item.SchoolId = school.schoolMaster.SchoolId;
+                                item.AcademicYear = Convert.ToDecimal(school.StartDate?.Year);
+                                item.CreatedBy = school.schoolMaster.CreatedBy;
+                                item.CreatedOn = school.schoolMaster.CreatedOn;
+                                this.context?.AttendanceCode.Add(item);
                             }
+                        }
 
-                            //insert into permission group
-                            var dataGroup = System.IO.File.ReadAllText(@"Group.json");
-                            JsonSerializerSettings settingGrp = new();
-                            List<PermissionGroup> objGroup = JsonConvert.DeserializeObject<List<PermissionGroup>>(dataGroup, settingGrp)!;
+                        long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                        var dataDpValue = System.IO.File.ReadAllText(@"DPdownValue.json");
+                        JsonSerializerSettings settingdpValue = new();
+                        List<DpdownValuelist> objDpValue = JsonConvert.DeserializeObject<List<DpdownValuelist>>(dataDpValue, settingdpValue)!;
 
-                            foreach (PermissionGroup permisionGrp in objGroup)
+                        foreach (DpdownValuelist dpdownValue in objDpValue)
+                        {
+                            dpdownValue.TenantId = school.schoolMaster.TenantId;
+                            dpdownValue.SchoolId = school.schoolMaster.SchoolId;
+                            dpdownValue.Id = (long)dpdownValueId!++;
+                            dpdownValue.CreatedBy = school.schoolMaster.CreatedBy;
+                            dpdownValue.CreatedOn = school.schoolMaster.CreatedOn;
+                            this.context?.DpdownValuelist.Add(dpdownValue);
+                        }
+
+                        //insert into permission group
+                        var dataGroup = System.IO.File.ReadAllText(@"Group.json");
+                        JsonSerializerSettings settingGrp = new();
+                        List<PermissionGroup> objGroup = JsonConvert.DeserializeObject<List<PermissionGroup>>(dataGroup, settingGrp)!;
+
+                        foreach (PermissionGroup permisionGrp in objGroup)
+                        {
+                            permisionGrp.TenantId = school.schoolMaster.TenantId;
+                            permisionGrp.SchoolId = school.schoolMaster.SchoolId;
+                            permisionGrp.CreatedBy = school.schoolMaster.CreatedBy;
+                            permisionGrp.CreatedOn = school.schoolMaster.CreatedOn;
+                            this.context?.PermissionGroup.Add(permisionGrp);
+                        }
+
+                        //insert into system default custom fields
+                        var dataCustomFields = System.IO.File.ReadAllText(@"CustomFields.json");
+                        JsonSerializerSettings settingCusFld = new();
+                        List<CustomFields> objCusFld = JsonConvert.DeserializeObject<List<CustomFields>>(dataCustomFields, settingCusFld)!;
+                        foreach (CustomFields customFields in objCusFld)
+                        {
+                            customFields.TenantId = school.schoolMaster.TenantId;
+                            customFields.SchoolId = school.schoolMaster.SchoolId;
+                            customFields.CreatedBy = school.schoolMaster.CreatedBy;
+                            customFields.CreatedOn = DateTime.UtcNow;
+                            this.context?.CustomFields.Add(customFields);
+                        }
+
+                        int? CusFldId = objCusFld.Max(x => x.FieldId);
+                        if (CusFldId != null)
+                        {
+                            CusFldId++;
+                        }
+
+                        //insert into permission category
+                        var dataCategory = System.IO.File.ReadAllText(@"Category.json");
+                        JsonSerializerSettings settingCat = new();
+                        List<PermissionCategory> objCat = JsonConvert.DeserializeObject<List<PermissionCategory>>(dataCategory, settingCat)!;
+                        foreach (PermissionCategory permissionCate in objCat)
+                        {
+                            permissionCate.TenantId = school.schoolMaster.TenantId;
+                            permissionCate.SchoolId = school.schoolMaster.SchoolId;
+                            permissionCate.CreatedBy = school.schoolMaster.CreatedBy;
+                            permissionCate.CreatedOn = DateTime.UtcNow;
+                            this.context?.PermissionCategory.Add(permissionCate);
+                        }
+
+                        //insert into permission subcategory
+                        var dataSubCategory = System.IO.File.ReadAllText(@"SubCategory.json");
+                        JsonSerializerSettings settingSubCat = new();
+                        List<PermissionSubcategory> objSubCat = JsonConvert.DeserializeObject<List<PermissionSubcategory>>(dataSubCategory, settingSubCat)!;
+                        foreach (PermissionSubcategory permissionSubCate in objSubCat)
+                        {
+                            permissionSubCate.TenantId = school.schoolMaster.TenantId;
+                            permissionSubCate.SchoolId = school.schoolMaster.SchoolId;
+                            permissionSubCate.CreatedBy = school.schoolMaster.CreatedBy;
+                            permissionSubCate.CreatedOn = DateTime.UtcNow;
+                            this.context?.PermissionSubcategory.Add(permissionSubCate);
+                        }
+
+                        int? SubCateId = objSubCat.Max(x => x.PermissionSubcategoryId);
+                        if (SubCateId != null)
+                        {
+                            SubCateId++;
+                        }
+
+                        //insert into role permission
+                        var dataRolePermission = System.IO.File.ReadAllText(@"RolePermission.json");
+                        JsonSerializerSettings settingRole = new();
+                        List<RolePermission> objRole = JsonConvert.DeserializeObject<List<RolePermission>>(dataRolePermission, settingRole)!;
+                        foreach (RolePermission permissionRole in objRole)
+                        {
+                            permissionRole.TenantId = school.schoolMaster.TenantId;
+                            permissionRole.SchoolId = school.schoolMaster.SchoolId;
+                            permissionRole.CreatedBy = school.schoolMaster.CreatedBy;
+                            permissionRole.CreatedOn = DateTime.UtcNow;
+                            this.context?.RolePermission.Add(permissionRole);
+                        }
+
+                        int? RoleId = objRole.Max(x => x.RolePermissionId);
+                        if (RoleId != null)
+                        {
+                            RoleId++;
+                        }
+
+                        var customFieldCategories = this.context?.FieldsCategory.Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.SchoolId && x.IsSystemCategory != true).ToList();
+
+                        if (customFieldCategories?.Any() == true)
+                        {
+                            foreach (var customFieldCategoriesData in customFieldCategories)
                             {
-
-                                permisionGrp.TenantId = school.schoolMaster.TenantId;
-                                permisionGrp.SchoolId = school.schoolMaster.SchoolId;
-                                permisionGrp.CreatedBy = school.schoolMaster.CreatedBy;
-                                permisionGrp.CreatedOn = school.schoolMaster.CreatedOn;
-                                //permisionGrp.IsActive = true;
-                                //permisionGrp.PermissionCategory = new HashSet<PermissionCategory>();
-                                this.context?.PermissionGroup.Add(permisionGrp);
-                                //this.context?.SaveChanges(objModel.UserName, objModel.HostName, objModel.IpAddress, objModel.Page);
-                            }
-
-                            //insert into system default custom fields
-                            var dataCustomFields = System.IO.File.ReadAllText(@"CustomFields.json");
-                            JsonSerializerSettings settingCusFld = new();
-                            List<CustomFields> objCusFld = JsonConvert.DeserializeObject<List<CustomFields>>(dataCustomFields, settingCusFld)!;
-                            foreach (CustomFields customFields in objCusFld)
-                            {
-                                customFields.TenantId = school.schoolMaster.TenantId;
-                                customFields.SchoolId = school.schoolMaster.SchoolId;
-                                customFields.CreatedBy = school.schoolMaster.CreatedBy;
-                                customFields.CreatedOn = DateTime.UtcNow;
-                                this.context?.CustomFields.Add(customFields);
-                                //this.context?.SaveChanges(objModel.UserName, objModel.HostName, objModel.IpAddress, objModel.Page);
-                            }
-
-                            int? CusFldId = objCusFld.Max(x => x.FieldId);
-                            if (CusFldId != null)
-                            {
-                                CusFldId++;
-                            }
-
-                            //insert into permission category
-                            var dataCategory = System.IO.File.ReadAllText(@"Category.json");
-                            JsonSerializerSettings settingCat = new();
-                            List<PermissionCategory> objCat = JsonConvert.DeserializeObject<List<PermissionCategory>>(dataCategory, settingCat)!;
-                            foreach (PermissionCategory permissionCate in objCat)
-                            {
-                                permissionCate.TenantId = school.schoolMaster.TenantId;
-                                permissionCate.SchoolId = school.schoolMaster.SchoolId;
-                                //permissionCate.PermissionGroup = new();
-                                //permissionCate.RolePermission = new HashSet<RolePermission>();
-                                permissionCate.CreatedBy = school.schoolMaster.CreatedBy;
-                                permissionCate.CreatedOn = DateTime.UtcNow;
-                                this.context?.PermissionCategory.Add(permissionCate);
-                                //this.context?.SaveChanges(objModel.UserName, objModel.HostName, objModel.IpAddress, objModel.Page);
-                            }
-
-                            //insert into permission subcategory
-                            var dataSubCategory = System.IO.File.ReadAllText(@"SubCategory.json");
-                            JsonSerializerSettings settingSubCat = new();
-                            List<PermissionSubcategory> objSubCat = JsonConvert.DeserializeObject<List<PermissionSubcategory>>(dataSubCategory, settingSubCat)!;
-                            foreach (PermissionSubcategory permissionSubCate in objSubCat)
-                            {
-                                permissionSubCate.TenantId = school.schoolMaster.TenantId;
-                                permissionSubCate.SchoolId = school.schoolMaster.SchoolId;
-                                //permissionSubCate.RolePermission = new HashSet<RolePermission>();
-                                permissionSubCate.CreatedBy = school.schoolMaster.CreatedBy;
-                                permissionSubCate.CreatedOn = DateTime.UtcNow;
-                                this.context?.PermissionSubcategory.Add(permissionSubCate);
-                                //this.context?.SaveChanges(objModel.UserName, objModel.HostName, objModel.IpAddress, objModel.Page);
-                            }
-
-                            int? SubCateId = objSubCat.Max(x => x.PermissionSubcategoryId);
-                            if (SubCateId != null)
-                            {
-                                SubCateId++;
-                            }
-
-                            //insert into role permission
-                            var dataRolePermission = System.IO.File.ReadAllText(@"RolePermission.json");
-                            JsonSerializerSettings settingRole = new();
-                            List<RolePermission> objRole = JsonConvert.DeserializeObject<List<RolePermission>>(dataRolePermission, settingRole)!;
-                            foreach (RolePermission permissionRole in objRole)
-                            {
-                                permissionRole.TenantId = school.schoolMaster.TenantId;
-                                permissionRole.SchoolId = school.schoolMaster.SchoolId;
-                                //permissionRole.PermissionCategory = null;
-                                //permissionRole.Membership = null;
-                                permissionRole.CreatedBy = school.schoolMaster.CreatedBy;
-                                permissionRole.CreatedOn = DateTime.UtcNow;
-                                this.context?.RolePermission.Add(permissionRole);
-                                //this.context?.SaveChanges(objModel.UserName, objModel.HostName, objModel.IpAddress, objModel.Page);
-                            }
-
-                            int? RoleId = objRole.Max(x => x.RolePermissionId);
-                            if (RoleId != null)
-                            {
-                                RoleId++;
-                            }
-
-                            var customFieldCategories = this.context?.FieldsCategory.Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.SchoolId && x.IsSystemCategory != true).ToList();
-
-                            if (customFieldCategories?.Any() == true)
-                            {
-                                foreach (var customFieldCategoriesData in customFieldCategories)
+                                var fieldsCategory = new FieldsCategory()
                                 {
-                                    var fieldsCategory = new FieldsCategory()
+                                    TenantId = school.schoolMaster.TenantId,
+                                    SchoolId = school.schoolMaster.SchoolId,
+                                    CategoryId = customFieldCategoriesData.CategoryId,
+                                    IsSystemCategory = false,
+                                    Search = customFieldCategoriesData.Search,
+                                    Title = customFieldCategoriesData.Title,
+                                    Module = customFieldCategoriesData.Module,
+                                    SortOrder = customFieldCategoriesData.SortOrder,
+                                    Required = customFieldCategoriesData.Required,
+                                    Hide = customFieldCategoriesData.Hide,
+                                    IsSystemWideCategory = true,
+                                    CreatedBy = school.schoolMaster.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+
+                                school.schoolMaster.FieldsCategory.Add(fieldsCategory);
+
+                                var PermissionSubcategoryData = this.context?.PermissionSubcategory.Include(x => x.RolePermission).AsEnumerable().Where(x => x.SchoolId == school.SchoolId && x.TenantId == school.schoolMaster.TenantId && String.Compare(x.PermissionSubcategoryName, customFieldCategoriesData.Title, true) == 0).FirstOrDefault();
+
+                                if (PermissionSubcategoryData != null)
+                                {
+                                    var permissionSubCategory = new PermissionSubcategory()
                                     {
                                         TenantId = school.schoolMaster.TenantId,
                                         SchoolId = school.schoolMaster.SchoolId,
-                                        CategoryId = customFieldCategoriesData.CategoryId,
-                                        IsSystemCategory = false,
-                                        Search = customFieldCategoriesData.Search,
-                                        Title = customFieldCategoriesData.Title,
-                                        Module = customFieldCategoriesData.Module,
-                                        SortOrder = customFieldCategoriesData.SortOrder,
-                                        Required = customFieldCategoriesData.Required,
-                                        Hide = customFieldCategoriesData.Hide,
-                                        IsSystemWideCategory = true,
+                                        PermissionSubcategoryId = (int)SubCateId!,
+                                        PermissionGroupId = PermissionSubcategoryData.PermissionGroupId,
+                                        PermissionCategoryId = PermissionSubcategoryData.PermissionCategoryId,
+                                        PermissionSubcategoryName = PermissionSubcategoryData.PermissionSubcategoryName,
+                                        Path = PermissionSubcategoryData.Path,
+                                        Title = PermissionSubcategoryData.Title,
+                                        EnableView = PermissionSubcategoryData.EnableView,
+                                        EnableAdd = PermissionSubcategoryData.EnableAdd,
+                                        EnableEdit = PermissionSubcategoryData.EnableEdit,
+                                        EnableDelete = PermissionSubcategoryData.EnableDelete,
                                         CreatedBy = school.schoolMaster.CreatedBy,
-                                        CreatedOn = DateTime.UtcNow
+                                        CreatedOn = DateTime.UtcNow,
+                                        IsActive = true,
+                                        SortOrder = PermissionSubcategoryData.SortOrder
                                     };
+                                    this.context?.PermissionSubcategory.Add(permissionSubCategory);
 
-                                    school.schoolMaster.FieldsCategory.Add(fieldsCategory);
+                                    var membershipData = this.context?.Membership.Where(x => x.SchoolId == school.SchoolId && x.TenantId == school.schoolMaster.TenantId && x.IsSystem == true).ToList();
 
-                                    var PermissionSubcategoryData = this.context?.PermissionSubcategory.Include(x => x.RolePermission).AsEnumerable().Where(x => x.SchoolId == school.SchoolId && x.TenantId == school.schoolMaster.TenantId && String.Compare(x.PermissionSubcategoryName, customFieldCategoriesData.Title, true) == 0).FirstOrDefault();
-
-                                    if (PermissionSubcategoryData != null)
+                                    foreach (var membership in membershipData!)
                                     {
-                                        var permissionSubCategory = new PermissionSubcategory()
+                                        if (String.Compare(membership.ProfileType, "super administrator", true) == 0 || String.Compare(membership.ProfileType, "school administrator", true) == 0 || String.Compare(membership.ProfileType, "admin assistant", true) == 0)
                                         {
-                                            TenantId = school.schoolMaster.TenantId,
-                                            SchoolId = school.schoolMaster.SchoolId,
-                                            PermissionSubcategoryId = (int)SubCateId!,
-                                            PermissionGroupId = PermissionSubcategoryData.PermissionGroupId,
-                                            PermissionCategoryId = PermissionSubcategoryData.PermissionCategoryId,
-                                            PermissionSubcategoryName = PermissionSubcategoryData.PermissionSubcategoryName,
-                                            Path = PermissionSubcategoryData.Path,
-                                            Title = PermissionSubcategoryData.Title,
-                                            EnableView = PermissionSubcategoryData.EnableView,
-                                            EnableAdd = PermissionSubcategoryData.EnableAdd,
-                                            EnableEdit = PermissionSubcategoryData.EnableEdit,
-                                            EnableDelete = PermissionSubcategoryData.EnableDelete,
-                                            CreatedBy = school.schoolMaster.CreatedBy,
-                                            CreatedOn = DateTime.UtcNow,
-                                            IsActive = true,
-                                            SortOrder = PermissionSubcategoryData.SortOrder
-                                        };
-                                        this.context?.PermissionSubcategory.Add(permissionSubCategory);
-
-                                        var membershipData = this.context?.Membership.Where(x => x.SchoolId == school.SchoolId && x.TenantId == school.schoolMaster.TenantId && x.IsSystem == true).ToList();
-
-                                        foreach (var membership in membershipData!)
-                                        {
-                                            if (String.Compare(membership.ProfileType, "super administrator", true) == 0 || String.Compare(membership.ProfileType, "school administrator", true) == 0 || String.Compare(membership.ProfileType, "admin assistant", true) == 0)
+                                            var rolePermission = new RolePermission()
                                             {
-                                                var rolePermission = new RolePermission()
-                                                {
-                                                    TenantId = school.schoolMaster.TenantId,
-                                                    SchoolId = school.schoolMaster.SchoolId,
-                                                    RolePermissionId = (int)RoleId!,
-                                                    PermissionGroupId = null,
-                                                    PermissionCategoryId = null,
-                                                    PermissionSubcategoryId = SubCateId!,
-                                                    CanView = true,
-                                                    CanAdd = true,
-                                                    CanEdit = true,
-                                                    CanDelete = true,
-                                                    CreatedBy = school.schoolMaster.CreatedBy,
-                                                    CreatedOn = DateTime.UtcNow,
-                                                    MembershipId = membership.MembershipId
-                                                };
-                                                this.context?.RolePermission.Add(rolePermission);
-                                            }
-                                            else
-                                            {
-                                                var rolePermission = new RolePermission()
-                                                {
-                                                    TenantId = school.schoolMaster.TenantId,
-                                                    SchoolId = school.schoolMaster.SchoolId,
-                                                    RolePermissionId = (int)RoleId!,
-                                                    PermissionGroupId = null,
-                                                    PermissionCategoryId = null,
-                                                    PermissionSubcategoryId = (int)SubCateId,
-                                                    CanView = false,
-                                                    CanAdd = false,
-                                                    CanEdit = false,
-                                                    CanDelete = false,
-                                                    CreatedBy = school.schoolMaster.CreatedBy,
-                                                    CreatedOn = DateTime.UtcNow,
-                                                    MembershipId = membership.MembershipId
-                                                };
-                                                this.context?.RolePermission.Add(rolePermission);
-                                            }
-                                            RoleId++;
+                                                TenantId = school.schoolMaster.TenantId,
+                                                SchoolId = school.schoolMaster.SchoolId,
+                                                RolePermissionId = (int)RoleId!,
+                                                PermissionGroupId = null,
+                                                PermissionCategoryId = null,
+                                                PermissionSubcategoryId = SubCateId!,
+                                                CanView = true,
+                                                CanAdd = true,
+                                                CanEdit = true,
+                                                CanDelete = true,
+                                                CreatedBy = school.schoolMaster.CreatedBy,
+                                                CreatedOn = DateTime.UtcNow,
+                                                MembershipId = membership.MembershipId
+                                            };
+                                            this.context?.RolePermission.Add(rolePermission);
                                         }
-                                        SubCateId++;
+                                        else
+                                        {
+                                            var rolePermission = new RolePermission()
+                                            {
+                                                TenantId = school.schoolMaster.TenantId,
+                                                SchoolId = school.schoolMaster.SchoolId,
+                                                RolePermissionId = (int)RoleId!,
+                                                PermissionGroupId = null,
+                                                PermissionCategoryId = null,
+                                                PermissionSubcategoryId = (int)SubCateId,
+                                                CanView = false,
+                                                CanAdd = false,
+                                                CanEdit = false,
+                                                CanDelete = false,
+                                                CreatedBy = school.schoolMaster.CreatedBy,
+                                                CreatedOn = DateTime.UtcNow,
+                                                MembershipId = membership.MembershipId
+                                            };
+                                            this.context?.RolePermission.Add(rolePermission);
+                                        }
+                                        RoleId++;
                                     }
+                                    SubCateId++;
                                 }
                             }
+                        }
 
-                            var CustomFieldsData = this.context?.CustomFields.Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.SchoolId && x.SystemField != true && x.IsSystemWideField == true).ToList();
-                            if (CustomFieldsData?.Any()==true)
+                        var CustomFieldsData = this.context?.CustomFields.Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.SchoolId && x.SystemField != true && x.IsSystemWideField == true).ToList();
+                        if (CustomFieldsData?.Any() == true)
+                        {
+                            CustomFieldsData.ForEach(x => { x.FieldId = (int)CusFldId!++; x.SchoolId = school.schoolMaster.SchoolId; x.CreatedBy = school.schoolMaster.CreatedBy; x.CreatedOn = DateTime.UtcNow; });
+                            this.context?.CustomFields.AddRange(CustomFieldsData);
+                        }
+
+                        this.context?.SchoolMaster.Add(school.schoolMaster);
+
+                        //Insert data in staff_school_info table for School Admin & Admin Assistant
+                        var userMasterData = this.context?.UserMaster.Include(x => x.Membership).Where(x => x.TenantId == school.schoolMaster.TenantId && x.EmailAddress == school.EmailAddress).ToList();
+
+                        if (userMasterData?.Any() == true)
+                        {
+                            if (userMasterData.FirstOrDefault()!.Membership.ProfileType != "Super Administrator")
                             {
-                                CustomFieldsData.ForEach(x => { x.FieldId = (int)CusFldId!++; x.SchoolId = school.schoolMaster.SchoolId; x.CreatedBy = school.schoolMaster.CreatedBy; x.CreatedOn = DateTime.UtcNow; });
-                                this.context?.CustomFields.AddRange(CustomFieldsData);
-                            }
+                                int? Id = 0;
+                                Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
 
-                            this.context?.SchoolMaster.Add(school.schoolMaster);
-                            this.context?.ReleaseNumber.Add(releaseNumber);
-
-                            //Insert data in staff_school_info table for School Admin & Admin Assistant
-                            var userMasterData = this.context?.UserMaster.Include(x => x.Membership).Where(x => x.TenantId == school.schoolMaster.TenantId && x.EmailAddress == school.EmailAddress).ToList();
-
-                            if (userMasterData?.Any()==true)
-                            {
-                                if (userMasterData.FirstOrDefault()!.Membership.ProfileType != "Super Administrator")
+                                StaffSchoolInfo staffSchoolInfo = new();
                                 {
-                                    int? Id = 0;
-                                    Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
-
-                                    StaffSchoolInfo staffSchoolInfo = new();
-                                    {
-                                        staffSchoolInfo.TenantId = school.schoolMaster.TenantId;
-                                        staffSchoolInfo.SchoolId = userMasterData.FirstOrDefault()!.SchoolId;
-                                        staffSchoolInfo.StaffId = userMasterData.FirstOrDefault()!.UserId;
-                                        staffSchoolInfo.SchoolAttachedId = school.schoolMaster.SchoolId;
-                                        staffSchoolInfo.SchoolAttachedName = school.schoolMaster.SchoolName;
-                                        staffSchoolInfo.Profile = userMasterData.FirstOrDefault()!.Membership.Profile;
-                                        staffSchoolInfo.StartDate = DateTime.UtcNow;
-                                        staffSchoolInfo.CreatedBy = school.schoolMaster.CreatedBy;
-                                        staffSchoolInfo.CreatedOn = DateTime.UtcNow;
-                                        staffSchoolInfo.Id = Id!=null ? (int)Id : 0;
-                                    }
-                                    this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
+                                    staffSchoolInfo.TenantId = school.schoolMaster.TenantId;
+                                    staffSchoolInfo.SchoolId = userMasterData.FirstOrDefault()!.SchoolId;
+                                    staffSchoolInfo.StaffId = userMasterData.FirstOrDefault()!.UserId;
+                                    staffSchoolInfo.SchoolAttachedId = school.schoolMaster.SchoolId;
+                                    staffSchoolInfo.SchoolAttachedName = school.schoolMaster.SchoolName;
+                                    staffSchoolInfo.Profile = userMasterData.FirstOrDefault()!.Membership.Profile;
+                                    staffSchoolInfo.StartDate = DateTime.UtcNow;
+                                    staffSchoolInfo.CreatedBy = school.schoolMaster.CreatedBy;
+                                    staffSchoolInfo.CreatedOn = DateTime.UtcNow;
+                                    staffSchoolInfo.Id = Id != null ? (int)Id : 0;
                                 }
+                                this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
                             }
+                        }
 
-                            AddSchoolYearAndSchoolCalendar(school.schoolMaster.TenantId, school.schoolMaster.SchoolId, school.StartDate,/* school.EndDate,*/ school.schoolMaster.CreatedBy);
+                        AddSchoolYearAndSchoolCalendar(school.schoolMaster.TenantId, school.schoolMaster.SchoolId, school.StartDate,/* school.EndDate,*/ school.schoolMaster.CreatedBy);
 
-                            this.context?.SaveChanges();
-                            transaction?.Commit();
-                            school._failure = false;
-                            school._message = "School added successfully";
+                        this.context?.SaveChanges();
+                        transaction?.Commit();
+                        school._failure = false;
+                        school._message = "School added successfully";
 
-                            school.schoolMaster.Membership = new HashSet<Membership>();
-                            school.schoolMaster.DpdownValuelist = new HashSet<DpdownValuelist>();
-                            school.schoolMaster.PermissionGroup = new HashSet<PermissionGroup>();
-                            school.schoolMaster.CustomFields = new HashSet<CustomFields>();
-                            //school.schoolMaster.FieldsCategory = null;
-
-                            //school.schoolMaster.Membership.ToList().ForEach(x=>x.SchoolMaster=null);
-                            /*if (school.schoolMaster.SchoolDetail.ToList().Count>0)
-                            {
-                                school.schoolMaster.SchoolDetail.FirstOrDefault().SchoolMaster = null;
-                            }*/
-                            //school.schoolMaster.FieldsCategory.ToList().ForEach(x => x.SchoolMaster = null);
-                            /*if (school.schoolMaster.SchoolDetail.ToList().Count > 0)
-                            {
-                                school.schoolMaster.SchoolDetail.FirstOrDefault().SchoolMaster = null;
-                            }*/
-                        //}
-
+                        school.schoolMaster.Membership = new HashSet<Membership>();
+                        school.schoolMaster.DpdownValuelist = new HashSet<DpdownValuelist>();
+                        school.schoolMaster.PermissionGroup = new HashSet<PermissionGroup>();
+                        school.schoolMaster.CustomFields = new HashSet<CustomFields>();
                     }
                     else
                     {
                         school._failure = true;
                         school._message = "Please provide start date";
-                    }                    
+                    }
                 }
                 catch (Exception es)
                 {
