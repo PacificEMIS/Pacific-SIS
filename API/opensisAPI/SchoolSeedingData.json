@@ -1,0 +1,401 @@
+{
+  "MemberShip": [
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 1,
+      "Profile": "Super Administrator",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": true,
+      "ProfileType": "Super Administrator"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 2,
+      "Profile": "School Administrator",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "School Administrator"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 3,
+      "Profile": "Admin Assistant",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "Admin Assistant"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 4,
+      "Profile": "Teacher",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "Teacher"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 5,
+      "Profile": "Homeroom Teacher",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "Homeroom Teacher"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 6,
+      "Profile": "Parent",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "Parent"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "MembershipId": 7,
+      "Profile": "Student",
+      "IsActive": true,
+      "IsSystem": true,
+      "IsSuperadmin": false,
+      "ProfileType": "Student"
+    }
+  ],
+  "FieldsCategory": [
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 1,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "General Information",
+      "Module": "School",
+      "SortOrder": 1,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 2,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Wash Information",
+      "Module": "School",
+      "SortOrder": 2,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 3,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "General Info",
+      "Module": "Student",
+      "SortOrder": 1,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 4,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Enrollment Info",
+      "Module": "Student",
+      "SortOrder": 2,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 5,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Address & Contact",
+      "Module": "Student",
+      "SortOrder": 3,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 6,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Family Info",
+      "Module": "Student",
+      "SortOrder": 4,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 7,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Medical Info",
+      "Module": "Student",
+      "SortOrder": 5,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 8,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Comments",
+      "Module": "Student",
+      "SortOrder": 6,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 9,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Documents",
+      "Module": "Student",
+      "SortOrder": 7,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 10,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "General Info",
+      "Module": "Parent",
+      "SortOrder": 1,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 11,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Address Info",
+      "Module": "Parent",
+      "SortOrder": 2,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 12,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "General Info",
+      "Module": "Staff",
+      "SortOrder": 1,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 13,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "School Info",
+      "Module": "Staff",
+      "SortOrder": 2,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 14,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Address & Contact",
+      "Module": "Staff",
+      "SortOrder": 3,
+      "Required": true,
+      "Hide": false
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "CategoryId": 15,
+      "IsSystemCategory": true,
+      "Search": true,
+      "Title": "Certification Info",
+      "Module": "Staff",
+      "SortOrder": 4,
+      "Required": true,
+      "Hide": false
+    }
+  ],
+  "StudentEnrollmentCode": [
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "EnrollmentCode": 1,
+      "AcademicYear": 2023,
+      "Title": "New",
+      "ShortName": "NEW",
+      "SortOrder": 1,
+      "Type": "Add"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "EnrollmentCode": 2,
+      "AcademicYear": 2023,
+      "Title": "Dropped Out",
+      "ShortName": "DROP",
+      "SortOrder": 2,
+      "Type": "Drop"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "EnrollmentCode": 3,
+      "AcademicYear": 2023,
+      "Title": "Rolled Over",
+      "ShortName": "ROLL",
+      "SortOrder": 3,
+      "Type": "Rolled Over"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "EnrollmentCode": 4,
+      "AcademicYear": 2023,
+      "Title": "Transferred In",
+      "ShortName": "TRAN",
+      "SortOrder": 4,
+      "Type": "Enroll (Transfer)"
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "EnrollmentCode": 5,
+      "AcademicYear": 2023,
+      "Title": "Transferred Out",
+      "ShortName": "TRAN",
+      "SortOrder": 5,
+      "Type": "Drop (Transfer)"
+    }
+  ],
+  "AttendanceCode": [
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 1,
+      "AcademicYear": null,
+      "Title": "Present",
+      "ShortName": "P",
+      "StateCode": "Present",
+      "DefaultCode": false,
+      "AllowEntryBy": "Teacher & Office",
+      "SortOrder": 1
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 2,
+      "AcademicYear": null,
+      "Title": "Absent",
+      "ShortName": "A",
+      "StateCode": "Absent",
+      "DefaultCode": false,
+      "AllowEntryBy": "Teacher & Office",
+      "SortOrder": 2
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 3,
+      "AcademicYear": null,
+      "Title": "Half Day",
+      "ShortName": "HF",
+      "StateCode": "Half Day",
+      "DefaultCode": false,
+      "AllowEntryBy": "Teacher & Office",
+      "SortOrder": 5
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 4,
+      "AcademicYear": null,
+      "Title": "Tardy",
+      "ShortName": "T",
+      "StateCode": "Present",
+      "DefaultCode": false,
+      "AllowEntryBy": "Teacher & Office",
+      "SortOrder": 3
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 5,
+      "AcademicYear": null,
+      "Title": "Excused Absence",
+      "ShortName": "EA",
+      "StateCode": "Present",
+      "DefaultCode": false,
+      "AllowEntryBy": "Office Only",
+      "SortOrder": 6
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 6,
+      "AcademicYear": null,
+      "Title": "Late",
+      "ShortName": "L",
+      "StateCode": "Present",
+      "DefaultCode": false,
+      "AllowEntryBy": "Teacher & Office",
+      "SortOrder": 4
+    },
+    {
+      "TenantId": "3FF38567-BC14-47E2-89E0-01D5F4050253",
+      "SchoolId": 1,
+      "AttendanceCategoryId": 1,
+      "AttendanceCode1": 7,
+      "AcademicYear": null,
+      "Title": "Unexcused Absence",
+      "ShortName": "UA",
+      "StateCode": "Absent",
+      "DefaultCode": false,
+      "AllowEntryBy": "Office Only",
+      "SortOrder": 7
+    }
+  ]
+}

@@ -1,0 +1,520 @@
+[
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "PK",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "K",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "1",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "2",
+    "SortOrder": 4
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "3",
+    "SortOrder": 5
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "4",
+    "SortOrder": 6
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "5",
+    "SortOrder": 7
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "6",
+    "SortOrder": 8
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "7",
+    "SortOrder": 9
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "8",
+    "SortOrder": 10
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "9",
+    "SortOrder": 11
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "10",
+    "SortOrder": 12
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "11",
+    "SortOrder": 13
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "12",
+    "SortOrder": 14
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "13",
+    "SortOrder": 15
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "14",
+    "SortOrder": 16
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "15",
+    "SortOrder": 17
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "16",
+    "SortOrder": 18
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "17",
+    "SortOrder": 19
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "18",
+    "SortOrder": 20
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "19",
+    "SortOrder": 21
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Grade Level",
+    "LovColumnValue": "20",
+    "SortOrder": 22
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Gender",
+    "LovColumnValue": "Boys",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Gender",
+    "LovColumnValue": "Girls",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Gender",
+    "LovColumnValue": "Mixed",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Mr.",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Miss.",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Mrs.",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Ms.",
+    "SortOrder": 4
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Dr.",
+    "SortOrder": 5
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Rev.",
+    "SortOrder": 6
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Prof.",
+    "SortOrder": 7
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Sir.",
+    "SortOrder": 8
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Salutation",
+    "LovColumnValue": "Lord",
+    "SortOrder": 9
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "Jr.",
+    "SortOrder": 10
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "Sr",
+    "SortOrder": 11
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "II",
+    "SortOrder": 12
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "III",
+    "SortOrder": 13
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "IV",
+    "SortOrder": 14
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "V",
+    "SortOrder": 15
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Suffix",
+    "LovColumnValue": "PhD",
+    "SortOrder": 16
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Gender",
+    "LovColumnValue": "Male",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Gender",
+    "LovColumnValue": "Female",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Gender",
+    "LovColumnValue": "Other",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Marital Status",
+    "LovColumnValue": "Single",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Marital Status",
+    "LovColumnValue": "Married",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Marital Status",
+    "LovColumnValue": "Partnered",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Rolling/Retention Option",
+    "LovColumnValue": "Next grade at current school",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Rolling/Retention Option",
+    "LovColumnValue": "Retain",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Rolling/Retention Option",
+    "LovColumnValue": "Do not enroll after this school year",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Relationship",
+    "LovColumnValue": "Father",
+    "SortOrder": "1"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Relationship",
+    "LovColumnValue": "Mother",
+    "SortOrder": "2"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Relationship",
+    "LovColumnValue": "Legal Guardian",
+    "SortOrder": "3"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Relationship",
+    "LovColumnValue": "Other",
+    "SortOrder": "4"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Enrollment Type",
+    "LovColumnValue": "Add",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Enrollment Type",
+    "LovColumnValue": "Drop",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Enrollment Type",
+    "LovColumnValue": "Rolled Over",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Enrollment Type",
+    "LovColumnValue": "Drop (Transfer)",
+    "SortOrder": 4
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Enrollment Type",
+    "LovColumnValue": "Enroll (Transfer)",
+    "SortOrder": 5
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Dropdown",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Editable Dropdown",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Text",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Checkbox",
+    "SortOrder": 4
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Number",
+    "SortOrder": 5
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Multiple SelectBox",
+    "SortOrder": 6
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Date",
+    "SortOrder": 7
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "Field Type",
+    "LovColumnValue": "Textarea",
+    "SortOrder": 8
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Level",
+    "LovColumnValue": "Pre-K",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Level",
+    "LovColumnValue": "Primary",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Level",
+    "LovColumnValue": "Middle",
+    "SortOrder": 3
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Level",
+    "LovColumnValue": "Secondary",
+    "SortOrder": 4
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Classification",
+    "LovColumnValue": "Public",
+    "SortOrder": 1
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Classification",
+    "LovColumnValue": "Private",
+    "SortOrder": 2
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "LovName": "School Classification",
+    "LovColumnValue": "Charter",
+    "SortOrder": 3
+  }
+]
