@@ -50,10 +50,24 @@
                 </mat-select>
             </mat-form-field>
         </li>
-        <li class="col-span-2 text-right pt-1">
-            <button color="primary" (click)="searchCourseSection()" mat-raised-button type="submit">Search</button>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "gradeLevel" | translate }}</mat-label>
+                <mat-select [(ngModel)]="courseSectionSearch.gradeId" name="gradeId">
+                    <mat-option>All Grade Level</mat-option>
+                    <mat-option *ngFor="let grade of gradeLevelList" [value]='grade.gradeId'>
+                        {{grade.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </li>
+        <!-- <li class="col-span-2 text-right pt-1">
+            <button color="primary" (click)="searchCourseSection()" mat-raised-button type="submit">Search</button>
+        </li> -->
     </ul>
+    <div fxLayout="row" fxLayoutAlign="end center" class="py-0 mb-2">
+        <button color="primary" (click)="searchCourseSection()" mat-raised-button type="submit">Search</button>
+    </div>
     <div class="-mx-6 border-t overflow-auto" *ngIf="isSearchRecordAvailable">
         <table mat-table [dataSource]="courseSectionList" class="mat-elevation-z8 shadow-none">
             <ng-container matColumnDef="staffSelected">

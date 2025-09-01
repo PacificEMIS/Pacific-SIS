@@ -190,6 +190,7 @@ export class SearchCourseSectionViewModel extends CommonField {
     public forStaff: boolean;
     public forStudent: boolean;
     public markingPeriodStartDate: string;
+    public gradeId ?:number;
 }
 
 export class SearchCourseSectionViewModelForGroupDelete extends CommonField {

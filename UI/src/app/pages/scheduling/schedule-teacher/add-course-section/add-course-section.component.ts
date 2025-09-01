@@ -44,6 +44,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 @Component({
   selector: 'vex-add-course-section',
   templateUrl: './add-course-section.component.html',
@@ -68,6 +70,8 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   isSearchRecordAvailable = false;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList = [];
 
   constructor(public translateService: TranslateService,
     private courseManagerService: CourseManagerService,
@@ -79,6 +83,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private commonService: CommonService,
+    private gradeLevelService: GradeLevelService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -91,7 +96,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    
+    this.getAllGradeLevelList();
   }
 
   searchCourseSection() {
@@ -236,6 +241,18 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
         duration: 2000
       });
     }
+  }
+
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
   }
 
   ngOnDestroy() {

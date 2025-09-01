@@ -40,6 +40,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { GetMarkingPeriodTitleListModel, MarkingPeriodTitleList } from 'src/app/models/marking-period.model';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
   selector: 'vex-add-course-section',
@@ -64,6 +66,8 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   courseSectionSearch: SearchCourseSectionViewModelForGroupDelete = new SearchCourseSectionViewModelForGroupDelete();
   selectedMarkingPeriod: MarkingPeriodTitleList = new MarkingPeriodTitleList();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList = [];
 
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
@@ -74,6 +78,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    private gradeLevelService: GradeLevelService,
     @Inject(MAT_DIALOG_DATA) public data) {
     this.courseList = this.data.courseList;
     this.subjectList = this.data.subjectList;
@@ -86,6 +91,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getAllGradeLevelList();
   }
 
   changeMarkingPeriod(markingPeriodId) {
@@ -177,6 +183,18 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
 
   cellClicked(element) {
     this.dialogRef.close(element);
+  }
+
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
   }
 
   // For destroy the isLoading subject.

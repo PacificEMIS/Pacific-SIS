@@ -45,6 +45,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import * as _moment from 'moment';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
   selector: 'vex-add-course-section',
@@ -72,6 +74,8 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   selection: SelectionModel<AllCourseSectionView> = new SelectionModel<AllCourseSectionView>(true, []);
   displayedColumns: string[] = ['courseSelected', 'course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'seats', 'available'];
   selectedMarkingPeriod: MarkingPeriodTitleList = new MarkingPeriodTitleList();
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList = [];
 
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
@@ -82,6 +86,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    private gradeLevelService: GradeLevelService,
     @Inject(MAT_DIALOG_DATA) public data
     ) {
     //translateService.use('en');
@@ -95,6 +100,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.subjectList=this.data.subjectList;
     this.programList=this.data.programList;
     this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriodList;
+    this.getAllGradeLevelList();
   }
 
 
@@ -260,6 +266,18 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
       }
       // this.selectionAmount = this.selection.selected.length;
     }
+  }
+
+    getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
   }
 
 

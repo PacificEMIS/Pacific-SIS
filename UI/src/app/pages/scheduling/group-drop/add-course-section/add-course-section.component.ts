@@ -42,6 +42,8 @@ import { takeUntil } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
   selector: 'vex-add-course-section',
@@ -67,6 +69,8 @@ export class AddCourseSectionComponent implements OnInit {
   courseDetails: MatTableDataSource<any>;
   icClose = icClose;
   displayedColumns: string[] = ['course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'scheduledTeacher'];
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList :any = [];
 
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
@@ -77,6 +81,7 @@ export class AddCourseSectionComponent implements OnInit {
     private loaderService: LoaderService,
     private courseSectionService: CourseSectionService,
     private commonService: CommonService,
+    private gradeLevelService: GradeLevelService,
     @Inject(MAT_DIALOG_DATA) public data
     ) {
      this.courseList= this.data.courseList;
@@ -90,6 +95,7 @@ export class AddCourseSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getAllGradeLevelList();
     
   }
  
@@ -164,6 +170,18 @@ export class AddCourseSectionComponent implements OnInit {
 
   cellClicked(element) {
     this.dialogRef.close(element);
+  }
+
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
   }
 
 }
