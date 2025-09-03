@@ -301,21 +301,41 @@ export class AttendanceReportComponent implements OnInit {
           this.totalCount = res.totalCount;
           this.pageNumber = res.pageNumber;
           this.pageSize = res._pageSize;
+          // res.studendAttendanceAdministrationList.map(x => {
+          //   let List = [];                                              //for blank dataSet array
+
+          //   x.periodsName.includes(',') ? x.studentAttendanceList = x.periodsName.split(",") : x.studentAttendanceList = x.periodsName;         //for checking the string has ',' or not
+
+          //   if (Array.isArray(x.studentAttendanceList)) {                //for split by '|'
+          //     for (let elemnt of x.studentAttendanceList) {
+          //       List.push(elemnt.split('|'))
+          //     }
+          //   } else {
+          //     List.push(x.studentAttendanceList.split('|'))
+          //   }
+
+          //   x.studentAttendanceList = List;                               //for push the custom dataSet
+          // })
           res.studendAttendanceAdministrationList.map(x => {
-            let List = [];                                              //for blank dataSet array
+          let periodsArray = x.periodsName.includes(',') ? x.periodsName.split(",") : [x.periodsName];
 
-            x.periodsName.includes(',') ? x.studentAttendanceList = x.periodsName.split(",") : x.studentAttendanceList = x.periodsName;         //for checking the string has ',' or not
+          // Sort based on the period number extracted from "Period N|"
+          periodsArray.sort((a, b) => {
+              const numA = parseInt(a.match(/\d+/)?.[0] || '0', 10);
+              const numB = parseInt(b.match(/\d+/)?.[0] || '0', 10);
+              return numA - numB;
+          });
 
-            if (Array.isArray(x.studentAttendanceList)) {                //for split by '|'
-              for (let elemnt of x.studentAttendanceList) {
-                List.push(elemnt.split('|'))
-              }
-            } else {
-              List.push(x.studentAttendanceList.split('|'))
-            }
+          // Update periodsName to the sorted, joined string
+          x.periodsName = periodsArray.join(",");
 
-            x.studentAttendanceList = List;                               //for push the custom dataSet
-          })
+          let List = [];
+          for (let element of periodsArray) {
+              List.push(element.split('|'));
+          }
+          x.studentAttendanceList = List;
+          });
+
           this.allAttendence = new MatTableDataSource(res.studendAttendanceAdministrationList);
         }
       }
