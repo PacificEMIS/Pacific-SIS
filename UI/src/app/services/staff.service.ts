@@ -123,8 +123,9 @@ export class StaffService {
         const index = model.externalSchoolIds.findIndex(x => x === this.defaultValuesService.getSchoolID())
         if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index >= 0) {
           if (model?.fieldsCategoryList[categoryId]?.customFields.filter(x => !x.systemField && !x.hide).length === 0) {
-            this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
-            reject({});
+            // this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
+            // reject({});
+            resolve({ isReadOnly });
           } else {
             isReadOnly = true;
             resolve({ isReadOnly });
