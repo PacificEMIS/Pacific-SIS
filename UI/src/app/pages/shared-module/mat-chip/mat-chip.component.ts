@@ -10,7 +10,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 })
 export class MatChipComponent implements OnInit {
   filteredFruits: Observable<string[]>;
-  chipModelList: string[];
+  // chipModelList: string[];
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -26,6 +26,8 @@ export class MatChipComponent implements OnInit {
   @Input() recordFor;
   @Input() isReadOnly: boolean;
   @Output() chipModel: EventEmitter<any> = new EventEmitter();
+  @Input() chipModelList: string[] = [];  
+  @Output() chipModelListChange = new EventEmitter<any[]>();
   constructor() { }
 
   ngOnInit(): void {
@@ -44,6 +46,11 @@ export class MatChipComponent implements OnInit {
       this.matChipList.splice(index, 1);
     }
     this.chipModel.emit(this.chipModelList);
+  }
+  
+  updateModel(newValue: any[]) {
+    this.chipModelList = newValue;
+    this.chipModelListChange.emit(this.chipModelList);
   }
 
 }

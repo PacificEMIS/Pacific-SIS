@@ -90,6 +90,7 @@ export class CommonStaffListComponent implements OnInit {
     { label: 'mobilePhone', property: 'mobilePhone', type: 'number', visible: false },
     { label: 'schoolName', property: 'schoolName', type: 'text', visible: false },
     { label: 'status', property: 'status', type: 'text', visible: false },
+    { label: 'primaryGradeLevelTaught', property: 'primaryGradeLevelTaught', type: 'text', visible: false },
     { label: 'actions', property: 'actions', type: 'text', visible: true }
   ];
   icImpersonate = icImpersonate;

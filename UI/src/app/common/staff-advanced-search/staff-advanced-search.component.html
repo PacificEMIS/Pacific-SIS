@@ -265,6 +265,30 @@
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </li>
+                    <li>
+                        <mat-form-field class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'primaryGradeLevelTaught'|translate}}</mat-label>
+                            <mat-select name="primaryGradeLevelTaught" [disabled]="isReadOnly" [(ngModel)]="staffMasterSearchModel.primaryGradeLevelTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let grade of gradeLevelList" [value]="grade.gradeId">{{grade.title}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <vex-mat-chip [labelName]="'otherGradeLevelTaught'" [(chipModelList)]="staffMasterSearchModel.otherGradeLevelTaught" [titleKey]="'title'" [valueKey]="'title'" [matChipList]="otherGradeLevelTaught" [isReadOnly]="isReadOnly" [matChipAutocompleteList]="gradeLevelList"></vex-mat-chip>
+                    </li>
+                    <li>
+                    <mat-form-field class="w-full" appearance="outline" color="primary">
+                        <mat-label>{{'primarySubjectTaught'|translate}}</mat-label>
+                            <mat-select name="primarySubjectTaught" [disabled]="isReadOnly" [(ngModel)]="staffMasterSearchModel.primarySubjectTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" value={{subject.subjectId}}>{{subject.subjectName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <vex-mat-chip [labelName]="'otherSubjectTaught'" [(chipModelList)]="staffMasterSearchModel.otherSubjectTaught" [matChipList]="otherSubjectTaught" [titleKey]="'subjectName'" [valueKey]="'subjectName'" [isReadOnly]="isReadOnly"  [matChipAutocompleteList]="getAllSubjectModel.subjectList"></vex-mat-chip>
+                    </li>
                 </ul>
             </mat-expansion-panel>
             <mat-expansion-panel>

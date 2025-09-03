@@ -31,7 +31,7 @@ import { SecondaryToolbarModule } from 'src/@vex/components/secondary-toolbar/se
 import { ContainerModule } from 'src/@vex/directives/container/container.module';
 import { SharedModuleModule } from 'src/app/pages/shared-module/shared-module.module';
 import { StaffinfoRoutingModule } from 'src/app/pages/staff/staffinfo/staffinfo-routing-module';
-
+import { MatChipModule } from 'src/app/pages/shared-module/mat-chip/mat-chip.module';
 
 
 @NgModule({
@@ -71,6 +71,7 @@ import { StaffinfoRoutingModule } from 'src/app/pages/staff/staffinfo/staffinfo-
     MatFormFieldModule,
     MatSlideToggleModule,
     MatRippleModule,
+    MatChipModule
   ],exports:[StaffAdvancedSearchComponent]
 })
 export class StaffAdvancedSearchModule { }

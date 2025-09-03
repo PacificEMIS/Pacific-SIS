@@ -205,6 +205,7 @@ export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
     public forStaff: boolean;
     public forStudent: boolean;
     public markingPeriodStartDate: string;
+    public gradeId?: string | number;
 
     constructor(){
         super();

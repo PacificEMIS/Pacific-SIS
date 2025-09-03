@@ -48,7 +48,7 @@ export class StaffMasterModel {
     public homeroomTeacher: boolean;
     public primaryGradeLevelTaught: string;
     public primarySubjectTaught: string;
-    public otherGradeLevelTaught: string;
+    public otherGradeLevelTaught: string | any;
     public otherSubjectTaught: string;
     public homePhone: string;
     public mobilePhone: string;
@@ -305,7 +305,7 @@ export class StaffSchoolInfoModel extends CommonField {
     homeroomTeacher: boolean;
     primaryGradeLevelTaught: string;
     primarySubjectTaught: string;
-    otherGradeLevelTaught: string;
+    otherGradeLevelTaught: string | any;
     otherSubjectTaught: string;
     fieldsCategoryList;
     selectedCategoryId;
@@ -359,8 +359,8 @@ export class StaffMasterSearchModel {
     public homeroomTeacher: boolean;
     public primaryGradeLevelTaught: string;
     public primarySubjectTaught: string;
-    public otherGradeLevelTaught: string;
-    public otherSubjectTaught: string;
+    public otherGradeLevelTaught: string | any;
+    public otherSubjectTaught: string | any;
     public homePhone: string;
     public mobilePhone: string;
     public officePhone: string;
@@ -396,6 +396,7 @@ export class StaffMasterSearchModel {
     public emergencyEmail: string;
     public lastUpdatedBy: string;
     public lastUpdated: string;
+    public otherGradeLevels?: any;
     
 }
 

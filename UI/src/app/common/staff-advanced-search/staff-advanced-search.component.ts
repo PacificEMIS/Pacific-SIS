@@ -20,6 +20,10 @@ import { MembershipService } from 'src/app/services/membership.service';
 import { SectionService } from 'src/app/services/section.service';
 import { StaffService } from 'src/app/services/staff.service';
 import { DefaultValuesService } from '../default-values.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
+import { CourseManagerService } from 'src/app/services/course-manager.service';
+import { GetAllSubjectModel } from 'src/app/models/course-manager.model';
 
 @Component({
   selector: 'vex-common-staff-advanced-search',
@@ -71,6 +75,12 @@ export class StaffAdvancedSearchComponent implements OnInit {
   @ViewChild('singleSelect') singleSelect: MatSelect;
   protected _onDestroy = new Subject<void>();
   @Input() parentComponent;
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList = [];
+  isReadOnly: boolean = false;
+  otherGradeLevelTaught: any[] = [];
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
+  otherSubjectTaught :any[] = [];
   constructor(    
     private commonLOV: CommonLOV,
     private snackbar: MatSnackBar,
@@ -80,7 +90,9 @@ export class StaffAdvancedSearchComponent implements OnInit {
     private staffService: StaffService,
     private defaultValuesService: DefaultValuesService,
     private commonFunction: SharedFunction,
-    private membershipService: MembershipService) { }
+    private membershipService: MembershipService,
+    private gradeLevelService: GradeLevelService,
+    private courseManagerService:CourseManagerService) { }
 
     protected setInitialValue() {
       this.filteredCountry
@@ -101,6 +113,7 @@ export class StaffAdvancedSearchComponent implements OnInit {
     }
   
     ngOnInit(): void {
+      
       this.getAllStaff.pageSize = this.defaultValuesService.getPageSize() ? this.defaultValuesService.getPageSize() : 10;
       if (this.incomingSearchValue) {
         this.inactiveStaff = this.incomingToggleValues.inactiveStaff;
@@ -108,6 +121,7 @@ export class StaffAdvancedSearchComponent implements OnInit {
         this.staffMasterSearchModel = this.incomingSearchValue;
       }
       if (this.filterJsonParams !== null && this.filterJsonParams !== undefined) {
+        
         this.updateFilter = true;
         this.searchTitle = 'searchAndUpdateFilter';
         let jsonResponse = JSON.parse(this.filterJsonParams.jsonList);
@@ -115,8 +129,11 @@ export class StaffAdvancedSearchComponent implements OnInit {
           this.staffMasterSearchModel[json.columnName] = json.filterValue;
         }
       }
-  
+      this.otherGradeLevelTaught = this?.incomingSearchValue?.otherGradeLevelTaught?.length >0 ? this?.incomingSearchValue?.otherGradeLevelTaught :[]
+      this.otherSubjectTaught = this?.incomingSearchValue?.otherSubjectTaught?.length >0 ? this?.incomingSearchValue?.otherSubjectTaught :[]
       this.initializeDropdownsInAddMode();
+      this.getAllGradeLevelList();
+      this.getAllSubjectList();
     }
     ngAfterViewInit() {
       this.countryValueChange();
@@ -325,6 +342,16 @@ export class StaffAdvancedSearchComponent implements OnInit {
       if (Array.isArray(this.staffMasterSearchModel.countryOfBirth)) {
         this.staffMasterSearchModel.countryOfBirth = null;
       }
+      if (this.otherGradeLevelTaught?.length >0) {
+          this.staffMasterSearchModel.otherGradeLevelTaught = this.otherGradeLevelTaught
+          this.otherGradeLevelTaught = this.staffMasterSearchModel.otherGradeLevelTaught;
+        // this.staffSchoolInfoModel.otherGradeLevelTaught = this.otherGradeLevelTaught.toString()
+      }
+      if(this.otherSubjectTaught?.length > 0){
+        this.staffMasterSearchModel.otherSubjectTaught = this.otherSubjectTaught
+
+      }
+      
       for (let key in this.staffMasterSearchModel) {
         if (this.staffMasterSearchModel.hasOwnProperty(key))
           if (this.staffMasterSearchModel[key] !== null && this.staffMasterSearchModel[key] !== '' && this.staffMasterSearchModel[key] !== undefined) {
@@ -381,7 +408,8 @@ export class StaffAdvancedSearchComponent implements OnInit {
         dobStartDate: this.dobStartDate,
         dobEndDate: this.dobEndDate
       });
-      this.searchValue.emit(this.currentForm.value);
+
+      this.searchValue.emit({...this.currentForm.value,otherGradeLevelTaught: this.staffMasterSearchModel.otherGradeLevelTaught , otherSubjectTaught : this.staffMasterSearchModel.otherSubjectTaught});
       this.toggelValues.emit({ inactiveStaff: this.inactiveStaff, searchAllSchool: this.searchAllSchool });
       this.showHideAdvanceSearch.emit({ showSaveFilter: this.showSaveFilter, hide: false });
       this.checkSearchRecord = 0;
@@ -399,6 +427,47 @@ export class StaffAdvancedSearchComponent implements OnInit {
     hideAdvanceSearch() {
       this.showHideAdvanceSearch.emit({ showSaveFilter: null, hide: false });
     }
+
+    getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
+  }
+
+  setOtherGradeLevelTaught(e){
+  }
+
+  getAllSubjectList(){   
+    this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).subscribe(data => {          
+      if(data){
+       if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+          this.getAllSubjectModel.subjectList=[];
+          if(!data.subjectList){
+            this.snackbar.open(data._message, '', {
+              duration: 1000
+            }); 
+          }
+        }else{
+          this.getAllSubjectModel.subjectList = data.subjectList;
+        }
+      }else{
+        this.snackbar.open(this.defaultValuesService.getHttpError(), '', {
+          duration: 1000
+        }); 
+      }      
+    });
+  }
+
+  
+  setOtherSubjectList(item){
+  }
   
     ngOnDestroy() {
       this.destroySubject$.next();
