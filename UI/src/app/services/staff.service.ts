@@ -127,7 +127,7 @@ export class StaffService {
             // reject({});
             resolve({ isReadOnly });
           } else {
-            isReadOnly = true;
+            // isReadOnly = true;
             resolve({ isReadOnly });
           }
         } else if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index === -1) {
