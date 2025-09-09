@@ -46,5 +46,6 @@ namespace opensis.data.ViewModels.CourseManager
         public bool? ForStaff { get; set; }
         public bool? ForStudent { get; set; }
         public DateTime? MarkingPeriodStartDate { get; set; }
+        public string? CourseGradeLevel { get; set; }
     }
 }
