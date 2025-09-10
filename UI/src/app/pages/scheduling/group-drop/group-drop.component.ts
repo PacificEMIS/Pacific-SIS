@@ -49,6 +49,8 @@ import { GetMarkingPeriodTitleListModel } from '../../../models/marking-period.m
 import { CourseManagerService } from '../../../services/course-manager.service';
 import { MarkingPeriodService } from '../../../services/marking-period.service';
 import { DefaultValuesService } from '../../../common/default-values.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
   selector: 'vex-group-drop',
@@ -92,6 +94,8 @@ export class GroupDropComponent implements OnInit, OnDestroy {
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   studentDetails: MatTableDataSource<ScheduleStudentForView>;
   selection: SelectionModel<ScheduleStudentForView> = new SelectionModel<ScheduleStudentForView>(true, []);
+  getAllGradeLevelsModel: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  gradeLevelList=[];
 
   displayedColumns: string[] = ['studentSelected', 'studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'phoneNumber', 'action'];
   permissions: Permissions
@@ -105,6 +109,7 @@ export class GroupDropComponent implements OnInit, OnDestroy {
     private pageRolePermissions: PageRolesPermission,
     private loaderService: LoaderService,
     private commonService: CommonService,
+    private gradeLevelService: GradeLevelService,
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -120,6 +125,7 @@ export class GroupDropComponent implements OnInit, OnDestroy {
     this.getAllSubjectList();
     this.getAllProgramList();
     this.getAllMarkingPeriodList();
+    this.getAllGradeLevelList();
   }
 
 
@@ -218,7 +224,8 @@ export class GroupDropComponent implements OnInit, OnDestroy {
         markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
         courseList: this.courseList,
         subjectList: this.subjectList,
-        programList: this.programList
+        programList: this.programList,
+        gradeLevelList: this.gradeLevelList
       },
     }).afterClosed().subscribe((data) => {
       this.courseSectionData = data;
@@ -397,6 +404,18 @@ export class GroupDropComponent implements OnInit, OnDestroy {
       })
     }
 
+  }
+
+  getAllGradeLevelList() {
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {
+      if (data._failure) {
+        this.commonService.checkTokenValidOrNot(data._message);
+      }
+      else {
+        this.gradeLevelList = data.tableGradelevelList;
+      }
+
+    });
   }
 
   ngOnDestroy(): void {

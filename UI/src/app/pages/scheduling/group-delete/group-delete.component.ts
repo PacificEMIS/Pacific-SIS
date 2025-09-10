@@ -54,6 +54,8 @@ import { RemoveStaffCourseSectionSchedule, ScheduledStaffForCourseSection } from
 import { CourseSectionService } from 'src/app/services/course-section.service';
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
 import { MatSort, Sort } from '@angular/material/sort';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 
 @Component({
   selector: 'vex-group-delete',
@@ -107,6 +109,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
   @ViewChild('masterCheckBoxStaff') masterCheckBoxStaff: MatCheckbox;
   @ViewChild(MatSort) sort: MatSort;
+  getAllGradeLevelsModel:GetAllGradeLevelsModel= new GetAllGradeLevelsModel();
 
   constructor(private dialog: MatDialog,
     public translateService: TranslateService,
@@ -122,6 +125,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     private commonService: CommonService,
     private courseSectionService:CourseSectionService,
     private teacherScheduleService:TeacherScheduleService,
+    private gradeLevelService: GradeLevelService
   ) {
     paginatorObj.itemsPerPageLabel = translateService.instant('itemsPerPage');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -136,6 +140,7 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getAllSubjectList();
     this.getAllProgramList();
     this.getAllMarkingPeriodList();
+    this.getAllGradeLevelList();
   }
 
   ngAfterViewInit(): void {
@@ -196,7 +201,8 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
           markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
           courseList: this.courseList,
           subjectList: this.subjectList,
-          programList: this.programList
+          programList: this.programList,
+          gradeLevelList: this.getAllGradeLevelsModel.tableGradelevelList
         }
       }).afterClosed().subscribe(res => {
         this.courseSectionData = res;
@@ -666,6 +672,15 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
         this.showCourseSectionName = false;
       }
     }
+  }
+
+  getAllGradeLevelList(){   
+    this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevelsModel).subscribe(data => {   
+      if(data._failure){
+        this.commonService.checkTokenValidOrNot(data._message);
+        }       
+      this.getAllGradeLevelsModel.tableGradelevelList=data.tableGradelevelList;      
+    });
   }
 
   // For destroy the isLoading subject.

@@ -356,7 +356,8 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
         courseList: this.courseList,
         subjectList: this.subjectList,
         programList: this.programList,
-        markingPeriodList: this.getMarkingPeriodTitleListModel.getMarkingPeriodView
+        markingPeriodList: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
+        gradeLevelList: this.gradeLevelList
       }
     }).afterClosed().subscribe((data) => {
       if(data)

@@ -55,7 +55,18 @@
                 </mat-select>
             </mat-form-field>
         </li>
-        <li *ngIf="selectedMarkingPeriod.value" class="pt-4">
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "gradeLevel" | translate }}</mat-label>
+                <mat-select [(ngModel)]="courseSectionSearch.courseGradeLevel" name="courseGradeLevel">
+                    <mat-option value="">{{ "allGradeLevel" | translate }}</mat-option>
+                    <mat-option *ngFor="let grade of gradeList" [value]='grade.title'>
+                        {{grade.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li *ngIf="selectedMarkingPeriod?.value" class="pt-4">
             {{selectedMarkingPeriod.startDate | date}} - {{selectedMarkingPeriod.endDate | date}}
         </li>
        

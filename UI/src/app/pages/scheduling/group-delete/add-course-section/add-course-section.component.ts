@@ -64,6 +64,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   courseSectionSearch: SearchCourseSectionViewModelForGroupDelete = new SearchCourseSectionViewModelForGroupDelete();
   selectedMarkingPeriod: MarkingPeriodTitleList = new MarkingPeriodTitleList();
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  gradeList = [];
 
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
@@ -79,7 +80,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.subjectList = this.data.subjectList;
     this.programList = this.data.programList;
     this.getMarkingPeriodTitleListModel.getMarkingPeriodView = this.data.markingPeriods;
-
+    this.gradeList = this.data.gradeLevelList;
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
     });
@@ -107,6 +108,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     cloneCourseSectionSearch.courseProgram = cloneCourseSectionSearch.courseProgram ? cloneCourseSectionSearch.courseProgram : null;
     cloneCourseSectionSearch.courseId = cloneCourseSectionSearch.courseId ? cloneCourseSectionSearch.courseId : null;
     cloneCourseSectionSearch.markingPeriodId = cloneCourseSectionSearch.markingPeriodId ? cloneCourseSectionSearch.markingPeriodId : null;
+    cloneCourseSectionSearch.courseGradeLevel = cloneCourseSectionSearch.courseGradeLevel ? cloneCourseSectionSearch.courseGradeLevel : null;
     if (cloneCourseSectionSearch.markingPeriodId) {
       cloneCourseSectionSearch.markingPeriodStartDate = null;
     } else {
