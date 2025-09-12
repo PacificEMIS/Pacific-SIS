@@ -200,14 +200,15 @@ export class ScheduleTeacherComponent implements OnInit, OnDestroy {
         markingPeriods: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
         courseList: this.getAllCourseListModel.courseViewModelList,
         subjectList: this.getAllSubjectModel.subjectList,
-        programList: this.getAllProgramModel.programList
+        programList: this.getAllProgramModel.programList,
+        gradeLevelList: this.getAllGradeLevelsModel.tableGradelevelList
       },
       width: '900px'
     }).afterClosed().subscribe((res) => {
       this.selectedCourseSection = res ? res : [];
       this.getTeacherScheduleView();
     });
-    }
+    }  
   }
 
 

@@ -50,7 +50,18 @@
                 </mat-select>
             </mat-form-field>
         </li>
-        <li class="col-span-2 text-right pt-1">
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "gradeLevel" | translate }}</mat-label>
+                <mat-select [(ngModel)]="courseSectionSearch.courseGradeLevel" name="courseGradeLevel">
+                    <mat-option value="">{{ "allGradeLevel" | translate }}</mat-option>
+                    <mat-option *ngFor="let grade of gradeList" [value]='grade.title'>
+                        {{grade.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
+        <li>
             <button color="primary" (click)="searchCourseSection()" mat-raised-button type="submit">Search</button>
         </li>
     </ul>

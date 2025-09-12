@@ -72,6 +72,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   selection: SelectionModel<AllCourseSectionView> = new SelectionModel<AllCourseSectionView>(true, []);
   displayedColumns: string[] = ['courseSelected', 'course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'seats', 'available'];
   selectedMarkingPeriod: MarkingPeriodTitleList = new MarkingPeriodTitleList();
+  gradeList = [];
 
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
@@ -95,6 +96,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.subjectList=this.data.subjectList;
     this.programList=this.data.programList;
     this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriodList;
+    this.gradeList = this.data.gradeLevelList;
   }
 
 
@@ -116,6 +118,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
       this.courseSectionSearch.markingPeriodStartDate=mpStartDate?mpStartDate.split('T')[0]:null;
     }
     this.courseSectionSearch.forStudent = true;
+    this.courseSectionSearch.courseGradeLevel = this.courseSectionSearch.courseGradeLevel ? this.courseSectionSearch.courseGradeLevel : null;
     this.courseSectionService.searchCourseSectionForSchedule(this.courseSectionSearch).subscribe((res) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
