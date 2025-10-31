@@ -728,6 +728,9 @@ namespace opensis.report.report.data.Repository
                             PreferredName = studentInfo.PreferredName,
                             GradeId = studentInfo.GradeId,
                             GradeLevelTitle = studentInfo.GradeLevelTitle,
+                            SectionName = studentInfo.SectionName,
+                            HomePhone = studentInfo.HomePhone,
+                            SchoolEmail = studentInfo.SchoolEmail,
                             CumulativeGPA = cgpa,
                             TotalCreditAttempeted = totalCA,
                             TotalCreditEarned = totalCE
@@ -756,7 +759,6 @@ namespace opensis.report.report.data.Repository
                 {
                     rankedList = rankedList.OrderBy(s => s.Rank).ToList();
                 }
-
 
                 // --- Final response
                 studentCgpa.TenantId = pageResult.TenantId;

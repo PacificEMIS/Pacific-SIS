@@ -29,6 +29,8 @@ namespace opensis.report.report.data.ViewModels.GradeReport
         public string? GradeLevelTitle { get; set; }
         public int? GradeId { get; set; }
         public string? SectionName { get; set; }
+        public string? SchoolEmail { get; set; }
+        public string? HomePhone { get; set; }
         public int? Rank { get; set; }
         public decimal? CumulativeGPA { get; set; }
         public decimal? TotalCreditAttempeted { get; set; }
