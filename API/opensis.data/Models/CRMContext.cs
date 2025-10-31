@@ -119,6 +119,7 @@ namespace opensis.data.Models
         public virtual DbSet<StudentFinalGradeStandard> StudentFinalGradeStandard { get; set; } = null!;
         public virtual DbSet<StudentListView> StudentListView { get; set; } = null!;
         public virtual DbSet<StudentMedicalListView> StudentMedicalListViews { get; set; } = null!;
+        public virtual DbSet<StudentFinalGradeListView> StudentFinalGradeListViews { get; set; } = null!;
         public virtual DbSet<StudentMaster> StudentMaster { get; set; } = null!;
         public virtual DbSet<StudentMedicalAlert> StudentMedicalAlert { get; set; } = null!;
         public virtual DbSet<StudentMedicalImmunization> StudentMedicalImmunization { get; set; } = null!;
@@ -6850,6 +6851,129 @@ namespace opensis.data.Models
                     .HasForeignKey(d => new { d.TenantId, d.SchoolId, d.StudentId, d.StudentFinalGradeSrlno })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("std_final_grade_std$FK_final_grade");
+            });
+
+            modelBuilder.Entity<StudentFinalGradeListView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("student_final_grade_list_view");
+
+                entity.Property(e => e.PpMarkingPeriodId).HasColumnName("pp_marking_period_id");
+
+                entity.Property(e => e.PpQuarterId).HasColumnName("pp_quarter_id");
+
+                entity.Property(e => e.ProgressPeriodsTitle)
+                    .HasMaxLength(50)
+                    .HasColumnName("progress_periods_title");
+
+                entity.Property(e => e.QtrMarkingPeriodId).HasColumnName("qtr_marking_period_id");
+
+                entity.Property(e => e.QtrSemesterId).HasColumnName("qtr_semester_id");
+
+                entity.Property(e => e.QuartersTitle)
+                    .HasMaxLength(50)
+                    .HasColumnName("quarters_title");
+
+                entity.Property(e => e.SchoolYearTitle)
+                    .HasMaxLength(50)
+                    .HasColumnName("school_year_title");
+
+                entity.Property(e => e.SemMarkingPeriodId).HasColumnName("sem_marking_period_id");
+
+                entity.Property(e => e.SemYearId).HasColumnName("sem_year_id");
+
+                entity.Property(e => e.SemestersTitle)
+                    .HasMaxLength(50)
+                    .HasColumnName("semesters_title");
+
+                entity.Property(e => e.SfgAcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("sfg_academic_year");
+
+                entity.Property(e => e.SfgBasedOnStandardGrade).HasColumnName("sfg_based_on_standard_grade");
+
+                entity.Property(e => e.SfgCalendarId).HasColumnName("sfg_calendar_id");
+
+                entity.Property(e => e.SfgCourseId).HasColumnName("sfg_course_id");
+
+                entity.Property(e => e.SfgCourseSectionId).HasColumnName("sfg_course_section_id");
+
+                entity.Property(e => e.SfgCreditattempted)
+                    .HasColumnType("decimal(8, 3)")
+                    .HasColumnName("sfg_creditattempted");
+
+                entity.Property(e => e.SfgCreditearned)
+                    .HasColumnType("decimal(8, 3)")
+                    .HasColumnName("sfg_creditearned");
+
+                entity.Property(e => e.SfgGradeId).HasColumnName("sfg_grade_id");
+
+                entity.Property(e => e.SfgGradeObtained)
+                    .HasMaxLength(30)
+                    .HasColumnName("sfg_grade_obtained");
+
+                entity.Property(e => e.SfgGradeScaleId).HasColumnName("sfg_grade_scale_id");
+
+                entity.Property(e => e.SfgIsCustomMarkingPeriod).HasColumnName("sfg_is_custom_marking_period");
+
+                entity.Property(e => e.SfgIsExamGrade).HasColumnName("sfg_is_exam_grade");
+
+                entity.Property(e => e.SfgIsPercent).HasColumnName("sfg_is_percent");
+
+                entity.Property(e => e.SfgPercentMarks)
+                    .HasColumnType("decimal(5, 2)")
+                    .HasColumnName("sfg_percent_marks");
+
+                entity.Property(e => e.SfgPrgrsprdMarkingPeriodId).HasColumnName("sfg_prgrsprd_marking_period_id");
+
+                entity.Property(e => e.SfgQtrMarkingPeriodId).HasColumnName("sfg_qtr_marking_period_id");
+
+                entity.Property(e => e.SfgSchoolId).HasColumnName("sfg_school_id");
+
+                entity.Property(e => e.SfgSmstrMarkingPeriodId).HasColumnName("sfg_smstr_marking_period_id");
+
+                entity.Property(e => e.SfgStudentFinalGradeSrlno).HasColumnName("sfg_student_final_grade_srlno");
+
+                entity.Property(e => e.SfgStudentId).HasColumnName("sfg_student_id");
+
+                entity.Property(e => e.SfgTeacherComment)
+                    .HasMaxLength(500)
+                    .HasColumnName("sfg_teacher_comment");
+
+                entity.Property(e => e.SfgTenantId).HasColumnName("sfg_tenant_id");
+
+                entity.Property(e => e.SfgYrMarkingPeriodId).HasColumnName("sfg_yr_marking_period_id");
+
+                entity.Property(e => e.SfgsAcademicYear)
+                    .HasColumnType("decimal(4, 0)")
+                    .HasColumnName("sfgs_academic_year");
+
+                entity.Property(e => e.SfgsCalendarId).HasColumnName("sfgs_calendar_id");
+
+                entity.Property(e => e.SfgsGradeObtained).HasColumnName("sfgs_grade_obtained");
+
+                entity.Property(e => e.SfgsId).HasColumnName("sfgs_id");
+
+                entity.Property(e => e.SfgsPrgsMarkPeriodId).HasColumnName("sfgs_prgs_mark_period_id");
+
+                entity.Property(e => e.SfgsQtrMarkPeriodId).HasColumnName("sfgs_qtr_mark_period_id");
+
+                entity.Property(e => e.SfgsSmstrMarkPeriodId).HasColumnName("sfgs_smstr_mark_period_id");
+
+                entity.Property(e => e.SfgsStandardGradeScaleId).HasColumnName("sfgs_standard_grade_scale_id");
+
+                entity.Property(e => e.SfgsStudentFinalGradeSrlno).HasColumnName("sfgs_student_final_grade_srlno");
+
+                entity.Property(e => e.SfgsStudentId).HasColumnName("sfgs_student_id");
+
+                entity.Property(e => e.SfgsTeacherComment)
+                    .HasMaxLength(500)
+                    .HasColumnName("sfgs_teacher_comment");
+
+                entity.Property(e => e.SfgsYrMarkPeriodId).HasColumnName("sfgs_yr_mark_period_id");
+
+                entity.Property(e => e.SyMarkingPeriodId).HasColumnName("sy_marking_period_id");
             });
 
             modelBuilder.Entity<StudentListView>(entity =>

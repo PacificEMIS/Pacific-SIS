@@ -1,4 +1,5 @@
-﻿using opensis.core.helper.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using opensis.core.helper.Interfaces;
 using opensis.data.Models;
 using opensis.report.report.core.Grade.Interfaces;
 using opensis.report.report.data.Interface;
@@ -72,6 +73,34 @@ namespace opensis.report.report.core.Grade.Services
                 studentFinalGrade._message = es.Message;
             }
             return studentFinalGrade;
+        }
+
+        /// <summary>
+        /// Get CGPA Rank List Report
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentCgpaViewModel GetCGPARankListReport(PageResult pageResult)
+        {
+            StudentCgpaViewModel studentCgpa = new();
+            try
+            {
+                //if (tokenManager.CheckToken(pageResult._tenantName + pageResult._userName, pageResult._token))
+                //{
+                    studentCgpa = this.gradeReportRepository.GetCGPARankListReport(pageResult);
+                //}
+                //else
+                //{
+                //    studentCgpa._failure = true;
+                //    studentCgpa._message = TOKENINVALID;
+                //}
+            }
+            catch (Exception es)
+            {
+                studentCgpa._failure = true;
+                studentCgpa._message = es.Message;
+            }
+            return studentCgpa;
         }
     }
 }
