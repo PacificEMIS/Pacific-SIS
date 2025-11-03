@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
+import { CommonService } from 'src/app/services/common.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { LoaderService } from 'src/app/services/loader.service';
+import { ReportService } from 'src/app/services/report.service';
 
 export interface StudentListData {
   studentName: string;
@@ -16,18 +25,6 @@ export interface StudentListData {
   classRank: number;
 }
 
-export const studentListData: StudentListData[] = [
-  {studentName: 'Arthur Boucher', studentId: 'STD0012', alternateId: 'STD0012', grade: '10th Grade', section: 'A', phone: 5643267895, gpa: '3.73', unweightedGpa: '3.73', weightedGpa: '', classRank: 1},
-  {studentName: 'Sophia Brown', studentId: 'STD0015', alternateId: 'STD0015', grade: '10th Grade', section: 'A', phone: 5643267895, gpa: '3.67', unweightedGpa: '3.67', weightedGpa: '', classRank: 2},
-  {studentName: 'Wang Wang', studentId: 'STD0035', alternateId: 'STD0035', grade: '10th Grade', section: 'B', phone: 5643267895, gpa: '3.49', unweightedGpa: '3.49', weightedGpa: '', classRank: 3},
-  {studentName: 'Clare Garcia', studentId: 'STD0102', alternateId: 'STD0102', grade: '10th Grade', section: 'B', phone: 5643267895, gpa: '3.47', unweightedGpa: '3.47', weightedGpa: '', classRank: 4},
-  {studentName: 'Amelia Jones', studentId: 'STD0067', alternateId: 'STD0067', grade: '10th Grade', section: 'C', phone: 5643267895, gpa: '3.12', unweightedGpa: '3.12', weightedGpa: '', classRank: 5},
-  {studentName: 'Arthur Boucher', studentId: 'STD0013', alternateId: 'STD0013', grade: '10th Grade', section: 'A', phone: 5643267895, gpa: '2.83', unweightedGpa: '2.83', weightedGpa: '', classRank: 6},
-  {studentName: 'Wang Wang', studentId: 'STD0035', alternateId: 'STD0035', grade: '10th Grade', section: 'B', phone: 5643267895, gpa: '2.86', unweightedGpa: '2.86', weightedGpa: '', classRank: 7},
-  {studentName: 'Clare Garcia', studentId: 'STD0002', alternateId: 'STD0002', grade: '10th Grade', section: 'C', phone: 5643267895, gpa: '1.96', unweightedGpa: '1.96', weightedGpa: '', classRank: 8},
-  {studentName: 'Amelia Jones', studentId: 'STD0076', alternateId: 'STD0076', grade: '10th Grade', section: 'A', phone: 5643267895, gpa: '1.00', unweightedGpa: '1.00', weightedGpa: '', classRank: 9},
-];
-
 @Component({
   selector: 'vex-class-rank-list',
   templateUrl: './class-rank-list.component.html',
@@ -35,20 +32,145 @@ export const studentListData: StudentListData[] = [
 })
 export class ClassRankListComponent implements OnInit {
 
-  displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'section', 'phone', 'gpa', 'unweightedGpa', 'weightedGpa', 'classRank'];
-  studentList = studentListData;
+  displayedColumns: string[] = ['studentName', 'studentId', 'alternateId', 'grade', 'section', 'gpa', 'unweightedGpa', 'weightedGpa', 'classRank'];
+  studentList;
+  gradeLevelList: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  filterForm!: FormGroup;
+  selectedGradeId;
+  destroySubject$: Subject<void> = new Subject();
+  loading: boolean;
+  totalCount;
+  pageNumber: number;
+  pageSize: number;
+  currentFilterParams: any[] = [];
 
   constructor(
     public translateService: TranslateService,
     private paginatorObj: MatPaginatorIntl,
-    private defaultValuesService:DefaultValuesService
-    ) { 
-      this.defaultValuesService.setReportCompoentTitle.next("GPA / Class Rank List");
-    // translateService.use("en");
+    private defaultValuesService: DefaultValuesService,
+    private gradeLevelService: GradeLevelService,
+    private snackbar: MatSnackBar,
+    private commonService: CommonService,
+    private fb: FormBuilder,
+    private reportService: ReportService,
+    private defaultService: DefaultValuesService,
+    private loaderService: LoaderService,
+  ) {
+    this.defaultValuesService.setReportCompoentTitle.next("GPA / Class Rank List");
+    this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
+      this.loading = val;
+    });
+  }
+
+  ngOnInit() {
+  this.getAllGradeLevel();
+  this.filterForm = this.fb.group({
+    searchText: [''],
+    gradeLevel: ['']
+  });
+
+  this.getClassRankList([]);
+  this.filterForm.get('searchText')!.valueChanges
+    .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroySubject$))
+    .subscribe(searchValue => {
+      if (searchValue) {
+        this.filterForm.patchValue({ gradeLevel: '' }, { emitEvent: false });
+      }
+
+      const filterParams = this.buildFilterParams(searchValue, this.filterForm.value.gradeLevel);
+      this.currentFilterParams = filterParams;
+      this.getClassRankList(filterParams);
+    });
+    this.filterForm.get('gradeLevel')!.valueChanges
+    .pipe(distinctUntilChanged(), takeUntil(this.destroySubject$))
+    .subscribe(gradeValue => {
+      if (gradeValue) {
+        this.filterForm.patchValue({ searchText: '' }, { emitEvent: false });
+      }
+
+      const filterParams = this.buildFilterParams(this.filterForm.value.searchText, gradeValue);
+      this.currentFilterParams = filterParams;
+      this.getClassRankList(filterParams);
+    });
+}
+
+
+  private buildFilterParams(searchText: string, gradeLevel: string) {
+  const filterParams: any[] = [];
+
+    if (searchText && !gradeLevel) {
+      filterParams.push({
+        columnName: null,
+        filterValue: searchText.trim(),
+        filterOption: 3
+      });
+    } else if (!searchText && gradeLevel) {
+      filterParams.push({
+        filterOption: 11,
+        columnName: 'gradeId',
+        filterValue: gradeLevel
+      });
+    }
+
+    return filterParams;
+  }
+
+  getClassRankList(filterParams?: any) {
+    const requestBody = {
+      filterParams,
+      sortingModel: null,
+      pageNumber: this.pageNumber || 1,
+      pageSize: this.pageSize || 10
+    };
+
+    this.reportService.getClassRankListReport(requestBody).subscribe(res => {
+
+      if (res) {
+        if (res._failure) {
+          this.studentList = [];
+          this.totalCount = 0;
+          this.snackbar.open(res._message, '', { duration: 10000 });
+        } else {
+          this.studentList = res?.studentCgpaDetails || [];
+          this.totalCount = res?.totalCount || this.studentList.length;
+          this.pageSize = res?._pageSize;
+        }
+      } else {
+        this.studentList = [];
+        this.totalCount = 0;
+        this.snackbar.open(this.defaultService.getHttpError(), '', { duration: 10000 });
+      }
+    });
   }
 
 
-  ngOnInit(): void {
+  getAllGradeLevel() {
+    this.gradeLevelService.getAllGradeLevels(this.gradeLevelList).subscribe((res) => {
+      if (typeof (res) == 'undefined') {
+        this.gradeLevelList.tableGradelevelList = []
+        this.snackbar.open('Grade Level List failed. ' + this.defaultValuesService.getHttpError(), '', {
+          duration: 10000
+        });
+      }
+      else {
+        if (res._failure) {
+
+        } else {
+          this.gradeLevelList = res;
+        }
+      }
+    });
+  }
+
+  getPageEvent(event) {
+    this.pageNumber = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.getClassRankList(this.currentFilterParams);
+  }
+
+  ngOnDestroy() {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
   }
 
 }
