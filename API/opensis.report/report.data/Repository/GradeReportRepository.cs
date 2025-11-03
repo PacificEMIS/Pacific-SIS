@@ -2,6 +2,7 @@
 using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
+using opensis.data.ViewModels.MarkingPeriods;
 using opensis.report.report.data.Interface;
 using opensis.report.report.data.ViewModels.GradeReport;
 using System;
@@ -496,5 +497,301 @@ namespace opensis.report.report.data.Repository
             }
             return studentFinalGrade;
         }
+
+        /// <summary>
+        /// Get CGPA Rank List Report
+        /// </summary>
+        /// <param name="pageResult"></param>
+        /// <returns></returns>
+        public StudentCgpaViewModel GetCGPARankListReport(PageResult pageResult)
+        {
+            StudentCgpaViewModel studentCgpa = new();
+            studentCgpa._tenantName = pageResult._tenantName;
+            studentCgpa._userName = pageResult._userName;
+            studentCgpa._token = pageResult._token;
+
+            try
+            {
+                List<StudentCgpaDetails> cgpaDetailsList = new();
+                var gradeDataList = new List<Grade>();
+                //bool? teacherGradeCalculateGpa = null;
+                List<int> studentIdList = new List<int>();
+
+                var studentDataList = this.context?.StudentListView
+                   .Where(x => x.TenantId == pageResult.TenantId
+                       && x.SchoolId == pageResult.SchoolId);
+
+                if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
+                {
+                    studentIdList = studentDataList.Select(s => s.StudentId).ToList();
+                }
+                else
+                {
+                    string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
+                    var ColumnvalueForName = Regex.Replace(Columnvalue, @"\s+", "");
+                    if (pageResult.FilterParams != null && pageResult.FilterParams.ElementAt(0).ColumnName == null && pageResult.FilterParams.Count == 1)
+                    {
+                        var searchData = studentDataList.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.MiddleName != null && x.MiddleName.ToLower().Contains(ColumnvalueForName.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.MiddleName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.FirstGivenName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || ((x.MiddleName ?? "").ToLower() + (x.LastFamilyName ?? "").ToLower()).Contains(ColumnvalueForName.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(Columnvalue.ToLower()) || x.AlternateId != null && x.AlternateId.ToLower().Contains(Columnvalue.ToLower()) || x.GradeLevelTitle != null && x.GradeLevelTitle.ToLower().Contains(Columnvalue.ToLower()) || x.SectionName != null && x.SectionName.ToLower().Contains(Columnvalue.ToLower()));
+
+                        if (searchData?.Any() == true)
+                        {
+                            studentIdList = searchData.Select(s => s.StudentId).ToList();
+                        }
+                    }
+                    else
+                    {
+                        //normal advance search
+                        var studentDatas = studentDataList.AsQueryable();
+                        studentDatas = Utility.FilteredData(pageResult.FilterParams!, studentDatas).AsQueryable();
+                        if (studentDatas?.Any() == true)
+                        {
+                            studentIdList = studentDatas.Select(s => s.StudentId).ToList();
+                        }
+                    }
+                }
+                var gradeScaleData = this.context?.GradeScale.Include(g => g.Grade)
+                .FirstOrDefault(x => x.TenantId == pageResult.TenantId
+                    && x.SchoolId == pageResult.SchoolId
+                    && x.AcademicYear == pageResult._academicYear
+                    && x.UseAsStandardGradeScale != true);
+
+                if (gradeScaleData != null)
+                {
+                    //teacherGradeCalculateGpa = gradeScaleData.CalculateGpa;
+                    gradeDataList = gradeScaleData.Grade
+                                    .Select(s => new Grade
+                                    {
+                                        GradeScaleId = s.GradeScaleId,
+                                        GradeId = s.GradeId,
+                                        UnweightedGpValue = s.UnweightedGpValue ?? 0,
+                                        WeightedGpValue = s.WeightedGpValue ?? 0
+                                    }).ToList();
+                }
+
+
+                var studentFinalGrades = this.context?.StudentFinalGradeListViews
+                    .Where(x => x.SfgTenantId == pageResult.TenantId
+                        && x.SfgSchoolId == pageResult.SchoolId
+                        && x.SfgAcademicYear == pageResult._academicYear
+                        && studentIdList.Contains(x.SfgStudentId)
+                        && x.SfgIsExamGrade != true)
+                    .ToList();
+
+                if (studentFinalGrades == null || !studentFinalGrades.Any())
+                    return studentCgpa;
+
+                var studentIds = studentFinalGrades
+                    .Select(s => s.SfgStudentId)
+                    .Distinct()
+                    .ToList();
+
+                var csData = this.context?.CourseSection
+                           .Where(x => x.TenantId == pageResult.TenantId
+                               && x.SchoolId == pageResult.SchoolId).ToList();
+
+                var gradeScaleListData = this.context?.GradeScale.Include(s => s.Grade).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId).ToList();
+
+                foreach (var studentId in studentIds)
+                {
+                    decimal totalCA = 0.0m;
+                    decimal totalgpValue = 0.0m;
+                    decimal totalCE = 0.0m;
+
+                    var studentGrades = studentFinalGrades
+                        .Where(s => s.SfgStudentId == studentId)
+                        .ToList();
+
+                    foreach (var csfg in studentGrades)
+                    {
+                        var cs = csData
+                            .FirstOrDefault(x => x.TenantId == pageResult.TenantId
+                                && x.SchoolId == pageResult.SchoolId
+                                && x.CourseSectionId == csfg.SfgCourseSectionId);
+
+                        if (cs == null) continue;
+
+                        // ==================== GPA LOGIC ====================
+                        decimal? gpValue = 0;
+                        if (csfg.SfgGradeScaleId != null)
+                        {
+                            var GradeScale = gradeScaleListData.FirstOrDefault(x => x.GradeScaleId == csfg.SfgGradeScaleId);
+                            if (GradeScale != null)
+                            {
+                                var grade = GradeScale.Grade.FirstOrDefault(s => s.Title == csfg.SfgGradeObtained);
+                                if (grade.WeightedGpValue == null)
+                                {
+                                    grade.WeightedGpValue = 0;
+                                }
+                                if (grade.UnweightedGpValue == null)
+                                {
+                                    grade.UnweightedGpValue = 0;
+                                }
+
+                                gpValue = (decimal)(cs.IsWeightedCourse != true ? csfg.SfgCreditearned * grade.UnweightedGpValue : csfg.SfgCreditearned * grade.WeightedGpValue);
+                            }
+                        }
+                        else if (cs.GradeScaleType == "Teacher_Scale")
+                        {
+                                var ConfigurationGrade = this.context?.GradebookConfigurationGradescale.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == cs.CourseSectionId && x.AcademicYear == pageResult._academicYear && x.BreakoffPoints <= csfg.SfgPercentMarks);
+                                if (ConfigurationGrade != null)
+                                {
+                                    var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
+                                    if (gradeData != null)
+                                    {
+                                        gpValue = (decimal)(cs.IsWeightedCourse != true ? csfg.SfgCreditearned * gradeData.UnweightedGpValue : csfg.SfgCreditearned * gradeData.WeightedGpValue);
+                                    }
+                                }
+                        }
+
+                        // Determine Marking Period hierarchy (Yr > Sem > Qtr > PP)
+                        if (csfg.SfgYrMarkingPeriodId != null)
+                        {
+                            totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                            totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                            //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
+                            totalgpValue += (decimal)gpValue;
+                        }
+                        else if (csfg.SfgSmstrMarkingPeriodId != null)
+                        {
+                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId && x.SfgYrMarkingPeriodId != null);
+                            if (!exists)
+                            {
+                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalgpValue += (decimal)gpValue;
+                            }
+                        }
+                        else if (csfg.SfgQtrMarkingPeriodId != null)
+                        {
+                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
+                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null));
+                            if (!exists)
+                            {
+                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalgpValue += (decimal)gpValue;
+                            }
+                        }
+                        else if (csfg.SfgPrgrsprdMarkingPeriodId != null)
+                        {
+                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
+                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null ||
+                                                                      x.SfgQtrMarkingPeriodId != null));
+                            if (!exists)
+                            {
+                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalgpValue += (decimal)gpValue;
+                            }
+                        }
+                        else
+                        {
+                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
+                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null ||
+                                                                      x.SfgQtrMarkingPeriodId != null || x.SfgPrgrsprdMarkingPeriodId != null));
+                            if (!exists)
+                            {
+                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
+                                totalgpValue += (decimal)gpValue;
+                            }
+                        }
+                    }
+
+                    // Historical Credit Transfer
+                    var hctData = this.context?.HistoricalCreditTransfer
+                        .Where(x => x.TenantId == pageResult.TenantId
+                            && x.SchoolId == pageResult.SchoolId
+                            && x.StudentId == studentId
+                            && x.CreditAttempted != null
+                            && x.GpValue != null)
+                        .ToList();
+
+                    totalCA += (decimal)(hctData?.Sum(s => s.CreditAttempted) ?? 0);
+                    totalCE += (decimal)(hctData?.Sum(s => s.CreditEarned) ?? 0);
+                    totalgpValue += (decimal)(hctData?.Sum(s => s.GpValue) ?? 0);
+
+                    decimal? cgpa = null;
+                    if (totalCA > 0 && totalgpValue > 0)
+                        cgpa = Math.Truncate(((decimal)(totalgpValue / totalCA)) * 100) / 100;
+
+                    // Get student details
+                    var studentInfo = studentDataList
+                        .FirstOrDefault(x => x.TenantId == pageResult.TenantId
+                            && x.SchoolId == pageResult.SchoolId
+                            && x.StudentId == studentId);
+
+                    if (studentInfo != null)
+                    {
+                        cgpaDetailsList.Add(new StudentCgpaDetails
+                        {
+                            StudentId = studentId,
+                            StudentInternalId = studentInfo.StudentInternalId,
+                            AlternateId = studentInfo.AlternateId,
+                            FirstGivenName = studentInfo.FirstGivenName,
+                            MiddleName = studentInfo.MiddleName,
+                            LastFamilyName = studentInfo.LastFamilyName,
+                            PreferredName = studentInfo.PreferredName,
+                            GradeId = studentInfo.GradeId,
+                            GradeLevelTitle = studentInfo.GradeLevelTitle,
+                            SectionName = studentInfo.SectionName,
+                            HomePhone = studentInfo.HomePhone,
+                            SchoolEmail = studentInfo.SchoolEmail,
+                            CumulativeGPA = cgpa,
+                            TotalCreditAttempeted = totalCA,
+                            TotalCreditEarned = totalCE
+                        });
+                    }
+                }
+
+                // Rank calculation based on GPA
+                var rankedList = cgpaDetailsList
+                    .OrderByDescending(x => x.CumulativeGPA ?? 0)
+                    .ToList();
+
+                int rank = 1;
+                foreach (var student in rankedList)
+                {
+                    student.Rank = rank++;
+                }
+
+                if (pageResult.SortingModel != null)
+                {
+                    var rankedListAsQ = rankedList.AsQueryable();
+                    rankedListAsQ = Utility.Sort(rankedListAsQ, pageResult.SortingModel.SortColumn ?? "", (pageResult.SortingModel.SortDirection ?? "").ToLower());
+                    rankedList = rankedListAsQ.ToList();
+                }
+                else
+                {
+                    rankedList = rankedList.OrderBy(s => s.Rank).ToList();
+                }
+
+                // --- Final response
+                studentCgpa.TenantId = pageResult.TenantId;
+                studentCgpa.SchoolId = (int)pageResult.SchoolId;
+                studentCgpa.PageNumber = pageResult.PageNumber;
+                studentCgpa._pageSize = pageResult.PageSize;
+                studentCgpa.TotalCount = rankedList.Count;
+                if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)
+                {
+                    studentCgpa.studentCgpaDetails = rankedList
+                        .Skip((pageResult.PageNumber - 1) * pageResult.PageSize)
+                        .Take(pageResult.PageSize)
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                studentCgpa._failure = true;
+                studentCgpa._message = ex.Message;
+            }
+
+            return studentCgpa;
+        }
+
     }
 }

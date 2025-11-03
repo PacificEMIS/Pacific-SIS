@@ -12,5 +12,6 @@ namespace opensis.report.report.data.Interface
     {
         public HonorRollListForReport GetHonorRollReport(PageResult pageResult);
         public StudentFinalGradeViewModel GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel);
+        public StudentCgpaViewModel GetCGPARankListReport(PageResult pageResult);
     }
 }
