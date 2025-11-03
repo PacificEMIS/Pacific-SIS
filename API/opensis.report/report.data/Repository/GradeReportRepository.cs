@@ -538,6 +538,16 @@ namespace opensis.report.report.data.Repository
                             studentIdList = searchData.Select(s => s.StudentId).ToList();
                         }
                     }
+                    else
+                    {
+                        //normal advance search
+                        var studentDatas = studentDataList.AsQueryable();
+                        studentDatas = Utility.FilteredData(pageResult.FilterParams!, studentDatas).AsQueryable();
+                        if (studentDatas?.Any() == true)
+                        {
+                            studentIdList = studentDatas.Select(s => s.StudentId).ToList();
+                        }
+                    }
                 }
                 var gradeScaleData = this.context?.GradeScale.Include(g => g.Grade)
                 .FirstOrDefault(x => x.TenantId == pageResult.TenantId
