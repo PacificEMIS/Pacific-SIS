@@ -1541,8 +1541,13 @@ namespace opensis.data.Repository
             {
                 if (reportCardViewModel.studentsReportCardViewModelList.Count > 0)
                 {
+                    DateTime todayDate = DateTime.UtcNow.Date;
                     string? schoolYear = null;
+                    DateTime? YTDStartDate = null;
+                    DateTime? YTDEndDate = null;
                     var gradeDataList = new List<Grade>();
+                    List<EffortGradeLibraryCategory>? EffortGradeLibraryCategoryData = new();
+                    List<EffortGradeScale>? EffortGradeScaleData = new();
 
                     var schoolData = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Include(x => x.SchoolYears).Include(x => x.GradeScale).ThenInclude(x => x.Grade).FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
 
@@ -1566,8 +1571,15 @@ namespace opensis.data.Repository
                     var studentMasterData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
 
                     var studentAttendanceMasterData = this.context?.StudentAttendance.Include(x => x.AttendanceCodeNavigation).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
+                    var studentDailyAttendanceAllData = this.context?.StudentDailyAttendance.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
+                    var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
 
-                    var EffortGradeLibraryCategoryData = this.context?.EffortGradeLibraryCategory.Include(s => s.EffortGradeLibraryCategoryItem).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
+                    if (reportCardViewModel.EffortGrade == true)
+                    {
+                        EffortGradeLibraryCategoryData = this.context?.EffortGradeLibraryCategory.Include(s => s.EffortGradeLibraryCategoryItem).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
+
+                        EffortGradeScaleData = this.context?.EffortGradeScale.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId).ToList();
+                    }
 
                     if (String.Compare(reportCardViewModel.TemplateType, "default", true) == 0)
                     {
@@ -1587,7 +1599,7 @@ namespace opensis.data.Repository
 
                             var studentData = studentMasterData!.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
-                            var GradeLevelTitle = studentData!.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
+                            var enrollmentData = studentData!.StudentEnrollment.Where(x => x.IsActive == true).FirstOrDefault();
 
                             studentsReportCard.SchoolName = schoolData!.SchoolName;
                             studentsReportCard.SchoolYear = schoolYear;
@@ -1595,13 +1607,16 @@ namespace opensis.data.Repository
                             studentsReportCard.MiddleName = studentData.MiddleName;
                             studentsReportCard.LastFamilyName = studentData.LastFamilyName;
                             studentsReportCard.StudentInternalId = studentData.StudentInternalId;
-                            studentsReportCard.GradeTitle = GradeLevelTitle;
+                            studentsReportCard.GradeTitle = enrollmentData.GradeLevelTitle;
                             studentsReportCard.HomeAddressLineOne = schoolData.StreetAddress1;
                             studentsReportCard.HomeAddressLineTwo = schoolData.StreetAddress2;
                             studentsReportCard.HomeAddressCountry = schoolData.Country;
                             studentsReportCard.HomeAddressState = schoolData.State;
                             studentsReportCard.HomeAddressCity = schoolData.City;
                             studentsReportCard.HomeAddressZip = schoolData.Zip;
+
+                            YTDStartDate = Convert.ToDateTime(enrollmentData?.EnrollmentDate);
+                            YTDEndDate = Convert.ToDateTime(enrollmentData?.EnrollmentDate);
 
                             var markingPeriodsData = reportCardViewModel.MarkingPeriods!.Split(",");
                             DateTime? startDate = null;
@@ -1643,6 +1658,7 @@ namespace opensis.data.Repository
                                         MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         SortId = "3_" + ppData.MarkingPeriodId;
                                         MarkingPeriod.SortId = SortId;
+                                        YTDEndDate = YTDEndDate > ppData.EndDate ? YTDEndDate : ppData.EndDate;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
@@ -1667,6 +1683,7 @@ namespace opensis.data.Repository
                                         MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         SortId = "2_" + qtrData.MarkingPeriodId;
                                         MarkingPeriod.SortId = SortId;
+                                        YTDEndDate = YTDEndDate > qtrData.EndDate ? YTDEndDate : qtrData.EndDate;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
@@ -1691,6 +1708,7 @@ namespace opensis.data.Repository
                                         MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         SortId = "1_" + smstrData.MarkingPeriodId;
                                         MarkingPeriod.SortId = SortId;
+                                        YTDEndDate = YTDEndDate > smstrData.EndDate ? YTDEndDate : smstrData.EndDate;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
@@ -1715,6 +1733,7 @@ namespace opensis.data.Repository
                                         MarkingPeriod.MarkingPeriodName = MarkingPeriodShortTitle;
                                         SortId = "0_" + yrData.MarkingPeriodId;
                                         MarkingPeriod.SortId = SortId;
+                                        YTDEndDate = YTDEndDate > yrData.EndDate ? YTDEndDate : yrData.EndDate;
 
                                         if (markingPeriodid.Last() == "E")
                                         {
@@ -1879,8 +1898,11 @@ namespace opensis.data.Repository
                                     //studentsReportCard.teacherCommentList = teacherComments;
                                     //studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
 
-                                    markingPeriodDetailsForDefaultTemplates.AverageGPA = Math.Round((decimal)markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Where(s => s.GPA != null).Select(s => s.GPA).Average(), 2);
+                                    if (markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates?.Any() == true)
+                                    {
+                                        markingPeriodDetailsForDefaultTemplates.AverageGPA = Math.Round(markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Where(s => s.GPA.HasValue).Select(s => s.GPA.Value).DefaultIfEmpty(0).Average(), 2);
 
+                                    }
                                     studentsReportCard.markingPeriodDetailsForDefaultTemplates.Add(markingPeriodDetailsForDefaultTemplates);
 
                                     //this block for effot grade
@@ -1913,18 +1935,22 @@ namespace opensis.data.Repository
                             //this code for year to date percentage calculation
                             int workDays = 0;
                             decimal attendencePercent = 0;
+                            decimal? PresentCount = 0;
+                            decimal? AbsentCount = 0;
 
                             var calenderData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.DefaultCalender == true && x.AcademicYear == reportCardViewModel.AcademicYear);
 
                             var schoolYearData = schoolData.SchoolYears.FirstOrDefault(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.AcademicYear == reportCardViewModel.AcademicYear);
 
+                            YTDEndDate = YTDEndDate > todayDate ? todayDate : YTDEndDate;
+
                             if (calenderData != null && schoolYearData != null)
                             {
-                                DateTime? schoolYearStartDate = schoolYearData.StartDate;
-                                DateTime? schoolYearEndDate = schoolYearData.EndDate;
+                                //DateTime? schoolYearStartDate = schoolYearData.StartDate;
+                                //DateTime? schoolYearEndDate = schoolYearData.EndDate;
 
                                 // Calculate Holiday
-                                var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == reportCardViewModel.TenantId && e.AcademicYear == reportCardViewModel.AcademicYear && (e.StartDate >= schoolYearStartDate && e.StartDate <= schoolYearEndDate || e.EndDate >= schoolYearStartDate && e.EndDate <= schoolYearEndDate) && e.IsHoliday == true && (e.SchoolId == reportCardViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                                var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == reportCardViewModel.TenantId && e.AcademicYear == reportCardViewModel.AcademicYear && (e.StartDate >= YTDStartDate && e.StartDate <= YTDEndDate || e.EndDate >= YTDStartDate && e.EndDate <= YTDEndDate) && e.IsHoliday == true && (e.SchoolId == reportCardViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
                                 if (CalendarEventsData?.Any() == true)
                                 {
@@ -1980,24 +2006,59 @@ namespace opensis.data.Repository
                                 }
 
                                 //fetch all dates in this session calender
-                                var allDates = Enumerable.Range(0, 1 + schoolYearEndDate!.Value.Date.Subtract(schoolYearStartDate!.Value.Date).Days).Select(d => schoolYearStartDate.Value.Date.AddDays(d)).ToList();
+                                var allDates = Enumerable.Range(0, 1 + YTDEndDate!.Value.Date.Subtract(YTDStartDate!.Value.Date).Days).Select(d => YTDStartDate.Value.Date.AddDays(d)).ToList();
 
                                 //remove holidays &weekoffdays
                                 var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString())).ToList();
 
                                 workDays = wrokingDates.Count;
 
-                                var studentAttendance = this.context?.StudentAttendance.Include(s => s.AttendanceCodeNavigation).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= schoolYearStartDate && x.AttendanceDate <= schoolYearEndDate).ToList();
+                                //var studentAttendance = this.context?.StudentAttendance.Include(s => s.AttendanceCodeNavigation).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= YTDStartDate && x.AttendanceDate <= YTDEndDate).ToList();
 
-                                if (studentAttendance?.Count > 0 && workDays > 0)
+                                //if (studentAttendance?.Count > 0 && workDays > 0)
+                                //{
+                                //var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present").GroupBy(c => new
+                                //{
+                                //    c.StudentId,
+                                //    c.AttendanceDate
+                                //}).Count();
+
+                                //attendencePercent = ((Convert.ToDecimal(studentDailyAttendanceCount) / Convert.ToDecimal(workDays)) * 100);
+                                //}
+
+                                var studentDailyAttendanceData = studentDailyAttendanceAllData!.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= YTDStartDate && x.AttendanceDate <= YTDEndDate).ToList();
+
+                                if (studentDailyAttendanceData.Count > 0)
                                 {
-                                    var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present").GroupBy(c => new
+                                    foreach (var dailyAttendance in studentDailyAttendanceData)
                                     {
-                                        c.StudentId,
-                                        c.AttendanceDate
-                                    }).Count();
+                                        var StudentAttendanceData = studentAttendanceMasterData?.FirstOrDefault(x => x.StudentId == student.StudentId && x.AttendanceDate == dailyAttendance.AttendanceDate);
 
-                                    attendencePercent = ((Convert.ToDecimal(studentDailyAttendanceCount) / Convert.ToDecimal(workDays)) * 100);
+                                        if (StudentAttendanceData != null)
+                                        {
+                                            var block = BlockData?.FirstOrDefault(x => x.BlockId == StudentAttendanceData!.BlockId
+                                            );
+
+                                            if (dailyAttendance.AttendanceMinutes >= block?.FullDayMinutes)
+                                            {
+                                                PresentCount++;
+                                            }
+                                            if (dailyAttendance.AttendanceMinutes < block?.HalfDayMinutes)
+                                            {
+                                                AbsentCount++;
+                                            }
+                                            if (dailyAttendance.AttendanceMinutes >= block?.HalfDayMinutes && dailyAttendance.AttendanceMinutes < block?.FullDayMinutes)
+                                            {
+                                                PresentCount = PresentCount + 0.5m;
+                                                AbsentCount = AbsentCount + 0.5m;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (PresentCount > 0 && workDays > 0)
+                                {
+                                    attendencePercent = (decimal)(Convert.ToDecimal(PresentCount) / Convert.ToDecimal(workDays) * 100);
                                 }
                             }
 
@@ -2085,6 +2146,7 @@ namespace opensis.data.Repository
                                     studentsReportCard.effortGradeScales = effortGradeScale;
                                 }
                             }
+
                             reportCardView.studentsReportCardViewModelList.Add(studentsReportCard);
                         }
                     }
@@ -2093,7 +2155,7 @@ namespace opensis.data.Repository
                     {
                         List<string?> Subjects = new List<string?> { "math", "science", "social studies", "health", "marshallese", "english" };
 
-                        var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
+                        //var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
 
                         foreach (var student in reportCardViewModel.studentsReportCardViewModelList)
                         {
@@ -2453,7 +2515,7 @@ namespace opensis.data.Repository
 
                             var AttendanceData = this.context?.StudentAttendance.Include(s => s.BlockPeriod).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId);
 
-                            var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
+                            //var BlockData = this.context?.Block.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId);
 
                             foreach (var markingPeriod in markingPeriodsData)
                             {
