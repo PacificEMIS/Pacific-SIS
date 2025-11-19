@@ -1968,5 +1968,6 @@
     "thenextSchoolYearCanStartAnytimeBetween": "El próximo año escolar puede comenzar en cualquier momento entre",
     "and": "y",
     "allowingA2monthFlexibleBufferOnceaStartDateisChosenTheEndDateShouldFallBetween": "permitiendo al menos dos meses de margen flexible para la selección de la fecha anterior y un mes para la selección de la fecha futura. Una vez elegida la fecha de inicio, la fecha de finalización debe estar comprendida entre",
-    "ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime": "asegurando un ciclo académico completo de 12 meses con suficiente flexibilidad y tiempo de instrucción."
+    "ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime": "asegurando un ciclo académico completo de 12 meses con suficiente flexibilidad y tiempo de instrucción.",
+    "gradePointAverageGPA": "Promedio de Calificación (GPA)"
 }
