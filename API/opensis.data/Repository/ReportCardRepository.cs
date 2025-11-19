@@ -1879,6 +1879,8 @@ namespace opensis.data.Repository
                                     //studentsReportCard.teacherCommentList = teacherComments;
                                     //studentsReportCard.courseCommentCategories = courseCommentCategoryData!;
 
+                                    markingPeriodDetailsForDefaultTemplates.AverageGPA = Math.Round((decimal)markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Where(s => s.GPA != null).Select(s => s.GPA).Average(), 2);
+
                                     studentsReportCard.markingPeriodDetailsForDefaultTemplates.Add(markingPeriodDetailsForDefaultTemplates);
 
                                     //this block for effot grade
