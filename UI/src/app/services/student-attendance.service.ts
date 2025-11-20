@@ -111,6 +111,7 @@ export class StudentAttendanceService {
   }
   recalculateDailyAttendence(obj: StudentRecalculateDailyAttendance){
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.updatedBy = this.defaultValuesService.getUserGuidId();
     const apiurl = this.apiUrl + obj._tenantName + '/StudentAttendance/reCalculateDailyAttendance';
     return this.http.post<StudentRecalculateDailyAttendance>(apiurl, obj,this.httpOptions);
   }
