@@ -1969,5 +1969,7 @@
     "and": "et",
     "allowingA2monthFlexibleBufferOnceaStartDateisChosenTheEndDateShouldFallBetween": "prévoir au moins deux mois de marge de manœuvre pour la sélection de dates rétrospectives et un mois pour la sélection de dates ultérieures. Une fois la date de début choisie, la date de fin doit être comprise entre",
     "ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime": "garantissant un cycle scolaire complet de 12 mois avec une flexibilité et un temps d'instruction adéquats.",
-    "gradePointAverageGPA": "Moyenne de points de notation (GPA)"
+    "gradePointAverageGPA": "Moyenne de points de notation (GPA)",
+    "yearToDateAttendencePercent": "Pourcentage de présence à ce jour",
+    "averageGpa": "Moyenne du GPA"
 }

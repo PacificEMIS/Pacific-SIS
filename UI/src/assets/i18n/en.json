@@ -1970,5 +1970,7 @@
     "and": "and",
     "allowingA2monthFlexibleBufferOnceaStartDateisChosenTheEndDateShouldFallBetween": "allowing at least 2-month flexible buffer for backward date selection and 1-month for forward date selection. Once a start date is chosen, the end date should fall between",
     "ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime": "ensuring a full 12-month academic cycle with adequate flexibility and instructional time.",
-    "gradePointAverageGPA": "Grade Point Average (GPA)"
+    "gradePointAverageGPA": "Grade Point Average (GPA)",
+    "yearToDateAttendencePercent": "Year To Date Attendence Percent",
+    "averageGpa" : "Average Gpa"
 }
