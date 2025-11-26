@@ -2980,7 +2980,7 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="reCalculateDailyAttendanceViewModel"></param>
         /// <returns></returns>
-        public ReCalculateDailyAttendanceViewModel ReCalculateDailyAttendance(ReCalculateDailyAttendanceViewModel reCalculateDailyAttendanceViewModel)
+        public ReCalculateDailyAttendanceViewModel ReCalculateDailyAttendance_old(ReCalculateDailyAttendanceViewModel reCalculateDailyAttendanceViewModel)
         {
             try
             {
@@ -3044,6 +3044,134 @@ namespace opensis.data.Repository
                     reCalculateDailyAttendanceViewModel._message = NORECORDFOUND;
                     reCalculateDailyAttendanceViewModel._failure = false;
                 }
+            }
+            catch (Exception ex)
+            {
+                reCalculateDailyAttendanceViewModel._message = ex.Message;
+                reCalculateDailyAttendanceViewModel._failure = true;
+            }
+            return reCalculateDailyAttendanceViewModel;
+        }
+
+        public ReCalculateDailyAttendanceViewModel ReCalculateDailyAttendance(ReCalculateDailyAttendanceViewModel reCalculateDailyAttendanceViewModel)
+        {
+            try
+            {
+                var tenantId = reCalculateDailyAttendanceViewModel.TenantId;
+                var schoolId = reCalculateDailyAttendanceViewModel.SchoolId;
+                var fromDate = reCalculateDailyAttendanceViewModel.FromDate;
+                var toDate = reCalculateDailyAttendanceViewModel.ToDate;
+                var academicYear = reCalculateDailyAttendanceViewModel._academicYear;
+
+                var studentDailyAttendanceMasterData = this.context?.StudentDailyAttendance
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.AttendanceDate >= fromDate && x.AttendanceDate <= toDate)
+                    .ToList();
+
+                var studentAttendanceMasterData = this.context?.StudentAttendance
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.AttendanceDate >= fromDate && x.AttendanceDate <= toDate)
+                    .ToList();
+
+                if (studentAttendanceMasterData?.Any() != true)
+                {
+                    reCalculateDailyAttendanceViewModel._message = NORECORDFOUND;
+                    reCalculateDailyAttendanceViewModel._failure = false;
+                    return reCalculateDailyAttendanceViewModel;
+                }
+
+                // Load all master data up-front
+                var blockPeriodLookup = this.context?.BlockPeriod
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId)
+                    .ToLookup(x => (x.BlockId, x.PeriodId));
+
+                var attendanceCodeLookup = this.context?.AttendanceCode
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId)
+                    .ToDictionary(x => (x.AttendanceCode1, x.AttendanceCategoryId));
+
+                var blockLookup = this.context?.Block
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId)
+                    .ToDictionary(x => x.BlockId);
+
+                var attendanceDates = studentAttendanceMasterData.Select(s => s.AttendanceDate).Distinct();
+
+                foreach (var attendanceDate in attendanceDates)
+                {
+                    var attendanceDataInADay = studentAttendanceMasterData.Where(x => x.AttendanceDate == attendanceDate).ToList();
+                    var studentIds = attendanceDataInADay.Select(s => s.StudentId).Distinct();
+
+                    foreach (var studentId in studentIds)
+                    {
+                        int totalAttendanceMin = 0;
+                        string attendanceCode = string.Empty;
+
+                        var studentAttendanceData = attendanceDataInADay.Where(x => x.StudentId == studentId).ToList();
+
+                        foreach (var attendance in studentAttendanceData)
+                        {
+                            var blockPeriod = blockPeriodLookup?[(attendance.BlockId, attendance.PeriodId)].FirstOrDefault();
+
+                            TimeSpan start = TimeSpan.Parse(blockPeriod.PeriodStartTime!);
+                            TimeSpan end = TimeSpan.Parse(blockPeriod.PeriodEndTime!);
+                            int classMin = (int)(end - start).TotalMinutes;
+
+                            if (attendanceCodeLookup != null && attendanceCodeLookup.TryGetValue((attendance.AttendanceCode, attendance.AttendanceCategoryId), out var code))
+                            {
+                                switch (code.StateCode?.ToLower())
+                                {
+                                    case "present":
+                                        totalAttendanceMin += classMin;
+                                        break;
+                                    case "half day":
+                                        totalAttendanceMin += (int)Math.Ceiling(classMin / 2.0);
+                                        break;
+                                }
+                            }
+                        }
+
+                        var blockId = studentAttendanceData.FirstOrDefault()?.BlockId;
+                        var block = blockId != null && blockLookup?.ContainsKey(blockId.Value) == true ? blockLookup[blockId.Value] : null;
+
+                        if (block != null)
+                        {
+                            if (totalAttendanceMin >= block.FullDayMinutes)
+                                attendanceCode = "Present";
+                            else if (totalAttendanceMin >= block.HalfDayMinutes)
+                                attendanceCode = "Half Day";
+                            else
+                                attendanceCode = "Absent";
+                        }
+
+                        var existingRecord = studentDailyAttendanceMasterData?.FirstOrDefault(x =>
+                            x.TenantId == tenantId && x.SchoolId == schoolId &&
+                            x.StudentId == studentId && x.AttendanceDate == attendanceDate);
+
+                        if (existingRecord != null)
+                        {
+                            existingRecord.AttendanceMinutes = totalAttendanceMin;
+                            existingRecord.AttendanceCode = attendanceCode;
+                            existingRecord.UpdatedOn = DateTime.UtcNow;
+                            existingRecord.UpdatedBy = reCalculateDailyAttendanceViewModel.UpdatedBy;
+                        }
+                        else
+                        {
+                            this.context?.StudentDailyAttendance.Add(new StudentDailyAttendance
+                            {
+                                TenantId = tenantId,
+                                SchoolId = schoolId,
+                                StudentId = studentId,
+                                AttendanceDate = attendanceDate,
+                                CreatedBy = reCalculateDailyAttendanceViewModel.UpdatedBy,
+                                CreatedOn = DateTime.UtcNow,
+                                AttendanceMinutes = totalAttendanceMin,
+                                AttendanceCode = attendanceCode
+                            });
+                        }
+                    }
+                }
+
+                this.context?.SaveChanges();
+
+                reCalculateDailyAttendanceViewModel._message = "The daily attendance between given timeframe has been recalculated";
+                reCalculateDailyAttendanceViewModel._failure = false;
             }
             catch (Exception ex)
             {
