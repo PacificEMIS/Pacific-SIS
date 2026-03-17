@@ -8,4 +8,5 @@ export class StudentRecalculateDailyAttendance {
     public _token: string;
     public _failure: boolean;
     public _message: string; 
+    public updatedBy?: string;
 }

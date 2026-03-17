@@ -42,5 +42,6 @@ namespace opensis.data.ViewModels.ReportCard
         public string? MarkingPeriodTitle { get; set; }
         public int? Absences { get; set; }
         public int? ExcusedAbsences { get; set; }
+        public decimal? AverageGPA { get; set; }
     }
 }

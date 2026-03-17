@@ -1041,13 +1041,15 @@ namespace opensis.data.Repository
 
                         //totalStudent = this.context.StudentCoursesectionSchedule.Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true ).ToList().Count;
 
-                        totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true /*&& (x.EffectiveDropDate == null || x.EffectiveDropDate.Value.Date >= DateTime.Today.Date)*/&& x.StudentMaster.IsActive == true).ToList().Count;                        
+                        //totalStudent = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true /*&& (x.EffectiveDropDate == null || x.EffectiveDropDate.Value.Date >= DateTime.Today.Date)*/&& x.StudentMaster.IsActive == true).ToList().Count;                        
+
+                        totalStudent = ActiveStudentInCourseSection(courseSection);
 
                         var staffData = this.context?.StaffCoursesectionSchedule.Include(x => x.StaffMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.IsDropped != true).ToList();
-                        if (staffData!=null && staffData.Any())
+                        if (staffData != null && staffData.Any())
                         {
-                          
-                            staffFullName = $"{staffData!.FirstOrDefault()!.StaffMaster.FirstGivenName} { (staffData!.FirstOrDefault()!.StaffMaster.MiddleName == null ? " " : $"{staffData!.FirstOrDefault()!.StaffMaster.MiddleName} ")}{staffData!.FirstOrDefault()!.StaffMaster.LastFamilyName}";
+
+                            staffFullName = $"{staffData!.FirstOrDefault()!.StaffMaster.FirstGivenName} {(staffData!.FirstOrDefault()!.StaffMaster.MiddleName == null ? " " : $"{staffData!.FirstOrDefault()!.StaffMaster.MiddleName} ")}{staffData!.FirstOrDefault()!.StaffMaster.LastFamilyName}";
                             totalStaff = staffData.Count;
                         }
 
@@ -2607,7 +2609,7 @@ namespace opensis.data.Repository
                 }
                 //var todayDate = DateTime.UtcNow;
 
-                var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && (searchCourseSectionViewModel.MarkingPeriodStartDate == null || (x.DurationStartDate >= searchCourseSectionViewModel.MarkingPeriodStartDate || x.DurationEndDate >= searchCourseSectionViewModel.MarkingPeriodStartDate)) && (searchCourseSectionViewModel.CourseId == null || x.CourseId == searchCourseSectionViewModel.CourseId) && (searchCourseSectionViewModel.CourseSubject == null || x.CourseSubject == searchCourseSectionViewModel.CourseSubject) && (searchCourseSectionViewModel.CourseProgram == null || x.CourseProgram == searchCourseSectionViewModel.CourseProgram) && (searchCourseSectionViewModel.MarkingPeriodId == null || x.YrMarkingPeriodId == YrmarkingPeriodId || x.SmstrMarkingPeriodId == SmtrmarkingPeriodId || x.QtrMarkingPeriodId == QtrmarkingPeriodId || x.PrgrsprdMarkingPeriodId == PrgrsprdmarkingPeriodId));
+                var coursedata = this.context?.AllCourseSectionView.Where(x => x.TenantId == searchCourseSectionViewModel.TenantId && x.SchoolId == searchCourseSectionViewModel.SchoolId && (searchCourseSectionViewModel.MarkingPeriodStartDate == null || (x.DurationStartDate >= searchCourseSectionViewModel.MarkingPeriodStartDate || x.DurationEndDate >= searchCourseSectionViewModel.MarkingPeriodStartDate)) && (searchCourseSectionViewModel.CourseId == null || x.CourseId == searchCourseSectionViewModel.CourseId) && (searchCourseSectionViewModel.CourseSubject == null || x.CourseSubject == searchCourseSectionViewModel.CourseSubject) && (searchCourseSectionViewModel.CourseProgram == null || x.CourseProgram == searchCourseSectionViewModel.CourseProgram) && (searchCourseSectionViewModel.MarkingPeriodId == null || x.YrMarkingPeriodId == YrmarkingPeriodId || x.SmstrMarkingPeriodId == SmtrmarkingPeriodId || x.QtrMarkingPeriodId == QtrmarkingPeriodId || x.PrgrsprdMarkingPeriodId == PrgrsprdmarkingPeriodId) && (searchCourseSectionViewModel.CourseGradeLevel == null || x.CourseGradeLevel == searchCourseSectionViewModel.CourseGradeLevel));
 
                 if (coursedata != null && coursedata.Any())
                 {
@@ -2966,7 +2968,7 @@ namespace opensis.data.Repository
                     }
                 }
 
-                var courseSearchData = this.context?.AllCourseSectionView.Where(x => x.TenantId == courseCatelogViewModel.TenantId && x.SchoolId == courseCatelogViewModel.SchoolId && x.AcademicYear == courseCatelogViewModel.AcademicYear && (courseCatelogViewModel.CourseId == null || x.CourseId == courseCatelogViewModel.CourseId) && (string.IsNullOrEmpty(courseCatelogViewModel.CourseSubject) || x.CourseSubject == courseCatelogViewModel.CourseSubject) && (string.IsNullOrEmpty(courseCatelogViewModel.GradeLevel) || x.CourseGradeLevel == courseCatelogViewModel.GradeLevel) && (string.IsNullOrEmpty(courseCatelogViewModel.MarkingPeriodId) || x.YrMarkingPeriodId == YrmarkingPeriodId || x.SmstrMarkingPeriodId == SmtrmarkingPeriodId || x.QtrMarkingPeriodId == QtrmarkingPeriodId || x.PrgrsprdMarkingPeriodId == PrgrsprdmarkingPeriodId));
+                var courseSearchData = this.context?.AllCourseSectionView.Where(x => x.TenantId == courseCatelogViewModel.TenantId && x.SchoolId == courseCatelogViewModel.SchoolId && x.AcademicYear == courseCatelogViewModel.AcademicYear && (courseCatelogViewModel.CourseId == null || x.CourseId == courseCatelogViewModel.CourseId) && (string.IsNullOrEmpty(courseCatelogViewModel.CourseSubject) || x.CourseSubject == courseCatelogViewModel.CourseSubject) && (string.IsNullOrEmpty(courseCatelogViewModel.GradeLevel) || x.CourseGradeLevel == courseCatelogViewModel.GradeLevel) && (string.IsNullOrEmpty(courseCatelogViewModel.MarkingPeriodId) || x.YrMarkingPeriodId == YrmarkingPeriodId || x.SmstrMarkingPeriodId == SmtrmarkingPeriodId || x.QtrMarkingPeriodId == QtrmarkingPeriodId || x.PrgrsprdMarkingPeriodId == PrgrsprdmarkingPeriodId) && (courseCatelogViewModel.RoomId == null || x.FixedRoomId == courseCatelogViewModel.RoomId || x.VarRoomId == courseCatelogViewModel.RoomId || x.CalRoomId == courseCatelogViewModel.RoomId || x.BlockRoomId == courseCatelogViewModel.RoomId) && (courseCatelogViewModel.PeriodId == null || x.FixedPeriodId == courseCatelogViewModel.PeriodId || x.VarPeriodId == courseCatelogViewModel.PeriodId || x.CalPeriodId == courseCatelogViewModel.PeriodId || x.BlockPeriodId == courseCatelogViewModel.PeriodId));
 
                 if (courseSearchData != null && courseSearchData.Any())
                 {
@@ -3293,6 +3295,16 @@ namespace opensis.data.Repository
                 courseSectionAssignment._message = es.Message;
             }
             return courseSectionAssignment;
+        }
+
+        private int? ActiveStudentInCourseSection(CourseSection courseSection)
+        {
+            int? studentCount = 0;
+            if (courseSection != null)
+            {
+                studentCount = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.StudentMaster.IsActive == true && ((courseSection.DurationEndDate < DateTime.Today.Date && x.EffectiveDropDate == courseSection.DurationEndDate) || x.IsDropped != true)).ToList().Count;
+            }
+            return studentCount;
         }
     }
 }

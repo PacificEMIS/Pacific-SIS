@@ -259,3 +259,19 @@ export class GetPrintScheduleReportModel extends CommonField {
         super();
     }
 }
+
+export class GetStudentRankList extends CommonField {
+    academicYear?: number;
+    filterParams?: any;
+    pageNumber?:any;
+    pageSize?:any;
+    schoolId: any;
+    sortingModel?: any;
+    studentCgpaDetails?: any;
+    totalCount?: any;
+    _pageSize?: any;
+    
+    constructor() {
+        super();
+    }
+}

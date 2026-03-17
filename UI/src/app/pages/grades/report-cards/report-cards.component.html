@@ -280,6 +280,12 @@
                                 <td>{{courseSection?.courseSectionName}}</td>
                                 <td *ngFor="let percentageAndGrade of courseSection?.percentageAndGrade">{{percentageAndGrade?.grade}} {{percentageAndGrade?.percentage ? '(' + percentageAndGrade?.percentage + ')' : ''}}</td>
                             </tr>
+                            <tr>
+                                <td><strong>{{'averageGpa' | translate}}</strong></td>
+                                <td *ngFor="let markingPeriodDetails of grade?.markingPeriodDetailsForOtherTemplates">
+                                    <span>{{markingPeriodDetails?.gpa || '-'}}</span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </td>
@@ -300,6 +306,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="gpa-section mt-4" style="margin-top: 10px;">
+                        <p class="text-left mt-4">
+                            <strong>{{ 'yearToDateAttendencePercent' | translate }}: {{grade?.yearToDateAttendencePercent}}</strong>
+                        </p>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -728,6 +739,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="gpa-section mt-4" style="margin-top: 10px;">
+                        <p class="text-left mt-4">
+                            <strong>{{ 'gradePointAverageGPA' | translate }}: {{markingPeriod?.averageGPA}}</strong>
+                        </p>
+                    </div>
                 </td>
             </tr>
             <ng-container *ngIf="this.addReportCardPdf?.standardGrade;else ViewMode2">

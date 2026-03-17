@@ -83,5 +83,6 @@ namespace opensis.data.Models
         public bool? IsHomeRoomTeacher { get; set; }
         public int? PeriodId { get; set; }
         public int[]? CourseSectionIds { get; set; }
+        public int? GradeLevelId { get; set; }
     }
 }

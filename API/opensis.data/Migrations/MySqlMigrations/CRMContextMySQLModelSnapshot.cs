@@ -10580,6 +10580,10 @@ namespace opensis.data.Migrations.MySqlMigrations
                         .HasColumnType("datetime(0)")
                         .HasColumnName("created_on");
 
+                    b.Property<int?>("EnrollOtherSchoolId")
+                        .HasColumnType("int")
+                        .HasColumnName("enroll_other_school_id");
+
                     b.Property<string>("EnrollmentCode")
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
@@ -10597,6 +10601,11 @@ namespace opensis.data.Migrations.MySqlMigrations
                     b.Property<DateTime?>("ExitDate")
                         .HasColumnType("date")
                         .HasColumnName("exit_date");
+
+                    b.Property<string>("ExitReason")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("exit_reason");
 
                     b.Property<int?>("GradeId")
                         .HasColumnType("int")

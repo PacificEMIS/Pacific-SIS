@@ -211,6 +211,8 @@ export class StudentEnrollmentDetailsForGroupAssignModel {
     gradeId: number;
     gradeLevelTitle: string;
     updatedBy: string;
+    enrollmentDate?: string;
+    enrollOtherSchoolId? : string | number;
 }
 
 
@@ -234,6 +236,16 @@ export class CheckStudentInternalIdViewModel extends CommonField {
     public schoolId: number;
     public studentInternalId: string;
     public isValidInternalId: boolean;
+}
+
+export class DeleteStudentModel extends CommonField {    
+    public studentListViews: StudentListView[];
+    public tenantId: string;
+    public schoolId: string | number;
+    public updatedBy: string;
+    constructor() {
+        super();
+    }
 }
 
 class studentList {
@@ -452,6 +464,7 @@ export class StudentListView{
     public dentistPhone: string;
     public vision: string;
     public visionPhone: string;
+    public isCurrentSchool?: boolean;
 }
 class sorting {
     sortColumn: string;
@@ -572,6 +585,8 @@ export class StudentEnrollmentDetails {
     gradeLevelTitle: string;
     enrollmentDate: string;
     enrollmentCode: string;
+    enrollmentCodeId?: number|string;
+    exitCodeId?: number|string;
     exitDate: string;
     exitCode: string;
     exitType: string;
@@ -589,6 +604,11 @@ export class StudentEnrollmentDetails {
     endYear: string;
     isActive: boolean;
     showDrop:boolean;
+    enrollmentCodeName? : string;
+    exitCodeName? : string;
+    programId? : number | string;
+    transferredProgramId? : number | string;
+    exitReason? : string;
 }
 export class StudentEnrollmentModel extends CommonField {
     studentEnrollments: Array<StudentEnrollmentDetails>;
@@ -609,7 +629,10 @@ export class StudentEnrollmentModel extends CommonField {
     lepIndicator: boolean;
     fieldsCategoryList;
     selectedCategoryId;
-    
+    transferredSchoolId;
+    transferredSchoolName;
+    enrollOtherSchoolId;
+    statusCode;
     constructor() {
         super();
         this.studentEnrollments = [new StudentEnrollmentDetails];

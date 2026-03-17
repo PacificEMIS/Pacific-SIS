@@ -1,4 +1,5 @@
-﻿using opensis.data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using opensis.data.Models;
 using opensis.report.report.data.ViewModels.GradeReport;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace opensis.report.report.core.Grade.Interfaces
     {
         public HonorRollListForReport GetHonorRollReport(PageResult pageResult);
         public StudentFinalGradeViewModel GetStudentFinalGradeReport(StudentFinalGradeViewModel studentFinalGradeViewModel);
+        public StudentCgpaViewModel GetCGPARankListReport(PageResult pageResult);
     }
 }

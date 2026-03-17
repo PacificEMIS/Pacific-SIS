@@ -367,5 +367,21 @@ namespace opensisAPI.Controllers
             }
             return printScheduleReport;
         }
+
+        [HttpPost("getCGPARankListReport")]
+        public ActionResult<StudentCgpaViewModel> GetCGPARankListReport(PageResult pageResult)
+        {
+            StudentCgpaViewModel studentCgpa = new();
+            try
+            {
+                studentCgpa = _gradeReportService.GetCGPARankListReport(pageResult);
+            }
+            catch (Exception es)
+            {
+                studentCgpa._failure = true;
+                studentCgpa._message = es.Message;
+            }
+            return studentCgpa;
+        }
     }
 }

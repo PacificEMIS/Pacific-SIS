@@ -6,6 +6,7 @@ import { CryptoService } from './Crypto.service';
 import {
   CheckStaffInternalIdViewModel,
   GetAllStaffModel, StaffAddModel,
+  DeleteStaffModel,
   StaffCertificateModel,
   StaffCertificateListModel,
   StaffSchoolInfoModel,
@@ -122,10 +123,11 @@ export class StaffService {
         const index = model.externalSchoolIds.findIndex(x => x === this.defaultValuesService.getSchoolID())
         if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index >= 0) {
           if (model?.fieldsCategoryList[categoryId]?.customFields.filter(x => !x.systemField && !x.hide).length === 0) {
-            this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
-            reject({});
+            // this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
+            // reject({});
+            resolve({ isReadOnly });
           } else {
-            isReadOnly = true;
+            // isReadOnly = true;
             resolve({ isReadOnly });
           }
         } else if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index === -1) {
@@ -196,6 +198,15 @@ export class StaffService {
     obj.staffMaster.tenantId = this.defaultValuesService.getTenantID();
     const apiurl = this.apiUrl + obj._tenantName + '/Staff/viewStaff';
     return this.http.post<StaffAddModel>(apiurl, obj,this.httpOptions);
+  }
+
+  deleteStaff(obj: DeleteStaffModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.schoolId = this.defaultValuesService.getSchoolID();
+    obj.tenantId = this.defaultValuesService.getTenantID();
+    obj.updatedBy = this.defaultValuesService.getUserGuidId();
+    const apiurl = this.apiUrl + obj._tenantName + '/Staff/deleteStaff';
+    return this.http.post<DeleteStaffModel>(apiurl, obj,this.httpOptions);
   }
 
   getAllStaffList(obj: GetAllStaffModel){

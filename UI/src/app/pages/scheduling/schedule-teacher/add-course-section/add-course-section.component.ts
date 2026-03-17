@@ -68,6 +68,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   isSearchRecordAvailable = false;
   @ViewChild('masterCheckBox') masterCheckBox: MatCheckbox;
+  gradeList = [];
 
   constructor(public translateService: TranslateService,
     private courseManagerService: CourseManagerService,
@@ -88,6 +89,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
     this.getAllSubjectModel.subjectList=this.data.subjectList;
     this.getAllProgramModel.programList=this.data.programList;
     this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriods;
+    this.gradeList = this.data.gradeLevelList;
   }
 
   ngOnInit(): void {
@@ -111,6 +113,7 @@ export class AddCourseSectionComponent implements OnInit, OnDestroy {
       dataSet.markingPeriodStartDate=null;
     }
     dataSet.forStaff = true;
+    dataSet.courseGradeLevel = dataSet.courseGradeLevel ? dataSet.courseGradeLevel : null;
     this.courseSectionService.searchCourseSectionForSchedule(dataSet).subscribe((res) => {
     if (res.allCourseSectionViewList === null) {
         this.commonService.checkTokenValidOrNot(res._message);

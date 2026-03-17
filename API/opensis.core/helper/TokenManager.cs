@@ -70,7 +70,7 @@ namespace opensis.core.helper
         /// <returns></returns>
         public static (string Token, DateTimeOffset Expiry) GenerateTokenWithExpiry(string username)
         {
-            DateTimeOffset expiry = DateTimeOffset.UtcNow.AddMinutes(30);
+            DateTimeOffset expiry = DateTimeOffset.UtcNow.AddMinutes(1440);
             byte[] key = Convert.FromBase64String(Secret);
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
             SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor

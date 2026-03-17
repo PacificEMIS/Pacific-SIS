@@ -29,6 +29,7 @@ using opensis.data.Helper;
 using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.data.ViewModels;
+using opensis.data.ViewModels.Rollover;
 using opensis.data.ViewModels.School;
 using opensis.data.ViewModels.User;
 using System;
@@ -2570,6 +2571,34 @@ namespace opensis.data.Repository
             int? calenderId = 1;
 
             DateTime sessionEndDate = startDate!.Value.Date.AddYears(+1);
+            sessionEndDate = sessionEndDate.AddDays(-1);
+            var year = startDate?.Year;
+
+            //var month = startDate!.Value.Month;
+            //var year = startDate.Value.Year;
+            //var sessionCalendarStartDate = new DateTime(month, year, 1);
+            //var dateAfterOneYear = sessionCalendarStartDate.Date.AddYears(+1);
+            //var sessionEndDate = dateAfterOneYear.AddDays(-1);
+
+            //set academic year
+            decimal academicYear = Convert.ToDecimal(year);
+            bool exists = true;
+            int counter = 0;
+
+            while (exists)
+            {
+                var academicYearExist = this.context?.SchoolCalendars.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.SessionCalendar == true && x.AcademicYear == academicYear).FirstOrDefault();
+
+                if (academicYearExist == null)
+                {
+                    exists = false;
+                }
+                else
+                {
+                    counter++;
+                    academicYear = Convert.ToDecimal($"{year}.{counter}");
+                }
+            }
 
             var schoolCalendar = new SchoolCalendars()
             {
@@ -2577,12 +2606,12 @@ namespace opensis.data.Repository
                 SchoolId = schoolId,
                 CalenderId = (int)calenderId,
                 Title = "Default Calendar",
-                AcademicYear = Convert.ToDecimal(startDate?.Year),
+                AcademicYear = /*Convert.ToDecimal(sessionCalendarStartDate.Year)*/academicYear,
                 DefaultCalender = true,
                 SessionCalendar = true,
                 Days = "12345",
                 StartDate = startDate,
-                EndDate = sessionEndDate.AddDays(-1),
+                EndDate = sessionEndDate,
                 CreatedBy = createdBy,
                 CreatedOn = DateTime.UtcNow,
             };

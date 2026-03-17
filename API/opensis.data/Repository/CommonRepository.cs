@@ -498,7 +498,25 @@ namespace opensis.data.Repository
             }
             else
             {
-                long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                //long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                long? dpdownValueId = 1;
+
+                var dpValueAllData = this.context?.DpdownValuelist.Where(x => x.TenantId == dpdownValue.DropdownValue.TenantId);
+
+                if (dpValueAllData != null)
+                {
+                    var dpValueData = dpValueAllData.OrderByDescending(x => x.Id).FirstOrDefault();
+                    if (dpValueData != null)
+                    {
+                        dpdownValueId = dpValueData.Id + 1;
+                    }
+                    var dpDownSortData = dpValueAllData.Where(x => Equals(x.LovName, dpdownValue.DropdownValue.LovName)).OrderByDescending(x => x.SortOrder).FirstOrDefault();
+                    if (dpDownSortData != null)
+                    {
+                        dpdownValue.DropdownValue.SortOrder = dpDownSortData.SortOrder + 1;
+                    }
+                }
+
                 dpdownValue.DropdownValue!.Id = (long)dpdownValueId!;
                 dpdownValue.DropdownValue.CreatedOn = DateTime.UtcNow;
                 this.context?.DpdownValuelist.Add(dpdownValue.DropdownValue);
@@ -734,7 +752,7 @@ namespace opensis.data.Repository
             {
                 if (dpdownList.SchoolId != null && dpdownList.SchoolId > 0)
                 {
-                    var dropdownList = this.context?.DpdownValuelist.AsEnumerable().Where(x => x.TenantId == dpdownList.TenantId && (x.SchoolId == dpdownList.SchoolId || x.SchoolId == null) && String.Compare( x.LovName, dpdownList.LovName,true)==0).ToList();
+                    var dropdownList = this.context?.DpdownValuelist.AsEnumerable().Where(x => x.TenantId == dpdownList.TenantId && (x.SchoolId == dpdownList.SchoolId || x.SchoolId == null) && String.Compare( x.LovName, dpdownList.LovName,true)==0).OrderBy(a => a.SortOrder).ToList();
 
                     if (dropdownList !=null && dropdownList.Any())
                     {
@@ -3468,7 +3486,7 @@ namespace opensis.data.Repository
                                 if ((lastEnrollment!.ExitDate != null && lastEnrollment.ExitDate < DateTime.Today.Date) || (lastEnrollment.EnrollmentDate > DateTime.Today.Date))
                                 {
                                     activeDeactiveUserViewModel._failure = true;
-                                    activeDeactiveUserViewModel._message = "Student dropped out from the school, so can not upadte the status";
+                                    activeDeactiveUserViewModel._message = "The status can not be updated because the student was dropped out of the school. If you wanted to make the student Active, use the Re-enroll Student functionality.";
                                     return activeDeactiveUserViewModel;
                                 }
                                 else
@@ -3504,7 +3522,7 @@ namespace opensis.data.Repository
                                 if (staffSchoolInfo!.EndDate != null && staffSchoolInfo.EndDate < DateTime.Today.Date)
                                 {
                                     activeDeactiveUserViewModel._failure = true;
-                                    activeDeactiveUserViewModel._message = "Staff dropped out from the school, so can not upadte the status";
+                                    activeDeactiveUserViewModel._message = "The status can not be updated because the staff was dropped out of the school.";
                                     return activeDeactiveUserViewModel;
                                 }
                                 else
@@ -3532,7 +3550,7 @@ namespace opensis.data.Repository
 
                     this.context?.SaveChanges();
                     activeDeactiveUserViewModel._failure = false;
-                    activeDeactiveUserViewModel._message = "updated successfully";
+                    activeDeactiveUserViewModel._message = "Status updated successfully";
                 }
                 else
                 {
@@ -3546,6 +3564,52 @@ namespace opensis.data.Repository
                 activeDeactiveUserViewModel._message = es.Message;
             }
             return activeDeactiveUserViewModel;
+        }
+
+        /// <summary>
+        /// Update Dropdown Value Sort Order
+        /// </summary>
+        /// <param name="dpValueSortOrderModel"></param>
+        /// <returns></returns>
+        public DropdownValueSortOrderModel UpdateDropdownValueSortOrder(DropdownValueSortOrderModel dpValueSortOrderModel)
+        {
+            try
+            {
+                var dpValueList = this.context?.DpdownValuelist.Where(a => a.TenantId == dpValueSortOrderModel.TenantId && a.SchoolId == dpValueSortOrderModel.SchoolId && Equals(a.LovName, dpValueSortOrderModel.LovName));
+                if (dpValueList != null && dpValueList.Any())
+                {
+                    var sortOrderValues = dpValueSortOrderModel.SortOrderValues.OrderBy(c => c.Id);
+                    foreach (var dpValue in sortOrderValues)
+                    {
+
+                        var dpDownValueData = dpValueList.FirstOrDefault(d => d.TenantId == dpValueSortOrderModel.TenantId && d.SchoolId == dpValueSortOrderModel.SchoolId && d.Id == dpValue.Id);
+
+                        if (dpDownValueData != null)
+                        {
+                            var editDpDownData = dpDownValueData;
+                            dpDownValueData.SortOrder = dpValue.SortOrder;
+                            dpDownValueData.UpdatedOn = DateTime.UtcNow;
+                            dpDownValueData.UpdatedBy = dpValueSortOrderModel.UpdatedBy;
+                            this.context?.Entry(editDpDownData).CurrentValues.SetValues(dpDownValueData);
+                        }
+
+                    }
+                    this.context?.SaveChanges();
+                    dpValueSortOrderModel._failure = false;
+                    dpValueSortOrderModel._message = dpValueSortOrderModel.LovName + " sort order updated successfully";
+                }
+                else
+                {
+                    dpValueSortOrderModel._failure = true;
+                    dpValueSortOrderModel._message = NORECORDFOUND;
+                }
+            }
+            catch (Exception es)
+            {
+                dpValueSortOrderModel._message = es.Message;
+                dpValueSortOrderModel._failure = true;
+            }
+            return dpValueSortOrderModel;
         }
     }
 }

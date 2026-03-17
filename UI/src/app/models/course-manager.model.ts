@@ -190,6 +190,7 @@ export class SearchCourseSectionViewModel extends CommonField {
     public forStaff: boolean;
     public forStudent: boolean;
     public markingPeriodStartDate: string;
+    public courseGradeLevel?: string;
 }
 
 export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
@@ -204,6 +205,7 @@ export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
     public forStaff: boolean;
     public forStudent: boolean;
     public markingPeriodStartDate: string;
+    public courseGradeLevel?: string;
 
     constructor(){
         super();
@@ -211,6 +213,7 @@ export class SearchCourseSectionViewModelForGroupDelete extends CommonField {
         this.courseSubject = '';
         this.courseProgram = '';
         this.markingPeriodId = '';
+        this.courseGradeLevel = '';
     }
 }
 
@@ -277,12 +280,16 @@ export class CourseCatelogViewModel extends CommonField {
     markingPeriodId: string;
     gradeLevel: string;
     courseSubject: string;
+    periodId?:string;
+    roomId?:string;
     constructor(){
         super();
         this.markingPeriodId = '';
         this.courseSubject = '';
         this.courseId = '';
         this.gradeLevel = '';
+        this.periodId = '';
+        this.roomId = '';
     }
 }
 

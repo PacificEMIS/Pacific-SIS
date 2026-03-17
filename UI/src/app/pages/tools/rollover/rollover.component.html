@@ -35,15 +35,18 @@
             <p class="text-blue text-base">{{ 'enterNextSchoolYearsBeginAndEndDates' | translate }}</p>
             <div class="bg-skyblue text-center text-blue px-2 py-1 rounded mb-2 mt-5">
                 <div>
-                    <p>{{'theSchoolYearBeginAndEndDateShouldBeBetween' | translate}} <b>{{ minSchoolBeginDateVal |
-                            date }}</b> and <b>{{ maxSchoolEndDateVal | date }}</b></p>
+                    <!-- <p>{{'theSchoolYearBeginAndEndDateShouldBeBetween' | translate}} <b>{{ minSchoolBeginDateVal |
+                            date }}</b> and <b>{{ maxSchoolEndDateVal | date }}</b></p> -->
+                            <p>
+                                {{"yourCurrentSchoolYear"|translate}} <b>({{defaultValuesService.getFullAcademicYear()}})</b> {{"endsOn"|translate}} <b>{{currentSchoolEndDateVal | date}}</b>. {{"thenextSchoolYearCanStartAnytimeBetween"|translate}} <b>{{ minSchoolBeginDateVal | date }}</b> {{"and"|translate}} <b>{{ maxSchoolBeginDateVal | date }}</b>, {{"allowingA2monthFlexibleBufferOnceaStartDateisChosenTheEndDateShouldFallBetween"|translate}} <b>{{ minSchoolEndDateVal1 | date }}</b> {{"and"|translate}} <b>{{ minSchoolEndDateVal2 | date }}</b>, {{"ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime"|translate}}
+                            </p>
                 </div>
             </div>
             <ul class="grid grid-cols-1 md:grid-cols-2 col-gap-8 row-gap-0 mt-2">
                 <li>
                     <mat-form-field class="w-full" appearance="outline" color="primary">
                         <mat-label>{{ "schoolBeginDate" | translate }}</mat-label>
-                        <input matInput #school_Begin_Date="ngModel" [min]="minSchoolBeginDateVal" [matDatepicker]="beginDate" name="schoolBeginDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolBeginDate" required>
+                        <input matInput #school_Begin_Date="ngModel" [min]="minSchoolBeginDateVal" [max]="maxSchoolBeginDateVal" (dateChange)="schoolBeginDateChange()" [matDatepicker]="beginDate" name="schoolBeginDate" [(ngModel)]="rolloverViewModel.schoolRollover.schoolBeginDate" required>
                         <mat-datepicker-toggle matSuffix [for]="beginDate" ></mat-datepicker-toggle>
                         <mat-datepicker #beginDate ></mat-datepicker>
                         <mat-error *ngIf="school_Begin_Date.errors?.required">

@@ -116,6 +116,7 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
   permissions: Permissions;
   date = new FormControl(moment());
   weekArray = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  tableData: string[];
   constructor(private dialog: MatDialog, public translateService: TranslateService,
     private studentScheduleService: StudentScheduleService,
     private loaderService: LoaderService,
@@ -306,8 +307,24 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
             }
           }
         });
-        this.displayedColumns = Object.keys(data.scheduleReport[0]);
         this.scheduleReport = new MatTableDataSource(data.scheduleReport);
+        this.displayedColumns = ['studentName','studentInternalId','courseSection','error'];
+        const result = [];
+        data.scheduleReport.forEach(student => {
+          Object.keys(student).forEach(subject => {
+            if (subject !== 'studentName' && subject !== 'studentInternalId') {
+              const [status, description] = student[subject].split(' | ');
+              result.push({
+                studentName: student.studentName,
+                studentInternalId: student.studentInternalId,
+                courseSection: subject,
+                status: status,
+                description: description
+              });
+            }
+          });
+        });
+        this.scheduleReport = new MatTableDataSource(result);
       }
 
     });
@@ -339,7 +356,8 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
         courseList: this.courseList,
         subjectList: this.subjectList,
         programList: this.programList,
-        markingPeriodList: this.getMarkingPeriodTitleListModel.getMarkingPeriodView
+        markingPeriodList: this.getMarkingPeriodTitleListModel.getMarkingPeriodView,
+        gradeLevelList: this.gradeLevelList
       }
     }).afterClosed().subscribe((data) => {
       if(data)
@@ -359,8 +377,10 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
     courseSectionList.map((courseSection: any) => {
       courseSection.courseDurationStartDate=courseSection.durationStartDate=moment(courseSection.durationStartDate).format('YYYY-MM-DD');
 
-      if (moment(new Date()).isBetween(courseSection.courseDurationStartDate, courseSection.durationEndDate))  // for checking current date is in between or not  
-        courseSection.durationStartDate = moment(new Date()).format('YYYY-MM-DD');
+      if (moment(new Date()).isBetween(courseSection.courseDurationStartDate, courseSection.durationEndDate)) {
+        // courseSection.durationStartDate = moment(new Date()).format('YYYY-MM-DD');
+        courseSection.durationStartDate = moment(courseSection.durationStartDate).format('YYYY-MM-DD');
+      } // for checking current date is in between or not  
 
       if (courseSection?.staffName)                                                                            // splitting all staff names 
         courseSection.staffNameList = this.cerateTeacherListArray(courseSection?.staffName.split("|"));

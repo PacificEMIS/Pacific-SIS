@@ -67,7 +67,7 @@ export class AddCourseSectionComponent implements OnInit {
   courseDetails: MatTableDataSource<any>;
   icClose = icClose;
   displayedColumns: string[] = ['course', 'courseSection', 'markingPeriod', 'startDate', 'endDate', 'scheduledTeacher'];
-
+  gradeList = [];
   constructor(public translateService: TranslateService,
     private dialogRef: MatDialogRef<AddCourseSectionComponent>,
     private courseManagerService: CourseManagerService,
@@ -83,6 +83,7 @@ export class AddCourseSectionComponent implements OnInit {
      this.subjectList=this.data.subjectList;
      this.programList=this.data.programList;
      this.getMarkingPeriodTitleListModel.getMarkingPeriodView= this.data.markingPeriods;
+     this.gradeList = this.data.gradeLevelList;
     //translateService.use('en');
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -102,6 +103,7 @@ export class AddCourseSectionComponent implements OnInit {
       this.courseSectionSearch.markingPeriodStartDate=mpStartDate?mpStartDate.split('T')[0]:null;
     }
     this.courseSectionSearch.forStudent = true;
+    this.courseSectionSearch.courseGradeLevel = this.courseSectionSearch.courseGradeLevel ? this.courseSectionSearch.courseGradeLevel : null;
     this.courseSectionService.searchCourseSectionForSchedule(this.courseSectionSearch).subscribe((res) => {
     if(res._failure){
         this.commonService.checkTokenValidOrNot(res._message);
