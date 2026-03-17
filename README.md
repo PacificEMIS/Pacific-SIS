@@ -214,6 +214,40 @@ No manual migration steps during deployment — the API auto-migrates each tenan
 
 ---
 
+## Commit Conventions
+
+Format: `type(scope): brief description` — lowercase, imperative, no period at end.
+
+| Type | Use for |
+|---|---|
+| `feat` | new feature |
+| `fix` | bug fix |
+| `perf` | performance improvement |
+| `refactor` | code restructuring (no behaviour change) |
+| `docs` | documentation only |
+| `style` | formatting, whitespace (no logic change) |
+| `test` | adding or fixing tests |
+| `chore` | build, tooling, config, dependencies |
+| `ci` | CI/CD pipeline changes |
+
+**Scope** = the affected feature area or layer, e.g. `school`, `student`, `attendance`, `grades`, `login`, `auth`, `tenant`, `migration`, `api`, `ui`, `data`, `backgroundjob`, `configuration`.
+
+If the commit resolves a GitHub issue, add `Resolves #<number>` in the commit body (separated from the subject by a blank line).
+
+```
+feat(attendance): add bulk-mark present for whole class
+
+Resolves #42
+
+fix(login): restore tenant after session clear
+
+perf(school): replace N+1 queries with single JOIN
+
+Resolves #608
+```
+
+---
+
 ## Config File Reference
 
 | File | Committed | Purpose |

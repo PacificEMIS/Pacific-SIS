@@ -162,6 +162,41 @@ Managed from `C:\Users\Ghislain Hachey\Development\Purltek\purltek-systems` (Ans
 
 ---
 
+## Commit Conventions
+
+Format: `type(scope): brief description` — lowercase, imperative, no period.
+
+| Type | Use for |
+|---|---|
+| `feat` | new feature |
+| `fix` | bug fix |
+| `perf` | performance improvement |
+| `refactor` | code restructuring (no behaviour change) |
+| `docs` | documentation only |
+| `style` | formatting, whitespace (no logic change) |
+| `test` | adding or fixing tests |
+| `chore` | build, tooling, config, dependencies |
+| `ci` | CI/CD pipeline changes |
+
+Scope = the affected feature area or layer, e.g. `school`, `student`, `attendance`, `login`, `auth`, `tenant`, `migration`, `api`, `ui`, `data`, `backgroundjob`, `configuration`.
+
+If the commit resolves a GitHub issue, add `Resolves #<number>` in the commit body (blank line after subject).
+
+Examples:
+```
+feat(attendance): add bulk-mark present for whole class
+
+Resolves #42
+
+fix(login): restore tenant after session clear
+
+perf(school): replace N+1 queries with single JOIN
+
+Resolves #608
+```
+
+---
+
 ## UI Node.js Version Requirement
 
 The Angular 10 frontend requires **Node.js v14.21.3**. Newer Node versions produce build errors. Use nvm to pin the version when working on the UI.
