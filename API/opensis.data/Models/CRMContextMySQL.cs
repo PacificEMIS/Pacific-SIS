@@ -17,12 +17,36 @@ namespace opensis.data.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //var tenant = "fedsis_new";
-                //** ML Server **//
-                string connectionString = "server=110.227.203.159;port=3307;database=fedsis_new;user=admin;password=methodolog1c;default command timeout=3000";
-                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                // Used only by EF tooling (dotnet ef migrations add).
+                // Create a .env file at the repo root with:
+                //   OPENSIIS_MIGRATION_CONNSTR=server=localhost;database=kisis;user=...
+                var connectionString = ReadDotEnv("OPENSIIS_MIGRATION_CONNSTR")
+                    ?? Environment.GetEnvironmentVariable("OPENSIIS_MIGRATION_CONNSTR");
+                if (!string.IsNullOrEmpty(connectionString))
+                    optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
+        }
 
+        private static string? ReadDotEnv(string key)
+        {
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (dir != null)
+            {
+                var envFile = Path.Combine(dir.FullName, ".env");
+                if (File.Exists(envFile))
+                {
+                    foreach (var line in File.ReadAllLines(envFile))
+                    {
+                        var trimmed = line.Trim();
+                        if (trimmed.StartsWith("#") || !trimmed.Contains('=')) continue;
+                        var idx = trimmed.IndexOf('=');
+                        if (trimmed[..idx].Trim() == key)
+                            return trimmed[(idx + 1)..].Trim();
+                    }
+                }
+                dir = dir.Parent;
+            }
+            return null;
         }
     }
 }
