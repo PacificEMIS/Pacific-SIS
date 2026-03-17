@@ -173,8 +173,6 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     });
 
 
-    this.router.onSameUrlNavigation = 'reload';
-
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe((res) => {
@@ -271,7 +269,8 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkCurrentCategoryAndRoute() {    
+  checkCurrentCategoryAndRoute() {
+    if (this.router.url === this.categoryPath) return;
     if(this.categoryPath === '/school/staff/staff-generalinfo') {
       this.router.navigate(['/school', 'staff', 'staff-generalinfo']);
     } else if(this.categoryPath === '/school/staff/staff-schoolinfo') {

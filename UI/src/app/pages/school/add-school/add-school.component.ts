@@ -119,8 +119,6 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.router.onSameUrlNavigation = 'reload';
-
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe((res) => {

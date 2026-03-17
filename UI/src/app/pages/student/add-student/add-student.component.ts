@@ -265,6 +265,7 @@ export class AddStudentComponent implements OnInit, OnDestroy {
   }
 
   checkCurrentCategoryAndRoute() {
+    if (this.router.url === this.categoryPath) return;
     if(this.categoryPath === '/school/students/student-generalinfo') {
       this.router.navigate(['/school', 'students', 'student-generalinfo']);
     } else if(this.categoryPath === '/school/students/student-enrollmentinfo' ) {

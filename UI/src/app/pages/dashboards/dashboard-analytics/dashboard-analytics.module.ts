@@ -23,7 +23,6 @@ import {SharedModuleModule} from '../../shared-module/shared-module.module';
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
@@ -57,9 +56,6 @@ import { MatDividerModule } from '@angular/material/divider';
     SharedModuleModule,
     MatExpansionModule,
     MatDividerModule,
-    BackButtonDisableModule.forRoot({
-      preserveScrollPosition: true
-    }),
     TranslateModule
   ]
 })

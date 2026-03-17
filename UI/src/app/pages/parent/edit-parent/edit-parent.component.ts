@@ -171,6 +171,7 @@ export class EditParentComponent implements OnInit {
   }
 
   checkCurrentCategoryAndRoute() {
+    if (this.router.url === this.categoryPath) return;
     if(this.categoryPath === '/school/parents/parent-generalinfo') {
       this.router.navigate(['/school', 'parents', 'parent-generalinfo']);
     } else if(this.categoryPath === '/school/parents/parent-addressinfo') {

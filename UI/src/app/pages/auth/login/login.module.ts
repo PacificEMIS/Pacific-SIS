@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
 import {MatSelectModule} from '@angular/material/select';
-import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
+
 @NgModule({
   declarations: [LoginComponent],
   imports: [
@@ -34,10 +34,7 @@ import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
     TranslateModule,
     MatProgressBarModule,
     SharedModuleModule,
-    MatSelectModule,
-    BackButtonDisableModule.forRoot({
-      preserveScrollPosition: false
-    })
+    MatSelectModule
   ]
 })
 export class LoginModule {
