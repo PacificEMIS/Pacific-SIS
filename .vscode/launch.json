@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: opensisAPI",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build: opensisAPI",
+      "program": "${workspaceFolder}/API/opensisAPI/bin/Debug/net6.0/opensisAPI.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/API/opensisAPI",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "name": "API: backgroundjob",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build: backgroundjob",
+      "program": "${workspaceFolder}/API/opensis.backgroundjob/bin/Debug/net6.0/opensis.backgroundjob.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/API/opensis.backgroundjob",
+      "stopAtEntry": false,
+      "env": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  ]
+}
