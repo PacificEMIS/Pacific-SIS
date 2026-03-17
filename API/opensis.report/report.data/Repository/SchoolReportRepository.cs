@@ -13,7 +13,6 @@ namespace opensis.report.report.data.Repository
     {
 
         private readonly CRMContext? context;
-        private static readonly string NORECORDFOUND = "No Record Found";
         public SchoolReportRepository(IDbContextFactory dbContextFactory)
         {
             this.context = dbContextFactory.Create();
