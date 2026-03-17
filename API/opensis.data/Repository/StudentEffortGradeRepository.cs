@@ -439,7 +439,7 @@ namespace opensis.data.Repository
                             SmstrMarkingPeriodId = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.SmstrMarkingPeriodId,
                             QtrMarkingPeriodId = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.QtrMarkingPeriodId,
                             PrgrsprdMarkingPeriodId = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.PrgrsprdMarkingPeriodId,
-                            StudentEffortGradeDetail = StudentEffortGradeMasterData.Where(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId).SelectMany(s => s.StudentEffortGradeDetail).ToList(),
+                            StudentEffortGradeDetail = StudentEffortGradeMasterData?.Where(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId).SelectMany(s => s.StudentEffortGradeDetail).ToList() ?? new List<StudentEffortGradeDetail>(),
 
                         }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
                     }

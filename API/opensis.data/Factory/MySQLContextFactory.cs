@@ -25,7 +25,7 @@ namespace opensis.data.Factory
             _catalogDBRepository = catalogDBRepository;
         }
         
-        public CRMContext Create()
+        public CRMContext? Create()
         {
             CRMContext? context = null;
 

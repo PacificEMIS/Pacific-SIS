@@ -679,7 +679,7 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        getDpdownValue.LovColumnValue = dpdownValue.DropdownValue.LovColumnValue;
+                        getDpdownValue.LovColumnValue = dpdownValue.DropdownValue!.LovColumnValue;
                         getDpdownValue.UpdatedOn = DateTime.UtcNow;
                         getDpdownValue.UpdatedBy = dpdownValue.DropdownValue.UpdatedBy;
                         this.context?.SaveChanges();
