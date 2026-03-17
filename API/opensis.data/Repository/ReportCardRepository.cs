@@ -1787,7 +1787,6 @@ namespace opensis.data.Repository
 
                                     decimal? gPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
-                                    decimal? CreditHours = 0.0m;
                                     decimal? GradePoint = 0.0m;
 
                                     if (reportCardData?.Any() == true)
@@ -2664,7 +2663,6 @@ namespace opensis.data.Repository
 
                                     decimal? SumofGPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
-                                    decimal? CreditHours = 0.0m;
                                     int CourseCount = 0;
                                     if (reportCardData?.Any() == true)
                                     {
