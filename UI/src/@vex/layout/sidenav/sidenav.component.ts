@@ -68,8 +68,12 @@ export class SidenavComponent implements OnInit {
     private impersonateServices:ImpersonateServices
     ) {
 
-      this.tenantSidenavLogo = this.defaultValuesService.getPhotoAndFooter().tenantSidenavLogo;
-      this.tenantLogoIcon = this.defaultValuesService.getPhotoAndFooter().tenantLogoIcon;
+      this.defaultValuesService.photoAndFooter$.pipe(takeUntil(this.destroySubject$)).subscribe(data => {
+        if (data) {
+          this.tenantSidenavLogo = data.tenantSidenavLogo;
+          this.tenantLogoIcon = data.tenantLogoIcon;
+        }
+      });
       this.tenantName = this.defaultValuesService.getTenantName();
 
       this.navigationService.menuItems.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {

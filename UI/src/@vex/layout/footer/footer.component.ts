@@ -32,7 +32,11 @@ export class FooterComponent implements OnInit, OnDestroy {
     private schoolService: SchoolService,
     private defaultValuesService: DefaultValuesService
   ) {
-    this.tenantFooter = this.defaultValuesService.getPhotoAndFooter().tenantFooter;
+    this.defaultValuesService.photoAndFooter$.pipe(takeUntil(this.destroySubject$)).subscribe(data => {
+      if (data) {
+        this.tenantFooter = data.tenantFooter;
+      }
+    });
   }
 
   ngOnInit() {

@@ -185,10 +185,6 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   showCalendarView: boolean = false;
   noticeHide: boolean = true;
   getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
-  // @HostListener('window:popstate', ['$event'])
-  // onPopState(event) {
-  //   history.pushState(null, null, location.href);
-  // }
   noticeList = [];
   eventCount = 0;
   constructor(
@@ -207,13 +203,6 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   }
 
   ngOnInit() {
-    // this.router.events
-    // .subscribe((event: NavigationStart) => {
-    //   if (event.navigationTrigger === 'popstate') {
-    //     // Perform actions
-    //     history.pushState(null, null, location.href);
-    //   }
-    // });
     setTimeout(() => {
       const temp = [
         {

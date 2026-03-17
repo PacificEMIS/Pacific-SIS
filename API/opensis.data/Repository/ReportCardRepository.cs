@@ -681,9 +681,9 @@ namespace opensis.data.Repository
 
                                     if (studentAttendanceData != null && studentAttendanceData.Any())
                                     {
-                                        Absences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
-                                        ExcusedAbsences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "excusedabsent").Count();
-                                        var prasentData = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present");
+                                        Absences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "absent").Count();
+                                        ExcusedAbsences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "excusedabsent").Count();
+                                        var prasentData = studentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "present");
 
                                         absencesInDays += Absences + ExcusedAbsences;
                                     }
@@ -805,7 +805,7 @@ namespace opensis.data.Repository
 
                                         if (studentPrasentAttendanceData != null && studentPrasentAttendanceData.Any())
                                         {
-                                            prasentDay = studentPrasentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present").Count();
+                                            prasentDay = studentPrasentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "present").Count();
                                         }
                                         var presentDays = workDays - absencesInDays;
                                         attendencePercent = (double)(presentDays * 100 / workDays);
@@ -1341,7 +1341,7 @@ namespace opensis.data.Repository
                         data = new
                         {
                             TotalData = reportCardList,
-                            GradeData = schoolData.GradeScale.Count > 0 ? schoolData.GradeScale.FirstOrDefault()!.Grade.ToList() : null,
+                            GradeData = schoolData!.GradeScale.Count > 0 ? schoolData.GradeScale.FirstOrDefault()!.Grade.ToList() : null,
                         };
                     }
 
@@ -1607,7 +1607,7 @@ namespace opensis.data.Repository
                             studentsReportCard.MiddleName = studentData.MiddleName;
                             studentsReportCard.LastFamilyName = studentData.LastFamilyName;
                             studentsReportCard.StudentInternalId = studentData.StudentInternalId;
-                            studentsReportCard.GradeTitle = enrollmentData.GradeLevelTitle;
+                            studentsReportCard.GradeTitle = enrollmentData?.GradeLevelTitle;
                             studentsReportCard.HomeAddressLineOne = schoolData.StreetAddress1;
                             studentsReportCard.HomeAddressLineTwo = schoolData.StreetAddress2;
                             studentsReportCard.HomeAddressCountry = schoolData.Country;
@@ -1763,8 +1763,8 @@ namespace opensis.data.Repository
 
                                     if (studentAttendanceData.Count > 0)
                                     {
-                                        Absences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "absent").Count();
-                                        ExcusedAbsences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "excusedabsent").Count();
+                                        Absences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "absent").Count();
+                                        ExcusedAbsences = studentAttendanceData.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "excusedabsent").Count();
                                         absencesInDays += Absences + ExcusedAbsences;
                                     }
                                     var reportCardData = new List<StudentFinalGrade>();
@@ -1787,7 +1787,6 @@ namespace opensis.data.Repository
 
                                     decimal? gPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
-                                    decimal? CreditHours = 0.0m;
                                     decimal? GradePoint = 0.0m;
 
                                     if (reportCardData?.Any() == true)
@@ -1900,7 +1899,7 @@ namespace opensis.data.Repository
 
                                     if (markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates?.Any() == true)
                                     {
-                                        markingPeriodDetailsForDefaultTemplates.AverageGPA = Math.Round(markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Where(s => s.GPA.HasValue).Select(s => s.GPA.Value).DefaultIfEmpty(0).Average(), 2);
+                                        markingPeriodDetailsForDefaultTemplates.AverageGPA = Math.Round(markingPeriodDetailsForDefaultTemplates.courseSectionGradeDetailsForDefaultTemplates.Where(s => s.GPA.HasValue).Select(s => s.GPA!.Value).DefaultIfEmpty(0).Average(), 2);
 
                                     }
                                     studentsReportCard.markingPeriodDetailsForDefaultTemplates.Add(markingPeriodDetailsForDefaultTemplates);
@@ -2017,7 +2016,7 @@ namespace opensis.data.Repository
 
                                 //if (studentAttendance?.Count > 0 && workDays > 0)
                                 //{
-                                //var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation.StateCode.ToLower() == "present").GroupBy(c => new
+                                //var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "present").GroupBy(c => new
                                 //{
                                 //    c.StudentId,
                                 //    c.AttendanceDate
@@ -2123,7 +2122,7 @@ namespace opensis.data.Repository
                                         effortGradeItemDetails.EffortItemTitle = item.Key;
                                         effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
 
-                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName.ToLower() == "custom"); //effort does't generate for custom
+                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName != null && s.MarkingPeriodName.ToLower() == "custom"); //effort does't generate for custom
                                         if (index > -1)
                                         {
                                             MarkingPeriodList.RemoveAt(index);
@@ -2309,7 +2308,7 @@ namespace opensis.data.Repository
 
                             //fetch all final grade data for student
                             var studentFinalGradeData = this.context?.StudentFinalGrade.Include(x => x.SchoolYears).Include(x => x.Semesters).Include(x => x.Quarters).Include(x => x.ProgressPeriod).Join(this.context?.CourseSection.Include(x => x.Course)!, sfg => sfg.CourseSectionId, cs => cs.CourseSectionId,
-                           (sfg, cs) => new { sfg, cs }).Where(x => x.sfg.TenantId == reportCardViewModel.TenantId && x.sfg.SchoolId == reportCardViewModel.SchoolId && x.cs.TenantId == reportCardViewModel.TenantId && x.cs.SchoolId == reportCardViewModel.SchoolId && x.sfg.StudentId == student.StudentId && x.sfg.AcademicYear == reportCardViewModel.AcademicYear && Subjects.Contains(x.cs.Course.CourseSubject.ToLower()) &&
+                           (sfg, cs) => new { sfg, cs }).Where(x => x.sfg.TenantId == reportCardViewModel.TenantId && x.sfg.SchoolId == reportCardViewModel.SchoolId && x.cs.TenantId == reportCardViewModel.TenantId && x.cs.SchoolId == reportCardViewModel.SchoolId && x.sfg.StudentId == student.StudentId && x.sfg.AcademicYear == reportCardViewModel.AcademicYear && Subjects.Contains(x.cs.Course.CourseSubject!.ToLower()) &&
 
                            ((((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodId.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodId.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodId.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodId.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade != true) ||
                            (((x.sfg.YrMarkingPeriodId != null && YrMarkingPeriodIdExam.Contains(x.sfg.YrMarkingPeriodId)) || (x.sfg.SmstrMarkingPeriodId != null && SmstrMarkingPeriodIdExam.Contains(x.sfg.SmstrMarkingPeriodId)) || (x.sfg.QtrMarkingPeriodId != null && QtrMarkingPeriodIdExam.Contains(x.sfg.QtrMarkingPeriodId)) || (x.sfg.PrgrsprdMarkingPeriodId != null && PrgrsprdMarkingPeriodIdExam.Contains(x.sfg.PrgrsprdMarkingPeriodId))) && x.sfg.IsExamGrade == true))).ToList();
@@ -2664,7 +2663,6 @@ namespace opensis.data.Repository
 
                                     decimal? SumofGPaValue = 0.0m;
                                     decimal? CreditEarned = 0.0m;
-                                    decimal? CreditHours = 0.0m;
                                     int CourseCount = 0;
                                     if (reportCardData?.Any() == true)
                                     {
@@ -2989,7 +2987,7 @@ namespace opensis.data.Repository
                                         effortGradeItemDetails.EffortItemTitle = item.Key;
                                         effortGradeItemDetails.markingPeriodDetailsforEffortGrades = item.Select(s => new MarkingPeriodDetailsforEffortGrade { MarkingPeriodName = s.MarkingPeriodName, GradeScaleValue = s.GradeScaleValue, SortId = s.SortId }).ToList();
 
-                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName.ToLower() == "custom");
+                                        var index = MarkingPeriodList.FindIndex(s => s.MarkingPeriodName != null && s.MarkingPeriodName.ToLower() == "custom");
                                         if (index > -1)
                                         {
                                             MarkingPeriodList.RemoveAt(index);

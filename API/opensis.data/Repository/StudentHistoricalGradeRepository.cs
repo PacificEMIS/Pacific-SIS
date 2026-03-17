@@ -145,7 +145,7 @@ namespace opensis.data.Repository
                         string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
                         //transactionIQ = historicalMarkingPeriodList.Where(x => x.Title.ToLower().Contains(Columnvalue.ToLower()) || x.AcademicYear.ToString().Contains(Columnvalue.ToLower()) || (x.GradePostDate.ToString() == Columnvalue));
                         transactionIQ = historicalMarkingPeriodList?.Where(x =>
- String.Compare(x.Title, Columnvalue, true) == 0 || x.AcademicYear.ToString()!.Contains(Columnvalue.ToLower()) || (x.GradePostDate.ToString() == Columnvalue));
+ String.Compare(x.Title, Columnvalue, true) == 0 || (x.AcademicYear ?? "").Contains(Columnvalue.ToLower()) || (x.GradePostDate.ToString() == Columnvalue));
                     }
                 }
                 transactionIQ = transactionIQ?.OrderBy(s => s.GradePostDate);

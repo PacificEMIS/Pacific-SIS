@@ -199,12 +199,15 @@ export class StudentService {
     return this.studentDetails;
   }
 
-  private studentId: number;
   setStudentId(id: number) {
-    this.studentId = id;
+    if (id) {
+      sessionStorage.setItem('studentId', JSON.stringify(id));
+    } else {
+      sessionStorage.removeItem('studentId');
+    }
   }
   getStudentId() {
-    return this.studentId;
+    return JSON.parse(sessionStorage.getItem('studentId'));
   }
 
   private studentGuid: string;

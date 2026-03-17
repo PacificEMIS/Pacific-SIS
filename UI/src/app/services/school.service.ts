@@ -13,7 +13,7 @@ import { SchoolCreate } from '../enums/school-create.enum';
 })
 export class SchoolService {
   schoolCreate = SchoolCreate;
-  private schoolId;
+
   private navigationState=false;
   private schoolDetails;
   private categoryTitle = new BehaviorSubject(null);
@@ -22,7 +22,9 @@ export class SchoolService {
   currentMessage = this.messageSource.asObservable();
   apiUrl: string = environment.apiURL;
 
-  private schoolCreateMode = new BehaviorSubject(this.schoolCreate.ADD);
+  private schoolCreateMode = new BehaviorSubject(
+    JSON.parse(sessionStorage.getItem('schoolCreateMode')) ?? this.schoolCreate.ADD
+  );
   schoolCreatedMode = this.schoolCreateMode.asObservable();
 
   private schoolDetailsForViewAndEdit = new BehaviorSubject(null);
@@ -122,10 +124,14 @@ export class SchoolService {
   }
 
   setSchoolId(id: number) {
-    this.schoolId = id
+    if (id) {
+      sessionStorage.setItem('schoolDetailsId', JSON.stringify(id));
+    } else {
+      sessionStorage.removeItem('schoolDetailsId');
+    }
   }
   getSchoolId() {
-    return this.schoolId;
+    return JSON.parse(sessionStorage.getItem('schoolDetailsId'));
   }
 
   private schoolMultiselectValue: any;
@@ -190,6 +196,11 @@ export class SchoolService {
   }
 
   setSchoolCreateMode(data) {
+    if (data != null) {
+      sessionStorage.setItem('schoolCreateMode', JSON.stringify(data));
+    } else {
+      sessionStorage.removeItem('schoolCreateMode');
+    }
     this.schoolCreateMode.next(data);
   }
 

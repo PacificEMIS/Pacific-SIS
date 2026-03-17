@@ -78,6 +78,7 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   schoolCreateMode: SchoolCreate = SchoolCreate.ADD;
   schoolCreate = SchoolCreate;
   permittedDetails;
+  private schoolDetailsLoading = false;
 
 
   constructor(
@@ -97,13 +98,15 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
       this.loading = val;
     });
 
-    this.schoolCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type: this.schoolCreateMode;
+    const navState = this.router.getCurrentNavigation()?.extras?.state;
+    const savedMode = JSON.parse(sessionStorage.getItem('schoolCreateMode'));
+    this.schoolCreateMode = navState?.type ?? savedMode ?? this.schoolCreateMode;
 
     this.permittedDetails= this.pageRolePermission.getPermittedSubCategories('/school/schoolinfo/generalinfo');
     if(this.permittedDetails.length){
     this.checkInitialState(this.permittedDetails[0].path);
     }
-   
+
     this.schoolService.schoolCreatedMode.pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
       this.schoolCreateMode = res;
     });
@@ -116,8 +119,6 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.router.onSameUrlNavigation = 'reload';
-
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe((res) => {
@@ -127,7 +128,9 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   }
 
   checkInitialState(url) {
-    this.schoolCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type: this.schoolCreateMode;
+    const navState = this.router.getCurrentNavigation()?.extras?.state;
+    const savedMode = JSON.parse(sessionStorage.getItem('schoolCreateMode'));
+    this.schoolCreateMode = navState?.type ?? savedMode ?? this.schoolCreateMode;
     this.schoolService.setSchoolCreateMode(this.schoolCreateMode);
     if (url === '/school/schoolinfo/generalinfo') {
       this.currentCategory = 1;
@@ -219,7 +222,10 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   }
 
   getSchoolGeneralandWashInfoDetails() {
+    if (this.schoolDetailsLoading) return;
+    this.schoolDetailsLoading = true;
     this.schoolService.ViewSchool(this.schoolAddViewModel).subscribe(data => {
+      this.schoolDetailsLoading = false;
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       } else {
@@ -235,8 +241,8 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
 
       const index = this.schoolAddViewModel.schoolMaster.fieldsCategory.findIndex(x=> x.categoryId === this.fieldsCategory[0].categoryId)
       this.changeCategory({categoryId: this.currentCategory, title: this.fieldsCategory[0].title}, index);
-      this.schoolService.setSchoolImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
-      this.schoolService.setSchoolCloneImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
+      this.schoolService.setSchoolImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolThumbnailLogo);
+      this.schoolService.setSchoolCloneImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolThumbnailLogo);
       this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
     }
     });
@@ -315,6 +321,7 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.defaultValueService.setSchoolID(undefined);
     this.schoolService.setSchoolId(undefined);
+    this.schoolService.setSchoolCreateMode(null);
     this.schoolService.setSchoolDetailsForViewAndEdit(new SchoolAddViewModel());
     this.schoolService.setSchoolImage(null);
     this.destroySubject$.next();

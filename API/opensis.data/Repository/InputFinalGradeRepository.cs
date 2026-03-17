@@ -1072,7 +1072,7 @@ namespace opensis.data.Repository
                                             }
                                         }
                                         qtrPercentage = qtrPercentage + qtrGradeExam;
-                                        qtrPercentage = Math.Round((decimal)qtrPercentage, 2);
+                                        qtrPercentage = Math.Round(qtrPercentage ?? 0m, 2);
                                     }
                                     else
                                     {

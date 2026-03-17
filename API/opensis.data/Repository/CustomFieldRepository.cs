@@ -413,7 +413,7 @@ namespace opensis.data.Repository
                                 fieldsCategoryList.Add(fieldCategory);
 
 
-                                var permissionGroupData = this.context?.PermissionGroup.FirstOrDefault(x => x.TenantId == schoolData.TenantId && x.SchoolId == schoolData.SchoolId && x.PermissionGroupName.Contains(fieldsCategoryAddViewModel!.FieldsCategory!.Module!));
+                                var permissionGroupData = this.context?.PermissionGroup.FirstOrDefault(x => x.TenantId == schoolData.TenantId && x.SchoolId == schoolData.SchoolId && x.PermissionGroupName!.Contains(fieldsCategoryAddViewModel!.FieldsCategory!.Module!));
 
                                 if (permissionGroupData != null)
                                 {
@@ -548,7 +548,7 @@ namespace opensis.data.Repository
                         this.context?.RolePermission.AddRange(rolePermissionList);
                         this.context?.SaveChanges();
                         transaction?.Commit();
-                        fieldsCategoryAddViewModel._failure = false;
+                        fieldsCategoryAddViewModel!._failure = false;
                         fieldsCategoryAddViewModel._message = "Field category added successfully";
                     }
                 }

@@ -1,0 +1,20 @@
+# Visual Studio user-specific files
+*.csproj.user
+*.sln.user
+.vs/
+
+# Publish profile user state (the .pubxml profiles themselves are fine to commit)
+*.pubxml.user
+
+# Environment-specific configuration — never commit local credentials
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Angular frontend local config — generated from config.template.json
+UI/src/assets/config.json
+
+# Local secrets / environment overrides
+.env
+
+# Claude Code session memory
+.claude/

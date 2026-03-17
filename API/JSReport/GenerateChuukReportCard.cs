@@ -14,7 +14,7 @@ namespace JSReport
   public  class GenerateChuukReportCard
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        public async Task<string> Generate(object data)
+        public Task<string> Generate(object data)
         {
             string msg = "success";
             try
@@ -94,7 +94,7 @@ namespace JSReport
                 logger.Error("Method AddReportCard end with error :" + ex.Message);
                 msg = ex.Message;
             }
-            return msg;
+            return Task.FromResult(msg);
         }
     }
 }

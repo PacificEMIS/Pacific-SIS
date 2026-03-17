@@ -18,7 +18,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { CalendarModule as AngularCalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
-import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
 
 @NgModule({
   declarations: [TeacherDashboardComponent],
@@ -41,10 +40,7 @@ import { BackButtonDisableModule } from 'angular-disable-browser-back-button';
     TranslateModule,
     MatExpansionModule,
     MatDividerModule,
-    SharedModuleModule,
-    BackButtonDisableModule.forRoot({
-      preserveScrollPosition: true
-    })
+    SharedModuleModule
   ]
 })
 export class TeacherDashboardModule { }

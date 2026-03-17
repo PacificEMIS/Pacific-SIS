@@ -27,6 +27,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/_redirects",
+              "src/.htaccess",
               "src/README.md",
               "src/CHANGELOG.md"
             ],

@@ -34,7 +34,7 @@ export class StaffService {
   private staffThumbnailImage;
   private isFirstView:boolean= true;
 
-  private staffId: number;
+
 
   private staffMultiselectValue: any;
 
@@ -95,10 +95,14 @@ export class StaffService {
     this.staffThumbnailImage = imageInBase64;
   }
   setStaffId(id: number) {
-    this.staffId = id;
+    if (id) {
+      sessionStorage.setItem('staffId', JSON.stringify(id));
+    } else {
+      sessionStorage.removeItem('staffId');
+    }
   }
   getStaffId() {
-    return this.staffId;
+    return JSON.parse(sessionStorage.getItem('staffId'));
   }
   setStaffMultiselectValue(value: any) {
     this.staffMultiselectValue = value;

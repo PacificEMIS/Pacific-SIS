@@ -173,8 +173,6 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     });
 
 
-    this.router.onSameUrlNavigation = 'reload';
-
     this.router.events.pipe(takeUntil(this.destroySubject$)).pipe(
       filter((event: RouterEvent) => event instanceof NavigationEnd)
     ).subscribe((res) => {
@@ -186,8 +184,9 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   }
 
   checkInitialState() {
-  this.currentRolePermission = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.permissions : undefined;
-  this.staffCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type : this.staffCreateMode;
+  const navState = this.router.getCurrentNavigation()?.extras?.state;
+  this.currentRolePermission = navState ? navState.permissions : undefined;
+  this.staffCreateMode = navState?.type ?? (this.staffService.getStaffId() ? SchoolCreate.VIEW : this.staffCreateMode);
   this.staffService.setStaffCreateMode(this.staffCreateMode);
   
     this.staffId = this.staffService.getStaffId();
@@ -270,7 +269,8 @@ export class AddStaffComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkCurrentCategoryAndRoute() {    
+  checkCurrentCategoryAndRoute() {
+    if (this.router.url === this.categoryPath) return;
     if(this.categoryPath === '/school/staff/staff-generalinfo') {
       this.router.navigate(['/school', 'staff', 'staff-generalinfo']);
     } else if(this.categoryPath === '/school/staff/staff-schoolinfo') {

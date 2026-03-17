@@ -1,0 +1,7 @@
+{
+  "apiURLOpensis": "https://localhost:5001/",
+  "apiURL": "https://localhost:5001/",
+  "encryptionKey": "your-encryption-key",
+  "dataEncryptionKey": "your-data-encryption-key",
+  "tenant": "your-tenant-name"
+}

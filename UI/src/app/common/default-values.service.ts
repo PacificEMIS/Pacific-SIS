@@ -1,4 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { CommonField } from '../models/common-field.model';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from '../services/login.service';
@@ -18,6 +19,8 @@ export class DefaultValuesService {
   photoChanged = this.photoChange.asObservable();
   customFieldsCheckParentComp = new BehaviorSubject<boolean>(false);
   customFieldsCheckParentCompObs = this.customFieldsCheckParentComp.asObservable();
+  private photoAndFooterSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('photoAndFooter')));
+  photoAndFooter$ = this.photoAndFooterSubject.asObservable();
   TenantId: string = '';
   schoolID: number;
   academicYear: number;
@@ -38,10 +41,8 @@ export class DefaultValuesService {
 
     let tenant = '';
     if (url.includes('localhost')) {
-      // sessionStorage.setItem('tenant', JSON.stringify('opensisv2_ef6'));
-      // tenant = 'opensisv2_ef6';
-      sessionStorage.setItem('tenant', JSON.stringify('110'));
-      tenant = '110';
+      sessionStorage.setItem('tenant', JSON.stringify(environment.tenant));
+      tenant = environment.tenant;
     } else {
       let startIndex = url.indexOf('//');
       let endIndex = url.indexOf('.');
@@ -394,9 +395,16 @@ export class DefaultValuesService {
   }
   setPhotoAndFooter(data) {
      sessionStorage.setItem('photoAndFooter', JSON.stringify(data));
+     this.photoAndFooterSubject.next(data);
   }
   getPhotoAndFooter() {
-    return JSON.parse(sessionStorage.getItem('photoAndFooter'));
+    return JSON.parse(sessionStorage.getItem('photoAndFooter')) ?? {
+      tenantSidenavLogo: null,
+      tenantLogoIcon: null,
+      tenantFavIcon: null,
+      tenantLogo: null,
+      tenantFooter: ''
+    };
   }
 
   //useing of RxJs

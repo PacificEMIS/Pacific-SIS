@@ -401,7 +401,7 @@ namespace opensis.data.Repository
                                                 ReturnModel.UserGuid = userData.StaffGuid.ToString();
 
                                                 ReturnModel.MembershipId = schoolInfoData.MembershipId;
-                                                ReturnModel.MembershipType = schoolInfoData.Membership.ProfileType;
+                                                ReturnModel.MembershipType = schoolInfoData.Membership?.ProfileType;
                                                 ReturnModel.MembershipName = schoolInfoData.Membership?.Profile;
 
                                                 //update
@@ -426,7 +426,7 @@ namespace opensis.data.Repository
                                                     UserMaster userMasters = new UserMaster();
                                                     //userMasters = loginInfoData;
                                                     userMasters.SchoolId = (int)schoolInfoData.SchoolAttachedId;
-                                                    userMasters.MembershipId = (int)schoolInfoData.MembershipId;
+                                                    userMasters.MembershipId = (int)schoolInfoData.MembershipId!;
                                                     userMasters.LastUsedSchoolId = schoolInfoData.SchoolAttachedId;
                                                     userMasters.TenantId = loginInfoData.TenantId;
                                                     userMasters.UserId = loginInfoData.UserId;
