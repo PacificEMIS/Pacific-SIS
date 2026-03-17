@@ -117,6 +117,7 @@ export class LoginComponent implements OnInit {
     });
      /***10_8 */
      sessionStorage.clear();
+     this.defaultValuesService.setTenant(this.tenant);
      this.checkValidTenant();
      /**10_8 */
     this.GetAllLanguage();

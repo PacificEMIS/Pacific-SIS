@@ -19,6 +19,8 @@ export class DefaultValuesService {
   photoChanged = this.photoChange.asObservable();
   customFieldsCheckParentComp = new BehaviorSubject<boolean>(false);
   customFieldsCheckParentCompObs = this.customFieldsCheckParentComp.asObservable();
+  private photoAndFooterSubject = new BehaviorSubject<any>(JSON.parse(sessionStorage.getItem('photoAndFooter')));
+  photoAndFooter$ = this.photoAndFooterSubject.asObservable();
   TenantId: string = '';
   schoolID: number;
   academicYear: number;
@@ -393,9 +395,16 @@ export class DefaultValuesService {
   }
   setPhotoAndFooter(data) {
      sessionStorage.setItem('photoAndFooter', JSON.stringify(data));
+     this.photoAndFooterSubject.next(data);
   }
   getPhotoAndFooter() {
-    return JSON.parse(sessionStorage.getItem('photoAndFooter'));
+    return JSON.parse(sessionStorage.getItem('photoAndFooter')) ?? {
+      tenantSidenavLogo: null,
+      tenantLogoIcon: null,
+      tenantFavIcon: null,
+      tenantLogo: null,
+      tenantFooter: ''
+    };
   }
 
   //useing of RxJs

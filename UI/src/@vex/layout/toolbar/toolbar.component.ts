@@ -69,7 +69,7 @@ export class ToolbarComponent implements OnInit,OnDestroy {
   icArrowDropDown = icArrowDropDown;
   icAdd = icAdd;
   // addNewMenu=[];
-  // private destroySubject$ = new Subject<void>();
+  private destroySubject$ = new Subject<void>();
   impersonateButton:boolean;
   impersonateSubjectForToolBar:boolean=false;
   constructor(private layoutService: LayoutService,
@@ -81,7 +81,11 @@ export class ToolbarComponent implements OnInit,OnDestroy {
     public translateService: TranslateService,
     private impersonateServices:ImpersonateServices
     ) {
-    this.tenantLogoIcon = this.defaultValueService.getPhotoAndFooter().tenantLogoIcon;
+    this.defaultValueService.photoAndFooter$.pipe(takeUntil(this.destroySubject$)).subscribe(data => {
+      if (data) {
+        this.tenantLogoIcon = data.tenantLogoIcon;
+      }
+    });
     this.tenantName = this.defaultValueService.getTenantName();
     //  this.navigationService.menuItems.pipe(takeUntil(this.destroySubject$)).subscribe((res)=>{
     //    if(res){
@@ -157,7 +161,7 @@ export class ToolbarComponent implements OnInit,OnDestroy {
   }*/
 
   ngOnDestroy(){
-    // this.destroySubject$.next();
-    // this.destroySubject$.complete();
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
   }
 }
