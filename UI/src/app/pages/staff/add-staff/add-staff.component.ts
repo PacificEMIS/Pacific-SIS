@@ -186,8 +186,9 @@ export class AddStaffComponent implements OnInit, OnDestroy {
   }
 
   checkInitialState() {
-  this.currentRolePermission = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.permissions : undefined;
-  this.staffCreateMode = this.router.getCurrentNavigation().extras.state ? this.router.getCurrentNavigation().extras.state.type : this.staffCreateMode;
+  const navState = this.router.getCurrentNavigation()?.extras?.state;
+  this.currentRolePermission = navState ? navState.permissions : undefined;
+  this.staffCreateMode = navState?.type ?? (this.staffService.getStaffId() ? SchoolCreate.VIEW : this.staffCreateMode);
   this.staffService.setStaffCreateMode(this.staffCreateMode);
   
     this.staffId = this.staffService.getStaffId();
