@@ -154,6 +154,7 @@ Managed from `C:\Users\Ghislain Hachey\Development\Purltek\purltek-systems` (Ans
 
 ## Working Conventions
 
+- When the user says "wrap up", propose a commit message following the Commit Conventions below.
 - User reviews all code before committing — do not auto-commit or auto-push
 - Tackle issues one at a time, starting small and growing in complexity
 - Always check the Ansible deployment repo before changing config file structure
