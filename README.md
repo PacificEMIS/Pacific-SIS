@@ -86,8 +86,8 @@ Edit `config.json`:
 {
   "apiURLOpensis": "https://localhost:5001/",
   "apiURL": "https://localhost:5001/",
-  "encryptionKey": "oPen$!$.b14Ca5898a4e4133b!",
-  "dataEncryptionKey": "oPen$!$.b14Ca58!",
+  "encryptionKey": "your-encryption-key",
+  "dataEncryptionKey": "your-data-encryption-key",
   "tenant": "your-tenant-name"
 }
 ```

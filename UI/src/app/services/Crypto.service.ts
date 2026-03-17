@@ -1,3 +1,6 @@
+// TODO: The encryptionKey and dataEncryptionKey are currently app-wide constants shared across all
+// deployments and were previously exposed in git history. These keys need to be rotated and made
+// per-deployment secrets injected at build/deploy time. Track in GitHub issue.
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
 import { environment } from 'src/environments/environment';
