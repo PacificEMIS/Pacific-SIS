@@ -399,11 +399,18 @@ namespace opensis.data.Repository
             SchoolAddViewModel SchoolAddViewModel = new();
             try
             {
-                var schoolMaster = this.context?.SchoolMaster.Include(x => x.SchoolDetail).Include(x => x.FieldsCategory).ThenInclude(x => x.CustomFields).ThenInclude(x => x.CustomFieldsValue).Include(x=>x.SchoolYears).FirstOrDefault(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.schoolMaster.SchoolId);
+                var schoolId = school.schoolMaster.SchoolId;
+                var tenantId = school.schoolMaster.TenantId;
+                var schoolMaster = this.context?.SchoolMaster
+                    .Include(x => x.SchoolDetail)
+                    .Include(x => x.FieldsCategory.Where(c => c.Module == "School"))
+                        .ThenInclude(y => y.CustomFields.Where(z => z.SystemField != true))
+                        .ThenInclude(z => z.CustomFieldsValue.Where(w => w.TargetId == schoolId))
+                    .FirstOrDefault(x => x.TenantId == tenantId && x.SchoolId == schoolId);
 
                 if (schoolMaster != null)
                 {
-                    var customFields = schoolMaster.FieldsCategory.Where(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.schoolMaster.SchoolId && x.Module == "School").OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
+                    var customFields = schoolMaster.FieldsCategory.Where(x => x.TenantId == tenantId && x.SchoolId == schoolId).OrderByDescending(x => x.IsSystemCategory).ThenBy(x => x.SortOrder)
                                     .Select(y => new FieldsCategory
                                     {
                                         TenantId = y.TenantId,
@@ -440,7 +447,7 @@ namespace opensis.data.Repository
                                             UpdatedBy = z.UpdatedBy,
                                             CreatedBy = z.CreatedBy,
                                             CreatedOn = z.CreatedOn,
-                                            CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == school.schoolMaster.SchoolId).ToList()
+                                            CustomFieldsValue = z.CustomFieldsValue.Where(w => w.TargetId == schoolId).ToList()
                                         }).OrderByDescending(x => x.SystemField).ThenBy(x => x.SortOrder).ToList()
                                     }).ToList();
 
@@ -450,21 +457,21 @@ namespace opensis.data.Repository
                     //school.schoolMaster.FieldsCategory.FirstOrDefault().CustomFields = schoolcustomFields;
                     if (school.schoolMaster.SchoolDetail.ToList().Count > 0)
                     {
-                        school.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolMaster = null;
+                        var detail = school.schoolMaster.SchoolDetail.FirstOrDefault()!;
+                        detail.SchoolMaster = null;
+                        // For schools that predate thumbnail generation, fall back to the full logo
+                        if (detail.SchoolThumbnailLogo == null)
+                        {
+                            detail.SchoolThumbnailLogo = detail.SchoolLogo;
+                        }
+                        detail.SchoolLogo = null;
                     }
                     if (school.schoolMaster.CustomFields.ToList().Count > 0)
                     {
                         school.schoolMaster.CustomFields = new HashSet<CustomFields>();
                     }
 
-                    if (schoolMaster.SchoolYears.Count > 0)
-                    {
-                        school.IsMarkingPeriod = true;
-                    }
-                    else
-                    {
-                        school.IsMarkingPeriod = false;
-                    }
+                    school.IsMarkingPeriod = this.context!.SchoolYears.Any(x => x.TenantId == school.schoolMaster.TenantId && x.SchoolId == school.schoolMaster.SchoolId);
 
                     school._tenantName = school._tenantName;
                     return school;
@@ -561,6 +568,12 @@ namespace opensis.data.Repository
                                 school.schoolMaster.SchoolDetail.FirstOrDefault()!.CreatedBy = schoolMaster.SchoolDetail.FirstOrDefault()!.CreatedBy;
                                 school.schoolMaster.SchoolDetail.FirstOrDefault()!.CreatedOn = schoolMaster.SchoolDetail.FirstOrDefault()!.CreatedOn;
                                 school.schoolMaster.SchoolDetail.FirstOrDefault()!.UpdatedOn = DateTime.UtcNow;
+
+                                if (school.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolLogo == null)
+                                {
+                                    school.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolLogo = schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolLogo;
+                                    school.schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo = schoolMaster.SchoolDetail.FirstOrDefault()!.SchoolThumbnailLogo;
+                                }
 
                                 this.context?.Entry(schoolMaster.SchoolDetail.FirstOrDefault()!).CurrentValues.SetValues(school.schoolMaster.SchoolDetail.FirstOrDefault()!);
                             }

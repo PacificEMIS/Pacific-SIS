@@ -3374,46 +3374,55 @@ namespace opensis.data.Repository
 
         public ScheduledCourseSectionViewModel GetMissingAttendanceCountForDashboardView(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
         {
-            List<AllCourseSectionView>? AllCourseSectionViewList = new();
             ScheduledCourseSectionViewModel scheduledCourseSectionView = new();
-            List<DateTime> holidayList = new List<DateTime>();
             try
             {
-                var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.IsDropped != true).ToList();
+                var tenantId = scheduledCourseSectionViewModel.TenantId;
+                var schoolId = scheduledCourseSectionViewModel.SchoolId;
+                var academicYear = scheduledCourseSectionViewModel.AcademicYear;
 
-                if (scheduledCourseSectionData != null && scheduledCourseSectionData.Any())
+                // Single JOIN query: staff schedule × attendance-enabled course sections
+                var qualifyingSections = (
+                    from s in this.context!.StaffCoursesectionSchedule
+                    where s.TenantId == tenantId && s.SchoolId == schoolId && s.IsDropped != true
+                    join v in this.context.AllCourseSectionView.Where(v =>
+                            v.TenantId == tenantId && v.SchoolId == schoolId && v.AcademicYear == academicYear &&
+                            (v.AttendanceTaken == true || v.TakeAttendanceCalendar == true ||
+                             v.TakeAttendanceVariable == true || v.TakeAttendanceBlock == true))
+                        on new { s.CourseId, s.CourseSectionId } equals new { v.CourseId, v.CourseSectionId }
+                    select new { s.CourseSectionId, s.DurationStartDate, s.DurationEndDate })
+                    .ToList()
+                    .GroupBy(x => x.CourseSectionId)
+                    .Select(g => g.First())
+                    .ToList();
+
+                if (qualifyingSections.Any())
                 {
+                    // Load all missing attendances for qualifying sections in one query
+                    var courseSectionIds = qualifyingSections.Select(x => x.CourseSectionId).ToList();
+                    var allMissingAttendances = this.context.StudentMissingAttendances
+                        .Where(m => m.TenantId == tenantId && m.SchoolId == schoolId && m.CourseSectionId.HasValue && courseSectionIds.Contains(m.CourseSectionId!.Value))
+                        .Select(m => new { m.CourseSectionId, m.MissingAttendanceDate })
+                        .ToList();
+
+                    // Count with per-section date range filter in memory
                     int count = 0;
-                    List<int> ID = new List<int>();
-
-                    AllCourseSectionViewList = this.context?.AllCourseSectionView.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.AcademicYear == scheduledCourseSectionViewModel.AcademicYear).ToList();
-
-                    foreach (var scheduledCourseSection in scheduledCourseSectionData)
+                    foreach (var section in qualifyingSections)
                     {
-                        if (!ID.Contains(scheduledCourseSection.CourseSectionId))
-                        {
-                            var AllCourseSectionViewData = AllCourseSectionViewList!.Where(v => v.SchoolId == scheduledCourseSectionViewModel.SchoolId && v.TenantId == scheduledCourseSectionViewModel.TenantId && v.CourseId == scheduledCourseSection.CourseId && v.CourseSectionId == scheduledCourseSection.CourseSectionId && (v.AttendanceTaken == true || v.TakeAttendanceCalendar == true || v.TakeAttendanceVariable == true || v.TakeAttendanceBlock == true)).ToList();
-
-                            if (AllCourseSectionViewData.Any())
-                            {
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId && x.MissingAttendanceDate >= scheduledCourseSection.DurationStartDate && x.MissingAttendanceDate <= scheduledCourseSection.DurationEndDate).ToList();
-
-                                if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
-                                {
-                                    count += studentMissingAttendanceData.Count;
-                                }
-
-                                ID.Add(scheduledCourseSection.CourseSectionId);
-                            }
-                        }
+                        count += allMissingAttendances.Count(m =>
+                            m.CourseSectionId == section.CourseSectionId &&
+                            m.MissingAttendanceDate >= section.DurationStartDate &&
+                            m.MissingAttendanceDate <= section.DurationEndDate);
                     }
+
                     scheduledCourseSectionView.MissingAttendanceCount = count;
-                    scheduledCourseSectionView._failure = false;
-                    scheduledCourseSectionView.SchoolId = scheduledCourseSectionViewModel.SchoolId;
-                    scheduledCourseSectionView.TenantId = scheduledCourseSectionViewModel.TenantId;
-                    scheduledCourseSectionView._tenantName = scheduledCourseSectionViewModel._tenantName;
-                    scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
                 }
+
+                scheduledCourseSectionView._failure = false;
+                scheduledCourseSectionView.SchoolId = schoolId;
+                scheduledCourseSectionView.TenantId = tenantId;
+                scheduledCourseSectionView._tenantName = scheduledCourseSectionViewModel._tenantName;
+                scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
             }
             catch (Exception es)
             {

@@ -115,7 +115,7 @@ export class ProfileImageComponent implements OnInit, OnDestroy {
       if(res){
         this.schoolAddModel = res;
         this.preview = '';
-        this.responseImage = this.schoolAddModel.schoolMaster.schoolDetail[0].schoolLogo;
+        this.responseImage = this.schoolAddModel.schoolMaster.schoolDetail[0].schoolThumbnailLogo;
       }
     });
 

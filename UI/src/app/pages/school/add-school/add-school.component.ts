@@ -78,6 +78,7 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   schoolCreateMode: SchoolCreate = SchoolCreate.ADD;
   schoolCreate = SchoolCreate;
   permittedDetails;
+  private schoolDetailsLoading = false;
 
 
   constructor(
@@ -219,7 +220,10 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
   }
 
   getSchoolGeneralandWashInfoDetails() {
+    if (this.schoolDetailsLoading) return;
+    this.schoolDetailsLoading = true;
     this.schoolService.ViewSchool(this.schoolAddViewModel).subscribe(data => {
+      this.schoolDetailsLoading = false;
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
       } else {
@@ -235,8 +239,8 @@ export class AddSchoolComponent implements OnInit, OnDestroy {
 
       const index = this.schoolAddViewModel.schoolMaster.fieldsCategory.findIndex(x=> x.categoryId === this.fieldsCategory[0].categoryId)
       this.changeCategory({categoryId: this.currentCategory, title: this.fieldsCategory[0].title}, index);
-      this.schoolService.setSchoolImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
-      this.schoolService.setSchoolCloneImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolLogo);
+      this.schoolService.setSchoolImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolThumbnailLogo);
+      this.schoolService.setSchoolCloneImage(this.schoolAddViewModel.schoolMaster.schoolDetail[0].schoolThumbnailLogo);
       this.schoolService.setSchoolDetailsForViewAndEdit(this.schoolAddViewModel);
     }
     });
