@@ -19,34 +19,25 @@ an informed decision.
 
 ## Current State (as of 2026-03-17)
 
-**Total CS warnings: 220** — all in `opensis.data/Repository/`
+**Total CS warnings: 0** — cleanup complete. All 220 warnings resolved across 15 files.
 
-| Code   | Count | Meaning |
-|--------|-------|---------|
-| CS8602 | 158   | Dereference of possibly null reference (`x.Property` where x may be null) |
-| CS8629 |  60   | Nullable value type may be null (`(int)x` or `x.Value` where x is `int?`) |
-| CS8601 |   2   | Possible null reference assignment |
-
-| File                                  | Warnings | Status  |
-|---------------------------------------|----------|---------|
-| CommonRepository.cs                   |   52     | pending |
-| StudentRepository.cs                  |   28     | pending |
-| StaffRepository.cs                    |   26     | pending |
-| StudentAttendanceRepository.cs        |   24     | pending |
-| ReportCardRepository.cs               |   24     | pending |
-| StudentScheduleRepository.cs          |   22     | pending |
-| StudentPortalRepository.cs            |   14     | pending |
-| StaffPortalRepository.cs              |   12     | pending |
-| UserRepository.cs                     |    4     | pending |
-| CustomFieldRepository.cs              |    4     | pending |
-| MarkingperiodRepository.cs            |    2     | pending |
-| SchoolRepository.cs                   |    2     | pending |
-| PeriodRepository.cs                   |    2     | pending |
-| InputFinalGradeRepository.cs          |    2     | pending |
-| StudentHistoricalGradeRepository.cs   |    2     | pending |
-
-**Suggested order:** smaller files first (bottom of table upward) to establish patterns before
-tackling CommonRepository.cs (52 warnings) and the other large files.
+| File                                  | Warnings | Status    |
+|---------------------------------------|----------|-----------|
+| CommonRepository.cs                   |   52     | complete  |
+| StudentRepository.cs                  |   28     | complete  |
+| StaffRepository.cs                    |   26     | complete  |
+| StudentAttendanceRepository.cs        |   24     | complete  |
+| ReportCardRepository.cs               |   24     | complete  |
+| StudentScheduleRepository.cs          |   22     | complete  |
+| StudentPortalRepository.cs            |   14     | complete  |
+| StaffPortalRepository.cs              |   12     | complete  |
+| UserRepository.cs                     |    4     | complete  |
+| CustomFieldRepository.cs              |    4     | complete  |
+| MarkingperiodRepository.cs            |    2     | complete  |
+| SchoolRepository.cs                   |    2     | complete  |
+| PeriodRepository.cs                   |    2     | complete  |
+| InputFinalGradeRepository.cs          |    2     | complete  |
+| StudentHistoricalGradeRepository.cs   |    2     | complete  |
 
 ---
 
@@ -83,9 +74,22 @@ assignment source is provably non-null.
 
 ---
 
-## Patterns Found (updated as we work)
+## Patterns Found
 
-*This section grows as we process files. Record recurring patterns here to speed up later files.*
+Recurring patterns confirmed across multiple files:
+
+| Pattern | Fix | Rationale |
+|---------|-----|-----------|
+| `b.EffectiveStartDate.Value.Date` in EF LINQ | `b.EffectiveStartDate!.Value.Date` | EF translates to SQL; compiler doesn't know it's non-null |
+| `x.BlockPeriod.CourseFixedSchedule = ...` in `.ForEach()` after `.Include()` | `x.BlockPeriod!.CourseFixedSchedule` | Include guarantees load |
+| `e.VarDay.ToLower().Contains(...)` in in-memory LINQ | `e.VarDay != null && e.VarDay.ToLower()...` | VarDay is `string?`; real null risk |
+| `x.AttendanceCodeNavigation!.StateCode.ToLower()` | `.StateCode?.ToLower()` | StateCode is `string?`; nullable comparison returns false if null |
+| `(int)x.NullableFKId` where FK is structurally non-null | `(int)x.NullableFKId!` | FK to parent can't be null if record exists |
+| `x.GPA.Value` after `.Where(x => x.GPA.HasValue)` | `x.GPA!.Value` | Compiler doesn't track HasValue across lambda boundary |
+| `x.MarkingPeriodName.ToLower()` in-memory LINQ | `x.MarkingPeriodName != null && ...` | `string?` property; real null risk |
+| `x.MeetingDays.ToLower()` in-memory LINQ | `x.MeetingDays != null && ...` | Same pattern |
+| `x.Locale.ToLower()` in EF LINQ | `x.Locale!.ToLower()` | EF context; SQL handles null |
+| `result.Property` where result from `FirstOrDefault()` | Use `?.` or add null guard | FirstOrDefault can return null |
 
 ---
 

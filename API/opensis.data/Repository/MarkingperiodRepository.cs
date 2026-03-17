@@ -135,7 +135,7 @@ namespace opensis.data.Repository
                                     schoolProgressPeriodView.SchoolId = progressPeriod.SchoolId;
                                     schoolProgressPeriodView.MarkingPeriodId = progressPeriod.MarkingPeriodId;
                                     schoolProgressPeriodView.Title = progressPeriod.Title;
-                                    schoolProgressPeriodView.QuarterId =(int) progressPeriod.QuarterId;
+                                    schoolProgressPeriodView.QuarterId =(int) progressPeriod.QuarterId!;
                                     schoolProgressPeriodView.ShortName = progressPeriod.ShortName;
                                     schoolProgressPeriodView.DoesComments = progressPeriod.DoesComments;
                                     schoolProgressPeriodView.DoesExam = progressPeriod.DoesExam;

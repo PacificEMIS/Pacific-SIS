@@ -832,7 +832,7 @@ namespace opensis.data.Repository
                 }
                 if (pageResult.DobStartDate.HasValue && pageResult.DobEndDate.HasValue)
                 {
-                    staffScheduleDataList = staffScheduleDataList?.Where(e => ((pageResult.DobStartDate.Value.Date >= e.DurationStartDate.Value.Date && pageResult.DobStartDate.Value.Date <= e.DurationEndDate.Value.Date) || (pageResult.DobEndDate.Value.Date >= e.DurationStartDate.Value.Date && pageResult.DobEndDate.Value.Date <= e.DurationEndDate)));
+                    staffScheduleDataList = staffScheduleDataList?.Where(e => ((pageResult.DobStartDate!.Value.Date >= e.DurationStartDate!.Value.Date && pageResult.DobStartDate!.Value.Date <= e.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= e.DurationStartDate!.Value.Date && pageResult.DobEndDate!.Value.Date <= e.DurationEndDate)));
 
                     //Calculate Holiday
                     var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewList.FirstOrDefault()!.CalendarId && (e.StartDate >= pageResult.DobStartDate && e.StartDate <= pageResult.DobEndDate || e.EndDate >= pageResult.DobStartDate && e.EndDate <= pageResult.DobEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
@@ -1002,7 +1002,7 @@ namespace opensis.data.Repository
                                         }
                                         if (staffScheduleData.CourseSection.ScheduleType == "Variable Schedule (2)")
                                         {
-                                            var courseVariableScheduleData = allCourseSectionVewLists.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
+                                            var courseVariableScheduleData = allCourseSectionVewLists.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
                                             if (courseVariableScheduleData != null)
                                             {
@@ -1329,7 +1329,7 @@ namespace opensis.data.Repository
 
             try
             {
-                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1407,7 +1407,7 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var bellSchedule in bellScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                                 if (StudentCoursesectionScheduleData?.Any() == true)
                                                 {
@@ -1484,7 +1484,7 @@ namespace opensis.data.Repository
 
                                     foreach (var date in dateList)
                                     {
-                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
+                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section
 
                                         if (StudentCoursesectionScheduleData?.Any() == true)
                                         {
@@ -1518,7 +1518,7 @@ namespace opensis.data.Repository
                                             }
                                             if (staffCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
                                             {
-                                                var courseVariableScheduleData = allCourseSectionVewLists.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
+                                                var courseVariableScheduleData = allCourseSectionVewLists.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
                                                 if (courseVariableScheduleData != null)
                                                 {
@@ -1563,7 +1563,7 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var calenderSchedule in calenderScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
 
                                                 if (StudentCoursesectionScheduleData?.Any() == true)
                                                 {
@@ -1608,7 +1608,7 @@ namespace opensis.data.Repository
                             {
                                 string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
 
-                                transactionIQ = staffCoursesectionSchedule.Where(x => x.StaffFirstGivenName != null && x.StaffFirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffMiddleName != null && x.StaffMiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffLastFamilyName != null && x.StaffLastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.CourseSectionName != null && x.CourseSectionName.ToLower().Contains(Columnvalue.ToLower()) ||/* x.AttendanceDate != null && */x.AttendanceDate.Date.ToString("yyyy-MM-dd").Contains(Columnvalue) || x.PeriodTitle.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
+                                transactionIQ = staffCoursesectionSchedule.Where(x => x.StaffFirstGivenName != null && x.StaffFirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffMiddleName != null && x.StaffMiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffLastFamilyName != null && x.StaffLastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.CourseSectionName != null && x.CourseSectionName.ToLower().Contains(Columnvalue.ToLower()) ||/* x.AttendanceDate != null && */x.AttendanceDate.Date.ToString("yyyy-MM-dd").Contains(Columnvalue) || x.PeriodTitle != null && x.PeriodTitle.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
                             }
                         }
                         transactionIQ = transactionIQ != null ? transactionIQ.Distinct() : null;
@@ -1660,7 +1660,7 @@ namespace opensis.data.Repository
 
             try
             {
-                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1809,7 +1809,7 @@ namespace opensis.data.Repository
                             {
                                 string Columnvalue = pageResult.FilterParams.ElementAt(0).FilterValue;
 
-                                transactionIQ = staffCoursesectionSchedule.Where(x => x.StaffFirstGivenName != null && x.StaffFirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffMiddleName != null && x.StaffMiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffLastFamilyName != null && x.StaffLastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.CourseSectionName != null && x.CourseSectionName.ToLower().Contains(Columnvalue.ToLower()) ||/* x.AttendanceDate != null && */x.AttendanceDate.Date.ToString("yyyy-MM-dd").Contains(Columnvalue) || x.PeriodTitle.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
+                                transactionIQ = staffCoursesectionSchedule.Where(x => x.StaffFirstGivenName != null && x.StaffFirstGivenName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffMiddleName != null && x.StaffMiddleName.ToLower().Contains(Columnvalue.ToLower()) || x.StaffLastFamilyName != null && x.StaffLastFamilyName.ToLower().Contains(Columnvalue.ToLower()) || x.CourseSectionName != null && x.CourseSectionName.ToLower().Contains(Columnvalue.ToLower()) ||/* x.AttendanceDate != null && */x.AttendanceDate.Date.ToString("yyyy-MM-dd").Contains(Columnvalue) || x.PeriodTitle != null && x.PeriodTitle.ToLower().Contains(Columnvalue.ToLower())).AsQueryable();
                             }
                         }
                         transactionIQ = transactionIQ != null ? transactionIQ.Distinct() : null;
@@ -3108,6 +3108,8 @@ namespace opensis.data.Repository
                         foreach (var attendance in studentAttendanceData)
                         {
                             var blockPeriod = blockPeriodLookup?[(attendance.BlockId, attendance.PeriodId)].FirstOrDefault();
+
+                            if (blockPeriod is null) continue;
 
                             TimeSpan start = TimeSpan.Parse(blockPeriod.PeriodStartTime!);
                             TimeSpan end = TimeSpan.Parse(blockPeriod.PeriodEndTime!);

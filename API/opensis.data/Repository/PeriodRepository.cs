@@ -405,7 +405,7 @@ namespace opensis.data.Repository
             {
                 //var blockPeriodDelete = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == blockPeriodAddViewModel.blockPeriod.TenantId && x.SchoolId == blockPeriodAddViewModel.blockPeriod.SchoolId && x.PeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId);
 
-                var courseSectionData = this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == blockPeriodAddViewModel.blockPeriod.TenantId && b.SchoolId == blockPeriodAddViewModel.blockPeriod.SchoolId && (b.CalPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId || b.VarPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId || b.FixedPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId) && b.IsActive == true && b.DurationEndDate.Value.Date >= DateTime.Today.Date);
+                var courseSectionData = this.context?.AllCourseSectionView.FirstOrDefault(b => b.TenantId == blockPeriodAddViewModel.blockPeriod.TenantId && b.SchoolId == blockPeriodAddViewModel.blockPeriod.SchoolId && (b.CalPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId || b.VarPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId || b.FixedPeriodId == blockPeriodAddViewModel.blockPeriod.PeriodId) && b.IsActive == true && b.DurationEndDate >= DateTime.Today);
 
                 if (courseSectionData != null)
                 {

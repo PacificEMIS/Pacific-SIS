@@ -679,7 +679,7 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        getDpdownValue.LovColumnValue = dpdownValue.DropdownValue!.LovColumnValue;
+                        getDpdownValue.LovColumnValue = dpdownValue.DropdownValue!.LovColumnValue!;
                         getDpdownValue.UpdatedOn = DateTime.UtcNow;
                         getDpdownValue.UpdatedBy = dpdownValue.DropdownValue.UpdatedBy;
                         this.context?.SaveChanges();
@@ -1508,7 +1508,7 @@ namespace opensis.data.Repository
                 {
                     if (scheduledCourseSectionViewModel.AllCourse != true)
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays != null && x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
                     }
                     else
                     {
@@ -1597,7 +1597,7 @@ namespace opensis.data.Repository
 
                                 if (variableData?.Any() == true)
                                 {
-                                    variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    variableData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseVariableSchedule = variableData;
                                     CourseSections.HolidayList = holidayList;
@@ -1607,7 +1607,7 @@ namespace opensis.data.Repository
                             //{
                             //    CourseSections.ScheduleType = "Calendar Schedule";
 
-                            //    calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                            //    calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date!.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                             //    if (calenderData.Any())
                             //    {
@@ -1630,12 +1630,12 @@ namespace opensis.data.Repository
                                 {
                                     blockData.ForEach(x =>
                                     { /*x.BlockPeriod.CourseFixedSchedule = null!; x.BlockPeriod.CourseVariableSchedule = null!; x.BlockPeriod.CourseCalendarSchedule = null!; x.BlockPeriod.CourseBlockSchedule = null!; x.BlockPeriod.StudentAttendance = null!; x.Rooms.CourseFixedSchedule = null!; x.Rooms.CourseVariableSchedule = null!; x.Rooms.CourseCalendarSchedule = null!; x.Rooms.CourseBlockSchedule = null!;*/
-                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                         x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                         x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                         x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
                                         x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
-                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                         x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                         x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                         x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
@@ -1743,18 +1743,18 @@ namespace opensis.data.Repository
                                     ScheduleType = "Calendar Schedule"
                                 };
 
-                                calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                                calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date!.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                                 if (calenderData != null && calenderData.Any())
                                 {
                                     calenderData.ForEach(x =>
                                     { /*x.BlockPeriod.CourseFixedSchedule = null!; x.BlockPeriod.CourseVariableSchedule = null!; x.BlockPeriod.CourseCalendarSchedule = null!; x.BlockPeriod.CourseBlockSchedule = null!; x.BlockPeriod.StudentAttendance = null!; x.Rooms.CourseFixedSchedule = null!; x.Rooms.CourseVariableSchedule = null!; x.Rooms.CourseCalendarSchedule = null!; x.Rooms.CourseBlockSchedule = null!;*/
-                                        x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                         x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                         x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                         x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
                                         x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
-                                        x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                        x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                         x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                         x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                         x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
@@ -1901,7 +1901,7 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var bellSchedule in bellScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                                 if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
                                                 {
@@ -1960,7 +1960,7 @@ namespace opensis.data.Repository
 
                                 foreach (var date in dateList)
                                 {
-                                    var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
+                                    var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
                                     if (StudentCoursesectionScheduleData?.Any() == true)
                                     {
@@ -1976,7 +1976,7 @@ namespace opensis.data.Repository
 
                                         if (StaffScheduleData.CourseSection.ScheduleType == "Variable Schedule (2)")
                                         {
-                                            var courseVariableScheduleData = allCourseSectionViewData.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
+                                            var courseVariableScheduleData = allCourseSectionViewData.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
                                             if (courseVariableScheduleData != null)
                                             {
@@ -1996,13 +1996,13 @@ namespace opensis.data.Repository
                             }
                             else
                             {
-                                var calendarDataList = allCourseSectionViewData.Where(c => c.CalDate <= DateTime.Today.Date && !holidayList.Contains(c.CalDate.Value.Date));
+                                var calendarDataList = allCourseSectionViewData.Where(c => c.CalDate <= DateTime.Today.Date && !holidayList.Contains(c.CalDate!.Value.Date));
 
                                 if (calendarDataList.Any())
                                 {
                                     foreach (var calenderScheduleData in calendarDataList)
                                     {
-                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= calenderScheduleData.CalDate && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
+                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= calenderScheduleData.CalDate && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
 
                                         if (StudentCoursesectionScheduleData?.Any() == true)
                                         {
@@ -2076,7 +2076,7 @@ namespace opensis.data.Repository
                 {
                     if (scheduledCourseSectionViewModel.AllCourse != true)
                     {
-                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && x.DurationStartDate <= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+                        staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && x.DurationStartDate <= todayDate && (x.MeetingDays != null && x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
                     }
                     else
                     {
@@ -2183,7 +2183,7 @@ namespace opensis.data.Repository
 
                                 if (variableData?.Any() == true)
                                 {
-                                    //variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    //variableData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseVariableSchedule = variableData;
                                     CourseSections.HolidayList = holidayList;
@@ -2209,13 +2209,13 @@ namespace opensis.data.Repository
                                 {
                                     //blockData.ForEach(x =>
                                     //{
-                                    //    x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                     //    x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                     //    x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                     //    x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
                                     //    x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
                                     //    x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
-                                    //    x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                     //    x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                     //    x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                     //    x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
@@ -2332,19 +2332,19 @@ namespace opensis.data.Repository
                                     }
                                 }
 
-                                calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                                calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date!.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                                 if (calenderData != null && calenderData.Any())
                                 {
                                     //calenderData.ForEach(x =>
                                     //{
-                                    //    x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                     //    x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                     //    x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                     //    x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
                                     //    x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
                                     //    x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>();
-                                    //    x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
+                                    //    x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>();
                                     //    x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>();
                                     //    x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>();
                                     //    x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
@@ -2452,15 +2452,15 @@ namespace opensis.data.Repository
                         }
                         else if (courseSection.courseVariableSchedule?.Any() == true)
                         {
-                            courseSection.courseVariableSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                            courseSection.courseVariableSchedule.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
                         }
                         else if (courseSection.courseCalendarSchedule?.Any() == true)
                         {
-                            courseSection.courseCalendarSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                            courseSection.courseCalendarSchedule.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
                         }
                         else if (courseSection.courseBlockSchedule?.Any() == true)
                         {
-                            courseSection.courseBlockSchedule.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                            courseSection.courseBlockSchedule.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.BlockPeriod.StudentMissingAttendances = new HashSet<StudentMissingAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
                         }
                     }
                 }
@@ -2520,7 +2520,7 @@ namespace opensis.data.Repository
         //        {
         //            if (scheduledCourseSectionViewModel.AllCourse != true)
         //            {
-        //                staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
+        //                staffCoursesectionScheduleList = scheduledCourseSectionData.Where(x => x.DurationEndDate >= todayDate && (x.MeetingDays != null && x.MeetingDays.ToLower().Contains(todayDate.DayOfWeek.ToString().ToLower()) || x.MeetingDays == "Calendar Days" || x.MeetingDays == "Block Days")).ToList();
         //            }
         //            else
         //            {
@@ -2588,7 +2588,7 @@ namespace opensis.data.Repository
 
         //                        if (variableData?.Any() == true)
         //                        {
-        //                            variableData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+        //                            variableData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
         //                            CourseSections.courseVariableSchedule = variableData;
         //                            CourseSections.HolidayList = holidayList;
@@ -2599,13 +2599,13 @@ namespace opensis.data.Repository
         //                {
         //                    CourseSections.ScheduleType = "Calendar Schedule";
 
-        //                    calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+        //                    calenderData = this.context?.CourseCalendarSchedule.Include(v => v.BlockPeriod).Include(f => f.Rooms).Where(c => (scheduledCourseSectionViewModel.AllCourse != true) ? c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId && c.Date!.Value.Date == todayDate.Date : c.SchoolId == scheduledCourseSection.SchoolId && c.TenantId == scheduledCourseSection.TenantId && c.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
         //                    if (calenderData != null && calenderData.Any())
         //                    {
         //                        calenderData.ForEach(x =>
         //                        {
-        //                            x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+        //                            x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
         //                        });
 
         //                        CourseSections.courseCalendarSchedule = calenderData;
@@ -2622,7 +2622,7 @@ namespace opensis.data.Repository
         //                    {
         //                        blockData.ForEach(x =>
         //                        {
-        //                            x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
+        //                            x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>();
         //                        });
 
         //                        CourseSections.courseBlockSchedule = blockData;
@@ -2761,7 +2761,7 @@ namespace opensis.data.Repository
         //                            {
         //                                foreach (var bellSchedule in bellScheduleList)
         //                                {
-        //                                    var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+        //                                    var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
         //                                    if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
         //                                    {
@@ -2804,7 +2804,7 @@ namespace opensis.data.Repository
 
         //                        foreach (var date in dateList)
         //                        {
-        //                            var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
+        //                            var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
         //                            if (StudentCoursesectionScheduleData?.Any() == true)
         //                            {
@@ -2820,7 +2820,7 @@ namespace opensis.data.Repository
 
         //                                if (StaffScheduleData.CourseSection.ScheduleType == "Variable Schedule (2)")
         //                                {
-        //                                    var courseVariableScheduleData = allCourseSectionViewData.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
+        //                                    var courseVariableScheduleData = allCourseSectionViewData.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
         //                                    if (courseVariableScheduleData != null)
         //                                    {
@@ -2840,13 +2840,13 @@ namespace opensis.data.Repository
         //                    }
         //                    else
         //                    {
-        //                        var calendarDataList = allCourseSectionViewData.Where(c => c.CalDate <= DateTime.Today.Date && !holidayList.Contains(c.CalDate.Value.Date));
+        //                        var calendarDataList = allCourseSectionViewData.Where(c => c.CalDate <= DateTime.Today.Date && !holidayList.Contains(c.CalDate!.Value.Date));
 
         //                        if (calendarDataList.Any())
         //                        {
         //                            foreach (var calenderScheduleData in calendarDataList)
         //                            {
-        //                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate.Value.Date <= calenderScheduleData.CalDate && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
+        //                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == StaffScheduleData.SchoolId && b.TenantId == StaffScheduleData.TenantId && b.EffectiveStartDate!.Value.Date <= calenderScheduleData.CalDate && b.CourseSectionId == StaffScheduleData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
 
         //                                if (StudentCoursesectionScheduleData?.Any() == true)
         //                                {
@@ -3252,7 +3252,7 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var bellSchedule in bellScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                                 if (StudentCoursesectionScheduleData?.Any()==true)
                                                 {
@@ -3270,13 +3270,13 @@ namespace opensis.data.Repository
 
                                 if (scheduledCourseSection.CourseSection.ScheduleType == "Calendar Schedule (3)")
                                 {
-                                    var calenderScheduleList = AllCourseSectionViewData.Where(c => c.CalDate.Value.Date <= DateTime.Today.Date && (!holidayList.Contains(c.CalDate.Value.Date)));
+                                    var calenderScheduleList = AllCourseSectionViewData.Where(c => c.CalDate!.Value.Date <= DateTime.Today.Date && (!holidayList.Contains(c.CalDate!.Value.Date)));
 
                                     if (calenderScheduleList.Any())
                                     {
                                         foreach (var courseCalenderSchedule in calenderScheduleList)
                                         {
-                                            var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate.Value.Date <= courseCalenderSchedule.CalDate!.Value.Date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+                                            var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate!.Value.Date <= courseCalenderSchedule.CalDate!.Value.Date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                             if (StudentCoursesectionScheduleData?.Any()==true)
                                             {
@@ -3318,7 +3318,7 @@ namespace opensis.data.Repository
 
                                     foreach (var date in dateList)
                                     {
-                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate.Value.Date <= date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
+                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == scheduledCourseSection.SchoolId && b.TenantId == scheduledCourseSection.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
 
                                         if (StudentCoursesectionScheduleData?.Any()==true)
                                         {
@@ -3334,7 +3334,7 @@ namespace opensis.data.Repository
 
                                             if (scheduledCourseSection.CourseSection.ScheduleType == "Variable Schedule (2)")
                                             {
-                                                var courseVariableScheduleData = AllCourseSectionViewData.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
+                                                var courseVariableScheduleData = AllCourseSectionViewData.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
                                                 if (courseVariableScheduleData != null)
                                                 {

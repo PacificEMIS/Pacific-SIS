@@ -1956,7 +1956,7 @@ namespace opensis.data.Repository
                                         this.context?.Quarters.AddRange(quartersData);
                                         var qtrIds = quartersData.Select(s => s.MarkingPeriodId).ToList();
 
-                                        var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId && qtrIds.Contains((int)x.QuarterId)).ToList();
+                                        var progressPeriodsData = this.context?.ProgressPeriods.Where(x => x.SchoolId == copySchoolViewModel.FromSchoolId && x.TenantId == copySchoolViewModel.TenantId && qtrIds.Contains((int)x.QuarterId!)).ToList();
 
                                         if (progressPeriodsData?.Any() == true)
                                         {

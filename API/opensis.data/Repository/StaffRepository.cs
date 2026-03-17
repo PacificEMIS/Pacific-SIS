@@ -1650,7 +1650,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.FirstLanguageName.ToLower())?.LangId;
+                                        var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == staff.FirstLanguageName.ToLower())?.LangId;
                                         staff.staffMaster.FirstLanguage = firstLanguageId != null ? firstLanguageId : null;
                                     }
                                 }
@@ -1665,7 +1665,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.SecondLanguageName.ToLower())?.LangId;
+                                        var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == staff.SecondLanguageName.ToLower())?.LangId;
                                         staff.staffMaster.SecondLanguage = secondLanguageId != null ? secondLanguageId : null;
                                     }
                                 }
@@ -1680,7 +1680,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == staff.ThirdLanguageName.ToLower())?.LangId;
+                                        var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == staff.ThirdLanguageName.ToLower())?.LangId;
                                         staff.staffMaster.ThirdLanguage = thirdLanguageId != null ? thirdLanguageId : null;
                                     }
                                 }
@@ -1695,7 +1695,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.CountryOfBirthName.ToLower())?.Id;
+                                        var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == staff.CountryOfBirthName.ToLower())?.Id;
                                         staff.staffMaster.CountryOfBirth = countryOfBirthId != null ? countryOfBirthId : null;
                                     }
                                 }
@@ -1710,7 +1710,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.NationalityName.ToLower())?.Id;
+                                        var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == staff.NationalityName.ToLower())?.Id;
                                         staff.staffMaster.Nationality = nationalityId != null ? nationalityId : null;
                                     }
                                 }
@@ -1726,7 +1726,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.HomeAddressCountry.ToLower());
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == staff.staffMaster.HomeAddressCountry.ToLower());
                                         staff.staffMaster.HomeAddressCountry = CountryData?.Id.ToString();
                                     }
                                 }
@@ -1741,7 +1741,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == staff.staffMaster.MailingAddressCountry.ToLower());
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == staff.staffMaster.MailingAddressCountry.ToLower());
                                         staff.staffMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
                                     }
                                 }
@@ -1940,7 +1940,7 @@ namespace opensis.data.Repository
 
                                 if (courseVariableScheduleData != null && courseVariableScheduleData.Any())
                                 {
-                                    courseVariableScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    courseVariableScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseVariableSchedule = courseVariableScheduleData;
                                 }
@@ -1953,7 +1953,7 @@ namespace opensis.data.Repository
 
                                 if (courseCalenderScheduleData != null && courseCalenderScheduleData.Any())
                                 {
-                                    courseCalenderScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    courseCalenderScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseCalendarSchedule = courseCalenderScheduleData;
                                 }
@@ -1966,7 +1966,7 @@ namespace opensis.data.Repository
 
                                 if (courseBlockScheduleData != null && courseBlockScheduleData.Any())
                                 {
-                                    courseBlockScheduleData.ForEach(x => { x.BlockPeriod.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
+                                    courseBlockScheduleData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.Rooms!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.Rooms.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.Rooms.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.Rooms.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); });
 
                                     CourseSections.courseBlockSchedule = courseBlockScheduleData;
 

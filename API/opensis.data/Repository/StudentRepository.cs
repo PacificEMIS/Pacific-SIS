@@ -131,7 +131,7 @@ namespace opensis.data.Repository
                             calenderId = defaultCalender.CalenderId;
                         }
 
-                        var enrollmentType = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == student.studentMaster.TenantId && x.SchoolId == student.studentMaster.SchoolId && x.Type.ToLower() == "Add".ToLower());
+                        var enrollmentType = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == student.studentMaster.TenantId && x.SchoolId == student.studentMaster.SchoolId && x.Type!.ToLower() == "Add".ToLower());
 
                         if (enrollmentType != null)
                         {
@@ -736,7 +736,7 @@ namespace opensis.data.Repository
         //                }
 
         //                //searching for section name
-        //                var sectionId = this.context?.Sections.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.Name.ToLower().Contains(Columnvalue.ToLower())).Select(x => x.SectionId).ToList();
+        //                var sectionId = this.context?.Sections.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.Name!.ToLower().Contains(Columnvalue.ToLower())).Select(x => x.SectionId).ToList();
 
         //                if (sectionId.ToList()?.Any()==true)
         //                {
@@ -1401,7 +1401,7 @@ namespace opensis.data.Repository
                                         }
 
                                         //fetching enrollment code where student enroll(transfer).
-                                        var studentTransferIn = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentList.TenantId && x.SchoolId == studentEnrollmentList.TransferredSchoolId && x.Type.ToLower() == "Enroll (Transfer)".ToLower());
+                                        var studentTransferIn = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == studentEnrollmentList.TenantId && x.SchoolId == studentEnrollmentList.TransferredSchoolId && x.Type!.ToLower() == "Enroll (Transfer)".ToLower());
 
                                         if (studentTransferIn != null)
                                         {
@@ -1663,7 +1663,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        if (studentExitCode.Type.ToLower() == "Drop".ToLower())
+                                        if (studentExitCode?.Type?.ToLower() == "Drop".ToLower())
                                         {
                                             //This block update data for student's drop out from school
                                             studentEnrollmentUpdate.ExitCode = studentExitCode.Title;
@@ -1714,7 +1714,7 @@ namespace opensis.data.Repository
                                         else
                                         {
                                             //This block save data for student's roll over
-                                            studentEnrollmentUpdate.ExitCode = studentExitCode.Title;
+                                            studentEnrollmentUpdate.ExitCode = studentExitCode?.Title;
                                             studentEnrollmentUpdate.ExitDate = studentEnrollmentList.ExitDate;
                                             studentEnrollmentUpdate.TransferredGrade = studentEnrollmentList.GradeLevelTitle;
                                             studentEnrollmentUpdate.UpdatedOn = DateTime.UtcNow;
@@ -1728,7 +1728,7 @@ namespace opensis.data.Repository
                                             studentEnrollment.CalenderId = studentEnrollmentListModel.CalenderId;
                                             studentEnrollment.SchoolName = studentEnrollmentList.SchoolName;
                                             studentEnrollment.EnrollmentDate = studentEnrollmentList.ExitDate;
-                                            studentEnrollment.EnrollmentCode = studentExitCode.Title;
+                                            studentEnrollment.EnrollmentCode = studentExitCode?.Title;
                                             studentEnrollment.GradeLevelTitle = studentEnrollmentList.GradeLevelTitle;
                                             studentEnrollment.GradeId = studentEnrollmentList.GradeId;
                                             studentEnrollment.RollingOption = studentEnrollmentListModel.RollingOption;
@@ -3487,7 +3487,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == student.FirstLanguageName.ToLower())?.LangId;
+                                        var firstLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == student.FirstLanguageName.ToLower())?.LangId;
                                         student.studentMaster.FirstLanguageId = firstLanguageId != null ? firstLanguageId : null;
                                     }
                                 }
@@ -3502,7 +3502,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == student.SecondLanguageName.ToLower())?.LangId;
+                                        var secondLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == student.SecondLanguageName.ToLower())?.LangId;
                                         student.studentMaster.SecondLanguageId = secondLanguageId != null ? secondLanguageId : null;
                                     }
                                 }
@@ -3517,7 +3517,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale.ToLower() == student.ThirdLanguageName.ToLower())?.LangId;
+                                        var thirdLanguageId = this.context?.Language.FirstOrDefault(x => x.Locale!.ToLower() == student.ThirdLanguageName.ToLower())?.LangId;
                                         student.studentMaster.ThirdLanguageId = thirdLanguageId != null ? thirdLanguageId : null;
                                     }
                                 }
@@ -3532,7 +3532,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == student.CountryOfBirthName.ToLower())?.Id;
+                                        var countryOfBirthId = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == student.CountryOfBirthName.ToLower())?.Id;
                                         student.studentMaster.CountryOfBirth = countryOfBirthId != null ? countryOfBirthId : null;
                                     }
                                 }
@@ -3547,7 +3547,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == student.NationalityName.ToLower())?.Id;
+                                        var nationalityId = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == student.NationalityName.ToLower())?.Id;
                                         student.studentMaster.Nationality = nationalityId != null ? nationalityId : null;
                                     }
                                 }
@@ -3562,7 +3562,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var sectionId = this.context?.Sections.FirstOrDefault(x => x.Name.ToLower() == student.SectionName.ToLower() && x.TenantId == studentListAddViewModel.TenantId && x.SchoolId == studentListAddViewModel.SchoolId)?.SectionId;
+                                        var sectionId = this.context?.Sections.FirstOrDefault(x => x.Name!.ToLower() == student.SectionName.ToLower() && x.TenantId == studentListAddViewModel.TenantId && x.SchoolId == studentListAddViewModel.SchoolId)?.SectionId;
                                         student.studentMaster.SectionId = sectionId != null ? sectionId : null;
                                     }
                                 }
@@ -3577,7 +3577,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == student.studentMaster.HomeAddressCountry.ToLower());
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == student.studentMaster.HomeAddressCountry.ToLower());
                                         student.studentMaster.HomeAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
                                     }
                                 }
@@ -3591,7 +3591,7 @@ namespace opensis.data.Repository
                                     }
                                     else
                                     {
-                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name.ToLower() == student.studentMaster.MailingAddressCountry.ToLower());
+                                        var CountryData = this.context?.Country.FirstOrDefault(x => x.Name!.ToLower() == student.studentMaster.MailingAddressCountry.ToLower());
                                         student.studentMaster.MailingAddressCountry = CountryData != null ? CountryData.Id.ToString() : null;
                                     }
                                 }
@@ -3610,7 +3610,7 @@ namespace opensis.data.Repository
                                     calenderId = defaultCalender.CalenderId;
                                 }
 
-                                var enrollmentType = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == student.studentMaster.TenantId && x.SchoolId == student.studentMaster.SchoolId && x.Type.ToLower() == "Add".ToLower());
+                                var enrollmentType = this.context?.StudentEnrollmentCode.FirstOrDefault(x => x.TenantId == student.studentMaster.TenantId && x.SchoolId == student.studentMaster.SchoolId && x.Type!.ToLower() == "Add".ToLower());
 
                                 if (enrollmentType != null)
                                 {
@@ -3618,7 +3618,7 @@ namespace opensis.data.Repository
                                 }
                                 if (student.CurrentGradeLevel != null)
                                 {
-                                    var gradeLevelData = this.context?.Gradelevels.FirstOrDefault(x => x.SchoolId == student.studentMaster.SchoolId && x.TenantId == student.studentMaster.TenantId && x.Title.ToLower() == student.CurrentGradeLevel.ToLower());
+                                    var gradeLevelData = this.context?.Gradelevels.FirstOrDefault(x => x.SchoolId == student.studentMaster.SchoolId && x.TenantId == student.studentMaster.TenantId && x.Title!.ToLower() == student.CurrentGradeLevel.ToLower());
 
                                     if (gradeLevelData != null)
                                     {
@@ -3894,7 +3894,7 @@ namespace opensis.data.Repository
         //                                            reportCardDetailsForTranscript.Grade = reportCard.GradeObtained;
         //                                            if (courseSectionData.GradeScale != null)
         //                                            {
-        //                                                //var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
+        //                                                //var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && x.Title!.ToLower() == reportCard.GradeObtained.ToLower() && x.GradeScaleId == reportCard.GradeScaleId);
         //                                                var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
 
         //                                                if (gradeData != null)
