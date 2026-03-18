@@ -105,7 +105,7 @@ namespace opensis.data.Repository
             AttendanceCodeAddViewModel attendanceCodeViewModel = new ();
             try
             {                
-                var attendanceCodeView = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && x.AttendanceCode1 == attendanceCodeAddViewModel.AttendanceCode.AttendanceCode1);
+                var attendanceCodeView = this.context?.AttendanceCode.AsNoTracking().FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && x.AttendanceCode1 == attendanceCodeAddViewModel.AttendanceCode.AttendanceCode1);
                 if (attendanceCodeView != null)
                 {
                     attendanceCodeViewModel.AttendanceCode = attendanceCodeView;
@@ -183,7 +183,7 @@ namespace opensis.data.Repository
             AttendanceCodeListViewModel attendanceCodeListModel = new();
             try
             {
-                var attendanceCodeList = this.context?.AttendanceCode.Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
+                var attendanceCodeList = this.context?.AttendanceCode.AsNoTracking().Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
 
                 if (attendanceCodeList is not null && attendanceCodeList.Any())
                 {
@@ -298,7 +298,7 @@ namespace opensis.data.Repository
             AttendanceCodeCategoriesAddViewModel attendanceCodeCategoriesViewModel = new ();
             try
             {
-                var attendanceCodeCategoriesView = this.context?.AttendanceCodeCategories.FirstOrDefault(x => x.TenantId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories!.TenantId && x.SchoolId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.SchoolId && x.AttendanceCategoryId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.AttendanceCategoryId);
+                var attendanceCodeCategoriesView = this.context?.AttendanceCodeCategories.AsNoTracking().FirstOrDefault(x => x.TenantId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories!.TenantId && x.SchoolId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.SchoolId && x.AttendanceCategoryId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.AttendanceCategoryId);
                 if (attendanceCodeCategoriesView != null)
                 {
                     attendanceCodeCategoriesViewModel.AttendanceCodeCategories = attendanceCodeCategoriesView;
@@ -358,7 +358,7 @@ namespace opensis.data.Repository
             AttendanceCodeCategoriesListViewModel attendanceCodeCategoriesListModel = new ();
             try
             {
-                var attendanceCodeCategoriesList = this.context?.AttendanceCodeCategories.Where(x => x.TenantId == attendanceCodeCategoriesListViewModel.TenantId && x.SchoolId == attendanceCodeCategoriesListViewModel.SchoolId && x.AcademicYear == attendanceCodeCategoriesListViewModel.AcademicYear).ToList();
+                var attendanceCodeCategoriesList = this.context?.AttendanceCodeCategories.AsNoTracking().Where(x => x.TenantId == attendanceCodeCategoriesListViewModel.TenantId && x.SchoolId == attendanceCodeCategoriesListViewModel.SchoolId && x.AcademicYear == attendanceCodeCategoriesListViewModel.AcademicYear).ToList();
 
                 if (attendanceCodeCategoriesList is not null && attendanceCodeCategoriesList.Any())
                 {
