@@ -6,13 +6,15 @@ This file gives Claude persistent context about this project across sessions.
 
 ## What This Is
 
-Pacific-SIS is a multi-tenant Student Information System for Pacific EMIS — a regional education authority managing schools across multiple Pacific Island nations (FSM, Kiribati, Marshall Islands, Solomon Islands, Vanuatu, etc.).
+Pacific-SIS is a multi-tenant Student Information System for Pacific EMIS. This Student Information System can be used by anyone (i.e. a country, a school, etc.)
 
-Each country/school is a separate **tenant** with its own MySQL database. The system is operated by Ghislain Hachey, who took over development from a third-party team. We are progressively improving code quality and taking full ownership.
+Each country/school is a separate **tenant** with its own MySQL database. The system is operated by volunteers under the Pacific EMIS project.
 
 ---
 
 ## Tech Stack
+
+To be upgraded soon.
 
 | Layer | Technology |
 |---|---|
@@ -25,7 +27,7 @@ Each country/school is a separate **tenant** with its own MySQL database. The sy
 | Auth | JWT |
 | Reporting | JSReport |
 | Logging | NLog |
-| Deployment | Ansible (`purltek-systems` repo) |
+| Deployment | Ansible |
 
 ---
 
@@ -113,7 +115,7 @@ cp UI/src/assets/config.template.json UI/src/assets/config.json
 
 ```bash
 # PowerShell example
-$env:OPENSIIS_MIGRATION_CONNSTR = "server=localhost;database=kisis;user=opensisadmin;password=..."
+$env:OPENSIIS_MIGRATION_CONNSTR = "server=localhost;database=mysis;user=myadminuser;password=..."
 
 dotnet ef migrations add MigrationName \
   --project API/opensis.data \
@@ -124,31 +126,28 @@ dotnet ef migrations add MigrationName \
 
 ---
 
-## Deployment Pipeline
+## Publish & Deploy
 
-Managed from `C:\Users\Ghislain Hachey\Development\Purltek\purltek-systems` (Ansible).
+When the user says "publish":
+1. Run the three build commands (see README § Building for Production)
+2. Tell the user to run their sync script from WSL to rsync artifacts to the Ansible control node
 
-- Role: `roles/dotnet/`
+Deployment is managed via Ansible (see local MEMORY for details).
+
 - Rsyncs **compiled artifacts** (not source) to servers — config files excluded
 - Writes `appsettings.json`, `assets/config.json`, `NLog.config` from Jinja2 templates
 - systemd manages one service per tenant instance
 - Apache reverse-proxies HTTPS → Kestrel localhost port
 
-**Key Ansible deployment files:**
-- `roles/dotnet/tasks/main.yml` — deployment orchestration
-- `roles/dotnet/templates/appsettings.json.j2` — API config template
-- `roles/dotnet/templates/assets-config.json.j2` — UI config template
-- `purltek/ironhide1.purltek.com-deployment.yml` — main Pacific-SIS deployment
-
 ---
 
 ## Development Environment
 
-- **OS:** Windows 10, targeting Linux for production and eventual dev migration
+- **OS:** Windows 10/11, targeting Linux for production and eventual dev migration
 - **IDE:** VS Code for both frontend and backend (C# Dev Kit installed)
 - **Backend debug:** F5 in VS Code using `.vscode/launch.json`
 - **Git:** User handles all commits/PRs — never auto-commit
-- **Deployment repo:** `C:\Users\Ghislain Hachey\Development\Purltek\purltek-systems`
+- **Deployment:** ansible (see MEMORY for local path)
 
 ---
 
@@ -206,7 +205,7 @@ The Angular 10 frontend requires **Node.js v14.21.3**. Newer Node versions produ
 
 ## Known Technical Debt
 
-- Angular 10 and .NET 6 are both EOL — upgrade is a future goal
+- Angular 10 and .NET 6 are both EOL — upgrade is a near future goal
 - 132 build warnings (mostly nullable reference warnings in `opensis.data`)
 - `System.IdentityModel.Tokens.Jwt` 6.14.1 has a known moderate vulnerability
 - No automated tests running in CI
