@@ -105,7 +105,7 @@ namespace opensis.data.Repository
             AttendanceCodeAddViewModel attendanceCodeViewModel = new ();
             try
             {                
-                var attendanceCodeView = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && x.AttendanceCode1 == attendanceCodeAddViewModel.AttendanceCode.AttendanceCode1);
+                var attendanceCodeView = this.context?.AttendanceCode.AsNoTracking().FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && x.AttendanceCode1 == attendanceCodeAddViewModel.AttendanceCode.AttendanceCode1);
                 if (attendanceCodeView != null)
                 {
                     attendanceCodeViewModel.AttendanceCode = attendanceCodeView;
@@ -183,16 +183,76 @@ namespace opensis.data.Repository
             AttendanceCodeListViewModel attendanceCodeListModel = new();
             try
             {
-                var attendanceCodeList = this.context?.AttendanceCode.Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
+                var attendanceCodeList = this.context?.AttendanceCode.AsNoTracking().Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
 
                 if (attendanceCodeList is not null && attendanceCodeList.Any())
                 {
                     if (attendanceCodeListViewModel.IsListView == true)
                     {
+                        // Batch-load user names instead of N+1 Utility.CreatedOrUpdatedBy calls
+                        var userGuids = attendanceCodeList
+                            .SelectMany(c => new[] { c.CreatedBy, c.UpdatedBy })
+                            .Where(g => !string.IsNullOrEmpty(g))
+                            .Select(g => g!)
+                            .Distinct()
+                            .ToList();
+
+                        var nameLookup = new Dictionary<string, string>();
+
+                        if (userGuids.Any())
+                        {
+                            var staffData = this.context!.StaffMaster
+                                .AsNoTracking()
+                                .Where(e => e.TenantId == attendanceCodeListViewModel.TenantId && e.PortalAccess == true)
+                                .Select(e => new { e.StaffGuid, e.FirstGivenName, e.MiddleName, e.LastFamilyName })
+                                .ToList();
+
+                            foreach (var s in staffData)
+                            {
+                                var guidStr = s.StaffGuid.ToString();
+                                if (userGuids.Contains(guidStr))
+                                    nameLookup[guidStr] = $"{s.FirstGivenName} {(s.MiddleName == null ? "" : $"{s.MiddleName} ")}{s.LastFamilyName}";
+                            }
+
+                            var remainingGuids = userGuids.Where(g => !nameLookup.ContainsKey(g)).ToList();
+                            if (remainingGuids.Any())
+                            {
+                                var parentData = this.context!.ParentInfo
+                                    .AsNoTracking()
+                                    .Where(e => e.TenantId == attendanceCodeListViewModel.TenantId && e.IsPortalUser == true)
+                                    .Select(e => new { e.ParentGuid, e.Firstname, e.Middlename, e.Lastname })
+                                    .ToList();
+
+                                foreach (var p in parentData)
+                                {
+                                    var guidStr = p.ParentGuid.ToString();
+                                    if (remainingGuids.Contains(guidStr))
+                                        nameLookup[guidStr] = $"{p.Firstname} {(p.Middlename == null ? "" : $"{p.Middlename} ")}{p.Lastname}";
+                                }
+
+                                remainingGuids = remainingGuids.Where(g => !nameLookup.ContainsKey(g)).ToList();
+                                if (remainingGuids.Any())
+                                {
+                                    var studentData = this.context!.StudentMaster
+                                        .AsNoTracking()
+                                        .Where(e => e.TenantId == attendanceCodeListViewModel.TenantId && e.StudentPortalId != null)
+                                        .Select(e => new { e.StudentGuid, e.FirstGivenName, e.MiddleName, e.LastFamilyName })
+                                        .ToList();
+
+                                    foreach (var st in studentData)
+                                    {
+                                        var guidStr = st.StudentGuid.ToString();
+                                        if (remainingGuids.Contains(guidStr))
+                                            nameLookup[guidStr] = $"{st.FirstGivenName} {(st.MiddleName == null ? "" : $"{st.MiddleName} ")}{st.LastFamilyName}";
+                                    }
+                                }
+                            }
+                        }
+
                         attendanceCodeList.ForEach(c =>
                         {
-                            c.CreatedBy = Utility.CreatedOrUpdatedBy(this.context!, attendanceCodeListViewModel.TenantId, c.CreatedBy!);
-                            c.UpdatedBy = Utility.CreatedOrUpdatedBy(this.context!, attendanceCodeListViewModel.TenantId, c.UpdatedBy!);
+                            c.CreatedBy = !string.IsNullOrEmpty(c.CreatedBy) && nameLookup.TryGetValue(c.CreatedBy, out var createdName) ? createdName : string.Empty;
+                            c.UpdatedBy = !string.IsNullOrEmpty(c.UpdatedBy) && nameLookup.TryGetValue(c.UpdatedBy, out var updatedName) ? updatedName : string.Empty;
                         });
                     }
                     attendanceCodeListModel.AttendanceCodeList = attendanceCodeList;
@@ -229,7 +289,7 @@ namespace opensis.data.Repository
 
                 if (attendanceCodeDelete != null)
                 {
-                    var studentDailyAttendanceData = this.context?.StudentDailyAttendance.AsEnumerable().FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && String.Compare(x.AttendanceCode, attendanceCodeDelete.Title,true) == 0);
+                    var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && (x.AttendanceCode ?? "").ToLower() == (attendanceCodeDelete.Title ?? "").ToLower());
 
                    // (x.AttendanceCode??"").ToLower() == attendanceCodeDelete.Title.ToLower());
                     
@@ -298,7 +358,7 @@ namespace opensis.data.Repository
             AttendanceCodeCategoriesAddViewModel attendanceCodeCategoriesViewModel = new ();
             try
             {
-                var attendanceCodeCategoriesView = this.context?.AttendanceCodeCategories.FirstOrDefault(x => x.TenantId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories!.TenantId && x.SchoolId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.SchoolId && x.AttendanceCategoryId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.AttendanceCategoryId);
+                var attendanceCodeCategoriesView = this.context?.AttendanceCodeCategories.AsNoTracking().FirstOrDefault(x => x.TenantId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories!.TenantId && x.SchoolId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.SchoolId && x.AttendanceCategoryId == attendanceCodeCategoriesAddViewModel.AttendanceCodeCategories.AttendanceCategoryId);
                 if (attendanceCodeCategoriesView != null)
                 {
                     attendanceCodeCategoriesViewModel.AttendanceCodeCategories = attendanceCodeCategoriesView;
@@ -358,7 +418,7 @@ namespace opensis.data.Repository
             AttendanceCodeCategoriesListViewModel attendanceCodeCategoriesListModel = new ();
             try
             {
-                var attendanceCodeCategoriesList = this.context?.AttendanceCodeCategories.Where(x => x.TenantId == attendanceCodeCategoriesListViewModel.TenantId && x.SchoolId == attendanceCodeCategoriesListViewModel.SchoolId && x.AcademicYear == attendanceCodeCategoriesListViewModel.AcademicYear).ToList();
+                var attendanceCodeCategoriesList = this.context?.AttendanceCodeCategories.AsNoTracking().Where(x => x.TenantId == attendanceCodeCategoriesListViewModel.TenantId && x.SchoolId == attendanceCodeCategoriesListViewModel.SchoolId && x.AcademicYear == attendanceCodeCategoriesListViewModel.AcademicYear).ToList();
 
                 if (attendanceCodeCategoriesList is not null && attendanceCodeCategoriesList.Any())
                 {

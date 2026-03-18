@@ -14,9 +14,11 @@ namespace opensis.backgroundjob.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                var env = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
                 IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{env}.json", optional: true)
             .Build();
                 string connectionString = configuration.GetConnectionString("DefaultConnection");
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));

@@ -130,7 +130,7 @@ namespace opensis.data.Repository
                         var programUpdate = this.context?.Programs.FirstOrDefault(x => x.TenantId == programLists.TenantId && x.SchoolId == programLists.SchoolId && x.ProgramId == programLists.ProgramId);
                         if (programUpdate != null)
                         {
-                            var program = this.context?.Programs.AsEnumerable().FirstOrDefault(x => x.TenantId == programLists.TenantId && x.SchoolId == programLists.SchoolId && x.ProgramId != programLists.ProgramId && String.Compare(x.ProgramName,programLists.ProgramName,true)==0);
+                            var program = this.context?.Programs.FirstOrDefault(x => x.TenantId == programLists.TenantId && x.SchoolId == programLists.SchoolId && x.ProgramId != programLists.ProgramId && (x.ProgramName ?? "").ToLower() == (programLists.ProgramName ?? "").ToLower());
                             if (program != null)
                             {
                                 programUpdateModel._message = "Program Name already exists";
@@ -139,7 +139,7 @@ namespace opensis.data.Repository
                             }
                             else
                             {
-                                var courseList = this.context?.Course.AsEnumerable().Where(x => x.TenantId == programUpdate.TenantId && x.SchoolId == programUpdate.SchoolId && String.Compare(x.CourseProgram,programUpdate.ProgramName,true)==0).ToList();
+                                var courseList = this.context?.Course.Where(x => x.TenantId == programUpdate.TenantId && x.SchoolId == programUpdate.SchoolId && (x.CourseProgram ?? "").ToLower() == (programUpdate.ProgramName ?? "").ToLower()).ToList();
 
                                 programLists.CreatedBy = programUpdate.CreatedBy;
                                 programLists.CreatedOn = programUpdate.CreatedOn;
@@ -167,7 +167,7 @@ namespace opensis.data.Repository
                             ProgramId = programData.ProgramId + 1;
                         }
 
-                        var program = this.context?.Programs.AsEnumerable().Where(x => x.SchoolId == programLists.SchoolId && x.TenantId == programLists.TenantId && String.Compare(x.ProgramName, programLists.ProgramName,true)==0).FirstOrDefault();
+                        var program = this.context?.Programs.Where(x => x.SchoolId == programLists.SchoolId && x.TenantId == programLists.TenantId && (x.ProgramName ?? "").ToLower() == (programLists.ProgramName ?? "").ToLower()).FirstOrDefault();
                         if (program != null)
                         {
                             programUpdateModel._failure = true;

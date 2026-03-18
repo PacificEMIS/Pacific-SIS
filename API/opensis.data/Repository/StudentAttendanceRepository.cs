@@ -265,17 +265,36 @@ namespace opensis.data.Repository
 
                             var studentIdList = studentAttendanceAddViewModel.studentAttendance.Where(s => s.AttendanceCode > 0).Select(x => x.StudentId).ToList();
 
+                            // Batch-load all lookup data before the loop (eliminates N+1 queries)
+                            var allAttendanceForDate = this.context?.StudentAttendance
+                                .AsNoTracking()
+                                .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && studentIdList.Contains(x.StudentId) && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate)
+                                .ToList()
+                                .GroupBy(x => x.StudentId)
+                                .ToDictionary(g => g.Key, g => g.ToList());
+
+                            var blockPeriodLookup = this.context?.BlockPeriod
+                                .AsNoTracking()
+                                .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                                .ToDictionary(x => (x.BlockId, x.PeriodId));
+
+                            var attendanceCodeList = this.context?.AttendanceCode
+                                .AsNoTracking()
+                                .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                                .ToList();
+
+                            var existingDailyAttendance = this.context?.StudentDailyAttendance
+                                .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && studentIdList.Contains(x.StudentId) && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate)
+                                .ToDictionary(x => x.StudentId);
+
                             foreach (var studentId in studentIdList)
                             {
                                 int totalAttendanceMin = 0;
-                                var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate).ToList();
-                                if (attendanceData != null)
+                                if (allAttendanceForDate != null && allAttendanceForDate.TryGetValue(studentId, out var attendanceData))
                                 {
                                     foreach (var attendance in attendanceData)
                                     {
-                                        var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
-
-                                        if (BlockPeriodData != null)
+                                        if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                         {
                                             var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                             var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
@@ -284,7 +303,7 @@ namespace opensis.data.Repository
                                             var min = Convert.ToInt32(periodTime.Value.Minutes);
                                             var classMin = hour > 0 ? (hour * 60 + min) : min;
 
-                                            var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                            var AttendanceCodeData = attendanceCodeList?.FirstOrDefault(x => x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                             if (AttendanceCodeData != null)
                                             {
                                                 if (AttendanceCodeData.StateCode!.ToLower() != "absent".ToLower())
@@ -295,9 +314,7 @@ namespace opensis.data.Repository
                                         }
                                     }
                                 }
-                                var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate);
-
-                                if (studentDailyAttendanceData != null)
+                                if (existingDailyAttendance != null && existingDailyAttendance.TryGetValue(studentId, out var studentDailyAttendanceData))
                                 {
                                     studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
                                 }
@@ -340,7 +357,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                var studentAttendanceData = this.context?.StudentAttendance.Include(k => k.Membership).Include(c => c.StudentCoursesectionSchedule).Include(v => v.StudentAttendanceComments).ThenInclude(y => y.Membership).Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate && x.PeriodId == studentAttendanceAddViewModel.PeriodId).ToList();
+                var studentAttendanceData = this.context?.StudentAttendance.AsNoTracking().Include(k => k.Membership).Include(c => c.StudentCoursesectionSchedule).Include(v => v.StudentAttendanceComments).ThenInclude(y => y.Membership).Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendanceAddViewModel.AttendanceDate && x.PeriodId == studentAttendanceAddViewModel.PeriodId).ToList();
 
                 if (studentAttendanceData?.Any() == true)
                 {
@@ -378,7 +395,7 @@ namespace opensis.data.Repository
                 scheduledCourseSectionView.StaffId = scheduledCourseSectionViewModel.StaffId;
                 scheduledCourseSectionView._token = scheduledCourseSectionViewModel._token;
 
-                var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.Include(s => s.StaffMaster).Include(x => x.CourseSection).Include(x => x.CourseSection.Course).Include(x => x.CourseSection.SchoolCalendars).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
+                var scheduledCourseSectionData = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(s => s.StaffMaster).Include(x => x.CourseSection).Include(x => x.CourseSection.Course).Include(x => x.CourseSection.SchoolCalendars).Where(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.StaffId == scheduledCourseSectionViewModel.StaffId && x.IsDropped != true).ToList();
 
                 if (scheduledCourseSectionData?.Any() == true)
                 {
@@ -389,11 +406,11 @@ namespace opensis.data.Repository
                         {
                             CourseSectionViewList CourseSections = new CourseSectionViewList();
 
-                            var courseSectionData = this.context?.CourseSection.FirstOrDefault(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId);
+                            var courseSectionData = this.context?.CourseSection.AsNoTracking().FirstOrDefault(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId);
 
                             if (courseSectionData != null)
                             {
-                                var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == scheduledCourseSection.TenantId && e.CalendarId == courseSectionData.CalendarId && (e.StartDate >= courseSectionData.DurationStartDate && e.StartDate <= courseSectionData.DurationEndDate || e.EndDate >= courseSectionData.DurationStartDate && e.EndDate <= courseSectionData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == scheduledCourseSection.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                                var CalendarEventsData = this.context?.CalendarEvents.AsNoTracking().Where(e => e.TenantId == scheduledCourseSection.TenantId && e.CalendarId == courseSectionData.CalendarId && (e.StartDate >= courseSectionData.DurationStartDate && e.StartDate <= courseSectionData.DurationEndDate || e.EndDate >= courseSectionData.DurationStartDate && e.EndDate <= courseSectionData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == scheduledCourseSection.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
                                 if (CalendarEventsData?.Any() == true)
                                 {
@@ -416,7 +433,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Fixed Schedule";
 
-                                var courseFixedScheduleData = this.context?.CourseFixedSchedule.Include(c => c.BlockPeriod).FirstOrDefault(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId);
+                                var courseFixedScheduleData = this.context?.CourseFixedSchedule.AsNoTracking().Include(c => c.BlockPeriod).FirstOrDefault(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId);
                                 if (courseFixedScheduleData != null)
                                 {
                                     if (courseFixedScheduleData.BlockPeriod != null)
@@ -435,7 +452,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Variable Schedule";
 
-                                var courseVariableScheduleData = this.context?.CourseVariableSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                                var courseVariableScheduleData = this.context?.CourseVariableSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                                 if (courseVariableScheduleData?.Any() == true)
                                 {
@@ -448,7 +465,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Calendar Schedule";
 
-                                var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                                var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                                 if (courseCalenderScheduleData?.Any() == true)
                                 {
@@ -461,7 +478,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Block Schedule";
 
-                                var courseBlockScheduleData = this.context?.CourseBlockSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
+                                var courseBlockScheduleData = this.context?.CourseBlockSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == scheduledCourseSection.TenantId && x.SchoolId == scheduledCourseSection.SchoolId && x.CourseSectionId == scheduledCourseSection.CourseSectionId).ToList();
 
                                 if (courseBlockScheduleData?.Any() == true)
                                 {
@@ -542,7 +559,7 @@ namespace opensis.data.Repository
                         if (staffSchoolInfoData != null)
                         {
                             //membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && v.Profile.ToLower() == staffSchoolInfoData.Profile.ToLower())?.MembershipId;
-                            membershipID = this.context?.Membership.AsEnumerable().FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && String.Compare(v.Profile, staffSchoolInfoData.Profile, true) == 0)?.MembershipId;
+                            membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && (v.Profile ?? "").ToLower() == (staffSchoolInfoData.Profile ?? "").ToLower())?.MembershipId;
                         }
                         else
                         {
@@ -550,7 +567,7 @@ namespace opensis.data.Repository
                             if (staffMasterData != null)
                             {
                                 //membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && v.Profile.ToLower() == staffMasterData.Profile.ToLower())?.MembershipId;
-                                membershipID = this.context?.Membership.AsEnumerable().FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && String.Compare(v.Profile, staffMasterData.Profile, true) == 0)?.MembershipId;
+                                membershipID = this.context?.Membership.FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && (v.Profile ?? "").ToLower() == (staffMasterData.Profile ?? "").ToLower())?.MembershipId;
                             }
                         }
 
@@ -722,17 +739,37 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
 
                         attendanceDates = attendanceDates.Distinct().ToList();
+
+                        // Batch-load all lookup data before the loop (eliminates N+1 queries)
+                        var allAttendanceForDates = this.context?.StudentAttendance
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentAttendanceAddViewModel.StudentId && attendanceDates.Contains(x.AttendanceDate))
+                            .ToList()
+                            .GroupBy(x => x.AttendanceDate)
+                            .ToDictionary(g => g.Key, g => g.ToList());
+
+                        var blockPeriodLookup = this.context?.BlockPeriod
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                            .ToDictionary(x => (x.BlockId, x.PeriodId));
+
+                        var attendanceCodeList = this.context?.AttendanceCode
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                            .ToList();
+
+                        var existingDailyAttendance = this.context?.StudentDailyAttendance
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentAttendanceAddViewModel.StudentId && attendanceDates.Contains(x.AttendanceDate))
+                            .ToDictionary(x => x.AttendanceDate);
+
                         foreach (var date in attendanceDates)
                         {
                             int totalAttendanceMin = 0;
-                            var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentAttendanceAddViewModel.StudentId && x.AttendanceDate == date).ToList();
-                            if (attendanceData != null && attendanceData.Any())
+                            if (allAttendanceForDates != null && allAttendanceForDates.TryGetValue(date, out var attendanceData))
                             {
                                 foreach (var attendance in attendanceData)
                                 {
-                                    var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
-
-                                    if (BlockPeriodData != null)
+                                    if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                     {
                                         var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                         var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
@@ -741,10 +778,9 @@ namespace opensis.data.Repository
                                         var min = Convert.ToInt32(periodTime.Value.Minutes);
                                         var classMin = hour > 0 ? (hour * 60 + min) : min;
 
-                                        var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                        var AttendanceCodeData = attendanceCodeList?.FirstOrDefault(x => x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                         if (AttendanceCodeData != null)
                                         {
-                                            //if (String.Compare(AttendanceCodeData.Title, "absent", true) == 0)
                                             if (AttendanceCodeData.StateCode!.ToLower() != "absent")
                                             {
                                                 totalAttendanceMin = totalAttendanceMin + classMin;
@@ -753,9 +789,7 @@ namespace opensis.data.Repository
                                     }
                                 }
                             }
-                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentAttendanceAddViewModel.StudentId && x.AttendanceDate == date);
-
-                            if (studentDailyAttendanceData != null)
+                            if (existingDailyAttendance != null && existingDailyAttendance.TryGetValue(date, out var studentDailyAttendanceData))
                             {
                                 studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
                             }
@@ -797,7 +831,7 @@ namespace opensis.data.Repository
             List<DateTime> holidayList = new List<DateTime>();
             try
             {
-                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StaffMaster).Include(d => d.StudentAttendance).Include(b => b.CourseSection).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(d => d.StaffMaster).Include(d => d.StudentAttendance).Include(b => b.CourseSection).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -825,7 +859,7 @@ namespace opensis.data.Repository
                 });
 
                 //var calendarData = this.context?.CourseCalendarSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
-                allCourseSectionVewList = this.context?.AllCourseSectionView.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                allCourseSectionVewList = this.context?.AllCourseSectionView.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
                 if (allCourseSectionVewList is null)
                 {
                     return staffListViewModel;
@@ -835,7 +869,7 @@ namespace opensis.data.Repository
                     staffScheduleDataList = staffScheduleDataList?.Where(e => ((pageResult.DobStartDate!.Value.Date >= e.DurationStartDate!.Value.Date && pageResult.DobStartDate!.Value.Date <= e.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= e.DurationStartDate!.Value.Date && pageResult.DobEndDate!.Value.Date <= e.DurationEndDate)));
 
                     //Calculate Holiday
-                    var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewList.FirstOrDefault()!.CalendarId && (e.StartDate >= pageResult.DobStartDate && e.StartDate <= pageResult.DobEndDate || e.EndDate >= pageResult.DobStartDate && e.EndDate <= pageResult.DobEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                    var CalendarEventsData = this.context?.CalendarEvents.AsNoTracking().Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewList.FirstOrDefault()!.CalendarId && (e.StartDate >= pageResult.DobStartDate && e.StartDate <= pageResult.DobEndDate || e.EndDate >= pageResult.DobStartDate && e.EndDate <= pageResult.DobEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
                     if (CalendarEventsData?.Any() == true)
                     {
@@ -885,14 +919,14 @@ namespace opensis.data.Repository
                                     foreach (var allCourseSectionVew in allCourseSectionVewList)
                                     {
 
-                                        var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == allCourseSectionVew.BlockId && v.BellScheduleDate >= start && v.BellScheduleDate <= end && v.BellScheduleDate <= DateTime.Today.Date).ToList();
+                                        var bellScheduleList = this.context?.BellSchedule.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == allCourseSectionVew.BlockId && v.BellScheduleDate >= start && v.BellScheduleDate <= end && v.BellScheduleDate <= DateTime.Today.Date).ToList();
 
                                         if (bellScheduleList?.Any() == true)
                                         {
                                             foreach (var bellSchedule in bellScheduleList)
                                             {
 
-                                                var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId && b.AttendanceDate.Date == bellSchedule.BellScheduleDate && b.CourseSectionId == staffScheduleData.CourseSectionId && b.CourseId == staffScheduleData.CourseId && b.PeriodId == allCourseSectionVew.BlockPeriodId);
+                                                var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId && b.AttendanceDate.Date == bellSchedule.BellScheduleDate && b.CourseSectionId == staffScheduleData.CourseSectionId && b.CourseId == staffScheduleData.CourseId && b.PeriodId == allCourseSectionVew.BlockPeriodId);
 
                                                 if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                 {
@@ -916,7 +950,7 @@ namespace opensis.data.Repository
                                     {
                                         foreach (var courseCalenderScheduleDate in courseCalenderScheduleDateList)
                                         {
-                                            var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffScheduleData.StaffId*/ && b.AttendanceDate.Date == courseCalenderScheduleDate.CalDate && b.CourseSectionId == staffScheduleData.CourseSectionId && b.CourseId == staffScheduleData.CourseId && b.PeriodId == courseCalenderScheduleDate.CalPeriodId);
+                                            var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffScheduleData.StaffId*/ && b.AttendanceDate.Date == courseCalenderScheduleDate.CalDate && b.CourseSectionId == staffScheduleData.CourseSectionId && b.CourseId == staffScheduleData.CourseId && b.PeriodId == courseCalenderScheduleDate.CalPeriodId);
 
                                             if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                             {
@@ -981,7 +1015,7 @@ namespace opensis.data.Repository
                                         {
                                             CourseSectionViewList CourseSectionFixed = new CourseSectionViewList();
 
-                                            var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseId == staffScheduleData.CourseId && b.CourseSectionId == staffScheduleData.CourseSectionId && b.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId);
+                                            var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseId == staffScheduleData.CourseId && b.CourseSectionId == staffScheduleData.CourseSectionId && b.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId);
 
                                             if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                             {
@@ -1010,7 +1044,7 @@ namespace opensis.data.Repository
                                                 {
                                                     CourseSectionViewList CourseSectionVariable = new CourseSectionViewList();
 
-                                                    var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseId == staffScheduleData.CourseId && b.CourseSectionId == staffScheduleData.CourseSectionId && b.PeriodId == courseVariableSchedule.VarPeriodId);
+                                                    var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffScheduleData.SchoolId && b.TenantId == staffScheduleData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseId == staffScheduleData.CourseId && b.CourseSectionId == staffScheduleData.CourseSectionId && b.PeriodId == courseVariableSchedule.VarPeriodId);
 
                                                     if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                     {
@@ -1123,7 +1157,7 @@ namespace opensis.data.Repository
 
             try
             {
-                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.Include(d => d.StudentAttendance).Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(d => d.StudentAttendance).Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1175,7 +1209,7 @@ namespace opensis.data.Repository
                     }
                 });
 
-                allCourseSectionVewList = this.context?.AllCourseSectionView.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                allCourseSectionVewList = this.context?.AllCourseSectionView.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
 
                 if (allCourseSectionVewList != null)
                 {
@@ -1210,7 +1244,7 @@ namespace opensis.data.Repository
                                         end = (DateTime)staffScheduleData.DurationEndDate!;
                                     }
 
-                                    var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == staffScheduleData.CourseSectionId && x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList();
+                                    var studentMissingAttendanceData = this.context?.StudentMissingAttendances.AsNoTracking().Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == staffScheduleData.CourseSectionId && x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList();
 
                                     if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                     {
@@ -1329,7 +1363,7 @@ namespace opensis.data.Repository
 
             try
             {
-                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1361,9 +1395,12 @@ namespace opensis.data.Repository
                 if (staffCourseSectionDataList?.Any() == true)
                 {
 
-                    allCourseSectionVewList = this.context?.AllCourseSectionView.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                    allCourseSectionVewList = this.context?.AllCourseSectionView.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
 
-                    BlockPeriodList = this.context?.BlockPeriod.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                    BlockPeriodList = this.context?.BlockPeriod.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+
+                    // Dictionary for O(1) BlockPeriod lookups instead of linear scans
+                    var blockPeriodByPeriodId = BlockPeriodList?.GroupBy(x => x.PeriodId).ToDictionary(g => g.Key, g => g.First());
 
                     foreach (var staffCourseSectionData in staffCourseSectionDataList.ToList())
                     {
@@ -1373,7 +1410,7 @@ namespace opensis.data.Repository
 
                             if (allCourseSectionVewLists.Count > 0)
                             {
-                                var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewLists.FirstOrDefault()!.CalendarId && (e.StartDate >= staffCourseSectionData.DurationStartDate && e.StartDate <= staffCourseSectionData.DurationEndDate || e.EndDate >= staffCourseSectionData.DurationStartDate && e.EndDate <= staffCourseSectionData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                                var CalendarEventsData = this.context?.CalendarEvents.AsNoTracking().Where(e => e.TenantId == pageResult.TenantId && e.CalendarId == allCourseSectionVewLists.FirstOrDefault()!.CalendarId && (e.StartDate >= staffCourseSectionData.DurationStartDate && e.StartDate <= staffCourseSectionData.DurationEndDate || e.EndDate >= staffCourseSectionData.DurationStartDate && e.EndDate <= staffCourseSectionData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == pageResult.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
                                 if (CalendarEventsData?.Any() == true)
                                 {
@@ -1396,7 +1433,7 @@ namespace opensis.data.Repository
                                     var blockScheduleData = allCourseSectionVewList!.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.CourseId == staffCourseSectionData.CourseId && v.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();
                                     foreach (var blockSchedule in blockScheduleData)
                                     {
-                                        var bellScheduleList = this.context?.BellSchedule.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockSchedule.BlockId && v.BellScheduleDate >= pageResult.DobStartDate && v.BellScheduleDate <= pageResult.DobEndDate && v.BellScheduleDate <= DateTime.Today.Date && (!holidayList.Contains(v.BellScheduleDate))).ToList();
+                                        var bellScheduleList = this.context?.BellSchedule.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId && v.BlockId == blockSchedule.BlockId && v.BellScheduleDate >= pageResult.DobStartDate && v.BellScheduleDate <= pageResult.DobEndDate && v.BellScheduleDate <= DateTime.Today.Date && (!holidayList.Contains(v.BellScheduleDate))).ToList();
 
                                         if (pageResult.DobStartDate != null && pageResult.DobEndDate != null)
                                         {
@@ -1407,13 +1444,13 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var bellSchedule in bellScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                                 if (StudentCoursesectionScheduleData?.Any() == true)
                                                 {
                                                     CourseSectionViewList courseSectionBlock = new CourseSectionViewList();
 
-                                                    var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == bellSchedule.BellScheduleDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == blockSchedule.BlockPeriodId).ToList();
+                                                    var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == bellSchedule.BellScheduleDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == blockSchedule.BlockPeriodId).ToList();
 
                                                     if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                     {
@@ -1427,7 +1464,7 @@ namespace opensis.data.Repository
                                                         courseSectionBlock.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
 
 
-                                                        courseSectionBlock.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == blockSchedule.BlockPeriodId)!.PeriodTitle : null;
+                                                        courseSectionBlock.PeriodTitle = blockPeriodByPeriodId != null && blockSchedule.BlockPeriodId != null && blockPeriodByPeriodId.TryGetValue((int)blockSchedule.BlockPeriodId, out var bpBlk) ? bpBlk.PeriodTitle : null;
                                                         courseSectionBlock.BlockId = blockSchedule.BlockId;
                                                         courseSectionBlock.PeriodId = blockSchedule.BlockPeriodId;
                                                         courseSectionBlock.AttendanceTaken = blockSchedule.TakeAttendanceBlock;
@@ -1484,7 +1521,7 @@ namespace opensis.data.Repository
 
                                     foreach (var date in dateList)
                                     {
-                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section
+                                        var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section
 
                                         if (StudentCoursesectionScheduleData?.Any() == true)
                                         {
@@ -1492,7 +1529,7 @@ namespace opensis.data.Repository
                                             {
                                                 CourseSectionViewList CourseSectionFixed = new CourseSectionViewList();
 
-                                                var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId);
+                                                var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId);
 
                                                 if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                 {
@@ -1508,9 +1545,11 @@ namespace opensis.data.Repository
                                                     CourseSectionFixed.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
 
 
-                                                    CourseSectionFixed.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId)?.PeriodTitle : null;
-                                                    CourseSectionFixed.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId)?.BlockId : null;
-                                                    CourseSectionFixed.PeriodId = allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId;
+                                                    var fixedPeriodId = allCourseSectionVewLists.FirstOrDefault()!.FixedPeriodId;
+                                                    var bpFixedOld = fixedPeriodId != null && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue((int)fixedPeriodId, out var bpf) ? bpf : null;
+                                                    CourseSectionFixed.PeriodTitle = bpFixedOld?.PeriodTitle;
+                                                    CourseSectionFixed.BlockId = bpFixedOld?.BlockId;
+                                                    CourseSectionFixed.PeriodId = fixedPeriodId;
                                                     CourseSectionFixed.AttendanceTaken = staffCourseSectionData.CourseSection.AttendanceTaken;
 
                                                     staffCoursesectionSchedule.Add(CourseSectionFixed);
@@ -1526,7 +1565,7 @@ namespace opensis.data.Repository
                                                     {
                                                         CourseSectionViewList CourseSectionVariable = new CourseSectionViewList();
 
-                                                        var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == courseVariableSchedule.VarPeriodId);
+                                                        var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == courseVariableSchedule.VarPeriodId);
 
                                                         if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                         {
@@ -1540,8 +1579,9 @@ namespace opensis.data.Repository
                                                             CourseSectionVariable.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
 
 
-                                                            CourseSectionVariable.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == courseVariableSchedule.VarPeriodId)?.PeriodTitle : null;
-                                                            CourseSectionVariable.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == courseVariableSchedule.VarPeriodId)?.BlockId : null;
+                                                            var bpVarOld = courseVariableSchedule.VarPeriodId != null && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue((int)courseVariableSchedule.VarPeriodId, out var bpv) ? bpv : null;
+                                                            CourseSectionVariable.PeriodTitle = bpVarOld?.PeriodTitle;
+                                                            CourseSectionVariable.BlockId = bpVarOld?.BlockId;
                                                             CourseSectionVariable.PeriodId = courseVariableSchedule.VarPeriodId;
                                                             CourseSectionVariable.AttendanceTaken = courseVariableSchedule.TakeAttendanceVariable;
 
@@ -1563,13 +1603,13 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var calenderSchedule in calenderScheduleList)
                                             {
-                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
+                                                var StudentCoursesectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate!.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
 
                                                 if (StudentCoursesectionScheduleData?.Any() == true)
                                                 {
                                                     CourseSectionViewList CourseSectioncalender = new CourseSectionViewList();
 
-                                                    var staffAttendanceData = this.context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == calenderSchedule.CalPeriodId);
+                                                    var staffAttendanceData = this.context?.StudentAttendance.AsNoTracking().Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId /*&& b.StaffId == staffCourseSectionData.StaffId*/ && b.AttendanceDate == calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == calenderSchedule.CalPeriodId);
 
                                                     if (staffAttendanceData?.Any() == false/*.Count() == 0*/)
                                                     {
@@ -1583,8 +1623,9 @@ namespace opensis.data.Repository
                                                         CourseSectioncalender.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
 
 
-                                                        CourseSectioncalender.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == calenderSchedule.CalPeriodId)?.PeriodTitle : null;
-                                                        CourseSectioncalender.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == calenderSchedule.CalPeriodId)?.BlockId : null;
+                                                        var bpCalOld = calenderSchedule.CalPeriodId != null && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue((int)calenderSchedule.CalPeriodId, out var bpc) ? bpc : null;
+                                                        CourseSectioncalender.PeriodTitle = bpCalOld?.PeriodTitle;
+                                                        CourseSectioncalender.BlockId = bpCalOld?.BlockId;
                                                         CourseSectioncalender.PeriodId = calenderSchedule.CalPeriodId;
                                                         CourseSectioncalender.AttendanceTaken = calenderSchedule.TakeAttendanceCalendar;
 
@@ -1660,7 +1701,7 @@ namespace opensis.data.Repository
 
             try
             {
-                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                var staffCourseSectionDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(x => x.CourseSection).Where(s => s.SchoolId == pageResult.SchoolId && s.TenantId == pageResult.TenantId && s.StaffId == pageResult.StaffId && ((pageResult.DobStartDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobStartDate.Value.Date <= s.DurationEndDate!.Value.Date) || (pageResult.DobEndDate!.Value.Date >= s.DurationStartDate!.Value.Date && pageResult.DobEndDate.Value.Date <= s.DurationEndDate)) && s.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1692,9 +1733,12 @@ namespace opensis.data.Repository
                 if (staffCourseSectionDataList?.Any() == true)
                 {
 
-                    allCourseSectionVewList = this.context?.AllCourseSectionView.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                    allCourseSectionVewList = this.context?.AllCourseSectionView.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
 
-                    BlockPeriodList = this.context?.BlockPeriod.Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+                    BlockPeriodList = this.context?.BlockPeriod.AsNoTracking().Where(v => v.SchoolId == pageResult.SchoolId && v.TenantId == pageResult.TenantId).ToList();
+
+                    // Dictionary for O(1) BlockPeriod lookups instead of linear scans
+                    var blockPeriodByPeriodId = BlockPeriodList?.GroupBy(x => x.PeriodId).ToDictionary(g => g.Key, g => g.First());
 
                     foreach (var staffCourseSectionData in staffCourseSectionDataList.ToList())
                     {
@@ -1707,7 +1751,7 @@ namespace opensis.data.Repository
                                 DateTime start = (DateTime)pageResult.DobStartDate!;
                                 DateTime end = (DateTime)pageResult.DobEndDate!;
 
-                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList();
+                                var studentMissingAttendanceData = this.context?.StudentMissingAttendances.AsNoTracking().Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList();
 
                                 if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                 {
@@ -1727,8 +1771,9 @@ namespace opensis.data.Repository
                                             CourseSectionFixed.StaffMiddleName = staffCourseSectionData.StaffMaster.MiddleName;
                                             CourseSectionFixed.StaffLastFamilyName = staffCourseSectionData.StaffMaster.LastFamilyName;
                                             CourseSectionFixed.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
-                                            CourseSectionFixed.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == studentMissingAttendance.PeriodId)?.PeriodTitle : null;
-                                            CourseSectionFixed.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == studentMissingAttendance.PeriodId)?.BlockId : null;
+                                            var bpFixed = studentMissingAttendance.PeriodId.HasValue && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue(studentMissingAttendance.PeriodId.Value, out var bpFixedVal) ? bpFixedVal : null;
+                                            CourseSectionFixed.PeriodTitle = bpFixed?.PeriodTitle;
+                                            CourseSectionFixed.BlockId = bpFixed?.BlockId;
                                             CourseSectionFixed.PeriodId = studentMissingAttendance.PeriodId;
                                             CourseSectionFixed.AttendanceTaken = staffCourseSectionData.CourseSection.AttendanceTaken;
 
@@ -1747,8 +1792,9 @@ namespace opensis.data.Repository
                                             CourseSectionVariable.StaffMiddleName = staffCourseSectionData.StaffMaster.MiddleName;
                                             CourseSectionVariable.StaffLastFamilyName = staffCourseSectionData.StaffMaster.LastFamilyName;
                                             CourseSectionVariable.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
-                                            CourseSectionVariable.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == studentMissingAttendance.PeriodId)?.PeriodTitle : null;
-                                            CourseSectionVariable.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == studentMissingAttendance.PeriodId)?.BlockId : null;
+                                            var bpVarNew = studentMissingAttendance.PeriodId.HasValue && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue(studentMissingAttendance.PeriodId.Value, out var bpVarVal) ? bpVarVal : null;
+                                            CourseSectionVariable.PeriodTitle = bpVarNew?.PeriodTitle;
+                                            CourseSectionVariable.BlockId = bpVarNew?.BlockId;
                                             CourseSectionVariable.PeriodId = studentMissingAttendance.PeriodId;
                                             CourseSectionVariable.AttendanceTaken = allCourseSectionVewLists.FirstOrDefault(e => e.VarPeriodId == studentMissingAttendance.PeriodId && e.VarDay!.ToLower().Contains(studentMissingAttendance.MissingAttendanceDate.Value.Date.DayOfWeek.ToString().ToLower()))?.TakeAttendanceVariable;
 
@@ -1766,8 +1812,9 @@ namespace opensis.data.Repository
                                             CourseSectioncalender.StaffMiddleName = staffCourseSectionData.StaffMaster.MiddleName;
                                             CourseSectioncalender.StaffLastFamilyName = staffCourseSectionData.StaffMaster.LastFamilyName;
                                             CourseSectioncalender.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
-                                            CourseSectioncalender.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == studentMissingAttendance.PeriodId)?.PeriodTitle : null;
-                                            CourseSectioncalender.BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == studentMissingAttendance.PeriodId)?.BlockId : null;
+                                            var bpCalNew = studentMissingAttendance.PeriodId.HasValue && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue(studentMissingAttendance.PeriodId.Value, out var bpCalVal) ? bpCalVal : null;
+                                            CourseSectioncalender.PeriodTitle = bpCalNew?.PeriodTitle;
+                                            CourseSectioncalender.BlockId = bpCalNew?.BlockId;
                                             CourseSectioncalender.PeriodId = studentMissingAttendance.PeriodId;
                                             CourseSectioncalender.AttendanceTaken = allCourseSectionVewLists.FirstOrDefault(e => e.CalPeriodId == studentMissingAttendance.PeriodId && e.CalDate == studentMissingAttendance.MissingAttendanceDate.Value.Date)?.TakeAttendanceCalendar;
 
@@ -1786,7 +1833,7 @@ namespace opensis.data.Repository
                                             courseSectionBlock.StaffMiddleName = staffCourseSectionData.StaffMaster.MiddleName;
                                             courseSectionBlock.StaffLastFamilyName = staffCourseSectionData.StaffMaster.LastFamilyName;
                                             courseSectionBlock.AttendanceCategoryId = staffCourseSectionData.CourseSection.AttendanceCategoryId != null ? staffCourseSectionData.CourseSection.AttendanceCategoryId : null;
-                                            courseSectionBlock.PeriodTitle = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(c => c.PeriodId == studentMissingAttendance.PeriodId)?.PeriodTitle : null;
+                                            courseSectionBlock.PeriodTitle = studentMissingAttendance.PeriodId.HasValue && blockPeriodByPeriodId != null && blockPeriodByPeriodId.TryGetValue(studentMissingAttendance.PeriodId.Value, out var bpBlockNew) ? bpBlockNew.PeriodTitle : null;
                                             courseSectionBlock.BlockId = studentMissingAttendance.BlockId;
                                             courseSectionBlock.PeriodId = studentMissingAttendance.PeriodId;
                                             courseSectionBlock.AttendanceTaken = allCourseSectionVewLists.FirstOrDefault(e => e.BlockPeriodId == studentMissingAttendance.PeriodId && e.BlockId == studentMissingAttendance.BlockId)?.TakeAttendanceBlock;
@@ -1869,20 +1916,28 @@ namespace opensis.data.Repository
             List<StudendAttendanceAdministrationViewModel> attendanceData = new List<StudendAttendanceAdministrationViewModel>();
             try
             {
-                var studentAttendanceData = this.context?.StudentAttendance.Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate == pageResult.AttendanceDate && (pageResult.AttendanceCode == null || x.AttendanceCode == pageResult.AttendanceCode)).ToList();
+                var studentAttendanceData = this.context?.StudentAttendance.AsNoTracking().Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate == pageResult.AttendanceDate && (pageResult.AttendanceCode == null || x.AttendanceCode == pageResult.AttendanceCode)).ToList();
                 if (studentAttendanceData != null && studentAttendanceData.Any())
                 {
                     var studentIds = studentAttendanceData.Select(a => a.StudentId).Distinct().ToList();
                     var blockId = studentAttendanceData.FirstOrDefault()!.BlockId;
+
+                    // Batch-load daily attendance and block data before the loop (eliminates N+1)
+                    var dailyAttendanceLookup = this.context?.StudentDailyAttendance
+                        .AsNoTracking()
+                        .Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && studentIds.Contains(x.StudentId) && x.AttendanceDate == pageResult.AttendanceDate)
+                        .ToDictionary(x => x.StudentId);
+
+                    var blockData = this.context?.Block.AsNoTracking().FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == blockId);
+
                     foreach (var ide in studentIds)
                     {
                         StudendAttendanceAdministrationViewModel administrationViewModel = new StudendAttendanceAdministrationViewModel();
 
-                        var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.StudentId == ide && x.AttendanceDate == pageResult.AttendanceDate);
+                        var studentDailyAttendanceData = dailyAttendanceLookup != null && dailyAttendanceLookup.TryGetValue(ide, out var dailyAtt) ? dailyAtt : null;
 
                         if (studentDailyAttendanceData != null)
                         {
-                            var blockData = this.context?.Block.FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == blockId);
                             if (studentDailyAttendanceData.AttendanceMinutes >= blockData?.FullDayMinutes)
                             {
                                 administrationViewModel.Present = "Full-Day";
@@ -2021,11 +2076,10 @@ namespace opensis.data.Repository
             courseSectionList._token = courseSectionForAttendanceViewModel._token;
             try
             {
-                var CourseSectionData = this.context?.CourseSection.Include(x => x.StudentCoursesectionSchedule).Include(x => x.Course).Include(x => x.SchoolCalendars).Include(x => x.StaffCoursesectionSchedule).Where(x => x.TenantId == courseSectionForAttendanceViewModel.TenantId && x.SchoolId == courseSectionForAttendanceViewModel.SchoolId && x.AcademicYear == courseSectionForAttendanceViewModel.AcademicYear).ToList();
+                var CourseSectionData = this.context?.CourseSection.AsNoTracking().Include(x => x.StudentCoursesectionSchedule).Include(x => x.Course).Include(x => x.SchoolCalendars).Include(x => x.StaffCoursesectionSchedule).Where(x => x.TenantId == courseSectionForAttendanceViewModel.TenantId && x.SchoolId == courseSectionForAttendanceViewModel.SchoolId && x.AcademicYear == courseSectionForAttendanceViewModel.AcademicYear && x.StaffCoursesectionSchedule.Any() && x.StudentCoursesectionSchedule.Any(s => s.IsDropped != true)).ToList();
 
                 if (CourseSectionData?.Any() == true)
                 {
-                    CourseSectionData = CourseSectionData.Where(x => x.StaffCoursesectionSchedule.Count > 0).ToList();
                     foreach (var courseSection in CourseSectionData)
                     {
                         var studentExistInCS = courseSection.StudentCoursesectionSchedule.Where(x => x.IsDropped != true).ToList();
@@ -2034,7 +2088,7 @@ namespace opensis.data.Repository
                         {
                             CourseSectionViewList CourseSections = new CourseSectionViewList();
 
-                            var CalendarEventsData = this.context?.CalendarEvents.Where(e => e.TenantId == courseSectionForAttendanceViewModel.TenantId && e.CalendarId == courseSection.CalendarId && (e.StartDate >= courseSection.DurationStartDate && e.StartDate <= courseSection.DurationEndDate || e.EndDate >= courseSection.DurationStartDate && e.EndDate <= courseSection.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == courseSectionForAttendanceViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                            var CalendarEventsData = this.context?.CalendarEvents.AsNoTracking().Where(e => e.TenantId == courseSectionForAttendanceViewModel.TenantId && e.CalendarId == courseSection.CalendarId && (e.StartDate >= courseSection.DurationStartDate && e.StartDate <= courseSection.DurationEndDate || e.EndDate >= courseSection.DurationStartDate && e.EndDate <= courseSection.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == courseSectionForAttendanceViewModel.SchoolId || e.ApplicableToAllSchool == true)).ToList();
 
                             if (CalendarEventsData?.Any() == true)
                             {
@@ -2061,7 +2115,7 @@ namespace opensis.data.Repository
                                 {
                                     CourseSections.ScheduleType = "Fixed Schedule";
 
-                                    var courseFixedScheduleData = this.context?.CourseFixedSchedule.Include(c => c.BlockPeriod).FirstOrDefault(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId);
+                                    var courseFixedScheduleData = this.context?.CourseFixedSchedule.AsNoTracking().Include(c => c.BlockPeriod).FirstOrDefault(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId);
                                     if (courseFixedScheduleData != null)
                                     {
                                         if (courseFixedScheduleData.BlockPeriod != null)
@@ -2095,7 +2149,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Variable Schedule";
 
-                                var courseVariableScheduleData = this.context?.CourseVariableSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
+                                var courseVariableScheduleData = this.context?.CourseVariableSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
 
                                 if (courseVariableScheduleData?.Any() == true)
                                 {
@@ -2119,7 +2173,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Calendar Schedule";
 
-                                var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
+                                var courseCalenderScheduleData = this.context?.CourseCalendarSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
 
                                 if (courseCalenderScheduleData?.Any() == true)
                                 {
@@ -2143,7 +2197,7 @@ namespace opensis.data.Repository
                             {
                                 CourseSections.ScheduleType = "Block Schedule";
 
-                                var courseBlockScheduleData = this.context?.CourseBlockSchedule.Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
+                                var courseBlockScheduleData = this.context?.CourseBlockSchedule.AsNoTracking().Include(c => c.BlockPeriod).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseSectionId == courseSection.CourseSectionId && x.TakeAttendance == true).ToList();
 
                                 if (courseBlockScheduleData?.Any() == true)
                                 {
@@ -2159,16 +2213,9 @@ namespace opensis.data.Repository
                                     CourseSections.DurationEndDate = courseSection.DurationEndDate;
                                     CourseSections.AttendanceCategoryId = courseSection.AttendanceCategoryId;
 
-                                    //for bellSchedule list return.
-                                    var bellScheduleList = new List<BellSchedule>();
-                                    foreach (var block in courseBlockScheduleData)
-                                    {
-                                        var bellScheduleData = this.context?.BellSchedule.Where(c => c.SchoolId == courseSection.SchoolId && c.TenantId == courseSection.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= courseSection.DurationStartDate && c.BellScheduleDate <= courseSection.DurationEndDate).ToList();
-                                        if (bellScheduleData?.Any() == true)
-                                        {
-                                            bellScheduleList.AddRange(bellScheduleData);
-                                        }
-                                    }
+                                    //for bellSchedule list return — batch-load for all blocks instead of per-block N+1
+                                    var blockIds = courseBlockScheduleData.Select(b => b.BlockId).Distinct().ToList();
+                                    var bellScheduleList = this.context?.BellSchedule.AsNoTracking().Where(c => c.SchoolId == courseSection.SchoolId && c.TenantId == courseSection.TenantId && blockIds.Contains(c.BlockId) && c.BellScheduleDate >= courseSection.DurationStartDate && c.BellScheduleDate <= courseSection.DurationEndDate).ToList() ?? new List<BellSchedule>();
 
                                     CourseSections.bellScheduleList = bellScheduleList;
                                     courseSectionList.courseSectionViewList.Add(CourseSections);
@@ -3197,7 +3244,7 @@ namespace opensis.data.Repository
             studentAttendanceHistory.SchoolId = studentAttendanceHistoryViewModel.SchoolId;
             try
             {
-                var StudentAttendanceHistoryData = this.context?.StudentAttendanceHistory.Where(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.SchoolId == studentAttendanceHistoryViewModel.SchoolId && x.StudentId == studentAttendanceHistoryViewModel.StudentId && x.CourseId == studentAttendanceHistoryViewModel.CourseId && x.CourseSectionId == studentAttendanceHistoryViewModel.CourseSectionId && x.BlockId == studentAttendanceHistoryViewModel.BlockId && x.PeriodId == studentAttendanceHistoryViewModel.PeriodId && x.AttendanceDate == studentAttendanceHistoryViewModel.AttendanceDate).OrderBy(x => x.ModificationTimestamp).ToList();
+                var StudentAttendanceHistoryData = this.context?.StudentAttendanceHistory.AsNoTracking().Where(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.SchoolId == studentAttendanceHistoryViewModel.SchoolId && x.StudentId == studentAttendanceHistoryViewModel.StudentId && x.CourseId == studentAttendanceHistoryViewModel.CourseId && x.CourseSectionId == studentAttendanceHistoryViewModel.CourseSectionId && x.BlockId == studentAttendanceHistoryViewModel.BlockId && x.PeriodId == studentAttendanceHistoryViewModel.PeriodId && x.AttendanceDate == studentAttendanceHistoryViewModel.AttendanceDate).OrderBy(x => x.ModificationTimestamp).ToList();
 
                 if (StudentAttendanceHistoryData?.Any() == true)
                 {
@@ -3225,10 +3272,10 @@ namespace opensis.data.Repository
                                 ModifiedBy = AttendanceHistory.ModifiedBy,
                                 ModificationTimestamp = AttendanceHistory.ModificationTimestamp,
                                 ProfileType = AttendanceHistory.MembershipId == 1 ? "Super Administrator" : "Teacher",
-                                AttendanceCodeTitle = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.SchoolId == studentAttendanceHistoryViewModel.SchoolId && x.AttendanceCategoryId == AttendanceHistory.AttendanceCategoryId && x.AttendanceCode1 == AttendanceHistory.AttendanceCode)?.Title
+                                AttendanceCodeTitle = this.context?.AttendanceCode.AsNoTracking().FirstOrDefault(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.SchoolId == studentAttendanceHistoryViewModel.SchoolId && x.AttendanceCategoryId == AttendanceHistory.AttendanceCategoryId && x.AttendanceCode1 == AttendanceHistory.AttendanceCode)?.Title
                             };
 
-                            var StaffMasterData = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.StaffId == UserId);
+                            var StaffMasterData = this.context?.StaffMaster.AsNoTracking().FirstOrDefault(x => x.TenantId == studentAttendanceHistoryViewModel.TenantId && x.StaffId == UserId);
 
                             if (StaffMasterData != null)
                             {
@@ -3256,7 +3303,7 @@ namespace opensis.data.Repository
         {
             bool IsVaild = false;
 
-            var CourseSectionData = this.context?.CourseSection.Where(x => x.TenantId == TenantId && x.SchoolId == SchoolId && x.CourseSectionId == CourseSectionID && x.DurationStartDate <= AttendanceDate && x.DurationEndDate >= AttendanceDate).FirstOrDefault();
+            var CourseSectionData = this.context?.CourseSection.AsNoTracking().Where(x => x.TenantId == TenantId && x.SchoolId == SchoolId && x.CourseSectionId == CourseSectionID && x.DurationStartDate <= AttendanceDate && x.DurationEndDate >= AttendanceDate).FirstOrDefault();
 
             if (CourseSectionData != null)
             {
