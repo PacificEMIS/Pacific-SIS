@@ -68,7 +68,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    int? GradeLevelId = Utility.GetMaxPK(this.context, new Func<Gradelevels, int>(x => x.GradeId));
+                    int? GradeLevelId = Utility.GetMaxPK<Gradelevels>(this.context, x => x.GradeId);
                     gradelevel.TblGradelevel.GradeId = (int)GradeLevelId!;
                     gradelevel.TblGradelevel.CreatedOn = DateTime.UtcNow;
                     // gradelevel.TblGradelevel.SchoolMaster = null;

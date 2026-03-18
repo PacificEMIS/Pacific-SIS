@@ -74,11 +74,11 @@ namespace opensis.data.Repository
 
                             long? StudentAttendanceId = 1;
 
-                            var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
+                            var maxAttendanceId = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).Max(x => (long?)x.StudentAttendanceId);
 
-                            if (studentAttendanceData != null)
+                            if (maxAttendanceId != null)
                             {
-                                StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
+                                StudentAttendanceId = maxAttendanceId + 1;
                             }
 
                             int? membershipID = null;
@@ -91,7 +91,7 @@ namespace opensis.data.Repository
                                 //membershipID = this.context?.Membership.AsEnumerable().FirstOrDefault(v => v.TenantId == studentAttendanceAddViewModel.TenantId && v.SchoolId == studentAttendanceAddViewModel.SchoolId && String.Compare(v.Profile, staffSchoolInfoData.Profile, true) == 0)?.MembershipId;
                             }
 
-                            long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+                            long? CommentId = Utility.GetMaxLongPK<StudentAttendanceComments>(this.context, x => x.CommentId);
 
                             foreach (var studentAttendances in studentAttendanceAddViewModel.studentAttendance)
                             {
@@ -105,7 +105,7 @@ namespace opensis.data.Repository
                                 }
                             }
 
-                            long? HistoryCommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceHistory, long>(x => x.AttendanceHistoryId));
+                            long? HistoryCommentId = Utility.GetMaxLongPK<StudentAttendanceHistory>(this.context, x => x.AttendanceHistoryId);
 
                             if (attendanceDataExist?.Any() == true)
                             {
@@ -571,7 +571,7 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+                        long? CommentId = Utility.GetMaxLongPK<StudentAttendanceComments>(this.context, x => x.CommentId);
 
                         foreach (var studentAttendances in studentAttendanceAddViewModel.studentAttendance)
                         {
@@ -585,7 +585,7 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        long? HistoryCommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceHistory, long>(x => x.AttendanceHistoryId));
+                        long? HistoryCommentId = Utility.GetMaxLongPK<StudentAttendanceHistory>(this.context, x => x.AttendanceHistoryId);
 
                         if (attendanceDataExist?.Any() == true)
                         {
@@ -2257,30 +2257,43 @@ namespace opensis.data.Repository
 
                         long? StudentAttendanceId = 1;
 
-                        var studentAttendanceData = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).OrderByDescending(x => x.StudentAttendanceId).FirstOrDefault();
+                        var maxAbsAttendanceId = this.context?.StudentAttendance.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId).Max(x => (long?)x.StudentAttendanceId);
 
-                        if (studentAttendanceData != null)
+                        if (maxAbsAttendanceId != null)
                         {
-                            StudentAttendanceId = studentAttendanceData.StudentAttendanceId + 1;
+                            StudentAttendanceId = maxAbsAttendanceId + 1;
                         }
 
-                        long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+                        long? CommentId = Utility.GetMaxLongPK<StudentAttendanceComments>(this.context, x => x.CommentId);
 
                         var allCsData = this.context?.AllCourseSectionView.Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId).ToList();
 
                         var staffId = this.context?.StaffCoursesectionSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.IsDropped != true)?.StaffId;
                         if (allCsData?.Any() == true)
                         {
+                            // Batch-load data used inside the per-student loop (eliminates N+1 queries)
+                            int? blockIde = this.context?.Block.Where(b => b.TenantId == studentAttendanceAddViewModel.TenantId && b.SchoolId == studentAttendanceAddViewModel.SchoolId && b.AcademicYear == Utility.GetCurrentAcademicYear(this.context!, studentAttendanceAddViewModel.TenantId, studentAttendanceAddViewModel.SchoolId)).FirstOrDefault()!.BlockId;
+
+                            var absStudentIds = studentAttendanceAddViewModel.studentAttendance.Select(s => s.StudentId).ToList();
+                            var absAttendanceDates = studentAttendanceAddViewModel.studentAttendance.Select(s => s.AttendanceDate).Distinct().ToList();
+
+                            var existingAttendanceLookup = this.context?.StudentAttendance
+                                .Include(x => x.StudentAttendanceComments)
+                                .Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && absStudentIds.Contains(x.StudentId) && absAttendanceDates.Contains(x.AttendanceDate) && x.MembershipId == 1)
+                                .ToList();
+
+                            var bellScheduleLookup = this.context?.BellSchedule
+                                .Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && absAttendanceDates.Contains(x.BellScheduleDate))
+                                .ToDictionary(x => x.BellScheduleDate);
+
                             foreach (var studentAttendance in studentAttendanceAddViewModel.studentAttendance)
                             {
-                                int? blockIde = this.context?.Block.Where(b=>b.TenantId == studentAttendanceAddViewModel.TenantId && b.SchoolId == studentAttendanceAddViewModel.SchoolId && b.AcademicYear == Utility.GetCurrentAcademicYear(this.context!, studentAttendanceAddViewModel.TenantId, studentAttendanceAddViewModel.SchoolId)).FirstOrDefault()!.BlockId;
-                               /* blockPeriodAddViewModel.blockPeriod.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, blockPeriodAddViewModel.blockPeriod.TenantId, blockPeriodAddViewModel.blockPeriod.SchoolId);*/
                                 int? periodIde = null;
                                 if (allCsData.FirstOrDefault()!.ScheduleType == "Fixed Schedule (1)")
                                 {
                                     periodIde = allCsData.FirstOrDefault()!.FixedPeriodId;
 
-                                    var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1);
+                                    var attendanceDataForStudent = existingAttendanceLookup?.FirstOrDefault(x => x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId);
 
                                     if (attendanceDataForStudent != null)
                                     {
@@ -2399,7 +2412,7 @@ namespace opensis.data.Repository
                                     {
                                         foreach (var periodId in periodIds)
                                         {
-                                            var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1 && x.PeriodId == periodId.VarPeriodId);
+                                            var attendanceDataForStudent = existingAttendanceLookup?.FirstOrDefault(x => x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.PeriodId == periodId.VarPeriodId);
 
                                             if (attendanceDataForStudent != null)
                                             {
@@ -2517,7 +2530,7 @@ namespace opensis.data.Repository
                                     {
                                         foreach (var periodId in periodIds)
                                         {
-                                            var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1 && x.PeriodId == periodId.CalPeriodId);
+                                            var attendanceDataForStudent = existingAttendanceLookup?.FirstOrDefault(x => x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.PeriodId == periodId.CalPeriodId);
 
                                             if (attendanceDataForStudent != null)
                                             {
@@ -2629,14 +2642,15 @@ namespace opensis.data.Repository
                                 }
                                 if (allCsData.FirstOrDefault()!.ScheduleType == "Block Schedule (4)")
                                 {
-                                    var BellScheduleData = this.context?.BellSchedule.FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.BellScheduleDate == studentAttendance.AttendanceDate);
+                                    BellSchedule? BellScheduleData = null;
+                                    bellScheduleLookup?.TryGetValue(studentAttendance.AttendanceDate, out BellScheduleData);
                                     if (BellScheduleData != null)
                                     {
                                         blockIde = BellScheduleData.BlockId;
                                         periodIde = allCsData.Where(x => x.BlockId == BellScheduleData.BlockId).Select(s => s.BlockPeriodId).FirstOrDefault();
                                     }
 
-                                    var attendanceDataForStudent = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).FirstOrDefault(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId && x.MembershipId == 1);
+                                    var attendanceDataForStudent = existingAttendanceLookup?.FirstOrDefault(x => x.AttendanceDate == studentAttendance.AttendanceDate && x.StudentId == studentAttendance.StudentId);
 
                                     if (attendanceDataForStudent != null)
                                     {
@@ -2748,18 +2762,39 @@ namespace opensis.data.Repository
                         this.context?.StudentAttendanceComments.AddRange(studentAttendanceCommentsList);
                         this.context?.SaveChanges();
 
-                        //Insert into daily attendance table
+                        //Insert into daily attendance table — batch-load lookups to eliminate N+1 queries
+                        var dailyStudentIds = studentAttendanceAddViewModel.studentAttendance.Select(s => s.StudentId).ToList();
+                        var dailyAttendanceDates = studentAttendanceAddViewModel.studentAttendance.Select(s => s.AttendanceDate).Distinct().ToList();
+
+                        var allAttendanceForDaily = this.context?.StudentAttendance
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && dailyStudentIds.Contains(x.StudentId) && dailyAttendanceDates.Contains(x.AttendanceDate))
+                            .ToList()
+                            .GroupBy(x => (x.StudentId, x.AttendanceDate))
+                            .ToDictionary(g => g.Key, g => g.ToList());
+
+                        var blockPeriodLookup = this.context?.BlockPeriod
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                            .ToDictionary(x => (x.BlockId, x.PeriodId));
+
+                        var attendanceCodeList = this.context?.AttendanceCode
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId)
+                            .ToList();
+
+                        var existingDailyAttendance = this.context?.StudentDailyAttendance
+                            .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && dailyStudentIds.Contains(x.StudentId) && dailyAttendanceDates.Contains(x.AttendanceDate))
+                            .ToDictionary(x => (x.StudentId, x.AttendanceDate));
+
                         foreach (var studentId in studentAttendanceAddViewModel.studentAttendance)
                         {
                             int totalAttendanceMin = 0;
-                            var attendanceData = this.context?.StudentAttendance.Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId.StudentId && x.AttendanceDate == studentId.AttendanceDate).ToList();
-                            if (attendanceData != null)
+                            if (allAttendanceForDaily != null && allAttendanceForDaily.TryGetValue((studentId.StudentId, studentId.AttendanceDate), out var attendanceData))
                             {
                                 foreach (var attendance in attendanceData)
                                 {
-                                    var BlockPeriodData = this.context?.BlockPeriod.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.BlockId == attendance.BlockId && x.PeriodId == attendance.PeriodId);
-
-                                    if (BlockPeriodData != null)
+                                    if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                     {
                                         var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                         var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
@@ -2768,10 +2803,10 @@ namespace opensis.data.Repository
                                         var min = Convert.ToInt32(periodTime.Value.Minutes);
                                         var classMin = hour > 0 ? (hour * 60 + min) : min;
 
-                                        var AttendanceCodeData = this.context?.AttendanceCode.FirstOrDefault(x => x.TenantId == attendance.TenantId && x.SchoolId == attendance.SchoolId && x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                        var AttendanceCodeData = attendanceCodeList?.FirstOrDefault(x => x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
                                         if (AttendanceCodeData != null)
                                         {
-                                            if (AttendanceCodeData.Title!.ToLower() != "absent".ToLower())
+                                            if (AttendanceCodeData.StateCode!.ToLower() != "absent".ToLower())
                                             {
                                                 totalAttendanceMin = totalAttendanceMin + classMin;
                                             }
@@ -2779,9 +2814,7 @@ namespace opensis.data.Repository
                                     }
                                 }
                             }
-                            var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.StudentId == studentId.StudentId && x.AttendanceDate == studentId.AttendanceDate);
-
-                            if (studentDailyAttendanceData != null)
+                            if (existingDailyAttendance != null && existingDailyAttendance.TryGetValue((studentId.StudentId, studentId.AttendanceDate), out var studentDailyAttendanceData))
                             {
                                 studentDailyAttendanceData.AttendanceMinutes = totalAttendanceMin;
                             }
@@ -2971,7 +3004,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    long? CommentId = Utility.GetMaxLongPK(this.context, new Func<StudentAttendanceComments, long>(x => x.CommentId));
+                    long? CommentId = Utility.GetMaxLongPK<StudentAttendanceComments>(this.context, x => x.CommentId);
 
                     int? membershipID = null;
                     //var staffSchoolInfoData = this.context?.StaffSchoolInfo.FirstOrDefault(c => c.TenantId == studentAttendanceCommentsAddViewModel.studentAttendanceComments.TenantId && c.SchoolId == studentAttendanceCommentsAddViewModel.studentAttendanceComments.SchoolId && c.StaffId == studentAttendanceCommentsAddViewModel.StaffId);

@@ -77,7 +77,7 @@ namespace opensis.data.Repository
                     }
                     else
                     {
-                        //int? MasterStudentId = Utility.GetMaxPK(this.context, new Func<StudentMaster, int>(x => x.StudentId));
+                        //int? MasterStudentId = Utility.GetMaxPK<StudentMaster>(this.context, x => x.StudentId);
                         int? MasterStudentId = 1;
 
                         var studentData = this.context?.StudentMaster.Where(x => x.SchoolId == student.studentMaster.SchoolId && x.TenantId == student.studentMaster.TenantId).OrderByDescending(x => x.StudentId).FirstOrDefault();
@@ -905,7 +905,7 @@ namespace opensis.data.Repository
 
                 if (studentDocumentAddViewModel.studentDocuments != null && studentDocumentAddViewModel.studentDocuments.ToList()?.Any()==true)
                 {
-                    MasterDocumentId = Utility.GetMaxPK(this.context, new Func<StudentDocuments, int>(x => x.DocumentId));
+                    MasterDocumentId = Utility.GetMaxPK<StudentDocuments>(this.context, x => x.DocumentId);
 
                     foreach (var studentDocument in studentDocumentAddViewModel.studentDocuments.ToList())
                     {
@@ -1119,7 +1119,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                int? MasterCommentId = Utility.GetMaxPK(this.context, new Func<StudentComments, int>(x => x.CommentId));
+                int? MasterCommentId = Utility.GetMaxPK<StudentComments>(this.context, x => x.CommentId);
                 studentCommentAddViewModel.studentComments!.CommentId = (int)MasterCommentId!;
                 studentCommentAddViewModel.studentComments.CreatedOn = DateTime.UtcNow;
                 this.context?.StudentComments.Add(studentCommentAddViewModel.studentComments);
@@ -1248,7 +1248,7 @@ namespace opensis.data.Repository
             try
             {
                 int? EnrollmentId = null;
-                EnrollmentId = Utility.GetMaxPK(this.context, new Func<StudentEnrollment, int>(x => x.EnrollmentId));
+                EnrollmentId = Utility.GetMaxPK<StudentEnrollment>(this.context, x => x.EnrollmentId);
                 foreach (var studentEnrollment in studentEnrollmentListModel.studentEnrollments)
                 {
 
@@ -5784,7 +5784,7 @@ namespace opensis.data.Repository
             {
                 if (studentCommentAddViewModel.studentIds?.Any()==true)
                 {
-                    int? MasterCommentId = Utility.GetMaxPK(this.context, new Func<StudentComments, int>(x => x.CommentId));
+                    int? MasterCommentId = Utility.GetMaxPK<StudentComments>(this.context, x => x.CommentId);
 
                     foreach (var studentId in studentCommentAddViewModel.studentIds)
                     {
@@ -5826,7 +5826,7 @@ namespace opensis.data.Repository
                 int? MasterDocumentId = 0;
                 if (studentDocumentAddViewModel.studentIds?.Any()==true)
                 {
-                    MasterDocumentId = Utility.GetMaxPK(this.context, new Func<StudentDocuments, int>(x => x.DocumentId));
+                    MasterDocumentId = Utility.GetMaxPK<StudentDocuments>(this.context, x => x.DocumentId);
 
                     foreach (var studentId in studentDocumentAddViewModel.studentIds)
                     {

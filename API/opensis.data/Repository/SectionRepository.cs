@@ -66,7 +66,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    //int? MasterSectionId = Utility.GetMaxPK(this.context, new Func<Sections, int>(x => x.SectionId));
+                    //int? MasterSectionId = Utility.GetMaxPK<Sections>(this.context, x => x.SectionId);
                     int? MasterSectionId = 1;
 
                     var SectionData = this.context?.Sections.Where(x => x.SchoolId == section.tableSections.SchoolId && x.TenantId == section.tableSections.TenantId).OrderByDescending(x => x.SectionId).FirstOrDefault();

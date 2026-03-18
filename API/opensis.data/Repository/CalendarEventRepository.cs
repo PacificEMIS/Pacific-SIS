@@ -52,7 +52,7 @@ namespace opensis.data.Repository
         public CalendarEventAddViewModel AddCalendarEvent(CalendarEventAddViewModel calendarEvent)
         {
 
-            //int? eventId = Utility.GetMaxPK(this.context, new Func<CalendarEvents, int>(x => x.EventId));
+            //int? eventId = Utility.GetMaxPK<CalendarEvents>(this.context, x => x.EventId);
             int? eventId = 1;
 
             var eventData = this.context?.CalendarEvents.Where(x => x.TenantId == calendarEvent.SchoolCalendarEvent!.TenantId /*&& x.SchoolId == calendarEvent.schoolCalendarEvent.SchoolId*/).OrderByDescending(x => x.EventId).FirstOrDefault();

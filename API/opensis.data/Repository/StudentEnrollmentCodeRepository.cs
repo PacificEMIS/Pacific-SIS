@@ -52,7 +52,7 @@ namespace opensis.data.Repository
         public StudentEnrollmentCodeAddViewModel AddStudentEnrollmentCode(StudentEnrollmentCodeAddViewModel studentEnrollmentCodeAddViewModel)
         {
 
-            //int? MasterEnrollmentCode = Utility.GetMaxPK(this.context, new Func<StudentEnrollmentCode, int>(x => x.EnrollmentCode));
+            //int? MasterEnrollmentCode = Utility.GetMaxPK<StudentEnrollmentCode>(this.context, x => x.EnrollmentCode);
             if (studentEnrollmentCodeAddViewModel.studentEnrollmentCode != null)
             {
                 int? MasterEnrollmentCode = 1;

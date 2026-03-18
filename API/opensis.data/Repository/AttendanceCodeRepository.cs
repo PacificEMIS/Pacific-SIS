@@ -50,7 +50,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AttendanceCodeAddViewModel AddAttendanceCode(AttendanceCodeAddViewModel attendanceCodeAddViewModel)
         {
-            //int? AttendanceCodeId = Utility.GetMaxPK(this.context, new Func<AttendanceCode, int>(x => x.AttendanceCode1));
+            //int? AttendanceCodeId = Utility.GetMaxPK<AttendanceCode>(this.context, x => x.AttendanceCode1);
            
             int? AttendanceCodeId = 1;
             int? SortOrder = 1;
@@ -327,7 +327,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AttendanceCodeCategoriesAddViewModel AddAttendanceCodeCategories(AttendanceCodeCategoriesAddViewModel attendanceCodeCategoriesAddViewModel)
         {
-            //int? AttendanceCodeCategoryId = Utility.GetMaxPK(this.context, new Func<AttendanceCodeCategories, int>(x => x.AttendanceCategoryId));
+            //int? AttendanceCodeCategoryId = Utility.GetMaxPK<AttendanceCodeCategories>(this.context, x => x.AttendanceCategoryId);
 
             int? AttendanceCodeCategoryId = 1;
 

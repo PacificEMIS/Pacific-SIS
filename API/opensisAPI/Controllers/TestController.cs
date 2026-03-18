@@ -214,10 +214,10 @@ namespace opensisAPI.Controllers
 
             for (int i = 1; i < 2; i++)
             {
-                int? schoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
-                int? schoolDetailId = Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id));
-                long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
-                int? gradeId = Utility.GetMaxPK(this.context, new Func<Gradelevels, int>(x => x.GradeId));
+                int? schoolId = Utility.GetMaxPK<SchoolMaster>(this.context, x => x.SchoolId);
+                int? schoolDetailId = Utility.GetMaxPK<SchoolDetail>(this.context, x => x.Id);
+                long? dpdownValueId = Utility.GetMaxLongPK<DpdownValuelist>(this.context, x => x.Id);
+                int? gradeId = Utility.GetMaxPK<Gradelevels>(this.context, x => x.GradeId);
                 Guid GuidId = Guid.NewGuid();
 
                 var school = new List<SchoolMaster>()
@@ -1057,8 +1057,8 @@ namespace opensisAPI.Controllers
 
                 var staffData = this.context?.StaffMaster.Include(c => c.StaffSchoolInfo).FirstOrDefault(b => b.SchoolId == schoolId && b.TenantId == tenantId && b.StaffId == staffId);
 
-                int? staffID = Utility.GetMaxPK(this.context, new Func<StaffMaster, int>(x => x.StaffId));
-                int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                int? staffID = Utility.GetMaxPK<StaffMaster>(this.context, x => x.StaffId);
+                int? Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => (int)x.Id);
 
                 if (staffData != null)
                 {
@@ -1159,7 +1159,7 @@ namespace opensisAPI.Controllers
 
                         if (staffData.StaffSchoolInfo.ToList().Count > 0)
                         {
-                            //int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                            //int? Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => (int)x.Id);
 
                             foreach (var StaffSchoolInfoData in staffData.StaffSchoolInfo)
                             {
@@ -1199,7 +1199,7 @@ namespace opensisAPI.Controllers
         {
             try
             {
-                long? schoolPreferenceId= Utility.GetMaxLongPK(this.context, new Func<SchoolPreference, long>(x => x.SchoolPreferenceId));
+                long? schoolPreferenceId= Utility.GetMaxLongPK<SchoolPreference>(this.context, x => x.SchoolPreferenceId);
                 var schoolMasterData = this.context?.SchoolMaster.ToList();
 
                 if (schoolMasterData.Count>0)
@@ -1551,7 +1551,7 @@ namespace opensisAPI.Controllers
             {
                 try
                 {
-                    var maxId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                    var maxId = Utility.GetMaxLongPK<DpdownValuelist>(this.context, x => x.Id);
 
                     var DpdownValueData = this.context?.DpdownValuelist.Where(x => x.SchoolId == 1 && x.LovName.ToLower() == lovName.ToLower()).ToList();
 

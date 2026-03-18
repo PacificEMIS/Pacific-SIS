@@ -57,7 +57,7 @@ namespace opensis.data.Repository
             }
             try
             {
-                //int? noticeId = Utility.GetMaxPK(this.context, new Func<Notice, int>(x => x.NoticeId));
+                //int? noticeId = Utility.GetMaxPK<Notice>(this.context, x => x.NoticeId);
 
                 int? noticeId = 1;
 

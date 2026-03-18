@@ -101,6 +101,8 @@ cp UI/src/assets/config.template.json UI/src/assets/config.json
 # Edit: set tenant name and confirm API URL
 
 # Run API: VS Code F5 → "API: opensisAPI"
+# Run background job (requires DOTNET_ENVIRONMENT — not ASPNETCORE_ENVIRONMENT):
+DOTNET_ENVIRONMENT=Development dotnet run --project API/opensis.backgroundjob/opensis.backgroundjob.csproj
 # Run UI (dev):  cd UI && npm install && npm start    (ng serve is equivalent)
 # Build UI (prod): cd UI && npm run build             (NOT ng build --prod — needs 6GB memory flag)
 ```

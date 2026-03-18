@@ -48,7 +48,7 @@ namespace opensis.data.Helper
         /// <param name="cRMContext"></param>
         /// <param name="columnSelector"></param>
         /// <returns></returns>
-        public static int? GetMaxPK<TEntity>(CRMContext? cRMContext, Func<TEntity, int> columnSelector) where TEntity : class
+        public static int? GetMaxPK<TEntity>(CRMContext? cRMContext, Expression<Func<TEntity, int>> columnSelector) where TEntity : class
         {
             int? GetMaxId = 0;
            
@@ -85,13 +85,12 @@ namespace opensis.data.Helper
         /// <param name="cRMContext"></param>
         /// <param name="columnSelector"></param>
         /// <returns></returns>
-        public static long? GetMaxLongPK<TEntity>(CRMContext? cRMContext, Func<TEntity, long> columnSelector) where TEntity : class
+        public static long? GetMaxLongPK<TEntity>(CRMContext? cRMContext, Expression<Func<TEntity, long>> columnSelector) where TEntity : class
         {
             long? GetMaxId = 0;
 
-
             var entityClass = cRMContext?.Set<TEntity>();
-            if (entityClass !=null && !entityClass.Any())
+            if (entityClass != null && !entityClass.Any())
             {
                 GetMaxId = 1;
             }
@@ -107,7 +106,6 @@ namespace opensis.data.Helper
                     GetMaxId = GetMaxId + 1;
                 }
             }
-
 
             return GetMaxId;
         }

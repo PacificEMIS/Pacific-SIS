@@ -222,7 +222,7 @@ namespace opensis.data.Repository
                     if (SchoolYear?.StartDate <= semester.tableSemesters?.StartDate && SchoolYear?.EndDate >= semester.tableSemesters?.EndDate)
                     {
 
-                        //int? MasterMarkingPeriodId = Utility.GetMaxPK(this.context, new Func<Semesters, int>(x => x.MarkingPeriodId));
+                        //int? MasterMarkingPeriodId = Utility.GetMaxPK<Semesters>(this.context, x => x.MarkingPeriodId);
 
                         int? MarkingPeriodId = 1;
 
@@ -461,7 +461,7 @@ namespace opensis.data.Repository
                     var Quarter = this.context?.Quarters.FirstOrDefault(x => x.TenantId == progressPeriod.tableProgressPeriods.TenantId && x.SchoolId == progressPeriod.tableProgressPeriods.SchoolId && x.MarkingPeriodId == progressPeriod.tableProgressPeriods.QuarterId);
                     if (Quarter?.StartDate <= progressPeriod.tableProgressPeriods?.StartDate && Quarter?.EndDate >= progressPeriod.tableProgressPeriods?.EndDate)
                     {
-                        //int? MasterMarkingPeriodId = Utility.GetMaxPK(this.context, new Func<ProgressPeriods, int>(x => x.MarkingPeriodId));
+                        //int? MasterMarkingPeriodId = Utility.GetMaxPK<ProgressPeriods>(this.context, x => x.MarkingPeriodId);
 
                         int MarkingPeriodId = 1;
 
@@ -647,7 +647,7 @@ namespace opensis.data.Repository
             }
             try
             {
-                //int? MarkingPeriodId = Utility.GetMaxPK(this.context, new Func<SchoolYears, int>(x => x.MarkingPeriodId));
+                //int? MarkingPeriodId = Utility.GetMaxPK<SchoolYears>(this.context, x => x.MarkingPeriodId);
 
                 //var calendarData = this.context?.SchoolCalendars.FirstOrDefault(x => x.TenantId == schoolYears.tableSchoolYears.TenantId && x.SchoolId == schoolYears.tableSchoolYears.SchoolId && x.StartDate.Value.Date <= DateTime.UtcNow.Date && x.EndDate.Value.Date >= DateTime.UtcNow.Date && x.SessionCalendar == true);
 
@@ -939,7 +939,7 @@ namespace opensis.data.Repository
                     var semester = this.context?.Semesters.FirstOrDefault(x => x.TenantId == quarters.tableQuarter.TenantId && x.SchoolId == quarters.tableQuarter.SchoolId && x.MarkingPeriodId == quarters.tableQuarter.SemesterId);
                     if (semester?.StartDate <= quarters.tableQuarter?.StartDate && semester?.EndDate >= quarters.tableQuarter?.EndDate)
                     {
-                        //int? MarkingPeriodId = Utility.GetMaxPK(this.context, new Func<Quarters, int>(x => x.MarkingPeriodId));
+                        //int? MarkingPeriodId = Utility.GetMaxPK<Quarters>(this.context, x => x.MarkingPeriodId);
 
                         int? MarkingPeriodId = 1;
 
