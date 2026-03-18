@@ -170,9 +170,9 @@ Verify: schedule students into sections, verify no conflicts missed, verify stud
 
 ### Phase 6 — Student scheduling Include chains + bell schedule loops (C1, C2, A3, A4)
 
-- [ ] C1 — ScheduleCoursesForStudent360: replace deep Include with Select projection
-- [ ] C2 — ScheduleCourseSectionListForStudent360: same treatment
-- [ ] A3/A4 — Bell schedule loops: batch-load all bell schedules for date range in one query
+- [x] C1 — ScheduleCoursesForStudent360: flattened deep Include chain into direct Includes + AsSplitQuery (eliminates Cartesian product)
+- [x] C2 — ScheduleCourseSectionListForStudent360: added AsSplitQuery to avoid Cartesian from collection Includes
+- [x] A3/A4 — Bell schedule loops: replaced per-block loop with single blockIds.Contains() query in both methods
 
 Risk: medium. Student 360 view is data-heavy.
 Verify: open Student 360 scheduling tab, compare all displayed data.
@@ -213,3 +213,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 3 | A7, A8, A9 | Done — batch-load + dictionary lookups, replaced Utility.CreatedOrUpdatedBy loop |
 | 2026-03-18 | 4 | B5, C3, C4, F1, F2 | Done — DB-side filters, batch-loads, dictionary lookups for attendance admin |
 | 2026-03-18 | 5 | A1, A2, B1, B2, B3 | Done — batch-load before loops in _old method, AsNoTracking+narrowed loads in new method, dictionary lookups for student list |
+| 2026-03-18 | 6 | C1, C2, A3, A4 | Done — flattened Include chains + AsSplitQuery, batch-loaded BellSchedule with blockIds.Contains() |

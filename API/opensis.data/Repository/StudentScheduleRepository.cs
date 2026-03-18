@@ -2025,7 +2025,15 @@ namespace opensis.data.Repository
             List<Student360ScheduleCourseSectionForView> student360ScheduleCourseSectionForViewList = new List<Student360ScheduleCourseSectionForView>();
             try
             {
-                var StudentData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Include(v => v.CourseSection.Course).Include(x => x.CourseSection).ThenInclude(y => y.SchoolYears).ThenInclude(s => s!.Semesters).ThenInclude(e=>e.Quarters).ThenInclude(c => c.StaffCoursesectionSchedule).Include(e=>e.StudentAttendance).Where(x => (student360ScheduleCourseSectionListViewModel.IsDropped==false)?  x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && x.StudentId == student360ScheduleCourseSectionListViewModel.StudentId && x.IsDropped != true : x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && x.StudentId == student360ScheduleCourseSectionListViewModel.StudentId).ToList();
+                var StudentData = this.context?.StudentCoursesectionSchedule.AsNoTracking()
+                    .Include(v => v.CourseSection.Course)
+                    .Include(x => x.CourseSection.SchoolYears)
+                    .Include(x => x.CourseSection.Semesters)
+                    .Include(x => x.CourseSection.Quarters)
+                    .Include(x => x.CourseSection.StaffCoursesectionSchedule)
+                    .Include(e => e.StudentAttendance)
+                    .AsSplitQuery()
+                    .Where(x => (student360ScheduleCourseSectionListViewModel.IsDropped==false)?  x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && x.StudentId == student360ScheduleCourseSectionListViewModel.StudentId && x.IsDropped != true : x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && x.StudentId == student360ScheduleCourseSectionListViewModel.StudentId).ToList();
 
                 var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(d => d.StaffMaster).Select(v => new StaffCoursesectionSchedule() { SchoolId=v.SchoolId,TenantId=v.TenantId,CourseSectionId=v.CourseSectionId,IsDropped=v.IsDropped,StaffMaster=new StaffMaster() {
                     FirstGivenName=v.StaffMaster.FirstGivenName,
@@ -2130,16 +2138,10 @@ namespace opensis.data.Repository
 
                                 Student360ScheduleCourseSectionData.courseBlockScheduleList = blockData;
 
-                                var bellScheduleList = new List<BellSchedule>();
-                                foreach (var block in blockData)
-                                {
-                                    var bellScheduleData = this.context?.BellSchedule.AsNoTracking().Where(c => c.SchoolId == Student.SchoolId && c.TenantId == Student.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= Student.CourseSection.DurationStartDate && c.BellScheduleDate <= Student.CourseSection.DurationEndDate).ToList();
-                                    if (bellScheduleData != null )
-                                    {
-                                        bellScheduleList.AddRange(bellScheduleData);
-                                    }
-                                    
-                                }
+                                var blockIds = blockData.Select(b => b.BlockId).Distinct().ToList();
+                                var bellScheduleList = this.context?.BellSchedule.AsNoTracking()
+                                    .Where(c => c.SchoolId == Student.SchoolId && c.TenantId == Student.TenantId && blockIds.Contains(c.BlockId) && c.BellScheduleDate >= Student.CourseSection.DurationStartDate && c.BellScheduleDate <= Student.CourseSection.DurationEndDate)
+                                    .ToList() ?? new List<BellSchedule>();
 
                                 Student360ScheduleCourseSectionData.bellScheduleList = bellScheduleList;
                             }
@@ -2317,7 +2319,7 @@ namespace opensis.data.Repository
                 //if (studentdata.ToList().Count > 0)
                 if (studentdata?.ToList()!= null && studentdata.ToList().Any())
                 {
-                    var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Include(o => o.CourseSection).Include(c=>c.StudentAttendance).ThenInclude(v=>v.StudentAttendanceComments).Include(p=>p.CourseSection.SchoolCalendars).Where(e => e.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && e.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && e.StudentId== student360ScheduleCourseSectionListViewModel.StudentId && (studentdata == null || (studentdata.Contains(e.CourseSectionId))) && e.IsDropped !=true).ToList();
+                    var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Include(o => o.CourseSection).Include(c=>c.StudentAttendance).ThenInclude(v=>v.StudentAttendanceComments).Include(p=>p.CourseSection.SchoolCalendars).AsSplitQuery().Where(e => e.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && e.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && e.StudentId== student360ScheduleCourseSectionListViewModel.StudentId && (studentdata == null || (studentdata.Contains(e.CourseSectionId))) && e.IsDropped !=true).ToList();
 
                     var allBlockData = this.context?.Block.AsNoTracking().Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId).ToList();
 
@@ -2413,15 +2415,10 @@ namespace opensis.data.Repository
                                     blockData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); });
                                     Student360ScheduleCourseSection.courseBlockScheduleList = blockData;
 
-                                    var bellScheduleList = new List<BellSchedule>();
-                                    foreach (var block in blockData)
-                                    {
-                                        var bellScheduleData = this.context?.BellSchedule.AsNoTracking().Where(c => c.SchoolId == studentCourseSectionSchedule.SchoolId && c.TenantId == studentCourseSectionSchedule.TenantId && c.BlockId == block.BlockId && c.BellScheduleDate >= student360ScheduleCourseSectionListViewModel.DurationStartDate && c.BellScheduleDate <= student360ScheduleCourseSectionListViewModel.DurationEndDate).ToList();
-                                        if (bellScheduleData != null)
-                                        {
-                                            bellScheduleList.AddRange(bellScheduleData);
-                                        }
-                                    }
+                                    var blockIds = blockData.Select(b => b.BlockId).Distinct().ToList();
+                                    var bellScheduleList = this.context?.BellSchedule.AsNoTracking()
+                                        .Where(c => c.SchoolId == studentCourseSectionSchedule.SchoolId && c.TenantId == studentCourseSectionSchedule.TenantId && blockIds.Contains(c.BlockId) && c.BellScheduleDate >= student360ScheduleCourseSectionListViewModel.DurationStartDate && c.BellScheduleDate <= student360ScheduleCourseSectionListViewModel.DurationEndDate)
+                                        .ToList() ?? new List<BellSchedule>();
                                     Student360ScheduleCourseSection.bellScheduleList = bellScheduleList;
                                 }
                             }
