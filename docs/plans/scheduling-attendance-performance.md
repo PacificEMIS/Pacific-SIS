@@ -179,8 +179,8 @@ Verify: open Student 360 scheduling tab, compare all displayed data.
 
 ### Phase 7 — Staff scheduling (A5, A6, E3, E4)
 
-- [ ] A5 — StaffScheduleViewForCourseSection: batch-load all schedule types before loops
-- [ ] A6/E3/E4 — CheckAvailabilityStaffCourseSectionSchedule: batch-load, keep regex client-side but from single query
+- [x] A5 — StaffScheduleViewForCourseSection: batch-loaded AllCourseSectionView, SchoolCalendars, StaffCoursesectionSchedule, and 4 schedule-type tables before loops
+- [x] A6/E3/E4 — CheckAvailabilityStaffCourseSectionSchedule: batch-loaded AllCourseSectionView + StaffCoursesectionSchedule, replaced DB Join with in-memory join, removed .AsEnumerable()
 
 Risk: medium. Staff conflict checking is critical.
 Verify: schedule a teacher, verify conflicts detected correctly.
@@ -214,3 +214,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 4 | B5, C3, C4, F1, F2 | Done — DB-side filters, batch-loads, dictionary lookups for attendance admin |
 | 2026-03-18 | 5 | A1, A2, B1, B2, B3 | Done — batch-load before loops in _old method, AsNoTracking+narrowed loads in new method, dictionary lookups for student list |
 | 2026-03-18 | 6 | C1, C2, A3, A4 | Done — flattened Include chains + AsSplitQuery, batch-loaded BellSchedule with blockIds.Contains() |
+| 2026-03-18 | 7 | A5, A6, E3, E4 | Done — batch-loaded 7 tables in A5, batch-loaded + in-memory join in A6 |
