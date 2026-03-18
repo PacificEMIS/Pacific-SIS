@@ -148,14 +148,18 @@ dotnet ef migrations add YourMigrationName \
 
 ## Building for Production
 
-**API:**
+All commands run from the repo root. The `-o` flag outputs directly to the path Ansible expects (avoids the default `publish/` subdirectory).
+
+**API (framework-dependent — requires `aspnetcore-runtime-6.0` on server):**
 ```bash
-dotnet publish API/opensisAPI/opensisAPI.csproj -c Release
+dotnet publish API/opensisAPI/opensisAPI.csproj -c Release \
+  -o API/opensisAPI/bin/Release/net6.0/
 ```
 
-**Background job (Linux):**
+**Background job (self-contained Linux binary):**
 ```bash
-dotnet publish API/opensis.backgroundjob/opensis.backgroundjob.csproj -c Release -r linux-x64
+dotnet publish API/opensis.backgroundjob/opensis.backgroundjob.csproj -c Release -r linux-x64 \
+  -o API/opensis.backgroundjob/bin/Release/net6.0/linux-x64/
 ```
 
 **UI:**
@@ -203,9 +207,23 @@ ng g module    path/to/module-name      # new module
 
 ## Deployment
 
-Managed by Ansible from the `purltek-systems` repository using the `dotnet` role. The role:
+### 1. Sync builds to the Ansible control node
 
-1. Rsyncs compiled artifacts to the server (config files explicitly excluded)
+After building for production (see above), rsync the three build outputs to your Ansible control node:
+
+```
+API/opensisAPI/bin/Release/net6.0/                          → API artifact
+API/opensis.backgroundjob/bin/Release/net6.0/linux-x64/     → Background job artifact
+UI/dist/vex/                                                 → Frontend artifact
+```
+
+Use `rsync -avz --delete` to keep the target in sync and remove stale files. Wrap in a shell script for convenience.
+
+### 2. Run Ansible
+
+From the Ansible control node, run the appropriate playbook from the `purltek-systems` repo. Ansible:
+
+1. Rsyncs compiled artifacts to target servers (config files explicitly excluded)
 2. Writes `appsettings.json`, `assets/config.json`, and `NLog.config` from Jinja2 templates with server-specific values
 3. Manages systemd services (one per tenant instance)
 4. Apache handles SSL termination and reverse-proxies to the .NET Kestrel port
