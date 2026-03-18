@@ -193,14 +193,24 @@ Verify: schedule a teacher, verify conflicts detected correctly.
 Risk: low-medium.
 Verify: drop a student from a section, verify attendance records cleaned up correctly.
 
-### Phase 9 (future) — Conflict regex rethink (E1, E2)
+### Phase 9 — Background job: AddMissingAttendance (CRITICAL)
+
+- [x] Replace per-date-per-section DB queries with batch-loaded HashSets/Dictionaries
+- [x] Fix holiday list accumulation bug (was leaking across course sections)
+- [x] Add AsNoTracking to all read-only queries
+- [x] Add appsettings.Development.json support for local dev
+
+Risk: medium. Functionally equivalent (verified line-by-line), processes all dates.
+Result: 24+ hour runtime reduced to < 1 second. Was causing sustained 100% MySQL CPU.
+
+### Phase 10 (future) — Conflict regex rethink (E1, E2)
 
 The day-matching regex (`"MoTuWe"` pattern matching) is inherently client-side logic.
 Long-term options:
 - Normalize day data into a junction table (e.g., `CourseSectionDay`) with indexed columns
 - Pre-compute conflict flags on schedule save
 
-This is a larger architectural change — defer until phases 1-8 are stable.
+This is a larger architectural change — defer until phases 1-9 are stable.
 
 ---
 
@@ -216,3 +226,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 6 | C1, C2, A3, A4 | Done — flattened Include chains + AsSplitQuery, batch-loaded BellSchedule with blockIds.Contains() |
 | 2026-03-18 | 7 | A5, A6, E3, E4 | Done — batch-loaded 7 tables in A5, batch-loaded + in-memory join in A6 |
 | 2026-03-18 | 8 | G1, G2, G3, G4 | Done — narrowed drop queries by courseSectionIds, dictionary Block lookup, filtered AttendanceCodeCategories |
+| 2026-03-18 | 9 | Background job | Done — batch-load + HashSet lookups in AddMissingAttendance, fixed holiday bug, 24h+ runtime → <1s |
