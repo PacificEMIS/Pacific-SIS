@@ -235,7 +235,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    int? languageId = Utility.GetMaxPK(this.context!, new Func<Language, int>(x => x.LangId));
+                    int? languageId = Utility.GetMaxPK<Language>(this.context!, x => x.LangId);
                     languageAdd.Language!.LangId = (int)languageId!;
                     languageAdd.Language.CreatedOn = DateTime.UtcNow;
                     this.context?.Language.Add(languageAdd.Language);
@@ -835,7 +835,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    int? CountryId = Utility.GetMaxPK(this.context, new Func<Country, int>(x => x.Id));
+                    int? CountryId = Utility.GetMaxPK<Country>(this.context, x => x.Id);
                     countryAddModel.Country.Id = (int)CountryId!;
                     countryAddModel.Country.CreatedOn = DateTime.UtcNow;
                     this.context?.Country.Add(countryAddModel.Country);
@@ -3135,7 +3135,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    long? schoolPreferenceId = Utility.GetMaxLongPK(this.context, new Func<SchoolPreference, long>(x => x.SchoolPreferenceId));
+                    long? schoolPreferenceId = Utility.GetMaxLongPK<SchoolPreference>(this.context, x => x.SchoolPreferenceId);
                     schoolPreferenceAddViewModel.SchoolPreference.SchoolPreferenceId = (long)schoolPreferenceId!;
                     schoolPreferenceAddViewModel.SchoolPreference.CreatedOn = DateTime.UtcNow;
                     this.context?.SchoolPreference.Add(schoolPreferenceAddViewModel.SchoolPreference);

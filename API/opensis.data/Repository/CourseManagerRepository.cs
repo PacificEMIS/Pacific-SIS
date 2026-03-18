@@ -51,7 +51,7 @@ namespace opensis.data.Repository
         /// <returns></returns>
         //public ProgramAddViewModel AddProgram(ProgramAddViewModel programAddViewModel)
         //{
-        //    //int? ProgramId = Utility.GetMaxPK(this.context, new Func<Programs, int>(x => x.ProgramId));
+        //    //int? ProgramId = Utility.GetMaxPK<Programs>(this.context, x => x.ProgramId);
 
         //    int? ProgramId = 0;
 
@@ -241,7 +241,7 @@ namespace opensis.data.Repository
         //{
         //    try
         //    {
-        //        //int? MasterSubjectId = Utility.GetMaxPK(this.context, new Func<Subject, int>(x => x.SubjectId));
+        //        //int? MasterSubjectId = Utility.GetMaxPK<Subject>(this.context, x => x.SubjectId);
         //        int? MasterSubjectId = 1;
 
         //        var subjectData = this.context?.Subject.Where(x => x.SchoolId == subjectAddViewModel.subject.SchoolId && x.TenantId == subjectAddViewModel.subject.TenantId).OrderByDescending(x => x.SubjectId).FirstOrDefault();

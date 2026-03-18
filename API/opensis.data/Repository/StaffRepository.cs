@@ -62,7 +62,7 @@ namespace opensis.data.Repository
             {
                 try
                 {
-                    //int? staffId = Utility.GetMaxPK(this.context, new Func<StaffMaster, int>(x => x.StaffId));
+                    //int? staffId = Utility.GetMaxPK<StaffMaster>(this.context, x => x.StaffId);
                     int? staffId = 1;
                     var dataExits = this.context?.StaffMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId).Count();
 
@@ -151,7 +151,7 @@ namespace opensis.data.Repository
                     this.context?.SaveChanges();
 
                     //Insert data into StaffSchoolInfo table            
-                    int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                    int? Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => (int)x.Id);
                     var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staffAddViewModel.staffMaster.TenantId && x.SchoolId == staffAddViewModel.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
                     var StaffSchoolInfoData = new StaffSchoolInfo() { TenantId = staffAddViewModel.staffMaster.TenantId, SchoolId = staffAddViewModel.staffMaster.SchoolId, StaffId = staffAddViewModel.staffMaster.StaffId, SchoolAttachedId = staffAddViewModel.staffMaster.SchoolId,/* Id = (int)Id!*/Id=0, SchoolAttachedName = schoolName, StartDate = DateTime.UtcNow, CreatedOn = DateTime.UtcNow, CreatedBy = staffAddViewModel.staffMaster.CreatedBy, Profile = "Teacher", MembershipId = 4 };
                     this.context?.StaffSchoolInfo.Add(StaffSchoolInfoData);
@@ -917,7 +917,7 @@ namespace opensis.data.Repository
                     if (staffSchoolInfoAddViewModel.staffSchoolInfoList != null && staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList().Count > 0)
                     {
                         int? Id = 0;
-                        Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
+                        Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => x.Id);
                         foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
                         {
                             staffSchoolInfo.Id = (int)Id!;
@@ -1169,7 +1169,7 @@ namespace opensis.data.Repository
                         }
 
                         int? Id = 0;
-                        Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
+                        Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => x.Id);
                         foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
                         {
                             staffSchoolInfo.Id = 0;
@@ -1241,7 +1241,7 @@ namespace opensis.data.Repository
             {
                 try
                 {
-                    int? Id = Utility.GetMaxPK(this.context, new Func<StaffCertificateInfo, int>(x => x.Id));
+                    int? Id = Utility.GetMaxPK<StaffCertificateInfo>(this.context, x => x.Id);
                     staffCertificateInfoAddViewModel.staffCertificateInfo.Id = (int)Id!;
                     staffCertificateInfoAddViewModel.staffCertificateInfo.CreatedOn = DateTime.UtcNow;
                     this.context?.StaffCertificateInfo.Add(staffCertificateInfoAddViewModel.staffCertificateInfo);
@@ -1571,7 +1571,7 @@ namespace opensis.data.Repository
                 staffListAdd._failure = false;
                 staffListAdd._message = "Staff added successfully";
 
-                //int? staffId = Utility.GetMaxPK(this.context, new Func<StaffMaster, int>(x => x.StaffId));
+                //int? staffId = Utility.GetMaxPK<StaffMaster>(this.context, x => x.StaffId);
                 int? staffId = 1;
 
                 var dataExits = this.context?.StaffMaster.Where(x => x.TenantId == staffListAddViewModel.TenantId).Count();
@@ -1812,7 +1812,7 @@ namespace opensis.data.Repository
                                 this.context?.SaveChanges();
 
                                 //Insert data into StaffSchoolInfo table            
-                                int? Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => (int)x.Id));
+                                int? Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => (int)x.Id);
                                 var schoolName = this.context?.SchoolMaster.Where(x => x.TenantId == staff.staffMaster.TenantId && x.SchoolId == staff.staffMaster.SchoolId).Select(s => s.SchoolName).FirstOrDefault();
 
                                 var startDate = DateTime.UtcNow;

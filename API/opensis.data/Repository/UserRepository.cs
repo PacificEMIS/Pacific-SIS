@@ -665,7 +665,7 @@ namespace opensis.data.Repository
         {
             try
             {
-                long? Id = Utility.GetMaxLongPK(this.context, new Func<UserAccessLog, long>(x => x.Id));
+                long? Id = Utility.GetMaxLongPK<UserAccessLog>(this.context, x => x.Id);
 
                 //objModel.userAccessLog.Id = (long)Id;
                 objModel.userAccessLog!.Id = (long)Id!;

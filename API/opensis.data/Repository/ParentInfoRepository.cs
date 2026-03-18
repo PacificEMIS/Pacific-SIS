@@ -98,7 +98,7 @@ namespace opensis.data.Repository
                             return parentInfoAddViewModel;
                         }
 
-                        //int? ParentId = Utility.GetMaxPK(this.context, new Func<ParentInfo, int>(x => x.ParentId));
+                        //int? ParentId = Utility.GetMaxPK<ParentInfo>(this.context, x => x.ParentId);
                         int? ParentId = 1;
                         var dataExits = this.context?.ParentInfo.Where(x => x.TenantId == parentInfoAddViewModel.parentInfo.TenantId).Count();
 
@@ -1247,7 +1247,7 @@ namespace opensis.data.Repository
             }
             try
             {
-                int? ParentId = Utility.GetMaxPK(this.context, new Func<ParentInfo, int>(x => x.ParentId));
+                int? ParentId = Utility.GetMaxPK<ParentInfo>(this.context, x => x.ParentId);
                 parentInfoAddViewModel.parentInfo.ParentId = (int)ParentId!;
                 parentInfoAddViewModel.parentInfo.CreatedOn = DateTime.UtcNow;
                 parentInfoAddViewModel.parentInfo.LoginEmail = parentInfoAddViewModel.parentInfo.LoginEmail;

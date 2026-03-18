@@ -185,10 +185,10 @@ namespace opensisAPI.Controllers
                 {
                     Guid tenantId = (Guid)tenantDetail.TenantId;
 
-                    int? schoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
-                    int? schoolDetailId = Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id));
-                    long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
-                    int? gradeId = Utility.GetMaxPK(this.context, new Func<Gradelevels, int>(x => x.GradeId));
+                    int? schoolId = Utility.GetMaxPK<SchoolMaster>(this.context, x => x.SchoolId);
+                    int? schoolDetailId = Utility.GetMaxPK<SchoolDetail>(this.context, x => x.Id);
+                    long? dpdownValueId = Utility.GetMaxLongPK<DpdownValuelist>(this.context, x => x.Id);
+                    int? gradeId = Utility.GetMaxPK<Gradelevels>(this.context, x => x.GradeId);
                     Guid SchoolGuidId = Guid.NewGuid();
 
                     var school = new List<SchoolMaster>()

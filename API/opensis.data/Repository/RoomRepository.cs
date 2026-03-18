@@ -72,7 +72,7 @@ namespace opensis.data.Repository
                 }
                 else
                 {
-                    //int? RoomlId = Utility.GetMaxPK(this.context, new Func<Rooms, int>(x => x.RoomId));
+                    //int? RoomlId = Utility.GetMaxPK<Rooms>(this.context, x => x.RoomId);
 
                     int? RoomId = 1;
 

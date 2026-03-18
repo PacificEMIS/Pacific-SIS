@@ -547,7 +547,7 @@ namespace opensis.data.Repository
                         this.context?.Entry(schoolMaster).CurrentValues.SetValues(school.schoolMaster);                     
                         if (schoolMaster.SchoolDetail.ToList().Count == 0 && school.schoolMaster.SchoolDetail.ToList().Count > 0)
                         {
-                            school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id))!);
+                            school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK<SchoolDetail>(this.context, x => x.Id)!);
                             school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.SchoolId = school.schoolMaster.SchoolId);
                             school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.TenantId = school.schoolMaster.TenantId);
                             school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.UpdatedOn = DateTime.UtcNow);
@@ -675,7 +675,7 @@ namespace opensis.data.Repository
                         //}
                         //else
                         //{
-                            //int? MasterSchoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
+                            //int? MasterSchoolId = Utility.GetMaxPK<SchoolMaster>(this.context, x => x.SchoolId);
                             int? MasterSchoolId = 1;
 
                             var schoolData = this.context?.SchoolMaster.Where(x => x.TenantId == school.schoolMaster.TenantId).OrderByDescending(x => x.SchoolId).FirstOrDefault();
@@ -684,8 +684,8 @@ namespace opensis.data.Repository
                             {
                                 MasterSchoolId = schoolData.SchoolId + 1;
                             }
-                            //int? MemberShipId = Utility.GetMaxPK(this.context, new Func<Membership, int>(x => x.MembershipId));
-                            //int? CategoryId = Utility.GetMaxPK(this.context, new Func<FieldsCategory, int>(x => x.CategoryId));
+                            //int? MemberShipId = Utility.GetMaxPK<Membership>(this.context, x => x.MembershipId);
+                            //int? CategoryId = Utility.GetMaxPK<FieldsCategory>(this.context, x => x.CategoryId);
                             school.schoolMaster.SchoolId = (int)MasterSchoolId;
                             Guid GuidId = Guid.NewGuid();
                             var GuidIdExist = this.context?.SchoolMaster.FirstOrDefault(x => x.SchoolGuid == GuidId);
@@ -699,7 +699,7 @@ namespace opensis.data.Repository
 
                             if (school.schoolMaster.SchoolDetail.ToList().Count > 0)
                             {
-                                school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id))!);
+                                school.schoolMaster.SchoolDetail.ToList().ForEach(p => p.Id = (int)Utility.GetMaxPK<SchoolDetail>(this.context, x => x.Id)!);
                             }
                             school.schoolMaster.CreatedOn = DateTime.UtcNow;
                             school.schoolMaster.TenantId = school.schoolMaster.TenantId;
@@ -730,7 +730,7 @@ namespace opensis.data.Repository
                     new Membership(){CreatedOn=DateTime.UtcNow,CreatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,Profile= "Student", IsActive= true, IsSuperadmin= false, IsSystem= true, MembershipId= 7, ProfileType= "Student"},
                 };
 
-                            long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                            long? dpdownValueId = Utility.GetMaxLongPK<DpdownValuelist>(this.context, x => x.Id);
 
                             school.schoolMaster.DpdownValuelist = new List<DpdownValuelist>() {
                     new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=school.schoolMaster.CreatedBy, TenantId= school.schoolMaster.TenantId,SchoolId=school.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="PK",CreatedBy=school.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId!},
@@ -1084,7 +1084,7 @@ namespace opensis.data.Repository
                                 if (userMasterData.FirstOrDefault()!.Membership.ProfileType != "Super Administrator")
                                 {
                                     int? Id = 0;
-                                    Id = Utility.GetMaxPK(this.context, new Func<StaffSchoolInfo, int>(x => x.Id));
+                                    Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => x.Id);
 
                                     StaffSchoolInfo staffSchoolInfo = new();
                                     {
@@ -1313,7 +1313,7 @@ namespace opensis.data.Repository
                         }
                         
                         copySchoolViewModel.schoolMaster = copyFromSchool;
-                        int? MasterSchoolId = Utility.GetMaxPK(this.context, new Func<SchoolMaster, int>(x => x.SchoolId));
+                        int? MasterSchoolId = Utility.GetMaxPK<SchoolMaster>(this.context, x => x.SchoolId);
                         copySchoolViewModel.schoolMaster.SchoolId = (int)MasterSchoolId!;
 
                         Guid GuidId = Guid.NewGuid();
@@ -1332,7 +1332,7 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
 
                         int? Ide = null;
-                        Ide = (int)Utility.GetMaxPK(this.context, new Func<SchoolDetail, int>(x => x.Id))!;
+                        Ide = (int)Utility.GetMaxPK<SchoolDetail>(this.context, x => x.Id)!;
 
                         var schoolDetailsData = this.context?.SchoolDetail.Where(x => x.TenantId == copySchoolViewModel.TenantId && x.SchoolId == copySchoolViewModel.FromSchoolId).ToList();
 
@@ -1355,7 +1355,7 @@ namespace opensis.data.Repository
                             this.context?.Membership.AddRange(membershipData);
                         }
 
-                        long? dpdownValueId = Utility.GetMaxLongPK(this.context, new Func<DpdownValuelist, long>(x => x.Id));
+                        long? dpdownValueId = Utility.GetMaxLongPK<DpdownValuelist>(this.context, x => x.Id);
 
                         var DpdownValuelist = new List<DpdownValuelist>() {
                             new DpdownValuelist(){UpdatedOn=DateTime.UtcNow,UpdatedBy=copySchoolViewModel.schoolMaster.CreatedBy, TenantId= copySchoolViewModel.schoolMaster.TenantId,SchoolId=copySchoolViewModel.schoolMaster.SchoolId,LovName="Grade Level",LovColumnValue="PK",CreatedBy=copySchoolViewModel.schoolMaster.CreatedBy,CreatedOn=DateTime.UtcNow,Id=(long)dpdownValueId!},
