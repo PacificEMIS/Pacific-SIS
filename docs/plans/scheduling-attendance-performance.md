@@ -14,7 +14,7 @@ equivalent — verify it.
 
 ## Scope
 
-Four repository files account for nearly all the damage:
+Four repository files account for nearly all the damage, plus one related file:
 
 | File | Lines | Area |
 |---|---|---|
@@ -22,6 +22,7 @@ Four repository files account for nearly all the damage:
 | `API/opensis.data/Repository/StaffScheduleRepository.cs` | ~400 | Staff/teacher scheduling |
 | `API/opensis.data/Repository/StudentAttendanceRepository.cs` | ~3,260 | Attendance taking & admin |
 | `API/opensis.data/Repository/AttendanceCodeRepository.cs` | ~475 | Attendance code lookups |
+| `API/opensis.data/Repository/CourseManagerRepository.cs` | ~500 | Course/program management (B7 only) |
 
 ---
 
@@ -114,10 +115,10 @@ Work in phases. Each phase is a commit (or small set of commits). Test after eac
 
 ### Phase 1 — Quick wins: .AsNoTracking() on all read-only queries (all 4 files)
 
-- [ ] StudentScheduleRepository.cs — add .AsNoTracking() to every read-only query
-- [ ] StaffScheduleRepository.cs — add .AsNoTracking() to every read-only query
-- [ ] StudentAttendanceRepository.cs — add .AsNoTracking() to every read-only query
-- [ ] AttendanceCodeRepository.cs — add .AsNoTracking() to every read-only query
+- [x] StudentScheduleRepository.cs — add .AsNoTracking() to every read-only query
+- [x] StaffScheduleRepository.cs — add .AsNoTracking() to every read-only query
+- [x] StudentAttendanceRepository.cs — add .AsNoTracking() to every read-only query
+- [x] AttendanceCodeRepository.cs — add .AsNoTracking() to every read-only query
 
 Risk: near-zero. Read-only queries are not modified and saved back.
 Verify: run the same UI flows before/after, confirm identical results.
@@ -127,9 +128,9 @@ Verify: run the same UI flows before/after, confirm identical results.
 Replace `.AsEnumerable()` + `String.Compare(..., true)` with database-side
 `EF.Functions.Like()` or `.ToLower()` that Pomelo can translate.
 
-- [ ] B4 — Membership lookup in AddUpdateStudentAttendanceForStudent360
-- [ ] B6 — StudentDailyAttendance in DeleteAttendanceCode
-- [ ] B7 — Programs and Course in AddEditProgram
+- [x] B4 — Membership lookup in AddUpdateStudentAttendanceForStudent360
+- [x] B6 — StudentDailyAttendance in DeleteAttendanceCode
+- [x] B7 — Programs and Course in AddEditProgram
 
 Risk: low. Same logic, just executed in MySQL instead of C#.
 Verify: confirm same rows returned.
@@ -207,4 +208,5 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 
 | Date | Phase | Items | Status |
 |------|-------|-------|--------|
-| — | — | — | — |
+| 2026-03-18 | 1 | D (all 4 files) | Done — 98 .AsNoTracking() additions |
+| 2026-03-18 | 2 | B4, B6, B7 | Done — removed .AsEnumerable(), use .ToLower() for DB-side compare |

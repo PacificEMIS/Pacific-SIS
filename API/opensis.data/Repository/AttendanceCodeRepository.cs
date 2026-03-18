@@ -229,7 +229,7 @@ namespace opensis.data.Repository
 
                 if (attendanceCodeDelete != null)
                 {
-                    var studentDailyAttendanceData = this.context?.StudentDailyAttendance.AsEnumerable().FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && String.Compare(x.AttendanceCode, attendanceCodeDelete.Title,true) == 0);
+                    var studentDailyAttendanceData = this.context?.StudentDailyAttendance.FirstOrDefault(x => x.TenantId == attendanceCodeAddViewModel.AttendanceCode!.TenantId && x.SchoolId == attendanceCodeAddViewModel.AttendanceCode.SchoolId && x.AttendanceCode.ToLower() == attendanceCodeDelete.Title.ToLower());
 
                    // (x.AttendanceCode??"").ToLower() == attendanceCodeDelete.Title.ToLower());
                     
