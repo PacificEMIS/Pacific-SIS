@@ -100,7 +100,23 @@ Open the repo root in VS Code. Press `F5` → select **API: opensisAPI**.
 
 The API builds, starts with the debugger attached, and auto-migrates the tenant database on first request. Verify at `https://localhost:5001/swagger`.
 
-### 5. Run the UI
+### 5. Run the background job
+
+The background job is a standalone console app that runs nightly scheduled tasks (drop dates, enrollment updates, missing attendance). Unlike the API, it reads `DOTNET_ENVIRONMENT` (not `ASPNETCORE_ENVIRONMENT`) to locate `appsettings.Development.json`.
+
+```bash
+DOTNET_ENVIRONMENT=Development dotnet run --project API/opensis.backgroundjob/opensis.backgroundjob.csproj
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:DOTNET_ENVIRONMENT = "Development"
+dotnet run --project API/opensis.backgroundjob/opensis.backgroundjob.csproj
+```
+
+> Without `DOTNET_ENVIRONMENT=Development`, the job reads only `appsettings.json` (which has placeholder credentials) and fails to connect to MySQL.
+
+### 6. Run the UI
 
 > **Node.js version matters.** Use Node.js v14.21.3. Newer versions have build errors with this codebase. If you use nvm: `nvm use 14.21.3` (or `nvm install 14.21.3` first).
 
