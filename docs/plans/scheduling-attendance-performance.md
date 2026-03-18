@@ -160,10 +160,10 @@ Verify: load attendance admin screen, compare course section list and attendance
 
 The biggest and most complex changes.
 
-- [ ] A1 — AddStudentCourseSectionSchedule_old: batch-load before loops, eliminate triple-nested queries
-- [ ] B1/B2 — Conflict checking: batch-load AllCourseSectionView once, filter in-memory from that single load (the regex stays client-side for now, but fed from one query not N)
-- [ ] B3 — AddStudentCourseSectionSchedule: narrow the 4 school-wide loads with proper WHERE clauses
-- [ ] A2 — GetStudentListByCourseSection: replace FirstOrDefault in Select with pre-loaded dictionaries
+- [x] A1 — AddStudentCourseSectionSchedule_old: batch-load before loops, eliminate triple-nested queries
+- [x] B1/B2 — Conflict checking: batch-load AllCourseSectionView once, filter in-memory from that single load (the regex stays client-side for now, but fed from one query not N)
+- [x] B3 — AddStudentCourseSectionSchedule: added AsNoTracking to read-only loads, narrowed StudentEnrollment to request students, removed redundant .AsEnumerable()
+- [x] A2 — GetStudentListByCourseSection: replace FirstOrDefault in Select with pre-loaded dictionaries
 
 Risk: medium-high. Scheduling is complex business logic.
 Verify: schedule students into sections, verify no conflicts missed, verify student list matches.
@@ -212,3 +212,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 2 | B4, B6, B7 | Done — removed .AsEnumerable(), use .ToLower() for DB-side compare |
 | 2026-03-18 | 3 | A7, A8, A9 | Done — batch-load + dictionary lookups, replaced Utility.CreatedOrUpdatedBy loop |
 | 2026-03-18 | 4 | B5, C3, C4, F1, F2 | Done — DB-side filters, batch-loads, dictionary lookups for attendance admin |
+| 2026-03-18 | 5 | A1, A2, B1, B2, B3 | Done — batch-load before loops in _old method, AsNoTracking+narrowed loads in new method, dictionary lookups for student list |
