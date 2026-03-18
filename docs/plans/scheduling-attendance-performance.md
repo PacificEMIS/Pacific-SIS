@@ -149,9 +149,9 @@ Verify: save attendance for a class, compare DB state before/after.
 
 ### Phase 4 — Attendance admin queries (B5, C3, C4, F1, F2)
 
-- [ ] B5/C4 — CourseSectionListForAttendanceAdministration: add proper WHERE, replace Include with Select projection, add AsNoTracking
-- [ ] C3 — GetAllStudentAttendanceListForAdministration: replace deep Include chain with Select projection
-- [ ] F1/F2 — MissingAttendanceList: replace FirstOrDefault with dictionary lookups
+- [x] B5/C4 — CourseSectionListForAttendanceAdministration: pushed staff/student filters to DB, batch-loaded BellSchedule
+- [x] C3 — GetAllStudentAttendanceListForAdministration: batch-loaded StudentDailyAttendance + Block (was N+1)
+- [x] F1/F2 — MissingAttendanceList: replaced BlockPeriodList.FirstOrDefault with dictionary lookups
 
 Risk: medium. These shape the data returned to the UI — verify field-by-field.
 Verify: load attendance admin screen, compare course section list and attendance list.
@@ -211,3 +211,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 1 | D (all 4 files) | Done — 98 .AsNoTracking() additions |
 | 2026-03-18 | 2 | B4, B6, B7 | Done — removed .AsEnumerable(), use .ToLower() for DB-side compare |
 | 2026-03-18 | 3 | A7, A8, A9 | Done — batch-load + dictionary lookups, replaced Utility.CreatedOrUpdatedBy loop |
+| 2026-03-18 | 4 | B5, C3, C4, F1, F2 | Done — DB-side filters, batch-loads, dictionary lookups for attendance admin |
