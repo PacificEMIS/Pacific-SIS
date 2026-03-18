@@ -140,9 +140,9 @@ Verify: confirm same rows returned.
 Rewrite the per-student attendance save loops to batch-load BlockPeriod and
 AttendanceCode data before the loop, then look up from dictionaries.
 
-- [ ] A7 — AddUpdateStudentAttendance: batch-load, dictionary lookup
-- [ ] A8 — AddUpdateStudentAttendanceForStudent360: same pattern
-- [ ] A9 — GetAllAttendanceCode: replace Utility.CreatedOrUpdatedBy loop
+- [x] A7 — AddUpdateStudentAttendance: batch-load, dictionary lookup
+- [x] A8 — AddUpdateStudentAttendanceForStudent360: same pattern
+- [x] A9 — GetAllAttendanceCode: replace Utility.CreatedOrUpdatedBy loop
 
 Risk: low-medium. Same data, different fetch order.
 Verify: save attendance for a class, compare DB state before/after.
@@ -210,3 +210,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 |------|-------|-------|--------|
 | 2026-03-18 | 1 | D (all 4 files) | Done — 98 .AsNoTracking() additions |
 | 2026-03-18 | 2 | B4, B6, B7 | Done — removed .AsEnumerable(), use .ToLower() for DB-side compare |
+| 2026-03-18 | 3 | A7, A8, A9 | Done — batch-load + dictionary lookups, replaced Utility.CreatedOrUpdatedBy loop |
