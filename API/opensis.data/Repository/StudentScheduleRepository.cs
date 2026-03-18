@@ -1651,14 +1651,19 @@ namespace opensis.data.Repository
 
                         decimal? academicYear = Utility.GetCurrentAcademicYear(this.context!, scheduledStudentDropModel.TenantId, scheduledStudentDropModel.SchoolId);
 
-                        var missingAttendancesList = this.context?.StudentMissingAttendances.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId).ToList();
+                        // Narrow to only course sections being dropped (G1 fix)
+                        var dropCourseSectionIds = scheduledStudentDropModel.studentCoursesectionScheduleList.Select(x => x.CourseSectionId).Distinct().ToList();
+                        if (scheduledStudentDropModel.CourseSectionId > 0 && !dropCourseSectionIds.Contains(scheduledStudentDropModel.CourseSectionId))
+                            dropCourseSectionIds.Add(scheduledStudentDropModel.CourseSectionId);
+
+                        var missingAttendancesList = this.context?.StudentMissingAttendances.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.CourseSectionId.HasValue && dropCourseSectionIds.Contains(y.CourseSectionId.Value)).ToList();
 
                         //this blok for student 360 screen
                         if (!string.IsNullOrEmpty(scheduledStudentDropModel.StudentId.ToString()) && scheduledStudentDropModel.StudentId > 0)
                         {
-                            var attendanceDataList = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId).ToList();
+                            var attendanceDataList = this.context?.StudentAttendance.Include(x => x.StudentAttendanceComments).Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId && dropCourseSectionIds.Contains(y.CourseSectionId)).ToList();
 
-                            var studentAttendanceHistoryDataList = this.context?.StudentAttendanceHistory.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId).ToList();
+                            var studentAttendanceHistoryDataList = this.context?.StudentAttendanceHistory.Where(y => y.TenantId == scheduledStudentDropModel.TenantId && y.SchoolId == scheduledStudentDropModel.SchoolId && y.StudentId == scheduledStudentDropModel.StudentId && dropCourseSectionIds.Contains(y.CourseSectionId)).ToList();
 
 
                             foreach (var scheduledStudent in scheduledStudentDropModel.studentCoursesectionScheduleList)
@@ -2321,11 +2326,15 @@ namespace opensis.data.Repository
                 {
                     var studentCourseSectionScheduleData = this.context?.StudentCoursesectionSchedule.AsNoTracking().Include(o => o.CourseSection).Include(c=>c.StudentAttendance).ThenInclude(v=>v.StudentAttendanceComments).Include(p=>p.CourseSection.SchoolCalendars).AsSplitQuery().Where(e => e.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && e.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && e.StudentId== student360ScheduleCourseSectionListViewModel.StudentId && (studentdata == null || (studentdata.Contains(e.CourseSectionId))) && e.IsDropped !=true).ToList();
 
-                    var allBlockData = this.context?.Block.AsNoTracking().Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId).ToList();
+                    // Convert to dictionary for O(1) lookups (G3 fix)
+                    var blockLookup = this.context?.Block.AsNoTracking().Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId).ToDictionary(x => x.BlockId);
 
                     if (studentCourseSectionScheduleData!=null && studentCourseSectionScheduleData.Any())
                     {
-                        var attendanceCategoriesData = this.context?.AttendanceCodeCategories.AsNoTracking().Include(c=>c.AttendanceCode).Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId).ToList();
+                        // Narrow to only categories referenced by the student's course sections (G4 fix)
+                        var categoryIds = studentCourseSectionScheduleData.Where(x => x.CourseSection?.AttendanceCategoryId != null).Select(x => x.CourseSection!.AttendanceCategoryId!.Value).Distinct().ToList();
+
+                        var attendanceCategoriesData = this.context?.AttendanceCodeCategories.AsNoTracking().Include(c=>c.AttendanceCode).Where(x => x.SchoolId == student360ScheduleCourseSectionListViewModel.SchoolId && x.TenantId == student360ScheduleCourseSectionListViewModel.TenantId && categoryIds.Contains(x.AttendanceCategoryId)).ToList();
 
                         foreach (var studentCourseSectionSchedule in studentCourseSectionScheduleData)
                         {
@@ -2372,8 +2381,8 @@ namespace opensis.data.Repository
                                     Student360ScheduleCourseSection.courseFixedSchedule = fixedData;
                                     Student360ScheduleCourseSection.DayOfWeek = studentCourseSectionSchedule.CourseSection?.MeetingDays;
 
-                                    Student360ScheduleCourseSection.FullDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == fixedData.BlockId)?.FullDayMinutes;
-                                    Student360ScheduleCourseSection.HalfDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == fixedData.BlockId)?.HalfDayMinutes;
+                                    Student360ScheduleCourseSection.FullDayMinutes = (fixedData.BlockId != null && blockLookup?.ContainsKey(fixedData.BlockId.Value) == true ? blockLookup[fixedData.BlockId.Value].FullDayMinutes : null);
+                                    Student360ScheduleCourseSection.HalfDayMinutes = (fixedData.BlockId != null && blockLookup?.ContainsKey(fixedData.BlockId.Value) == true ? blockLookup[fixedData.BlockId.Value].HalfDayMinutes : null);
                                 }
                             }
                             if (studentCourseSectionSchedule.CourseSection?.ScheduleType == "Variable Schedule (2)")
@@ -2387,8 +2396,9 @@ namespace opensis.data.Repository
 
                                     Student360ScheduleCourseSection.courseVariableScheduleList = variableData;
 
-                                    Student360ScheduleCourseSection.FullDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == variableData.FirstOrDefault()?.BlockId)?.FullDayMinutes;
-                                    Student360ScheduleCourseSection.HalfDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == variableData.FirstOrDefault()?.BlockId)?.HalfDayMinutes;
+                                    var varBlockId = variableData.FirstOrDefault()?.BlockId;
+                                    Student360ScheduleCourseSection.FullDayMinutes = (varBlockId != null && blockLookup?.ContainsKey(varBlockId.Value) == true ? blockLookup[varBlockId.Value].FullDayMinutes : null);
+                                    Student360ScheduleCourseSection.HalfDayMinutes = (varBlockId != null && blockLookup?.ContainsKey(varBlockId.Value) == true ? blockLookup[varBlockId.Value].HalfDayMinutes : null);
                                 }
                             }
                             if (studentCourseSectionSchedule.CourseSection?.ScheduleType == "Calendar Schedule (3)")
@@ -2401,8 +2411,9 @@ namespace opensis.data.Repository
                                     calenderData.ForEach(x => { x.BlockPeriod!.CourseFixedSchedule = new HashSet<CourseFixedSchedule>(); x.BlockPeriod.CourseVariableSchedule = new HashSet<CourseVariableSchedule>(); x.BlockPeriod.CourseCalendarSchedule = new HashSet<CourseCalendarSchedule>(); x.BlockPeriod.CourseBlockSchedule = new HashSet<CourseBlockSchedule>(); x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); });
                                     Student360ScheduleCourseSection.courseCalendarScheduleList = calenderData;
 
-                                    Student360ScheduleCourseSection.FullDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == calenderData.FirstOrDefault()?.BlockId)?.FullDayMinutes;
-                                    Student360ScheduleCourseSection.HalfDayMinutes = allBlockData?.FirstOrDefault(x => x.BlockId == calenderData.FirstOrDefault()?.BlockId)?.HalfDayMinutes;
+                                    var calBlockId = calenderData.FirstOrDefault()?.BlockId;
+                                    Student360ScheduleCourseSection.FullDayMinutes = (calBlockId != null && blockLookup?.ContainsKey(calBlockId.Value) == true ? blockLookup[calBlockId.Value].FullDayMinutes : null);
+                                    Student360ScheduleCourseSection.HalfDayMinutes = (calBlockId != null && blockLookup?.ContainsKey(calBlockId.Value) == true ? blockLookup[calBlockId.Value].HalfDayMinutes : null);
                                 }
                             }
                             if (studentCourseSectionSchedule.CourseSection?.ScheduleType == "Block Schedule (4)")

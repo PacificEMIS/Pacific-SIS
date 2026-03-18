@@ -187,8 +187,8 @@ Verify: schedule a teacher, verify conflicts detected correctly.
 
 ### Phase 8 — Unbounded loads + drop operation (G1-G4)
 
-- [ ] G1/G2 — GroupDropForScheduledStudent: narrow queries to specific course sections and date ranges
-- [ ] G3/G4 — ScheduleCourseSectionListForStudent360: filter blocks and categories to only what's needed
+- [x] G1/G2 — GroupDropForScheduledStudent: narrowed StudentMissingAttendances, StudentAttendance, and StudentAttendanceHistory to specific courseSectionIds being dropped
+- [x] G3/G4 — ScheduleCourseSectionListForStudent360: converted Block to dictionary lookup, narrowed AttendanceCodeCategories to only categories referenced by student's course sections
 
 Risk: low-medium.
 Verify: drop a student from a section, verify attendance records cleaned up correctly.
@@ -215,3 +215,4 @@ This is a larger architectural change — defer until phases 1-8 are stable.
 | 2026-03-18 | 5 | A1, A2, B1, B2, B3 | Done — batch-load before loops in _old method, AsNoTracking+narrowed loads in new method, dictionary lookups for student list |
 | 2026-03-18 | 6 | C1, C2, A3, A4 | Done — flattened Include chains + AsSplitQuery, batch-loaded BellSchedule with blockIds.Contains() |
 | 2026-03-18 | 7 | A5, A6, E3, E4 | Done — batch-loaded 7 tables in A5, batch-loaded + in-memory join in A6 |
+| 2026-03-18 | 8 | G1, G2, G3, G4 | Done — narrowed drop queries by courseSectionIds, dictionary Block lookup, filtered AttendanceCodeCategories |
