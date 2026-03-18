@@ -16,5 +16,11 @@ UI/src/assets/config.json
 # Local secrets / environment overrides
 .env
 
+# Build outputs
+bin/
+obj/
+node_modules/
+UI/dist/
+
 # Claude Code session memory
 .claude/
