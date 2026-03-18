@@ -326,245 +326,270 @@ namespace opensis.backgroundjob
                         }
                     }
 
-                    var staffCourseSectionScheduleData = context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).Where(x => x.IsDropped != true && yesterdayDate >= x.DurationStartDate && yesterdayDate <= x.DurationEndDate).ToList();
+                    // Load staff-course sections whose duration includes yesterday
+                    var staffCourseSectionScheduleData = context?.StaffCoursesectionSchedule.AsNoTracking().Include(x => x.CourseSection).Where(x => x.IsDropped != true && yesterdayDate >= x.DurationStartDate && yesterdayDate <= x.DurationEndDate).ToList();
 
-                    var allCourseSectionVewListData = context?.AllCourseSectionView.ToList();
+                    if (staffCourseSectionScheduleData == null || !staffCourseSectionScheduleData.Any())
+                        return;
 
-                    if (staffCourseSectionScheduleData != null && staffCourseSectionScheduleData.Any() == true)
+                    // Collect all relevant tenant/school/courseSectionIds for batch loading
+                    var schoolWiseCourseSectionData = staffCourseSectionScheduleData.Select(s => new { s.TenantId, s.SchoolId, s.CourseSectionId }).Distinct().ToList();
+                    var allCourseSectionIds = schoolWiseCourseSectionData.Select(x => x.CourseSectionId).Distinct().ToList();
+                    var allSchoolIds = schoolWiseCourseSectionData.Select(x => x.SchoolId).Distinct().ToList();
+
+                    // Batch-load AllCourseSectionView for relevant course sections only
+                    var allCourseSectionVewListData = context?.AllCourseSectionView.AsNoTracking()
+                        .Where(v => allCourseSectionIds.Contains(v.CourseSectionId))
+                        .ToList() ?? new List<AllCourseSectionView>();
+
+                    // Batch-load BlockPeriod for relevant schools
+                    var blockPeriodList = context?.BlockPeriod.AsNoTracking()
+                        .Where(bp => allSchoolIds.Contains(bp.SchoolId))
+                        .ToList() ?? new List<BlockPeriod>();
+                    var blockPeriodLookup = blockPeriodList
+                        .GroupBy(bp => (bp.SchoolId, (int?)bp.PeriodId))
+                        .ToDictionary(g => g.Key, g => g.First().BlockId);
+
+                    // Batch-load ALL StudentAttendance for relevant course sections (full duration range)
+                    var allStudentAttendance = context?.StudentAttendance.AsNoTracking()
+                        .Where(a => allCourseSectionIds.Contains(a.CourseSectionId))
+                        .Select(a => new { a.SchoolId, a.CourseSectionId, a.PeriodId, a.AttendanceDate })
+                        .ToList();
+                    // Key: (SchoolId, CourseSectionId, PeriodId, Date) -> exists
+                    var attendanceSet = new HashSet<(int, int, int?, DateTime)>(
+                        allStudentAttendance?.Select(a => (a.SchoolId, a.CourseSectionId, (int?)a.PeriodId, a.AttendanceDate))
+                        ?? Enumerable.Empty<(int, int, int?, DateTime)>());
+
+                    // Batch-load ALL existing StudentMissingAttendances for relevant course sections
+                    var allExistingMissing = context?.StudentMissingAttendances.AsNoTracking()
+                        .Where(m => m.CourseSectionId != null && allCourseSectionIds.Contains(m.CourseSectionId.Value))
+                        .Select(m => new { m.SchoolId, CourseSectionId = m.CourseSectionId!.Value, m.PeriodId, m.MissingAttendanceDate })
+                        .ToList();
+                    var missingSet = new HashSet<(int, int, int?, DateTime)>(
+                        allExistingMissing?.Select(m => (m.SchoolId, m.CourseSectionId, m.PeriodId, m.MissingAttendanceDate ?? DateTime.MinValue))
+                        ?? Enumerable.Empty<(int, int, int?, DateTime)>());
+
+                    // Batch-load student enrollments for relevant course sections
+                    // Key: (SchoolId, CourseSectionId) -> earliest EffectiveStartDate
+                    var allStudentEnrollments = context?.StudentCoursesectionSchedule.AsNoTracking()
+                        .Where(b => allCourseSectionIds.Contains(b.CourseSectionId) && b.EffectiveStartDate != null)
+                        .GroupBy(b => new { b.SchoolId, b.CourseSectionId })
+                        .Select(g => new { g.Key.SchoolId, g.Key.CourseSectionId, EarliestStart = g.Min(x => x.EffectiveStartDate) })
+                        .ToList();
+                    var enrollmentLookup = allStudentEnrollments?
+                        .ToDictionary(e => (e.SchoolId, e.CourseSectionId), e => e.EarliestStart)
+                        ?? new Dictionary<(int, int), DateTime?>();
+
+                    // Batch-load holidays for all relevant calendars
+                    var calendarIds = allCourseSectionVewListData.Where(v => v.CalendarId != null).Select(v => v.CalendarId).Distinct().ToList();
+                    var allCalendarEvents = context?.CalendarEvents.AsNoTracking()
+                        .Where(e => calendarIds.Contains(e.CalendarId) && e.IsHoliday == true)
+                        .ToList() ?? new List<CalendarEvents>();
+
+                    // Batch-load BellSchedule for block schedule types (full duration range up to yesterday)
+                    var blockIds = allCourseSectionVewListData.Where(v => v.BlockId != null).Select(v => v.BlockId).Distinct().ToList();
+                    var allBellSchedules = blockIds.Any()
+                        ? context?.BellSchedule.AsNoTracking()
+                            .Where(bs => blockIds.Contains(bs.BlockId) && bs.BellScheduleDate <= yesterdayDate)
+                            .ToList() ?? new List<BellSchedule>()
+                        : new List<BellSchedule>();
+
+                    foreach (var schoolWiseCourseSection in schoolWiseCourseSectionData)
                     {
-                        List<DateTime> holidayList = new List<DateTime>();
+                        var staffCourseSectionData = staffCourseSectionScheduleData.FirstOrDefault(x => x.SchoolId == schoolWiseCourseSection.SchoolId && x.CourseSectionId == schoolWiseCourseSection.CourseSectionId);
 
-                        var BlockPeriodList = context?.BlockPeriod.ToList();
+                        if (staffCourseSectionData == null)
+                            continue;
 
-                        var schoolWiseCourseSectionData = staffCourseSectionScheduleData.Select(s => new { s.SchoolId, s.CourseSectionId }).Distinct();
+                        var allCourseSectionVewList = allCourseSectionVewListData.Where(e => e.SchoolId == staffCourseSectionData.SchoolId && e.CourseSectionId == staffCourseSectionData.CourseSectionId && (e.AttendanceTaken == true || e.TakeAttendanceCalendar == true || e.TakeAttendanceVariable == true || e.TakeAttendanceBlock == true)).ToList();
 
-                        foreach (var schoolWiseCourseSection in schoolWiseCourseSectionData)
+                        if (!allCourseSectionVewList.Any())
+                            continue;
+
+                        // Build holiday set for this course section's calendar
+                        var calendarId = allCourseSectionVewList.First().CalendarId;
+                        var relevantHolidays = allCalendarEvents
+                            .Where(e => e.CalendarId == calendarId && (e.SchoolId == staffCourseSectionData.SchoolId || e.ApplicableToAllSchool == true))
+                            .ToList();
+
+                        var holidaySet = new HashSet<DateTime>();
+                        foreach (var calEvent in relevantHolidays)
                         {
-                            var staffCourseSectionData = staffCourseSectionScheduleData.Where(x => x.SchoolId == schoolWiseCourseSection.SchoolId && x.CourseSectionId == schoolWiseCourseSection.CourseSectionId).FirstOrDefault();
-
-                            if (staffCourseSectionData != null)
+                            if (calEvent.StartDate != null)
                             {
-                                var allCourseSectionVewList = allCourseSectionVewListData!.Where(e => e.SchoolId == staffCourseSectionData.SchoolId && e.CourseSectionId == staffCourseSectionData.CourseSectionId && (e.AttendanceTaken == true || e.TakeAttendanceCalendar == true || e.TakeAttendanceVariable == true || e.TakeAttendanceBlock == true)).ToList();//fetch data from view for this cs
-
-                                if (allCourseSectionVewList.Any())
+                                if (calEvent.EndDate != null && calEvent.EndDate.Value.Date > calEvent.StartDate.Value.Date)
                                 {
-                                    //fetch event & holiday.
-                                    var CalendarEventsData = context?.CalendarEvents.Where(e => e.TenantId == staffCourseSectionData.TenantId && e.CalendarId == allCourseSectionVewList.FirstOrDefault()!.CalendarId && (e.StartDate >= staffCourseSectionData.DurationStartDate && e.StartDate <= staffCourseSectionData.DurationEndDate || e.EndDate >= staffCourseSectionData.DurationStartDate && e.EndDate <= staffCourseSectionData.DurationEndDate) && e.IsHoliday == true && (e.SchoolId == staffCourseSectionData.SchoolId || e.ApplicableToAllSchool == true)).ToList();
+                                    for (var d = calEvent.StartDate.Value.Date; d <= calEvent.EndDate.Value.Date; d = d.AddDays(1))
+                                        holidaySet.Add(d);
+                                }
+                                holidaySet.Add(calEvent.StartDate.Value.Date);
+                            }
+                        }
 
-                                    if (CalendarEventsData != null && CalendarEventsData.Any())
+                        // Check students are enrolled in this section
+                        if (!enrollmentLookup.ContainsKey((staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)))
+                            continue;
+
+                        if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)" || staffCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
+                        {
+                            // Build date list from DurationStartDate to yesterday, matching meeting days
+                            DateTime start = (DateTime)staffCourseSectionData.DurationStartDate!;
+                            DateTime end = (DateTime)staffCourseSectionData.DurationEndDate!;
+                            if (end > yesterdayDate) end = yesterdayDate;
+
+                            var meetingDays = staffCourseSectionData.MeetingDays?.ToLower().Split("|");
+                            bool allDays = meetingDays == null || !meetingDays.Any();
+
+                            var dateList = Enumerable.Range(0, 1 + end.Subtract(start).Days)
+                                .Select(offset => start.AddDays(offset))
+                                .Where(d => (allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower())) && !holidaySet.Contains(d))
+                                .ToList();
+
+                            foreach (var date in dateList)
+                            {
+                                // Check if students were enrolled by this date
+                                var earliestStart = enrollmentLookup[(staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)];
+                                if (earliestStart != null && earliestStart.Value.Date > date)
+                                    continue;
+
+                                if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)")
+                                {
+                                    var fixedPeriodId = allCourseSectionVewList.First().FixedPeriodId;
+                                    var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, fixedPeriodId, date);
+                                    var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, fixedPeriodId, date);
+
+                                    if (!attendanceSet.Contains(attendanceKey) && !missingSet.Contains(missingKey))
                                     {
-                                        foreach (var calender in CalendarEventsData)
+                                        blockPeriodLookup.TryGetValue((staffCourseSectionData.SchoolId, fixedPeriodId), out var blockId);
+                                        studentMissingAttendances.Add(new StudentMissingAttendance
                                         {
-                                            if (calender.EndDate!.Value.Date > calender.StartDate!.Value.Date)
-                                            {
-                                                var date = Enumerable.Range(0, 1 + (calender.EndDate.Value.Date - calender.StartDate.Value.Date).Days)
-                                                   .Select(i => calender.StartDate.Value.Date.AddDays(i))
-                                                   .ToList();
-                                                holidayList.AddRange(date);
-                                            }
-                                            holidayList.Add(calender.StartDate.Value.Date);
-                                        }
+                                            TenantId = staffCourseSectionData.TenantId,
+                                            SchoolId = staffCourseSectionData.SchoolId,
+                                            MissingAttendanceId = (int)missingAttendanceId!,
+                                            StaffId = staffCourseSectionData.StaffId,
+                                            BlockId = blockId,
+                                            CourseId = staffCourseSectionData.CourseId,
+                                            CourseSectionId = staffCourseSectionData.CourseSectionId,
+                                            PeriodId = fixedPeriodId,
+                                            AttendanceCategoryId = null,
+                                            AttendanceCode = null,
+                                            MissingAttendanceDate = date,
+                                        });
+                                        missingAttendanceId++;
                                     }
+                                }
+                                else // Variable Schedule (2)
+                                {
+                                    var courseVariableScheduleData = allCourseSectionVewList.Where(e => e.VarDay != null && e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
 
-                                    if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)" || staffCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
+                                    foreach (var courseVariableSchedule in courseVariableScheduleData)
                                     {
-                                        List<DateTime> dateList = new List<DateTime>();
-                                        List<string> list = new List<string>();
-                                        string[] meetingDays = { };
+                                        var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, courseVariableSchedule.VarPeriodId, date);
+                                        var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, courseVariableSchedule.VarPeriodId, date);
 
-                                        DateTime start = (DateTime)staffCourseSectionData.DurationStartDate!;
-                                        DateTime end = (DateTime)staffCourseSectionData.DurationEndDate!;
-
-                                        meetingDays = staffCourseSectionData.MeetingDays!.ToLower().Split("|");
-
-                                        bool allDays = meetingDays == null || !meetingDays.Any();
-
-                                        dateList = Enumerable.Range(0, 1 + end.Subtract(start).Days)
-                                                             .Select(offset => start.AddDays(offset))
-                                                             .Where(d => allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower()))
-                                                             .ToList();
-
-                                        dateList = dateList.Where(s => dateList.Any(secL => s.Date >= staffCourseSectionData.DurationStartDate && s.Date <= staffCourseSectionData.DurationEndDate)).ToList();
-
-                                        if (dateList.Count > 0)
+                                        if (!attendanceSet.Contains(attendanceKey) && !missingSet.Contains(missingKey))
                                         {
-                                            //get datelist upto yesterday date.
-                                            dateList = dateList.Where(s => dateList.Any(secL => s.Date <= yesterdayDate)).ToList();
-                                            //Remove Holiday
-                                            dateList = dateList.Where(x => !holidayList.Contains(x.Date)).ToList();
-                                        }
-
-                                        foreach (var date in dateList)
-                                        {
-                                            var StudentCoursesectionScheduleData = context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();  //check student's EffectiveStartDate in this course section 
-
-                                            if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
+                                            blockPeriodLookup.TryGetValue((staffCourseSectionData.SchoolId, courseVariableSchedule.VarPeriodId), out var blockId);
+                                            studentMissingAttendances.Add(new StudentMissingAttendance
                                             {
-                                                if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)")
-                                                {
-                                                    var staffAttendanceData = context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == allCourseSectionVewList.FirstOrDefault()!.FixedPeriodId);
-
-                                                    if (staffAttendanceData?.Any() == false)
-                                                    {
-                                                        var dataExitsInMA = context?.StudentMissingAttendances.Where(x => x.TenantId == staffCourseSectionData.TenantId && x.SchoolId == staffCourseSectionData.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.PeriodId == allCourseSectionVewList.FirstOrDefault()!.FixedPeriodId && x.MissingAttendanceDate == date).FirstOrDefault();
-                                                        if (dataExitsInMA == null)
-                                                        {
-                                                            var missingAttendance = new StudentMissingAttendance
-                                                            {
-                                                                TenantId = staffCourseSectionData.TenantId,
-                                                                SchoolId = staffCourseSectionData.SchoolId,
-                                                                MissingAttendanceId = (int)missingAttendanceId,
-                                                                StaffId = staffCourseSectionData.StaffId,
-                                                                BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == allCourseSectionVewList.FirstOrDefault()!.FixedPeriodId && e.SchoolId == staffCourseSectionData.SchoolId)?.BlockId : null,
-                                                                CourseId = staffCourseSectionData.CourseId,
-                                                                CourseSectionId = staffCourseSectionData.CourseSectionId,
-                                                                PeriodId = allCourseSectionVewList.FirstOrDefault()!.FixedPeriodId,
-                                                                AttendanceCategoryId = null,
-                                                                AttendanceCode = null,
-                                                                MissingAttendanceDate = date,
-                                                            };
-                                                            studentMissingAttendances.Add(missingAttendance);
-                                                            missingAttendanceId++;
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            if (staffCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
-                                            {
-                                                var courseVariableScheduleData = allCourseSectionVewList.Where(e => e.VarDay.ToLower().Contains(date.DayOfWeek.ToString().ToLower()));
-
-                                                if (courseVariableScheduleData != null)
-                                                {
-                                                    foreach (var courseVariableSchedule in courseVariableScheduleData.ToList())
-                                                    {
-                                                        var staffAttendanceData = context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == date && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == courseVariableSchedule.VarPeriodId);
-
-                                                        if (staffAttendanceData?.Any() == false)
-                                                        {
-                                                            var dataExitsInMA = context?.StudentMissingAttendances.Where(x => x.TenantId == staffCourseSectionData.TenantId && x.SchoolId == staffCourseSectionData.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.PeriodId == courseVariableSchedule.VarPeriodId && x.MissingAttendanceDate == date).FirstOrDefault();
-                                                            if (dataExitsInMA == null)
-                                                            {
-                                                                var missingAttendance = new StudentMissingAttendance
-                                                                {
-                                                                    TenantId = staffCourseSectionData.TenantId,
-                                                                    SchoolId = staffCourseSectionData.SchoolId,
-                                                                    MissingAttendanceId = (int)missingAttendanceId,
-                                                                    StaffId = staffCourseSectionData.StaffId,
-                                                                    BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == courseVariableSchedule.VarPeriodId && e.SchoolId == staffCourseSectionData.SchoolId)?.BlockId : null,
-                                                                    CourseId = staffCourseSectionData.CourseId,
-                                                                    CourseSectionId = staffCourseSectionData.CourseSectionId,
-                                                                    PeriodId = courseVariableSchedule.VarPeriodId,
-                                                                    AttendanceCategoryId = null,
-                                                                    AttendanceCode = null,
-                                                                    MissingAttendanceDate = date
-                                                                };
-                                                                studentMissingAttendances.Add(missingAttendance);
-                                                                missingAttendanceId++;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    else if (staffCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
-                                    {
-                                        if (allCourseSectionVewList.Count > 0)
-                                        {
-                                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate >= staffCourseSectionData.DurationStartDate && c.CalDate <= staffCourseSectionData.DurationEndDate && c.CalDate <= yesterdayDate.Date && !holidayList.Contains(c.CalDate.Value.Date));
-
-                                            if (calenderScheduleList.ToList().Count > 0)
-                                            {
-                                                foreach (var calenderSchedule in calenderScheduleList)
-                                                {
-                                                    var StudentCoursesectionScheduleData = context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section 
-
-                                                    if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
-                                                    {
-                                                        var staffAttendanceData = context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == calenderSchedule.CalDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == calenderSchedule.CalPeriodId);
-
-                                                        if (staffAttendanceData?.Any() == false)
-                                                        {
-                                                            var dataExitsInMA = context?.StudentMissingAttendances.Where(x => x.TenantId == staffCourseSectionData.TenantId && x.SchoolId == staffCourseSectionData.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.PeriodId == calenderSchedule.CalPeriodId && x.MissingAttendanceDate == calenderSchedule.CalDate).FirstOrDefault();
-                                                            if (dataExitsInMA == null)
-                                                            {
-                                                                var missingAttendance = new StudentMissingAttendance
-                                                                {
-                                                                    TenantId = staffCourseSectionData.TenantId,
-                                                                    SchoolId = staffCourseSectionData.SchoolId,
-                                                                    MissingAttendanceId = (int)missingAttendanceId,
-                                                                    StaffId = staffCourseSectionData.StaffId,
-                                                                    BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == calenderSchedule.CalPeriodId && e.SchoolId == staffCourseSectionData.SchoolId)?.BlockId : null,
-                                                                    CourseId = staffCourseSectionData.CourseId,
-                                                                    CourseSectionId = staffCourseSectionData.CourseSectionId,
-                                                                    PeriodId = calenderSchedule.CalPeriodId,
-                                                                    AttendanceCategoryId = null,
-                                                                    AttendanceCode = null,
-                                                                    MissingAttendanceDate = calenderSchedule.CalDate
-                                                                };
-                                                                studentMissingAttendances.Add(missingAttendance);
-                                                                missingAttendanceId++;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    else if (staffCourseSectionData.CourseSection.ScheduleType == "Block Schedule (4)")
-                                    {
-                                        var blockScheduleData = allCourseSectionVewList?.Where(v => v.SchoolId == staffCourseSectionData.SchoolId && v.TenantId == staffCourseSectionData.TenantId && v.CourseId == staffCourseSectionData.CourseId && v.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();
-
-                                        if (blockScheduleData != null && blockScheduleData.Any())
-                                        {
-                                            foreach (var blockSchedule in blockScheduleData)
-                                            {
-                                                var bellScheduleList = context?.BellSchedule.Where(v => v.SchoolId == staffCourseSectionData.SchoolId && v.TenantId == staffCourseSectionData.TenantId && v.BlockId == blockSchedule.BlockId && v.BellScheduleDate >= staffCourseSectionData.DurationStartDate && v.BellScheduleDate <= staffCourseSectionData.DurationEndDate && v.BellScheduleDate <= yesterdayDate && (!holidayList.Contains(v.BellScheduleDate))).ToList();
-
-                                                if (bellScheduleList != null && bellScheduleList.Any())
-                                                {
-                                                    foreach (var bellSchedule in bellScheduleList)
-                                                    {
-                                                        var StudentCoursesectionScheduleData = context?.StudentCoursesectionSchedule.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.EffectiveStartDate.Value.Date <= bellSchedule.BellScheduleDate.Date && b.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList(); //check student's EffectiveStartDate in this course section
-
-                                                        if (StudentCoursesectionScheduleData != null && StudentCoursesectionScheduleData.Any())
-                                                        {
-                                                            var staffAttendanceData = context?.StudentAttendance.Where(b => b.SchoolId == staffCourseSectionData.SchoolId && b.TenantId == staffCourseSectionData.TenantId && b.AttendanceDate == bellSchedule.BellScheduleDate && b.CourseSectionId == staffCourseSectionData.CourseSectionId && b.PeriodId == blockSchedule.BlockPeriodId).ToList();
-
-                                                            if (staffAttendanceData?.Any() == false)
-                                                            {
-                                                                var dataExitsInMA = context?.StudentMissingAttendances.Where(x => x.TenantId == staffCourseSectionData.TenantId && x.SchoolId == staffCourseSectionData.SchoolId && x.CourseSectionId == staffCourseSectionData.CourseSectionId && x.PeriodId == blockSchedule.BlockPeriodId && x.MissingAttendanceDate == bellSchedule.BellScheduleDate).FirstOrDefault();
-                                                                if (dataExitsInMA == null)
-                                                                {
-                                                                    var missingAttendance = new StudentMissingAttendance
-                                                                    {
-                                                                        TenantId = staffCourseSectionData.TenantId,
-                                                                        SchoolId = staffCourseSectionData.SchoolId,
-                                                                        MissingAttendanceId = (int)missingAttendanceId,
-                                                                        StaffId = staffCourseSectionData.StaffId,
-                                                                        BlockId = (BlockPeriodList?.Count > 0) ? BlockPeriodList.FirstOrDefault(e => e.PeriodId == blockSchedule.BlockPeriodId && e.SchoolId == staffCourseSectionData.SchoolId)?.BlockId : null,
-                                                                        CourseId = staffCourseSectionData.CourseId,
-                                                                        CourseSectionId = staffCourseSectionData.CourseSectionId,
-                                                                        PeriodId = blockSchedule.BlockPeriodId,
-                                                                        AttendanceCategoryId = null,
-                                                                        AttendanceCode = null,
-                                                                        MissingAttendanceDate = bellSchedule.BellScheduleDate
-                                                                    };
-                                                                    studentMissingAttendances.Add(missingAttendance);
-                                                                    missingAttendanceId++;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                                TenantId = staffCourseSectionData.TenantId,
+                                                SchoolId = staffCourseSectionData.SchoolId,
+                                                MissingAttendanceId = (int)missingAttendanceId!,
+                                                StaffId = staffCourseSectionData.StaffId,
+                                                BlockId = blockId,
+                                                CourseId = staffCourseSectionData.CourseId,
+                                                CourseSectionId = staffCourseSectionData.CourseSectionId,
+                                                PeriodId = courseVariableSchedule.VarPeriodId,
+                                                AttendanceCategoryId = null,
+                                                AttendanceCode = null,
+                                                MissingAttendanceDate = date,
+                                            });
+                                            missingAttendanceId++;
                                         }
                                     }
                                 }
                             }
                         }
+                        else if (staffCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
+                        {
+                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate != null && c.CalDate.Value.Date >= staffCourseSectionData.DurationStartDate && c.CalDate.Value.Date <= staffCourseSectionData.DurationEndDate && c.CalDate.Value.Date <= yesterdayDate && !holidaySet.Contains(c.CalDate.Value.Date));
+
+                            foreach (var calenderSchedule in calenderScheduleList)
+                            {
+                                // Check if students were enrolled by this date
+                                var earliestStart = enrollmentLookup[(staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)];
+                                if (earliestStart != null && earliestStart.Value.Date > calenderSchedule.CalDate!.Value.Date)
+                                    continue;
+
+                                var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, calenderSchedule.CalPeriodId, calenderSchedule.CalDate!.Value.Date);
+                                var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, calenderSchedule.CalPeriodId, calenderSchedule.CalDate!.Value.Date);
+
+                                if (!attendanceSet.Contains(attendanceKey) && !missingSet.Contains(missingKey))
+                                {
+                                    blockPeriodLookup.TryGetValue((staffCourseSectionData.SchoolId, calenderSchedule.CalPeriodId), out var blockId);
+                                    studentMissingAttendances.Add(new StudentMissingAttendance
+                                    {
+                                        TenantId = staffCourseSectionData.TenantId,
+                                        SchoolId = staffCourseSectionData.SchoolId,
+                                        MissingAttendanceId = (int)missingAttendanceId!,
+                                        StaffId = staffCourseSectionData.StaffId,
+                                        BlockId = blockId,
+                                        CourseId = staffCourseSectionData.CourseId,
+                                        CourseSectionId = staffCourseSectionData.CourseSectionId,
+                                        PeriodId = calenderSchedule.CalPeriodId,
+                                        AttendanceCategoryId = null,
+                                        AttendanceCode = null,
+                                        MissingAttendanceDate = calenderSchedule.CalDate,
+                                    });
+                                    missingAttendanceId++;
+                                }
+                            }
+                        }
+                        else if (staffCourseSectionData.CourseSection.ScheduleType == "Block Schedule (4)")
+                        {
+                            var blockScheduleData = allCourseSectionVewList.Where(v => v.SchoolId == staffCourseSectionData.SchoolId && v.TenantId == staffCourseSectionData.TenantId && v.CourseId == staffCourseSectionData.CourseId && v.CourseSectionId == staffCourseSectionData.CourseSectionId).ToList();
+
+                            foreach (var blockSchedule in blockScheduleData)
+                            {
+                                // Get all bell schedule dates for this block within the duration range
+                                var bellScheduleDates = allBellSchedules.Where(bs => bs.SchoolId == staffCourseSectionData.SchoolId && bs.TenantId == staffCourseSectionData.TenantId && bs.BlockId == blockSchedule.BlockId && bs.BellScheduleDate >= staffCourseSectionData.DurationStartDate && bs.BellScheduleDate <= staffCourseSectionData.DurationEndDate && !holidaySet.Contains(bs.BellScheduleDate)).ToList();
+
+                                foreach (var bellSchedule in bellScheduleDates)
+                                {
+                                    // Check if students were enrolled by this date
+                                    var earliestStart = enrollmentLookup[(staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)];
+                                    if (earliestStart != null && earliestStart.Value.Date > bellSchedule.BellScheduleDate.Date)
+                                        continue;
+
+                                    var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, blockSchedule.BlockPeriodId, bellSchedule.BellScheduleDate);
+                                    var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, blockSchedule.BlockPeriodId, bellSchedule.BellScheduleDate);
+
+                                    if (!attendanceSet.Contains(attendanceKey) && !missingSet.Contains(missingKey))
+                                    {
+                                        blockPeriodLookup.TryGetValue((staffCourseSectionData.SchoolId, blockSchedule.BlockPeriodId), out var blockId);
+                                        studentMissingAttendances.Add(new StudentMissingAttendance
+                                        {
+                                            TenantId = staffCourseSectionData.TenantId,
+                                            SchoolId = staffCourseSectionData.SchoolId,
+                                            MissingAttendanceId = (int)missingAttendanceId!,
+                                            StaffId = staffCourseSectionData.StaffId,
+                                            BlockId = blockId,
+                                            CourseId = staffCourseSectionData.CourseId,
+                                            CourseSectionId = staffCourseSectionData.CourseSectionId,
+                                            PeriodId = blockSchedule.BlockPeriodId,
+                                            AttendanceCategoryId = null,
+                                            AttendanceCode = null,
+                                            MissingAttendanceDate = bellSchedule.BellScheduleDate,
+                                        });
+                                        missingAttendanceId++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (studentMissingAttendances.Any())
+                    {
                         context?.StudentMissingAttendances.AddRange(studentMissingAttendances);
                         context?.SaveChanges();
                     }
