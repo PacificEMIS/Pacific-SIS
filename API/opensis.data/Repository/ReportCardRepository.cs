@@ -787,12 +787,19 @@ namespace opensis.data.Repository
                                             WeekOfflist.Add(Day!);
                                         }
 
+                                        // Resolve leaf-level marking period ranges to exclude gaps
+                                        // (semester breaks, quarter breaks, etc.)
+                                        var mpRanges = Utility.GetLeafMarkingPeriodRanges(
+                                            this.context!, reportCardViewModel.TenantId,
+                                            reportCardViewModel.SchoolId, schoolYearData.MarkingPeriodId);
+
                                         int workDays = 0;
                                         while (schoolYearStartDate != schoolYearEndDate)
                                         {
                                             if (!holidayList.Contains(schoolYearStartDate))
                                             {
-                                                if (!WeekOfflist.Contains(schoolYearStartDate.DayOfWeek.ToString()))
+                                                if (!WeekOfflist.Contains(schoolYearStartDate.DayOfWeek.ToString())
+                                                    && Utility.IsWithinMarkingPeriod(schoolYearStartDate, mpRanges))
                                                 {
                                                     workDays++;
                                                 }
@@ -2004,26 +2011,19 @@ namespace opensis.data.Repository
                                     WeekOfflist.Add(Day!);
                                 }
 
+                                // Resolve leaf-level marking period ranges to exclude gaps
+                                // (semester breaks, quarter breaks, etc.)
+                                var mpRanges = Utility.GetLeafMarkingPeriodRanges(
+                                    this.context!, reportCardViewModel.TenantId,
+                                    reportCardViewModel.SchoolId, schoolYearData.MarkingPeriodId);
+
                                 //fetch all dates in this session calender
                                 var allDates = Enumerable.Range(0, 1 + YTDEndDate!.Value.Date.Subtract(YTDStartDate!.Value.Date).Days).Select(d => YTDStartDate.Value.Date.AddDays(d)).ToList();
 
-                                //remove holidays &weekoffdays
-                                var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString())).ToList();
+                                //remove holidays, weekoffdays, and dates outside marking periods
+                                var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString()) && Utility.IsWithinMarkingPeriod(s.Date, mpRanges)).ToList();
 
                                 workDays = wrokingDates.Count;
-
-                                //var studentAttendance = this.context?.StudentAttendance.Include(s => s.AttendanceCodeNavigation).Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= YTDStartDate && x.AttendanceDate <= YTDEndDate).ToList();
-
-                                //if (studentAttendance?.Count > 0 && workDays > 0)
-                                //{
-                                //var studentDailyAttendanceCount = studentAttendance.Where(x => x.AttendanceCodeNavigation!.StateCode?.ToLower() == "present").GroupBy(c => new
-                                //{
-                                //    c.StudentId,
-                                //    c.AttendanceDate
-                                //}).Count();
-
-                                //attendencePercent = ((Convert.ToDecimal(studentDailyAttendanceCount) / Convert.ToDecimal(workDays)) * 100);
-                                //}
 
                                 var studentDailyAttendanceData = studentDailyAttendanceAllData!.Where(x => x.TenantId == reportCardViewModel.TenantId && x.SchoolId == reportCardViewModel.SchoolId && x.StudentId == student.StudentId && x.AttendanceDate >= YTDStartDate && x.AttendanceDate <= YTDEndDate).ToList();
 
@@ -2885,11 +2885,17 @@ namespace opensis.data.Repository
                                     WeekOfflist.Add(Day!);
                                 }
 
+                                // Resolve leaf-level marking period ranges to exclude gaps
+                                // (semester breaks, quarter breaks, etc.)
+                                var mpRanges = Utility.GetLeafMarkingPeriodRanges(
+                                    this.context!, reportCardViewModel.TenantId,
+                                    reportCardViewModel.SchoolId, schoolYearData.MarkingPeriodId);
+
                                 //fetch all dates in this session calender
                                 var allDates = Enumerable.Range(0, 1 + YTDEndDate!.Value.Date.Subtract(YTDStartDate!.Value.Date).Days).Select(d => YTDStartDate.Value.Date.AddDays(d)).ToList();
 
-                                //remove holidays &weekoffdays
-                                var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString())).ToList();
+                                //remove holidays, weekoffdays, and dates outside marking periods
+                                var wrokingDates = allDates.Where(s => !holidayList.Contains(s.Date) && !WeekOfflist.Contains(s.Date.DayOfWeek.ToString()) && Utility.IsWithinMarkingPeriod(s.Date, mpRanges)).ToList();
 
                                 workDays = wrokingDates.Count;
 

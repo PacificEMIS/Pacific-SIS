@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.EntityFrameworkCore;
 using opensis.data.Models;
 using opensis.data.ViewModels;
 using System;
@@ -625,6 +626,82 @@ namespace opensis.data.Helper
                 filterStudentGuids = medicalFilterData.Select(s => s.StudentGuid).Distinct().ToList();
             }
             return filterStudentGuids;
+        }
+
+        /// <summary>
+        /// Resolves the valid instructional date ranges for a school year by walking
+        /// the marking period hierarchy down to the leaf level.
+        ///
+        /// Given a school year's marking period ID, finds all child semesters, then
+        /// their child quarters, then their child progress periods. Returns the
+        /// date ranges of the deepest level that exists. Gaps between these ranges
+        /// (semester breaks, quarter breaks, etc.) are excluded.
+        ///
+        /// If the year has no children, returns the year's own date range.
+        /// </summary>
+        public static List<(DateTime Start, DateTime End)> GetLeafMarkingPeriodRanges(
+            CRMContext context, Guid tenantId, int schoolId, int yearMarkingPeriodId)
+        {
+            var ranges = new List<(DateTime Start, DateTime End)>();
+
+            var semesters = context.Semesters.AsNoTracking()
+                .Where(s => s.TenantId == tenantId && s.SchoolId == schoolId && s.YearId == yearMarkingPeriodId)
+                .ToList();
+
+            if (semesters.Any())
+            {
+                foreach (var semester in semesters)
+                {
+                    var quarters = context.Quarters.AsNoTracking()
+                        .Where(q => q.TenantId == tenantId && q.SchoolId == schoolId && q.SemesterId == semester.MarkingPeriodId)
+                        .ToList();
+
+                    if (quarters.Any())
+                    {
+                        foreach (var quarter in quarters)
+                        {
+                            var progressPeriods = context.ProgressPeriods.AsNoTracking()
+                                .Where(p => p.TenantId == tenantId && p.SchoolId == schoolId && p.QuarterId == quarter.MarkingPeriodId
+                                    && p.StartDate != null && p.EndDate != null)
+                                .ToList();
+
+                            if (progressPeriods.Any())
+                            {
+                                ranges.AddRange(progressPeriods.Select(p => (p.StartDate!.Value, p.EndDate!.Value)));
+                            }
+                            else if (quarter.StartDate != null && quarter.EndDate != null)
+                            {
+                                ranges.Add((quarter.StartDate.Value, quarter.EndDate.Value));
+                            }
+                        }
+                    }
+                    else if (semester.StartDate != null && semester.EndDate != null)
+                    {
+                        ranges.Add((semester.StartDate.Value, semester.EndDate.Value));
+                    }
+                }
+            }
+            else
+            {
+                // No children — use the year's own dates
+                var year = context.SchoolYears.AsNoTracking()
+                    .FirstOrDefault(y => y.TenantId == tenantId && y.SchoolId == schoolId && y.MarkingPeriodId == yearMarkingPeriodId);
+                if (year?.StartDate != null && year?.EndDate != null)
+                    ranges.Add((year.StartDate.Value, year.EndDate.Value));
+            }
+
+            return ranges;
+        }
+
+        /// <summary>
+        /// Returns true if the date falls within at least one of the marking period ranges,
+        /// or if no ranges were resolved (allow all dates as fallback).
+        /// </summary>
+        public static bool IsWithinMarkingPeriod(DateTime date, List<(DateTime Start, DateTime End)>? ranges)
+        {
+            if (ranges == null || !ranges.Any())
+                return true;
+            return ranges.Any(r => date >= r.Start && date <= r.End);
         }
     }
 }
