@@ -514,20 +514,36 @@ namespace opensis.data.Repository
                     {
                         var csIds = scheduledCourseSectionView.courseSectionViewList.Select(c => c.CourseSectionId).ToList();
 
+                        var enrolledCounts = this.context?.StudentCoursesectionSchedule
+                            .AsNoTracking()
+                            .Where(ss => ss.TenantId == scheduledCourseSectionViewModel.TenantId
+                                && ss.SchoolId == scheduledCourseSectionViewModel.SchoolId
+                                && csIds.Contains(ss.CourseSectionId)
+                                && ss.IsDropped != true)
+                            .GroupBy(ss => ss.CourseSectionId)
+                            .Select(g => new { CourseSectionId = g.Key, Count = g.Count() })
+                            .ToDictionary(x => x.CourseSectionId, x => x.Count)
+                            ?? new Dictionary<int, int>();
+
                         scheduledCourseSectionView.AttendanceTakenList = this.context?.StudentAttendance
                             .AsNoTracking()
                             .Where(sa => sa.TenantId == scheduledCourseSectionViewModel.TenantId
                                 && sa.SchoolId == scheduledCourseSectionViewModel.SchoolId
                                 && csIds.Contains(sa.CourseSectionId))
-                            .Select(sa => new { sa.CourseSectionId, sa.PeriodId, sa.AttendanceDate })
-                            .Distinct()
-                            .Select(sa => new AttendanceTakenRecord
+                            .GroupBy(sa => new { sa.CourseSectionId, sa.PeriodId, sa.AttendanceDate })
+                            .Select(g => new AttendanceTakenRecord
                             {
-                                CourseSectionId = sa.CourseSectionId,
-                                PeriodId = sa.PeriodId,
-                                AttendanceDate = sa.AttendanceDate
+                                CourseSectionId = g.Key.CourseSectionId,
+                                PeriodId = g.Key.PeriodId,
+                                AttendanceDate = g.Key.AttendanceDate,
+                                AttendanceCount = g.Select(sa => sa.StudentId).Distinct().Count()
                             })
                             .ToList() ?? new List<AttendanceTakenRecord>();
+
+                        foreach (var record in scheduledCourseSectionView.AttendanceTakenList)
+                        {
+                            record.EnrolledCount = enrolledCounts.GetValueOrDefault(record.CourseSectionId ?? 0, 0);
+                        }
                     }
                 }
                 else

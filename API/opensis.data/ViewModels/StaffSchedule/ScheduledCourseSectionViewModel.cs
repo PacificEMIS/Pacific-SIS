@@ -34,6 +34,8 @@ namespace opensis.data.ViewModels.StaffSchedule
         public int? CourseSectionId { get; set; }
         public int? PeriodId { get; set; }
         public DateTime AttendanceDate { get; set; }
+        public int AttendanceCount { get; set; }
+        public int EnrolledCount { get; set; }
     }
 
     public class ScheduledCourseSectionViewModel : CommonFields

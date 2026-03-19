@@ -70,7 +70,7 @@ export class CourseSectionComponent implements OnInit {
   masterCalendarEvents: CalendarEvent<any>[];
   loading: boolean;
   holidayList = [];
-  attendanceTakenSet: Set<string> = new Set();
+  attendanceTakenMap: Map<string, { attendanceCount: number, enrolledCount: number }> = new Map();
 
   constructor(
     private router: Router,
@@ -110,17 +110,21 @@ export class CourseSectionComponent implements OnInit {
           duration: 1000
         });
       } else {
-        this.buildAttendanceTakenSet(data.attendanceTakenList || []);
+        this.buildAttendanceTakenMap(data.attendanceTakenList || []);
         this.generateEventForCalendar(data.courseSectionViewList);
       }
     });
   }
 
-  buildAttendanceTakenSet(attendanceTakenList: any[]) {
-    this.attendanceTakenSet.clear();
+  buildAttendanceTakenMap(attendanceTakenList: any[]) {
+    this.attendanceTakenMap.clear();
     attendanceTakenList.forEach(record => {
       const dateStr = moment(record.attendanceDate).format('YYYY-MM-DD');
-      this.attendanceTakenSet.add(`${record.courseSectionId}_${record.periodId}_${dateStr}`);
+      const key = `${record.courseSectionId}_${record.periodId}_${dateStr}`;
+      this.attendanceTakenMap.set(key, {
+        attendanceCount: record.attendanceCount,
+        enrolledCount: record.enrolledCount
+      });
     });
   }
 
@@ -134,7 +138,11 @@ export class CourseSectionComponent implements OnInit {
       return 'future';
     }
     const key = `${courseSectionId}_${periodId}_${moment(attendanceDate).format('YYYY-MM-DD')}`;
-    return this.attendanceTakenSet.has(key) ? 'taken' : 'missing';
+    const record = this.attendanceTakenMap.get(key);
+    if (!record) {
+      return 'missing';
+    }
+    return record.attendanceCount >= record.enrolledCount ? 'taken' : 'partial';
   }
 
   getAllCourseSections() {

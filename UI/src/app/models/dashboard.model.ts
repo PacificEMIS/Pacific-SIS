@@ -31,6 +31,8 @@ export class AttendanceTakenRecord {
     courseSectionId: number;
     periodId: number;
     attendanceDate: string;
+    attendanceCount: number;
+    enrolledCount: number;
 }
 
 export class ScheduledCourseSectionViewModel extends CommonField{
