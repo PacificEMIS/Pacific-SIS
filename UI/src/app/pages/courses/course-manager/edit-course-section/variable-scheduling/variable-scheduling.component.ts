@@ -163,6 +163,14 @@ export class VariableSchedulingComponent implements OnInit, OnChanges {
       return x.periodId === +periodId
     })
     this.selectedPeriod[indexOfDynamicRow] = index;
+
+    // Auto-set Take Attendance based on the period's Calculate Attendance flag
+    const selectedPeriod = this.blockListViewModel.getBlockListForView[0]?.blockPeriod.find(
+      p => p.periodId === +periodId
+    );
+    if (selectedPeriod) {
+      this.courseSectionAddViewModel.courseVariableScheduleList[indexOfDynamicRow].takeAttendance = selectedPeriod.calculateAttendance;
+    }
   }
 
   addMoreRotatingScheduleRow() {

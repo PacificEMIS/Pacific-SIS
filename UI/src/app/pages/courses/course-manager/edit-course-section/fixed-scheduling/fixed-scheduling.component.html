@@ -22,7 +22,7 @@
                 <mat-form-field class="w-full" appearance="outline" color="primary">
                     <mat-label>{{'period' | translate}}</mat-label>
                     <mat-select #period="ngModel" name="period" [disabled]="!this.defaultValueService.checkAcademicYear()"
-                    [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.periodId" required>
+                    [(ngModel)]="fixedSchedulingModel.courseFixedSchedule.periodId" (selectionChange)="onPeriodChange()" required>
                         <mat-option *ngFor="let period of periodList" [value]="period.periodId">{{period.periodTitle}}</mat-option>
                     </mat-select>
                     <mat-error *ngIf="period.errors?.required">

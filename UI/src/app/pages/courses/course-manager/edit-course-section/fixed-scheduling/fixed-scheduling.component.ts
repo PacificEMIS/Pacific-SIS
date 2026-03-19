@@ -178,6 +178,15 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
     }
   }
 
+  onPeriodChange() {
+    const selectedPeriod = this.periodList.find(
+      p => p.periodId === this.fixedSchedulingModel.courseFixedSchedule.periodId
+    );
+    if (selectedPeriod) {
+      this.fixedSchedulingModel.courseFixedSchedule.attendanceTaken = selectedPeriod.calculateAttendance;
+    }
+  }
+
   sendFixedScheduleDataToParent(){
     if(this.currentForm.form.valid && this.activeDays.length>0){
       this.fixedSchedulingModel.courseFixedSchedule.meetingDays=this.activeDays?.join('|');

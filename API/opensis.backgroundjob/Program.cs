@@ -353,6 +353,14 @@ namespace opensis.backgroundjob
                         .GroupBy(bp => (bp.SchoolId, (int?)bp.PeriodId))
                         .ToDictionary(g => g.Key, g => g.First().BlockId);
 
+                    // Build set of (SchoolId, PeriodId) where CalculateAttendance is true.
+                    // Only generate missing attendance for these periods — periods not flagged
+                    // for attendance calculation should not prompt teachers to take attendance.
+                    var calculateAttendanceSet = new HashSet<(int, int?)>(
+                        blockPeriodList
+                            .Where(bp => bp.CalculateAttendance == true)
+                            .Select(bp => (bp.SchoolId, (int?)bp.PeriodId)));
+
                     // Batch-load ALL StudentAttendance for relevant course sections (full duration range)
                     var allStudentAttendance = context?.StudentAttendance.AsNoTracking()
                         .Where(a => allCourseSectionIds.Contains(a.CourseSectionId))
@@ -498,6 +506,11 @@ namespace opensis.backgroundjob
                                 if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)")
                                 {
                                     var fixedPeriodId = allCourseSectionVewList.First().FixedPeriodId;
+
+                                    // Skip periods not flagged for attendance calculation
+                                    if (!calculateAttendanceSet.Contains((staffCourseSectionData.SchoolId, fixedPeriodId)))
+                                        continue;
+
                                     var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, fixedPeriodId, date);
                                     var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, fixedPeriodId, date);
 
@@ -527,6 +540,10 @@ namespace opensis.backgroundjob
 
                                     foreach (var courseVariableSchedule in courseVariableScheduleData)
                                     {
+                                        // Skip periods not flagged for attendance calculation
+                                        if (!calculateAttendanceSet.Contains((staffCourseSectionData.SchoolId, courseVariableSchedule.VarPeriodId)))
+                                            continue;
+
                                         var attendanceKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, courseVariableSchedule.VarPeriodId, date);
                                         var missingKey = (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId, courseVariableSchedule.VarPeriodId, date);
 
@@ -559,6 +576,10 @@ namespace opensis.backgroundjob
 
                             foreach (var calenderSchedule in calenderScheduleList)
                             {
+                                // Skip periods not flagged for attendance calculation
+                                if (!calculateAttendanceSet.Contains((staffCourseSectionData.SchoolId, calenderSchedule.CalPeriodId)))
+                                    continue;
+
                                 // Check if students were enrolled by this date
                                 var earliestStart = enrollmentLookup[(staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)];
                                 if (earliestStart != null && earliestStart.Value.Date > calenderSchedule.CalDate!.Value.Date)
@@ -599,6 +620,10 @@ namespace opensis.backgroundjob
 
                                 foreach (var bellSchedule in bellScheduleDates)
                                 {
+                                    // Skip periods not flagged for attendance calculation
+                                    if (!calculateAttendanceSet.Contains((staffCourseSectionData.SchoolId, blockSchedule.BlockPeriodId)))
+                                        continue;
+
                                     // Check if students were enrolled by this date
                                     var earliestStart = enrollmentLookup[(staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)];
                                     if (earliestStart != null && earliestStart.Value.Date > bellSchedule.BellScheduleDate.Date)

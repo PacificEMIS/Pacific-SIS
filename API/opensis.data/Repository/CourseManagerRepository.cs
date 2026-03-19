@@ -1320,6 +1320,15 @@ namespace opensis.data.Repository
                     //    }
                     //}
 
+                    // Validate period allows attendance calculation if attendance is being taken
+                    if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                        courseSectionAddViewModel.CourseFixedSchedule.BlockId,
+                        courseSectionAddViewModel.CourseFixedSchedule.PeriodId,
+                        courseSectionAddViewModel.CourseSection!.AttendanceTaken))
+                    {
+                        return courseSectionAddViewModel;
+                    }
+
                     var roomCapacity = this.context?.Rooms.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.RoomId == courseSectionAddViewModel.CourseFixedSchedule.RoomId)?.Capacity;
 
                     if (roomCapacity == null || roomCapacity < courseSectionAddViewModel.CourseSection!.Seats)
@@ -1476,6 +1485,15 @@ namespace opensis.data.Repository
 
                         //    }
 
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseVariableSchedules.BlockId,
+                            courseVariableSchedules.PeriodId,
+                            courseVariableSchedules.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
+                        }
+
                         var courseeVariableSchedule = new CourseVariableSchedule()
                         {
                             TenantId = courseSectionAddViewModel.CourseSection!.TenantId,
@@ -1597,6 +1615,15 @@ namespace opensis.data.Repository
                         //            return courseSectionAddViewModel;
                         //        }
 
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseCalendarSchedule.BlockId,
+                            courseCalendarSchedule.PeriodId,
+                            courseCalendarSchedule.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
+                        }
+
                         var courseCalenderSchedule = new CourseCalendarSchedule()
                         {
                             TenantId = courseSectionAddViewModel.CourseSection!.TenantId,
@@ -1666,6 +1693,15 @@ namespace opensis.data.Repository
                                 courseSectionAddViewModel._message = "Room is not available for this block and period";
                                 return courseSectionAddViewModel;
                             }
+                        }
+
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseBlockSchedules.BlockId,
+                            courseBlockSchedules.PeriodId,
+                            courseBlockSchedules.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
                         }
 
                         var courseBlockSchedule = new CourseBlockSchedule()
@@ -1866,6 +1902,15 @@ namespace opensis.data.Repository
 
                     if (fixedScheduleDataUpdate != null)
                     {
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseSectionAddViewModel.CourseFixedSchedule.BlockId,
+                            courseSectionAddViewModel.CourseFixedSchedule.PeriodId,
+                            courseSectionAddViewModel.CourseSection!.AttendanceTaken))
+                        {
+                            return courseSectionAddViewModel;
+                        }
+
                         var roomCapacity = this.context?.Rooms.FirstOrDefault(e => e.TenantId == courseSectionAddViewModel.CourseSection!.TenantId && e.SchoolId == courseSectionAddViewModel.CourseSection.SchoolId && e.RoomId == courseSectionAddViewModel.CourseFixedSchedule.RoomId && e.IsActive == true)?.Capacity;
 
                         if (roomCapacity == null || roomCapacity < courseSectionAddViewModel.CourseSection!.Seats)
@@ -2091,6 +2136,15 @@ namespace opensis.data.Repository
                         //    }
                         //}
 
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseVariableSchedules.BlockId,
+                            courseVariableSchedules.PeriodId,
+                            courseVariableSchedules.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
+                        }
+
                         var courseVariableScheduleAdd = new CourseVariableSchedule()
                         {
                             TenantId = courseSectionAddViewModel.CourseSection!.TenantId,
@@ -2219,6 +2273,15 @@ namespace opensis.data.Repository
                         //    courseSectionAddViewModel._failure = true;
                         //    return courseSectionAddViewModel;
                         //}
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseCalendarSchedule.BlockId,
+                            courseCalendarSchedule.PeriodId,
+                            courseCalendarSchedule.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
+                        }
+
                         var courseCalenderSchedule = new CourseCalendarSchedule()
                         {
                             TenantId = courseSectionAddViewModel.CourseSection!.TenantId,
@@ -2295,6 +2358,15 @@ namespace opensis.data.Repository
                                 courseSectionAddViewModel._message = "Room is not available for this block and period";
                                 return courseSectionAddViewModel;
                             }
+                        }
+
+                        // Validate period allows attendance calculation if attendance is being taken
+                        if (!ValidateCalculateAttendance(courseSectionAddViewModel,
+                            courseBlockSchedule.BlockId,
+                            courseBlockSchedule.PeriodId,
+                            courseBlockSchedule.TakeAttendance))
+                        {
+                            return courseSectionAddViewModel;
                         }
 
                         var courseBlockScheduleAdd = new CourseBlockSchedule()
@@ -3305,6 +3377,41 @@ namespace opensis.data.Repository
                 studentCount = this.context?.StudentCoursesectionSchedule.Include(s => s.StudentMaster).Where(x => x.TenantId == courseSection.TenantId && x.SchoolId == courseSection.SchoolId && x.CourseId == courseSection.CourseId && x.CourseSectionId == courseSection.CourseSectionId && x.StudentMaster.IsActive == true && ((courseSection.DurationEndDate < DateTime.Today.Date && x.EffectiveDropDate == courseSection.DurationEndDate) || x.IsDropped != true)).ToList().Count;
             }
             return studentCount;
+        }
+        /// <summary>
+        /// Validates the relationship between a period's CalculateAttendance flag
+        /// and the course section's Take Attendance setting.
+        /// - Cannot take attendance on a period where CalculateAttendance is false.
+        /// - Cannot disable attendance on a period where CalculateAttendance is true
+        ///   (downstream calculations depend on attendance being collected).
+        /// Returns true if valid. Sets _failure and _message on the view model if invalid.
+        /// </summary>
+        private bool ValidateCalculateAttendance(CourseSectionAddViewModel vm, int? blockId, int? periodId, bool? takeAttendance)
+        {
+            var blockPeriod = this.context?.BlockPeriod.FirstOrDefault(bp =>
+                bp.TenantId == vm.CourseSection!.TenantId
+                && bp.SchoolId == vm.CourseSection.SchoolId
+                && bp.BlockId == blockId
+                && bp.PeriodId == periodId);
+
+            if (blockPeriod == null)
+                return true;
+
+            if (takeAttendance == true && blockPeriod.CalculateAttendance != true)
+            {
+                vm._failure = true;
+                vm._message = "Cannot take attendance on a period where 'Calculate Attendance' is not enabled. Update the period settings first.";
+                return false;
+            }
+
+            if (takeAttendance != true && blockPeriod.CalculateAttendance == true)
+            {
+                vm._failure = true;
+                vm._message = "Attendance must be taken on periods where 'Calculate Attendance' is enabled. Attendance calculations depend on this data being collected.";
+                return false;
+            }
+
+            return true;
         }
     }
 }
