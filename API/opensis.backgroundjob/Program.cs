@@ -312,6 +312,9 @@ namespace opensis.backgroundjob
                 {
                     List<StudentMissingAttendance> studentMissingAttendances = new List<StudentMissingAttendance>();
 
+                    // Upper bound is yesterday; but date generation (below) starts from
+                    // DurationStartDate, so the job safely back-fills any days it missed.
+                    // This is intentional — do NOT change it to generate only for yesterday.
                     var yesterdayDate = DateTime.Today.AddDays(-1).Date;
 
                     int? missingAttendanceId = 1;
@@ -394,6 +397,37 @@ namespace opensis.backgroundjob
                             .ToList() ?? new List<BellSchedule>()
                         : new List<BellSchedule>();
 
+                    // Batch-load marking period tables to exclude dates outside active marking periods.
+                    // A course section is assigned to one level (Year/Semester/Quarter/ProgressPeriod).
+                    // We walk down to the leaf-level children to find the actual instructional date ranges,
+                    // so gaps between semesters, quarters, etc. are automatically excluded.
+                    var allSchoolYears = context?.SchoolYears.AsNoTracking()
+                        .Where(y => allSchoolIds.Contains(y.SchoolId))
+                        .ToList() ?? new List<SchoolYears>();
+                    var allSemesters = context?.Semesters.AsNoTracking()
+                        .Where(s => allSchoolIds.Contains(s.SchoolId))
+                        .ToList() ?? new List<Semesters>();
+                    var allQuarters = context?.Quarters.AsNoTracking()
+                        .Where(q => allSchoolIds.Contains(q.SchoolId))
+                        .ToList() ?? new List<Quarters>();
+                    var allProgressPeriods = context?.ProgressPeriods.AsNoTracking()
+                        .Where(p => allSchoolIds.Contains(p.SchoolId))
+                        .ToList() ?? new List<ProgressPeriods>();
+
+                    // Build a lookup: (SchoolId, CourseSectionId) -> list of valid (StartDate, EndDate) ranges.
+                    // Each course section gets its marking period resolved to leaf-level date ranges.
+                    var markingPeriodRangesLookup = new Dictionary<(int SchoolId, int CourseSectionId), List<(DateTime Start, DateTime End)>>();
+
+                    foreach (var csv in allCourseSectionVewListData.GroupBy(v => new { v.SchoolId, v.CourseSectionId }).Select(g => g.First()))
+                    {
+                        var ranges = GetLeafMarkingPeriodRanges(
+                            csv.SchoolId, csv.YrMarkingPeriodId, csv.SmstrMarkingPeriodId,
+                            csv.QtrMarkingPeriodId, csv.PrgrsprdMarkingPeriodId,
+                            allSchoolYears, allSemesters, allQuarters, allProgressPeriods);
+                        if (ranges.Any())
+                            markingPeriodRangesLookup[(csv.SchoolId, csv.CourseSectionId)] = ranges;
+                    }
+
                     foreach (var schoolWiseCourseSection in schoolWiseCourseSectionData)
                     {
                         var staffCourseSectionData = staffCourseSectionScheduleData.FirstOrDefault(x => x.SchoolId == schoolWiseCourseSection.SchoolId && x.CourseSectionId == schoolWiseCourseSection.CourseSectionId);
@@ -430,6 +464,13 @@ namespace opensis.backgroundjob
                         if (!enrollmentLookup.ContainsKey((staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId)))
                             continue;
 
+                        // Get marking period date ranges for this course section.
+                        // If ranges exist, only generate missing attendance for dates within them.
+                        // This excludes gaps between semesters, quarters, etc.
+                        markingPeriodRangesLookup.TryGetValue(
+                            (staffCourseSectionData.SchoolId, staffCourseSectionData.CourseSectionId),
+                            out var mpRanges);
+
                         if (staffCourseSectionData.CourseSection.ScheduleType == "Fixed Schedule (1)" || staffCourseSectionData.CourseSection.ScheduleType == "Variable Schedule (2)")
                         {
                             // Build date list from DurationStartDate to yesterday, matching meeting days
@@ -442,7 +483,9 @@ namespace opensis.backgroundjob
 
                             var dateList = Enumerable.Range(0, 1 + end.Subtract(start).Days)
                                 .Select(offset => start.AddDays(offset))
-                                .Where(d => (allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower())) && !holidaySet.Contains(d))
+                                .Where(d => (allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower()))
+                                    && !holidaySet.Contains(d)
+                                    && IsWithinMarkingPeriod(d, mpRanges))
                                 .ToList();
 
                             foreach (var date in dateList)
@@ -512,7 +555,7 @@ namespace opensis.backgroundjob
                         }
                         else if (staffCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
                         {
-                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate != null && c.CalDate.Value.Date >= staffCourseSectionData.DurationStartDate && c.CalDate.Value.Date <= staffCourseSectionData.DurationEndDate && c.CalDate.Value.Date <= yesterdayDate && !holidaySet.Contains(c.CalDate.Value.Date));
+                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate != null && c.CalDate.Value.Date >= staffCourseSectionData.DurationStartDate && c.CalDate.Value.Date <= staffCourseSectionData.DurationEndDate && c.CalDate.Value.Date <= yesterdayDate && !holidaySet.Contains(c.CalDate.Value.Date) && IsWithinMarkingPeriod(c.CalDate.Value.Date, mpRanges));
 
                             foreach (var calenderSchedule in calenderScheduleList)
                             {
@@ -552,7 +595,7 @@ namespace opensis.backgroundjob
                             foreach (var blockSchedule in blockScheduleData)
                             {
                                 // Get all bell schedule dates for this block within the duration range
-                                var bellScheduleDates = allBellSchedules.Where(bs => bs.SchoolId == staffCourseSectionData.SchoolId && bs.TenantId == staffCourseSectionData.TenantId && bs.BlockId == blockSchedule.BlockId && bs.BellScheduleDate >= staffCourseSectionData.DurationStartDate && bs.BellScheduleDate <= staffCourseSectionData.DurationEndDate && !holidaySet.Contains(bs.BellScheduleDate)).ToList();
+                                var bellScheduleDates = allBellSchedules.Where(bs => bs.SchoolId == staffCourseSectionData.SchoolId && bs.TenantId == staffCourseSectionData.TenantId && bs.BlockId == blockSchedule.BlockId && bs.BellScheduleDate >= staffCourseSectionData.DurationStartDate && bs.BellScheduleDate <= staffCourseSectionData.DurationEndDate && !holidaySet.Contains(bs.BellScheduleDate) && IsWithinMarkingPeriod(bs.BellScheduleDate, mpRanges)).ToList();
 
                                 foreach (var bellSchedule in bellScheduleDates)
                                 {
@@ -599,6 +642,117 @@ namespace opensis.backgroundjob
                     var msg = es.Message;
                 }
             }
+        }
+
+        /// <summary>
+        /// Resolves the valid instructional date ranges for a course section by walking
+        /// the marking period hierarchy down to the leaf level.
+        ///
+        /// A course section is assigned to exactly one marking period level via one of
+        /// YrMarkingPeriodId, SmstrMarkingPeriodId, QtrMarkingPeriodId, or PrgrsprdMarkingPeriodId.
+        /// If that level has children (e.g. a Year has Semesters, which have Quarters),
+        /// the leaf-level children define the actual instructional date ranges. Gaps between
+        /// leaves (e.g. semester breaks, quarter breaks) are excluded.
+        /// If the assigned level has no children, its own dates are used.
+        /// </summary>
+        private static List<(DateTime Start, DateTime End)> GetLeafMarkingPeriodRanges(
+            int schoolId, int? yrId, int? smstrId, int? qtrId, int? prgrsprdId,
+            List<SchoolYears> allYears, List<Semesters> allSemesters,
+            List<Quarters> allQuarters, List<ProgressPeriods> allProgressPeriods)
+        {
+            var ranges = new List<(DateTime Start, DateTime End)>();
+
+            if (prgrsprdId != null)
+            {
+                // Assigned at progress period level — this IS the leaf
+                var pp = allProgressPeriods.FirstOrDefault(p => p.SchoolId == schoolId && p.MarkingPeriodId == prgrsprdId);
+                if (pp?.StartDate != null && pp?.EndDate != null)
+                    ranges.Add((pp.StartDate.Value, pp.EndDate.Value));
+                return ranges;
+            }
+
+            if (qtrId != null)
+            {
+                // Assigned at quarter level — check for child progress periods
+                var childPPs = allProgressPeriods
+                    .Where(p => p.SchoolId == schoolId && p.QuarterId == qtrId
+                        && p.StartDate != null && p.EndDate != null)
+                    .ToList();
+                if (childPPs.Any())
+                {
+                    ranges.AddRange(childPPs.Select(p => (p.StartDate!.Value, p.EndDate!.Value)));
+                    return ranges;
+                }
+                // No children — use the quarter's own dates
+                var qtr = allQuarters.FirstOrDefault(q => q.SchoolId == schoolId && q.MarkingPeriodId == qtrId);
+                if (qtr?.StartDate != null && qtr?.EndDate != null)
+                    ranges.Add((qtr.StartDate.Value, qtr.EndDate.Value));
+                return ranges;
+            }
+
+            if (smstrId != null)
+            {
+                // Assigned at semester level — check for child quarters
+                var childQtrs = allQuarters
+                    .Where(q => q.SchoolId == schoolId && q.SemesterId == smstrId)
+                    .ToList();
+                if (childQtrs.Any())
+                {
+                    // Recurse into each quarter to find its leaves
+                    foreach (var cq in childQtrs)
+                    {
+                        var qtrRanges = GetLeafMarkingPeriodRanges(
+                            schoolId, null, null, cq.MarkingPeriodId, null,
+                            allYears, allSemesters, allQuarters, allProgressPeriods);
+                        ranges.AddRange(qtrRanges);
+                    }
+                    return ranges;
+                }
+                // No children — use the semester's own dates
+                var sem = allSemesters.FirstOrDefault(s => s.SchoolId == schoolId && s.MarkingPeriodId == smstrId);
+                if (sem?.StartDate != null && sem?.EndDate != null)
+                    ranges.Add((sem.StartDate.Value, sem.EndDate.Value));
+                return ranges;
+            }
+
+            if (yrId != null)
+            {
+                // Assigned at year level — check for child semesters
+                var childSems = allSemesters
+                    .Where(s => s.SchoolId == schoolId && s.YearId == yrId)
+                    .ToList();
+                if (childSems.Any())
+                {
+                    // Recurse into each semester to find its leaves
+                    foreach (var cs in childSems)
+                    {
+                        var semRanges = GetLeafMarkingPeriodRanges(
+                            schoolId, null, cs.MarkingPeriodId, null, null,
+                            allYears, allSemesters, allQuarters, allProgressPeriods);
+                        ranges.AddRange(semRanges);
+                    }
+                    return ranges;
+                }
+                // No children — use the year's own dates
+                var yr = allYears.FirstOrDefault(y => y.SchoolId == schoolId && y.MarkingPeriodId == yrId);
+                if (yr?.StartDate != null && yr?.EndDate != null)
+                    ranges.Add((yr.StartDate.Value, yr.EndDate.Value));
+                return ranges;
+            }
+
+            // No marking period assigned — no filtering (return empty = allow all dates)
+            return ranges;
+        }
+
+        /// <summary>
+        /// Returns true if the date falls within at least one of the marking period ranges,
+        /// or if no ranges were resolved (no marking period assigned — allow all dates).
+        /// </summary>
+        private static bool IsWithinMarkingPeriod(DateTime date, List<(DateTime Start, DateTime End)>? ranges)
+        {
+            if (ranges == null || !ranges.Any())
+                return true; // No marking period constraint — allow all dates
+            return ranges.Any(r => date >= r.Start && date <= r.End);
         }
 
         private static void UpdateReenrollmentDateForStudent()
