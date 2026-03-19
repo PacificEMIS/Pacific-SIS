@@ -1186,7 +1186,7 @@ namespace opensis.data.Repository
 
             try
             {
-                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(d => d.StudentAttendance).Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
+                staffScheduleDataList = this.context?.StaffCoursesectionSchedule.AsNoTracking().Include(b => b.CourseSection).Include(d => d.StaffMaster).ThenInclude(a => a.StaffSchoolInfo).Where(e => e.SchoolId == pageResult.SchoolId && e.TenantId == pageResult.TenantId && e.IsDropped != true).Select(v => new StaffCoursesectionSchedule()
                 {
                     SchoolId = v.SchoolId,
                     TenantId = v.TenantId,
@@ -1251,7 +1251,24 @@ namespace opensis.data.Repository
                     List<DateTime> missingAttendanceDatelist = new List<DateTime>();
                     if (staffScheduleDataList?.Any() == true)
                     {
-                        foreach (var staffScheduleData in staffScheduleDataList.ToList())
+                        var staffScheduleDataMaterialized = staffScheduleDataList.ToList();
+
+                        // Batch-load all missing attendance for this school in one query (eliminates N+1)
+                        var courseSectionIds = staffScheduleDataMaterialized
+                            .Where(s => s.CourseSection.AcademicYear == pageResult.AcademicYear)
+                            .Select(s => s.CourseSectionId).Distinct().ToList();
+
+                        var allMissingAttendance = this.context?.StudentMissingAttendances.AsNoTracking()
+                            .Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId.HasValue && courseSectionIds.Contains(x.CourseSectionId.Value))
+                            .ToList();
+
+                        var missingAttendanceByCourseSection = allMissingAttendance?
+                            .Where(x => x.CourseSectionId.HasValue)
+                            .GroupBy(x => x.CourseSectionId!.Value)
+                            .ToDictionary(g => g.Key, g => g.ToList())
+                            ?? new Dictionary<int, List<StudentMissingAttendance>>();
+
+                        foreach (var staffScheduleData in staffScheduleDataMaterialized)
                         {
                             if (staffScheduleData.CourseSection.AcademicYear == pageResult.AcademicYear)
                             {
@@ -1273,7 +1290,9 @@ namespace opensis.data.Repository
                                         end = (DateTime)staffScheduleData.DurationEndDate!;
                                     }
 
-                                    var studentMissingAttendanceData = this.context?.StudentMissingAttendances.AsNoTracking().Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.CourseSectionId == staffScheduleData.CourseSectionId && x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList();
+                                    var studentMissingAttendanceData = missingAttendanceByCourseSection.TryGetValue(staffScheduleData.CourseSectionId, out var csData)
+                                        ? csData.Where(x => x.MissingAttendanceDate >= start && x.MissingAttendanceDate <= end).ToList()
+                                        : null;
 
                                     if (studentMissingAttendanceData != null && studentMissingAttendanceData.Any() == true)
                                     {
