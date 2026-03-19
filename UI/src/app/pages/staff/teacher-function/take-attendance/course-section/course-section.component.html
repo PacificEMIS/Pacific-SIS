@@ -1,5 +1,3 @@
-<!-- <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay> -->
-
         <div class="grid grid-cols-4 gap-6">
             <div class="col-span-4 lg:col-span-3">
                 <div class="card">
@@ -28,18 +26,15 @@
                             </div>
                             <div class="cal-events px-2 pb-2 justify-center" *ngIf="day.events.length > 0">
                                 <ng-container *ngFor="let event of day.events;let i = index;">
-                                    <div *ngIf="event.meta.takeAttendance" class="text-xs px-2 py-2 rounded text-white cursor-pointer"  [ngClass]="event.meta.randomColor.backgroundColor"
-                                     (click)="eventClicked(event, i)">
-                                    <span class="align-middle">{{ event.title | truncate:10 }}</span>
-                                </div>
+                                    <div *ngIf="event.meta.takeAttendance"
+                                         class="attendance-event text-xs px-2 py-2 rounded cursor-pointer"
+                                         [ngClass]="'status-' + event.meta.attendanceStatus"
+                                         [style.border-left-color]="event.meta.sectionColor?.dotColor"
+                                         (click)="eventClicked(event, i)">
+                                        <span class="event-title align-middle">{{ event.title | truncate:10 }}</span>
+                                    </div>
                                 </ng-container>
                             </div>
-                            <!-- <p class="bg-teal rounded uppercase text-white m-2 px-2 py-1 mt-0 text-xs" *ngFor="let event of day.events;let i = index;">{{ event.title | truncate:10 }}
-                            </p>
-                            <p class="bg-cyan rounded uppercase text-white m-2 px-2 py-1 mt-0 text-xs" *ngFor="let event of day.events;let i = index;">{{ event.title | truncate:10 }}
-                            </p>
-                            <p class="bg-pink rounded uppercase text-white m-2 px-2 py-1 mt-0 text-xs" *ngFor="let event of day.events;let i = index;">{{ event.title | truncate:10 }}
-                            </p> -->
                         </ng-template>
                         <div [ngSwitch]="view" class="attendance-calendar">
                             <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events"
@@ -58,16 +53,25 @@
                     <div class="title-body">
                         <div class="custom-checkbox mt-4" *ngFor="let courseSection of courseSectionList">
                             <input type="checkbox" [id]="courseSection?.courseSectionId" (change)="filterWithSectionName(courseSection, $event)">
-                            <label [for]="courseSection?.courseSectionId" [ngClass]="courseSection?.randomColor.label">{{courseSection?.courseSectionName}} - {{courseSection?.periodTitle}}</label>
+                            <label [for]="courseSection?.courseSectionId" [ngClass]="courseSection?.sectionColor?.label">
+                                {{courseSection?.courseSectionName}} - {{courseSection?.periodTitle}}
+                            </label>
                         </div>
-                        <!-- <div class="custom-checkbox mt-4">
-                            <input type="checkbox" id="period2">
-                            <label for="period2" class="label-cyan">GEOM005 - Period5</label>
-                        </div>
-                        <div class="custom-checkbox mt-4">
-                            <input type="checkbox" id="period3">
-                            <label for="period3" class="label-pink">GEOM005 - Period1</label>
-                        </div> -->
+                    </div>
+                </div>
+                <div class="card p-4 mt-4">
+                    <h4 class="font-medium mb-3">{{'legend' | translate}}</h4>
+                    <div class="legend-item mb-2">
+                        <span class="legend-swatch status-taken"></span>
+                        <span class="text-sm">{{'attendanceTaken' | translate}}</span>
+                    </div>
+                    <div class="legend-item mb-2">
+                        <span class="legend-swatch status-missing"></span>
+                        <span class="text-sm">{{'attendanceMissing' | translate}}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-swatch status-future"></span>
+                        <span class="text-sm">{{'upcoming' | translate}}</span>
                     </div>
                 </div>
             </div>

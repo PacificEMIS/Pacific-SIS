@@ -508,6 +508,27 @@ namespace opensis.data.Repository
                             scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
                         }
                     }
+
+                    // Bulk-load which (courseSectionId, periodId, date) combos already have attendance
+                    if (scheduledCourseSectionView.courseSectionViewList.Any())
+                    {
+                        var csIds = scheduledCourseSectionView.courseSectionViewList.Select(c => c.CourseSectionId).ToList();
+
+                        scheduledCourseSectionView.AttendanceTakenList = this.context?.StudentAttendance
+                            .AsNoTracking()
+                            .Where(sa => sa.TenantId == scheduledCourseSectionViewModel.TenantId
+                                && sa.SchoolId == scheduledCourseSectionViewModel.SchoolId
+                                && csIds.Contains(sa.CourseSectionId))
+                            .Select(sa => new { sa.CourseSectionId, sa.PeriodId, sa.AttendanceDate })
+                            .Distinct()
+                            .Select(sa => new AttendanceTakenRecord
+                            {
+                                CourseSectionId = sa.CourseSectionId,
+                                PeriodId = sa.PeriodId,
+                                AttendanceDate = sa.AttendanceDate
+                            })
+                            .ToList() ?? new List<AttendanceTakenRecord>();
+                    }
                 }
                 else
                 {

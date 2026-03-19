@@ -27,8 +27,15 @@ export class DashboardViewModel extends CommonField{
     }
 }
 
+export class AttendanceTakenRecord {
+    courseSectionId: number;
+    periodId: number;
+    attendanceDate: string;
+}
+
 export class ScheduledCourseSectionViewModel extends CommonField{
     courseSectionViewList:AllCourseSectionView[];
+    attendanceTakenList: AttendanceTakenRecord[];
     missingAttendanceCount: number;
     tenantId: string;
     schoolId: number;

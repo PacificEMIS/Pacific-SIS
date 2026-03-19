@@ -11,34 +11,18 @@ export const weeks = [
 export const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export const color = [
-    {
-        label: 'label-pink',
-        backgroundColor: 'bg-pink'
-    },
-    {
-        label: 'label-cyan',
-        backgroundColor: 'bg-cyan'
-    },
-    {
-        label: 'label-teal',
-        backgroundColor: 'bg-teal'
-    },
-    {
-        label: 'label-teal',
-        backgroundColor: 'bg-teal'
-    },
-    {
-        label: 'label-cyan',
-        backgroundColor: 'bg-cyan'
-    },
-    {
-        label: 'label-teal',
-        backgroundColor: 'bg-teal'
-    },
-    {
-        label: 'label-teal',
-        backgroundColor: 'bg-teal'
-    }
+    { label: 'label-burnt-orange', dotColor: 'hsl(18,75%,48%)' },
+    { label: 'label-amber', dotColor: 'hsl(40,75%,48%)' },
+    { label: 'label-olive-gold', dotColor: 'hsl(62,75%,38%)' },
+    { label: 'label-yellow-green', dotColor: 'hsl(84,65%,40%)' },
+    { label: 'label-teal', dotColor: 'hsl(158,75%,38%)' },
+    { label: 'label-cyan', dotColor: 'hsl(180,75%,38%)' },
+    { label: 'label-sky-blue', dotColor: 'hsl(202,75%,48%)' },
+    { label: 'label-blue', dotColor: 'hsl(224,65%,50%)' },
+    { label: 'label-blue-violet', dotColor: 'hsl(246,55%,55%)' },
+    { label: 'label-violet', dotColor: 'hsl(268,55%,50%)' },
+    { label: 'label-purple', dotColor: 'hsl(290,55%,48%)' },
+    { label: 'label-magenta', dotColor: 'hsl(312,55%,48%)' },
 ];
 
 export const reportCardType = [

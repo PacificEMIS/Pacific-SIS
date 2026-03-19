@@ -29,15 +29,24 @@ using System.Text;
 
 namespace opensis.data.ViewModels.StaffSchedule
 {
+    public class AttendanceTakenRecord
+    {
+        public int? CourseSectionId { get; set; }
+        public int? PeriodId { get; set; }
+        public DateTime AttendanceDate { get; set; }
+    }
+
     public class ScheduledCourseSectionViewModel : CommonFields
     {
         public ScheduledCourseSectionViewModel()
         {
             courseSectionViewList = new List<CourseSectionViewList>();
+            AttendanceTakenList = new List<AttendanceTakenRecord>();
             NotificationList = new List<string>();
             NoticeList = new List<Models.Notice>();
         }
         public List<CourseSectionViewList> courseSectionViewList { get; set; }
+        public List<AttendanceTakenRecord> AttendanceTakenList { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
         public int? StaffId { get; set; }

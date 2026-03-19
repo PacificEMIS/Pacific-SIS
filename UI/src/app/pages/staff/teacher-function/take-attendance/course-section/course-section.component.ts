@@ -58,7 +58,6 @@ import { CommonService } from "src/app/services/common.service";
 export class CourseSectionComponent implements OnInit {
   view: CalendarView = CalendarView.Month;
   viewDate: Date = new Date();
-  // events: CalendarEvent[] = [];
   cssClass: string;
   refresh: Subject<any> = new Subject();
   pageStatus = "Teacher Function";
@@ -71,6 +70,7 @@ export class CourseSectionComponent implements OnInit {
   masterCalendarEvents: CalendarEvent<any>[];
   loading: boolean;
   holidayList = [];
+  attendanceTakenSet: Set<string> = new Set();
 
   constructor(
     private router: Router,
@@ -110,9 +110,31 @@ export class CourseSectionComponent implements OnInit {
           duration: 1000
         });
       } else {
+        this.buildAttendanceTakenSet(data.attendanceTakenList || []);
         this.generateEventForCalendar(data.courseSectionViewList);
       }
     });
+  }
+
+  buildAttendanceTakenSet(attendanceTakenList: any[]) {
+    this.attendanceTakenSet.clear();
+    attendanceTakenList.forEach(record => {
+      const dateStr = moment(record.attendanceDate).format('YYYY-MM-DD');
+      this.attendanceTakenSet.add(`${record.courseSectionId}_${record.periodId}_${dateStr}`);
+    });
+  }
+
+  getAttendanceStatus(courseSectionId: number, periodId: number, attendanceDate: Date): string {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const eventDate = new Date(attendanceDate);
+    eventDate.setHours(0, 0, 0, 0);
+
+    if (eventDate >= today) {
+      return 'future';
+    }
+    const key = `${courseSectionId}_${periodId}_${moment(attendanceDate).format('YYYY-MM-DD')}`;
+    return this.attendanceTakenSet.has(key) ? 'taken' : 'missing';
   }
 
   getAllCourseSections() {
@@ -160,15 +182,14 @@ export class CourseSectionComponent implements OnInit {
   }
 
   generateEventForCalendar(responseFromServer) {
-    const arr = [];
+    this.events = [];
+    this.courseSectionList = [];
 
     responseFromServer.forEach((item, index) => {
       this.holidayList = item.holidayList.map(x => {
         return new Date(x);
       });
-      let staticIndex = 0;
-      staticIndex = color.length < staticIndex ? 0 : staticIndex;
-      staticIndex = color.length < index + 1 ? staticIndex + 1 : 0;
+      const sectionColor = color[index % color.length];
 
       if (
         item.scheduleType === scheduleType.FixedSchedule ||
@@ -180,30 +201,33 @@ export class CourseSectionComponent implements OnInit {
           dt <= new Date(item.durationEndDate);
           dt.setDate(dt.getDate() + 1)
         ) {
-         
+
           if (this.holidayList.filter(x => x.getTime() === dt.getTime())?.length === 0) {
-            
+
             const formatedDate = new Date(dt);
             const dayName = days[formatedDate.getDay()];
             if (item.scheduleType === scheduleType.FixedSchedule) {
 
               item.meetingDays.split("|").forEach(subItem => {
                 if (dayName === subItem) {
+                  const eventDate = new Date(dt);
+                  const periodId = item.courseFixedSchedule.blockPeriod.periodId;
                   this.events.push({
                     title: item.courseSectionName + " - " + item.courseFixedSchedule.blockPeriod.periodTitle,
-                    start: new Date(dt),
+                    start: eventDate,
                     color: null,
                     meta: {
                       blockId: item.courseFixedSchedule.blockId,
-                      periodId: item.courseFixedSchedule.blockPeriod.periodId,
+                      periodId: periodId,
                       courseSectionId: item.courseSectionId,
-                      attendanceDate: new Date(dt),
+                      attendanceDate: eventDate,
                       takeAttendance: item.attendanceTaken,
                       courseId: item.courseId,
                       courseSectionName: item.courseSectionName,
                       periodTitle: item.courseFixedSchedule.blockPeriod.periodTitle,
                       attendanceCategoryId: item.attendanceCategoryId ? item.attendanceCategoryId : 1,
-                      randomColor: color[color.length < index + 1 ? staticIndex - 1 : index]
+                      sectionColor: sectionColor,
+                      attendanceStatus: this.getAttendanceStatus(item.courseSectionId, periodId, eventDate)
                     },
                   });
                 }
@@ -212,21 +236,24 @@ export class CourseSectionComponent implements OnInit {
             } else if (item.scheduleType === scheduleType.variableSchedule) {
               item.courseVariableSchedule.forEach(subItem => {
                 if (dayName === subItem.day) {
+                  const eventDate = new Date(dt);
+                  const periodId = subItem.blockPeriod.periodId;
                   this.events.push({
                     title: item.courseSectionName + " - " + subItem.blockPeriod.periodTitle,
-                    start: new Date(dt),
+                    start: eventDate,
                     color: null,
                     meta: {
                       blockId: subItem.blockId,
-                      periodId: subItem.blockPeriod.periodId,
+                      periodId: periodId,
                       courseSectionId: item.courseSectionId,
-                      attendanceDate: new Date(dt),
+                      attendanceDate: eventDate,
                       takeAttendance: subItem.takeAttendance,
                       courseId: item.courseId,
                       courseSectionName: item.courseSectionName,
                       periodTitle: subItem.blockPeriod.periodTitle,
                       attendanceCategoryId: item.attendanceCategoryId ? item.attendanceCategoryId : 1,
-                      randomColor: color[color.length < index + 1 ? staticIndex - 1 : index]
+                      sectionColor: sectionColor,
+                      attendanceStatus: this.getAttendanceStatus(item.courseSectionId, periodId, eventDate)
                     },
                   });
                 }
@@ -236,15 +263,16 @@ export class CourseSectionComponent implements OnInit {
         }
       } else {
         item.courseCalendarSchedule.forEach(subItem => {
-          let cDate= new Date(subItem.date);
+          let cDate = new Date(subItem.date);
           if (this.holidayList.filter(x => x.getTime() === cDate.getTime())?.length === 0) {
+            const periodId = subItem.blockPeriod.periodId;
             this.events.push({
               title: item.courseSectionName + " - " + subItem.blockPeriod.periodTitle,
               start: new Date(subItem.date),
               color: null,
               meta: {
                 blockId: subItem.blockId,
-                periodId: subItem.blockPeriod.periodId,
+                periodId: periodId,
                 courseSectionId: item.courseSectionId,
                 attendanceDate: new Date(subItem.date),
                 takeAttendance: subItem.takeAttendance,
@@ -252,7 +280,8 @@ export class CourseSectionComponent implements OnInit {
                 courseSectionName: item.courseSectionName,
                 periodTitle: subItem.blockPeriod.periodTitle,
                 attendanceCategoryId: item.attendanceCategoryId ? item.attendanceCategoryId : 1,
-                randomColor: color[color.length < index + 1 ? staticIndex - 1 : index]
+                sectionColor: sectionColor,
+                attendanceStatus: this.getAttendanceStatus(item.courseSectionId, periodId, new Date(subItem.date))
               },
             });
           }
@@ -265,7 +294,7 @@ export class CourseSectionComponent implements OnInit {
         this.courseSectionList.push(item.meta);
       }
     });
-    this.masterCalendarEvents = this.events
+    this.masterCalendarEvents = this.events;
     this.refresh.next();
   }
 
