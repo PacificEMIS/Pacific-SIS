@@ -58,6 +58,7 @@ export class StudendAttendanceAdministrationViewModel {
     present: string;
     gradeId: number;
     sectionId: number;
+    periodsRecorded: number;
     studentAttendanceList: [];
 
 }

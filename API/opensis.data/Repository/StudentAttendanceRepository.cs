@@ -1959,74 +1959,142 @@ namespace opensis.data.Repository
             studentAttendanceList.SchoolId = pageResult.SchoolId;
             studentAttendanceList._userName = pageResult._userName;
             studentAttendanceList._tenantName = pageResult._tenantName;
-            studentAttendanceList._userName = pageResult._userName;
             IQueryable<StudendAttendanceAdministrationViewModel>? transactionIQ = null;
             List<StudendAttendanceAdministrationViewModel> attendanceData = new List<StudendAttendanceAdministrationViewModel>();
             try
             {
-                var studentAttendanceData = this.context?.StudentAttendance.AsNoTracking().Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership).Include(s => s.BlockPeriod).Include(s => s.AttendanceCodeNavigation).Include(s => s.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).ThenInclude(s => s.StudentEnrollment).Include(s => s.StudentCoursesectionSchedule.StudentMaster.Sections).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.AttendanceDate == pageResult.AttendanceDate && (pageResult.AttendanceCode == null || x.AttendanceCode == pageResult.AttendanceCode)).ToList();
-                if (studentAttendanceData != null && studentAttendanceData.Any())
+                // Get the latest enrollment per student (mirrors StudentListView logic)
+                var latestEnrollmentIds = this.context?.StudentEnrollment
+                    .AsNoTracking()
+                    .Where(e => e.TenantId == pageResult.TenantId && e.SchoolId == pageResult.SchoolId)
+                    .GroupBy(e => e.StudentId)
+                    .Select(g => g.Max(x => x.EnrollmentId))
+                    .ToList() ?? new List<int>();
+
+                // Start from students whose latest enrollment is active
+                var enrolledStudents = this.context?.StudentEnrollment
+                    .AsNoTracking()
+                    .Include(e => e.StudentMaster)
+                        .ThenInclude(s => s.Sections)
+                    .Where(e => e.TenantId == pageResult.TenantId
+                        && e.SchoolId == pageResult.SchoolId
+                        && e.IsActive == true
+                        && e.StudentMaster.IsActive != false
+                        && latestEnrollmentIds.Contains(e.EnrollmentId))
+                    .ToList();
+
+                if (enrolledStudents != null && enrolledStudents.Any())
                 {
-                    var studentIds = studentAttendanceData.Select(a => a.StudentId).Distinct().ToList();
-                    var blockId = studentAttendanceData.FirstOrDefault()!.BlockId;
+                    var studentIds = enrolledStudents.Select(e => e.StudentId).Distinct().ToList();
 
-                    // Batch-load daily attendance and block data before the loop (eliminates N+1)
-                    var dailyAttendanceLookup = this.context?.StudentDailyAttendance
-                        .AsNoTracking()
-                        .Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && studentIds.Contains(x.StudentId) && x.AttendanceDate == pageResult.AttendanceDate)
-                        .ToDictionary(x => x.StudentId);
+                    // Batch-load all attendance records for the selected date
+                    var studentAttendanceData = pageResult.AttendanceDate != null
+                        ? this.context?.StudentAttendance.AsNoTracking()
+                            .Include(s => s.StudentAttendanceComments).ThenInclude(s => s.Membership)
+                            .Include(s => s.BlockPeriod)
+                            .Include(s => s.AttendanceCodeNavigation)
+                            .Include(s => s.StudentCoursesectionSchedule)
+                            .Where(x => x.TenantId == pageResult.TenantId
+                                && x.SchoolId == pageResult.SchoolId
+                                && studentIds.Contains(x.StudentId)
+                                && x.AttendanceDate == pageResult.AttendanceDate
+                                && (pageResult.AttendanceCode == null || x.AttendanceCode == pageResult.AttendanceCode))
+                            .ToList()
+                        : new List<StudentAttendance>();
 
-                    var blockData = this.context?.Block.AsNoTracking().FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == blockId);
+                    // Group attendance by student for O(1) lookup
+                    var attendanceByStudent = studentAttendanceData!
+                        .GroupBy(a => a.StudentId)
+                        .ToDictionary(g => g.Key, g => g.ToList());
 
-                    foreach (var ide in studentIds)
+                    // Batch-load daily attendance for present status
+                    var dailyAttendanceLookup = pageResult.AttendanceDate != null
+                        ? this.context?.StudentDailyAttendance
+                            .AsNoTracking()
+                            .Where(x => x.TenantId == pageResult.TenantId
+                                && x.SchoolId == pageResult.SchoolId
+                                && studentIds.Contains(x.StudentId)
+                                && x.AttendanceDate == pageResult.AttendanceDate)
+                            .ToDictionary(x => x.StudentId)
+                        : new Dictionary<int, StudentDailyAttendance>();
+
+                    // Load block data for present status calculation
+                    var firstAttendance = studentAttendanceData!.FirstOrDefault();
+                    var blockData = firstAttendance != null
+                        ? this.context?.Block.AsNoTracking().FirstOrDefault(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId && x.BlockId == firstAttendance.BlockId)
+                        : null;
+
+                    // Deduplicate students (one enrollment row per student)
+                    var processedStudentIds = new HashSet<int>();
+
+                    foreach (var enrollment in enrolledStudents)
                     {
-                        StudendAttendanceAdministrationViewModel administrationViewModel = new StudendAttendanceAdministrationViewModel();
+                        if (!processedStudentIds.Add(enrollment.StudentId))
+                            continue;
 
-                        var studentDailyAttendanceData = dailyAttendanceLookup != null && dailyAttendanceLookup.TryGetValue(ide, out var dailyAtt) ? dailyAtt : null;
+                        var student = enrollment.StudentMaster;
+                        if (student == null) continue;
 
-                        if (studentDailyAttendanceData != null)
+                        var administrationViewModel = new StudendAttendanceAdministrationViewModel
                         {
-                            if (studentDailyAttendanceData.AttendanceMinutes >= blockData?.FullDayMinutes)
+                            TenantId = enrollment.TenantId,
+                            SchoolId = enrollment.SchoolId,
+                            StudentId = enrollment.StudentId,
+                            StudentGuid = student.StudentGuid,
+                            StudentInternalId = student.StudentInternalId,
+                            FirstGivenName = student.FirstGivenName,
+                            MiddleName = student.MiddleName,
+                            LastFamilyName = student.LastFamilyName,
+                            GradeLevelTitle = enrollment.GradeLevelTitle,
+                            GradeId = enrollment.GradeId,
+                            Section = student.Sections?.Name,
+                            SectionId = student.SectionId
+                        };
+
+                        // Attach attendance records if any exist for this student
+                        if (attendanceByStudent.TryGetValue(enrollment.StudentId, out var records))
+                        {
+                            administrationViewModel.PeriodsRecorded = records.Count;
+
+                            // Break circular references for serialization
+                            records.ForEach(x =>
+                            {
+                                x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>();
+                                x.AttendanceCodeNavigation.StudentAttendance = new HashSet<StudentAttendance>();
+                                x.StudentCoursesectionSchedule.StudentMaster = new();
+                                x.Membership = null;
+                                x.StudentAttendanceComments.ToList().ForEach(c =>
+                                {
+                                    c.Membership!.StudentAttendanceComments = new HashSet<StudentAttendanceComments>();
+                                    c.Membership.StudentAttendance = new HashSet<StudentAttendance>();
+                                });
+                            });
+                            administrationViewModel.studentAttendanceList = records;
+                        }
+
+                        // Calculate present status from daily attendance
+                        if (dailyAttendanceLookup != null && dailyAttendanceLookup.TryGetValue(enrollment.StudentId, out var dailyAtt))
+                        {
+                            if (dailyAtt.AttendanceMinutes >= blockData?.FullDayMinutes)
                             {
                                 administrationViewModel.Present = "Full-Day";
                             }
-                            if (studentDailyAttendanceData.AttendanceMinutes >= blockData?.HalfDayMinutes && studentDailyAttendanceData.AttendanceMinutes < blockData?.FullDayMinutes)
+                            else if (dailyAtt.AttendanceMinutes >= blockData?.HalfDayMinutes)
                             {
                                 administrationViewModel.Present = "Half-Day";
                             }
-                            if (studentDailyAttendanceData.AttendanceMinutes < blockData?.HalfDayMinutes)
+                            else
                             {
                                 administrationViewModel.Present = "Absent";
                             }
-                            administrationViewModel.AttendanceComment = studentDailyAttendanceData.AttendanceComment;
+                            administrationViewModel.AttendanceComment = dailyAtt.AttendanceComment;
                         }
-
-                        var studentAttendance = studentAttendanceData.Where(x => x.StudentId == ide);
-
-                        var attendance = studentAttendance.FirstOrDefault();
-                        if (attendance != null)
-                        {
-                            administrationViewModel.TenantId = attendance.TenantId;
-                            administrationViewModel.SchoolId = attendance.SchoolId;
-                            administrationViewModel.StudentId = attendance.StudentId;
-                            administrationViewModel.StudentInternalId = attendance.StudentCoursesectionSchedule.StudentMaster.StudentInternalId;
-                            administrationViewModel.StudentGuid = attendance.StudentCoursesectionSchedule.StudentMaster.StudentGuid;
-                            administrationViewModel.FirstGivenName = attendance.StudentCoursesectionSchedule.StudentMaster.FirstGivenName;
-                            administrationViewModel.MiddleName = attendance.StudentCoursesectionSchedule.StudentMaster.MiddleName;
-                            administrationViewModel.LastFamilyName = attendance.StudentCoursesectionSchedule.StudentMaster.LastFamilyName;
-                            administrationViewModel.GradeLevelTitle = attendance.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeLevelTitle).FirstOrDefault();
-                            administrationViewModel.Section = attendance.StudentCoursesectionSchedule.StudentMaster.Sections?.Name;
-                            administrationViewModel.GradeId = attendance.StudentCoursesectionSchedule.StudentMaster.StudentEnrollment.Where(x => x.IsActive == true).Select(s => s.GradeId).FirstOrDefault();
-                            administrationViewModel.SectionId = attendance.StudentCoursesectionSchedule.StudentMaster.SectionId;
-                        }
-
-                        studentAttendance.ToList().ForEach(x => { x.BlockPeriod.StudentAttendance = new HashSet<StudentAttendance>(); x.AttendanceCodeNavigation.StudentAttendance = new HashSet<StudentAttendance>(); x.StudentCoursesectionSchedule.StudentMaster = new(); x.Membership = null; x.StudentAttendanceComments.ToList().ForEach(c => { c.Membership!.StudentAttendanceComments = new HashSet<StudentAttendanceComments>(); c.Membership.StudentAttendance = new HashSet<StudentAttendance>(); }); });
-                        administrationViewModel.studentAttendanceList = studentAttendance.ToList();
 
                         attendanceData.Add(administrationViewModel);
                     }
 
-                    if (attendanceData.Count() > 0)
+                    // Apply filters, search, sorting, and pagination
+                    if (attendanceData.Count > 0)
                     {
                         if (pageResult.FilterParams == null || pageResult.FilterParams.Count == 0)
                         {
@@ -2098,6 +2166,11 @@ namespace opensis.data.Repository
                         studentAttendanceList._failure = true;
                         studentAttendanceList._message = NORECORDFOUND;
                     }
+                }
+                else
+                {
+                    studentAttendanceList._failure = true;
+                    studentAttendanceList._message = NORECORDFOUND;
                 }
             }
             catch (Exception es)

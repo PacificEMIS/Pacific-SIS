@@ -183,7 +183,7 @@ namespace opensis.data.Repository
             AttendanceCodeListViewModel attendanceCodeListModel = new();
             try
             {
-                var attendanceCodeList = this.context?.AttendanceCode.AsNoTracking().Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
+                var attendanceCodeList = this.context?.AttendanceCode.AsNoTracking().Where(x => x.TenantId == attendanceCodeListViewModel.TenantId && x.SchoolId == attendanceCodeListViewModel.SchoolId && (attendanceCodeListViewModel.AttendanceCategoryId == null || x.AttendanceCategoryId == attendanceCodeListViewModel.AttendanceCategoryId) && x.AcademicYear == attendanceCodeListViewModel.AcademicYear).OrderBy(x => x.SortOrder).ToList();
 
                 if (attendanceCodeList is not null && attendanceCodeList.Any())
                 {
