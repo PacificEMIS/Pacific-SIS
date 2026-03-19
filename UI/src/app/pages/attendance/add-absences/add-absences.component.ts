@@ -114,7 +114,6 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
   searchCount: any;
   searchValue: any;
   toggleValues: any;
-  attendance = [new attendance()];
   isFromAdvancedSearch: boolean = false;
   myHolidayDates = [];
   calendarDays = [];
@@ -549,22 +548,22 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
     this.currentForm.form.markAllAsTouched();
     if (this.currentForm.form.valid) {
       if (this.model.length < 1) {
-        this.snackbar.open(this.defaultValueService.translateKey('absenceDateIsRequired'), '', {
+        this.snackbar.open(this.defaultValueService.translateKey('attendanceDateIsRequired'), '', {
           duration: 10000
         });
       }
       else {
         if (this.selectedStudent.length > 0) {
+          const attendanceEntries: attendance[] = [];
           this.model.map((m) => {
             this.selectedStudent.map((item) => {
-              this.attendance.push({
+              attendanceEntries.push({
                 studentId: item.studentId,
                 attendanceDate: m
               })
             })
           })
-          this.attendance.splice(0, 1);
-          this.studentAttendanceAddViewModel.studentAttendance = this.attendance;
+          this.studentAttendanceAddViewModel.studentAttendance = attendanceEntries;
           this.studentAttendanceService.addAbsences(this.studentAttendanceAddViewModel).subscribe((res: StudentAttendanceAddViewModel) => {
             if (res._failure) {
               this.commonService.checkTokenValidOrNot(res._message);
@@ -575,7 +574,13 @@ export class AddAbsencesComponent implements OnInit, AfterViewInit {
               this.snackbar.open(res._message, '', {
                 duration: 10000
               });
-              this.studentAttendanceAddViewModel = res;
+              this.model = [];
+              this.selectedStudent = [];
+              this.listOfStudent.forEach(user => user.checked = false);
+              this.studentDetails = new MatTableDataSource(this.listOfStudent);
+              if (this.masterCheckBox) {
+                this.masterCheckBox.checked = false;
+              }
             }
           });
 

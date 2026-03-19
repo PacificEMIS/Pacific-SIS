@@ -2416,7 +2416,7 @@ namespace opensis.data.Repository
 
                             var existingAttendanceLookup = this.context?.StudentAttendance
                                 .Include(x => x.StudentAttendanceComments)
-                                .Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && absStudentIds.Contains(x.StudentId) && absAttendanceDates.Contains(x.AttendanceDate) && x.MembershipId == 1)
+                                .Where(x => x.SchoolId == studentAttendanceAddViewModel.SchoolId && x.TenantId == studentAttendanceAddViewModel.TenantId && x.CourseSectionId == studentAttendanceAddViewModel.CourseSectionId && absStudentIds.Contains(x.StudentId) && absAttendanceDates.Contains(x.AttendanceDate))
                                 .ToList();
 
                             var bellScheduleLookup = this.context?.BellSchedule
@@ -2922,7 +2922,9 @@ namespace opensis.data.Repository
 
                         var existingDailyAttendance = this.context?.StudentDailyAttendance
                             .Where(x => x.TenantId == studentAttendanceAddViewModel.TenantId && x.SchoolId == studentAttendanceAddViewModel.SchoolId && dailyStudentIds.Contains(x.StudentId) && dailyAttendanceDates.Contains(x.AttendanceDate))
-                            .ToDictionary(x => (x.StudentId, x.AttendanceDate));
+                            .ToList()
+                            .GroupBy(x => (x.StudentId, x.AttendanceDate))
+                            .ToDictionary(g => g.Key, g => g.First());
 
                         foreach (var studentId in studentAttendanceAddViewModel.studentAttendance)
                         {
@@ -2970,7 +2972,7 @@ namespace opensis.data.Repository
                         this.context?.SaveChanges();
 
                         transaction?.Commit();
-                        studentAttendanceAddViewModel._message = "Add absences added successfully";
+                        studentAttendanceAddViewModel._message = "Attendance records saved successfully";
                     }
                     else
                     {
@@ -2982,7 +2984,7 @@ namespace opensis.data.Repository
                 {
                     transaction?.Rollback();
                     studentAttendanceAddViewModel._failure = true;
-                    studentAttendanceAddViewModel._message = es.Message;
+                    studentAttendanceAddViewModel._message = es.InnerException?.Message ?? es.Message;
                 }
             }
             return studentAttendanceAddViewModel;
