@@ -111,7 +111,7 @@ export class MissingAttendanceComponent implements OnInit, AfterViewInit, OnDest
       this.loading = val;
       if (this.defaultDateRangeChanged === false) {
         this.getAllStaffModel.dobEndDate = this.commonFunction.formatDateSaveWithoutTime(new Date());
-        this.getAllStaffModel.dobStartDate=this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getMarkingPeriodStartDate())
+        this.getAllStaffModel.dobStartDate=this.commonFunction.formatDateSaveWithoutTime(this.defaultValuesService.getFullYearStartDate())
       }
     });
   }
