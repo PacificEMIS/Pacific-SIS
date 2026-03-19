@@ -9,6 +9,8 @@
     -- A date is "outside" if it doesn't fall within any leaf-level range.
     -- =============================================================================
 
+    START TRANSACTION;
+
     -- Step 1: Build a temp table of valid date ranges per course section.
     -- Each row = one leaf-level marking period's (start_date, end_date).
 
@@ -487,3 +489,10 @@
         ON sm.tenant_id = sma.tenant_id AND sm.school_id = sma.school_id
     GROUP BY sma.school_id, sm.school_name
     ORDER BY sma.school_id;
+
+    -- =============================================================================
+    -- Review results above. If everything looks correct:
+    --   COMMIT;
+    -- If something looks wrong:
+    --   ROLLBACK;
+    -- =============================================================================

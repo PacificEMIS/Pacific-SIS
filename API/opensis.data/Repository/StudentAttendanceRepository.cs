@@ -296,6 +296,10 @@ namespace opensis.data.Repository
                                     {
                                         if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                         {
+                                            // Only count periods flagged as calculating attendance
+                                            if (BlockPeriodData.CalculateAttendance != true)
+                                                continue;
+
                                             var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                             var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
                                             TimeSpan? periodTime = periodEndTime - periodStartTime;
@@ -771,6 +775,10 @@ namespace opensis.data.Repository
                                 {
                                     if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                     {
+                                        // Only count periods flagged as calculating attendance
+                                        if (BlockPeriodData.CalculateAttendance != true)
+                                            continue;
+
                                         var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                         var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
                                         TimeSpan? periodTime = periodEndTime - periodStartTime;
@@ -2796,6 +2804,10 @@ namespace opensis.data.Repository
                                 {
                                     if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
                                     {
+                                        // Only count periods flagged as calculating attendance
+                                        if (BlockPeriodData.CalculateAttendance != true)
+                                            continue;
+
                                         var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                         var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
                                         TimeSpan? periodTime = periodEndTime - periodStartTime;
@@ -3088,6 +3100,10 @@ namespace opensis.data.Repository
 
                                     if (BlockPeriodData != null)
                                     {
+                                        // Only count periods flagged as calculating attendance
+                                        if (BlockPeriodData.CalculateAttendance != true)
+                                            continue;
+
                                         var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
                                         var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
                                         TimeSpan? periodTime = periodEndTime - periodStartTime;
