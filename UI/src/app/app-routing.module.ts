@@ -241,10 +241,20 @@ const routes: Routes = [
           {
             path: 'attendance/add-absences',
             loadChildren: () => import('./pages/attendance/add-absences/add-absences.module').then(m => m.AddAbsencesModule),
-            canActivate: [AuthGuard]       
+            canActivate: [AuthGuard]
           }
         ]
-      },  
+      },
+      {
+        path: '',
+        children: [
+          {
+            path: 'attendance/fill-attendance',
+            loadChildren: () => import('./pages/attendance/fill-attendance/fill-attendance.module').then(m => m.FillAttendanceModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
       {
         path: '',
         children: [

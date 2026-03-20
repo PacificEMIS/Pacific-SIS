@@ -393,5 +393,33 @@ namespace opensis.core.StudentAttendances.Services
             }
             return studentAttendanceHistory;
         }
+
+        /// <summary>
+        /// Fill Attendance As Present
+        /// </summary>
+        /// <param name="fillAttendanceViewModel"></param>
+        /// <returns></returns>
+        public FillAttendanceViewModel FillAttendanceAsPresent(FillAttendanceViewModel fillAttendanceViewModel)
+        {
+            FillAttendanceViewModel fillAttendance = new FillAttendanceViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(fillAttendanceViewModel._tenantName + fillAttendanceViewModel._userName, fillAttendanceViewModel._token))
+                {
+                    fillAttendance = this.studentAttendanceRepository.FillAttendanceAsPresent(fillAttendanceViewModel);
+                }
+                else
+                {
+                    fillAttendance._failure = true;
+                    fillAttendance._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                fillAttendance._failure = true;
+                fillAttendance._message = es.Message;
+            }
+            return fillAttendance;
+        }
     }
 }

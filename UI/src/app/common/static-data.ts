@@ -2772,6 +2772,53 @@ export const permissions = {
             {
               "tenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
               "schoolId": 1,
+              "permissionCategoryId": 95,
+              "permissionGroupId": 9,
+              "permissionCategoryName": "Fill Attendance as Present",
+              "shortCode": "flatp",
+              "path": "/school/attendance/fill-attendance",
+              "title": "Fill Attendance as Present",
+              "type": "link",
+              "isActive": null,
+              "enableView": true,
+              "enableAdd": true,
+              "enableEdit": true,
+              "enableDelete": true,
+              "createdBy": null,
+              "createdOn": null,
+              "updatedBy": null,
+              "updatedOn": null,
+              "permissionGroup": null,
+              "permissionSubcategory": [
+
+              ],
+              "rolePermission": [
+                {
+                  "tenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+                  "schoolId": 1,
+                  "rolePermissionId": 500,
+                  "membershipId": 1,
+                  "permissionGroupId": null,
+                  "permissionCategoryId": 95,
+                  "permissionSubcategoryId": null,
+                  "canView": true,
+                  "canAdd": true,
+                  "canEdit": true,
+                  "canDelete": true,
+                  "createdBy": null,
+                  "createdOn": null,
+                  "updatedBy": null,
+                  "updatedOn": null,
+                  "membership": null,
+                  "permissionGroup": null,
+                  "permissionCategory": null,
+                  "permissionSubcategory": null
+                }
+              ]
+            },
+            {
+              "tenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+              "schoolId": 1,
               "permissionCategoryId": 31,
               "permissionGroupId": 9,
               "permissionCategoryName": "Recalculate Daily Attendance",

@@ -2991,6 +2991,427 @@ namespace opensis.data.Repository
         }
 
         /// <summary>
+        /// Fill Attendance As Present
+        /// For all course sections (or a specific one), fills missing attendance
+        /// records with the "Present" attendance code from DurationStartDate
+        /// to min(today, DurationEndDate).
+        /// </summary>
+        /// <param name="fillAttendanceViewModel"></param>
+        /// <returns></returns>
+        public FillAttendanceViewModel FillAttendanceAsPresent(FillAttendanceViewModel fillAttendanceViewModel)
+        {
+            using (var transaction = this.context?.Database.BeginTransaction())
+            {
+                try
+                {
+                    var academicYear = Utility.GetCurrentAcademicYear(this.context!, fillAttendanceViewModel.TenantId, fillAttendanceViewModel.SchoolId);
+
+                    // Get course sections: all or specific one
+                    var courseSectionsQuery = this.context?.CourseSection
+                        .Include(cs => cs.StaffCoursesectionSchedule)
+                        .Include(cs => cs.Course)
+                        .Where(cs => cs.TenantId == fillAttendanceViewModel.TenantId
+                            && cs.SchoolId == fillAttendanceViewModel.SchoolId
+                            && cs.AcademicYear == academicYear
+                            && cs.IsActive == true
+                            && cs.DurationStartDate != null
+                            && cs.DurationEndDate != null);
+
+                    if (fillAttendanceViewModel.CourseSectionId != null)
+                    {
+                        courseSectionsQuery = courseSectionsQuery?.Where(cs => cs.CourseSectionId == fillAttendanceViewModel.CourseSectionId);
+                    }
+
+                    var courseSections = courseSectionsQuery?.ToList();
+
+                    if (courseSections == null || !courseSections.Any())
+                    {
+                        fillAttendanceViewModel._failure = true;
+                        fillAttendanceViewModel._message = "No active course sections found";
+                        return fillAttendanceViewModel;
+                    }
+
+                    // Batch-load shared lookups
+                    int? blockId = this.context?.Block.Where(b => b.TenantId == fillAttendanceViewModel.TenantId && b.SchoolId == fillAttendanceViewModel.SchoolId && b.AcademicYear == academicYear).FirstOrDefault()?.BlockId;
+
+                    var allCourseSectionView = this.context?.AllCourseSectionView.AsNoTracking()
+                        .Where(v => v.SchoolId == fillAttendanceViewModel.SchoolId && v.TenantId == fillAttendanceViewModel.TenantId && v.AcademicYear == academicYear)
+                        .ToList();
+
+                    var blockPeriodLookup = this.context?.BlockPeriod.AsNoTracking()
+                        .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId)
+                        .ToDictionary(x => (x.BlockId, x.PeriodId));
+
+                    var attendanceCodeList = this.context?.AttendanceCode.AsNoTracking()
+                        .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId && x.AcademicYear == academicYear)
+                        .ToList();
+
+                    // Batch-load ALL existing attendance for this school/year to avoid per-section queries
+                    var csIds = courseSections.Select(cs => cs.CourseSectionId).ToList();
+
+                    var existingAttendanceSet = new HashSet<(int StudentId, int CourseSectionId, DateTime Date, int PeriodId)>(
+                        this.context?.StudentAttendance.AsNoTracking()
+                            .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId && csIds.Contains(x.CourseSectionId))
+                            .Select(x => new { x.StudentId, x.CourseSectionId, x.AttendanceDate, x.PeriodId })
+                            .ToList()
+                            .Select(x => (x.StudentId, x.CourseSectionId, x.AttendanceDate, x.PeriodId))
+                        ?? Enumerable.Empty<(int, int, DateTime, int)>()
+                    );
+
+                    // Batch-load all enrolled students per course section
+                    var enrolledStudents = this.context?.StudentCoursesectionSchedule.AsNoTracking()
+                        .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId && csIds.Contains(x.CourseSectionId) && x.IsDropped != true)
+                        .ToList()
+                        .GroupBy(x => x.CourseSectionId)
+                        .ToDictionary(g => g.Key, g => g.ToList());
+
+                    // Batch-load holidays per calendar
+                    var calendarIds = courseSections.Select(cs => cs.CalendarId).Where(id => id != null).Distinct().ToList();
+                    var holidayEvents = this.context?.CalendarEvents.AsNoTracking()
+                        .Where(e => e.TenantId == fillAttendanceViewModel.TenantId && calendarIds.Contains(e.CalendarId) && e.IsHoliday == true && (e.SchoolId == fillAttendanceViewModel.SchoolId || e.ApplicableToAllSchool == true))
+                        .ToList();
+
+                    var holidaysByCalendar = new Dictionary<int, HashSet<DateTime>>();
+                    foreach (var calId in calendarIds)
+                    {
+                        var holidays = new HashSet<DateTime>();
+                        var eventsForCal = holidayEvents?.Where(e => e.CalendarId == calId).ToList();
+                        if (eventsForCal != null)
+                        {
+                            foreach (var evt in eventsForCal)
+                            {
+                                if (evt.StartDate != null)
+                                {
+                                    holidays.Add(evt.StartDate.Value.Date);
+                                    if (evt.EndDate != null && evt.EndDate.Value.Date > evt.StartDate.Value.Date)
+                                    {
+                                        var range = Enumerable.Range(0, 1 + (evt.EndDate.Value.Date - evt.StartDate.Value.Date).Days)
+                                            .Select(i => evt.StartDate.Value.Date.AddDays(i));
+                                        foreach (var d in range) holidays.Add(d);
+                                    }
+                                }
+                            }
+                        }
+                        holidaysByCalendar[(int)calId!] = holidays;
+                    }
+
+                    // Batch-load bell schedules for block schedule sections
+                    var blockCsSections = courseSections.Where(cs => cs.ScheduleType == "Block Schedule (4)").ToList();
+                    var bellScheduleLookup = new Dictionary<int, List<BellSchedule>>();
+                    if (blockCsSections.Any())
+                    {
+                        var blockCsIds = blockCsSections.Select(cs => cs.CourseSectionId).ToList();
+                        var blockIdsForBell = allCourseSectionView?.Where(v => blockCsIds.Contains(v.CourseSectionId) && v.BlockId.HasValue).Select(v => v.BlockId!.Value).Distinct().ToList();
+                        if (blockIdsForBell?.Any() == true)
+                        {
+                            var allBellSchedules = this.context?.BellSchedule.AsNoTracking()
+                                .Where(b => b.TenantId == fillAttendanceViewModel.TenantId && b.SchoolId == fillAttendanceViewModel.SchoolId && b.BlockId.HasValue && blockIdsForBell.Contains(b.BlockId.Value))
+                                .ToList();
+                            if (allBellSchedules != null)
+                            {
+                                bellScheduleLookup = allBellSchedules.Where(b => b.BlockId.HasValue).GroupBy(b => b.BlockId!.Value).ToDictionary(g => g.Key, g => g.ToList());
+                            }
+                        }
+                    }
+
+                    // Batch-load existing daily attendance
+                    var existingDailyLookup = this.context?.StudentDailyAttendance
+                        .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId)
+                        .ToList()
+                        .GroupBy(x => (x.StudentId, x.AttendanceDate))
+                        .ToDictionary(g => g.Key, g => g.First());
+
+                    long? StudentAttendanceId = 1;
+                    var maxAttendanceId = this.context?.StudentAttendance.Where(x => x.SchoolId == fillAttendanceViewModel.SchoolId && x.TenantId == fillAttendanceViewModel.TenantId).Max(x => (long?)x.StudentAttendanceId);
+                    if (maxAttendanceId != null)
+                    {
+                        StudentAttendanceId = maxAttendanceId + 1;
+                    }
+
+                    long? CommentId = Utility.GetMaxLongPK<StudentAttendanceComments>(this.context, x => x.CommentId);
+
+                    DateTime today = DateTime.Today.Date;
+                    List<StudentAttendance> newAttendanceRecords = new List<StudentAttendance>();
+                    List<StudentAttendanceComments> newCommentRecords = new List<StudentAttendanceComments>();
+                    // Track (studentId, date) for daily attendance update
+                    HashSet<(int StudentId, DateTime Date)> affectedStudentDates = new HashSet<(int, DateTime)>();
+                    int sectionsProcessed = 0;
+
+                    foreach (var courseSection in courseSections)
+                    {
+                        var csViewData = allCourseSectionView?.Where(v => v.CourseId == courseSection.CourseId && v.CourseSectionId == courseSection.CourseSectionId && (v.AttendanceTaken == true || v.TakeAttendanceCalendar == true || v.TakeAttendanceVariable == true || v.TakeAttendanceBlock == true)).ToList();
+
+                        if (csViewData == null || !csViewData.Any()) continue;
+
+                        var holidays = courseSection.CalendarId != null && holidaysByCalendar.TryGetValue((int)courseSection.CalendarId, out var h) ? h : new HashSet<DateTime>();
+
+                        // Get the "Present" attendance code for this section's category
+                        // Pick the Present code for this section's category.
+                        // Prefer the one marked as DefaultCode, then by ShortName "P", then lowest code number for deterministic results.
+                        var presentCode = attendanceCodeList?
+                            .Where(x => x.AttendanceCategoryId == courseSection.AttendanceCategoryId && x.StateCode != null && x.StateCode.ToLower() == "present")
+                            .OrderByDescending(x => x.DefaultCode == true)
+                            .ThenBy(x => x.ShortName != null && x.ShortName.ToLower() == "p" ? 0 : 1)
+                            .ThenBy(x => x.AttendanceCode1)
+                            .FirstOrDefault();
+                        if (presentCode == null) continue;
+
+                        var staffId = courseSection.StaffCoursesectionSchedule?.FirstOrDefault(x => x.IsDropped != true)?.StaffId ?? 0;
+
+                        var sectionStudents = enrolledStudents != null && enrolledStudents.TryGetValue(courseSection.CourseSectionId, out var enrolled) ? enrolled : null;
+                        if (sectionStudents == null || !sectionStudents.Any()) continue;
+
+                        DateTime startDate = courseSection.DurationStartDate!.Value.Date;
+                        DateTime endDate = courseSection.DurationEndDate!.Value.Date;
+                        if (endDate > today) endDate = today;
+                        if (startDate > endDate) continue;
+
+                        // Determine date-period pairs based on schedule type
+                        var datePeriodPairs = new List<(DateTime date, int periodId, int effectiveBlockId)>();
+
+                        if (courseSection.ScheduleType == "Fixed Schedule (1)")
+                        {
+                            var fixedPeriodId = csViewData.FirstOrDefault()?.FixedPeriodId;
+                            if (fixedPeriodId == null || csViewData.FirstOrDefault()?.AttendanceTaken != true) continue;
+
+                            var meetingDays = courseSection.StaffCoursesectionSchedule?.FirstOrDefault(x => x.IsDropped != true)?.MeetingDays?.ToLower().Split("|");
+                            bool allDays = meetingDays == null || !meetingDays.Any();
+
+                            var dateList = Enumerable.Range(0, 1 + (endDate - startDate).Days)
+                                .Select(offset => startDate.AddDays(offset))
+                                .Where(d => allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower()))
+                                .Where(d => !holidays.Contains(d.Date))
+                                .ToList();
+
+                            foreach (var date in dateList)
+                            {
+                                datePeriodPairs.Add((date, (int)fixedPeriodId, blockId ?? 0));
+                            }
+                        }
+                        else if (courseSection.ScheduleType == "Variable Schedule (2)")
+                        {
+                            var meetingDays = courseSection.StaffCoursesectionSchedule?.FirstOrDefault(x => x.IsDropped != true)?.MeetingDays?.ToLower().Split("|");
+                            bool allDays = meetingDays == null || !meetingDays.Any();
+
+                            var dateList = Enumerable.Range(0, 1 + (endDate - startDate).Days)
+                                .Select(offset => startDate.AddDays(offset))
+                                .Where(d => allDays || meetingDays!.Contains(d.DayOfWeek.ToString().ToLower()))
+                                .Where(d => !holidays.Contains(d.Date))
+                                .ToList();
+
+                            foreach (var date in dateList)
+                            {
+                                var dayName = date.DayOfWeek.ToString();
+                                var periodsForDay = csViewData.Where(x => x.VarDay != null && String.Compare(x.VarDay, dayName, true) == 0 && x.TakeAttendanceVariable == true).ToList();
+                                foreach (var p in periodsForDay)
+                                {
+                                    if (p.VarPeriodId != null)
+                                    {
+                                        datePeriodPairs.Add((date, (int)p.VarPeriodId, blockId ?? 0));
+                                    }
+                                }
+                            }
+                        }
+                        else if (courseSection.ScheduleType == "Calendar Schedule (3)")
+                        {
+                            var calEntries = csViewData.Where(c => c.CalDate != null && c.CalDate.Value.Date >= startDate && c.CalDate.Value.Date <= endDate && !holidays.Contains(c.CalDate.Value.Date) && c.TakeAttendanceCalendar == true).ToList();
+
+                            foreach (var cal in calEntries)
+                            {
+                                if (cal.CalPeriodId != null)
+                                {
+                                    datePeriodPairs.Add((cal.CalDate!.Value.Date, (int)cal.CalPeriodId, blockId ?? 0));
+                                }
+                            }
+                        }
+                        else if (courseSection.ScheduleType == "Block Schedule (4)")
+                        {
+                            var blockViewData = csViewData.Where(v => v.BlockId.HasValue && v.BlockPeriodId.HasValue && v.TakeAttendanceBlock == true).ToList();
+
+                            foreach (var blockView in blockViewData)
+                            {
+                                if (bellScheduleLookup.TryGetValue(blockView.BlockId!.Value, out var bells))
+                                {
+                                    var validBells = bells.Where(b => b.BellScheduleDate >= startDate && b.BellScheduleDate <= endDate && !holidays.Contains(b.BellScheduleDate)).ToList();
+                                    foreach (var bell in validBells)
+                                    {
+                                        datePeriodPairs.Add((bell.BellScheduleDate, blockView.BlockPeriodId!.Value, bell.BlockId ?? 0));
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!datePeriodPairs.Any()) continue;
+
+                        sectionsProcessed++;
+
+                        // For each student x date-period, check if attendance exists
+                        foreach (var student in sectionStudents)
+                        {
+                            foreach (var (date, periodId, effectiveBlockId) in datePeriodPairs)
+                            {
+                                // Check student was enrolled on this date
+                                if (student.EffectiveStartDate != null && student.EffectiveStartDate.Value.Date > date) continue;
+
+                                // Skip if attendance already exists
+                                if (existingAttendanceSet.Contains((student.StudentId, courseSection.CourseSectionId, date, periodId))) continue;
+
+                                var attendanceRecord = new StudentAttendance()
+                                {
+                                    TenantId = fillAttendanceViewModel.TenantId,
+                                    SchoolId = fillAttendanceViewModel.SchoolId,
+                                    StudentId = student.StudentId,
+                                    StaffId = staffId,
+                                    CourseId = courseSection.CourseId,
+                                    CourseSectionId = courseSection.CourseSectionId,
+                                    AttendanceCategoryId = (int)courseSection.AttendanceCategoryId!,
+                                    AttendanceCode = (int)presentCode.AttendanceCode1,
+                                    AttendanceDate = date,
+                                    CreatedBy = fillAttendanceViewModel.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow,
+                                    BlockId = effectiveBlockId,
+                                    PeriodId = periodId,
+                                    StudentAttendanceId = (int)StudentAttendanceId!,
+                                    MembershipId = fillAttendanceViewModel.MembershipId
+                                };
+
+                                newAttendanceRecords.Add(attendanceRecord);
+
+                                var commentRecord = new StudentAttendanceComments
+                                {
+                                    TenantId = fillAttendanceViewModel.TenantId,
+                                    SchoolId = fillAttendanceViewModel.SchoolId,
+                                    StudentId = student.StudentId,
+                                    StudentAttendanceId = (int)StudentAttendanceId!,
+                                    CommentId = (long)CommentId!,
+                                    Comment = "",
+                                    CommentTimestamp = DateTime.UtcNow,
+                                    CreatedBy = fillAttendanceViewModel.CreatedBy,
+                                    CreatedOn = DateTime.UtcNow,
+                                    MembershipId = fillAttendanceViewModel.MembershipId
+                                };
+                                newCommentRecords.Add(commentRecord);
+                                CommentId++;
+
+                                existingAttendanceSet.Add((student.StudentId, courseSection.CourseSectionId, date, periodId));
+                                affectedStudentDates.Add((student.StudentId, date));
+                                StudentAttendanceId++;
+                            }
+                        }
+                    }
+
+                    if (newAttendanceRecords.Any())
+                    {
+                        this.context?.StudentAttendance.AddRange(newAttendanceRecords);
+                        this.context?.StudentAttendanceComments.AddRange(newCommentRecords);
+                        this.context?.SaveChanges();
+
+                        // Update StudentDailyAttendance for affected student-date combos
+                        var affectedStudentIds = affectedStudentDates.Select(x => x.StudentId).Distinct().ToList();
+                        var affectedDates = affectedStudentDates.Select(x => x.Date).Distinct().ToList();
+
+                        var allAttendanceForDaily = this.context?.StudentAttendance.AsNoTracking()
+                            .Where(x => x.TenantId == fillAttendanceViewModel.TenantId && x.SchoolId == fillAttendanceViewModel.SchoolId && affectedStudentIds.Contains(x.StudentId) && affectedDates.Contains(x.AttendanceDate))
+                            .ToList()
+                            .GroupBy(x => (x.StudentId, x.AttendanceDate))
+                            .ToDictionary(g => g.Key, g => g.ToList());
+
+                        List<StudentDailyAttendance> newDailyRecords = new List<StudentDailyAttendance>();
+
+                        foreach (var (studentId, date) in affectedStudentDates)
+                        {
+                            int totalAttendanceMin = 0;
+                            if (allAttendanceForDaily != null && allAttendanceForDaily.TryGetValue((studentId, date), out var attendanceData))
+                            {
+                                foreach (var attendance in attendanceData)
+                                {
+                                    if (blockPeriodLookup != null && blockPeriodLookup.TryGetValue((attendance.BlockId, attendance.PeriodId), out var BlockPeriodData))
+                                    {
+                                        if (BlockPeriodData.CalculateAttendance != true) continue;
+
+                                        var periodEndTime = TimeSpan.Parse(BlockPeriodData.PeriodEndTime!);
+                                        var periodStartTime = TimeSpan.Parse(BlockPeriodData.PeriodStartTime!);
+                                        TimeSpan? periodTime = periodEndTime - periodStartTime;
+                                        var hour = Convert.ToInt32(periodTime.Value.Hours);
+                                        var min = Convert.ToInt32(periodTime.Value.Minutes);
+                                        var classMin = hour > 0 ? (hour * 60 + min) : min;
+
+                                        var AttendanceCodeData = attendanceCodeList?.FirstOrDefault(x => x.AttendanceCode1 == attendance.AttendanceCode && x.AttendanceCategoryId == attendance.AttendanceCategoryId);
+                                        if (AttendanceCodeData != null)
+                                        {
+                                            if (AttendanceCodeData.StateCode!.ToLower() != "absent")
+                                            {
+                                                totalAttendanceMin = totalAttendanceMin + classMin;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (existingDailyLookup != null && existingDailyLookup.TryGetValue((studentId, date), out var existingDaily))
+                            {
+                                existingDaily.AttendanceMinutes = totalAttendanceMin;
+                            }
+                            else
+                            {
+                                var dailyRecord = new StudentDailyAttendance
+                                {
+                                    TenantId = fillAttendanceViewModel.TenantId,
+                                    SchoolId = fillAttendanceViewModel.SchoolId,
+                                    StudentId = studentId,
+                                    AttendanceDate = date,
+                                    CreatedBy = fillAttendanceViewModel.CreatedBy,
+                                    AttendanceMinutes = totalAttendanceMin,
+                                    CreatedOn = DateTime.UtcNow
+                                };
+                                newDailyRecords.Add(dailyRecord);
+                                // Add to lookup to avoid duplicates within the same batch
+                                existingDailyLookup![(studentId, date)] = dailyRecord;
+                            }
+                        }
+
+                        if (newDailyRecords.Any())
+                        {
+                            this.context?.StudentDailyAttendance.AddRange(newDailyRecords);
+                        }
+                        this.context?.SaveChanges();
+
+                        // Clean up matching StudentMissingAttendance records
+                        var missingRecords = this.context?.StudentMissingAttendances
+                            .Where(m => m.TenantId == fillAttendanceViewModel.TenantId && m.SchoolId == fillAttendanceViewModel.SchoolId && m.CourseSectionId.HasValue && csIds.Contains(m.CourseSectionId.Value))
+                            .ToList();
+
+                        if (missingRecords?.Any() == true)
+                        {
+                            var filledCombos = new HashSet<(int CourseSectionId, DateTime Date, int PeriodId)>(
+                                newAttendanceRecords.Select(r => (r.CourseSectionId, r.AttendanceDate, r.PeriodId)).Distinct()
+                            );
+                            var toRemove = missingRecords.Where(m => m.CourseSectionId.HasValue && m.MissingAttendanceDate.HasValue && m.PeriodId.HasValue && filledCombos.Contains((m.CourseSectionId.Value, m.MissingAttendanceDate.Value, m.PeriodId.Value))).ToList();
+                            if (toRemove.Any())
+                            {
+                                this.context?.StudentMissingAttendances.RemoveRange(toRemove);
+                                this.context?.SaveChanges();
+                            }
+                        }
+                    }
+
+                    transaction?.Commit();
+                    fillAttendanceViewModel.TotalRecordsCreated = newAttendanceRecords.Count;
+                    fillAttendanceViewModel.CourseSectionsProcessed = sectionsProcessed;
+                    fillAttendanceViewModel._failure = false;
+                    fillAttendanceViewModel._message = $"Successfully created {newAttendanceRecords.Count} attendance records across {sectionsProcessed} course sections";
+                }
+                catch (Exception es)
+                {
+                    transaction?.Rollback();
+                    fillAttendanceViewModel._failure = true;
+                    fillAttendanceViewModel._message = es.InnerException?.Message ?? es.Message;
+                }
+            }
+            return fillAttendanceViewModel;
+        }
+
+        /// <summary>
         /// Update Student Daily Attendance
         /// </summary>
         /// <param name="studentDailyAttendanceListViewModel"></param>

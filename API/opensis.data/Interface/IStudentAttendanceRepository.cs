@@ -48,5 +48,6 @@ namespace opensis.data.Interface
         public StudentAttendanceCommentsAddViewModel AddUpdateStudentAttendanceComments(StudentAttendanceCommentsAddViewModel studentAttendanceCommentsAddViewModel);
         public ReCalculateDailyAttendanceViewModel ReCalculateDailyAttendance(ReCalculateDailyAttendanceViewModel reCalculateDailyAttendanceViewModel);
         public StudentAttendanceHistoryViewModel GetStudentAttendanceHistory(StudentAttendanceHistoryViewModel studentAttendanceHistoryViewModel);
+        public FillAttendanceViewModel FillAttendanceAsPresent(FillAttendanceViewModel fillAttendanceViewModel);
     }
 }

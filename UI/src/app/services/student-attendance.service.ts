@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
 import { CourseSectionForAttendanceViewModel, StudentAttendanceAddViewModel, StudentAttendanceListViewModel, StudentDailyAttendanceListViewModel } from '../models/attendance-administrative.model';
+import { FillAttendanceViewModel } from '../models/fill-attendance.model';
 import { GetAllCourseListModel } from '../models/course-manager.model';
 import { ScheduledCourseSectionViewModel } from '../models/dashboard.model';
 import { GetAllStaffModel } from '../models/staff.model';
@@ -148,6 +149,14 @@ export class StudentAttendanceService {
     let apiurl = this.apiUrl + obj._tenantName + "/StudentAttendance/getStudentAttendanceHistory";
     return this.http.post<StudentAttendanceHistoryViewModel>(apiurl, obj, this.httpOptions);
    }
+
+  fillAttendanceAsPresent(obj: FillAttendanceViewModel) {
+    obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+    obj.createdBy = this.defaultValuesService.getUserGuidId();
+    obj.membershipId = +this.defaultValuesService.getuserMembershipID();
+    let apiurl = this.apiUrl + obj._tenantName + "/StudentAttendance/fillAttendanceAsPresent";
+    return this.http.post<FillAttendanceViewModel>(apiurl, obj, this.httpOptions);
+  }
 
   afterSubmit(data: boolean) {
     this.isSubmit.next(data);
