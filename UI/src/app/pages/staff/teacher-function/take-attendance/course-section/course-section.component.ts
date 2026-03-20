@@ -134,7 +134,7 @@ export class CourseSectionComponent implements OnInit {
     const eventDate = new Date(attendanceDate);
     eventDate.setHours(0, 0, 0, 0);
 
-    if (eventDate >= today) {
+    if (eventDate > today) {
       return 'future';
     }
     const key = `${courseSectionId}_${periodId}_${moment(attendanceDate).format('YYYY-MM-DD')}`;
