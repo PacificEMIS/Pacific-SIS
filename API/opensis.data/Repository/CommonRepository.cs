@@ -2973,7 +2973,7 @@ namespace opensis.data.Repository
             ResetPasswordModel resetPassword = new ();
             try
             {
-                var userMasterData = this.context?.UserMaster.Where(x => x.TenantId == resetPasswordModel.UserMaster!.TenantId && x.SchoolId == resetPasswordModel.UserMaster.SchoolId && x.UserId == resetPasswordModel.UserMaster.UserId && x.EmailAddress == resetPasswordModel.UserMaster.EmailAddress).FirstOrDefault();
+                var userMasterData = this.context?.UserMaster.Where(x => x.TenantId == resetPasswordModel.UserMaster!.TenantId && x.EmailAddress == resetPasswordModel.UserMaster.EmailAddress).FirstOrDefault();
                 if (userMasterData != null)
                 {
                     var decrypted = Utility.Decrypt(resetPasswordModel.UserMaster!.PasswordHash);
