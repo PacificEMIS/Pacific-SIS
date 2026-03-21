@@ -2001,5 +2001,14 @@
     "ensuringaFull12monthAcademicCycleWithAdequateFlexibilityAndInstructionalTime": "ensuring a full 12-month academic cycle with adequate flexibility and instructional time.",
     "gradePointAverageGPA": "Grade Point Average (GPA)",
     "yearToDateAttendencePercent": "Year To Date Attendence Percent",
-    "averageGpa" : "Average Gpa"
+    "averageGpa" : "Average Gpa",
+    "backToLogin": "Back to Login",
+    "sendResetLink": "Send Reset Link",
+    "enterYourEmailAddressAndWeWillSendYouALinkToResetYourPassword": "Enter your email address and we will send you a link to reset your password.",
+    "ifAnAccountWithThatEmailExistsAPasswordResetLinkHasBeenSent": "If an account with that email exists, a password reset link has been sent.",
+    "enterYourNewPassword": "Enter your new password.",
+    "passwordHasBeenResetSuccessfully": "Your password has been reset successfully.",
+    "requestNewResetLink": "Request a new reset link",
+    "passwordMustBeAtLeast6Characters": "Password must be at least 6 characters",
+    "confirmPasswordIsRequired": "Confirm password is required"
 }

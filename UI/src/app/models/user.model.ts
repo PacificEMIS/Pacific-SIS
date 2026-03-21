@@ -62,3 +62,12 @@ export class UserLogoutModel extends CommonField {
         super();
     }
 }
+
+export class ForgotPasswordModel extends CommonField {
+    public emailAddress: string;
+}
+
+export class ResetPasswordByTokenModel extends CommonField {
+    public resetToken: string;
+    public newPasswordHash: string;
+}

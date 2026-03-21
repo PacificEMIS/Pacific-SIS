@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CheckUserEmailAddressViewModel, UserViewModel } from '../models/user.model';
+import { CheckUserEmailAddressViewModel, ForgotPasswordModel, ResetPasswordByTokenModel, UserViewModel } from '../models/user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CryptoService } from '../services/Crypto.service';
 import { LanguageModel } from '../models/language.model';
@@ -65,5 +65,18 @@ export class LoginService {
     obj= this.defaultValuesService.getAllMandatoryVariable(obj);
     let apiurl = this.apiUrl + obj._tenantName + "/User/getAllUserAccessLog";
     return this.http.post<GetAccessLogInfoModel>(apiurl, obj,this.httpOptions)
+  }
+
+  forgotPassword(obj: ForgotPasswordModel) {
+    obj._tenantName = this.defaultValuesService.getTenent();
+    let apiurl = this.apiUrl + obj._tenantName + "/User/forgotPassword";
+    return this.http.post<ForgotPasswordModel>(apiurl, obj, this.httpOptions);
+  }
+
+  resetPasswordByToken(obj: ResetPasswordByTokenModel) {
+    obj._tenantName = this.defaultValuesService.getTenent();
+    obj.newPasswordHash = this.cryptoService.encrypt(obj.newPasswordHash);
+    let apiurl = this.apiUrl + obj._tenantName + "/User/resetPasswordByToken";
+    return this.http.post<ResetPasswordByTokenModel>(apiurl, obj, this.httpOptions);
   }
 }

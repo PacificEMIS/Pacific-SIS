@@ -23,11 +23,13 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.Extensions.Configuration;
 using opensis.core.helper;
 using opensis.core.helper.Interfaces;
 using opensis.core.User.Interfaces;
 using opensis.data.Interface;
 using opensis.data.Models;
+using opensis.data.ViewModels;
 using opensis.data.ViewModels.User;
 using System;
 using System.Collections.Generic;
@@ -195,6 +197,79 @@ namespace opensis.core.User.Services
                 userAccessLogListDelete._message = TOKENINVALID;
             }
             return userAccessLogListDelete;
+        }
+
+        /// <summary>
+        /// Handle forgot password request — send reset email if user exists
+        /// </summary>
+        public ForgotPasswordViewModel ForgotPassword(ForgotPasswordViewModel model, IConfiguration configuration)
+        {
+            ForgotPasswordViewModel result = new();
+            string safeMessage = "If an account with that email exists, a password reset link has been sent.";
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(model.EmailAddress) &&
+                    this.userRepository.UserExistsByEmail(model.EmailAddress))
+                {
+                    string token = TokenManager.GeneratePasswordResetToken(model.EmailAddress, model._tenantName!);
+                    string appUrl = configuration["AppUrl"] ?? "https://example.com";
+                    string resetLink = $"{appUrl}/reset-password?token={token}";
+
+                    var smtpSettings = new SmtpSettings();
+                    configuration.GetSection("SmtpSettings").Bind(smtpSettings);
+
+                    EmailService.SendPasswordResetEmail(model.EmailAddress, resetLink, smtpSettings);
+                }
+
+                result._failure = false;
+                result._message = safeMessage;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("ForgotPassword error: " + ex.Message);
+                result._failure = false;
+                result._message = safeMessage;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reset password using a validated JWT reset token
+        /// </summary>
+        public ResetPasswordByTokenViewModel ResetPasswordByToken(ResetPasswordByTokenViewModel model)
+        {
+            ResetPasswordByTokenViewModel result = new();
+
+            try
+            {
+                var (email, tenant) = TokenManager.ValidatePasswordResetToken(model.ResetToken!);
+
+                if (email == null || tenant == null)
+                {
+                    result._failure = true;
+                    result._message = "Invalid or expired reset link.";
+                    return result;
+                }
+
+                if (!string.Equals(tenant, model._tenantName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result._failure = true;
+                    result._message = "Invalid or expired reset link.";
+                    return result;
+                }
+
+                result = this.userRepository.ResetPasswordByToken(model, email);
+            }
+            catch (Exception ex)
+            {
+                result._failure = true;
+                result._message = ex.Message;
+                logger.Error("ResetPasswordByToken error: " + ex.Message);
+            }
+
+            return result;
         }
     }
 }
