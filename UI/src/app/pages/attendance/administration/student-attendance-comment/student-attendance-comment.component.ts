@@ -76,7 +76,7 @@ export class StudentAttendanceCommentComponent implements OnInit {
 
   // Get All Attendance Codes
   getAllAttendanceCode() {
-    this.getAllAttendanceCodeModel.attendanceCategoryId = 1;
+    this.getAllAttendanceCodeModel.attendanceCategoryId = null;
     this.attendanceCodeService.getAllAttendanceCode(this.getAllAttendanceCodeModel).subscribe((res: any) => {
       if (res._failure) {
         this.commonService.checkTokenValidOrNot(res._message);

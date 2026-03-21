@@ -36,6 +36,25 @@ a.disabled {
   pointer-events: none;
   cursor: default;
 }
+.attendance-status {
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  &.status-recorded {
+    color: #2e7d32;
+    background-color: rgba(76, 175, 80, 0.12);
+  }
+  &.status-none {
+    color: #c62828;
+    background-color: rgba(244, 67, 54, 0.12);
+  }
+  .text-hint {
+    font-weight: 400;
+    opacity: 0.7;
+  }
+}
 .hide {
   display: none;
 }

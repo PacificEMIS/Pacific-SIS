@@ -543,5 +543,37 @@ namespace opensisAPI.Controllers
             }
             return Ok(passwordHash);
         }
+
+        [HttpPost("forgotPassword")]
+        public ActionResult<ForgotPasswordViewModel> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            ForgotPasswordViewModel result = new ForgotPasswordViewModel();
+            try
+            {
+                result = _userService.ForgotPassword(model, _configuration);
+            }
+            catch (Exception)
+            {
+                result._failure = false;
+                result._message = "If an account with that email exists, a password reset link has been sent.";
+            }
+            return result;
+        }
+
+        [HttpPost("resetPasswordByToken")]
+        public ActionResult<ResetPasswordByTokenViewModel> ResetPasswordByToken(ResetPasswordByTokenViewModel model)
+        {
+            ResetPasswordByTokenViewModel result = new ResetPasswordByTokenViewModel();
+            try
+            {
+                result = _userService.ResetPasswordByToken(model);
+            }
+            catch (Exception es)
+            {
+                result._failure = true;
+                result._message = es.Message;
+            }
+            return result;
+        }
     }
 }

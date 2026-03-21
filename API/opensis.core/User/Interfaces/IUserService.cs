@@ -23,6 +23,7 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
+using Microsoft.Extensions.Configuration;
 using opensis.data.Models;
 using opensis.data.ViewModels.User;
 using System;
@@ -34,12 +35,14 @@ namespace opensis.core.User.Interfaces
 {
     public interface IUserService
     {
-        
+
         public LoginViewModel ValidateUserLogin(LoginViewModel ObjModel);
         public CheckUserEmailAddressViewModel CheckUserLoginEmail(CheckUserEmailAddressViewModel checkUserEmailAddressViewModel);
         public LoginViewModel RefreshToken(LoginViewModel ObjModel);
         public LoginViewModel LogOutForUser(LoginViewModel loginViewModel);
         public UserAccessLogListViewModel GetAllUserAccessLog(PageResult pageResult);
         public UserAccessLogListViewModel DeleteUserAccessLogs(UserAccessLogListViewModel userAccessLogListViewModel);
+        public ForgotPasswordViewModel ForgotPassword(ForgotPasswordViewModel model, IConfiguration configuration);
+        public ResetPasswordByTokenViewModel ResetPasswordByToken(ResetPasswordByTokenViewModel model);
     }
 }

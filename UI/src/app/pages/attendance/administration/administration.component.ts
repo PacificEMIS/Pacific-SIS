@@ -23,7 +23,6 @@ Copyright (c) Open Solutions for Education, Inc.
 All rights reserved.
 ***********************************************************************************/
 
-import { ConstantPool } from "@angular/compiler";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
@@ -35,9 +34,7 @@ import icSearch from '@iconify/icons-ic/search';
 import { TranslateService } from "@ngx-translate/core";
 import { debounceTime, distinctUntilChanged, timeout } from "rxjs/operators";
 import { DefaultValuesService } from "../../../common/default-values.service";
-import { StudentAttendanceListViewModel, StudentDailyAttendanceListViewModel } from "../../../models/attendance-administrative.model";
-import { AttendanceCode, GetAllAttendanceCodeModel } from "../../../models/attendance-code.model";
-import { AttendanceCodeService } from "../../../services/attendance-code.service";
+import { StudentAttendanceListViewModel } from "../../../models/attendance-administrative.model";
 import { CommonService } from "../../../services/common.service";
 import { LoaderService } from "../../../services/loader.service";
 import { StudentAttendanceService } from "../../../services/student-attendance.service";
@@ -74,12 +71,9 @@ export class AdministrationComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   parentData;
   icSearch = icSearch;
-  displayedColumns: string[] = ['studentName', 'studentId', 'grade', 'section', 'present', 'attendance', 'comment'];
+  displayedColumns: string[] = ['studentName', 'studentId', 'grade', 'section', 'status', 'comment'];
   getAllStudent: StudentAttendanceListViewModel = new StudentAttendanceListViewModel();
-  getAllAttendanceCodeModel: GetAllAttendanceCodeModel = new GetAllAttendanceCodeModel();
-  studentDailyAttendanceListViewModel: StudentDailyAttendanceListViewModel = new StudentDailyAttendanceListViewModel();
   advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
-  attendanceCodeList = [];
   totalCount = 0;
   pageNumber: number;
   pageSize: number;
@@ -104,7 +98,6 @@ export class AdministrationComponent implements OnInit {
     private commonService: CommonService,
     private commonFunction: SharedFunction,
     private studentAttendanceService: StudentAttendanceService,
-    private attendanceCodeService: AttendanceCodeService,
     private defaultValueService: DefaultValuesService,
     private paginatorObj: MatPaginatorIntl,
     private translateService: TranslateService
@@ -120,27 +113,8 @@ export class AdministrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.searchCtrl = new FormControl();
-    this.getAllAttendanceCode();
     this.studentAttendanceService.isSubmitted.subscribe(res => {
       if (res) this.getAllStudentAttendanceListForAdministration();
-    });
-  }
-
-  // Get All Attendance Codes
-  getAllAttendanceCode() {
-    this.getAllAttendanceCodeModel.attendanceCategoryId = 1;
-    this.attendanceCodeService.getAllAttendanceCode(this.getAllAttendanceCodeModel).subscribe((res: any) => {
-      if (res._failure) {
-        this.commonService.checkTokenValidOrNot(res._message);
-        if (res.attendanceCodeList === null) {
-          this.attendanceCodeList = [];
-        } else {
-          this.attendanceCodeList = [];
-        }
-      } else {
-        this.attendanceCodeList = res.attendanceCodeList;
-
-      }
     });
   }
 
@@ -174,22 +148,10 @@ export class AdministrationComponent implements OnInit {
   getAllStudentList(event) {
     this.disabledAdvancedSearch = true;
     this.getAllStudent.attendanceDate = this.commonFunction.formatDateSaveWithoutTime(event.value);
-    this.getAllStudent.attendanceCode= null;
-    this.parentData = { attendanceDate: this.getAllStudent.attendanceDate, attendanceCode: this.getAllStudent.attendanceCode }
+    this.parentData = { attendanceDate: this.getAllStudent.attendanceDate }
     this.getAllStudentAttendanceListForAdministration();
   }
 
-  attendanceCodeSelected() {
-    if (this.getAllStudent.attendanceDate) {
-      this.parentData = { attendanceDate: this.getAllStudent.attendanceDate, attendanceCode: this.getAllStudent.attendanceCode }
-      this.getAllStudentAttendanceListForAdministration();
-    }
-    else {
-      this.snackbar.open('Please select Attendance Date', '', {
-        duration: 10000
-      });
-    }
-  }
 
   ngAfterViewInit() {
     this.getAllStudent = new StudentAttendanceListViewModel();
@@ -313,100 +275,6 @@ export class AdministrationComponent implements OnInit {
     );
   }
 
-  onAttendanceSelected(attendance, element) {
-    const attendanceCodeDetails = this.attendanceCodeList.find(x=> x.attendanceCode1 == element.studentAttendanceList[0].attendanceCode);
-    if (this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.length > 1) {
-      let index = this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.findIndex(x => x.studentId == element.studentId);
-      if (index > 0) {
-        this.studentDailyAttendanceListViewModel.studentDailyAttendanceList[index] = {
-          tenantId: element.tenantId,
-          schoolId: element.schoolId,
-          gradeScaleId: null,
-          studentId: element.studentId,
-          gradeId: element.gradeId,
-          sectionId: element.sectionId,
-          attendanceCode: attendanceCodeDetails.title,
-          attendanceDate: this.getAllStudent.attendanceDate,
-          attendanceMinutes: null,
-          attendanceComment: element.attendanceComment,
-          createdBy: this.defaultValueService.getUserGuidId(),
-          updatedBy: null,
-          createdOn: null,
-          updatedOn: null,
-        };
-      }
-      else {
-        this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.push(
-          {
-            tenantId: element.tenantId,
-            schoolId: element.schoolId,
-            gradeScaleId: null,
-            studentId: element.studentId,
-            gradeId: element.gradeId,
-            sectionId: element.sectionId,
-            attendanceCode: attendanceCodeDetails.title,
-            attendanceDate: this.getAllStudent.attendanceDate,
-            attendanceMinutes: null,
-            attendanceComment: element.attendanceComment,
-            createdBy: this.defaultValueService.getUserGuidId(),
-            updatedBy: null,
-            createdOn: null,
-            updatedOn: null,
-          }
-        );
-      }
-    }
-    else {
-      this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.push(
-        {
-          tenantId: element.tenantId,
-          schoolId: element.schoolId,
-          gradeScaleId: null,
-          studentId: element.studentId,
-          gradeId: element.gradeId,
-          sectionId: element.sectionId,
-          attendanceCode: attendanceCodeDetails.title,
-          attendanceDate: this.getAllStudent.attendanceDate,
-          attendanceMinutes: null,
-          attendanceComment: element.attendanceComment,
-          createdBy: this.defaultValueService.getUserGuidId(),
-          updatedBy: null,
-          createdOn: null,
-          updatedOn: null,
-        }
-      );
-    }
-
-  }
-
-  submitDailyAttendance() {
-    this.studentDailyAttendanceListViewModel.studentDailyAttendanceList.splice(0, 1);
-    this.studentDailyAttendanceListViewModel.attendanceDate = this.getAllStudent.attendanceDate;
-    this.studentAttendanceService.updateStudentDailyAttendance(this.studentDailyAttendanceListViewModel).subscribe(
-      (res: StudentDailyAttendanceListViewModel) => {
-        if (res) {
-          if (res._failure) {
-            this.commonService.checkTokenValidOrNot(res._message);
-            this.snackbar.open('' + res._message, '', {
-              duration: 10000
-            });
-          } else {
-            this.getAllAttendanceCode();
-            this.getAllStudentAttendanceListForAdministration();
-            this.snackbar.open('' + res._message, '', {
-              duration: 10000
-            });
-          }
-        }
-        else {
-          this.snackbar.open(this.defaultValueService.getHttpError(), '', {
-            duration: 10000
-          });
-        }
-      }
-    );
-    
-  }
 
 
 

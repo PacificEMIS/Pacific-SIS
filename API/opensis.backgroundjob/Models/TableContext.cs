@@ -43,6 +43,10 @@ namespace opensis.backgroundjob.Models
         public virtual DbSet<BellSchedule> BellSchedule { get; set; } = null!;
         public virtual DbSet<SchoolMaster> SchoolMaster { get; set; } = null!;
         public virtual DbSet<SchoolCalendars> SchoolCalendars { get; set; } = null!;
+        public virtual DbSet<SchoolYears> SchoolYears { get; set; } = null!;
+        public virtual DbSet<Semesters> Semesters { get; set; } = null!;
+        public virtual DbSet<Quarters> Quarters { get; set; } = null!;
+        public virtual DbSet<ProgressPeriods> ProgressPeriods { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -335,6 +339,8 @@ namespace opensis.backgroundjob.Models
                 entity.Property(e => e.OnlineClassroomUrl)
                     .HasMaxLength(250)
                     .HasColumnName("online_classroom_url");
+
+                entity.Property(e => e.PrgrsprdMarkingPeriodId).HasColumnName("prgrsprd_marking_period_id");
 
                 entity.Property(e => e.QtrMarkingPeriodId).HasColumnName("qtr_marking_period_id");
 
@@ -1829,6 +1835,73 @@ namespace opensis.backgroundjob.Models
                 //    .HasForeignKey(d => new { d.TenantId, d.SchoolId })
                 //    .OnDelete(DeleteBehavior.ClientSetNull)
                 //    .HasConstraintName("school_calendars$FK_school_calendars_school_master");
+            });
+
+            modelBuilder.Entity<SchoolYears>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.MarkingPeriodId });
+
+                entity.ToTable("school_years");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+                entity.Property(e => e.MarkingPeriodId).HasColumnName("marking_period_id");
+                entity.Property(e => e.StartDate).HasColumnType("date").HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnType("date").HasColumnName("end_date");
+            });
+
+            modelBuilder.Entity<Semesters>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.MarkingPeriodId });
+
+                entity.ToTable("semesters");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+                entity.Property(e => e.MarkingPeriodId).HasColumnName("marking_period_id");
+                entity.Property(e => e.YearId).HasColumnName("year_id");
+                entity.Property(e => e.StartDate).HasColumnType("date").HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnType("date").HasColumnName("end_date");
+            });
+
+            modelBuilder.Entity<Quarters>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.MarkingPeriodId });
+
+                entity.ToTable("quarters");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+                entity.Property(e => e.MarkingPeriodId).HasColumnName("marking_period_id");
+                entity.Property(e => e.SemesterId).HasColumnName("semester_id");
+                entity.Property(e => e.StartDate).HasColumnType("date").HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnType("date").HasColumnName("end_date");
+            });
+
+            modelBuilder.Entity<ProgressPeriods>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.SchoolId, e.MarkingPeriodId });
+
+                entity.ToTable("progress_periods");
+
+                entity.Property(e => e.TenantId)
+                    .HasMaxLength(36)
+                    .HasColumnName("tenant_id")
+                    .IsFixedLength();
+                entity.Property(e => e.SchoolId).HasColumnName("school_id");
+                entity.Property(e => e.MarkingPeriodId).HasColumnName("marking_period_id");
+                entity.Property(e => e.QuarterId).HasColumnName("quarter_id");
+                entity.Property(e => e.StartDate).HasColumnType("date").HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnType("date").HasColumnName("end_date");
             });
         }
     }

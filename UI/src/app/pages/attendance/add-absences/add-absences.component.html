@@ -1,7 +1,7 @@
 <!-- Add absences -->
 <vex-page-layout>
     <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
-        <vex-secondary-toolbar current="{{'addAbsences'|translate}}" class="w-full">
+        <vex-secondary-toolbar current="{{'enterOverrideAttendance'|translate}}" class="w-full">
             <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
         </vex-secondary-toolbar>
     </vex-page-layout-header>
@@ -9,7 +9,8 @@
     <vex-page-layout-content class="-mt-6">
         <div class="card -mt-16 mb-4">
             <div class="px-6 py-4">
-                <h4 class="text-lg mb-2 font-semibold">{{ 'addAbsenceToCourseSections' | translate }}</h4>
+                <h4 class="text-lg mb-2 font-semibold">{{ 'enterOverrideAttendanceHeading' | translate }}</h4>
+                <p class="text-secondary text-sm mb-4" [innerHTML]="'enterOverrideAttendanceDescription' | translate"></p>
                 <ul class="grid grid-cols-1 md:grid-cols-2 md:grid-cols-4 col-gap-6 row-gap-4">
                     <li class="col-span-1 md:col-span-2">
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
@@ -47,14 +48,14 @@
                     </li>
                     <li class="col-span-1 md:col-span-2">
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                            <mat-label>{{ "absenceReason" | translate }}</mat-label>
+                            <mat-label>{{ "attendanceReason" | translate }}</mat-label>
                             <input matInput name="absenceReason" [(ngModel)]="studentAttendanceAddViewModel.absencesReason">
                         </mat-form-field>
                     </li>
                     <li class="col-span-1 md:col-span-2">
                         <div class="border border-gray-light rounded px-2 pb-4">
                             <div class="flex justify-between items-center">
-                                <p class="text-sm text-gray">{{ 'absenceDates' | translate }}</p>
+                                <p class="text-sm text-gray">{{ 'attendanceDates' | translate }}</p>
                                 <mat-form-field class="m-0 md:-mr-2">
                                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker [startAt]="init" [dateClass]="dateClass"></mat-datepicker>

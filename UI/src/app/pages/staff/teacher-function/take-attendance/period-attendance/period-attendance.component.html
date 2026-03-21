@@ -19,7 +19,8 @@
                 </div>
                 <div class="col-span-2">
                     <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
-                    <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
+                    <div *ngIf="active && active < allStudentList.length" class="px-4 py-2 inline-block text-white rounded text-center" style="background-color: #ffc107;">{{ 'attendancePartiallyTakenForThisPeriod' | translate }}</div>
+                    <div *ngIf="active >= allStudentList.length" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
                 </div> 
             </div>
             <mat-divider class="text-border"></mat-divider>
@@ -54,14 +55,16 @@
                                 </div>
                             </th>
                             <td mat-cell *matCellDef="let element;let i = index">
-                                <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList;let innerIndex=index;">
-                                    <label for="{{attendance.title+''+i}}">
-                                        <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}">
-                                        <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
-                                            <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
-                                        </div>
-                                    </label>
-                                </div>
+                                <ng-container *ngIf="addUpdateStudentAttendanceModel.studentAttendance[i]">
+                                    <div class="custom-radios" *ngFor="let attendance of getAllAttendanceCodeModel.attendanceCodeList;let innerIndex=index;">
+                                        <label for="{{attendance.title+''+i}}">
+                                            <input type="radio" id="{{attendance.title+''+i}}" name="{{i}}" [(ngModel)]="addUpdateStudentAttendanceModel.studentAttendance[i].attendanceCode" value="{{attendance.attendanceCode1}}">
+                                            <div class="inline-block checkmark-container" [ngClass]="active?giveClassAfterAttendence(attendance,i):giveClass(attendance)">
+                                                <span class="checkmark"></span>{{showShortName?attendance.shortName:attendance.title}}
+                                            </div>
+                                        </label>
+                                    </div>
+                                </ng-container>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="comments">

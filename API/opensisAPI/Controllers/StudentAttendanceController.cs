@@ -266,5 +266,21 @@ namespace opensisAPI.Controllers
             }
             return studentAttendanceHistory;
         }
+
+        [HttpPost("fillAttendanceAsPresent")]
+        public ActionResult<FillAttendanceViewModel> FillAttendanceAsPresent(FillAttendanceViewModel fillAttendanceViewModel)
+        {
+            FillAttendanceViewModel fillAttendance = new FillAttendanceViewModel();
+            try
+            {
+                fillAttendance = _studentAttendanceService.FillAttendanceAsPresent(fillAttendanceViewModel);
+            }
+            catch (Exception ex)
+            {
+                fillAttendance._message = ex.Message;
+                fillAttendance._failure = true;
+            }
+            return fillAttendance;
+        }
     }
 }

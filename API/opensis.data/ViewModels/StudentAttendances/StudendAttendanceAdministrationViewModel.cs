@@ -25,6 +25,7 @@ namespace opensis.data.ViewModels.StudentAttendances
         public string? Present { get; set; }
         public int? GradeId { get; set; }
         public int? SectionId { get; set; }
+        public int PeriodsRecorded { get; set; }
         public List<StudentAttendance> studentAttendanceList { get; set; }
 
     }

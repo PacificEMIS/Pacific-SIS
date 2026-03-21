@@ -230,5 +230,68 @@ namespace opensis.core.helper
                 return false;
             }
         }
+        /// <summary>
+        /// Generate a password reset token with 30 minute expiry
+        /// </summary>
+        public static string GeneratePasswordResetToken(string email, string tenantName)
+        {
+            byte[] key = Convert.FromBase64String(Secret);
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("tenant", tenantName),
+                    new Claim("purpose", "password-reset")
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(securityKey,
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
+            return handler.WriteToken(token);
+        }
+
+        /// <summary>
+        /// Validate a password reset token and return the email and tenant if valid
+        /// </summary>
+        public static (string? Email, string? Tenant) ValidatePasswordResetToken(string token)
+        {
+            try
+            {
+                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
+                if (jwtToken == null)
+                    return (null, null);
+
+                byte[] key = Convert.FromBase64String(Secret);
+                TokenValidationParameters parameters = new TokenValidationParameters()
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+
+                SecurityToken securityToken;
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(token, parameters, out securityToken);
+
+                var purposeClaim = principal.FindFirst("purpose");
+                if (purposeClaim == null || purposeClaim.Value != "password-reset")
+                    return (null, null);
+
+                var emailClaim = principal.FindFirst(ClaimTypes.Email);
+                var tenantClaim = principal.FindFirst("tenant");
+
+                return (emailClaim?.Value, tenantClaim?.Value);
+            }
+            catch (Exception)
+            {
+                return (null, null);
+            }
+        }
     }
 }

@@ -309,6 +309,12 @@ export class CalendarDaysComponent implements OnInit, OnChanges {
   onPeriodChange(event) {
     let index = this.blockListViewModel.getBlockListForView[0].blockPeriod.findIndex(item => item.periodId == +event);
     this.periodTitle.push(this.blockListViewModel.getBlockListForView[0].blockPeriod[index].periodTitle);
+
+    // Auto-set Take Attendance based on the period's Calculate Attendance flag
+    const selectedPeriod = this.blockListViewModel.getBlockListForView[0].blockPeriod[index];
+    if (selectedPeriod) {
+      this.courseCalendarSchedule.takeAttendance = selectedPeriod.calculateAttendance;
+    }
   }
   onRoomChange(event) {
     this.roomModelList.map((x) => {

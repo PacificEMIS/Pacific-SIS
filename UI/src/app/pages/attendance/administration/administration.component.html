@@ -8,6 +8,8 @@
     <vex-page-layout-content class="-mt-6">
         <div class="card overflow-auto -mt-16">
             <div class="px-6 pt-4 pb-2">
+                <h4 class="text-lg mb-2 font-semibold">{{ 'adminAttendanceTitle' | translate }}</h4>
+                <p class="text-secondary text-sm mb-4" [innerHTML]="'adminAttendanceDescription' | translate"></p>
                 <ul class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 col-gap-4 row-gap-2">
                     <li>
                         <mat-form-field class="w-full m-0" appearance="outline" color="primary">
@@ -15,15 +17,6 @@
                             <input [(ngModel)]="getAllStudent.attendanceDate" (dateChange)="getAllStudentList($event)" matInput [matDatepicker]="date">
                             <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                             <mat-datepicker #date></mat-datepicker>
-                        </mat-form-field>
-                    </li>
-                    <li>
-                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
-                            <mat-label>{{ "attendanceCode" | translate }}</mat-label>
-                            <mat-select (selectionChange)="attendanceCodeSelected()" [(ngModel)]="getAllStudent.attendanceCode" >
-                                <mat-option></mat-option>
-                                <mat-option *ngFor="let attendance of attendanceCodeList" [value]="attendance.attendanceCode1">{{attendance.title}}</mat-option>
-                            </mat-select>
                         </mat-form-field>
                     </li>
                 </ul>
@@ -74,23 +67,16 @@
                         <td mat-cell *matCellDef="let element"> {{element.section}} </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="present">
-                        <th mat-header-cell *matHeaderCellDef>{{'present' | translate }}</th>
-                        <td mat-cell *matCellDef="let element"> {{element.present}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="attendance">
-                        <th mat-header-cell *matHeaderCellDef>{{'attendance' | translate }}</th>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>{{'status' | translate }}</th>
                         <td mat-cell *matCellDef="let element">
-                            <div class="select-dropdown inline-block w-full">
-                                <select #selectAttendance (change)='onAttendanceSelected(selectAttendance.value, element)'
-                                [(ngModel)]="element.studentAttendanceList[0].attendanceCode">
-                                    <option *ngFor="let attendance of attendanceCodeList" 
-                                    [value]="attendance.attendanceCode1">
-                                        {{attendance.title}}</option>
-                                </select>
-                            </div>
-                            <!-- {{element.attendance}} -->
+                            <span *ngIf="element.periodsRecorded > 0" class="attendance-status status-recorded">
+                                {{element.periodsRecorded}} {{ (element.periodsRecorded === 1 ? 'periodRecorded' : 'periodsRecorded') | translate }}
+                                <span *ngIf="element.present" class="text-hint ml-1">({{element.present}})</span>
+                            </span>
+                            <span *ngIf="!element.periodsRecorded || element.periodsRecorded === 0" class="attendance-status status-none">
+                                {{ 'noAttendance' | translate }}
+                            </span>
                         </td>
                     </ng-container>
 
@@ -127,10 +113,6 @@
                 (page)='getPageEvent($event)'>
             </mat-paginator>
            
-            <div class="text-right p-4">
-                <button color="primary" [disabled]="allStudentlist?.data.length===0" (click)="submitDailyAttendance()" mat-flat-button type="submit">{{ 'update' | translate }}
-                </button>
-            </div>
         </div>
     </vex-page-layout-content>
 </vex-page-layout>

@@ -14,9 +14,17 @@ const routes: Routes = [
   //   loadChildren: () => import('./pages/auth/login/login.module').then(m => m.LoginModule),
   // },
   {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/auth/forgot-password/forgot-password.module').then(m => m.ForgotPasswordModule),
+  },
+  {
+    path: 'reset-password',
+    loadChildren: () => import('./pages/auth/reset-password/reset-password.module').then(m => m.ResetPasswordModule),
+  },
+  {
     path: 'error',
     loadChildren: () => import('./errors/errors.module').then(m => m.ErrorsModule),
-  },  
+  },
   {
     path: 'school',
     component: CustomLayoutComponent,
@@ -241,10 +249,20 @@ const routes: Routes = [
           {
             path: 'attendance/add-absences',
             loadChildren: () => import('./pages/attendance/add-absences/add-absences.module').then(m => m.AddAbsencesModule),
-            canActivate: [AuthGuard]       
+            canActivate: [AuthGuard]
           }
         ]
-      },  
+      },
+      {
+        path: '',
+        children: [
+          {
+            path: 'attendance/fill-attendance',
+            loadChildren: () => import('./pages/attendance/fill-attendance/fill-attendance.module').then(m => m.FillAttendanceModule),
+            canActivate: [AuthGuard]
+          }
+        ]
+      },
       {
         path: '',
         children: [

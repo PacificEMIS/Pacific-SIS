@@ -810,5 +810,49 @@ namespace opensis.data.Repository
             }
             return userAccessLogList;
         }
+
+        /// <summary>
+        /// Check if a user exists by email address
+        /// </summary>
+        public bool UserExistsByEmail(string emailAddress)
+        {
+            return this.context?.UserMaster.Any(x => x.EmailAddress == emailAddress) ?? false;
+        }
+
+        /// <summary>
+        /// Reset password using a validated token (email comes from the trusted JWT, not user input)
+        /// </summary>
+        public ResetPasswordByTokenViewModel ResetPasswordByToken(ResetPasswordByTokenViewModel model, string emailFromToken)
+        {
+            ResetPasswordByTokenViewModel result = new();
+            try
+            {
+                var userMasterData = this.context?.UserMaster.FirstOrDefault(x => x.EmailAddress == emailFromToken);
+
+                if (userMasterData != null)
+                {
+                    var decrypted = Utility.Decrypt(model.NewPasswordHash!);
+                    string passwordHash = Utility.GetHashedPassword(decrypted);
+
+                    userMasterData.PasswordHash = passwordHash;
+                    userMasterData.UpdatedOn = DateTime.UtcNow;
+
+                    this.context?.SaveChanges();
+                    result._failure = false;
+                    result._message = "Password has been reset successfully";
+                }
+                else
+                {
+                    result._failure = true;
+                    result._message = "Unable to reset password";
+                }
+            }
+            catch (Exception es)
+            {
+                result._failure = true;
+                result._message = es.Message;
+            }
+            return result;
+        }
     }
 }

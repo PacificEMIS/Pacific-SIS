@@ -63,8 +63,8 @@
   
         <div fxLayout="row" fxLayoutAlign="space-between center" class="mb-3">
           <mat-checkbox class="caption" #inputRememberMe [checked]= "setValue" color="primary" (click)="rememberMe(inputRememberMe.checked)" class="text-sm">{{'rememberMe'|translate}}</mat-checkbox>
-          <!-- <a [routerLink]="['/forgot-password']" class="caption" class="text-sm"><span
-              class="text-blue-600">{{'forgotPassword'|translate}}</span></a> -->
+          <a [routerLink]="['/forgot-password']" class="caption text-sm"><span
+              class="text-blue-600">{{'forgotPassword'|translate}}</span></a>
         </div>
       
        

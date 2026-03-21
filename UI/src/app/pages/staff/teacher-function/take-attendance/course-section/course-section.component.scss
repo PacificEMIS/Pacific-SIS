@@ -37,20 +37,97 @@
       border-radius: 0.25rem;
     }
   }
-  label.label-pink {
-    &:before {
-        background-color: #e91e63;
-    }
+  label.label-burnt-orange {
+    &:before { background-color: hsl(18,75%,48%); }
   }
-  label.label-cyan {
-    &:before {
-        background-color: #00bcd4;
-    }
+  label.label-amber {
+    &:before { background-color: hsl(40,75%,48%); }
+  }
+  label.label-olive-gold {
+    &:before { background-color: hsl(62,75%,38%); }
+  }
+  label.label-yellow-green {
+    &:before { background-color: hsl(84,65%,40%); }
   }
   label.label-teal {
-    &:before {
-        background-color: #009688;
-    }
+    &:before { background-color: hsl(158,75%,38%); }
+  }
+  label.label-cyan {
+    &:before { background-color: hsl(180,75%,38%); }
+  }
+  label.label-sky-blue {
+    &:before { background-color: hsl(202,75%,48%); }
+  }
+  label.label-blue {
+    &:before { background-color: hsl(224,65%,50%); }
+  }
+  label.label-blue-violet {
+    &:before { background-color: hsl(246,55%,55%); }
+  }
+  label.label-violet {
+    &:before { background-color: hsl(268,55%,50%); }
+  }
+  label.label-purple {
+    &:before { background-color: hsl(290,55%,48%); }
+  }
+  label.label-magenta {
+    &:before { background-color: hsl(312,55%,48%); }
+  }
+}
+
+// Attendance status backgrounds
+.attendance-event {
+  border-left: 4px solid transparent;
+
+  &.status-taken {
+    background-color: rgba(76, 175, 80, 0.5);
+    color: #fff;
+  }
+  &.status-partial {
+    background-color: rgba(255, 193, 7, 0.6);
+    color: #fff;
+  }
+  &.status-missing {
+    background-color: rgba(244, 67, 54, 0.5);
+    color: #fff;
+  }
+  &.status-future {
+    background-color: #e0e0e0;
+    color: #757575;
+  }
+}
+
+.event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Legend
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 3px;
+
+  &.status-taken {
+    background-color: #4caf50;
+  }
+  &.status-partial {
+    background-color: #ffc107;
+  }
+  &.status-missing {
+    background-color: #f44336;
+  }
+  &.status-future {
+    background-color: #e0e0e0;
   }
 }
 

@@ -123,6 +123,7 @@ namespace opensis.backgroundjob.Models
         public int? YrMarkingPeriodId { get; set; }
         public int? SmstrMarkingPeriodId { get; set; }
         public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public DateTime? DurationStartDate { get; set; }
         public DateTime? DurationEndDate { get; set; }
         /// <summary>

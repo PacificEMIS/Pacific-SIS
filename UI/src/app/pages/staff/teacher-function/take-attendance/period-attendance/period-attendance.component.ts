@@ -208,8 +208,10 @@ export class PeriodAttendanceComponent implements OnInit {
           if(addUpdateStudentAttendance.studentId==studentAttendance.studentId){
             addUpdateStudentAttendance.attendanceCode=studentAttendance.attendanceCode.toString();
             this.commentsArray[index] = studentAttendance.studentAttendanceComments
-            addUpdateStudentAttendance.studentAttendanceComments[0].comment = studentAttendance.studentAttendanceComments[0].comment;
-            addUpdateStudentAttendance.studentAttendanceComments[0].membershipId = studentAttendance.studentAttendanceComments[0].membershipId;
+            if (studentAttendance.studentAttendanceComments?.length > 0) {
+              addUpdateStudentAttendance.studentAttendanceComments[0].comment = studentAttendance.studentAttendanceComments[0].comment;
+              addUpdateStudentAttendance.studentAttendanceComments[0].membershipId = studentAttendance.studentAttendanceComments[0].membershipId;
+            }
 
             this.actionButtonTitle='update';
           }

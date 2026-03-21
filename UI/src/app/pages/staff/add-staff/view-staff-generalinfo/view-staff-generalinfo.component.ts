@@ -79,11 +79,9 @@ export class ViewStaffGeneralinfoComponent implements OnInit {
   // This openResetPassword method is used for open Reset Password dialog.
   openResetPassword() {
     if (this.staffViewDetails.staffMaster.profile !== 'Super Administrator') {
-      this.staffService.checkExternalSchoolId(this.staffViewDetails, this.categoryId).then((res: any) => {
-        this.dialog.open(ResetPasswordComponent, {
-          width: '500px',
-          data: { userId: this.staffViewDetails.staffMaster.staffId, emailAddress: this.staffViewDetails.staffMaster.loginEmailAddress }
-        });
+      this.dialog.open(ResetPasswordComponent, {
+        width: '500px',
+        data: { userId: this.staffViewDetails.staffMaster.staffId, emailAddress: this.staffViewDetails.staffMaster.loginEmailAddress }
       });
     }
     

@@ -1,0 +1,76 @@
+<vex-page-layout>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'fillAttendanceAsPresent' | translate }}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['attendance']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="card -mt-16 mb-4" @fadeInUp>
+            <div class="px-6 py-4">
+                <h4 class="text-lg mb-2 font-semibold">{{ 'fillAttendanceAsPresent' | translate }}</h4>
+                <p class="text-secondary text-sm mb-4">
+                    {{ 'fillAttendanceDescription' | translate }}
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 col-gap-6 row-gap-4 mb-6">
+                    <div>
+                        <mat-form-field class="w-full m-0" appearance="outline" color="primary">
+                            <mat-label>{{ 'courseSection' | translate }}</mat-label>
+                            <mat-select [(ngModel)]="selectedCourseSectionId" name="courseSectionId">
+                                <mat-option [value]="0">-- {{ 'allCourseSections' | translate }} --</mat-option>
+                                <mat-option *ngFor="let section of courseSectionViewList"
+                                    [value]="section.courseSectionId">
+                                    {{ section.courseSectionName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Confirmation step -->
+                <div *ngIf="!showConfirmation && !processing" class="mb-4">
+                    <button mat-flat-button color="primary" (click)="promptConfirmation()"
+                        [disabled]="loading">
+                        {{ 'fillRemainingAsPresent' | translate }}
+                    </button>
+                </div>
+
+                <div *ngIf="showConfirmation && !processing" class="mb-4 p-4 border border-yellow-400 rounded bg-yellow-50">
+                    <p class="font-semibold mb-2">{{ 'confirmFillAttendance' | translate }}</p>
+                    <p class="text-sm text-secondary mb-3">
+                        {{ 'confirmFillAttendanceMessage' | translate }}
+                        <strong>{{ getSelectionLabel() }}</strong>.
+                        {{ 'confirmFillAttendanceWarning' | translate }}
+                    </p>
+                    <div class="flex gap-3">
+                        <button mat-flat-button color="primary" (click)="fillAttendance()">
+                            {{ 'yesConfirm' | translate }}
+                        </button>
+                        <button mat-stroked-button (click)="cancelFill()">
+                            {{ 'cancel' | translate }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Processing spinner -->
+                <div *ngIf="processing" class="mb-4 flex items-center gap-3">
+                    <mat-spinner diameter="24"></mat-spinner>
+                    <span class="text-secondary">{{ 'processingAttendance' | translate }}</span>
+                </div>
+
+                <!-- Result -->
+                <div *ngIf="resultMessage && !processing" class="mb-4 p-4 rounded"
+                    [ngClass]="resultSuccess ? 'border border-green-400 bg-green-50' : 'border border-red-400 bg-red-50'">
+                    <p class="font-semibold mb-1" *ngIf="resultSuccess">{{ 'fillAttendanceComplete' | translate }}</p>
+                    <p class="font-semibold mb-1" *ngIf="!resultSuccess">{{ 'fillAttendanceFailed' | translate }}</p>
+                    <p class="text-sm">{{ resultMessage }}</p>
+                    <div *ngIf="resultSuccess" class="mt-2 text-sm text-secondary">
+                        <p>{{ 'recordsCreated' | translate }}: <strong>{{ totalRecordsCreated }}</strong></p>
+                        <p>{{ 'courseSectionsProcessed' | translate }}: <strong>{{ courseSectionsProcessed }}</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

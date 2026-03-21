@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: sans-serif; padding: 20px; max-width: 900px; }
+  h2 { margin-top: 32px; }
+  .row { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+  .swatch { width: 40px; height: 40px; border-radius: 4px; flex-shrink: 0; }
+  .stripe-demo { display: flex; gap: 8px; margin: 6px 0; }
+  .event { border-left: 4px solid; padding: 6px 10px; border-radius: 4px; color: #fff; font-size: 13px; width: 170px; }
+  .bg-taken { background: rgba(76, 175, 80, 0.5); }
+  .bg-missing { background: rgba(244, 67, 54, 0.5); }
+  .bg-future { background: #e0e0e0; color: #757575; }
+  .note { color: #666; font-size: 13px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+  <h2>12-Color Palette (evenly spaced, no green/red)</h2>
+  <p class="note">
+    12 hues at 22&deg; intervals across the color wheel, skipping green (85&deg;-155&deg;) and red (350&deg;-15&deg;).<br>
+    All at HSL saturation 75%, lightness 48% for consistent vibrancy.
+  </p>
+
+  <div class="row"><div class="swatch" style="background:hsl(18,75%,48%)"></div>  <span>1. Burnt Orange &mdash; hsl(18, 75%, 48%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(40,75%,48%)"></div>  <span>2. Amber &mdash; hsl(40, 75%, 48%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(62,75%,38%)"></div>  <span>3. Olive Gold &mdash; hsl(62, 75%, 38%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(84,65%,40%)"></div>  <span>4. Yellow Green &mdash; hsl(84, 65%, 40%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(158,75%,38%)"></div> <span>5. Teal &mdash; hsl(158, 75%, 38%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(180,75%,38%)"></div> <span>6. Cyan &mdash; hsl(180, 75%, 38%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(202,75%,48%)"></div> <span>7. Sky Blue &mdash; hsl(202, 75%, 48%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(224,65%,50%)"></div> <span>8. Blue &mdash; hsl(224, 65%, 50%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(246,55%,55%)"></div> <span>9. Blue Violet &mdash; hsl(246, 55%, 55%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(268,55%,50%)"></div> <span>10. Violet &mdash; hsl(268, 55%, 50%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(290,55%,48%)"></div> <span>11. Purple &mdash; hsl(290, 55%, 48%)</span></div>
+  <div class="row"><div class="swatch" style="background:hsl(312,55%,48%)"></div> <span>12. Magenta &mdash; hsl(312, 55%, 48%)</span></div>
+
+  <h2>Status Backgrounds</h2>
+  <div class="row"><div class="swatch" style="background:#4caf50"></div> <span>Taken (green) &mdash; #4caf50</span></div>
+  <div class="row"><div class="swatch" style="background:#f44336"></div> <span>Missing (red) &mdash; #f44336</span></div>
+  <div class="row"><div class="swatch" style="background:#e0e0e0"></div> <span>Future (grey) &mdash; #e0e0e0</span></div>
+
+  <h2>All 12 Stripes on Each Status Background</h2>
+
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(18,75%,48%)">1. Burnt Orange</div>
+    <div class="event bg-missing" style="border-left-color:hsl(18,75%,48%)">1. Burnt Orange</div>
+    <div class="event bg-future" style="border-left-color:hsl(18,75%,48%)">1. Burnt Orange</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(40,75%,48%)">2. Amber</div>
+    <div class="event bg-missing" style="border-left-color:hsl(40,75%,48%)">2. Amber</div>
+    <div class="event bg-future" style="border-left-color:hsl(40,75%,48%)">2. Amber</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(62,75%,38%)">3. Olive Gold</div>
+    <div class="event bg-missing" style="border-left-color:hsl(62,75%,38%)">3. Olive Gold</div>
+    <div class="event bg-future" style="border-left-color:hsl(62,75%,38%)">3. Olive Gold</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(84,65%,40%)">4. Yellow Green</div>
+    <div class="event bg-missing" style="border-left-color:hsl(84,65%,40%)">4. Yellow Green</div>
+    <div class="event bg-future" style="border-left-color:hsl(84,65%,40%)">4. Yellow Green</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(158,75%,38%)">5. Teal</div>
+    <div class="event bg-missing" style="border-left-color:hsl(158,75%,38%)">5. Teal</div>
+    <div class="event bg-future" style="border-left-color:hsl(158,75%,38%)">5. Teal</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(180,75%,38%)">6. Cyan</div>
+    <div class="event bg-missing" style="border-left-color:hsl(180,75%,38%)">6. Cyan</div>
+    <div class="event bg-future" style="border-left-color:hsl(180,75%,38%)">6. Cyan</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(202,75%,48%)">7. Sky Blue</div>
+    <div class="event bg-missing" style="border-left-color:hsl(202,75%,48%)">7. Sky Blue</div>
+    <div class="event bg-future" style="border-left-color:hsl(202,75%,48%)">7. Sky Blue</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(224,65%,50%)">8. Blue</div>
+    <div class="event bg-missing" style="border-left-color:hsl(224,65%,50%)">8. Blue</div>
+    <div class="event bg-future" style="border-left-color:hsl(224,65%,50%)">8. Blue</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(246,55%,55%)">9. Blue Violet</div>
+    <div class="event bg-missing" style="border-left-color:hsl(246,55%,55%)">9. Blue Violet</div>
+    <div class="event bg-future" style="border-left-color:hsl(246,55%,55%)">9. Blue Violet</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(268,55%,50%)">10. Violet</div>
+    <div class="event bg-missing" style="border-left-color:hsl(268,55%,50%)">10. Violet</div>
+    <div class="event bg-future" style="border-left-color:hsl(268,55%,50%)">10. Violet</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(290,55%,48%)">11. Purple</div>
+    <div class="event bg-missing" style="border-left-color:hsl(290,55%,48%)">11. Purple</div>
+    <div class="event bg-future" style="border-left-color:hsl(290,55%,48%)">11. Purple</div>
+  </div>
+  <div class="stripe-demo">
+    <div class="event bg-taken" style="border-left-color:hsl(312,55%,48%)">12. Magenta</div>
+    <div class="event bg-missing" style="border-left-color:hsl(312,55%,48%)">12. Magenta</div>
+    <div class="event bg-future" style="border-left-color:hsl(312,55%,48%)">12. Magenta</div>
+  </div>
+</body>
+</html>

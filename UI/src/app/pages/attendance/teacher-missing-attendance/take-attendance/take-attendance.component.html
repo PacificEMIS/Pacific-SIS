@@ -25,7 +25,8 @@
                 </div>
                 <div class="col-span-2">
                     <div *ngIf="!active" class="bg-red px-4 py-2 inline-block text-white rounded text-center">{{'attendanceHasNotBeenTakenForThisPeriod' | translate }}</div>
-                    <div *ngIf="active" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
+                    <div *ngIf="active && active < allStudentList.length" class="px-4 py-2 inline-block text-white rounded text-center" style="background-color: #ffc107;">{{ 'attendancePartiallyTakenForThisPeriod' | translate }}</div>
+                    <div *ngIf="active >= allStudentList.length" class="bg-green px-4 py-2 inline-block text-white rounded text-center">{{ 'youHaveTakenAttendanceForThisPeriod' | translate }}</div>
                 </div> 
             </div>
             <mat-divider class="text-border"></mat-divider>

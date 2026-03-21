@@ -97,6 +97,12 @@ export class RotatingSchedulingComponent implements OnInit {
       return x.periodId === +periodId
     })
     this.selectedPeriod[indexOfDynamicRow] = index;
+
+    // Auto-set Take Attendance based on the period's Calculate Attendance flag
+    const selectedPeriod = this.blockListViewModel.getBlockListForView[this.selectedBlocks[indexOfDynamicRow]]?.blockPeriod[index];
+    if (selectedPeriod) {
+      this.blockScheduleAddModel.courseBlockScheduleList[indexOfDynamicRow].takeAttendance = selectedPeriod.calculateAttendance;
+    }
   }
 
   addMoreRotatingScheduleRow() {
