@@ -1166,15 +1166,118 @@ namespace opensis.data.Repository
 
                 dashboardView.SchoolName = this.context?.SchoolMaster.FirstOrDefault(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId)?.SchoolName;
 
-                dashboardView.TotalStudent = this.context?.StudentMaster.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.IsActive == true).Count();
+                // Calendar IDs for the selected academic year
+                var calendarIds = this.context?.SchoolCalendars
+                    .Where(c => c.TenantId == dashboardViewModel.TenantId
+                        && c.SchoolId == dashboardViewModel.SchoolId
+                        && c.AcademicYear == dashboardViewModel.AcademicYear)
+                    .Select(c => c.CalenderId)
+                    .ToList() ?? new List<int>();
 
-                //dashboardView.TotalParent = this.context?.ParentAssociationship.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.Associationship == true).Select(s => new { s.TenantId, s.SchoolId, s.ParentId }).Distinct().ToList().Count();
+                // Year date range from calendars (for staff filtering)
+                var yearStart = this.context?.SchoolCalendars
+                    .Where(c => c.TenantId == dashboardViewModel.TenantId
+                        && c.SchoolId == dashboardViewModel.SchoolId
+                        && c.AcademicYear == dashboardViewModel.AcademicYear)
+                    .Min(c => c.StartDate);
+                var yearEnd = this.context?.SchoolCalendars
+                    .Where(c => c.TenantId == dashboardViewModel.TenantId
+                        && c.SchoolId == dashboardViewModel.SchoolId
+                        && c.AcademicYear == dashboardViewModel.AcademicYear)
+                    .Max(c => c.EndDate);
 
-                //dashboardView.TotalStaff = this.context?.StaffMaster.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId).Count();
+                // Students: count those enrolled in a calendar for this academic year
+                var enrolledStudents = this.context?.StudentEnrollment
+                    .Where(e => e.TenantId == dashboardViewModel.TenantId
+                        && e.SchoolId == dashboardViewModel.SchoolId
+                        && e.IsActive == true
+                        && e.CalenderId != null
+                        && calendarIds.Contains(e.CalenderId.Value))
+                    .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
 
-                dashboardView.TotalStaff = this.context?.StaffSchoolInfo.Include(x => x.StaffMaster).Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolAttachedId == dashboardViewModel.SchoolId && (x.EndDate == null || x.EndDate >= DateTime.UtcNow.Date) && x.StaffMaster!.IsActive != false).Count();
+                dashboardView.TotalStudent = enrolledStudents
+                    .Select(e => e.StudentId)
+                    .Distinct()
+                    .Count();
 
-                dashboardView.TotalParent = this.context?.ParentAssociationship.Where(x => x.TenantId == dashboardViewModel.TenantId && x.SchoolId == dashboardViewModel.SchoolId && x.Associationship == true).Select(x => x.ParentId).Distinct().Count();
+                // Enrollment by grade (for chart)
+                dashboardView.EnrollmentByGrade = enrolledStudents
+                    .Where(e => e.GradeId != null)
+                    .GroupBy(e => new { e.GradeId, e.GradeLevelTitle })
+                    .Select(g => new GradeCount
+                    {
+                        GradeId = g.Key.GradeId,
+                        GradeLevelTitle = g.Key.GradeLevelTitle,
+                        Count = g.Select(e => e.StudentId).Distinct().Count()
+                    })
+                    .ToList();
+
+                // Fetch grade sort orders for proper ordering
+                var gradeSortOrders = this.context?.Gradelevels
+                    .Where(gl => gl.TenantId == dashboardViewModel.TenantId
+                        && gl.SchoolId == dashboardViewModel.SchoolId)
+                    .ToDictionary(gl => gl.GradeId, gl => gl.SortOrder ?? 0)
+                    ?? new Dictionary<int, int>();
+
+                foreach (var gc in dashboardView.EnrollmentByGrade)
+                {
+                    gc.SortOrder = gc.GradeId.HasValue && gradeSortOrders.ContainsKey(gc.GradeId.Value)
+                        ? gradeSortOrders[gc.GradeId.Value]
+                        : 999;
+                }
+                dashboardView.EnrollmentByGrade = dashboardView.EnrollmentByGrade
+                    .OrderBy(g => g.SortOrder)
+                    .ToList();
+
+                // Staff: active during this school year's date range
+                var staffQuery = this.context?.StaffSchoolInfo
+                    .Include(x => x.StaffMaster)
+                    .Include(x => x.Membership)
+                    .Where(x => x.TenantId == dashboardViewModel.TenantId
+                        && x.SchoolAttachedId == dashboardViewModel.SchoolId
+                        && x.StaffMaster!.IsActive != false);
+
+                if (yearStart != null && yearEnd != null)
+                {
+                    staffQuery = staffQuery!.Where(x =>
+                        (x.StartDate == null || x.StartDate <= yearEnd)
+                        && (x.EndDate == null || x.EndDate >= yearStart));
+                }
+
+                var staffList = staffQuery?.ToList()
+                    ?? new List<opensis.data.Models.StaffSchoolInfo>();
+
+                dashboardView.TotalStaff = staffList.Count;
+
+                // Staff by profile (from Membership.Profile)
+                dashboardView.StaffByProfile = staffList
+                    .GroupBy(s => s.Membership?.Profile ?? "Unknown")
+                    .Select(g => new NameCount { Name = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+
+                // Staff by job title (from StaffMaster.JobTitle)
+                dashboardView.StaffByJobTitle = staffList
+                    .Where(s => !string.IsNullOrEmpty(s.StaffMaster?.JobTitle))
+                    .GroupBy(s => s.StaffMaster!.JobTitle!)
+                    .Select(g => new NameCount { Name = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+
+                // Parents: only those associated with students enrolled this year
+                var enrolledStudentIds = enrolledStudents
+                    .Select(e => e.StudentId)
+                    .Distinct()
+                    .ToList();
+
+                dashboardView.TotalParent = this.context?.ParentAssociationship
+                    .Where(x => x.TenantId == dashboardViewModel.TenantId
+                        && x.SchoolId == dashboardViewModel.SchoolId
+                        && x.Associationship == true
+                        && enrolledStudentIds.Contains(x.StudentId))
+                    .Select(x => x.ParentId)
+                    .Distinct()
+                    .Count() ?? 0;
 
                 var notice = this.context?.Notice.Where(x => x.TenantId == dashboardViewModel.TenantId && (x.SchoolId == dashboardViewModel.SchoolId || (x.SchoolId != dashboardViewModel.SchoolId && x.VisibleToAllSchool == true)) && x.Isactive == true && (x.ValidFrom <= todayDate && todayDate <= x.ValidTo)).OrderByDescending(x => x.ValidFrom).ToList();
                 if (notice?.Any() == true)

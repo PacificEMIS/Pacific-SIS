@@ -35,6 +35,9 @@ namespace opensis.data.ViewModels.CommonModel
         public DashboardViewModel()
         {
             CalendarEventList = new List<CalenderEventViewModel>();
+            EnrollmentByGrade = new List<GradeCount>();
+            StaffByProfile = new List<NameCount>();
+            StaffByJobTitle = new List<NameCount>();
         }
 
         public Guid? TenantId { get; set; }
@@ -52,5 +55,22 @@ namespace opensis.data.ViewModels.CommonModel
         //public List<opensis.data.Models.CalendarEvents> calendarEventList { get; set; }
         public List<CalenderEventViewModel> CalendarEventList { get; set; }
         public List<opensis.data.Models.Notice>? NoticeList { get; set; }
+        public List<GradeCount> EnrollmentByGrade { get; set; }
+        public List<NameCount> StaffByProfile { get; set; }
+        public List<NameCount> StaffByJobTitle { get; set; }
+    }
+
+    public class GradeCount
+    {
+        public int? GradeId { get; set; }
+        public string? GradeLevelTitle { get; set; }
+        public int Count { get; set; }
+        public int? SortOrder { get; set; }
+    }
+
+    public class NameCount
+    {
+        public string? Name { get; set; }
+        public int Count { get; set; }
     }
 }

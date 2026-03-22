@@ -67,130 +67,86 @@ AND (bp.calculate_attendance = 0 OR bp.calculate_attendance IS NULL);
 --
 -- Recomputes the sum of period minutes for non-absent attendance records,
 -- only including periods where CalculateAttendance = true.
+--
+-- Strategy: compute the aggregation ONCE into a temp table, then use it
+-- for preview, update, and verification. Avoids running the expensive
+-- 3-table join + GROUP BY four times.
 -- =============================================================================
 
--- 2a: Preview — show records that would change
+-- 2a: Compute recalculated minutes into a temp table
+DROP TABLE IF EXISTS _recalc_minutes;
+
+CREATE TABLE _recalc_minutes (
+    tenant_id CHAR(36),
+    school_id INT,
+    student_id INT,
+    attendance_date DATE,
+    new_minutes INT,
+    PRIMARY KEY (tenant_id, school_id, student_id, attendance_date)
+);
+
+INSERT INTO _recalc_minutes (tenant_id, school_id, student_id, attendance_date, new_minutes)
+SELECT
+    sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date,
+    SUM(
+        CASE
+            WHEN ac.state_code != 'absent' AND bp.calculate_attendance = 1
+            THEN TIMESTAMPDIFF(MINUTE,
+                CAST(CONCAT('2000-01-01 ', bp.period_start_time) AS DATETIME),
+                CAST(CONCAT('2000-01-01 ', bp.period_end_time) AS DATETIME))
+            ELSE 0
+        END
+    ) AS new_minutes
+FROM student_attendance sa
+JOIN block_period bp
+    ON bp.tenant_id = sa.tenant_id AND bp.school_id = sa.school_id
+    AND bp.block_id = sa.block_id AND bp.period_id = sa.period_id
+JOIN attendance_code ac
+    ON ac.tenant_id = sa.tenant_id AND ac.school_id = sa.school_id
+    AND ac.attendance_code = sa.attendance_code
+    AND ac.attendance_category_id = sa.attendance_category_id
+GROUP BY sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date;
+
+-- 2b: Preview — show records that would change (up to 100)
 SELECT
     sda.school_id,
     sda.student_id,
     sda.attendance_date,
     sda.attendance_minutes AS current_minutes,
-    COALESCE(recalc.new_minutes, 0) AS new_minutes
+    COALESCE(r.new_minutes, 0) AS new_minutes
 FROM student_daily_attendance sda
-LEFT JOIN (
-    SELECT
-        sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date,
-        SUM(
-            CASE
-                WHEN ac.state_code != 'absent' AND bp.calculate_attendance = 1
-                THEN TIMESTAMPDIFF(MINUTE,
-                    CAST(CONCAT('2000-01-01 ', bp.period_start_time) AS DATETIME),
-                    CAST(CONCAT('2000-01-01 ', bp.period_end_time) AS DATETIME))
-                ELSE 0
-            END
-        ) AS new_minutes
-    FROM student_attendance sa
-    JOIN block_period bp
-        ON bp.tenant_id = sa.tenant_id AND bp.school_id = sa.school_id
-        AND bp.block_id = sa.block_id AND bp.period_id = sa.period_id
-    JOIN attendance_code ac
-        ON ac.tenant_id = sa.tenant_id AND ac.school_id = sa.school_id
-        AND ac.attendance_code = sa.attendance_code
-        AND ac.attendance_category_id = sa.attendance_category_id
-    GROUP BY sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date
-) recalc
-    ON recalc.tenant_id = sda.tenant_id AND recalc.school_id = sda.school_id
-    AND recalc.student_id = sda.student_id AND recalc.attendance_date = sda.attendance_date
-WHERE sda.attendance_minutes != COALESCE(recalc.new_minutes, 0)
+LEFT JOIN _recalc_minutes r
+    ON r.tenant_id = sda.tenant_id AND r.school_id = sda.school_id
+    AND r.student_id = sda.student_id AND r.attendance_date = sda.attendance_date
+WHERE sda.attendance_minutes != COALESCE(r.new_minutes, 0)
 ORDER BY sda.school_id, sda.student_id, sda.attendance_date
 LIMIT 100;
 
--- 2b: Count how many records would change
+-- 2c: Count how many records would change
 SELECT COUNT(*) AS records_to_update
 FROM student_daily_attendance sda
-LEFT JOIN (
-    SELECT
-        sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date,
-        SUM(
-            CASE
-                WHEN ac.state_code != 'absent' AND bp.calculate_attendance = 1
-                THEN TIMESTAMPDIFF(MINUTE,
-                    CAST(CONCAT('2000-01-01 ', bp.period_start_time) AS DATETIME),
-                    CAST(CONCAT('2000-01-01 ', bp.period_end_time) AS DATETIME))
-                ELSE 0
-            END
-        ) AS new_minutes
-    FROM student_attendance sa
-    JOIN block_period bp
-        ON bp.tenant_id = sa.tenant_id AND bp.school_id = sa.school_id
-        AND bp.block_id = sa.block_id AND bp.period_id = sa.period_id
-    JOIN attendance_code ac
-        ON ac.tenant_id = sa.tenant_id AND ac.school_id = sa.school_id
-        AND ac.attendance_code = sa.attendance_code
-        AND ac.attendance_category_id = sa.attendance_category_id
-    GROUP BY sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date
-) recalc
-    ON recalc.tenant_id = sda.tenant_id AND recalc.school_id = sda.school_id
-    AND recalc.student_id = sda.student_id AND recalc.attendance_date = sda.attendance_date
-WHERE sda.attendance_minutes != COALESCE(recalc.new_minutes, 0);
+LEFT JOIN _recalc_minutes r
+    ON r.tenant_id = sda.tenant_id AND r.school_id = sda.school_id
+    AND r.student_id = sda.student_id AND r.attendance_date = sda.attendance_date
+WHERE sda.attendance_minutes != COALESCE(r.new_minutes, 0);
 
--- 2c: Update AttendanceMinutes
+-- 2d: Update AttendanceMinutes
 UPDATE student_daily_attendance sda
-JOIN (
-    SELECT
-        sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date,
-        SUM(
-            CASE
-                WHEN ac.state_code != 'absent' AND bp.calculate_attendance = 1
-                THEN TIMESTAMPDIFF(MINUTE,
-                    CAST(CONCAT('2000-01-01 ', bp.period_start_time) AS DATETIME),
-                    CAST(CONCAT('2000-01-01 ', bp.period_end_time) AS DATETIME))
-                ELSE 0
-            END
-        ) AS new_minutes
-    FROM student_attendance sa
-    JOIN block_period bp
-        ON bp.tenant_id = sa.tenant_id AND bp.school_id = sa.school_id
-        AND bp.block_id = sa.block_id AND bp.period_id = sa.period_id
-    JOIN attendance_code ac
-        ON ac.tenant_id = sa.tenant_id AND ac.school_id = sa.school_id
-        AND ac.attendance_code = sa.attendance_code
-        AND ac.attendance_category_id = sa.attendance_category_id
-    GROUP BY sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date
-) recalc
-    ON recalc.tenant_id = sda.tenant_id AND recalc.school_id = sda.school_id
-    AND recalc.student_id = sda.student_id AND recalc.attendance_date = sda.attendance_date
-SET sda.attendance_minutes = recalc.new_minutes
-WHERE sda.attendance_minutes != recalc.new_minutes;
+JOIN _recalc_minutes r
+    ON r.tenant_id = sda.tenant_id AND r.school_id = sda.school_id
+    AND r.student_id = sda.student_id AND r.attendance_date = sda.attendance_date
+SET sda.attendance_minutes = r.new_minutes
+WHERE sda.attendance_minutes != r.new_minutes;
 
--- 2d: Verify — should return 0
+-- 2e: Verify — should return 0
 SELECT COUNT(*) AS remaining_mismatched
 FROM student_daily_attendance sda
-LEFT JOIN (
-    SELECT
-        sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date,
-        SUM(
-            CASE
-                WHEN ac.state_code != 'absent' AND bp.calculate_attendance = 1
-                THEN TIMESTAMPDIFF(MINUTE,
-                    CAST(CONCAT('2000-01-01 ', bp.period_start_time) AS DATETIME),
-                    CAST(CONCAT('2000-01-01 ', bp.period_end_time) AS DATETIME))
-                ELSE 0
-            END
-        ) AS new_minutes
-    FROM student_attendance sa
-    JOIN block_period bp
-        ON bp.tenant_id = sa.tenant_id AND bp.school_id = sa.school_id
-        AND bp.block_id = sa.block_id AND bp.period_id = sa.period_id
-    JOIN attendance_code ac
-        ON ac.tenant_id = sa.tenant_id AND ac.school_id = sa.school_id
-        AND ac.attendance_code = sa.attendance_code
-        AND ac.attendance_category_id = sa.attendance_category_id
-    GROUP BY sa.tenant_id, sa.school_id, sa.student_id, sa.attendance_date
-) recalc
-    ON recalc.tenant_id = sda.tenant_id AND recalc.school_id = sda.school_id
-    AND recalc.student_id = sda.student_id AND recalc.attendance_date = sda.attendance_date
-WHERE sda.attendance_minutes != COALESCE(recalc.new_minutes, 0);
+LEFT JOIN _recalc_minutes r
+    ON r.tenant_id = sda.tenant_id AND r.school_id = sda.school_id
+    AND r.student_id = sda.student_id AND r.attendance_date = sda.attendance_date
+WHERE sda.attendance_minutes != COALESCE(r.new_minutes, 0);
+
+DROP TABLE IF EXISTS _recalc_minutes;
 
 -- =============================================================================
 -- Review results above. If everything looks correct:

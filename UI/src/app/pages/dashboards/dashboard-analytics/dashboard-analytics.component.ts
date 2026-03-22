@@ -38,7 +38,7 @@ import { TableColumn } from '../../../../@vex/interfaces/table-column.interface'
 import icMoreVert from '@iconify/icons-ic/twotone-more-vert';
 import icPreview from '@iconify/icons-ic/round-preview';
 import icPeople from '@iconify/icons-ic/twotone-people';
-import { DashboardViewModel, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
+import { DashboardViewModel, GradeCount, NameCount, ScheduledCourseSectionViewModel } from '../../../models/dashboard.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DasboardService } from '../../../services/dasboard.service';
 import { CalendarDateFormatter, CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewBeforeRenderEvent, CalendarMonthViewDay, CalendarView, DAYS_OF_WEEK } from 'angular-calendar';
@@ -187,6 +187,12 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   getAcademicYears: GetAcademicYearListModel = new GetAcademicYearListModel();
   noticeList = [];
   eventCount = 0;
+  enrollmentByGrade: GradeCount[] = [];
+  staffByProfile: NameCount[] = [];
+  staffByJobTitle: NameCount[] = [];
+  maxEnrollment = 0;
+  maxStaffByProfile = 0;
+  maxStaffByJobTitle = 0;
   constructor(
     private cd: ChangeDetectorRef,
     private router: Router,
@@ -269,6 +275,15 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
           this.studentCount = res.totalStudent !== null ? res.totalStudent : 0;
           this.staffCount = res.totalStaff !== null ? res.totalStaff : 0;
           this.parentCount = res.totalParent !== null ? res.totalParent : 0;
+          this.enrollmentByGrade = res.enrollmentByGrade || [];
+          this.staffByProfile = res.staffByProfile || [];
+          this.staffByJobTitle = res.staffByJobTitle || [];
+          this.maxEnrollment = this.enrollmentByGrade.length > 0
+            ? Math.max(...this.enrollmentByGrade.map(g => g.count)) : 0;
+          this.maxStaffByProfile = this.staffByProfile.length > 0
+            ? Math.max(...this.staffByProfile.map(s => s.count)) : 0;
+          this.maxStaffByJobTitle = this.staffByJobTitle.length > 0
+            ? Math.max(...this.staffByJobTitle.map(s => s.count)) : 0;
           if (res.noticeList?.length>0) {
             this.noticeList = res.noticeList;
           }
@@ -418,6 +433,11 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
         duration: 10000
       });
     }
+  }
+
+  barWidth(value: number, max: number): string {
+    if (max <= 0) return '0%';
+    return Math.round((value / max) * 100) + '%';
   }
 
   ngOnDestroy(): void {
