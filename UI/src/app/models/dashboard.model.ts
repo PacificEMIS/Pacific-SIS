@@ -21,10 +21,28 @@ export class DashboardViewModel extends CommonField{
     public calendarEventList : CalendarEventModel[];
     public membershipId : number;
     public noticeList: [];
+    public enrollmentByGrade: GradeCount[];
+    public staffByProfile: NameCount[];
+    public staffByJobTitle: NameCount[];
     constructor() {
         super();
         this.noticeList = [];
+        this.enrollmentByGrade = [];
+        this.staffByProfile = [];
+        this.staffByJobTitle = [];
     }
+}
+
+export class GradeCount {
+    gradeId: number;
+    gradeLevelTitle: string;
+    count: number;
+    sortOrder: number;
+}
+
+export class NameCount {
+    name: string;
+    count: number;
 }
 
 export class AttendanceTakenRecord {
