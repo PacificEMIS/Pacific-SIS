@@ -708,7 +708,7 @@ namespace opensis.data.Repository
                                                 //CreditHours = CourseSectionData.CreditHours;
                                                 CreditHours = CourseSectionData!.CreditHours;
                                                 CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                gPaValue = ((CourseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * (CreditHours / CreditEarned);
 
                                             }
 
@@ -958,7 +958,7 @@ namespace opensis.data.Repository
                                                 //CreditHours = CourseSectionData.CreditHours;
                                                 CreditHours = CourseSectionData!.CreditHours;
                                                 CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : CourseSectionData.CreditHours;
-                                                gPaValue = CourseSectionData.IsWeightedCourse != true ? gradeData.UnweightedGpValue * (CreditHours / CreditEarned) : gradeData.WeightedGpValue * (CreditHours / CreditEarned);
+                                                gPaValue = ((CourseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * (CreditHours / CreditEarned);
 
                                             }
                                             var studentReportCardDetail = new StudentReportCardDetail()
@@ -1819,7 +1819,7 @@ namespace opensis.data.Repository
                                                         gradeData.UnweightedGpValue = 0;
                                                     }
                                                     CreditEarned = reportCard.CreditEarned;
-                                                    GradePoint = CourseSectionData?.IsWeightedCourse != true ? (gradeData.UnweightedGpValue * CreditEarned) : gradeData.WeightedGpValue * CreditEarned;
+                                                    GradePoint = ((CourseSectionData?.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                     gPaValue = CreditEarned > 0 && GradePoint > 0 ? (GradePoint / CreditEarned) : 0;
                                                 }
                                             }
@@ -1833,7 +1833,7 @@ namespace opensis.data.Repository
                                                     if (gradeData != null)
                                                     {
                                                         CreditEarned = reportCard.CreditEarned;
-                                                        GradePoint = CourseSectionData?.IsWeightedCourse != true ? (gradeData.UnweightedGpValue * CreditEarned) : gradeData.WeightedGpValue * CreditEarned;
+                                                        GradePoint = ((CourseSectionData?.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                         gPaValue = CreditEarned > 0 && GradePoint > 0 ? (GradePoint / CreditEarned) : 0;
                                                     }
                                                 }
@@ -1847,7 +1847,7 @@ namespace opensis.data.Repository
                                                 //    if (gradeData != null)
                                                 //    {
                                                 //        CreditEarned = reportCard.CreditEarned;
-                                                //        GradePoint = CourseSectionData?.IsWeightedCourse != true ? (gradeData.UnweightedGpValue * CreditEarned) : gradeData.WeightedGpValue * CreditEarned;
+                                                //        GradePoint = ((CourseSectionData?.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                 //        gPaValue = CreditEarned > 0 && GradePoint > 0 ? (GradePoint / CreditEarned) : 0;
                                                 //    }
 
@@ -2401,7 +2401,7 @@ namespace opensis.data.Repository
                                                 if (gradeData != null)
                                                 {
                                                     var CreditEarned = reportCard.sfg.CreditEarned != null ? reportCard.sfg.CreditEarned : 0.0m;
-                                                    var gPaValue = reportCard.cs.IsWeightedCourse != true ? gradeData.UnweightedGpValue * CreditEarned : gradeData.WeightedGpValue * CreditEarned;
+                                                    var gPaValue = ((reportCard.cs.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                     SumofCreditEarned = SumofCreditEarned + CreditEarned;
                                                     SumofGPaValue = SumofGPaValue + gPaValue;
                                                 }
@@ -2690,7 +2690,7 @@ namespace opensis.data.Repository
                                                     }
 
                                                     CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0;
-                                                    gPaValue = CourseSectionData?.IsWeightedCourse != true ? gradeData.UnweightedGpValue * CreditEarned : gradeData.WeightedGpValue * CreditEarned;
+                                                    gPaValue = ((CourseSectionData?.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                     gPaValue = CreditEarned > 0 && gPaValue > 0 ? (gPaValue / CreditEarned) : 0;
                                                     SumofGPaValue = SumofGPaValue + gPaValue;
                                                 }
@@ -2705,7 +2705,7 @@ namespace opensis.data.Repository
                                                     if (gradeData != null)
                                                     {
                                                         CreditEarned = reportCard.CreditEarned != null ? reportCard.CreditEarned : 0;
-                                                        gPaValue = CourseSectionData?.IsWeightedCourse != true ? (gradeData.UnweightedGpValue * CreditEarned) : gradeData.WeightedGpValue * CreditEarned;
+                                                        gPaValue = ((CourseSectionData?.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue) * CreditEarned;
                                                         gPaValue = CreditEarned > 0 && gPaValue > 0 ? (gPaValue / CreditEarned) : 0;
                                                     }
                                                 }

@@ -43,8 +43,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
 
-  currentTab: string;
-  dayIndex: number;
   startDate;
   endDate;
   currentWeek = [];
@@ -63,6 +61,10 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
   weekDaysList = [];
   holidayList = [];
 
+  // Timetable grid data: for each period, an array of cell contents per school day
+  timetableGrid: { periodTitle: string; periodTime: string; cells: { entries: { courseName: string; staffName: string }[]; isHoliday: boolean; isNonSchoolDay: boolean }[] }[] = [];
+  schoolDays: { dayName: string; date: Date; isHoliday: boolean; isNonSchoolDay: boolean }[] = [];
+
   constructor(
     public defaultValuesService: DefaultValuesService,
     private reportService: ReportService,
@@ -78,15 +80,10 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.currentTab = days[new Date().getDay()];
-    this.dayIndex = new Date().getDay();
     this.renderCurrentWeek();
   }
 
   startDateChange() {
-    this.currentTab = days[new Date(this.startDate).getDay()];
-    this.dayIndex = new Date(this.startDate).getDay();
-
     const startDate = new Date(this.startDate);
     const cloneStartDate = startDate;
     for (let i = 0; i < 7; i++) {
@@ -117,9 +114,6 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
   }
 
   endDateChange() {
-    this.currentTab = days[new Date(this.endDate).getDay()];
-    this.dayIndex = new Date(this.endDate).getDay();
-
     const endDate = new Date(this.endDate);
     const cloneEndDate = endDate;
     for (let i = 0; i < 7; i++) {
@@ -147,11 +141,6 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
       this.startDate = this.currentWeek[0];
       this.endDate = this.currentWeek[6];
     }
-  }
-
-  changeTab(status: string, index: number) {
-    this.currentTab = status;
-    this.dayIndex = index;
   }
 
   // Rendering the current week
@@ -220,63 +209,94 @@ export class SchoolwideScheduleReportComponent implements OnInit, OnDestroy {
       if (res) {
         if (res._failure) {
           this.snackbar.open(res._message, '', { duration: 5000 });
-          this.calendarDataViewModel = res?.calendarDataView ? res.calendarDataView : null;
-          this.weekDaysList = this.calendarDataViewModel ? this.calendarDataViewModel?.days?.split('')?.map(item => +item) : [];
-          this.isPreviousButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.startDate));
-          this.isNextButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.endDate));
-          // if (res?.blockListForView.length> 0 && !!res?.blockListForView?.filter(item => item.blockId === 1)[0]) {
-          //   this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
-          // }
-          this.periodList = res?.blockListForView.length > 0 ? res?.blockListForView?.[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
-          this.dayWithCourseList = res.dayWithCourseList.length ? this.modifyDataSet(res) : null;
-          !this.dayWithCourseList ? this.modifyHolidayList() : '';
-        } else {
-          this.calendarDataViewModel = res?.calendarDataView ? res.calendarDataView : null;
-          this.weekDaysList = this.calendarDataViewModel ? this.calendarDataViewModel?.days?.split('')?.map(item => +item) : [];
-          this.isPreviousButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.startDate));
-          this.isNextButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.endDate));
-          // if (res?.blockListForView.length> 0 && !!res?.blockListForView?.filter(item => item.blockId === 1)[0]) {
-          //   this.periodList = res?.blockListForView.length ? res?.blockListForView?.filter(item => item.blockId === 1)[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
-          // }
-          this.periodList = res?.blockListForView.length > 0 ? res?.blockListForView?.[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
-          this.dayWithCourseList = res.dayWithCourseList.length ? this.modifyDataSet(res) : null;
-          !this.dayWithCourseList ? this.modifyHolidayList() : '';
         }
+        this.calendarDataViewModel = res?.calendarDataView ? res.calendarDataView : null;
+        this.weekDaysList = this.calendarDataViewModel ? this.calendarDataViewModel?.days?.split('')?.map(item => +item) : [];
+        this.isPreviousButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.startDate));
+        this.isNextButtonEnabled = !this.currentWeek.some(item => this.commonFunction.formatDateSaveWithoutTime(item) === this.commonFunction.formatDateSaveWithoutTime(this.calendarDataViewModel.endDate));
+        this.periodList = res?.blockListForView?.length > 0 ? res?.blockListForView?.[0]?.blockPeriod?.sort((a, b) => a.periodSortOrder - b.periodSortOrder) : [];
+        this.dayWithCourseList = res.dayWithCourseList?.length ? res.dayWithCourseList : [];
+        this.holidayList = [];
+        if (this.dayWithCourseList.length) {
+          this.dayWithCourseList.forEach(day => this.holidayList.push(day?.isHoliday));
+        } else {
+          this.modifyHolidayList();
+        }
+        this.buildTimetableGrid();
       } else {
         this.snackbar.open(this.defaultValuesService.getHttpError(), '', { duration: 5000 });
       }
     });
   }
 
-  modifyDataSet(res) {
-    this.holidayList = [];
-    if (res?.dayWithCourseList?.length) {
-      res?.dayWithCourseList?.map(day => {
-        if (day?.courseListModel?.length) {
-          day?.courseListModel?.map(course => {
+  buildTimetableGrid() {
+    // Build school days list — only days that are in weekDaysList (active calendar days)
+    this.schoolDays = [];
+    this.currentWeek.forEach((date, i) => {
+      const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon, ...
+      if (this.weekDaysList.includes(dayOfWeek)) {
+        this.schoolDays.push({
+          dayName: this.days[dayOfWeek],
+          date,
+          isHoliday: !!this.holidayList[i],
+          isNonSchoolDay: false
+        });
+      }
+    });
+
+    // Build a lookup: for each school day + period, collect course/staff entries
+    // dayWithCourseList[i] corresponds to currentWeek[i]
+    const periodCellMap: Map<number, { entries: { courseName: string; staffName: string }[]; isHoliday: boolean; isNonSchoolDay: boolean }[]> = new Map();
+
+    this.periodList.forEach(period => {
+      periodCellMap.set(period.periodId, []);
+    });
+
+    this.schoolDays.forEach(schoolDay => {
+      // Find the matching dayWithCourseList entry
+      const weekIndex = this.currentWeek.findIndex(d =>
+        this.commonFunction.formatDateSaveWithoutTime(d) === this.commonFunction.formatDateSaveWithoutTime(schoolDay.date)
+      );
+      const dayData = weekIndex >= 0 && this.dayWithCourseList[weekIndex] ? this.dayWithCourseList[weekIndex] : null;
+
+      this.periodList.forEach(period => {
+        const cellEntries: { courseName: string; staffName: string }[] = [];
+
+        if (dayData?.courseListModel?.length) {
+          dayData.courseListModel.forEach(course => {
             if (course?.staffListModels?.length) {
-              course?.staffListModels?.map(staff => {
-                staff.modiFiedcourseSectionListModels = [];
-                if (this.periodList.length > 0) {
-                  this.periodList.map(item => staff.modiFiedcourseSectionListModels?.push({ courseSectionName: '' }));
-                  if (staff?.courseSectionListModels?.length) {
-                    staff?.courseSectionListModels?.map(courseSection => {
-                      this.periodList.map((period, index) => {
-                        if (period.periodId === courseSection.periodId) {
-                          staff.modiFiedcourseSectionListModels[index].courseSectionName = staff.modiFiedcourseSectionListModels[index].courseSectionName ? staff.modiFiedcourseSectionListModels[index].courseSectionName + ", " + courseSection.courseSectionName : courseSection.courseSectionName;
-                        }
+              course.staffListModels.forEach(staff => {
+                if (staff?.courseSectionListModels?.length) {
+                  staff.courseSectionListModels.forEach(cs => {
+                    if (cs.periodId === period.periodId) {
+                      cellEntries.push({
+                        courseName: course.courseName,
+                        staffName: staff.staffName
                       });
-                    });
-                  }
+                    }
+                  });
                 }
               });
             }
           });
         }
-        this.holidayList.push(day?.isHoliday);
+
+        periodCellMap.get(period.periodId).push({
+          entries: cellEntries,
+          isHoliday: schoolDay.isHoliday,
+          isNonSchoolDay: schoolDay.isNonSchoolDay
+        });
       });
-      return res?.dayWithCourseList;
-    }
+    });
+
+    // Assemble the grid rows
+    this.timetableGrid = this.periodList.map(period => ({
+      periodTitle: period.periodTitle,
+      periodTime: period.periodStartTime && period.periodEndTime
+        ? `${period.periodStartTime} - ${period.periodEndTime}`
+        : '',
+      cells: periodCellMap.get(period.periodId)
+    }));
   }
 
   modifyHolidayList() {

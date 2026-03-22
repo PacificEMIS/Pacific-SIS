@@ -682,17 +682,63 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.getPrintScheduleReport().then((res: GetPrintScheduleReportModel) => {
-      res.studentDetailsViewModelList.map(studentDetails => {
-        studentDetails?.courseDetailsViewModelList?.map(courseDetails => {
-          courseDetails.modifiedDataList = [];
-          courseDetails?.courseSectionDetailsViewModelList?.map(courseSectionDetails => {
-            courseSectionDetails?.dayDetailsViewModelList?.map(dayDetails => {
-              dayDetails?.datePeriodRoomDetailsViewModelList?.map((datePeriodRoomDetails, datePeriodRoomDetailsIndex) => {
-                courseDetails.modifiedDataList.push({ date: datePeriodRoomDetails?.date, periodName: datePeriodRoomDetails?.periodName, roomName: datePeriodRoomDetails?.roomName, dayName: dayDetails?.dayName, courseSectionName: courseSectionDetails?.courseSectionName, staffName: courseSectionDetails?.staffName, courseName: courseDetails?.courseName, isFirst: datePeriodRoomDetailsIndex === 0 ? true : false, length: dayDetails?.datePeriodRoomDetailsViewModelList?.length });
+      // Build a timetable grid per student: rows = periods, columns = days
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+      res.studentDetailsViewModelList.forEach(studentDetails => {
+        // Collect all (day, period) -> cell entries across all courses
+        const cellMap: { [periodName: string]: { [day: string]: { courseName: string, courseSectionName: string, staffName: string, roomName: string }[] } } = {};
+        const daysUsed = new Set<string>();
+        const periodsUsed = new Set<string>();
+
+        studentDetails?.courseDetailsViewModelList?.forEach(courseDetails => {
+          courseDetails?.courseSectionDetailsViewModelList?.forEach(courseSectionDetails => {
+            courseSectionDetails?.dayDetailsViewModelList?.forEach(dayDetails => {
+              const day = dayDetails?.dayName;
+              if (day) { daysUsed.add(day); }
+              // Get distinct periods for this day (ignore individual dates)
+              const periodsSeen = new Set<string>();
+              dayDetails?.datePeriodRoomDetailsViewModelList?.forEach(detail => {
+                const periodName = detail?.periodName;
+                if (!periodName || periodsSeen.has(periodName)) { return; }
+                periodsSeen.add(periodName);
+                periodsUsed.add(periodName);
+                if (!cellMap[periodName]) { cellMap[periodName] = {}; }
+                if (!cellMap[periodName][day]) { cellMap[periodName][day] = []; }
+                cellMap[periodName][day].push({
+                  courseName: courseDetails?.courseName,
+                  courseSectionName: courseSectionDetails?.courseSectionName,
+                  staffName: courseSectionDetails?.staffName,
+                  roomName: detail?.roomName
+                });
               });
             });
           });
         });
+
+        // Sort days and periods
+        const sortedDays = dayOrder.filter(d => daysUsed.has(d));
+        const sortedPeriods = Array.from(periodsUsed).sort((a, b) => {
+          // Try numeric sort first (Period 1 before Period 2), fall back to alphabetical
+          const numA = parseInt(a.replace(/\D/g, ''), 10);
+          const numB = parseInt(b.replace(/\D/g, ''), 10);
+          if (!isNaN(numA) && !isNaN(numB)) { return numA - numB; }
+          return a.localeCompare(b);
+        });
+
+        // Build grid rows for the template
+        (studentDetails as any).timetableDays = sortedDays;
+        (studentDetails as any).timetableRows = sortedPeriods.map(period => ({
+          periodName: period,
+          cells: sortedDays.map(day => {
+            const entries = cellMap[period]?.[day];
+            if (!entries || entries.length === 0) { return { empty: true }; }
+            return {
+              empty: false,
+              entries: entries
+            };
+          })
+        }));
       });
 
       this.printScheduleReportData = res;
@@ -888,9 +934,6 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
           .bg-slate {
               background-color: #E5E5E5;
           }
-          .information-table td {
-              font-size: 16px;
-          }
 
           table td {
               vertical-align: middle;
@@ -904,6 +947,66 @@ export class PrintSchedulesComponent implements OnInit, AfterViewInit, OnDestroy
           }
           .report-header .information {
             width: calc(100% - 110px);
+          }
+
+          /* Timetable grid */
+          .timetable-section {
+              padding: 20px;
+          }
+          .timetable-grid {
+              border-collapse: separate;
+              border-spacing: 0;
+              border: 1px solid #000;
+              border-radius: 10px;
+              table-layout: fixed;
+          }
+          .timetable-grid th,
+          .timetable-grid td {
+              border-left: 1px solid #000;
+              border-top: 1px solid #000;
+              padding: 8px 10px;
+              text-align: center;
+              vertical-align: top;
+              font-size: 13px;
+          }
+          .timetable-grid thead tr th {
+              border-top: none;
+          }
+          .timetable-grid th:first-child,
+          .timetable-grid td:first-child {
+              border-left: none;
+          }
+          .timetable-grid thead tr th:first-child {
+              border-top-left-radius: 10px;
+          }
+          .timetable-grid thead tr th:last-child {
+              border-top-right-radius: 10px;
+          }
+          .timetable-grid tbody tr:last-child td:first-child {
+              border-bottom-left-radius: 10px;
+          }
+          .timetable-grid tbody tr:last-child td:last-child {
+              border-bottom-right-radius: 10px;
+          }
+          .timetable-grid .period-col {
+              width: 100px;
+              font-weight: 600;
+              text-align: left;
+          }
+          .timetable-entry {
+              margin-bottom: 4px;
+          }
+          .timetable-entry:last-child {
+              margin-bottom: 0;
+          }
+          .timetable-entry .course-name {
+              font-weight: 600;
+              font-size: 13px;
+              color: #000;
+          }
+          .timetable-entry .course-detail {
+              font-size: 11px;
+              color: #555;
           }
           </style>
         </head>

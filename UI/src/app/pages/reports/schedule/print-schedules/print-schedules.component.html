@@ -189,7 +189,7 @@
                                             <tr>
                                                 <td><b>{{'grade' | translate}}</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
                                                 <td><b>{{'gender' | translate}}</b> : <span>{{studentDetails?.gender}}</span></td>
-                                                <td></td>
+                                                <td *ngIf="selectedReportBy"><b>{{'term' | translate}}</b> : <span>{{selectedReportBy}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -198,33 +198,36 @@
                         </table>
                     </td>
                 </tr>
-            
+
                 <tr>
-                    <td class="student-details">
-                        <table class="border-table information-table">
+                    <td class="timetable-section">
+                        <table class="timetable-grid">
                             <thead>
                                 <tr>
-                                    <th class="bg-slate" width="12%"><strong>{{'date' | translate}}</strong></th>
-                                    <th class="bg-slate" width="12%"><strong>{{'day' | translate}}</strong></th>
-                                    <th class="bg-slate" width="10%"><strong>{{'period' | translate}}</strong></th>
-                                    <th *ngIf="selectedReportBy" class="bg-slate" width="15%"><strong>{{'term' | translate}}</strong></th>
-                                    <th class="bg-slate" width="25%"><strong>{{'courseSectionTeacher' | translate}}</strong></th>
-                                    <th class="bg-slate" width="10%"><strong>{{'room' | translate}}</strong></th>
-                                    <th class="bg-slate" width="15%"><strong>{{'course' | translate}}</strong></th>
+                                    <th class="bg-slate period-col"><strong>{{'period' | translate}}</strong></th>
+                                    <th class="bg-slate day-col" *ngFor="let day of studentDetails?.timetableDays">
+                                        <strong>{{day}}</strong>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngFor="let courseDetails of studentDetails?.courseDetailsViewModelList">
-                                    <tr *ngFor="let dateDetails of courseDetails?.modifiedDataList; first as isFirst">
-                                        <td>{{dateDetails?.date | date}}</td>
-                                        <td *ngIf="dateDetails?.isFirst" [attr.rowspan]="dateDetails?.length">{{dateDetails?.dayName}}</td>
-                                        <td>{{dateDetails?.periodName}}</td>
-                                        <td *ngIf="isFirst && selectedReportBy" [attr.rowspan]="courseDetails?.modifiedDataList?.length">{{selectedReportBy}}</td>
-                                        <td>{{dateDetails?.courseSectionName}} {{dateDetails?.staffName ? '-' : ''}} {{dateDetails?.staffName}}</td>
-                                        <td>{{dateDetails?.roomName}}</td>
-                                        <td *ngIf="isFirst" [attr.rowspan]="courseDetails?.modifiedDataList?.length">{{dateDetails?.courseName}}</td>
-                                    </tr>
-                                </ng-container>
+                                <tr *ngFor="let row of studentDetails?.timetableRows">
+                                    <td class="period-col bg-slate"><strong>{{row.periodName}}</strong></td>
+                                    <td class="day-col" *ngFor="let cell of row.cells">
+                                        <ng-container *ngIf="!cell.empty">
+                                            <div *ngFor="let entry of cell.entries" class="timetable-entry">
+                                                <div class="course-name">{{entry.courseName}}</div>
+                                                <div class="course-detail">{{entry.staffName}}</div>
+                                                <div class="course-detail" *ngIf="entry.roomName">{{entry.roomName}}</div>
+                                            </div>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!studentDetails?.timetableRows?.length">
+                                    <td [attr.colspan]="1 + (studentDetails?.timetableDays?.length || 0)" class="text-center">
+                                        {{'noData' | translate}}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </td>

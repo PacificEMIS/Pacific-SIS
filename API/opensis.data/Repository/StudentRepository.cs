@@ -4102,7 +4102,7 @@ namespace opensis.data.Repository
                                                                 var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
                                                                 if (gradeData != null)
                                                                 {
-                                                                    prgsGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    prgsGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                 }
                                                             }
                                                             else if (courseSectionData.GradeScaleType == "Teacher_Scale")
@@ -4115,7 +4115,7 @@ namespace opensis.data.Repository
                                                                     if (gradeData != null)
                                                                     {
                                                                         reportCardDetailsForTranscript.Grade = gradeData.Title;
-                                                                        prgsGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                        prgsGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                     }
                                                                 }
                                                             }
@@ -4179,7 +4179,7 @@ namespace opensis.data.Repository
                                                                 var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
                                                                 if (gradeData != null)
                                                                 {
-                                                                    qtrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    qtrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                 }
                                                             }
                                                             else if (courseSectionData.GradeScaleType == "Teacher_Scale")
@@ -4192,7 +4192,7 @@ namespace opensis.data.Repository
                                                                     if (gradeData != null)
                                                                     {
                                                                         reportCardDetailsForTranscript.Grade = gradeData.Title;
-                                                                        qtrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                        qtrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                     }
                                                                 }
                                                             }
@@ -4256,7 +4256,7 @@ namespace opensis.data.Repository
                                                                 var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
                                                                 if (gradeData != null)
                                                                 {
-                                                                    smstrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    smstrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                 }
                                                             }
                                                             else if (courseSectionData.GradeScaleType == "Teacher_Scale")
@@ -4269,7 +4269,7 @@ namespace opensis.data.Repository
                                                                     if (gradeData != null)
                                                                     {
                                                                         reportCardDetailsForTranscript.Grade = gradeData.Title;
-                                                                        smstrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                        smstrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                     }
                                                                 }
                                                             }
@@ -4333,7 +4333,7 @@ namespace opensis.data.Repository
                                                                 var gradeData = courseSectionData.GradeScale.Grade.FirstOrDefault(x => x.TenantId == reportCard.TenantId && x.SchoolId == reportCard.SchoolId && String.Compare(x.Title, reportCard.GradeObtained, true) == 0 && x.GradeScaleId == reportCard.GradeScaleId);
                                                                 if (gradeData != null)
                                                                 {
-                                                                    yrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                    yrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                 }
                                                             }
                                                             else if (courseSectionData.GradeScaleType == "Teacher_Scale")
@@ -4346,7 +4346,7 @@ namespace opensis.data.Repository
                                                                     if (gradeData != null)
                                                                     {
                                                                         reportCardDetailsForTranscript.Grade = gradeData.Title;
-                                                                        yrGPValue = courseSectionData.IsWeightedCourse != true ? reportCardDetailsForTranscript.CreditEarned * gradeData.UnweightedGpValue : reportCardDetailsForTranscript.CreditEarned * gradeData.WeightedGpValue;
+                                                                        yrGPValue = reportCardDetailsForTranscript.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                                     }
                                                                 }
                                                             }
@@ -4582,12 +4582,12 @@ namespace opensis.data.Repository
                                                 {
                                                     if (reportCard.CreditEarned != null)
                                                     {
-                                                        gPValue = courseSectionData.IsWeightedCourse != true ? reportCard.CreditEarned * gradeData.UnweightedGpValue : reportCard.CreditEarned * gradeData.WeightedGpValue;
+                                                        gPValue = reportCard.CreditEarned * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                         //gpValue=CreditEarned*(WeightedGpValue or UnweightedGpValue)
                                                     }
                                                     else
                                                     {
-                                                        gPValue = courseSectionData.IsWeightedCourse != true ? courseSectionData.CreditHours * gradeData.UnweightedGpValue : courseSectionData.CreditHours * gradeData.WeightedGpValue;
+                                                        gPValue = courseSectionData.CreditHours * ((courseSectionData.IsWeightedCourse == true && gradeData.WeightedGpValue > 0) ? gradeData.WeightedGpValue : gradeData.UnweightedGpValue);
                                                         //gpValue=CreditEarned*(WeightedGpValue or UnweightedGpValue)
                                                     }
 
