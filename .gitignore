@@ -15,6 +15,7 @@ UI/src/assets/config.json
 
 # Local secrets / environment overrides
 .env
+scripts/.token
 
 # Build outputs
 bin/

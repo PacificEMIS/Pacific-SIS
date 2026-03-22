@@ -5,9 +5,15 @@
                 <div class="flex w-full items-center">
                     <input class="py-3 border-0 outline-none w-full bg-transparent table-search" formControlName="searchText" placeholder="Search..."
                         type="search">
-                    <button class="ml-4" mat-icon-button type="button">
+                    <button *ngIf="!loading" class="ml-4" mat-icon-button type="button">
                         <mat-icon>search</mat-icon>
                     </button>
+                    <a (click)="showAdvanceSearchPanel = true;" [class.disabled]="totalCount == null" class="text-primary cursor-pointer ml-3 md:w-full">
+                        <mat-icon aria-hidden="false" class="align-middle">tune</mat-icon>
+                        <span class="ml-2 hidden lg:inline-block">
+                            {{'advanceSearch' | translate}}
+                        </span>
+                    </a>
                 </div>
             </div>
             <hr class="-mx-4 block md:hidden" />
@@ -102,4 +108,14 @@
     </div>
     <mat-paginator *ngIf="totalCount!=0" [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="[10 , 20 ,30 ,40]" aria-label="Select page" (page)='getPageEvent($event)'>
     </mat-paginator>
+</div>
+
+<div class="fixed top-0 left-0 w-full h-full z-50" *ngIf="showAdvanceSearchPanel">
+    <div class="advance-search-panel absolute bg-white w-full sm:w-4/6 md:w-3/6 lg:w-2/6 h-full z-20" @fadeInRight>
+        <vex-common-search-student [incomingSearchValue]="searchValue" [advancedSearchExpansion]="advancedSearchExpansionModel"
+            (toggelValues)="getToggleValues($event)" [incomingToggleValues]="toggleValues" (filteredValue)="filterData($event)"
+            (showHideAdvanceSearch)="hideAdvanceSearch($event)" (searchValue)="getSearchInput($event)">
+        </vex-common-search-student>
+    </div>
+    <div class="advance-search-backdrop bg-black opacity-50 fiexd top-0 left-0 w-full h-full z-10"></div>
 </div>

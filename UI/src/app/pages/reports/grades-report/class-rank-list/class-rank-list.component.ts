@@ -6,11 +6,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { AdvancedSearchExpansionModel } from 'src/app/models/common.model';
 import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
 import { CommonService } from 'src/app/services/common.service';
 import { GradeLevelService } from 'src/app/services/grade-level.service';
 import { LoaderService } from 'src/app/services/loader.service';
 import { ReportService } from 'src/app/services/report.service';
+import { fadeInRight400ms } from 'src/@vex/animations/fade-in-right.animation';
 
 export interface StudentListData {
   studentName: string;
@@ -28,7 +30,10 @@ export interface StudentListData {
 @Component({
   selector: 'vex-class-rank-list',
   templateUrl: './class-rank-list.component.html',
-  styleUrls: ['./class-rank-list.component.scss']
+  styleUrls: ['./class-rank-list.component.scss'],
+  animations: [
+    fadeInRight400ms
+  ]
 })
 export class ClassRankListComponent implements OnInit {
 
@@ -43,6 +48,11 @@ export class ClassRankListComponent implements OnInit {
   pageNumber: number;
   pageSize: number;
   currentFilterParams: any[] = [];
+  advancedSearchExpansionModel: AdvancedSearchExpansionModel = new AdvancedSearchExpansionModel();
+  showAdvanceSearchPanel: boolean = false;
+  isFromAdvancedSearch: boolean = false;
+  searchValue;
+  toggleValues;
 
   constructor(
     public translateService: TranslateService,
@@ -56,6 +66,9 @@ export class ClassRankListComponent implements OnInit {
     private defaultService: DefaultValuesService,
     private loaderService: LoaderService,
   ) {
+    this.advancedSearchExpansionModel.accessInformation = false;
+    this.advancedSearchExpansionModel.enrollmentInformation = false;
+    this.advancedSearchExpansionModel.searchAllSchools = false;
     this.defaultValuesService.setReportCompoentTitle.next("GPA / Class Rank List");
     this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
       this.loading = val;
@@ -166,6 +179,28 @@ export class ClassRankListComponent implements OnInit {
     this.pageNumber = event.pageIndex + 1;
     this.pageSize = event.pageSize;
     this.getClassRankList(this.currentFilterParams);
+  }
+
+  filterData(res) {
+    this.isFromAdvancedSearch = true;
+    this.pageNumber = 1;
+    if (res) {
+      this.currentFilterParams = res.filterParams;
+      this.filterForm.patchValue({ searchText: '', gradeLevel: '' }, { emitEvent: false });
+      this.getClassRankList(res.filterParams);
+    }
+  }
+
+  getToggleValues(event) {
+    this.toggleValues = event;
+  }
+
+  hideAdvanceSearch(event) {
+    this.showAdvanceSearchPanel = false;
+  }
+
+  getSearchInput(event) {
+    this.searchValue = event;
   }
 
   ngOnDestroy() {

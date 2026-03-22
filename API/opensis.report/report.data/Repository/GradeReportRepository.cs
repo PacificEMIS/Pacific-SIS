@@ -591,6 +591,38 @@ namespace opensis.report.report.data.Repository
 
                 var gradeScaleListData = this.context?.GradeScale.Include(s => s.Grade).Where(x => x.TenantId == pageResult.TenantId && x.SchoolId == pageResult.SchoolId).ToList();
 
+                // Phase 2a: Batch-fetch HistoricalCreditTransfer for all students at once
+                var hctDataAll = this.context?.HistoricalCreditTransfer
+                    .Where(x => x.TenantId == pageResult.TenantId
+                        && x.SchoolId == pageResult.SchoolId
+                        && studentIds.Contains(x.StudentId)
+                        && x.CreditAttempted != null
+                        && x.GpValue != null)
+                    .ToList() ?? new List<HistoricalCreditTransfer>();
+
+                var hctByStudent = hctDataAll
+                    .GroupBy(h => h.StudentId)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                // Phase 2b: Pre-compute marking period hierarchy flags per student
+                // Determines the highest marking period level that exists for each student
+                var studentMpFlags = studentIds.ToDictionary(
+                    sid => sid,
+                    sid =>
+                    {
+                        var grades = studentFinalGrades.Where(x => x.SfgStudentId == sid);
+                        return new
+                        {
+                            HasYear = grades.Any(x => x.SfgYrMarkingPeriodId != null),
+                            HasSemester = grades.Any(x => x.SfgSmstrMarkingPeriodId != null),
+                            HasQuarter = grades.Any(x => x.SfgQtrMarkingPeriodId != null),
+                            HasProgressPeriod = grades.Any(x => x.SfgPrgrsprdMarkingPeriodId != null)
+                        };
+                    });
+
+                // Build CourseSection lookup for O(1) access
+                var csLookup = csData!.ToDictionary(x => x.CourseSectionId);
+
                 foreach (var studentId in studentIds)
                 {
                     decimal totalCA = 0.0m;
@@ -601,14 +633,12 @@ namespace opensis.report.report.data.Repository
                         .Where(s => s.SfgStudentId == studentId)
                         .ToList();
 
+                    var mpFlags = studentMpFlags[studentId];
+
                     foreach (var csfg in studentGrades)
                     {
-                        var cs = csData
-                            .FirstOrDefault(x => x.TenantId == pageResult.TenantId
-                                && x.SchoolId == pageResult.SchoolId
-                                && x.CourseSectionId == csfg.SfgCourseSectionId);
-
-                        if (cs == null) continue;
+                        if (!csLookup.TryGetValue(csfg.SfgCourseSectionId, out var cs))
+                            continue;
 
                         // ==================== GPA LOGIC ====================
                         decimal? gpValue = 0;
@@ -627,7 +657,11 @@ namespace opensis.report.report.data.Repository
                                     grade.UnweightedGpValue = 0;
                                 }
 
-                                gpValue = (decimal)(cs.IsWeightedCourse != true ? csfg.SfgCreditearned * grade.UnweightedGpValue : csfg.SfgCreditearned * grade.WeightedGpValue);
+                                // Use weighted GP if course is weighted AND weighted value is defined; otherwise fall back to unweighted
+                                var effectiveGp = (cs.IsWeightedCourse == true && grade.WeightedGpValue > 0)
+                                    ? grade.WeightedGpValue
+                                    : grade.UnweightedGpValue;
+                                gpValue = (decimal)(csfg.SfgCreditearned * effectiveGp);
                             }
                         }
                         else if (cs.GradeScaleType == "Teacher_Scale")
@@ -638,82 +672,53 @@ namespace opensis.report.report.data.Repository
                                     var gradeData = gradeDataList?.FirstOrDefault(x => x.GradeId == ConfigurationGrade?.GradeId && x.GradeScaleId == ConfigurationGrade.GradeScaleId);
                                     if (gradeData != null)
                                     {
-                                        gpValue = (decimal)(cs.IsWeightedCourse != true ? csfg.SfgCreditearned * gradeData.UnweightedGpValue : csfg.SfgCreditearned * gradeData.WeightedGpValue);
+                                        var effectiveTeacherGp = (cs.IsWeightedCourse == true && gradeData.WeightedGpValue > 0)
+                                            ? gradeData.WeightedGpValue
+                                            : gradeData.UnweightedGpValue;
+                                        gpValue = (decimal)(csfg.SfgCreditearned * effectiveTeacherGp);
                                     }
                                 }
                         }
 
                         // Determine Marking Period hierarchy (Yr > Sem > Qtr > PP)
+                        // Use highest available level; skip lower levels if higher exists
+                        bool includeGrade = false;
                         if (csfg.SfgYrMarkingPeriodId != null)
                         {
-                            totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
-                            totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
-                            //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
-                            totalgpValue += (decimal)gpValue;
+                            includeGrade = true;
                         }
                         else if (csfg.SfgSmstrMarkingPeriodId != null)
                         {
-                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId && x.SfgYrMarkingPeriodId != null);
-                            if (!exists)
-                            {
-                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
-                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalgpValue += (decimal)gpValue;
-                            }
+                            includeGrade = !mpFlags.HasYear;
                         }
                         else if (csfg.SfgQtrMarkingPeriodId != null)
                         {
-                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
-                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null));
-                            if (!exists)
-                            {
-                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
-                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalgpValue += (decimal)gpValue;
-                            }
+                            includeGrade = !mpFlags.HasYear && !mpFlags.HasSemester;
                         }
                         else if (csfg.SfgPrgrsprdMarkingPeriodId != null)
                         {
-                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
-                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null ||
-                                                                      x.SfgQtrMarkingPeriodId != null));
-                            if (!exists)
-                            {
-                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
-                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalgpValue += (decimal)gpValue;
-                            }
+                            includeGrade = !mpFlags.HasYear && !mpFlags.HasSemester && !mpFlags.HasQuarter;
                         }
                         else
                         {
-                            var exists = studentFinalGrades.Any(x => x.SfgStudentId == studentId &&
-                                                                     (x.SfgYrMarkingPeriodId != null || x.SfgSmstrMarkingPeriodId != null ||
-                                                                      x.SfgQtrMarkingPeriodId != null || x.SfgPrgrsprdMarkingPeriodId != null));
-                            if (!exists)
-                            {
-                                totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
-                                //totalgpValue += (decimal)gpValue * (decimal)(csfg.SfgCreditattempted ?? 0);
-                                totalgpValue += (decimal)gpValue;
-                            }
+                            includeGrade = !mpFlags.HasYear && !mpFlags.HasSemester && !mpFlags.HasQuarter && !mpFlags.HasProgressPeriod;
+                        }
+
+                        if (includeGrade)
+                        {
+                            totalCA += (decimal)(csfg.SfgCreditattempted ?? 0);
+                            totalCE += (decimal)(csfg.SfgCreditearned ?? 0);
+                            totalgpValue += (decimal)gpValue;
                         }
                     }
 
-                    // Historical Credit Transfer
-                    var hctData = this.context?.HistoricalCreditTransfer
-                        .Where(x => x.TenantId == pageResult.TenantId
-                            && x.SchoolId == pageResult.SchoolId
-                            && x.StudentId == studentId
-                            && x.CreditAttempted != null
-                            && x.GpValue != null)
-                        .ToList();
-
-                    totalCA += (decimal)(hctData?.Sum(s => s.CreditAttempted) ?? 0);
-                    totalCE += (decimal)(hctData?.Sum(s => s.CreditEarned) ?? 0);
-                    totalgpValue += (decimal)(hctData?.Sum(s => s.GpValue) ?? 0);
+                    // Historical Credit Transfer — O(1) dictionary lookup
+                    if (hctByStudent.TryGetValue(studentId, out var hctData))
+                    {
+                        totalCA += (decimal)(hctData.Sum(s => s.CreditAttempted) ?? 0);
+                        totalCE += (decimal)(hctData.Sum(s => s.CreditEarned) ?? 0);
+                        totalgpValue += (decimal)(hctData.Sum(s => s.GpValue) ?? 0);
+                    }
 
                     decimal? cgpa = null;
                     if (totalCA > 0 && totalgpValue > 0)
@@ -748,15 +753,22 @@ namespace opensis.report.report.data.Repository
                     }
                 }
 
-                // Rank calculation based on GPA
+                // Rank calculation based on GPA (competition ranking — tied GPAs share rank)
                 var rankedList = cgpaDetailsList
                     .OrderByDescending(x => x.CumulativeGPA ?? 0)
                     .ToList();
 
                 int rank = 1;
-                foreach (var student in rankedList)
+                for (int i = 0; i < rankedList.Count; i++)
                 {
-                    student.Rank = rank++;
+                    if (i > 0 && rankedList[i].CumulativeGPA == rankedList[i - 1].CumulativeGPA)
+                    {
+                        rankedList[i].Rank = rankedList[i - 1].Rank;
+                    }
+                    else
+                    {
+                        rankedList[i].Rank = i + 1;
+                    }
                 }
 
                 if (pageResult.SortingModel != null)
