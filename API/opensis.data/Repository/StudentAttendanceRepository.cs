@@ -1929,6 +1929,10 @@ namespace opensis.data.Repository
                         {
                             transactionIQ = Utility.Sort(transactionIQ!, pageResult.SortingModel.SortColumn!, pageResult.SortingModel.SortDirection!.ToLower());
                         }
+                        else if (transactionIQ != null)
+                        {
+                            transactionIQ = transactionIQ.OrderBy(x => x.AttendanceDate);
+                        }
 
                         int totalCount = transactionIQ != null ? transactionIQ.Count() : 0;
 
@@ -1941,7 +1945,7 @@ namespace opensis.data.Repository
 
                             scheduledCourseSectionView.courseSectionViewList = transactionIQ.ToList();
                             scheduledCourseSectionView.MissingAttendanceCount = totalCount;
-                           
+
                         }
                     }
                 }
