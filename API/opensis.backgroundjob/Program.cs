@@ -531,6 +531,7 @@ namespace opensis.backgroundjob
                                             AttendanceCode = null,
                                             MissingAttendanceDate = date,
                                         });
+                                        missingSet.Add(missingKey);
                                         missingAttendanceId++;
                                     }
                                 }
@@ -564,6 +565,7 @@ namespace opensis.backgroundjob
                                                 AttendanceCode = null,
                                                 MissingAttendanceDate = date,
                                             });
+                                            missingSet.Add(missingKey);
                                             missingAttendanceId++;
                                         }
                                     }
@@ -605,6 +607,7 @@ namespace opensis.backgroundjob
                                         AttendanceCode = null,
                                         MissingAttendanceDate = calenderSchedule.CalDate,
                                     });
+                                    missingSet.Add(missingKey);
                                     missingAttendanceId++;
                                 }
                             }
@@ -649,6 +652,7 @@ namespace opensis.backgroundjob
                                             AttendanceCode = null,
                                             MissingAttendanceDate = bellSchedule.BellScheduleDate,
                                         });
+                                        missingSet.Add(missingKey);
                                         missingAttendanceId++;
                                     }
                                 }
