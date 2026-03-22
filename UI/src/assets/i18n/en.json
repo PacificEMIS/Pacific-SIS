@@ -962,7 +962,6 @@
     "confirmFillAttendanceMessage": "This will mark all missing attendance as Present for: ",
     "confirmFillAttendanceWarning": "This cannot be easily undone.",
     "yesConfirm": "Yes, Fill Attendance",
-    "cancel": "Cancel",
     "processingAttendance": "Processing attendance records... This may take a moment for large datasets.",
     "fillAttendanceComplete": "Complete",
     "fillAttendanceFailed": "Failed",
