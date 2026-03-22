@@ -393,6 +393,28 @@
 
     DROP TABLE IF EXISTS _cleanup_delete_attendance;
 
+    -- 3c: Zero out orphaned daily attendance records.
+    -- Per-period records were just deleted, so daily summaries that no longer
+    -- have any source data should not keep stale attendance_minutes values.
+
+    SELECT COUNT(*) AS orphaned_daily_to_zero
+    FROM student_daily_attendance sda
+    WHERE NOT EXISTS (
+        SELECT 1 FROM student_attendance sa
+        WHERE sa.tenant_id = sda.tenant_id AND sa.school_id = sda.school_id
+        AND sa.student_id = sda.student_id AND sa.attendance_date = sda.attendance_date
+    )
+    AND sda.attendance_minutes != 0;
+
+    UPDATE student_daily_attendance sda
+    SET sda.attendance_minutes = 0
+    WHERE NOT EXISTS (
+        SELECT 1 FROM student_attendance sa
+        WHERE sa.tenant_id = sda.tenant_id AND sa.school_id = sda.school_id
+        AND sa.student_id = sda.student_id AND sa.attendance_date = sda.attendance_date
+    )
+    AND sda.attendance_minutes != 0;
+
     -- =============================================================================
     -- Step 4: Verify — both should return 0 after deletes.
     -- =============================================================================
