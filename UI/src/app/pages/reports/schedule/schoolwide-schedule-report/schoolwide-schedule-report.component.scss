@@ -1,34 +1,48 @@
-.custom-tab {
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-}
-.schedule-table {
+.timetable-grid {
+    border-collapse: collapse;
+
     tr {
         th,
         td {
             @apply border-r;
             @apply border-b;
             border-color: rgba(0, 0, 0, 0.1);
-            text-align: center;
-            @apply px-6;
-            @apply py-3;
-        }
-        td {
-            @apply py-5;
+            @apply px-3;
+            @apply py-2;
+            vertical-align: top;
         }
         th:last-child,
         td:last-child {
             border-right: none;
         }
-        th:first-child,
-        td:first-child {
-            text-align: left;
+    }
+
+    .period-col {
+        text-align: left;
+        white-space: nowrap;
+        min-width: 120px;
+    }
+
+    .day-col {
+        text-align: center;
+        min-width: 140px;
+    }
+
+    td {
+        text-align: left;
+    }
+
+    .cell-entry {
+        @apply py-1;
+
+        & + .cell-entry {
+            @apply mt-1;
+            @apply pt-1;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
         }
     }
 }
+
 .schoolwide-schedule-report {
     .mat-datepicker-toggle button {
         display: none;
