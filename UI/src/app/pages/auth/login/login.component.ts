@@ -156,9 +156,10 @@ export class LoginComponent implements OnInit {
           this.tenantPhoto = data.tenant.tenantLogo;
           this.tenantName = data.tenant.tenantName;
           this.tenantFooter = data.tenant.tenantFooter;
-          
+
           this.defaultValuesService.setPhotoAndFooter(data.tenant);
           this.favIcon.href = 'data:image/jpeg;base64,'+ data.tenant.tenantFavIcon;
+          document.title = data.tenant.tenantName.toUpperCase();
           //this.router.navigateByUrl("/invalidtenant");
         }
       },

@@ -116,6 +116,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
       this._document.getElementById('appFavicon').setAttribute('href',  this.defaultValueService.getPhotoAndFooter() ? 'data:image/jpeg;base64,'+ this.defaultValueService.getPhotoAndFooter().tenantFavIcon : '');
 
+      const tenantName = this.defaultValueService.getTenantName();
+      if (tenantName) {
+        this._document.title = tenantName.toUpperCase();
+      }
+
 
       Settings.defaultLocale = this.localeId;
 
