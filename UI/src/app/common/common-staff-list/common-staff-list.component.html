@@ -129,6 +129,34 @@
             </td>
         </ng-container>
 
+        <ng-container matColumnDef="primaryGradeLevelTaught">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'primaryGradeLevelTaught'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.primaryGradeLevelTaught | EmtyValueCheckPipe}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="otherGradeLevelTaught">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'otherGradeLevelTaught'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.otherGradeLevelTaught | EmtyValueCheckPipe}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="primarySubjectTaught">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'primarySubjectTaught'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.primarySubjectTaught | EmtyValueCheckPipe}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="otherSubjectTaught">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'otherSubjectTaught'|translate}}</th>
+            <td mat-cell *matCellDef="let element">
+                {{element.otherSubjectTaught | EmtyValueCheckPipe}}
+            </td>
+        </ng-container>
+
         <ng-container matColumnDef="loginEmailAddress">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'loginEmail'|translate}}</th>
             <td mat-cell *matCellDef="let element">

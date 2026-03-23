@@ -20,6 +20,10 @@ import { MembershipService } from 'src/app/services/membership.service';
 import { SectionService } from 'src/app/services/section.service';
 import { StaffService } from 'src/app/services/staff.service';
 import { DefaultValuesService } from '../default-values.service';
+import { GradeLevelService } from 'src/app/services/grade-level.service';
+import { CourseManagerService } from 'src/app/services/course-manager.service';
+import { GetAllGradeLevelsModel } from 'src/app/models/grade-level.model';
+import { GetAllSubjectModel } from 'src/app/models/course-manager.model';
 
 @Component({
   selector: 'vex-common-staff-advanced-search',
@@ -56,6 +60,8 @@ export class StaffAdvancedSearchComponent implements OnInit {
   maritalStatusList = [];
   languageList;
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
+  getAllGradeLevels: GetAllGradeLevelsModel = new GetAllGradeLevelsModel();
+  getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   searchAllSchool: boolean;
   inactiveStaff = false;
   checkSearchRecord = 0;
@@ -80,7 +86,9 @@ export class StaffAdvancedSearchComponent implements OnInit {
     private staffService: StaffService,
     private defaultValuesService: DefaultValuesService,
     private commonFunction: SharedFunction,
-    private membershipService: MembershipService) { }
+    private membershipService: MembershipService,
+    private gradeLevelService: GradeLevelService,
+    private courseManagerService: CourseManagerService) { }
 
     protected setInitialValue() {
       this.filteredCountry
@@ -199,6 +207,8 @@ export class StaffAdvancedSearchComponent implements OnInit {
       this.getAllCountry();
       this.GetAllLanguage();
       this.getAllMembership();
+      this.getAllGradeLevel();
+      this.getAllSubjectList();
     }
   
     callLOVs() {
@@ -308,7 +318,27 @@ export class StaffAdvancedSearchComponent implements OnInit {
         }
       })
     }
-  
+
+    getAllGradeLevel() {
+      this.gradeLevelService.getAllGradeLevels(this.getAllGradeLevels).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+        if (res._failure) {
+          this.getAllGradeLevels.tableGradelevelList = [];
+        } else {
+          this.getAllGradeLevels.tableGradelevelList = res.tableGradelevelList;
+        }
+      });
+    }
+
+    getAllSubjectList() {
+      this.courseManagerService.GetAllSubjectList(this.getAllSubjectModel).pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+        if (res._failure) {
+          this.getAllSubjectModel.subjectList = [];
+        } else {
+          this.getAllSubjectModel.subjectList = res.subjectList;
+        }
+      });
+    }
+
     submit() {
       this.checkSearchRecord = 1;
       this.search();

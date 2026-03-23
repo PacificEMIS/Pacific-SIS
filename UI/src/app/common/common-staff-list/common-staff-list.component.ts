@@ -66,7 +66,7 @@ export class CommonStaffListComponent implements OnInit {
   searchFilterListViewModel: SearchFilterListViewModel = new SearchFilterListViewModel();
   deleteStaffModel: DeleteStaffModel = new DeleteStaffModel();
   searchFilter: SearchFilter = new SearchFilter();
-  displayedColumns: string[] = ['lastFamilyName', 'staffInternalId', 'profile', 'jobTitle', 'schoolEmail', 'mobilePhone', 'status'];
+  displayedColumns: string[] = ['lastFamilyName', 'staffInternalId', 'profile', 'jobTitle', 'primaryGradeLevelTaught', 'schoolEmail', 'mobilePhone', 'status'];
   icFilterList = icFilterList;
   icDelete = icDelete;
   showAdvanceSearchPanel: boolean = false;
@@ -83,6 +83,10 @@ export class CommonStaffListComponent implements OnInit {
     { label: 'staffId', property: 'staffInternalId', type: 'text', visible: true },
     { label: 'profile', property: 'profile', type: 'text', visible: true },
     { label: 'jobTitle', property: 'jobTitle', type: 'text', visible: true },
+    { label: 'primaryGradeLevelTaught', property: 'primaryGradeLevelTaught', type: 'text', visible: true },
+    { label: 'otherGradeLevelTaught', property: 'otherGradeLevelTaught', type: 'text', visible: false },
+    { label: 'primarySubjectTaught', property: 'primarySubjectTaught', type: 'text', visible: false },
+    { label: 'otherSubjectTaught', property: 'otherSubjectTaught', type: 'text', visible: false },
     { label: 'loginEmail', property: 'loginEmailAddress', type: 'text', visible: true },
     { label: 'gender', property: 'gender', type: 'text', visible: true },
     { label: 'dob', property: 'dob', type: 'text', visible: true },
@@ -537,6 +541,10 @@ export class CommonStaffListComponent implements OnInit {
               'Staff ID': x.staffInternalId,
               Profile: x.profile,
               'Job Title': x.jobTitle,
+              'Primary Grade Level Taught': x.primaryGradeLevelTaught,
+              'Other Grade Level Taught': x.otherGradeLevelTaught,
+              'Primary Subject Taught': x.primarySubjectTaught,
+              'Other Subject Taught': x.otherSubjectTaught,
               'School Email': x.schoolEmail,
               'Mobile Phone': x.mobilePhone
             }
@@ -601,15 +609,15 @@ export class CommonStaffListComponent implements OnInit {
     this.toggleValues = event;
     if(this.parentComponent !== "takeAttendence"){
       if (event.inactiveStaff === true)
-        this.columns[7].visible = true;
+        this.columns[11].visible = true;
       else
-        this.columns[7].visible = false;
+        this.columns[11].visible = false;
     }
 
     if (event.searchAllSchool === true)
-      this.columns[6].visible = true;
+      this.columns[10].visible = true;
     else
-      this.columns[6].visible = false;
+      this.columns[10].visible = false;
   }
 
   getSearchInput(event) {
