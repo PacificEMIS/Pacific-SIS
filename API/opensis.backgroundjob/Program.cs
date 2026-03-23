@@ -312,10 +312,11 @@ namespace opensis.backgroundjob
                 {
                     List<StudentMissingAttendance> studentMissingAttendances = new List<StudentMissingAttendance>();
 
-                    // Upper bound is yesterday; but date generation (below) starts from
-                    // DurationStartDate, so the job safely back-fills any days it missed.
-                    // This is intentional — do NOT change it to generate only for yesterday.
-                    var yesterdayDate = DateTime.Today.AddDays(-1).Date;
+                    // Upper bound is today — generates missing attendance for today's
+                    // classes so teachers see a proactive to-do list when they log in.
+                    // Date generation starts from DurationStartDate, so the job also
+                    // back-fills any days it missed.
+                    var upperBoundDate = DateTime.Today.Date;
 
                     int? missingAttendanceId = 1;
                     var dataExits = context?.StudentMissingAttendances.Count();
@@ -329,8 +330,8 @@ namespace opensis.backgroundjob
                         }
                     }
 
-                    // Load staff-course sections whose duration includes yesterday
-                    var staffCourseSectionScheduleData = context?.StaffCoursesectionSchedule.AsNoTracking().Include(x => x.CourseSection).Where(x => x.IsDropped != true && yesterdayDate >= x.DurationStartDate && yesterdayDate <= x.DurationEndDate).ToList();
+                    // Load staff-course sections whose duration includes today
+                    var staffCourseSectionScheduleData = context?.StaffCoursesectionSchedule.AsNoTracking().Include(x => x.CourseSection).Where(x => x.IsDropped != true && upperBoundDate >= x.DurationStartDate && upperBoundDate <= x.DurationEndDate).ToList();
 
                     if (staffCourseSectionScheduleData == null || !staffCourseSectionScheduleData.Any())
                         return;
@@ -397,11 +398,11 @@ namespace opensis.backgroundjob
                         .Where(e => calendarIds.Contains(e.CalendarId) && e.IsHoliday == true)
                         .ToList() ?? new List<CalendarEvents>();
 
-                    // Batch-load BellSchedule for block schedule types (full duration range up to yesterday)
+                    // Batch-load BellSchedule for block schedule types (full duration range up to today)
                     var blockIds = allCourseSectionVewListData.Where(v => v.BlockId != null).Select(v => v.BlockId).Distinct().ToList();
                     var allBellSchedules = blockIds.Any()
                         ? context?.BellSchedule.AsNoTracking()
-                            .Where(bs => blockIds.Contains(bs.BlockId) && bs.BellScheduleDate <= yesterdayDate)
+                            .Where(bs => blockIds.Contains(bs.BlockId) && bs.BellScheduleDate <= upperBoundDate)
                             .ToList() ?? new List<BellSchedule>()
                         : new List<BellSchedule>();
 
@@ -484,7 +485,7 @@ namespace opensis.backgroundjob
                             // Build date list from DurationStartDate to yesterday, matching meeting days
                             DateTime start = (DateTime)staffCourseSectionData.DurationStartDate!;
                             DateTime end = (DateTime)staffCourseSectionData.DurationEndDate!;
-                            if (end > yesterdayDate) end = yesterdayDate;
+                            if (end > upperBoundDate) end = upperBoundDate;
 
                             var meetingDays = staffCourseSectionData.MeetingDays?.ToLower().Split("|");
                             bool allDays = meetingDays == null || !meetingDays.Any();
@@ -574,7 +575,7 @@ namespace opensis.backgroundjob
                         }
                         else if (staffCourseSectionData.CourseSection.ScheduleType == "Calendar Schedule (3)")
                         {
-                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate != null && c.CalDate.Value.Date >= staffCourseSectionData.DurationStartDate && c.CalDate.Value.Date <= staffCourseSectionData.DurationEndDate && c.CalDate.Value.Date <= yesterdayDate && !holidaySet.Contains(c.CalDate.Value.Date) && IsWithinMarkingPeriod(c.CalDate.Value.Date, mpRanges));
+                            var calenderScheduleList = allCourseSectionVewList.Where(c => c.CalDate != null && c.CalDate.Value.Date >= staffCourseSectionData.DurationStartDate && c.CalDate.Value.Date <= staffCourseSectionData.DurationEndDate && c.CalDate.Value.Date <= upperBoundDate && !holidaySet.Contains(c.CalDate.Value.Date) && IsWithinMarkingPeriod(c.CalDate.Value.Date, mpRanges));
 
                             foreach (var calenderSchedule in calenderScheduleList)
                             {
