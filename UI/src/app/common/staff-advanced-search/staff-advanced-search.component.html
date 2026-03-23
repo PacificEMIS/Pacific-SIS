@@ -265,6 +265,42 @@
                             <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
                     </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'primaryGradeLevelTaught'|translate}}</mat-label>
+                            <mat-select name="primaryGradeLevelTaught" [(ngModel)]="staffMasterSearchModel.primaryGradeLevelTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let grade of getAllGradeLevels.tableGradelevelList" [value]="grade.title">{{grade.title}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'otherGradeLevelTaught'|translate}}</mat-label>
+                            <mat-select name="otherGradeLevelTaught" [(ngModel)]="staffMasterSearchModel.otherGradeLevelTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let grade of getAllGradeLevels.tableGradelevelList" [value]="grade.title">{{grade.title}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'primarySubjectTaught'|translate}}</mat-label>
+                            <mat-select name="primarySubjectTaught" [(ngModel)]="staffMasterSearchModel.primarySubjectTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">{{subject.subjectName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
+                    <li>
+                        <mat-form-field fxFlex="auto" class="w-full" appearance="outline" color="primary">
+                            <mat-label>{{'otherSubjectTaught'|translate}}</mat-label>
+                            <mat-select name="otherSubjectTaught" [(ngModel)]="staffMasterSearchModel.otherSubjectTaught">
+                                <mat-option></mat-option>
+                                <mat-option *ngFor="let subject of getAllSubjectModel.subjectList" [value]="subject.subjectName">{{subject.subjectName}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </li>
                 </ul>
             </mat-expansion-panel>
             <mat-expansion-panel>
