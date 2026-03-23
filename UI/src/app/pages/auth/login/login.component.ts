@@ -181,6 +181,8 @@ export class LoginComponent implements OnInit {
   getIpAdressFromExternal() {
     this.commonService.getIpAddress().subscribe((res)=>{
      this.ipAdd=res;
+    }, () => {
+     this.ipAdd = null;
     })
   }
   send() {
@@ -190,7 +192,7 @@ export class LoginComponent implements OnInit {
       this.UserModel._tenantName = this.tenant;
       this.UserModel.password = this.form.value.password;
       this.UserModel.email = this.form.value.email.trim().toLowerCase();;
-      this.UserModel.userAccessLog.ipaddress = (this.ipAdd.ip ? this.ipAdd.ip : null);
+      this.UserModel.userAccessLog.ipaddress = (this.ipAdd && this.ipAdd.ip ? this.ipAdd.ip : null);
       this.UserModel.schoolId=this.defaultValuesService.getSchoolID();
       this.loginService.ValidateLogin(this.UserModel).subscribe(data => {
         if (typeof (data) == 'undefined') {
