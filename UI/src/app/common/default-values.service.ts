@@ -40,7 +40,7 @@ export class DefaultValuesService {
     const url = window.location.href;
 
     let tenant = '';
-    if (url.includes('localhost')) {
+    if (url.includes('localhost') || url.includes('dev.local')) {
       sessionStorage.setItem('tenant', JSON.stringify(environment.tenant));
       tenant = environment.tenant;
     } else {
