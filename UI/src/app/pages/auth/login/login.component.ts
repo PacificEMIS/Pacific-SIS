@@ -49,6 +49,7 @@ import { RollBasedAccessService } from '../../../services/roll-based-access.serv
 import { ProfilesTypes } from '../../../enums/profiles.enum';
 import { AvailableTenantViewModel } from '../../../models/available-tenant';
 import { CatalogDbService } from 'src/app/services/catalog-db.service';
+import * as jwt_decode from 'jwt-decode';
 @Component({
   selector: 'vex-login',
   templateUrl: './login.component.html',
@@ -156,9 +157,10 @@ export class LoginComponent implements OnInit {
           this.tenantPhoto = data.tenant.tenantLogo;
           this.tenantName = data.tenant.tenantName;
           this.tenantFooter = data.tenant.tenantFooter;
-          
+
           this.defaultValuesService.setPhotoAndFooter(data.tenant);
           this.favIcon.href = 'data:image/jpeg;base64,'+ data.tenant.tenantFavIcon;
+          document.title = data.tenant.tenantName.toUpperCase();
           //this.router.navigateByUrl("/invalidtenant");
         }
       },
@@ -180,6 +182,8 @@ export class LoginComponent implements OnInit {
   getIpAdressFromExternal() {
     this.commonService.getIpAddress().subscribe((res)=>{
      this.ipAdd=res;
+    }, () => {
+     this.ipAdd = null;
     })
   }
   send() {
@@ -189,7 +193,7 @@ export class LoginComponent implements OnInit {
       this.UserModel._tenantName = this.tenant;
       this.UserModel.password = this.form.value.password;
       this.UserModel.email = this.form.value.email.trim().toLowerCase();;
-      this.UserModel.userAccessLog.ipaddress = (this.ipAdd.ip ? this.ipAdd.ip : null);
+      this.UserModel.userAccessLog.ipaddress = (this.ipAdd && this.ipAdd.ip ? this.ipAdd.ip : null);
       this.UserModel.schoolId=this.defaultValuesService.getSchoolID();
       this.loginService.ValidateLogin(this.UserModel).subscribe(data => {
         if (typeof (data) == 'undefined') {
@@ -204,6 +208,22 @@ export class LoginComponent implements OnInit {
               duration: 10000
             });
           } else {
+            // Detect client clock skew large enough to break the session.
+            // Token lifetime is 24h; warn if client clock is off by >1 hour,
+            // which is enough to indicate a real date/timezone problem
+            // without blocking normal NTP drift.
+            try {
+              const decoded: any = jwt_decode.default(data._token);
+              const nowSec = Date.now() / 1000;
+              if (nowSec > decoded.exp || (decoded.iat && Math.abs(nowSec - decoded.iat) > 3600)) {
+                this.snackbar.open(
+                  'Your computer\'s date, time, or timezone appears to be incorrect. Please correct this and try again.',
+                  'OK',
+                  { duration: 15000 }
+                );
+                return;
+              }
+            } catch (e) {}
             if(data.lastUsedSchoolId){
               this.defaultValuesService.setSchoolID(data.lastUsedSchoolId.toString());
               }

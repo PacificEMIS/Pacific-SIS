@@ -144,9 +144,23 @@ namespace opensis.core.helper.Services
 
             if (loginSessionData != null)
             {
-                if(CheckToken(userName, loginSessionData.Token))
+                try
                 {
-                    token= loginSessionData.Token;
+                    if(CheckToken(userName, loginSessionData.Token))
+                    {
+                        token= loginSessionData.Token;
+                    }
+                }
+                catch
+                {
+                    // Cached token is invalid (e.g. nbf in the future after a clock fix).
+                    // Expire it so a fresh token is generated.
+                    try
+                    {
+                        loginSessionData.IsExpired = true;
+                        this.context.SaveChanges();
+                    }
+                    catch { }
                 }
             }
             return token;

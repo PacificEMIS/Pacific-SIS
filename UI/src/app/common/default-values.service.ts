@@ -40,7 +40,7 @@ export class DefaultValuesService {
     const url = window.location.href;
 
     let tenant = '';
-    if (url.includes('localhost')) {
+    if (url.includes('localhost') || url.includes('dev.local')) {
       sessionStorage.setItem('tenant', JSON.stringify(environment.tenant));
       tenant = environment.tenant;
     } else {
@@ -282,6 +282,9 @@ export class DefaultValuesService {
   }
   getTenantName() {
     return JSON.parse(sessionStorage.getItem('tenant'));
+  }
+  getAppName(): string {
+    return (this.getTenantName() || 'SIS').toUpperCase();
   }
   getuserPhoto() {
     return JSON.parse(sessionStorage.getItem('userPhoto'));

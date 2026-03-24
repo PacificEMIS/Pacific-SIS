@@ -1149,22 +1149,26 @@ namespace opensis.data.Repository
                     if (staffSchoolInfoAddViewModel.staffSchoolInfoList != null && staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList().Count > 0)
                     {
                         var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
-                       
-                        if (staffSchoolInfoData!=null&& staffSchoolInfoData.Any())
+
+                        var oldSchoolId = staffSchoolInfoData?.FirstOrDefault()?.SchoolId;
+
+                        if (staffSchoolInfoData != null && staffSchoolInfoData.Any())
                         {
                             this.context?.StaffSchoolInfo.RemoveRange(staffSchoolInfoData);
                             this.context?.SaveChanges();
                         }
 
-                        if (staffSchoolInfoData?.FirstOrDefault()!.SchoolId != staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId)
+                        var newSchoolId = staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()?.SchoolId;
+
+                        if (oldSchoolId != null && oldSchoolId != newSchoolId)
                         {
-                            staffMaster!.SchoolId = (int)staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId!;
+                            staffMaster!.SchoolId = (int)newSchoolId!;
 
                             var staffCertificateData = this.context?.StaffCertificateInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
 
-                            if (staffCertificateData!=null&& staffCertificateData.Any())
+                            if (staffCertificateData != null && staffCertificateData.Any())
                             {
-                                staffCertificateData.ForEach(x => x.SchoolId = (int)staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.SchoolId!);
+                                staffCertificateData.ForEach(x => x.SchoolId = (int)newSchoolId!);
                             }
                         }
 
