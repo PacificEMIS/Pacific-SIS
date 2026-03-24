@@ -283,6 +283,9 @@ export class DefaultValuesService {
   getTenantName() {
     return JSON.parse(sessionStorage.getItem('tenant'));
   }
+  getAppName(): string {
+    return (this.getTenantName() || 'SIS').toUpperCase();
+  }
   getuserPhoto() {
     return JSON.parse(sessionStorage.getItem('userPhoto'));
   }

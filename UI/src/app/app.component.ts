@@ -86,6 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
   tokenEndTime;
   tokenExpired: boolean;
   timer: boolean;
+  private patchedLangs = new Set<string>();
   
   constructor(private configService: ConfigService,
     private styleService: StyleService,
@@ -624,9 +625,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.commonService.changedLanguage.subscribe((res)=>{      
+    this.commonService.changedLanguage.subscribe((res)=>{
       this.defaultValueService.getLanguage() ? this.translateService.use(this.defaultValueService.getLanguage()) : this.translateService.use('en');
     })
+
+    this.translateService.onLangChange.subscribe((event) => {
+      this.patchTranslationsWithAppName(event.lang);
+    });
 
     this.rollBasedAccessService.permissionsChanged.subscribe((res)=>{
       if(res){
@@ -634,6 +639,25 @@ export class AppComponent implements OnInit, OnDestroy {
         this.generateMenuBasedOnSchoolId(permissions)
       }
     })
+  }
+
+  private patchTranslationsWithAppName(lang: string) {
+    if (this.patchedLangs.has(lang)) return;
+    const appName = this.defaultValueService.getAppName();
+    const translations = this.translateService.translations[lang];
+    if (!translations || !appName) return;
+
+    const patched: any = {};
+    for (const key of Object.keys(translations)) {
+      if (typeof translations[key] === 'string' && /opensis/i.test(translations[key])) {
+        patched[key] = translations[key].replace(/openSIS|OpenSIS|opensis/gi, appName);
+      }
+    }
+
+    if (Object.keys(patched).length > 0) {
+      this.patchedLangs.add(lang);
+      this.translateService.setTranslation(lang, patched, true);
+    }
   }
 
   onStartWatching() {
