@@ -315,6 +315,7 @@ namespace opensis.data.Repository
 
                                 subject.CreatedBy = SubjectUpdate.CreatedBy;
                                 subject.CreatedOn = SubjectUpdate.CreatedOn;
+                                subject.AcademicYear = SubjectUpdate.AcademicYear;
                                 subject.UpdatedOn = DateTime.UtcNow;
                                 this.context?.Entry(SubjectUpdate).CurrentValues.SetValues(subject);
                                 this.context?.SaveChanges();

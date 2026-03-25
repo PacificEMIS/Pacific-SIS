@@ -49,7 +49,6 @@ import { RollBasedAccessService } from '../../../services/roll-based-access.serv
 import { ProfilesTypes } from '../../../enums/profiles.enum';
 import { AvailableTenantViewModel } from '../../../models/available-tenant';
 import { CatalogDbService } from 'src/app/services/catalog-db.service';
-import * as jwt_decode from 'jwt-decode';
 @Component({
   selector: 'vex-login',
   templateUrl: './login.component.html',
@@ -208,22 +207,6 @@ export class LoginComponent implements OnInit {
               duration: 10000
             });
           } else {
-            // Detect client clock skew large enough to break the session.
-            // Token lifetime is 24h; warn if client clock is off by >1 hour,
-            // which is enough to indicate a real date/timezone problem
-            // without blocking normal NTP drift.
-            try {
-              const decoded: any = jwt_decode.default(data._token);
-              const nowSec = Date.now() / 1000;
-              if (nowSec > decoded.exp || (decoded.iat && Math.abs(nowSec - decoded.iat) > 3600)) {
-                this.snackbar.open(
-                  'Your computer\'s date, time, or timezone appears to be incorrect. Please correct this and try again.',
-                  'OK',
-                  { duration: 15000 }
-                );
-                return;
-              }
-            } catch (e) {}
             if(data.lastUsedSchoolId){
               this.defaultValuesService.setSchoolID(data.lastUsedSchoolId.toString());
               }
