@@ -206,7 +206,7 @@ namespace opensis.data.Repository
                             {
                                 int? subjectId = 1;
 
-                                var subjectData = subjectList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.SubjectId).FirstOrDefault();
+                                var subjectData = this.context?.Subject.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.SubjectId).FirstOrDefault();
 
                                 if (subjectData != null)
                                 {
@@ -241,7 +241,7 @@ namespace opensis.data.Repository
                             {
                                 int? courseId = 1;
 
-                                var courseData = courseList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.CourseId).FirstOrDefault();
+                                var courseData = this.context?.Course.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.CourseId).FirstOrDefault();
 
                                 if (courseData != null)
                                 {
@@ -325,7 +325,7 @@ namespace opensis.data.Repository
                             {
                                 int? gradeScaleId = 1;
 
-                                var gradeScaleData = gradeScaleList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.GradeScaleId).FirstOrDefault();
+                                var gradeScaleData = this.context?.GradeScale.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.GradeScaleId).FirstOrDefault();
 
                                 if (gradeScaleData != null)
                                 {
@@ -401,7 +401,7 @@ namespace opensis.data.Repository
                             {
                                 int? roomId = 1;
 
-                                var roomData = roomList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.RoomId).FirstOrDefault();
+                                var roomData = this.context?.Rooms.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.RoomId).FirstOrDefault();
 
                                 if (roomData != null)
                                 {
@@ -440,7 +440,7 @@ namespace opensis.data.Repository
                             {
                                 int? blockId = 1;
 
-                                var blockData = blockList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.BlockId).FirstOrDefault();
+                                var blockData = this.context?.Block.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.BlockId).FirstOrDefault();
 
                                 if (blockData != null)
                                 {
@@ -519,7 +519,7 @@ namespace opensis.data.Repository
                             {
                                 int? studentEnrollmentCodeId = 1;
 
-                                var studentEnrollmentCodeData = studentEnrollmentCodeList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.EnrollmentCode).FirstOrDefault();
+                                var studentEnrollmentCodeData = this.context?.StudentEnrollmentCode.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.EnrollmentCode).FirstOrDefault();
 
                                 if (studentEnrollmentCodeData != null)
                                 {
@@ -596,7 +596,7 @@ namespace opensis.data.Repository
                             {
                                 int? attendanceCodeCategorieId = 1;
 
-                                var attendanceCodeCategorieData = attendanceCodeCategorieList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.AttendanceCategoryId).FirstOrDefault();
+                                var attendanceCodeCategorieData = this.context?.AttendanceCodeCategories.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.AttendanceCategoryId).FirstOrDefault();
 
                                 if (attendanceCodeCategorieData != null)
                                 {
@@ -673,7 +673,7 @@ namespace opensis.data.Repository
                             {
                                 int? honorRollsId = 1;
 
-                                var honorRollsData = honorRollsList.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.HonorRollId).FirstOrDefault();
+                                var honorRollsData = this.context?.HonorRolls.Where(x => x.TenantId == rolloverViewModel.SchoolRollover.TenantId && x.SchoolId == rolloverViewModel.SchoolRollover.SchoolId).OrderByDescending(x => x.HonorRollId).FirstOrDefault();
 
                                 if (honorRollsData != null)
                                 {
@@ -730,7 +730,7 @@ namespace opensis.data.Repository
 
                                 if (progressPeriodData != null)
                                 {
-                                    progressPeriodId = quarterData?.MarkingPeriodId + 1;
+                                    progressPeriodId = progressPeriodData.MarkingPeriodId + 1;
                                 }
 
                                 foreach (var sem in rolloverViewModel.Semesters)
@@ -1305,7 +1305,7 @@ namespace opensis.data.Repository
                 catch (Exception es)
                 {
                     transaction?.Rollback();
-                    rolloverViewModel._message = es.Message;
+                    rolloverViewModel._message = es.InnerException?.Message ?? es.Message;
                     rolloverViewModel._failure = true;
                 }
             }
