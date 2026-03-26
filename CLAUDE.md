@@ -148,54 +148,15 @@ Deployment is managed via Ansible (see local MEMORY for details).
 - **OS:** Windows 10/11, targeting Linux for production and eventual dev migration
 - **IDE:** VS Code for both frontend and backend (C# Dev Kit installed)
 - **Backend debug:** F5 in VS Code using `.vscode/launch.json`
-- **Git:** User handles all commits/PRs — never auto-commit
+- **Git:** User handles all commits/PRs
 - **Deployment:** ansible (see MEMORY for local path)
 
 ---
 
 ## Working Conventions
 
-- When the user says "wrap up", propose a commit message following the Commit Conventions below.
-- User reviews all code before committing — do not auto-commit or auto-push
-- Tackle issues one at a time, starting small and growing in complexity
 - Always check the Ansible deployment repo before changing config file structure
-- No emojis in code or docs unless explicitly asked
-- Keep changes minimal and focused — no speculative improvements
-
----
-
-## Commit Conventions
-
-Format: `type(scope): brief description` — lowercase, imperative, no period.
-
-| Type | Use for |
-|---|---|
-| `feat` | new feature |
-| `fix` | bug fix |
-| `perf` | performance improvement |
-| `refactor` | code restructuring (no behaviour change) |
-| `docs` | documentation only |
-| `style` | formatting, whitespace (no logic change) |
-| `test` | adding or fixing tests |
-| `chore` | build, tooling, config, dependencies |
-| `ci` | CI/CD pipeline changes |
-
-Scope = the affected feature area or layer, e.g. `school`, `student`, `attendance`, `login`, `auth`, `tenant`, `migration`, `api`, `ui`, `data`, `backgroundjob`, `configuration`.
-
-If the commit resolves a GitHub issue, add `Resolves #<number>` in the commit body (blank line after subject).
-
-Examples:
-```
-feat(attendance): add bulk-mark present for whole class
-
-Resolves #42
-
-fix(login): restore tenant after session clear
-
-perf(school): replace N+1 queries with single JOIN
-
-Resolves #608
-```
+- See `~/.claude/CLAUDE.md` for global conventions (commit format, "wrap up" keyword, etc.)
 
 ---
 
