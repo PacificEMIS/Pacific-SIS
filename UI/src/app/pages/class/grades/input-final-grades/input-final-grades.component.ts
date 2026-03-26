@@ -76,7 +76,7 @@ export class InputFinalGradesComponent implements OnInit {
   pageStatus = "Grade Details";
   showComment: boolean = false;
   staffDetails;
-  courseSectionData;
+  courseSectionData: any = {};
   commentDetails = 0;
   selectedStudent: number = 0;
   reportCardComments = [];
@@ -249,6 +249,8 @@ export class InputFinalGradesComponent implements OnInit {
     this.scheduleStudentListViewModel.courseSectionIds = [this.courseSectionData.courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
     this.scheduleStudentListViewModel.sortingModel = null;
+    this.scheduleStudentListViewModel._pageSize = 0;
+    this.scheduleStudentListViewModel.pageNumber = 0;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
       if(res._failure){
@@ -538,6 +540,8 @@ export class InputFinalGradesComponent implements OnInit {
     this.scheduleStudentListViewModel.sortingModel = null;
     this.scheduleStudentListViewModel.courseSectionIds = [courseSectionId];
     this.scheduleStudentListViewModel.profilePhoto = true;
+    this.scheduleStudentListViewModel._pageSize = 0;
+    this.scheduleStudentListViewModel.pageNumber = 0;
     this.studentScheduleService.searchScheduledStudentForGroupDrop(this.scheduleStudentListViewModel).subscribe((res) => {
       if (res) {
         if (res._failure) {
