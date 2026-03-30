@@ -66,27 +66,18 @@ namespace opensis.core.User.Services
                 ReturnModel = this.userRepository.ValidateUserLogin(ObjModel);
                 if (ReturnModel._failure == false)
                 {
-                    var existToken = tokenManager.CheckTokenInLogin(ReturnModel.Email, ReturnModel.TenantId, ReturnModel._tenantName + ReturnModel.Name);
-                    if (existToken != null)
+                    var tokenInfo = TokenManager.GenerateTokenWithExpiry(ReturnModel._tenantName + ReturnModel.Name + "|" + ReturnModel.Email + "|" + ReturnModel.TenantId);
+                    ReturnModel._token = tokenInfo.Token;
+                    ReturnModel._tokenExpiry = tokenInfo.Expiry;
+                    if (this.userRepository.AddLoginSession(ReturnModel))
                     {
-                        ReturnModel._token = existToken;
+                        logger.Info("Method ValidateLogin end with success.");
                     }
                     else
                     {
-                        var tokenInfo = TokenManager.GenerateTokenWithExpiry(ReturnModel._tenantName + ReturnModel.Name + "|" + ReturnModel.Email + "|" + ReturnModel.TenantId);
-                        // ReturnModel._token = TokenManager.GenerateToken(ReturnModel._tenantName);
-                        ReturnModel._token = tokenInfo.Token;
-                        ReturnModel._tokenExpiry = tokenInfo.Expiry;
-                        if (this.userRepository.AddLoginSession(ReturnModel))
-                        {
-                            logger.Info("Method ValidateLogin end with success.");
-                        }
-                        else
-                        {
-                            ReturnModel._token = null;
-                            logger.Info("Method ValidateLogin end with error");
-                            ReturnModel._failure = true;
-                        }
+                        ReturnModel._token = null;
+                        logger.Info("Method ValidateLogin end with error");
+                        ReturnModel._failure = true;
                     }
                 }
             }

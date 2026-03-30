@@ -702,8 +702,8 @@ export class AppComponent implements OnInit, OnDestroy {
     let date1: any = new Date(decoded.exp * 1000)
     let date2: any = new Date();
     let res = Math.abs(date1 - date2) / 1000;
-    this.minutes = Math.floor(res / 60) % 60;
-    this.tokenEndTime = (this.minutes - 2) * 60;
+    this.minutes = Math.floor(res / 60);
+    this.tokenEndTime = Math.max((this.minutes - 2) * 60, 60);
     this.tokenExpired = Date.now() > (decoded.exp * 1000 - 120000);
     if(this.tokenExpired) {
       this.logout();
