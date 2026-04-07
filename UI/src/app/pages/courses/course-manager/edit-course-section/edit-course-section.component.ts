@@ -121,6 +121,7 @@ export class EditCourseSectionComponent implements OnInit {
   seatChangeFlag: boolean;
   isAttendanceCategoryRequired: boolean;
   weightedGpWarning: boolean = false;
+  emptyGradeScaleWarning: boolean = false;
   staticGradeScaleValue=[
     {
       gradeScaleId:'Ungraded',
@@ -206,7 +207,10 @@ export class EditCourseSectionComponent implements OnInit {
 
     // Watch for changes to weighted toggle or grade scale selection
     this.form.get('isWeightedCourse').valueChanges.subscribe(() => this.checkWeightedGpWarning());
-    this.form.get('gradeScaleId').valueChanges.subscribe(() => this.checkWeightedGpWarning());
+    this.form.get('gradeScaleId').valueChanges.subscribe(() => {
+      this.checkWeightedGpWarning();
+      this.checkEmptyGradeScaleWarning();
+    });
   }
 // Patching value in Update Time
   patchFormValue() {
@@ -362,6 +366,7 @@ export class EditCourseSectionComponent implements OnInit {
 
         this.gradeScaleStandardList = data.gradeScaleList.filter(x => x.useAsStandardGradeScale);
         this.checkWeightedGpWarning();
+        this.checkEmptyGradeScaleWarning();
       }
     });
   }
@@ -378,6 +383,18 @@ export class EditCourseSectionComponent implements OnInit {
 
     const hasWeightedValues = scale.grade.some(g => g.weightedGpValue != null && g.weightedGpValue > 0);
     this.weightedGpWarning = !hasWeightedValues;
+  }
+
+  checkEmptyGradeScaleWarning() {
+    this.emptyGradeScaleWarning = false;
+    const gradeScaleId = this.form?.get('gradeScaleId')?.value;
+
+    if (typeof gradeScaleId !== 'number') return;
+
+    const scale = this.gradeScaleList?.find(s => s.gradeScaleId === gradeScaleId);
+    if (!scale) return;
+
+    this.emptyGradeScaleWarning = !scale.grade || scale.grade.length === 0;
   }
 
   goToGradeSettings() {
