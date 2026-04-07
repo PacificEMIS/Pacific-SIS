@@ -1,6 +1,6 @@
 {
-  "apiURLOpensis": "https://localhost:5001/",
-  "apiURL": "https://localhost:5001/",
+  "apiURLOpensis": "https://lvh.me:5001/",
+  "apiURL": "https://lvh.me:5001/",
   "encryptionKey": "your-encryption-key",
   "dataEncryptionKey": "your-data-encryption-key",
   "tenant": "your-tenant-name"

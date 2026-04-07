@@ -102,6 +102,16 @@
                         </div>
                     </div>
                 </div>
+                <div *ngIf="emptyGradeScaleWarning" class="empty-grade-scale-warning w-full mb-3">
+                    <div class="flex items-start">
+                        <mat-icon class="mr-2 warning-icon">warning</mat-icon>
+                        <div>
+                            <strong>{{'warning' | translate}}:</strong> {{'emptyGradeScaleWarning' | translate}}
+                            <br>
+                            <a class="warning-link" (click)="goToGradeSettings()">{{'configureGradeScale' | translate}} &rarr;</a>
+                        </div>
+                    </div>
+                </div>
                 <span class="mr-6">
                     <mat-slide-toggle [disabled]="!this.defaultValuesService.checkAcademicYear()" class="mb-3" formControlName="affectsClassRank" name="affectsClassRank"   color="primary">{{'affectsClassRank' | translate}}</mat-slide-toggle>
                 </span>

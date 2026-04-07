@@ -644,24 +644,27 @@ namespace opensis.report.report.data.Repository
                         decimal? gpValue = 0;
                         if (csfg.SfgGradeScaleId != null)
                         {
-                            var GradeScale = gradeScaleListData.FirstOrDefault(x => x.GradeScaleId == csfg.SfgGradeScaleId);
+                            var GradeScale = gradeScaleListData?.FirstOrDefault(x => x.GradeScaleId == csfg.SfgGradeScaleId);
                             if (GradeScale != null)
                             {
                                 var grade = GradeScale.Grade.FirstOrDefault(s => s.Title == csfg.SfgGradeObtained);
-                                if (grade.WeightedGpValue == null)
+                                if (grade != null)
                                 {
-                                    grade.WeightedGpValue = 0;
-                                }
-                                if (grade.UnweightedGpValue == null)
-                                {
-                                    grade.UnweightedGpValue = 0;
-                                }
+                                    if (grade.WeightedGpValue == null)
+                                    {
+                                        grade.WeightedGpValue = 0;
+                                    }
+                                    if (grade.UnweightedGpValue == null)
+                                    {
+                                        grade.UnweightedGpValue = 0;
+                                    }
 
-                                // Use weighted GP if course is weighted AND weighted value is defined; otherwise fall back to unweighted
-                                var effectiveGp = (cs.IsWeightedCourse == true && grade.WeightedGpValue > 0)
-                                    ? grade.WeightedGpValue
-                                    : grade.UnweightedGpValue;
-                                gpValue = (decimal)(csfg.SfgCreditearned * effectiveGp);
+                                    // Use weighted GP if course is weighted AND weighted value is defined; otherwise fall back to unweighted
+                                    var effectiveGp = (cs.IsWeightedCourse == true && grade.WeightedGpValue > 0)
+                                        ? grade.WeightedGpValue
+                                        : grade.UnweightedGpValue;
+                                    gpValue = (decimal)(csfg.SfgCreditearned * effectiveGp);
+                                }
                             }
                         }
                         else if (cs.GradeScaleType == "Teacher_Scale")

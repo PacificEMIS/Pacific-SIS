@@ -606,6 +606,7 @@
     "courseIsWeighted": "Course is Weighted",
     "warning": "Warning",
     "weightedGpWarning": "The selected grade scale has no weighted GP values configured. GPA will use unweighted values.",
+    "emptyGradeScaleWarning": "The selected grade scale has no grades defined. GPA and reports will not work correctly until grades are added.",
     "configureGradeScale": "Configure grade scale",
     "allowStudentConflict": "Allow Student Conflict",
     "allowTeacherConflict": "Allow Teacher Conflict",
