@@ -25,6 +25,7 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
@@ -70,6 +71,10 @@ namespace opensis.data.Models
         public int? PrgrsprdMarkingPeriodId { get; set; }
         public bool? IsCustomMarkingPeriod { get; set; }
         public bool? IsExamGrade { get; set; }
+        [NotMapped]
+        public string? CreatedByName { get; set; }
+        [NotMapped]
+        public string? UpdatedByName { get; set; }
         public virtual ProgressPeriods? ProgressPeriod { get; set; }
         public virtual Quarters? Quarters { get; set; }
         public virtual SchoolYears? SchoolYears { get; set; }

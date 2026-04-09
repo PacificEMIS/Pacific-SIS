@@ -39,6 +39,7 @@
                                         </span>
                                         <span class="ml-6">{{ "letterGrade" | translate }}</span>
                                     </th>
+                                    <th>{{ "audit" | translate }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,11 +48,11 @@
                                             showMessage |
                                             translate }}</span></td>
                                 </tr>
+                                <ng-container *ngFor="let student of studentMasterList;let i = index">
                                 <tr class="cursor-pointer" [ngClass]="{'active':selectedStudent === i }"
-                                    *ngFor="let student of studentMasterList;let i = index"
                                     [matTooltip]="student.studentInternalId != null ? student.firstGivenName + ' ' + student.lastFamilyName + ', Student ID : ' + student.studentInternalId : student.firstGivenName + ' ' + student.lastFamilyName + ', Student ID : '">
                                     <td class="whitespace-nowrap">
-                                        <div class="flex cursor-pointer" (click)="addComments(i)">
+                                        <div class="flex cursor-pointer items-center" (click)="addComments(i)">
                                             <div class="flex-shrink-0 h-12 w-12">
                                                 <img src="{{student.studentPhoto?'data:image/png;base64,'+ student.studentPhoto:'assets/img/default-person.jpg'}}"
                                                     alt="Student photo" class="h-12 w-12 rounded-full" />
@@ -102,7 +103,13 @@
                                             {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
                                         </td>
                                     </ng-container>
+                                    <td>
+                                        <mat-icon *ngIf="getAuditTooltip(i)"
+                                            [matTooltip]="getAuditTooltip(i)"
+                                            matTooltipClass="audit-tooltip">info</mat-icon>
+                                    </td>
                                 </tr>
+                                </ng-container>
 
                             </tbody>
                         </table>

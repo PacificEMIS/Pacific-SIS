@@ -23,8 +23,10 @@ export class StudentFinalGrade {
     public teacherComment: string;
     public createdBy: string;
     public createdOn: string;
+    public createdByName: string;
     public updatedBy: string;
     public updatedOn: string;
+    public updatedByName: string;
     public studentFinalGradeComments: StudentFinalGradeComments[];
     public studentFinalGradeStandard: StudentFinalGradeStandard[];
 
