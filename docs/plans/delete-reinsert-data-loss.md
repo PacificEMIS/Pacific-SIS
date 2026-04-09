@@ -131,7 +131,7 @@ All instances of RemoveRange + AddRange on the same entity scope within a transa
 | Repository | Method | Tables | Status |
 |---|---|---|---|
 | InputFinalGradeRepository | AddUpdateStudentFinalGrade | student_final_grade, _comments, _standard | DONE |
-| StudentEffortGradeRepository | AddUpdateStudentEffortGrade | student_effort_grade_master, _detail | TODO |
+| StudentEffortGradeRepository | AddUpdateStudentEffortGrade | student_effort_grade_master, _detail | DONE |
 | ReportCardRepository | 2 methods | student_report_card_master, _detail | TODO |
 | StaffPortalGradebookRepository | 3 methods | gradebook_grades, gradebook_configuration_* | TODO |
 | StudentHistoricalGradeRepository | AddUpdateHistoricalGrade | historical_grade, historical_credit_transfer | TODO |
@@ -214,7 +214,7 @@ studentId, causing data corruption when the roster order differed from the grade
 list order (e.g. after dropping a student). Fixed by rebuilding the grade array
 using a Map keyed by studentId. See branch `issue819`.
 
-### Issue #821 — InputFinalGrade upsert + audit display (this branch)
+### Issue #821 — InputFinalGrade upsert + audit display
 
 - **InputFinalGradeRepository.AddUpdateStudentFinalGrade** rewritten as an
   upsert keyed by `StudentId`. Existing grades for students absent from the
@@ -230,6 +230,47 @@ using a Map keyed by studentId. See branch `issue819`.
   icon in a new "Audit" column shows a tooltip with created/updated timestamps
   and user names. Timestamps are parsed as UTC and rendered in the user's
   local timezone.
+
+### StudentEffortGrade upsert + audit display (this branch, follow-up)
+
+- **StudentEffortGradeRepository.AddUpdateStudentEffortGrade** rewritten as
+  an upsert keyed by `StudentId`. Note that the original code in this
+  repository was already filtered by `studentIds.Contains(...)`, so dropped
+  students' rows weren't being deleted on every save like InputFinalGrade —
+  but `CreatedOn`/`CreatedBy` were still being wiped on every re-save. The
+  fix here is primarily about preserving audit history.
+- During the rewrite, two pre-existing performance/correctness issues were
+  also corrected:
+  - The original code loaded the **entire** `student_effort_grade_detail`
+    table into the EF tracker just to compute the next surrogate `Id`.
+    Replaced with a simple `MAX(Id)` projection using `AsNoTracking()`.
+  - The marking-period filter used an OR across all four marking-period
+    columns including `0` defaults, which could match unrelated records.
+    Tightened to compare only the non-zero ID.
+- **Approach for the upsert**: load existing records with `AsNoTracking()`
+  rather than tracking them. For updates, build a fresh `StudentEffortGradeMaster`
+  copying preserved fields (notably `CreatedOn`/`CreatedBy`) from the
+  no-track snapshot, then attach as `Modified` via `Update()`. Detail rows
+  for updated students are deleted by srlno and re-inserted fresh. New
+  students follow a clean insert path. This avoids EF change-tracker
+  conflicts that arose from mixing tracked existing entities with new ones
+  in the same context.
+- **GetStudentListByHomeRoomStaff** now populates `CreatedBy`/`CreatedOn`/
+  `UpdatedBy`/`UpdatedOn` in the projection and resolves the staff GUIDs
+  to readable names, same approach as InputFinalGrade.
+- **Frontend audit display** added to the shared `EffortGradeDetailsComponent`
+  (used by both the admin and teacher routes). Info icon next to the student
+  name in the left list, with a tooltip showing the audit history.
+- **Note on per-student audit timestamps:** the entire roster is submitted
+  on every Submit click, so all students in the roster get the same
+  `UpdatedOn`. This is by design of the existing UI workflow, not a
+  consequence of the upsert rewrite. True per-cell audit would require
+  frontend dirty-row tracking — out of scope for this fix.
+- **Related companion doc:** [effort-grades-feature.md](effort-grades-feature.md)
+  documents the broader effort grades feature: setup requirements, the
+  "Homeroom Teacher" profile gate, the strict course-section date
+  containment rule, the absence of any reporting consumer, and the
+  step-by-step test plan used to verify this fix.
 
 ## Related Open Concerns
 

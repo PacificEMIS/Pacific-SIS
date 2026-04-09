@@ -59,12 +59,13 @@ namespace opensis.data.Repository
                     List<StudentEffortGradeMaster> studentEffortGradeList = new List<StudentEffortGradeMaster>();
 
                     long Id = 1;
-                    var StudentEffortDetails = this.context?.StudentEffortGradeDetail.ToList();
-
-                    if (StudentEffortDetails != null && StudentEffortDetails.Any())
+                    var maxDetailId = this.context?.StudentEffortGradeDetail.AsNoTracking()
+                        .OrderByDescending(s => s.Id)
+                        .Select(s => (long?)s.Id)
+                        .FirstOrDefault();
+                    if (maxDetailId.HasValue)
                     {
-                        // Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault().Id + 1;
-                        Id = StudentEffortDetails.OrderByDescending(s => s.Id).FirstOrDefault()!.Id + 1;
+                        Id = maxDetailId.Value + 1;
                     }
                     studentEffortGradeListModel.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, studentEffortGradeListModel.TenantId, studentEffortGradeListModel.SchoolId);
 
@@ -124,85 +125,114 @@ namespace opensis.data.Repository
                             }
                         }
 
-                        var studentEffortGradeData = new List<StudentEffortGradeMaster>();
-
                         var studentIds = studentEffortGradeListModel.studentsByHomeRoomStaffView.Select(s => s.StudentId).ToList();
-                        studentEffortGradeData = this.context?.StudentEffortGradeMaster.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && e.AcademicYear == studentEffortGradeListModel.AcademicYear && (e.YrMarkingPeriodId == YrMarkingPeriodId || e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || e.QtrMarkingPeriodId == QtrMarkingPeriodId || e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId) && studentIds.Contains(e.StudentId)).ToList();
 
-                        if (studentEffortGradeData != null && studentEffortGradeData.Any())
+                        // Load existing records WITHOUT tracking to avoid conflicts.
+                        // Match the marking period precisely — only ONE of the four IDs is non-zero,
+                        // so use that one instead of an OR across all four (which would match unrelated rows).
+                        var existingMasters = this.context!.StudentEffortGradeMaster.AsNoTracking().Where(e =>
+                            e.SchoolId == studentEffortGradeListModel.SchoolId
+                            && e.TenantId == studentEffortGradeListModel.TenantId
+                            && e.AcademicYear == studentEffortGradeListModel.AcademicYear
+                            && ((YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId)
+                                || (SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId)
+                                || (QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId)
+                                || (PrgrsprdMarkingPeriodId > 0 && e.PrgrsprdMarkingPeriodId == PrgrsprdMarkingPeriodId))
+                            && studentIds.Contains(e.StudentId)).ToList();
+
+                        // Map by StudentId for quick lookup
+                        var existingByStudentId = existingMasters
+                            .GroupBy(g => g.StudentId)
+                            .ToDictionary(g => g.Key, g => g.First());
+
+                        var updatedSrlnos = existingByStudentId.Values
+                            .Select(g => g.StudentEffortGradeSrlno)
+                            .ToList();
+
+                        // Delete old detail rows for students being updated
+                        if (updatedSrlnos.Any())
                         {
-                            var containStudentEffortGradeSrlno = studentEffortGradeData.Select(x => x.StudentEffortGradeSrlno).Distinct().ToList();
-
-                            List<long> studentEffortGradeSrlnos = new List<long> { };
-                            studentEffortGradeSrlnos = containStudentEffortGradeSrlno;
-
-                            var studentEffortGradeDetailsData = this.context?.StudentEffortGradeDetail.Where(e => e.SchoolId == studentEffortGradeListModel.SchoolId && e.TenantId == studentEffortGradeListModel.TenantId && (studentEffortGradeSrlnos == null || (studentEffortGradeSrlnos.Contains(e.StudentEffortGradeSrlno)))).ToList();
-
-                            if (studentEffortGradeDetailsData != null && studentEffortGradeDetailsData.Any())
+                            var detailsToDelete = this.context.StudentEffortGradeDetail.Where(e =>
+                                e.SchoolId == studentEffortGradeListModel.SchoolId
+                                && e.TenantId == studentEffortGradeListModel.TenantId
+                                && updatedSrlnos.Contains(e.StudentEffortGradeSrlno)).ToList();
+                            if (detailsToDelete.Any())
                             {
-                                this.context?.StudentEffortGradeDetail.RemoveRange(studentEffortGradeDetailsData);
+                                this.context.StudentEffortGradeDetail.RemoveRange(detailsToDelete);
+                                this.context.SaveChanges();
                             }
-                            this.context?.StudentEffortGradeMaster.RemoveRange(studentEffortGradeData);
-                            this.context?.SaveChanges();
+                        }
 
-                            long? studentEffortGradeSrlno = 1;
+                        // Get next srlno for any new inserts (no tracking)
+                        long nextSrlno = 1;
+                        var maxSrlno = this.context.StudentEffortGradeMaster.AsNoTracking()
+                            .Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId)
+                            .Select(x => (long?)x.StudentEffortGradeSrlno)
+                            .OrderByDescending(x => x)
+                            .FirstOrDefault();
+                        if (maxSrlno.HasValue)
+                        {
+                            nextSrlno = maxSrlno.Value + 1;
+                        }
 
-                            var studentFinalGradeSrlnoData = this.context?.StudentEffortGradeMaster.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId).OrderByDescending(x => x.StudentEffortGradeSrlno).FirstOrDefault();
-
-                            if (studentFinalGradeSrlnoData != null)
+                        foreach (var studentEffortGrade in studentEffortGradeListModel.studentsByHomeRoomStaffView)
+                        {
+                            if (existingByStudentId.TryGetValue(studentEffortGrade.StudentId, out var existing))
                             {
-                                studentEffortGradeSrlno = studentFinalGradeSrlnoData.StudentEffortGradeSrlno + 1;
-                            }
-
-                            foreach (var studentEffortGrade in studentEffortGradeListModel.studentsByHomeRoomStaffView)
-                            {
-                                var studentEffortGradeUpdate = new StudentEffortGradeMaster()
+                                // UPDATE: build a fresh entity from existing audit data + new values, attach as Modified
+                                var updated = new StudentEffortGradeMaster
                                 {
-                                    TenantId = (Guid)studentEffortGradeListModel.TenantId!,
-                                    SchoolId = (int)studentEffortGradeListModel.SchoolId!,
-                                    StudentId = studentEffortGrade.StudentId,
-                                    CourseId = 0,
-                                    CourseSectionId = 0,
+                                    TenantId = existing.TenantId,
+                                    SchoolId = existing.SchoolId,
+                                    StudentId = existing.StudentId,
+                                    StudentEffortGradeSrlno = existing.StudentEffortGradeSrlno,
+                                    CourseId = existing.CourseId,
+                                    CourseSectionId = existing.CourseSectionId,
+                                    CalendarId = existing.CalendarId,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
-                                    CalendarId = null,
                                     YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
                                     SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
                                     QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
                                     PrgrsprdMarkingPeriodId = (PrgrsprdMarkingPeriodId > 0) ? PrgrsprdMarkingPeriodId : null,
+                                    IsCustomMarkingPeriod = existing.IsCustomMarkingPeriod,
+                                    IsExamGrade = existing.IsExamGrade,
+                                    TeacherComment = studentEffortGrade.TeacherComment,
+                                    // Preserve original creation audit
+                                    CreatedBy = existing.CreatedBy,
+                                    CreatedOn = existing.CreatedOn,
                                     UpdatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy,
-                                    UpdatedOn = DateTime.UtcNow,
-                                    StudentEffortGradeSrlno = (long)studentEffortGradeSrlno,
-                                    TeacherComment = studentEffortGrade.TeacherComment,
-                                    StudentEffortGradeDetail = studentEffortGrade.StudentEffortGradeDetail.Select(c =>
-                                    {
-                                        c.UpdatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy;
-                                        c.UpdatedOn = DateTime.UtcNow;
-                                        return c;
-                                    }).ToList()
+                                    UpdatedOn = DateTime.UtcNow
                                 };
-                                studentEffortGradeList.Add(studentEffortGradeUpdate);
-                                studentEffortGradeSrlno++;
+                                this.context.StudentEffortGradeMaster.Update(updated);
+
+                                // Insert new detail rows for this student
+                                foreach (var d in studentEffortGrade.StudentEffortGradeDetail)
+                                {
+                                    var newDetail = new StudentEffortGradeDetail
+                                    {
+                                        TenantId = (Guid)studentEffortGradeListModel.TenantId!,
+                                        SchoolId = (int)studentEffortGradeListModel.SchoolId!,
+                                        StudentId = studentEffortGrade.StudentId,
+                                        StudentEffortGradeSrlno = existing.StudentEffortGradeSrlno,
+                                        Id = Id++,
+                                        EffortCategoryId = d.EffortCategoryId,
+                                        EffortItemId = d.EffortItemId,
+                                        EffortGradeScaleId = d.EffortGradeScaleId,
+                                        UpdatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy,
+                                        UpdatedOn = DateTime.UtcNow
+                                    };
+                                    this.context.StudentEffortGradeDetail.Add(newDetail);
+                                }
                             }
-                            studentEffortGradeListModel._message = "Student Effort Grade updated successfully.";
-                        }
-                        else
-                        {
-                            long? studentEffortGradeSrlno = 1;
-
-                            var studentEffortGradeSrlnoData = this.context?.StudentEffortGradeMaster.Where(x => x.SchoolId == studentEffortGradeListModel.SchoolId && x.TenantId == studentEffortGradeListModel.TenantId).OrderByDescending(x => x.StudentEffortGradeSrlno).FirstOrDefault();
-
-                            if (studentEffortGradeSrlnoData != null)
+                            else
                             {
-                                studentEffortGradeSrlno = studentEffortGradeSrlnoData.StudentEffortGradeSrlno + 1;
-                            }
-
-                            foreach (var studentEffortGrade in studentEffortGradeListModel.studentsByHomeRoomStaffView)
-                            {
-                                var studentEffortGradeAdd = new StudentEffortGradeMaster()
+                                // INSERT: new student getting effort grades for the first time
+                                var newMaster = new StudentEffortGradeMaster
                                 {
                                     TenantId = (Guid)studentEffortGradeListModel.TenantId!,
                                     SchoolId = (int)studentEffortGradeListModel.SchoolId!,
                                     StudentId = studentEffortGrade.StudentId,
+                                    StudentEffortGradeSrlno = nextSrlno,
                                     CourseId = 0,
                                     CourseSectionId = 0,
                                     AcademicYear = studentEffortGradeListModel.AcademicYear,
@@ -211,26 +241,40 @@ namespace opensis.data.Repository
                                     SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
                                     QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
                                     PrgrsprdMarkingPeriodId = (PrgrsprdMarkingPeriodId > 0) ? PrgrsprdMarkingPeriodId : null,
-                                    CreatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy,
-                                    CreatedOn = DateTime.UtcNow,
-                                    StudentEffortGradeSrlno = (long)studentEffortGradeSrlno,
                                     TeacherComment = studentEffortGrade.TeacherComment,
-                                    StudentEffortGradeDetail = studentEffortGrade.StudentEffortGradeDetail.Select(c =>
-                                    {
-                                        c.CreatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy;
-                                        c.CreatedOn = DateTime.UtcNow;
-                                        return c;
-                                    }).ToList()
+                                    CreatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy,
+                                    CreatedOn = DateTime.UtcNow
                                 };
-                                studentEffortGradeList.Add(studentEffortGradeAdd);
-                                studentEffortGradeSrlno++;
+                                this.context.StudentEffortGradeMaster.Add(newMaster);
+
+                                foreach (var d in studentEffortGrade.StudentEffortGradeDetail)
+                                {
+                                    var newDetail = new StudentEffortGradeDetail
+                                    {
+                                        TenantId = (Guid)studentEffortGradeListModel.TenantId!,
+                                        SchoolId = (int)studentEffortGradeListModel.SchoolId!,
+                                        StudentId = studentEffortGrade.StudentId,
+                                        StudentEffortGradeSrlno = nextSrlno,
+                                        Id = Id++,
+                                        EffortCategoryId = d.EffortCategoryId,
+                                        EffortItemId = d.EffortItemId,
+                                        EffortGradeScaleId = d.EffortGradeScaleId,
+                                        CreatedBy = studentEffortGradeListModel.CreatedOrUpdatedBy,
+                                        CreatedOn = DateTime.UtcNow
+                                    };
+                                    this.context.StudentEffortGradeDetail.Add(newDetail);
+                                }
+
+                                nextSrlno++;
                             }
-                            studentEffortGradeListModel._message = "Student Effort Grade Added succsesfully.";
                         }
-                        this.context?.StudentEffortGradeMaster.AddRange(studentEffortGradeList);
-                        this.context?.SaveChanges();
+
+                        this.context.SaveChanges();
                         transaction?.Commit();
                         studentEffortGradeListModel._failure = false;
+                        studentEffortGradeListModel._message = existingByStudentId.Any()
+                            ? "Student Effort Grade updated successfully."
+                            : "Student Effort Grade Added succsesfully.";
                     }
                 }
                 catch (Exception es)
@@ -440,8 +484,36 @@ namespace opensis.data.Repository
                             QtrMarkingPeriodId = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.QtrMarkingPeriodId,
                             PrgrsprdMarkingPeriodId = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.PrgrsprdMarkingPeriodId,
                             StudentEffortGradeDetail = StudentEffortGradeMasterData?.Where(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId).SelectMany(s => s.StudentEffortGradeDetail).ToList() ?? new List<StudentEffortGradeDetail>(),
+                            CreatedBy = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.CreatedBy,
+                            CreatedOn = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.CreatedOn,
+                            UpdatedBy = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.UpdatedBy,
+                            UpdatedOn = StudentEffortGradeMasterData?.FirstOrDefault(x => x.SchoolId == ssv.sm.SchoolId && x.StudentId == ssv.sm.StudentId)?.UpdatedOn,
 
                         }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
+
+                        // Resolve CreatedBy/UpdatedBy GUIDs to staff names
+                        var staffGuids = studentListByHomeRoomStaffView
+                            .SelectMany(g => new[] { g.CreatedBy, g.UpdatedBy })
+                            .Where(g => g != null)
+                            .Distinct()
+                            .Select(g => Guid.TryParse(g, out var parsed) ? parsed : (Guid?)null)
+                            .Where(g => g.HasValue)
+                            .Select(g => g!.Value)
+                            .ToList();
+
+                        var staffNameLookup = staffGuids.Any()
+                            ? this.context?.StaffMaster.AsNoTracking()
+                                .Where(s => s.TenantId == pageResult.TenantId && staffGuids.Contains(s.StaffGuid))
+                                .ToDictionary(s => s.StaffGuid.ToString(), s => (s.FirstGivenName ?? "") + " " + (s.LastFamilyName ?? ""))
+                            : new Dictionary<string, string>();
+
+                        foreach (var v in studentListByHomeRoomStaffView)
+                        {
+                            if (v.CreatedBy != null && staffNameLookup!.TryGetValue(v.CreatedBy, out var createdName))
+                                v.CreatedByName = createdName.Trim();
+                            if (v.UpdatedBy != null && staffNameLookup!.TryGetValue(v.UpdatedBy, out var updatedName))
+                                v.UpdatedByName = updatedName.Trim();
+                        }
                     }
 
                     if (studentListByHomeRoomStaffView != null && studentListByHomeRoomStaffView.Any())
