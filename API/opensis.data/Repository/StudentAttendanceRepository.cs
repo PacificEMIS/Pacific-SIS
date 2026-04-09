@@ -2163,6 +2163,10 @@ namespace opensis.data.Repository
                                         break;
                                 }
                             }
+                            else
+                            {
+                                transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(s => s.FirstGivenName);
+                            }
 
                             int? totalCount = transactionIQ.Count();
                             if (pageResult.PageNumber > 0 && pageResult.PageSize > 0)

@@ -400,19 +400,34 @@ export class GradeDetailsComponent implements OnInit {
     }
     this.addUpdateStudentFinalGradeModel.isExamGrade = markingPeriodDetails.doesExam;
 
-    this.studentMasterList?.map((val:any,index)=>{
-      if(!this.matchStudentData(val.studentId)){
-        if(val.isDropped)
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade());
-        else{
-          this.addUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,0,new StudentFinalGrade())
-          this.initializeDefaultValues(val,index);
+    // Build a lookup of existing grades keyed by studentId
+    const existingGrades = new Map();
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.forEach(grade => {
+      if (grade.studentId) {
+        existingGrades.set(grade.studentId, grade);
+      }
+    });
+
+    // Rebuild the grade list aligned to the roster order
+    const rebuiltList = [];
+    this.studentMasterList?.forEach((val: any, index) => {
+      if (this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale')
+        val.gradeScaleList = this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
+
+      const existing = existingGrades.get(val.studentId);
+      if (existing) {
+        rebuiltList.push(existing);
+      } else {
+        const newGrade = new StudentFinalGrade();
+        rebuiltList.push(newGrade);
+        if (!val.isDropped) {
+          this.addUpdateStudentFinalGradeModel.studentFinalGradeList = rebuiltList;
+          this.initializeDefaultValues(val, index);
         }
       }
-      if(this.courseSectionDetails[0].gradeScaleType === 'Teacher_Scale')
-        val.gradeScaleList=this.gradebookConfigurationAddViewModel.gradebookConfiguration.gradebookConfigurationGradescale;
     });
-    
+    this.addUpdateStudentFinalGradeModel.studentFinalGradeList = rebuiltList;
+
     this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map((item, i) => {
       let commentArray = [];
       item.studentFinalGradeComments?.map((subItem) => {
@@ -449,10 +464,8 @@ export class GradeDetailsComponent implements OnInit {
     });
   }
 
-  matchStudentData(studentId){
-    let isMatch=false;
-    this.addUpdateStudentFinalGradeModel.studentFinalGradeList.map(innerVal=> { if(innerVal.studentId === studentId) isMatch=true; });
-    return isMatch;
+  matchStudentData(studentId) {
+    return this.addUpdateStudentFinalGradeModel.studentFinalGradeList.some(g => g.studentId === studentId);
   }
 
   selectMarkingPeriod(data) {
@@ -679,10 +692,8 @@ if(courseSection) {
     this.addUpdateStudentFinalGradeModel.creditHours = this.creditHours;
     let cloneModel=JSON.stringify(this.addUpdateStudentFinalGradeModel);
     this.cloneAddUpdateStudentFinalGradeModel = JSON.parse(cloneModel)
-    this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.map((val,index)=>{
-      if(val.isDropped)
-        this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.splice(index,1);
-    });
+    this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList =
+      this.cloneAddUpdateStudentFinalGradeModel.studentFinalGradeList.filter(val => !val.isDropped);
     this.finalGradeService.addUpdateStudentFinalGrade(this.cloneAddUpdateStudentFinalGradeModel).subscribe((data) => {
       if (data) {
        if(data._failure){
