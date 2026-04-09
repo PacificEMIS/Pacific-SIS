@@ -1445,6 +1445,10 @@ namespace opensis.data.Repository
                                     break;
                             }
                         }
+                        else
+                        {
+                            transactionIQ = transactionIQ.OrderBy(s => s.LastFamilyName).ThenBy(s => s.FirstGivenName);
+                        }
                         //Advance Search for date range
                         if (pageResult?.DobStartDate != null && pageResult.DobEndDate != null)
                         {
