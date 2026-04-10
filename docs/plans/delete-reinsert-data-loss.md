@@ -132,8 +132,8 @@ All instances of RemoveRange + AddRange on the same entity scope within a transa
 |---|---|---|---|
 | InputFinalGradeRepository | AddUpdateStudentFinalGrade | student_final_grade, _comments, _standard | DONE |
 | StudentEffortGradeRepository | AddUpdateStudentEffortGrade | student_effort_grade_master, _detail | DONE |
-| ReportCardRepository | 2 methods | student_report_card_master, _detail | TODO |
-| StaffPortalGradebookRepository | 3 methods | gradebook_grades, gradebook_configuration_* | TODO |
+| ReportCardRepository | 2 methods | student_report_card_master, _detail | DEAD CODE — skip |
+| StaffPortalGradebookRepository | 4 methods | gradebook_grades, gradebook_configuration_* | DEFERRED — see [gradebook-repository-upsert.md](gradebook-repository-upsert.md) |
 | StudentHistoricalGradeRepository | AddUpdateHistoricalGrade | historical_grade, historical_credit_transfer | TODO |
 
 ### Student record data
@@ -271,6 +271,68 @@ using a Map keyed by studentId. See branch `issue819`.
   "Homeroom Teacher" profile gate, the strict course-section date
   containment rule, the absence of any reporting consumer, and the
   step-by-step test plan used to verify this fix.
+
+### StaffPortalGradebookRepository — investigated and deferred
+
+Four methods use the delete-reinsert pattern across `gradebook_grades`
+and `gradebook_configuration_*` tables:
+
+- `AddUpdateGradebookConfiguration`
+- `AddGradebookGrade`
+- `AddGradebookGradeByStudent`
+- `AddgradebookGradeByAssignmentType`
+
+All four are wired to live frontend components and are technically
+active code. However:
+
+- **Data loss risk is low** — the grade-save methods filter by
+  `StudentId` + scope before deleting, so dropped-student grade loss
+  (the severe issue from InputFinalGrade) does not apply here.
+- **Audit destruction risk is high** — every re-save wipes `CreatedBy`/
+  `CreatedOn` for the touched rows.
+- **No Pacific EMIS tenant is currently using gradebook**, so the
+  audit destruction has no active victims.
+- **Fix complexity is higher** than the previous two repositories —
+  four methods, composite key with `AssignmentTypeId` + `AssignmentId`,
+  plus a separate configuration method with different shape and manual
+  PK generation fragility.
+
+Given the lower urgency and higher complexity, this work is **deferred
+to its own standalone plan** and should be tackled separately when
+gradebook becomes actively used or as a scheduled cleanup pass. See
+[gradebook-repository-upsert.md](gradebook-repository-upsert.md) for
+full analysis, proposed approach, and testing strategy.
+
+### ReportCardRepository — investigated and skipped (dead code)
+
+Both `AddReportCard` (default and custom template branches) use the
+delete-reinsert pattern on `student_report_card_master`/`_detail`. However
+investigation showed these are dead code paths in the current frontend:
+
+- The frontend's "Generate Report Card for Selected Students" button
+  calls `getReportCardForStudents`, which is a **pure dynamic aggregation**
+  that reads from `student_final_grade`, `student_attendance`, etc., and
+  never touches `student_report_card_master`.
+- The only frontend reference to `addReportCard` is **commented out** at
+  `student-report-card.component.ts:140`.
+- The other read method `GenerateReportCard` (which DOES read from the
+  master tables) is also unused by the frontend.
+- Tenant data in `student_report_card_master` is from 2021 only — leftover
+  test/seed records from initial system setup, never updated since.
+
+The whole snapshot-based report card flow was apparently designed but
+abandoned in favour of dynamic generation. The repository methods,
+controller endpoints, JSReport-based PDF flow, and database tables are
+all vestigial.
+
+**Recommendation for future work**: rather than fixing these methods,
+delete them along with their controller endpoints and unused service
+methods, and consider dropping the unused tables in a future migration.
+This is a cleanup task, not a data-safety fix — there is no risk of data
+loss because the destructive code path is never executed.
+
+Skipping this repository in the current scope and moving on to live code
+paths instead.
 
 ## Related Open Concerns
 
