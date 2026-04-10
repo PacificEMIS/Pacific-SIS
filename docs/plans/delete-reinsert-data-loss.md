@@ -4,7 +4,16 @@ Related issue: https://github.com/PacificEMIS/Pacific-SIS/issues/561
 
 ## Status
 
-**Critical** — actively causing silent data loss, not just an audit concern.
+**Acute data loss resolved, remaining work deferred.** The two repositories
+actively causing damage (`InputFinalGradeRepository` and
+`StudentEffortGradeRepository`) have been fixed. Every other repository
+flagged by the original inventory has been investigated and categorised
+as dead code, not in use, false positive, or low-priority audit-only —
+none are actively causing data loss or damage to any Pacific EMIS tenant.
+
+This document is now primarily an **audit-and-resolution record** rather
+than an open to-do list. See the per-repository sections below for full
+details on each resolution.
 
 ---
 
@@ -134,44 +143,45 @@ All instances of RemoveRange + AddRange on the same entity scope within a transa
 | StudentEffortGradeRepository | AddUpdateStudentEffortGrade | student_effort_grade_master, _detail | DONE |
 | ReportCardRepository | 2 methods | student_report_card_master, _detail | DEAD CODE — skip |
 | StaffPortalGradebookRepository | 4 methods | gradebook_grades, gradebook_configuration_* | DEFERRED — see [gradebook-repository-upsert.md](gradebook-repository-upsert.md) |
-| StudentHistoricalGradeRepository | AddUpdateHistoricalGrade | historical_grade, historical_credit_transfer | TODO |
+| StudentHistoricalGradeRepository | AddUpdateHistoricalGrade | historical_grade, historical_credit_transfer | DEFERRED — see [historical-grade-repository-upsert.md](historical-grade-repository-upsert.md) |
 
 ### Student record data
 
 | Repository | Method | Tables | Status |
 |---|---|---|---|
-| StudentRepository | Transcript creation | student_transcript_master, _detail | TODO |
-| StudentRepository | Parent association | parent_associationship | TODO |
+| StudentRepository | Transcript creation | student_transcript_master, _detail | DEFERRED — not in use (zero rows in DB) |
+| StudentRepository | Parent association | parent_associationship | NOT APPLICABLE — false positive |
 
 ### Configuration/scheduling (lower priority)
 
 | Repository | Method | Tables | Status |
 |---|---|---|---|
-| CourseManagerRepository | 4 methods | course_standard, course_variable_schedule, course_calendar_schedule, course_block_schedule | TODO |
+| CourseManagerRepository | 4 methods | course_standard, course_variable_schedule, course_calendar_schedule, course_block_schedule | DEFERRED — audit-only, low priority |
 
 ---
 
-## Proposed Fix: Upsert by Business Key
+## Upsert Pattern Used for the Fixes
 
-Replace the delete-reinsert pattern with a proper upsert that matches incoming records
-to existing ones by their natural business key.
+The two repositories that were fixed use a consistent upsert-by-business-key
+approach that has been proven in production.
 
-### Example: InputFinalGradeRepository.AddUpdateStudentFinalGrade
+**Business key**: the composite key of the row within the already-filtered
+scope. For `InputFinalGradeRepository`, that's `StudentId` within a course
+section + marking period. For `StudentEffortGradeRepository`, also
+`StudentId` within marking period + academic year.
 
-**Business key:** `StudentId` (within the already-scoped course section + marking period)
+**Pattern**:
 
 ```
 // Pseudocode
-var existingByStudentId = existingRecords.ToDictionary(r => r.StudentId);
+var existingByKey = existingRecords.ToDictionary(r => r.StudentId);
 
 foreach (incoming in incomingList)
 {
-    if (existingByStudentId.TryGetValue(incoming.StudentId, out var existing))
+    if (existingByKey.TryGetValue(incoming.StudentId, out var existing))
     {
         // UPDATE — preserve CreatedOn/CreatedBy, set UpdatedOn/UpdatedBy
         existing.PercentMarks = incoming.PercentMarks;
-        existing.GradeObtained = incoming.GradeObtained;
-        existing.TeacherComment = incoming.TeacherComment;
         existing.UpdatedOn = DateTime.UtcNow;
         existing.UpdatedBy = submittedBy;
         // ... update child collections (comments, standards)
@@ -186,25 +196,28 @@ foreach (incoming in incomingList)
     }
 }
 
-// DO NOT delete records for students not in the incoming list.
+// DO NOT delete records for keys not in the incoming list.
 // Dropped students' grades must be preserved.
 ```
 
-**Key principle:** only touch what you're given. Students absent from the submission
-(dropped students, transferred students) have their existing grades left untouched.
+**Key principle**: only touch what you're given. Students absent from the
+submission (dropped students, transferred students) have their existing
+grades left untouched.
 
-### Execution order
+**EF tracking subtlety** (learned during the StudentEffortGrade fix): loading
+existing entities as tracked and then mixing with `Add()` of new entities
+can cause "another instance with the same key is already being tracked"
+errors. The safer approach is:
+- Load existing records with `AsNoTracking()`.
+- For updates, construct a fresh entity copying preserved audit fields
+  from the no-track snapshot, then attach as `Modified` via `Update()`.
+- For inserts, construct and `Add()` as normal.
 
-1. **InputFinalGradeRepository** — start here (best understood, highest impact,
-   already demonstrated data loss)
-2. **StudentEffortGradeRepository** — same pattern, same risk for dropped students
-3. **ReportCardRepository** — report cards for dropped students also at risk
-4. **StaffPortalGradebookRepository** — gradebook assignment grades
-5. **Remaining repositories** — lower priority, schedule opportunistically
+Both fixed repositories now use this safer approach.
 
 ---
 
-## What Was Already Fixed (April 2026)
+## Resolution Summary (April 2026)
 
 ### Issue #819 — Grade misalignment (separate prior fix)
 
@@ -302,6 +315,71 @@ to its own standalone plan** and should be tackled separately when
 gradebook becomes actively used or as a scheduled cleanup pass. See
 [gradebook-repository-upsert.md](gradebook-repository-upsert.md) for
 full analysis, proposed approach, and testing strategy.
+
+### CourseManagerRepository — investigated and deferred
+
+Four methods using delete-reinsert on parent-child configuration
+relationships:
+- `CourseStandard` children of a course
+- `CourseVariableSchedule`, `CourseCalendarSchedule`, `CourseBlockSchedule`
+  children of a course section
+
+Data loss risk: **zero**. These are structural parent-child relationships
+where the children don't exist independently of the parent and are
+always submitted as a complete set. There's no concept of "external
+entities to preserve" — children are bound to their parent by design.
+
+Audit destruction risk: yes, but only on **course configuration**
+records, which are set up when courses are created and rarely touched
+after. Unlike student grade data which is edited throughout the term,
+course schedules and standards typically get their `created_on` set
+once and left alone.
+
+Deferred as audit-only, low priority. Worth revisiting as part of a
+scheduled cleanup pass or if audit history on course configuration
+becomes important for any reason.
+
+### StudentRepository transcript / parent association — investigated
+
+**Transcript creation** (`student_transcript_master`/`_detail`): deferred.
+DB check on 2026-04-10 showed zero rows in either table. Feature is not
+in use. Same pattern of delete-reinsert as the other deferred
+repositories but no active users, no active damage.
+
+**Parent association** (`parent_associationship`): **false positive** —
+NOT APPLICABLE. The RemoveRange + AddRange in
+`StudentRepository.UpdateStudentEnrollment` (around line 1876) is not the
+anti-pattern we were cataloguing. It's a legitimate data movement
+operation triggered only during a student **transfer to another school**.
+Because the composite key on `parent_associationship` includes `SchoolId`,
+moving a student to a new school requires deleting the old rows and
+creating new rows pointed at the new school's `SchoolId` — there's no
+"update in place" option when part of the primary key changes.
+
+Additionally, the copy code at
+[StudentRepository.cs:1656-1657](../../API/opensis.data/Repository/StudentRepository.cs#L1656-L1657)
+already explicitly preserves the original `CreatedBy`/`CreatedOn` on
+the new rows, so there is no audit destruction.
+
+The day-to-day parent-student association flow lives in
+`ParentInfoRepository.cs` and correctly uses single-row
+`Add`/`Update`/`Remove` operations — no anti-pattern there.
+
+### StudentHistoricalGradeRepository — investigated and deferred
+
+`AddUpdateHistoricalGrade` uses delete-reinsert across `historical_grade`
+and `historical_credit_transfer`. Fix is mechanically straightforward
+(similar shape to `StudentEffortGradeRepository`), but a DB check on
+2026-04-10 showed only 3 rows total — all entered within an 11-minute
+window on 2023-11-27 as a one-off test, with `updated_on` always NULL
+since then. No active users means no active data loss or audit
+destruction.
+
+Deferred to a standalone plan so it can be tackled as a focused fix
+when a tenant starts using the feature, or as part of a scheduled
+cleanup pass. See
+[historical-grade-repository-upsert.md](historical-grade-repository-upsert.md)
+for full analysis and proposed approach.
 
 ### ReportCardRepository — investigated and skipped (dead code)
 
