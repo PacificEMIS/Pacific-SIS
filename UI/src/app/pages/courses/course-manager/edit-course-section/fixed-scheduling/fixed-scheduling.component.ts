@@ -164,9 +164,7 @@ export class FixedSchedulingComponent implements OnInit,OnChanges {
   }
 
   
-  selectDays(event:Event, name) {
-
-    event.preventDefault();
+  selectDays(name) {
     if(this.weekArray.includes(name)){
       let index = this.activeDays.indexOf(name);
       if(index>-1){

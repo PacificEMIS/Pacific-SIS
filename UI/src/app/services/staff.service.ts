@@ -122,26 +122,28 @@ export class StaffService {
 
   checkExternalSchoolId(model, categoryId) {
     return new Promise((resolve, reject) => {
-      let isReadOnly = false;
-      if (model?.externalSchoolIds?.length > 0) {
-        const index = model.externalSchoolIds.findIndex(x => x === this.defaultValuesService.getSchoolID())
-        if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index >= 0) {
-          if (model?.fieldsCategoryList[categoryId]?.customFields.filter(x => !x.systemField && !x.hide).length === 0) {
-            // this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
-            // reject({});
-            resolve({ isReadOnly });
-          } else {
-            // isReadOnly = true;
-            resolve({ isReadOnly });
-          }
-        } else if (this.defaultValuesService.getSchoolID() !== model.staffMaster.schoolId && index === -1) {
-          this.snackbar.open(`This staff is associated to ${model.defaultSchoolName}. Please go to ${model.defaultSchoolName} for edit`, '', { duration: 10000 });
-          reject();
-        } else if (this.defaultValuesService.getSchoolID() === model.staffMaster.schoolId) {
-          resolve({ isReadOnly });
-        }
-      } else {
+      const isReadOnly = false;
+      // Session storage holds school id as a string, backend sends int → coerce both sides to number.
+      const currentSchoolId = Number(this.defaultValuesService.getSchoolID());
+      const staffMasterSchoolId = Number(model?.staffMaster?.schoolId);
+      const defaultSchoolId = model?.defaultSchoolId != null ? Number(model.defaultSchoolId) : null;
+      const externalSchoolIds = (model?.externalSchoolIds || []).map((x: any) => Number(x));
+
+      // Allow edit if the current school is any of the schools this staff is associated with:
+      // - the staff_master.school_id (may be stale on legacy data)
+      // - the home school reported by staff_school_info (defaultSchoolId)
+      // - any external school the staff is attached to
+      const isAssociated =
+        currentSchoolId === staffMasterSchoolId ||
+        currentSchoolId === defaultSchoolId ||
+        externalSchoolIds.includes(currentSchoolId);
+
+      if (isAssociated) {
         resolve({ isReadOnly });
+      } else {
+        const homeSchoolName = model?.defaultSchoolName || 'another school';
+        this.snackbar.open(`This staff is associated to ${homeSchoolName}. Please go to ${homeSchoolName} for edit`, '', { duration: 10000 });
+        reject(new Error('staff-not-in-current-school'));
       }
     });
   }
