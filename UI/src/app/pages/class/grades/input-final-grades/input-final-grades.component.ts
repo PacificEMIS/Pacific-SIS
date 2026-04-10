@@ -453,6 +453,13 @@ export class InputFinalGradesComponent implements OnInit {
   }
 
   gradeFromPercent(percent, index, student) {
+    if (percent > 100) {
+      percent = 100;
+      this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = 100;
+    } else if (percent < 0) {
+      percent = 0;
+      this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks = 0;
+    }
     let sortedData = [];
     sortedData = student.sort((a, b) => b.breakoff - a.breakoff);
     sortedData.map((item, i) => {
@@ -498,6 +505,12 @@ export class InputFinalGradesComponent implements OnInit {
   }
 
   percentToGrade(index) {
+    const grade = this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index];
+    if (grade.percentMarks > 100) {
+      grade.percentMarks = 100;
+    } else if (grade.percentMarks < 0) {
+      grade.percentMarks = 0;
+    }
     if (this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks >= 90 && this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].percentMarks <= 100) {
       this.addUpdateStudentFinalGradeModel.studentFinalGradeList[index].gradeObtained = 'A';
 
