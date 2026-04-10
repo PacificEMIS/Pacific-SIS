@@ -684,6 +684,9 @@ export class StaffGeneralinfoComponent implements OnInit {
       this.showDisabilityDescription = true;
     }
     this.callLOVs();
+  }).catch(() => {
+    // Edit blocked: snackbar already shown by checkExternalSchoolId.
+    // Swallow rejection to avoid "Uncaught (in promise)" in the console.
   });
   } else {
     this.staffCreateMode = this.staffCreate.EDIT

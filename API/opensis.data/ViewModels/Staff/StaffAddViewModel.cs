@@ -52,6 +52,7 @@ namespace opensis.data.ViewModels.Staff
         public string? StartDate { get; set; }
         public int? ExternalSchoolId { get; set; }
         public string? DefaultSchoolName { get; set; }
+        public int? DefaultSchoolId { get; set; }
         public int[]? ExternalSchoolIds { get; set; }
     }
 }

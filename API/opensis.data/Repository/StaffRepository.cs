@@ -551,6 +551,7 @@ namespace opensis.data.Repository
                             if (StaffSchoolInfo.SchoolId == StaffSchoolInfo.SchoolAttachedId)
                             {
                                 staffView.DefaultSchoolName = StaffSchoolInfo.SchoolAttachedName;
+                                staffView.DefaultSchoolId = StaffSchoolInfo.SchoolAttachedId;
                             }
                             else
                             {
@@ -814,6 +815,7 @@ namespace opensis.data.Repository
                                 staffAddViewModel.staffMaster.CreatedOn = staffUpdate.CreatedOn;
                                 staffAddViewModel.staffMaster.CreatedBy = staffUpdate.CreatedBy;
                                 staffAddViewModel.staffMaster.IsActive = staffUpdate.IsActive;
+                                staffAddViewModel.staffMaster.SchoolId = staffUpdate.SchoolId;
 
 
                                 this.context?.Entry(staffUpdate).CurrentValues.SetValues(staffAddViewModel.staffMaster);
