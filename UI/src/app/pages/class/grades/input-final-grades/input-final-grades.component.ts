@@ -473,6 +473,24 @@ export class InputFinalGradesComponent implements OnInit {
     return ((k >= 48 && k <= 57) || k === 8 || k === 46);
   }
 
+  getAuditTooltip(i: number): string {
+    const grade = this.addUpdateStudentFinalGradeModel.studentFinalGradeList[i];
+    if (!grade) return '';
+    const fmt = (d) => {
+      // Backend stores DateTime.UtcNow but serializes without Z, so force UTC parsing
+      const iso = typeof d === 'string' && !d.endsWith('Z') ? d + 'Z' : d;
+      return new Date(iso).toLocaleString([], {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'});
+    };
+    const parts = [];
+    if (grade.createdOn) {
+      parts.push('Created: ' + fmt(grade.createdOn) + (grade.createdByName ? ' by ' + grade.createdByName : ''));
+    }
+    if (grade.updatedOn) {
+      parts.push('Updated: ' + fmt(grade.updatedOn) + (grade.updatedByName ? ' by ' + grade.updatedByName : ''));
+    }
+    return parts.join('\n');
+  }
+
   selected(event: MatAutocompleteSelectedEvent): void {
     if (this.addUpdateStudentFinalGradeModel.studentFinalGradeList[this.selectedStudent].studentFinalGradeComments.findIndex(item => item.courseCommentId === event.option.value.courseCommentId) === -1) {
       this.addUpdateStudentFinalGradeModel.studentFinalGradeList[this.selectedStudent].studentFinalGradeComments.push(event.option.value);

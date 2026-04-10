@@ -36,7 +36,7 @@
                             <li *ngIf="!totalCount">
                                 <div class="py-3 px-6"><span class="mb-5 italic text-gray">{{ showMessage | translate }}</span></div>
                             </li>
-                            <li class="flex py-2 px-6 cursor-pointer"
+                            <li class="flex py-2 px-6 cursor-pointer items-center"
                                 [ngClass]="{'bg-skyblue-light':selectedStudent === i}"
                                 *ngFor="let student of studentMasterList;let i = index" (click)="viewDetails(i)">
 
@@ -53,6 +53,10 @@
                                         <span>{{ student.gradeLevel }}</span>
                                     </div>
                                 </div>
+                                <mat-icon *ngIf="getAuditTooltip(i)" class="ml-auto"
+                                    [matTooltip]="getAuditTooltip(i)"
+                                    matTooltipClass="audit-tooltip"
+                                    (click)="$event.stopPropagation()">info</mat-icon>
 
                             </li>
                         </ul>

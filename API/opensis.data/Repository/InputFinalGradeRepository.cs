@@ -154,24 +154,34 @@ namespace opensis.data.Repository
 
                         if (studentFinalGradeData != null && studentFinalGradeData.Any())
                         {
-                            var studentFinalGradeSrlnos = studentFinalGradeData.Select(x => x.StudentFinalGradeSrlno).Distinct().ToList();
+                            // Upsert: match incoming grades to existing by StudentId.
+                            // Existing grades for students NOT in the incoming list
+                            // (e.g. dropped students) are left untouched.
+                            var existingByStudentId = studentFinalGradeData.ToDictionary(g => g.StudentId);
+                            var existingSrlnos = studentFinalGradeData.Select(x => x.StudentFinalGradeSrlno).Distinct().ToList();
 
-                            var studentFinalGradeStandardData = this.context?.StudentFinalGradeStandard.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CalendarId == studentFinalGradeListModel.CalendarId && /*(YrMarkingPeriodId > 0 && e.YrMarkingPeriodId == YrMarkingPeriodId || SmstrMarkingPeriodId > 0 && e.SmstrMarkingPeriodId == SmstrMarkingPeriodId || QtrMarkingPeriodId > 0 && e.QtrMarkingPeriodId == QtrMarkingPeriodId) &&*/ (studentFinalGradeSrlnos == null || (studentFinalGradeSrlnos.Contains(e.StudentFinalGradeSrlno)))).ToList();
+                            // Load existing child records
+                            var existingStandardData = this.context?.StudentFinalGradeStandard.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && e.CalendarId == studentFinalGradeListModel.CalendarId && (existingSrlnos == null || existingSrlnos.Contains(e.StudentFinalGradeSrlno))).ToList();
 
-                            if (studentFinalGradeStandardData != null && studentFinalGradeStandardData.Any())
-                            {
-                                this.context?.StudentFinalGradeStandard.RemoveRange(studentFinalGradeStandardData);
-                            }
+                            var existingCommentsData = this.context?.StudentFinalGradeComments.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && (existingSrlnos == null || existingSrlnos.Contains(e.StudentFinalGradeSrlno))).ToList();
 
-                            var studentFinalGradeCommentsData = this.context?.StudentFinalGradeComments.Where(e => e.SchoolId == studentFinalGradeListModel.SchoolId && e.TenantId == studentFinalGradeListModel.TenantId && (studentFinalGradeSrlnos == null || (studentFinalGradeSrlnos.Contains(e.StudentFinalGradeSrlno)))).ToList();
+                            // Delete old children ONLY for students being updated
+                            var updatedSrlnos = studentFinalGradeListModel.StudentFinalGradeList
+                                .Where(g => existingByStudentId.ContainsKey(g.StudentId))
+                                .Select(g => existingByStudentId[g.StudentId].StudentFinalGradeSrlno)
+                                .ToList();
 
-                            if (studentFinalGradeCommentsData != null && studentFinalGradeCommentsData.Any())
-                            {
-                                this.context?.StudentFinalGradeComments.RemoveRange(studentFinalGradeCommentsData);
-                            }
-                            this.context?.StudentFinalGrade.RemoveRange(studentFinalGradeData);
+                            var standardsToDelete = existingStandardData?.Where(s => updatedSrlnos.Contains(s.StudentFinalGradeSrlno)).ToList();
+                            if (standardsToDelete?.Any() == true)
+                                this.context?.StudentFinalGradeStandard.RemoveRange(standardsToDelete);
+
+                            var commentsToDelete = existingCommentsData?.Where(c => updatedSrlnos.Contains(c.StudentFinalGradeSrlno)).ToList();
+                            if (commentsToDelete?.Any() == true)
+                                this.context?.StudentFinalGradeComments.RemoveRange(commentsToDelete);
+
                             this.context?.SaveChanges();
 
+                            // Get next srlno for any new inserts
                             long? studentFinalGradeSrlno = 1;
 
                             var studentFinalGradeSrlnoData = this.context?.StudentFinalGrade.Where(x => x.SchoolId == studentFinalGradeListModel.SchoolId && x.TenantId == studentFinalGradeListModel.TenantId).OrderByDescending(x => x.StudentFinalGradeSrlno).FirstOrDefault();
@@ -183,52 +193,107 @@ namespace opensis.data.Repository
 
                             decimal? academicYear = Utility.GetCurrentAcademicYear(this.context!, studentFinalGradeListModel.TenantId, studentFinalGradeListModel.SchoolId);
 
+                            var newStandards = new List<StudentFinalGradeStandard>();
+                            var newComments = new List<StudentFinalGradeComments>();
+
                             foreach (var studentFinalGrade in studentFinalGradeListModel.StudentFinalGradeList)
                             {
-                                var studentFinalGradeUpdate = new StudentFinalGrade()
+                                if (existingByStudentId.TryGetValue(studentFinalGrade.StudentId, out var existing))
                                 {
-                                    TenantId = studentFinalGradeListModel.TenantId,
-                                    SchoolId = studentFinalGradeListModel.SchoolId,
-                                    StudentId = studentFinalGrade.StudentId,
-                                    CourseId = studentFinalGradeListModel.CourseId,
-                                    CourseSectionId = studentFinalGradeListModel.CourseSectionId,
-                                    GradeId = studentFinalGrade.GradeId,
-                                    GradeScaleId = studentFinalGrade.GradeScaleId,
-                                    AcademicYear = academicYear,
-                                    CalendarId = studentFinalGradeListModel.CalendarId,
-                                    YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
-                                    SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
-                                    QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
-                                    PrgrsprdMarkingPeriodId = (PrgrsprdMarkingPeriodId > 0) ? PrgrsprdMarkingPeriodId : null,
-                                    IsPercent = studentFinalGradeListModel.IsPercent,
-                                    PercentMarks = studentFinalGrade.PercentMarks,
-                                    GradeObtained = studentFinalGrade.GradeObtained,
-                                    UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy,
-                                    UpdatedOn = DateTime.UtcNow,
-                                    StudentFinalGradeSrlno = (long)studentFinalGradeSrlno,
-                                    BasedOnStandardGrade = studentFinalGrade.BasedOnStandardGrade,
-                                    TeacherComment = studentFinalGrade.TeacherComment,
-                                    IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
-                                    IsExamGrade = studentFinalGradeListModel.IsExamGrade,
-                                    CreditAttempted = studentFinalGradeListModel.CreditHours,
-                                    CreditEarned = studentFinalGradeListModel.CreditHours,
-                                    StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments.Select(c =>
+                                    // UPDATE: modify tracked entity in place, preserve CreatedOn/CreatedBy
+                                    existing.GradeId = studentFinalGrade.GradeId;
+                                    existing.GradeScaleId = studentFinalGrade.GradeScaleId;
+                                    existing.AcademicYear = academicYear;
+                                    existing.IsPercent = studentFinalGradeListModel.IsPercent;
+                                    existing.PercentMarks = studentFinalGrade.PercentMarks;
+                                    existing.GradeObtained = studentFinalGrade.GradeObtained;
+                                    existing.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
+                                    existing.UpdatedOn = DateTime.UtcNow;
+                                    existing.BasedOnStandardGrade = studentFinalGrade.BasedOnStandardGrade;
+                                    existing.TeacherComment = studentFinalGrade.TeacherComment;
+                                    existing.IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod;
+                                    existing.IsExamGrade = studentFinalGradeListModel.IsExamGrade;
+                                    existing.CreditAttempted = studentFinalGradeListModel.CreditHours;
+                                    existing.CreditEarned = studentFinalGradeListModel.CreditHours;
+
+                                    // Collect new children linked to existing srlno
+                                    foreach (var c in studentFinalGrade.StudentFinalGradeComments)
                                     {
+                                        c.TenantId = studentFinalGradeListModel.TenantId;
+                                        c.SchoolId = studentFinalGradeListModel.SchoolId;
+                                        c.StudentId = studentFinalGrade.StudentId;
+                                        c.StudentFinalGradeSrlno = existing.StudentFinalGradeSrlno;
                                         c.UpdatedOn = DateTime.UtcNow;
                                         c.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
-                                        return c;
-                                    }).ToList(),
-                                    StudentFinalGradeStandard = studentFinalGrade.StudentFinalGradeStandard.Select(c =>
+                                        newComments.Add(c);
+                                    }
+
+                                    foreach (var s in studentFinalGrade.StudentFinalGradeStandard)
                                     {
-                                        c.AcademicYear = academicYear;
-                                        c.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
-                                        c.UpdatedOn = DateTime.UtcNow;
-                                        return c;
-                                    }).ToList()
-                                };
-                                studentFinalGradeList.Add(studentFinalGradeUpdate);
-                                studentFinalGradeSrlno++;
+                                        s.TenantId = studentFinalGradeListModel.TenantId;
+                                        s.SchoolId = studentFinalGradeListModel.SchoolId;
+                                        s.StudentId = studentFinalGrade.StudentId;
+                                        s.StudentFinalGradeSrlno = existing.StudentFinalGradeSrlno;
+                                        s.AcademicYear = academicYear;
+                                        s.UpdatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
+                                        s.UpdatedOn = DateTime.UtcNow;
+                                        newStandards.Add(s);
+                                    }
+                                }
+                                else
+                                {
+                                    // INSERT: new student getting graded for first time in this scope
+                                    var studentFinalGradeAdd = new StudentFinalGrade()
+                                    {
+                                        TenantId = studentFinalGradeListModel.TenantId,
+                                        SchoolId = studentFinalGradeListModel.SchoolId,
+                                        StudentId = studentFinalGrade.StudentId,
+                                        CourseId = studentFinalGradeListModel.CourseId,
+                                        CourseSectionId = studentFinalGradeListModel.CourseSectionId,
+                                        GradeId = studentFinalGrade.GradeId,
+                                        GradeScaleId = studentFinalGrade.GradeScaleId,
+                                        AcademicYear = academicYear,
+                                        CalendarId = studentFinalGradeListModel.CalendarId,
+                                        YrMarkingPeriodId = (YrMarkingPeriodId > 0) ? YrMarkingPeriodId : null,
+                                        SmstrMarkingPeriodId = (SmstrMarkingPeriodId > 0) ? SmstrMarkingPeriodId : null,
+                                        QtrMarkingPeriodId = (QtrMarkingPeriodId > 0) ? QtrMarkingPeriodId : null,
+                                        PrgrsprdMarkingPeriodId = (PrgrsprdMarkingPeriodId > 0) ? PrgrsprdMarkingPeriodId : null,
+                                        IsPercent = studentFinalGradeListModel.IsPercent,
+                                        PercentMarks = studentFinalGrade.PercentMarks,
+                                        GradeObtained = studentFinalGrade.GradeObtained,
+                                        CreatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy,
+                                        CreatedOn = DateTime.UtcNow,
+                                        StudentFinalGradeSrlno = (long)studentFinalGradeSrlno,
+                                        BasedOnStandardGrade = studentFinalGrade.BasedOnStandardGrade,
+                                        TeacherComment = studentFinalGrade.TeacherComment,
+                                        IsCustomMarkingPeriod = studentFinalGradeListModel.IsCustomMarkingPeriod,
+                                        IsExamGrade = studentFinalGradeListModel.IsExamGrade,
+                                        CreditAttempted = studentFinalGradeListModel.CreditHours,
+                                        CreditEarned = studentFinalGradeListModel.CreditHours,
+                                        StudentFinalGradeComments = studentFinalGrade.StudentFinalGradeComments.Select(c =>
+                                        {
+                                            c.CreatedBy = studentFinalGradeListModel?.CreatedOrUpdatedBy;
+                                            c.CreatedOn = DateTime.UtcNow;
+                                            return c;
+                                        }).ToList(),
+                                        StudentFinalGradeStandard = studentFinalGrade.StudentFinalGradeStandard.Select(c =>
+                                        {
+                                            c.CreatedBy = studentFinalGradeListModel.CreatedOrUpdatedBy;
+                                            c.CreatedOn = DateTime.UtcNow;
+                                            return c;
+                                        }).ToList()
+                                    };
+                                    studentFinalGradeList.Add(studentFinalGradeAdd);
+                                    studentFinalGradeSrlno++;
+                                }
                             }
+
+                            // Add new children for updated students
+                            if (newStandards.Any())
+                                this.context?.StudentFinalGradeStandard.AddRange(newStandards);
+                            if (newComments.Any())
+                                this.context?.StudentFinalGradeComments.AddRange(newComments);
+
                             studentFinalGradeListModel._message = "Student final grade updated successfully.";
                         }
                         else
@@ -365,6 +430,30 @@ namespace opensis.data.Repository
                     else
                     {
                         studentFinalGradeData = studentFinalGradeData.Where(e => e.IsExamGrade != true).ToList();
+                    }
+
+                    // Resolve CreatedBy/UpdatedBy GUIDs to staff names
+                    var staffGuids = studentFinalGradeData
+                        .SelectMany(g => new[] { g.CreatedBy, g.UpdatedBy })
+                        .Where(g => g != null)
+                        .Distinct()
+                        .Select(g => Guid.TryParse(g, out var parsed) ? parsed : (Guid?)null)
+                        .Where(g => g.HasValue)
+                        .Select(g => g!.Value)
+                        .ToList();
+
+                    var staffNameLookup = staffGuids.Any()
+                        ? this.context?.StaffMaster.AsNoTracking()
+                            .Where(s => s.TenantId == studentFinalGradeListModel.TenantId && staffGuids.Contains(s.StaffGuid))
+                            .ToDictionary(s => s.StaffGuid.ToString(), s => (s.FirstGivenName ?? "") + " " + (s.LastFamilyName ?? ""))
+                        : new Dictionary<string, string>();
+
+                    foreach (var grade in studentFinalGradeData)
+                    {
+                        if (grade.CreatedBy != null && staffNameLookup!.TryGetValue(grade.CreatedBy, out var createdName))
+                            grade.CreatedByName = createdName.Trim();
+                        if (grade.UpdatedBy != null && staffNameLookup!.TryGetValue(grade.UpdatedBy, out var updatedName))
+                            grade.UpdatedByName = updatedName.Trim();
                     }
 
                     studentFinalGradeList.StudentFinalGradeList = studentFinalGradeData;
