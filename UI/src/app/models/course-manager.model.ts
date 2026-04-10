@@ -250,6 +250,14 @@ export class AllCourseSectionView {
     public blockRoomId: number;
     public isActive: boolean;
     public markingPeriodTitle: string; // This is only for Front End to extract the marking period title based on ID
+
+    // Data-completeness status — populated by the backend, drives the
+    // green/red coloring on the teacher dashboard and My Classes pages.
+    public hasMissingAttendance: boolean;
+    public hasMissingGrades: boolean;
+    public missingAttendanceDaysCount: number;
+    public missingGradesStudentCount: number;
+    public missingGradesMarkingPeriodTitle: string;
 }
 
 

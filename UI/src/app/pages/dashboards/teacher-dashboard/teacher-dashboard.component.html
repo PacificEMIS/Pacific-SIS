@@ -34,6 +34,7 @@
             <div *ngIf="classCount>0" class="grid md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 mb-4">
                 <a *ngFor="let courseSection of scheduledCourseSectionViewModel.courseSectionViewList"
                     class="card px-4 py-2 border-l-8 cursor-pointer" [ngClass]="courseSection.borderColor"
+                    [matTooltip]="courseSection.statusTooltip" matTooltipClass="audit-tooltip"
                     (click)="selectCourseSection(courseSection)" [routerLink]="['/school', 'class']">
                     <div class="flex justify-between items-center">
                         <h5 [ngClass]="courseSection.text" class="uppercase font-semibold mr-2">{{courseSection.courseSectionName}}</h5>
