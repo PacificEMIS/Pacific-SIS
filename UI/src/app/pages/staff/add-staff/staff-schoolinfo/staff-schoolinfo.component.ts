@@ -31,6 +31,7 @@ import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.a
 import { TranslateService } from '@ngx-translate/core';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icClear from '@iconify/icons-ic/baseline-clear';
+import icInfo from '@iconify/icons-ic/twotone-info';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StaffService } from '../../../../services/staff.service';
 import { StaffSchoolInfoListModel, StaffSchoolInfoModel } from '../../../../models/staff.model';
@@ -81,6 +82,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   icAdd = icAdd;
   icClear = icClear;
   icEdit = icEdit;
+  icInfo = icInfo;
   selectedSchoolId = [];
   otherGradeLevelTaught=[];
   otherSubjectTaught =[];
@@ -503,6 +505,24 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
+  }
+
+  getAuditTooltip(schoolInfo: any): string {
+    if (!schoolInfo) return '';
+    // Backend serializes DateTime.UtcNow without the Z marker, so force
+    // UTC parsing before formatting to the user's local timezone.
+    const fmt = (d: any) => {
+      const iso = typeof d === 'string' && !d.endsWith('Z') ? d + 'Z' : d;
+      return new Date(iso).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+    const parts = [];
+    if (schoolInfo.createdOn) {
+      parts.push('Created: ' + fmt(schoolInfo.createdOn) + (schoolInfo.createdByName ? ' by ' + schoolInfo.createdByName : ''));
+    }
+    if (schoolInfo.updatedOn) {
+      parts.push('Updated: ' + fmt(schoolInfo.updatedOn) + (schoolInfo.updatedByName ? ' by ' + schoolInfo.updatedByName : ''));
+    }
+    return parts.join('\n');
   }
 
   ngOnDestroy() {

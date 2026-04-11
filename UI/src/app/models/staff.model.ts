@@ -285,8 +285,10 @@ export class StaffSchoolInfoListModel extends CommonField {
     hide: boolean; //This is not a backend key, Its only for frontend check.
     createdOn: string;
     createdBy: string;
+    createdByName: string;
     updatedOn: string;
     updatedBy: string;
+    updatedByName: string;
     membershipId: number;
     membership: any;
     constructor() {

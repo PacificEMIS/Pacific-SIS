@@ -216,6 +216,7 @@
                             <th class="text-left p-3 border-b">{{'startDate'|translate}}</th>
                             <th class="text-left p-3 border-b">{{'endDate'|translate}}</th>
                             <th class="text-left p-3 border-b">{{'status'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'audit'|translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -225,6 +226,12 @@
                             <td class="p-3">{{schoolInfo.startDate | date | EmtyValueCheckPipe}}</td>
                             <td class="p-3">{{schoolInfo.endDate | date | EmtyValueCheckPipe}}</td>
                             <td class="p-3"><span class="text-green" *ngIf="compareDate(index);else otherSpan">Active</span><ng-template #otherSpan><span class="text-red">{{staffSchoolInfoModel.staffSchoolInfoList[index].startDate==null?'-':'Inactive'}}</span></ng-template></td>
+                            <td class="p-3">
+                                <mat-icon *ngIf="getAuditTooltip(schoolInfo)"
+                                    [icIcon]="icInfo"
+                                    [matTooltip]="getAuditTooltip(schoolInfo)"
+                                    matTooltipClass="audit-tooltip"></mat-icon>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

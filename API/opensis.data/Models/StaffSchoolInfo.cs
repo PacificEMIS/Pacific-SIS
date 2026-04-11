@@ -25,13 +25,14 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace opensis.data.Models
 {
     public partial class StaffSchoolInfo
     {
-        
+
         public int Id { get; set; }
         public Guid? TenantId { get; set; }
         public int? SchoolId { get; set; }
@@ -46,6 +47,11 @@ namespace opensis.data.Models
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+
+        [NotMapped]
+        public string? CreatedByName { get; set; }
+        [NotMapped]
+        public string? UpdatedByName { get; set; }
 
         public virtual StaffMaster? StaffMaster { get; set; }
         public virtual Membership? Membership { get; set; }

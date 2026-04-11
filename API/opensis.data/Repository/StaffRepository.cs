@@ -1006,6 +1006,32 @@ namespace opensis.data.Repository
                 var staffSchoolInfo = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId).ToList();
                 if (staffSchoolInfo != null && staffSchoolInfo.Any())
                 {
+                    // Resolve CreatedBy/UpdatedBy GUIDs to staff names so the
+                    // client can show an audit tooltip in the School Info list.
+                    // Same pattern as InputFinalGradeRepository / StudentEffortGradeRepository.
+                    var staffGuids = staffSchoolInfo
+                        .SelectMany(s => new[] { s.CreatedBy, s.UpdatedBy })
+                        .Where(g => g != null)
+                        .Distinct()
+                        .Select(g => Guid.TryParse(g, out var parsed) ? parsed : (Guid?)null)
+                        .Where(g => g.HasValue)
+                        .Select(g => g!.Value)
+                        .ToList();
+
+                    var staffNameLookup = staffGuids.Any()
+                        ? this.context?.StaffMaster.AsNoTracking()
+                            .Where(s => s.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && staffGuids.Contains(s.StaffGuid))
+                            .ToDictionary(s => s.StaffGuid.ToString(), s => (s.FirstGivenName ?? "") + " " + (s.LastFamilyName ?? ""))
+                        : new Dictionary<string, string>();
+
+                    foreach (var row in staffSchoolInfo)
+                    {
+                        if (row.CreatedBy != null && staffNameLookup!.TryGetValue(row.CreatedBy, out var createdName))
+                            row.CreatedByName = createdName.Trim();
+                        if (row.UpdatedBy != null && staffNameLookup!.TryGetValue(row.UpdatedBy, out var updatedName))
+                            row.UpdatedByName = updatedName.Trim();
+                    }
+
                     staffSchoolInfoView.staffSchoolInfoList = staffSchoolInfo;
                 }
 
