@@ -433,6 +433,21 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   editSchoolInfo() {
+    // School Info can only be edited from the staff's home school. The
+    // server has a matching guard that rejects any save from a non-home
+    // school because UpdateStaffSchoolInfo's delete-then-reinsert loop
+    // silently duplicates rows otherwise. Refuse to enter edit mode here
+    // so Super Admin and regular admin both get an early, friendly block
+    // instead of editing a form that can't be saved.
+    const currentSchoolId = Number(this.defaultValuesService.getSchoolID());
+    const homeSchoolId = this.staffDetailsForViewAndEdit?.defaultSchoolId != null
+      ? Number(this.staffDetailsForViewAndEdit.defaultSchoolId)
+      : Number(this.staffDetailsForViewAndEdit?.staffMaster?.schoolId);
+    if (homeSchoolId && currentSchoolId !== homeSchoolId) {
+      const homeSchoolName = this.staffDetailsForViewAndEdit?.defaultSchoolName || "the staff's home school";
+      this.snackbar.open(`School Info can only be edited from ${homeSchoolName}. Please switch schools and try again.`, '', { duration: 10000 });
+      return;
+    }
     if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, 1).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
