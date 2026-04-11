@@ -31,6 +31,7 @@ import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.a
 import { TranslateService } from '@ngx-translate/core';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icClear from '@iconify/icons-ic/baseline-clear';
+import icHomeSchool from '@iconify/icons-ic/baseline-home';
 import icInfo from '@iconify/icons-ic/twotone-info';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StaffService } from '../../../../services/staff.service';
@@ -82,6 +83,7 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   icAdd = icAdd;
   icClear = icClear;
   icEdit = icEdit;
+  icHomeSchool = icHomeSchool;
   icInfo = icInfo;
   selectedSchoolId = [];
   otherGradeLevelTaught=[];
@@ -310,11 +312,32 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   findProfileForCurrentSchool(schoolInfo){
-    let currentProfileIndex=schoolInfo.findIndex((item)=>{
-      return item.schoolId==this.defaultValuesService.schoolID
-    })
-    // this.checkUpdatedProfileName.emit(schoolInfo[currentProfileIndex].profile)
-    this.staffService.setCheckUpdatedProfileName(schoolInfo[currentProfileIndex].profile);
+    // Find the active row for the current session school. Prefer the
+    // home row (schoolId == schoolAttachedId) that is not retired, so a
+    // staff with a historical home-school-change tombstone still shows
+    // the profile of their current home. Falls back to any non-retired
+    // row whose schoolId matches, then to any match at all.
+    const currentSchoolId = this.defaultValuesService.schoolID;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isActive = (item: any) => {
+      if (item.endDate == null) return true;
+      const end = new Date(item.endDate);
+      return isNaN(end.getTime()) || end >= today;
+    };
+    let match = schoolInfo.find((item: any) =>
+      item.schoolId == currentSchoolId
+      && Number(item.schoolAttachedId) === Number(item.schoolId)
+      && isActive(item));
+    if (!match) {
+      match = schoolInfo.find((item: any) => item.schoolId == currentSchoolId && isActive(item));
+    }
+    if (!match) {
+      match = schoolInfo.find((item: any) => item.schoolId == currentSchoolId);
+    }
+    if (match) {
+      this.staffService.setCheckUpdatedProfileName(match.profile);
+    }
   }
 
   manipulateArray() {
@@ -505,6 +528,33 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
+  }
+
+  // A row represents the *current* home school when:
+  //   - school_id == school_attached_id (the schema invariant), AND
+  //   - the row has not been retired (end_date is null or in the future).
+  //
+  // manipulateArray() stringifies schoolAttachedId so both sides are
+  // coerced to Number before comparing. The end_date check excludes
+  // tombstones left behind by a previous home-school change, which
+  // would otherwise light up as "home" alongside the real current
+  // home row.
+  isHomeSchool(schoolInfo: any): boolean {
+    if (!schoolInfo || schoolInfo.schoolId == null || schoolInfo.schoolAttachedId == null) {
+      return false;
+    }
+    if (Number(schoolInfo.schoolId) !== Number(schoolInfo.schoolAttachedId)) {
+      return false;
+    }
+    if (schoolInfo.endDate != null) {
+      const end = new Date(schoolInfo.endDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (!isNaN(end.getTime()) && end < today) {
+        return false;
+      }
+    }
+    return true;
   }
 
   getAuditTooltip(schoolInfo: any): string {

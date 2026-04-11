@@ -220,8 +220,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let schoolInfo of staffCloneModel?.staffSchoolInfoList;let index=index">
-                            <td class="p-3">{{schoolInfo.schoolAttachedName | EmtyValueCheckPipe}}</td>
+                        <tr *ngFor="let schoolInfo of staffCloneModel?.staffSchoolInfoList;let index=index"
+                            [ngClass]="{'bg-primary-light border-l-4 border-primary': isHomeSchool(schoolInfo)}">
+                            <td class="p-3">
+                                <mat-icon *ngIf="isHomeSchool(schoolInfo)"
+                                    [icIcon]="icHomeSchool"
+                                    class="text-primary align-middle mr-1"
+                                    matTooltip="{{'homeSchool' | translate}}"></mat-icon>
+                                {{schoolInfo.schoolAttachedName | EmtyValueCheckPipe}}
+                            </td>
                             <td class="p-3">{{schoolInfo.profile | EmtyValueCheckPipe}}</td>
                             <td class="p-3">{{schoolInfo.startDate | date | EmtyValueCheckPipe}}</td>
                             <td class="p-3">{{schoolInfo.endDate | date | EmtyValueCheckPipe}}</td>
