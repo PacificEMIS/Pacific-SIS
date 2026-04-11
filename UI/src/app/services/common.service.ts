@@ -267,10 +267,6 @@ export class CommonService {
     });*/
   }
 
-  getIpAddress() {
-    return this.http.get('https://api64.ipify.org/?format=json');
-  }
-
   setSearchResult(result) {
     this.searchResult = result;
   }

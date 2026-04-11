@@ -76,6 +76,10 @@ namespace opensisAPI.Controllers
         [HttpPost("ValidateLogin")]
         public ActionResult<LoginViewModel> ValidateLogin(LoginViewModel objModel)
         {
+            if (objModel.userAccessLog == null)
+                objModel.userAccessLog = new UserAccessLog();
+            objModel.userAccessLog.Ipaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
             var response=  _userService.ValidateUserLogin(objModel);
             if (this._configuration.GetValue<bool>("AntiForgeryTokenValidationEnabled"))
                 this.GenerateAntiForgeryToken(response._tokenExpiry);
