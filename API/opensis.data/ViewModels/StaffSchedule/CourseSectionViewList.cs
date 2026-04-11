@@ -85,5 +85,14 @@ namespace opensis.data.ViewModels.StaffSchedule
         public List<CourseBlockSchedule> courseBlockSchedule { get; set; }
         public List<DateTime> HolidayList { get; set; }
         public List<BellSchedule> bellScheduleList { get; set; }
+
+        // Data-completeness status — drives green/red coloring on the teacher
+        // dashboard and "My Classes". A course is "up to date" only when both
+        // flags are false.
+        public bool? HasMissingAttendance { get; set; }
+        public bool? HasMissingGrades { get; set; }
+        public int? MissingAttendanceDaysCount { get; set; }
+        public int? MissingGradesStudentCount { get; set; }
+        public string? MissingGradesMarkingPeriodTitle { get; set; }
     }
 }

@@ -206,14 +206,15 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
         })
         // item.text=classColor[random].text;
         // item.borderColor=classColor[random].borderColor;
-        if (item.attendanceTaken) {
+        if (!item.hasMissingAttendance && !item.hasMissingGrades) {
           item.text='text-green';
-          item.borderColor='border-green';  
+          item.borderColor='border-green';
         }
         else {
           item.text='text-red';
           item.borderColor='border-red';
         }
+        item.statusTooltip = this.buildStatusTooltip(item);
       } else if (item.scheduleType === 'Calendar Schedule') {
         item.attendanceDays = [];
         item.courseCalendarSchedule.map((calendarSchedule) => {
@@ -221,14 +222,15 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
         });
         // item.text = classColor[random].text;
         // item.borderColor = classColor[random].borderColor;
-        if (item.attendanceTaken) {
+        if (!item.hasMissingAttendance && !item.hasMissingGrades) {
           item.text='text-green';
-          item.borderColor='border-green';  
+          item.borderColor='border-green';
         }
         else {
           item.text='text-red';
           item.borderColor='border-red';
         }
+        item.statusTooltip = this.buildStatusTooltip(item);
       } else if (item.scheduleType === 'Block Schedule') {
         item.attendanceDays = [];
         item.bellScheduleList.map((blockSchedule) => {
@@ -236,14 +238,15 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
         });
         // item.text = classColor[random].text;
         // item.borderColor = classColor[random].borderColor;
-        if (item.attendanceTaken) {
+        if (!item.hasMissingAttendance && !item.hasMissingGrades) {
           item.text='text-green';
-          item.borderColor='border-green';  
+          item.borderColor='border-green';
         }
         else {
           item.text='text-red';
           item.borderColor='border-red';
         }
+        item.statusTooltip = this.buildStatusTooltip(item);
       }
       return item;
 
@@ -426,6 +429,22 @@ export class TeacherDashboardComponent implements OnInit,OnDestroy {
 
   goTeacherMissingAttendance(){
     this.router.navigate(['school/attendance/teacher-missing-attendance']);
+  }
+
+  // Returns an empty string when nothing is missing so the tooltip stays hidden.
+  buildStatusTooltip(courseSection): string {
+    const parts = [];
+    if (courseSection.hasMissingAttendance) {
+      const days = courseSection.missingAttendanceDaysCount || 0;
+      parts.push(`Missing attendance for ${days} day${days === 1 ? '' : 's'}`);
+    }
+    if (courseSection.hasMissingGrades) {
+      const students = courseSection.missingGradesStudentCount || 0;
+      const mp = courseSection.missingGradesMarkingPeriodTitle;
+      const mpSuffix = mp ? ` in ${mp}` : '';
+      parts.push(`Missing final grades for ${students} student${students === 1 ? '' : 's'}${mpSuffix}`);
+    }
+    return parts.join('\n');
   }
 
   ngOnDestroy(): void {

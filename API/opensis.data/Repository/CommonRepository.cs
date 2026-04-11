@@ -2538,6 +2538,12 @@ namespace opensis.data.Repository
                     }
                     scheduledCourseSectionView.MissingAttendanceCount = count;
 
+                    PopulateCourseSectionStatus(
+                        scheduledCourseSectionView.courseSectionViewList,
+                        scheduledCourseSectionViewModel.TenantId,
+                        scheduledCourseSectionViewModel.SchoolId,
+                        todayDate);
+
                     foreach (var courseSection in scheduledCourseSectionView.courseSectionViewList)
                     {
                         if (courseSection.courseFixedSchedule != null)
@@ -2592,6 +2598,253 @@ namespace opensis.data.Repository
                 scheduledCourseSectionView._message = es.Message;
             }
             return scheduledCourseSectionView;
+        }
+
+        /// <summary>
+        /// Populates the data-completeness status fields (HasMissingAttendance,
+        /// HasMissingGrades, plus their counts) on each course section in the list.
+        /// Used by GetDashboardViewForStaff to drive the green/red coloring on the
+        /// teacher dashboard and "My Classes" pages.
+        /// </summary>
+        /// <remarks>
+        /// Rules:
+        /// - Attendance: a course section is "missing attendance" if it is configured
+        ///   to take attendance (CourseSection.AttendanceTaken == true) AND any past
+        ///   scheduled day in its duration window has unrecorded attendance (rows in
+        ///   StudentMissingAttendances). Courses that are not configured to take
+        ///   attendance are always treated as up-to-date for attendance.
+        /// - Grades: pre-fetches every StudentFinalGrade row for the course section,
+        ///   then walks each marking period level (progress period -&gt; quarter -&gt;
+        ///   semester -&gt; year) finest first. A level is considered "in use" by the
+        ///   course only if at least one existing final grade row has that level's
+        ///   marking period column populated. (The *MarkingPeriodId fields on the
+        ///   section itself are not used: many schools tag year-long sections with
+        ///   YrMarkingPeriodId for hierarchy purposes but never post a manual
+        ///   year-level grade — the year grade rolls up from the quarters.) For each
+        ///   in-use level, every marking period at that level in the academic year
+        ///   whose grade posting has begun (PostStartDate &lt;= today) and that
+        ///   overlaps the course section's run window is checked. The school's
+        ///   DoesGrades and DoesExam flags on the marking period are the source of
+        ///   truth for what is required: a student is "complete" for the period if
+        ///   they have a regular final grade row (when DoesGrades is true) AND an
+        ///   exam grade row (when DoesExam is true). Marking periods that require
+        ///   neither are skipped. The first marking period in start-date order with
+        ///   any missing grades wins, so the tooltip surfaces the earliest gap.
+        /// </remarks>
+        private void PopulateCourseSectionStatus(List<CourseSectionViewList> courseSections, Guid? tenantId, int? schoolId, DateTime todayDate)
+        {
+            if (courseSections == null || courseSections.Count == 0)
+                return;
+
+            foreach (var cs in courseSections)
+            {
+                // Defaults
+                cs.HasMissingAttendance = false;
+                cs.HasMissingGrades = false;
+                cs.MissingAttendanceDaysCount = 0;
+                cs.MissingGradesStudentCount = 0;
+                cs.MissingGradesMarkingPeriodTitle = null;
+
+                if (cs.CourseSectionId == null)
+                    continue;
+
+                // ----- Attendance check -----
+                if (cs.AttendanceTaken == true)
+                {
+                    var missingDates = this.context?.StudentMissingAttendances
+                        .Where(x => x.TenantId == tenantId
+                            && x.SchoolId == schoolId
+                            && x.CourseSectionId == cs.CourseSectionId
+                            && x.MissingAttendanceDate >= cs.DurationStartDate
+                            && x.MissingAttendanceDate <= todayDate)
+                        .Select(x => x.MissingAttendanceDate!.Value.Date)
+                        .Distinct()
+                        .ToList() ?? new List<DateTime>();
+
+                    cs.MissingAttendanceDaysCount = missingDates.Count;
+                    cs.HasMissingAttendance = missingDates.Count > 0;
+                }
+
+                // ----- Final grades check -----
+                var enrolledStudentIds = this.context?.StudentCoursesectionSchedule
+                    .Where(x => x.TenantId == tenantId
+                        && x.SchoolId == schoolId
+                        && x.CourseSectionId == cs.CourseSectionId
+                        && x.IsDropped != true)
+                    .Select(x => x.StudentId)
+                    .Distinct()
+                    .ToList() ?? new List<int>();
+
+                if (enrolledStudentIds.Count == 0)
+                    continue;
+
+                // We need the academic year to find every marking period in the
+                // same school year (not just the one specifically pinned to the
+                // course section).
+                var academicYear = this.context?.CourseSection
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.CourseSectionId == cs.CourseSectionId)
+                    .Select(x => x.AcademicYear)
+                    .FirstOrDefault();
+
+                if (academicYear == null)
+                    continue;
+
+                // Pull all final grades for this course section once. Used both
+                // to infer which levels the course is graded at AND to check
+                // each marking period in memory without a per-period query.
+                var finalGrades = this.context?.StudentFinalGrade
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && x.CourseSectionId == cs.CourseSectionId)
+                    .Select(x => new FinalGradeRow
+                    {
+                        YrMarkingPeriodId = x.YrMarkingPeriodId,
+                        SmstrMarkingPeriodId = x.SmstrMarkingPeriodId,
+                        QtrMarkingPeriodId = x.QtrMarkingPeriodId,
+                        PrgrsprdMarkingPeriodId = x.PrgrsprdMarkingPeriodId,
+                        StudentId = x.StudentId,
+                        IsExamGrade = x.IsExamGrade
+                    })
+                    .ToList() ?? new List<FinalGradeRow>();
+
+                // Walk levels finest first; first miss wins.
+                if (CheckMarkingPeriodsAtLevel(cs, enrolledStudentIds, finalGrades, tenantId, schoolId, todayDate, academicYear.Value, "Prgrsprd"))
+                    continue;
+                if (CheckMarkingPeriodsAtLevel(cs, enrolledStudentIds, finalGrades, tenantId, schoolId, todayDate, academicYear.Value, "Qtr"))
+                    continue;
+                if (CheckMarkingPeriodsAtLevel(cs, enrolledStudentIds, finalGrades, tenantId, schoolId, todayDate, academicYear.Value, "Smstr"))
+                    continue;
+                CheckMarkingPeriodsAtLevel(cs, enrolledStudentIds, finalGrades, tenantId, schoolId, todayDate, academicYear.Value, "Yr");
+            }
+        }
+
+        // Used to materialise StudentFinalGrade projections so they can be
+        // passed across helper methods (anonymous types cannot).
+        private class FinalGradeRow
+        {
+            public int? YrMarkingPeriodId { get; set; }
+            public int? SmstrMarkingPeriodId { get; set; }
+            public int? QtrMarkingPeriodId { get; set; }
+            public int? PrgrsprdMarkingPeriodId { get; set; }
+            public int StudentId { get; set; }
+            public bool? IsExamGrade { get; set; }
+        }
+
+        private bool CheckMarkingPeriodsAtLevel(CourseSectionViewList cs, List<int> enrolledStudentIds, List<FinalGradeRow> finalGrades, Guid? tenantId, int? schoolId, DateTime todayDate, decimal academicYear, string level)
+        {
+            // Is this course graded at this level? Inferred ONLY from existing
+            // StudentFinalGrade rows: a level is "in use" if at least one row
+            // for this course section has that level's MarkingPeriodId column
+            // populated. The *MarkingPeriodId fields on the section itself are
+            // intentionally NOT used as a signal — many schools tag a year-long
+            // section with YrMarkingPeriodId for hierarchy reasons but never
+            // post a manual year-level grade (the year grade rolls up from
+            // the quarters), and we don't want to false-positive on that.
+            bool levelInUse = level switch
+            {
+                "Yr" => finalGrades.Any(g => g.YrMarkingPeriodId != null),
+                "Smstr" => finalGrades.Any(g => g.SmstrMarkingPeriodId != null),
+                "Qtr" => finalGrades.Any(g => g.QtrMarkingPeriodId != null),
+                "Prgrsprd" => finalGrades.Any(g => g.PrgrsprdMarkingPeriodId != null),
+                _ => false
+            };
+
+            if (!levelInUse)
+                return false;
+
+            // Fetch every candidate marking period at this level in the
+            // academic year: must require grades or exams (DoesGrades / DoesExam
+            // flags are the school's declaration that this level is graded at
+            // all), posting must have begun (PostStartDate <= today), and the
+            // period must overlap the course section's run window. Ordered by
+            // start date so the earliest (most overdue) gap is reported first.
+            List<MarkingPeriodInfo> markingPeriods = level switch
+            {
+                "Yr" => this.context?.SchoolYears
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && x.AcademicYear == academicYear
+                        && (x.DoesGrades == true || x.DoesExam == true)
+                        && x.PostStartDate != null && x.PostStartDate <= todayDate
+                        && (cs.DurationEndDate == null || x.StartDate == null || x.StartDate <= cs.DurationEndDate)
+                        && (cs.DurationStartDate == null || x.EndDate == null || x.EndDate >= cs.DurationStartDate))
+                    .OrderBy(x => x.StartDate)
+                    .Select(x => new MarkingPeriodInfo { MarkingPeriodId = x.MarkingPeriodId, Title = x.Title, DoesGrades = x.DoesGrades == true, DoesExam = x.DoesExam == true })
+                    .ToList() ?? new List<MarkingPeriodInfo>(),
+                "Smstr" => this.context?.Semesters
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && x.AcademicYear == academicYear
+                        && (x.DoesGrades == true || x.DoesExam == true)
+                        && x.PostStartDate != null && x.PostStartDate <= todayDate
+                        && (cs.DurationEndDate == null || x.StartDate == null || x.StartDate <= cs.DurationEndDate)
+                        && (cs.DurationStartDate == null || x.EndDate == null || x.EndDate >= cs.DurationStartDate))
+                    .OrderBy(x => x.StartDate)
+                    .Select(x => new MarkingPeriodInfo { MarkingPeriodId = x.MarkingPeriodId, Title = x.Title, DoesGrades = x.DoesGrades == true, DoesExam = x.DoesExam == true })
+                    .ToList() ?? new List<MarkingPeriodInfo>(),
+                "Qtr" => this.context?.Quarters
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && x.AcademicYear == academicYear
+                        && (x.DoesGrades == true || x.DoesExam == true)
+                        && x.PostStartDate != null && x.PostStartDate <= todayDate
+                        && (cs.DurationEndDate == null || x.StartDate == null || x.StartDate <= cs.DurationEndDate)
+                        && (cs.DurationStartDate == null || x.EndDate == null || x.EndDate >= cs.DurationStartDate))
+                    .OrderBy(x => x.StartDate)
+                    .Select(x => new MarkingPeriodInfo { MarkingPeriodId = x.MarkingPeriodId, Title = x.Title, DoesGrades = x.DoesGrades == true, DoesExam = x.DoesExam == true })
+                    .ToList() ?? new List<MarkingPeriodInfo>(),
+                "Prgrsprd" => this.context?.ProgressPeriods
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && x.AcademicYear == academicYear
+                        && (x.DoesGrades == true || x.DoesExam == true)
+                        && x.PostStartDate != null && x.PostStartDate <= todayDate
+                        && (cs.DurationEndDate == null || x.StartDate == null || x.StartDate <= cs.DurationEndDate)
+                        && (cs.DurationStartDate == null || x.EndDate == null || x.EndDate >= cs.DurationStartDate))
+                    .OrderBy(x => x.StartDate)
+                    .Select(x => new MarkingPeriodInfo { MarkingPeriodId = x.MarkingPeriodId, Title = x.Title, DoesGrades = x.DoesGrades == true, DoesExam = x.DoesExam == true })
+                    .ToList() ?? new List<MarkingPeriodInfo>(),
+                _ => new List<MarkingPeriodInfo>()
+            };
+
+            if (markingPeriods.Count == 0)
+                return false;
+
+            foreach (var mp in markingPeriods)
+            {
+                // Filter the pre-fetched final grades in memory: rows for this
+                // marking period at this level. A student is "complete" for the
+                // period only if they have whichever rows the period requires
+                // (regular when DoesGrades, exam when DoesExam — both when both).
+                var rowsForMp = finalGrades.Where(g => level switch
+                {
+                    "Yr" => g.YrMarkingPeriodId == mp.MarkingPeriodId,
+                    "Smstr" => g.SmstrMarkingPeriodId == mp.MarkingPeriodId,
+                    "Qtr" => g.QtrMarkingPeriodId == mp.MarkingPeriodId,
+                    "Prgrsprd" => g.PrgrsprdMarkingPeriodId == mp.MarkingPeriodId,
+                    _ => false
+                }).ToList();
+
+                var studentsWithRegularGrade = rowsForMp.Where(r => r.IsExamGrade != true).Select(r => r.StudentId).ToHashSet();
+                var studentsWithExamGrade = rowsForMp.Where(r => r.IsExamGrade == true).Select(r => r.StudentId).ToHashSet();
+
+                var missingCount = enrolledStudentIds.Count(s =>
+                    (mp.DoesGrades && !studentsWithRegularGrade.Contains(s))
+                    || (mp.DoesExam && !studentsWithExamGrade.Contains(s)));
+
+                if (missingCount > 0)
+                {
+                    cs.HasMissingGrades = true;
+                    cs.MissingGradesStudentCount = missingCount;
+                    cs.MissingGradesMarkingPeriodTitle = mp.Title;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private class MarkingPeriodInfo
+        {
+            public int MarkingPeriodId { get; set; }
+            public string? Title { get; set; }
+            public bool DoesGrades { get; set; }
+            public bool DoesExam { get; set; }
         }
 
         //public ScheduledCourseSectionViewModel GetDashboardViewForStaff(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)
