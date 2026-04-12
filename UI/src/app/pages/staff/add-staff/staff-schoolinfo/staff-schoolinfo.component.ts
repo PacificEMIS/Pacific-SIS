@@ -442,7 +442,15 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
             duration: 10000
           });
           this.staffSchoolInfoModel = res;
-          this.defaultValuesService.setSchoolID(this.defaultSchoolId!==0?this.defaultSchoolId.toString():this.defaultValuesService.getSchoolID().toString(),true);
+
+          // Patch the parent's staffDetailsForViewAndEdit model with the
+          // new home school derived from the refreshed list. Without this,
+          // the parent's staffAddModel still carries the pre-save
+          // defaultSchoolId/defaultSchoolName, and editSchoolInfo() will
+          // block the next edit attempt even though the save succeeded.
+          // The parent re-queries via viewStaff only on a full reload,
+          // so we mutate in place here (the parent binds by reference).
+          this.syncParentHomeSchool(res.staffSchoolInfoList);
 
           this.findProfileForCurrentSchool(res.staffSchoolInfoList);
           this.cloneStaffModel = JSON.stringify(this.staffSchoolInfoModel);
@@ -528,6 +536,42 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
+  }
+
+  // Walks a freshly-saved staffSchoolInfoList and patches the parent
+  // component's staffDetailsForViewAndEdit model with the new home
+  // school. The active home row is the one where
+  // schoolId == schoolAttachedId and end_date is null or in the future.
+  // External attachments (not retired, schoolId != schoolAttachedId) are
+  // recomputed too so checkExternalSchoolId on the other tabs stays
+  // accurate after a home-school change. Parent binds by reference so
+  // mutating in place propagates.
+  private syncParentHomeSchool(schoolInfoList: any[]): void {
+    if (!this.staffDetailsForViewAndEdit || !schoolInfoList) {
+      return;
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isActive = (item: any) => {
+      if (item.endDate == null) return true;
+      const end = new Date(item.endDate);
+      return isNaN(end.getTime()) || end >= today;
+    };
+    const activeHome = schoolInfoList.find((item: any) =>
+      isActive(item)
+      && Number(item.schoolAttachedId) === Number(item.schoolId));
+    if (activeHome) {
+      this.staffDetailsForViewAndEdit.defaultSchoolId = Number(activeHome.schoolAttachedId);
+      this.staffDetailsForViewAndEdit.defaultSchoolName = activeHome.schoolAttachedName;
+      if (this.staffDetailsForViewAndEdit.staffMaster) {
+        this.staffDetailsForViewAndEdit.staffMaster.schoolId = Number(activeHome.schoolId);
+      }
+    }
+    this.staffDetailsForViewAndEdit.externalSchoolIds = schoolInfoList
+      .filter((item: any) =>
+        isActive(item)
+        && Number(item.schoolAttachedId) !== Number(item.schoolId))
+      .map((item: any) => Number(item.schoolAttachedId));
   }
 
   // A row represents the *current* home school when:

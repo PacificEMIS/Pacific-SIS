@@ -42,7 +42,7 @@ back to that conflation.
 **What happens today.** To change a staff's home school, the admin has
 to:
 
-1. Open the staff → School Info → Edit.
+1. Open the staff -> School Info -> Edit.
 2. Set the current home row's `end_date` to a date in the past.
 3. Save. (Nothing visually changes in the list.)
 4. Edit again. The home row's school dropdown is now enabled because
@@ -66,8 +66,6 @@ an external attachment, the dialog should offer to merge: make the
 existing external row the new home, retire the old home row as a
 historical tombstone. The id-match upsert supports this shape today; the
 UI just needs to send the right payload.
-
-**Out of scope reason.** UX redesign, not a bug fix. File as its own issue.
 
 ### 2. Trash icon doesn't work
 
@@ -97,9 +95,6 @@ tombstones). The UI change is making the `*ngIf` on the trash icon
 permissive for any non-home row, and ensuring the removed row is
 actually stripped from `staffSchoolInfoList` before the submit call.
 
-**Out of scope reason.** Pre-existing. Requires a small product
-decision (hard vs soft delete) before coding.
-
 ### 3. Pre-existing duplication corruption
 
 **What happens today.** Any tenant that was running a version of
@@ -115,7 +110,7 @@ concerns (legitimate edits vs corruption healing) and grew edge cases.
 convenience). Run against each tenant to see the scope:
 
 ```sql
--- Staff with multiple "home" rows — the clearest smoking gun
+-- Staff with multiple "home" rows -- the clearest smoking gun
 SELECT
     staff_id,
     COUNT(*) AS home_row_count
@@ -137,7 +132,7 @@ SELECT
 FROM staff_school_info
 GROUP BY staff_id, school_attached_id
 HAVING COUNT(*) > 1
-ORDER BY row_count DESC;
+ORDER BY row_count DESC, staff_id;
 ```
 
 **Cleanup strategy.** Per-staff and manual, not automated. Once you
@@ -159,8 +154,6 @@ have the list of affected staff:
 Do this as dry-run-first SQL per tenant, with a backup before writing.
 Ideally done as support-ticket work with the tenant admin reviewing
 which rows are "real".
-
-**Out of scope reason.** Per-tenant operational cleanup. Not code.
 
 ### 4. Missing database unique constraint
 
@@ -186,49 +179,71 @@ safely ship.
 Safer alternative: add a non-unique index for performance now, and
 defer the UNIQUE upgrade until every tenant is verified clean.
 
-**Out of scope reason.** Depends on item 3 being done first.
+### 5. Can't re-assign a staff to a previously-attached school
 
-### 5. "Add already-attached school as home" edge case
+**What happens today.** The school dropdown in edit mode disables any
+school that already appears in `selectedSchoolId` (i.e. any school
+the staff is currently or historically attached to). This means a
+real-world reassignment cycle like:
 
-**What's missing.** If a staff is externally attached to School B and
-the admin wants to make B the new home, the current UI dropdown on row
-1 excludes already-selected schools (via `selectedSchoolId.includes`),
-so the admin cannot pick B. The workaround is to remove B as an
-external attachment first — but the trash icon is broken (item 2), so
-there's no clean UI path.
+- Teacher at School A (2020-2022)
+- Teacher moves to School B (2022-2024)
+- Teacher returns to School A (2024-now)
 
-**What it should do.** The "Change home school" dialog from item 1
-should allow picking any school, and if the chosen school is already
-an external attachment, perform a merge: update the existing external
-row to become the home (set its `school_id` to equal its
-`school_attached_id`) and retire the old home row as a tombstone. The
-id-match upsert already handles this data shape correctly — only the
-UI needs work.
+...cannot be represented. The admin can't pick School A in the
+dropdown because it's already in the list (as a tombstone with a past
+end_date). This is a legitimate pattern in Pacific Island schools
+where teachers rotate between schools on multi-year cycles.
 
-**Out of scope reason.** Depends on item 1 being redesigned.
+**Root cause.** The `[disabled]` binding on each `mat-option`:
+```html
+[disabled]="selectedSchoolId.includes(+school.schoolId)"
+```
+treats every row in `selectedSchoolId` as "taken" regardless of
+whether the row is active or retired. The `selectedSchoolId` array
+is populated in `manipulateArray()` which skips past-end-date rows
+via `splice(i, 1)` — but the splice logic has bugs (it mutates the
+array while iterating, causing index drift) and may not actually
+remove tombstone school IDs reliably.
+
+**What it should do.** Only exclude actively-attached schools from
+the dropdown. Tombstone rows (past end_date) should NOT reserve
+their school ID in `selectedSchoolId`, because the attachment has
+ended and the school is available for reassignment. The splice
+logic in `manipulateArray()` should be fixed or replaced.
+
+**Edge case:** if the admin re-adds School A as a new row while the
+tombstone for School A still exists, the backend should handle it
+correctly: the tombstone has a different `id` from the new row, so
+the id-match upsert would see the new row as `id=0` (insert) and
+the tombstone as handled/kept. The result would be two rows for
+School A: the tombstone (2020-2022) and the new active row
+(2024-now). This is semantically correct and represents the full
+history. The "one row per school" invariant no longer holds, but
+that's the right trade-off for supporting reassignment.
+
+**Impact on a future UNIQUE constraint (item 4).** If we support
+multiple rows per `(staff_id, school_attached_id)` for the
+reassignment case, the UNIQUE index from item 4 would need to be
+scoped differently — perhaps
+`(tenant_id, staff_id, school_attached_id)` WHERE `end_date IS NULL`
+(a partial unique index on active rows only). MySQL 8 doesn't
+support partial unique indexes natively, but the constraint can be
+enforced at the application layer via the upsert logic. Worth
+designing items 4 and 5 together.
 
 ### 6. Post-save audit tooltip may show missing names
 
-**What happens today.** Immediately after a save, the client echoes the
-server response into `staffSchoolInfoModel`. The save endpoint
-(`UpdateStaffSchoolInfo`) does not populate the `CreatedByName` /
-`UpdatedByName` fields on the response; only the read endpoint
-(`ViewStaffSchoolInfo`) does. So the audit tooltip may show "Updated:
-<date>" without the "by <name>" part until the page is reloaded or
-navigated away and back.
+**What happens today.** Immediately after a save, the server now
+returns a refreshed list with audit names resolved (fixed in this PR).
+However, in edge cases where the `CreatedBy`/`UpdatedBy` GUID doesn't
+match any `StaffMaster.StaffGuid` (e.g. the creating user was later
+deleted, or the GUID was entered manually), the name field will be
+blank and the tooltip shows just the date without "by ...".
 
-**What it should do.** Either:
-
-- Run the staff-name resolver on the save response before returning,
-  so the tooltip is correct immediately after save.
-- Have the client call `viewStaffSchoolInfo` after a successful save
-  to refresh the list.
-
-Either approach is a small diff. The first is more efficient (one
-round trip); the second is more robust (any future server-side
-computed fields also end up correct).
-
-**Out of scope reason.** Cosmetic, self-correcting on navigation.
+This is a minor display issue that affects all audit tooltips across
+the app (grade input, effort grades, and now school info). No fix
+needed unless a user reports it.
 
 ### 7. Missing `audit` translation key
 
@@ -239,33 +254,26 @@ earlier) has no matching entry in `en.json`, `fr.json`, or `es.json`.
 literally reads "audit" in the UI.
 
 **What to do.** Add the key to all three i18n files:
-`"audit": "Audit"` / `"audit": "Audit"` / `"audit": "Auditoría"`.
+`"audit": "Audit"` / `"audit": "Audit"` / `"audit": "Auditoria"`.
 One-line change per file. Cosmetic but easy.
-
-**Out of scope reason.** Also affects the grade pages, so it should be
-addressed as a small "add missing translation keys" commit that
-covers multiple places at once.
 
 ### 8. Misleading French/Spanish translations for `homeSchool`
 
 **What's wrong.** The existing `homeSchool` translations render as
-"École à la maison" (fr) and "escuela en casa" (es) — both of which
+"Ecole a la maison" (fr) and "escuela en casa" (es) — both of which
 mean "homeschooling" in the pedagogical sense (children taught at home
 by parents), not "the staff member's home/primary school". The English
 meaning in this codebase is the latter.
 
 **What to do.** Update the translations to something like:
 
-- fr: `"École principale"` or `"École d'origine"`
+- fr: `"Ecole principale"` or `"Ecole d'origine"`
 - es: `"Escuela principal"` or `"Escuela de origen"`
 
 Verify with a native speaker before committing. The key is used in at
 least two places
 ([student-enrollmentinfo.component.html:515](../../UI/src/app/pages/student/add-student/student-enrollmentinfo/student-enrollmentinfo.component.html#L515)
 and the new staff School Info list), so a single fix covers both.
-
-**Out of scope reason.** Requires translation review; low urgency as
-the English build renders correctly.
 
 ---
 
@@ -276,10 +284,11 @@ the English build renders correctly.
 2. **Item 8** (homeSchool translation) — needs a native speaker.
 3. **Item 3** (duplication cleanup) — operational, per-tenant. Do
    this before item 4.
-4. **Item 4** (unique index migration) — gated on item 3.
-5. **Item 6** (audit tooltip refresh) — small code fix, isolated.
-6. **Items 1, 2, 5** (UX redesign of the School Info tab) — larger
+4. **Items 4+5** (unique index + reassignment support) — design
+   together since they interact. Item 5 may relax the constraint
+   from item 4.
+5. **Item 6** (audit tooltip edge case) — cosmetic, low priority.
+6. **Items 1, 2** (UX redesign of the School Info tab) — larger
    design conversation. Best done as a single coherent redesign PR
-   rather than three separate tweaks, since they all touch the same
-   component and all relate to "how the user manages a staff's
-   school attachments".
+   since they touch the same component and relate to "how the user
+   manages a staff's school attachments".
