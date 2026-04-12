@@ -216,15 +216,29 @@
                             <th class="text-left p-3 border-b">{{'startDate'|translate}}</th>
                             <th class="text-left p-3 border-b">{{'endDate'|translate}}</th>
                             <th class="text-left p-3 border-b">{{'status'|translate}}</th>
+                            <th class="text-left p-3 border-b">{{'audit'|translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let schoolInfo of staffCloneModel?.staffSchoolInfoList;let index=index">
-                            <td class="p-3">{{schoolInfo.schoolAttachedName | EmtyValueCheckPipe}}</td>
+                        <tr *ngFor="let schoolInfo of staffCloneModel?.staffSchoolInfoList;let index=index"
+                            [ngClass]="{'bg-primary-light border-l-4 border-primary': isHomeSchool(schoolInfo)}">
+                            <td class="p-3">
+                                <mat-icon *ngIf="isHomeSchool(schoolInfo)"
+                                    [icIcon]="icHomeSchool"
+                                    class="text-primary align-middle mr-1"
+                                    matTooltip="{{'homeSchool' | translate}}"></mat-icon>
+                                {{schoolInfo.schoolAttachedName | EmtyValueCheckPipe}}
+                            </td>
                             <td class="p-3">{{schoolInfo.profile | EmtyValueCheckPipe}}</td>
                             <td class="p-3">{{schoolInfo.startDate | date | EmtyValueCheckPipe}}</td>
                             <td class="p-3">{{schoolInfo.endDate | date | EmtyValueCheckPipe}}</td>
                             <td class="p-3"><span class="text-green" *ngIf="compareDate(index);else otherSpan">Active</span><ng-template #otherSpan><span class="text-red">{{staffSchoolInfoModel.staffSchoolInfoList[index].startDate==null?'-':'Inactive'}}</span></ng-template></td>
+                            <td class="p-3">
+                                <mat-icon *ngIf="getAuditTooltip(schoolInfo)"
+                                    [icIcon]="icInfo"
+                                    [matTooltip]="getAuditTooltip(schoolInfo)"
+                                    matTooltipClass="audit-tooltip"></mat-icon>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

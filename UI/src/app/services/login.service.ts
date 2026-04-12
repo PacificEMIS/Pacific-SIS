@@ -11,7 +11,6 @@ import { DefaultValuesService } from '../common/default-values.service';
   providedIn: 'root'
 })
 export class LoginService {
-  ipAdd:any;
   apiUrl: string = environment.apiURL;
   httpOptions: { headers: any; };
   constructor(private http: HttpClient,
@@ -43,7 +42,6 @@ export class LoginService {
     obj._token= this.defaultValuesService.getToken();
     obj.password = this.cryptoService.encrypt(obj.password);
     obj.userAccessLog.Emailaddress = obj.email;
-    // obj.userAccessLog={"ipaddress":this.ipAdd.ip};
     let apiurl = this.apiUrl + obj._tenantName + "/User/ValidateLogin";
     return this.http.post<UserViewModel>(apiurl, obj,this.httpOptions)
   }

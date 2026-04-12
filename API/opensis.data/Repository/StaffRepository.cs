@@ -545,9 +545,23 @@ namespace opensis.data.Repository
                     {
                        // staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault().Profile;
                         staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault()?.Profile;
+                        // Skip tombstone rows (past end_date) when deriving
+                        // the home school and the list of external school
+                        // attachments. Tombstones are historical records
+                        // of retired attachments and should not be treated
+                        // as "currently home" or "currently external",
+                        // otherwise a staff who has changed home schools
+                        // ends up with DefaultSchoolId pointing at a past
+                        // home depending on iteration order, which breaks
+                        // the UI home-school gate.
+                        var todayUtc = DateTime.UtcNow.Date;
                         List<int> ids = new List<int>();
                         foreach (var StaffSchoolInfo in staffData.StaffSchoolInfo)
                         {
+                            if (StaffSchoolInfo.EndDate != null && StaffSchoolInfo.EndDate.Value.Date < todayUtc)
+                            {
+                                continue;
+                            }
                             if (StaffSchoolInfo.SchoolId == StaffSchoolInfo.SchoolAttachedId)
                             {
                                 staffView.DefaultSchoolName = StaffSchoolInfo.SchoolAttachedName;
@@ -1006,6 +1020,32 @@ namespace opensis.data.Repository
                 var staffSchoolInfo = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && x.StaffId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().StaffId).ToList();
                 if (staffSchoolInfo != null && staffSchoolInfo.Any())
                 {
+                    // Resolve CreatedBy/UpdatedBy GUIDs to staff names so the
+                    // client can show an audit tooltip in the School Info list.
+                    // Same pattern as InputFinalGradeRepository / StudentEffortGradeRepository.
+                    var staffGuids = staffSchoolInfo
+                        .SelectMany(s => new[] { s.CreatedBy, s.UpdatedBy })
+                        .Where(g => g != null)
+                        .Distinct()
+                        .Select(g => Guid.TryParse(g, out var parsed) ? parsed : (Guid?)null)
+                        .Where(g => g.HasValue)
+                        .Select(g => g!.Value)
+                        .ToList();
+
+                    var staffNameLookup = staffGuids.Any()
+                        ? this.context?.StaffMaster.AsNoTracking()
+                            .Where(s => s.TenantId == staffSchoolInfoAddViewModel.staffSchoolInfoList.First().TenantId && staffGuids.Contains(s.StaffGuid))
+                            .ToDictionary(s => s.StaffGuid.ToString(), s => (s.FirstGivenName ?? "") + " " + (s.LastFamilyName ?? ""))
+                        : new Dictionary<string, string>();
+
+                    foreach (var row in staffSchoolInfo)
+                    {
+                        if (row.CreatedBy != null && staffNameLookup!.TryGetValue(row.CreatedBy, out var createdName))
+                            row.CreatedByName = createdName.Trim();
+                        if (row.UpdatedBy != null && staffNameLookup!.TryGetValue(row.UpdatedBy, out var updatedName))
+                            row.UpdatedByName = updatedName.Trim();
+                    }
+
                     staffSchoolInfoView.staffSchoolInfoList = staffSchoolInfo;
                 }
 
@@ -1113,6 +1153,41 @@ namespace opensis.data.Repository
             {
                 try
                 {
+                    // Home-school guard. UpdateStaffSchoolInfo's mutation
+                    // logic is only safe when the caller is in the staff's
+                    // current home school; any other path can duplicate
+                    // rows or rewrite history. The real home is the row
+                    // where school_id = school_attached_id AND end_date
+                    // is null or in the future. Tombstone rows (past
+                    // end_date) are explicitly excluded so a staff who
+                    // changed home schools doesn't have the server
+                    // locking onto the previous, retired home.
+                    var guardTodayUtc = DateTime.UtcNow.Date;
+                    var realHomeSchoolId = this.context?.StaffSchoolInfo.AsNoTracking()
+                        .Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId
+                                 && x.StaffId  == staffSchoolInfoAddViewModel.StaffId
+                                 && x.SchoolId == x.SchoolAttachedId
+                                 && (x.EndDate == null || x.EndDate >= guardTodayUtc))
+                        .OrderBy(x => x.Id)
+                        .Select(x => x.SchoolId)
+                        .FirstOrDefault();
+
+                    if (realHomeSchoolId == null)
+                    {
+                        realHomeSchoolId = this.context?.StaffMaster.AsNoTracking()
+                            .Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId
+                                     && x.StaffId  == staffSchoolInfoAddViewModel.StaffId)
+                            .Select(x => (int?)x.SchoolId)
+                            .FirstOrDefault();
+                    }
+
+                    if (realHomeSchoolId != null && realHomeSchoolId != staffSchoolInfoAddViewModel.SchoolId)
+                    {
+                        staffSchoolInfoAddViewModel._failure = true;
+                        staffSchoolInfoAddViewModel._message = "School Info can only be edited from the staff's home school.";
+                        return staffSchoolInfoAddViewModel;
+                    }
+
                     var staffMaster = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId);
                     if (staffMaster != null)
                     {
@@ -1150,43 +1225,254 @@ namespace opensis.data.Repository
 
                     if (staffSchoolInfoAddViewModel.staffSchoolInfoList != null && staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList().Count > 0)
                     {
-                        var staffSchoolInfoData = this.context?.StaffSchoolInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
+                        // Id-matched upsert replacing the original
+                        // delete-then-reinsert. The old loop deleted rows
+                        // scoped by the caller's session school and then
+                        // inserted the client's full list unconditionally,
+                        // which duplicated rows on every save from a
+                        // non-home school and wiped created_on/created_by
+                        // on every home-school save. The home-school guard
+                        // above now blocks non-home saves entirely, so this
+                        // code only ever runs for the home admin whose list
+                        // is authoritative.
+                        //
+                        // Rules:
+                        //   - Match by surrogate id. Existing rows are
+                        //     updated in place preserving id, created_on,
+                        //     created_by so audit history survives.
+                        //   - Rows with id == 0 (or missing) are new
+                        //     attachments and get inserted with fresh audit
+                        //     stamps.
+                        //   - Any existing row whose id is not in the
+                        //     incoming payload is deleted, unless it is
+                        //     already a tombstone (end_date in the past) —
+                        //     those are preserved defensively so the client
+                        //     can't accidentally nuke history.
+                        //   - Every live row's school_id is rewritten to
+                        //     newHomeSchoolId so a home-school change
+                        //     propagates correctly. Tombstone rows keep
+                        //     their original school_id.
+                        //
+                        // Pre-existing corruption from the original bug
+                        // (non-canonical duplicate rows sharing the same
+                        // (staff_id, school_attached_id) pair) is NOT
+                        // healed here. Use the diagnostic SQL in
+                        // docs/plans/staff-school-info-duplication.md to
+                        // find and clean it up per tenant as a separate
+                        // one-shot operation.
 
-                        var oldSchoolId = staffSchoolInfoData?.FirstOrDefault()?.SchoolId;
+                        var existingRows = this.context?.StaffSchoolInfo.AsNoTracking()
+                            .Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId
+                                     && x.StaffId  == staffSchoolInfoAddViewModel.StaffId)
+                            .ToList() ?? new List<StaffSchoolInfo>();
 
-                        if (staffSchoolInfoData != null && staffSchoolInfoData.Any())
+                        var incomingRows = staffSchoolInfoAddViewModel.staffSchoolInfoList
+                            .Where(x => x.SchoolAttachedId != null)
+                            .ToList();
+
+                        // Safety: if the outer check said the list was
+                        // non-empty but every row had a null business key,
+                        // bail out instead of interpreting "no valid
+                        // incoming rows" as "delete every existing row".
+                        if (incomingRows.Count == 0)
                         {
-                            this.context?.StaffSchoolInfo.RemoveRange(staffSchoolInfoData);
-                            this.context?.SaveChanges();
+                            staffSchoolInfoAddViewModel._failure = true;
+                            staffSchoolInfoAddViewModel._message = "No valid staff school info rows were submitted.";
+                            return staffSchoolInfoAddViewModel;
                         }
 
-                        var newSchoolId = staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()?.SchoolId;
+                        var existingById = existingRows.ToDictionary(r => r.Id);
+                        var oldHomeSchoolId = realHomeSchoolId;
+                        // Every row in the incoming list carries the same
+                        // schoolId (the client rewrites them uniformly to
+                        // either defaultSchoolId from the home picker or
+                        // the session school). Pick the first non-null
+                        // value and fall back to the old home if nothing
+                        // is set.
+                        var newHomeSchoolId = incomingRows.FirstOrDefault()?.SchoolId ?? oldHomeSchoolId;
+                        var todayUtc = DateTime.UtcNow.Date;
 
-                        if (oldSchoolId != null && oldSchoolId != newSchoolId)
+                        var handledExistingIds = new HashSet<int>();
+
+                        foreach (var incoming in incomingRows)
                         {
-                            staffMaster!.SchoolId = (int)newSchoolId!;
-
-                            var staffCertificateData = this.context?.StaffCertificateInfo.Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId).ToList();
-
-                            if (staffCertificateData != null && staffCertificateData.Any())
+                            if (incoming.Id > 0 && existingById.TryGetValue(incoming.Id, out var existing))
                             {
-                                staffCertificateData.ForEach(x => x.SchoolId = (int)newSchoolId!);
+                                // Detect a "home-school change" rename: the
+                                // client is sending a row whose id matches a
+                                // retired row (existing end_date in the past)
+                                // but whose school_attached_id is different.
+                                // That's the second step of the two-step
+                                // home-school change flow — the admin first
+                                // retired the current home row, then picked
+                                // a new school on the same row. We preserve
+                                // the retired row as a historical tombstone
+                                // AND insert a fresh row for the new school.
+                                //
+                                // The tombstone's school_id is rewritten to
+                                // newHomeSchoolId so the schema invariant
+                                // "school_id == school_attached_id iff this
+                                // row is the staff's current home school"
+                                // holds across the whole table: only the
+                                // new live home row satisfies it. The
+                                // historical attachment information
+                                // (which school, when, how long) survives
+                                // on school_attached_id, school_attached_name,
+                                // start_date, end_date, and created_on/by,
+                                // so nothing is actually lost.
+                                var isRename = existing.EndDate != null
+                                               && existing.EndDate.Value.Date < todayUtc
+                                               && existing.SchoolAttachedId != incoming.SchoolAttachedId;
+
+                                if (isRename)
+                                {
+                                    // Update the retired row so its school_id
+                                    // reflects the new current home. Everything
+                                    // else is preserved — school_attached_id,
+                                    // name, profile, start/end date, created_on/by.
+                                    var tombstone = new StaffSchoolInfo
+                                    {
+                                        Id = existing.Id,
+                                        TenantId = existing.TenantId,
+                                        StaffId = existing.StaffId,
+                                        SchoolId = newHomeSchoolId,
+                                        SchoolAttachedId = existing.SchoolAttachedId,
+                                        SchoolAttachedName = existing.SchoolAttachedName,
+                                        Profile = existing.Profile,
+                                        MembershipId = existing.MembershipId,
+                                        StartDate = existing.StartDate,
+                                        EndDate = existing.EndDate,
+                                        CreatedOn = existing.CreatedOn,
+                                        CreatedBy = existing.CreatedBy,
+                                        UpdatedOn = DateTime.UtcNow,
+                                        UpdatedBy = incoming.UpdatedBy,
+                                    };
+                                    this.context?.StaffSchoolInfo.Update(tombstone);
+                                    handledExistingIds.Add(existing.Id);
+
+                                    // Insert a fresh row for the new school.
+                                    // end_date is forced to null — the new
+                                    // home isn't retired — and start_date is
+                                    // today so the new attachment reads as
+                                    // starting now.
+                                    var renamedNew = new StaffSchoolInfo
+                                    {
+                                        Id = 0,
+                                        TenantId = staffSchoolInfoAddViewModel.TenantId,
+                                        StaffId = staffSchoolInfoAddViewModel.StaffId,
+                                        SchoolId = newHomeSchoolId,
+                                        SchoolAttachedId = incoming.SchoolAttachedId,
+                                        SchoolAttachedName = incoming.SchoolAttachedName,
+                                        Profile = incoming.Profile,
+                                        MembershipId = incoming.MembershipId,
+                                        StartDate = todayUtc,
+                                        EndDate = null,
+                                        CreatedOn = DateTime.UtcNow,
+                                        CreatedBy = incoming.UpdatedBy ?? incoming.CreatedBy,
+                                        UpdatedOn = DateTime.UtcNow,
+                                        UpdatedBy = incoming.UpdatedBy,
+                                    };
+                                    this.context?.StaffSchoolInfo.Add(renamedNew);
+                                    continue;
+                                }
+
+                                // Plain in-place update. Preserve id,
+                                // created_on, created_by. school_id is
+                                // rewritten to the current home so a
+                                // home-school change propagates to every
+                                // live row.
+                                var updated = new StaffSchoolInfo
+                                {
+                                    Id = existing.Id,
+                                    TenantId = existing.TenantId,
+                                    StaffId = existing.StaffId,
+                                    SchoolId = newHomeSchoolId,
+                                    SchoolAttachedId = incoming.SchoolAttachedId,
+                                    SchoolAttachedName = incoming.SchoolAttachedName,
+                                    Profile = incoming.Profile,
+                                    MembershipId = incoming.MembershipId,
+                                    StartDate = incoming.StartDate,
+                                    EndDate = incoming.EndDate,
+                                    CreatedOn = existing.CreatedOn,
+                                    CreatedBy = existing.CreatedBy,
+                                    UpdatedOn = DateTime.UtcNow,
+                                    UpdatedBy = incoming.UpdatedBy,
+                                };
+                                this.context?.StaffSchoolInfo.Update(updated);
+                                handledExistingIds.Add(existing.Id);
+                            }
+                            else
+                            {
+                                // INSERT — id is 0 (new attachment from the
+                                // UI) or the id doesn't match any existing
+                                // row. Either way, insert with fresh audit.
+                                var newRow = new StaffSchoolInfo
+                                {
+                                    Id = 0,
+                                    TenantId = staffSchoolInfoAddViewModel.TenantId,
+                                    StaffId = staffSchoolInfoAddViewModel.StaffId,
+                                    SchoolId = newHomeSchoolId,
+                                    SchoolAttachedId = incoming.SchoolAttachedId,
+                                    SchoolAttachedName = incoming.SchoolAttachedName,
+                                    Profile = incoming.Profile,
+                                    MembershipId = incoming.MembershipId,
+                                    StartDate = incoming.StartDate,
+                                    EndDate = incoming.EndDate,
+                                    CreatedOn = DateTime.UtcNow,
+                                    CreatedBy = incoming.UpdatedBy ?? incoming.CreatedBy,
+                                    UpdatedOn = DateTime.UtcNow,
+                                    UpdatedBy = incoming.UpdatedBy,
+                                };
+                                this.context?.StaffSchoolInfo.Add(newRow);
                             }
                         }
 
-                        int? Id = 0;
-                        Id = Utility.GetMaxPK<StaffSchoolInfo>(this.context, x => x.Id);
-                        foreach (var staffSchoolInfo in staffSchoolInfoAddViewModel.staffSchoolInfoList.ToList())
+                        // Delete any existing row the client dropped from
+                        // the payload, except for on-disk tombstones which
+                        // are preserved as historical records.
+                        foreach (var existing in existingRows)
                         {
-                            staffSchoolInfo.Id = 0;
-                            //staffSchoolInfo.Id = Id != null ? (int)Id : 0;
-                            staffSchoolInfo.UpdatedOn = DateTime.UtcNow;
-                            staffSchoolInfo.CreatedOn = DateTime.UtcNow;
-                            staffSchoolInfo.CreatedBy = staffSchoolInfo.UpdatedBy;
-                            staffSchoolInfo.StaffMaster = null;
-                            this.context?.StaffSchoolInfo.Add(staffSchoolInfo);
-                            Id++;
+                            if (handledExistingIds.Contains(existing.Id))
+                            {
+                                continue;
+                            }
+
+                            var isRetired = existing.EndDate != null
+                                            && existing.EndDate.Value.Date < todayUtc;
+                            if (isRetired)
+                            {
+                                continue;
+                            }
+
+                            var stub = new StaffSchoolInfo { Id = existing.Id };
+                            this.context?.StaffSchoolInfo.Attach(stub);
+                            this.context?.StaffSchoolInfo.Remove(stub);
                         }
+
+                        // Home school change cascade: mirror the new home on
+                        // staff_master and migrate the staff's certificates
+                        // to the new home's school_id. Same intent as the
+                        // legacy code, just expressed against the explicit
+                        // old/new home variables for clarity.
+                        if (oldHomeSchoolId != null && newHomeSchoolId != null && oldHomeSchoolId != newHomeSchoolId)
+                        {
+                            if (staffMaster != null)
+                            {
+                                staffMaster.SchoolId = (int)newHomeSchoolId;
+                            }
+
+                            var staffCertificateData = this.context?.StaffCertificateInfo
+                                .Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId
+                                         && x.StaffId  == staffSchoolInfoAddViewModel.StaffId
+                                         && x.SchoolId == oldHomeSchoolId)
+                                .ToList();
+
+                            if (staffCertificateData != null && staffCertificateData.Any())
+                            {
+                                staffCertificateData.ForEach(x => x.SchoolId = (int)newHomeSchoolId);
+                            }
+                        }
+
                         this.context?.SaveChanges();
                     }
 
@@ -1219,6 +1505,47 @@ namespace opensis.data.Repository
                         }
                     }
                     transaction?.Commit();
+
+                    // Refresh staffSchoolInfoList from the DB so the
+                    // client sees the true post-save state (tombstones,
+                    // inserts, deletions, propagated school_id values)
+                    // instead of echoing back its own request payload.
+                    // Also resolve CreatedBy/UpdatedBy GUIDs to names so
+                    // the audit tooltip is correct immediately after save
+                    // without waiting for a navigate-away-and-back.
+                    var refreshed = this.context?.StaffSchoolInfo.AsNoTracking()
+                        .Where(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId
+                                 && x.StaffId == staffSchoolInfoAddViewModel.StaffId)
+                        .OrderBy(x => x.Id)
+                        .ToList() ?? new List<StaffSchoolInfo>();
+
+                    if (refreshed.Any())
+                    {
+                        var staffGuids = refreshed
+                            .SelectMany(r => new[] { r.CreatedBy, r.UpdatedBy })
+                            .Where(g => g != null)
+                            .Distinct()
+                            .Select(g => Guid.TryParse(g, out var parsed) ? parsed : (Guid?)null)
+                            .Where(g => g.HasValue)
+                            .Select(g => g!.Value)
+                            .ToList();
+
+                        var staffNameLookup = staffGuids.Any()
+                            ? this.context?.StaffMaster.AsNoTracking()
+                                .Where(s => s.TenantId == staffSchoolInfoAddViewModel.TenantId && staffGuids.Contains(s.StaffGuid))
+                                .ToDictionary(s => s.StaffGuid.ToString(), s => (s.FirstGivenName ?? "") + " " + (s.LastFamilyName ?? ""))
+                            : new Dictionary<string, string>();
+
+                        foreach (var row in refreshed)
+                        {
+                            if (row.CreatedBy != null && staffNameLookup!.TryGetValue(row.CreatedBy, out var createdName))
+                                row.CreatedByName = createdName.Trim();
+                            if (row.UpdatedBy != null && staffNameLookup!.TryGetValue(row.UpdatedBy, out var updatedName))
+                                row.UpdatedByName = updatedName.Trim();
+                        }
+                    }
+
+                    staffSchoolInfoAddViewModel.staffSchoolInfoList = refreshed;
                     staffSchoolInfoAddViewModel._failure = false;
                     staffSchoolInfoAddViewModel._message = "Staff school info updated successfully";
                 }
@@ -1231,7 +1558,7 @@ namespace opensis.data.Repository
             }
             return staffSchoolInfoAddViewModel;
         }
-        
+
         /// <summary>
         /// Add Staff Certificate Info
         /// </summary>

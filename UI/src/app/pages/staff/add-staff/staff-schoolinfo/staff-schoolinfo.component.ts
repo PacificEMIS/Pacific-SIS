@@ -31,6 +31,8 @@ import { fadeInRight400ms } from '../../../../../@vex/animations/fade-in-right.a
 import { TranslateService } from '@ngx-translate/core';
 import icAdd from '@iconify/icons-ic/baseline-add';
 import icClear from '@iconify/icons-ic/baseline-clear';
+import icHomeSchool from '@iconify/icons-ic/baseline-home';
+import icInfo from '@iconify/icons-ic/twotone-info';
 import { SchoolCreate } from '../../../../enums/school-create.enum';
 import { StaffService } from '../../../../services/staff.service';
 import { StaffSchoolInfoListModel, StaffSchoolInfoModel } from '../../../../models/staff.model';
@@ -81,6 +83,8 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   icAdd = icAdd;
   icClear = icClear;
   icEdit = icEdit;
+  icHomeSchool = icHomeSchool;
+  icInfo = icInfo;
   selectedSchoolId = [];
   otherGradeLevelTaught=[];
   otherSubjectTaught =[];
@@ -308,11 +312,32 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   findProfileForCurrentSchool(schoolInfo){
-    let currentProfileIndex=schoolInfo.findIndex((item)=>{
-      return item.schoolId==this.defaultValuesService.schoolID
-    })
-    // this.checkUpdatedProfileName.emit(schoolInfo[currentProfileIndex].profile)
-    this.staffService.setCheckUpdatedProfileName(schoolInfo[currentProfileIndex].profile);
+    // Find the active row for the current session school. Prefer the
+    // home row (schoolId == schoolAttachedId) that is not retired, so a
+    // staff with a historical home-school-change tombstone still shows
+    // the profile of their current home. Falls back to any non-retired
+    // row whose schoolId matches, then to any match at all.
+    const currentSchoolId = this.defaultValuesService.schoolID;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isActive = (item: any) => {
+      if (item.endDate == null) return true;
+      const end = new Date(item.endDate);
+      return isNaN(end.getTime()) || end >= today;
+    };
+    let match = schoolInfo.find((item: any) =>
+      item.schoolId == currentSchoolId
+      && Number(item.schoolAttachedId) === Number(item.schoolId)
+      && isActive(item));
+    if (!match) {
+      match = schoolInfo.find((item: any) => item.schoolId == currentSchoolId && isActive(item));
+    }
+    if (!match) {
+      match = schoolInfo.find((item: any) => item.schoolId == currentSchoolId);
+    }
+    if (match) {
+      this.staffService.setCheckUpdatedProfileName(match.profile);
+    }
   }
 
   manipulateArray() {
@@ -417,7 +442,15 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
             duration: 10000
           });
           this.staffSchoolInfoModel = res;
-          this.defaultValuesService.setSchoolID(this.defaultSchoolId!==0?this.defaultSchoolId.toString():this.defaultValuesService.getSchoolID().toString(),true);
+
+          // Patch the parent's staffDetailsForViewAndEdit model with the
+          // new home school derived from the refreshed list. Without this,
+          // the parent's staffAddModel still carries the pre-save
+          // defaultSchoolId/defaultSchoolName, and editSchoolInfo() will
+          // block the next edit attempt even though the save succeeded.
+          // The parent re-queries via viewStaff only on a full reload,
+          // so we mutate in place here (the parent binds by reference).
+          this.syncParentHomeSchool(res.staffSchoolInfoList);
 
           this.findProfileForCurrentSchool(res.staffSchoolInfoList);
           this.cloneStaffModel = JSON.stringify(this.staffSchoolInfoModel);
@@ -433,6 +466,21 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   editSchoolInfo() {
+    // School Info can only be edited from the staff's home school. The
+    // server has a matching guard that rejects any save from a non-home
+    // school because UpdateStaffSchoolInfo's delete-then-reinsert loop
+    // silently duplicates rows otherwise. Refuse to enter edit mode here
+    // so Super Admin and regular admin both get an early, friendly block
+    // instead of editing a form that can't be saved.
+    const currentSchoolId = Number(this.defaultValuesService.getSchoolID());
+    const homeSchoolId = this.staffDetailsForViewAndEdit?.defaultSchoolId != null
+      ? Number(this.staffDetailsForViewAndEdit.defaultSchoolId)
+      : Number(this.staffDetailsForViewAndEdit?.staffMaster?.schoolId);
+    if (homeSchoolId && currentSchoolId !== homeSchoolId) {
+      const homeSchoolName = this.staffDetailsForViewAndEdit?.defaultSchoolName || "the staff's home school";
+      this.snackbar.open(`School Info can only be edited from ${homeSchoolName}. Please switch schools and try again.`, '', { duration: 10000 });
+      return;
+    }
     if (this.staffDetailsForViewAndEdit.staffMaster.profile !== 'Super Administrator') {
     this.staffService.checkExternalSchoolId(this.staffDetailsForViewAndEdit, 1).then((res: any)=>{
       this.isReadOnly = res.isReadOnly;
@@ -488,6 +536,87 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
     this.staffCreateMode = this.staffCreate.VIEW;
     this.staffService.changePageMode(this.staffCreateMode);
     this.imageCropperService.cancelImage("staff");
+  }
+
+  // Walks a freshly-saved staffSchoolInfoList and patches the parent
+  // component's staffDetailsForViewAndEdit model with the new home
+  // school. The active home row is the one where
+  // schoolId == schoolAttachedId and end_date is null or in the future.
+  // External attachments (not retired, schoolId != schoolAttachedId) are
+  // recomputed too so checkExternalSchoolId on the other tabs stays
+  // accurate after a home-school change. Parent binds by reference so
+  // mutating in place propagates.
+  private syncParentHomeSchool(schoolInfoList: any[]): void {
+    if (!this.staffDetailsForViewAndEdit || !schoolInfoList) {
+      return;
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isActive = (item: any) => {
+      if (item.endDate == null) return true;
+      const end = new Date(item.endDate);
+      return isNaN(end.getTime()) || end >= today;
+    };
+    const activeHome = schoolInfoList.find((item: any) =>
+      isActive(item)
+      && Number(item.schoolAttachedId) === Number(item.schoolId));
+    if (activeHome) {
+      this.staffDetailsForViewAndEdit.defaultSchoolId = Number(activeHome.schoolAttachedId);
+      this.staffDetailsForViewAndEdit.defaultSchoolName = activeHome.schoolAttachedName;
+      if (this.staffDetailsForViewAndEdit.staffMaster) {
+        this.staffDetailsForViewAndEdit.staffMaster.schoolId = Number(activeHome.schoolId);
+      }
+    }
+    this.staffDetailsForViewAndEdit.externalSchoolIds = schoolInfoList
+      .filter((item: any) =>
+        isActive(item)
+        && Number(item.schoolAttachedId) !== Number(item.schoolId))
+      .map((item: any) => Number(item.schoolAttachedId));
+  }
+
+  // A row represents the *current* home school when:
+  //   - school_id == school_attached_id (the schema invariant), AND
+  //   - the row has not been retired (end_date is null or in the future).
+  //
+  // manipulateArray() stringifies schoolAttachedId so both sides are
+  // coerced to Number before comparing. The end_date check excludes
+  // tombstones left behind by a previous home-school change, which
+  // would otherwise light up as "home" alongside the real current
+  // home row.
+  isHomeSchool(schoolInfo: any): boolean {
+    if (!schoolInfo || schoolInfo.schoolId == null || schoolInfo.schoolAttachedId == null) {
+      return false;
+    }
+    if (Number(schoolInfo.schoolId) !== Number(schoolInfo.schoolAttachedId)) {
+      return false;
+    }
+    if (schoolInfo.endDate != null) {
+      const end = new Date(schoolInfo.endDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (!isNaN(end.getTime()) && end < today) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  getAuditTooltip(schoolInfo: any): string {
+    if (!schoolInfo) return '';
+    // Backend serializes DateTime.UtcNow without the Z marker, so force
+    // UTC parsing before formatting to the user's local timezone.
+    const fmt = (d: any) => {
+      const iso = typeof d === 'string' && !d.endsWith('Z') ? d + 'Z' : d;
+      return new Date(iso).toLocaleString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+    const parts = [];
+    if (schoolInfo.createdOn) {
+      parts.push('Created: ' + fmt(schoolInfo.createdOn) + (schoolInfo.createdByName ? ' by ' + schoolInfo.createdByName : ''));
+    }
+    if (schoolInfo.updatedOn) {
+      parts.push('Updated: ' + fmt(schoolInfo.updatedOn) + (schoolInfo.updatedByName ? ' by ' + schoolInfo.updatedByName : ''));
+    }
+    return parts.join('\n');
   }
 
   ngOnDestroy() {

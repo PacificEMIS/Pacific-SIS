@@ -80,7 +80,6 @@ export class LoginComponent implements OnInit {
   forceLoaderToStop:boolean;
   buildVersion:string;
   profiles= ProfilesTypes;
-  ipAdd:any;
   tenantPhoto: string;
   tenantName: any;
   tenantFooter: string;
@@ -138,7 +137,6 @@ export class LoginComponent implements OnInit {
       this.form.markAsDirty();
     }
     this.buildVersion= this.defaultValuesService.getBuildVersion();
-    this.getIpAdressFromExternal();
   }
 
   checkValidTenant() {
@@ -178,21 +176,12 @@ export class LoginComponent implements OnInit {
     }
 
   }
-  getIpAdressFromExternal() {
-    this.commonService.getIpAddress().subscribe((res)=>{
-     this.ipAdd=res;
-    }, () => {
-     this.ipAdd = null;
-    })
-  }
   send() {
-    this.getIpAdressFromExternal();
     this.form.markAsTouched();
     if (this.form.dirty && this.form.valid) {
       this.UserModel._tenantName = this.tenant;
       this.UserModel.password = this.form.value.password;
       this.UserModel.email = this.form.value.email.trim().toLowerCase();;
-      this.UserModel.userAccessLog.ipaddress = (this.ipAdd && this.ipAdd.ip ? this.ipAdd.ip : null);
       this.UserModel.schoolId=this.defaultValuesService.getSchoolID();
       this.loginService.ValidateLogin(this.UserModel).subscribe(data => {
         if (typeof (data) == 'undefined') {
