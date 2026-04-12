@@ -3261,7 +3261,9 @@ namespace opensis.data.Repository
                         dashboardView.SchoolCalendar!.SchoolMaster = null!;
                     }
 
-                    Events = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString()) && ((x.StartDate <= DateTime.Today.Date && DateTime.Today.Date <= x.EndDate) || (x.StartDate >= DateTime.Today.Date)) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true)).ToList();
+                    var membershipData = this.context?.Membership.FirstOrDefault(d => d.TenantId == dashboardViewModel.TenantId && d.SchoolId == dashboardViewModel.SchoolId && d.MembershipId == dashboardViewModel.MembershipId);
+
+                    Events = this.context?.CalendarEvents.AsEnumerable().Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && x.IsHoliday != true && (String.Compare(membershipData?.ProfileType, "Super Administrator", true) == 0 || String.Compare(membershipData?.ProfileType, "School Administrator", true) == 0 || String.Compare(membershipData?.ProfileType, "Admin Assistant", true) == 0 || (x.VisibleToMembershipId ?? "").Contains((dashboardViewModel.MembershipId ?? 0).ToString())) && ((x.StartDate <= DateTime.Today.Date && DateTime.Today.Date <= x.EndDate) || (x.StartDate >= DateTime.Today.Date)) && (x.SchoolId == dashboardViewModel.SchoolId || x.SystemWideEvent == true)).ToList();
 
                     //for fetch holiday
                     var holidays = this.context?.CalendarEvents.Where(x => x.TenantId == dashboardViewModel.TenantId && x.AcademicYear == dashboardViewModel.AcademicYear && ((x.StartDate <= DateTime.Today.Date && DateTime.Today.Date <= x.EndDate) || (x.StartDate >= DateTime.Today.Date)) && x.IsHoliday == true && (x.SchoolId == dashboardViewModel.SchoolId || x.ApplicableToAllSchool == true)).ToList();

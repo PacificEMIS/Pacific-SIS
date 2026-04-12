@@ -130,10 +130,16 @@
                             </li>
 
                         </ul>
-                        <div class="mb-4 mt-4" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
+                        <div class="mb-4 mt-4" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin || this.defaultValuesService.getUserMembershipType() === profiles.SchoolAdmin">
                             <mat-slide-toggle color="primary" formControlName="systemWideEvent">
                                 {{'applyToAllSchools' | translate}}
                             </mat-slide-toggle>
+                            <div *ngIf="isSchoolAdmin && userSchoolNames.length > 0" class="mt-1 ml-12 text-xs text-hint cursor-pointer" (click)="toggleSchoolList()">
+                                ({{userSchoolNames.length}} {{'schools' | translate}}) {{showSchoolList ? '&#9650;' : '&#9660;'}}
+                            </div>
+                            <ul *ngIf="isSchoolAdmin && showSchoolList" class="mt-1 ml-12 text-sm list-disc" style="max-height: 120px; overflow-y: auto;">
+                                <li *ngFor="let name of userSchoolNames">{{name}}</li>
+                            </ul>
                         </div>
 
                     </div>
@@ -188,10 +194,16 @@
                             <mat-label>{{'notes' | translate}}</mat-label>
                             <textarea formControlName="notes" name="notes" cdkFocusInitial matInput></textarea>
                         </mat-form-field>
-                        <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
+                        <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin || this.defaultValuesService.getUserMembershipType() === profiles.SchoolAdmin">
                             <mat-slide-toggle color="primary" formControlName="applicableToAllSchool">
                                 {{'applyToAllSchools' | translate}}
                             </mat-slide-toggle>
+                            <div *ngIf="isSchoolAdmin && userSchoolNames.length > 0" class="mt-1 ml-12 text-xs text-hint cursor-pointer" (click)="toggleSchoolList()">
+                                ({{userSchoolNames.length}} {{'schools' | translate}}) {{showSchoolList ? '&#9650;' : '&#9660;'}}
+                            </div>
+                            <ul *ngIf="isSchoolAdmin && showSchoolList" class="mt-1 ml-12 text-sm list-disc" style="max-height: 120px; overflow-y: auto;">
+                                <li *ngFor="let name of userSchoolNames">{{name}}</li>
+                            </ul>
                         </div>
                     </div>
                 </mat-dialog-content>
@@ -256,10 +268,14 @@
                         <mat-label>{{'notes' | translate}}</mat-label>
                         <textarea formControlName="notes" name="notes" cdkFocusInitial matInput></textarea>
                     </mat-form-field>
-                    <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin">
+                    <div class="my-2" *ngIf="this.defaultValuesService.getUserMembershipType() === profiles.SuperAdmin || this.defaultValuesService.getUserMembershipType() === profiles.SchoolAdmin">
                         <mat-slide-toggle color="primary" formControlName="applicableToAllSchool">
                             {{'applyToAllSchools' | translate}}
                         </mat-slide-toggle>
+                        <span *ngIf="isSchoolAdmin && userSchoolNames.length > 0" class="ml-2 text-xs text-hint cursor-pointer" (click)="toggleSchoolList()">({{userSchoolNames.length}} {{'schools' | translate}}) {{showSchoolList ? '&#9650;' : '&#9660;'}}</span>
+                        <ul *ngIf="isSchoolAdmin && showSchoolList" class="mt-2 ml-6 text-sm list-disc" style="max-height: 120px; overflow-y: auto;">
+                            <li *ngFor="let name of userSchoolNames">{{name}}</li>
+                        </ul>
                     </div>
                 </div>
             </mat-dialog-content>
