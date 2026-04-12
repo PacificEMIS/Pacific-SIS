@@ -47,6 +47,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { DefaultValuesService } from '../../../../common/default-values.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { SchoolService } from 'src/app/services/school.service';
+import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 
 @Component({
   selector: 'vex-edit-notice',
@@ -80,6 +82,9 @@ export class EditNoticeComponent implements OnInit {
   schoolVisibility = false;
   profileError: boolean;
   profiles = ProfilesTypes;
+  userSchoolNames: string[] = [];
+  showSchoolList: boolean = false;
+  isSchoolAdmin: boolean = false;
   @ViewChild('scrollBottom') private scrollBottom: ElementRef;
 
   constructor(
@@ -92,7 +97,8 @@ export class EditNoticeComponent implements OnInit {
               private loaderService: LoaderService,
               public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
-    private el: ElementRef
+    private el: ElementRef,
+    private schoolService: SchoolService
     ) {
     //translateService.use('en');
     this.loaderService.isLoading.subscribe((v) => {
@@ -103,6 +109,10 @@ export class EditNoticeComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.isSchoolAdmin = this.defaultValuesService.getUserMembershipType() === this.profiles.SchoolAdmin;
+    if (this.isSchoolAdmin) {
+      this.loadUserSchools();
+    }
     if(this.data==null){
       this.snackbar.open('Null vallue occur. ', '', {
         duration: 10000
@@ -311,6 +321,22 @@ export class EditNoticeComponent implements OnInit {
       this.checkBox.checked=false;
     }
     this.checkProfileError()
+  }
+
+  loadUserSchools() {
+    let schoolListModel = new OnlySchoolListModel();
+    schoolListModel.emailAddress = this.defaultValuesService.getEmailId();
+    this.schoolService.GetAllSchools(schoolListModel).subscribe((data: any) => {
+      if (data.getSchoolForView?.length > 0) {
+        this.userSchoolNames = data.getSchoolForView
+          .filter(s => s.membershipType === this.profiles.SchoolAdmin)
+          .map(s => s.schoolName);
+      }
+    });
+  }
+
+  toggleSchoolList() {
+    this.showSchoolList = !this.showSchoolList;
   }
 
 }

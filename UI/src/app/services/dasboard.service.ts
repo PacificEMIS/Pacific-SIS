@@ -42,6 +42,7 @@ export class DasboardService {
   getDashboardViewForCalendarView(obj: DashboardViewModel) {
     obj = this.defaultValuesService.getAllMandatoryVariable(obj);
     obj.academicYear= this.defaultValuesService.getAcademicYear();
+    obj.membershipId= +this.defaultValuesService.getuserMembershipID();
     let apiurl = this.apiUrl + obj._tenantName + "/Common/getDashboardViewForCalendarView";
     return this.http.post<DashboardViewModel>(apiurl, obj,this.httpOptions)
   }

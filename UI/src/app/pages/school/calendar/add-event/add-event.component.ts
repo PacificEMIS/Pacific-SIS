@@ -51,6 +51,8 @@ import { DefaultValuesService } from '../../../../common/default-values.service'
 import { PageRolesPermission } from '../../../../common/page-roles-permissions.service';
 import { CommonService } from 'src/app/services/common.service';
 import { ProfilesTypes } from 'src/app/enums/profiles.enum';
+import { SchoolService } from 'src/app/services/school.service';
+import { OnlySchoolListModel } from 'src/app/models/get-all-school.model';
 
 
 @Component({
@@ -77,6 +79,9 @@ export class AddEventComponent implements OnInit {
   membercount: number;
   memberArray: number[] = [];
   currentTab: string;
+  userSchoolNames: string[] = [];
+  showSchoolList: boolean = false;
+  isSchoolAdmin: boolean = false;
 
   colors: colors[] = [
     { name: 'Red', value: '#f44336' },
@@ -112,7 +117,8 @@ export class AddEventComponent implements OnInit {
     private fb: FormBuilder,
     public defaultValuesService: DefaultValuesService,
     private commonService: CommonService,
-    private el: ElementRef
+    private el: ElementRef,
+    private schoolService: SchoolService
   ) {
     this.translate.setDefaultLang('en');
     this.form = this.fb.group({
@@ -130,6 +136,10 @@ export class AddEventComponent implements OnInit {
   ngOnInit(): void {
     this.permissions = this.pageRolePermissions.checkPageRolePermission();
     this.currentTab = 'event';
+    this.isSchoolAdmin = this.defaultValuesService.getUserMembershipType() === this.profiles.SchoolAdmin;
+    if (this.isSchoolAdmin) {
+      this.loadUserSchools();
+    }
 
     if (this.data == null) {
       this.snackbar.open('Null value occur. ', '', {
@@ -415,6 +425,22 @@ export class AddEventComponent implements OnInit {
   }
   changeTab(status){
     this.currentTab = status;
+  }
+
+  loadUserSchools() {
+    let schoolListModel = new OnlySchoolListModel();
+    schoolListModel.emailAddress = this.defaultValuesService.getEmailId();
+    this.schoolService.GetAllSchools(schoolListModel).subscribe((data: any) => {
+      if (data.getSchoolForView?.length > 0) {
+        this.userSchoolNames = data.getSchoolForView
+          .filter(s => s.membershipType === this.profiles.SchoolAdmin)
+          .map(s => s.schoolName);
+      }
+    });
+  }
+
+  toggleSchoolList() {
+    this.showSchoolList = !this.showSchoolList;
   }
 
 }
