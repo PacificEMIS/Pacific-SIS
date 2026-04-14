@@ -1188,9 +1188,11 @@ namespace opensis.data.Repository
 
                 // Students: count those enrolled in a calendar for this academic year
                 var enrolledStudents = this.context?.StudentEnrollment
+                    .Include(e => e.StudentMaster)
                     .Where(e => e.TenantId == dashboardViewModel.TenantId
                         && e.SchoolId == dashboardViewModel.SchoolId
                         && e.IsActive == true
+                        && e.StudentMaster.IsActive != false
                         && e.CalenderId != null
                         && calendarIds.Contains(e.CalenderId.Value))
                     .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
