@@ -3837,6 +3837,22 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="activeDeactiveUserViewModel"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// SOFT vs HARD deactivation — two distinct mechanisms control student visibility:
+        ///
+        /// 1. SOFT disable (this toggle): sets only StudentMaster.IsActive = false.
+        ///    Enrollment records are intentionally left intact (StudentEnrollment.IsActive
+        ///    stays true) so the student can be re-activated without re-enrolling.
+        ///    Used for temporary holds, suspensions, or administrative corrections.
+        ///
+        /// 2. HARD deactivation (drop/transfer/rollover): sets both StudentMaster.IsActive
+        ///    and StudentEnrollment.IsActive to false, records an exit code and exit date,
+        ///    and drops course section schedules. Re-activation requires formal re-enrollment.
+        ///    See StudentRepository.UpdateStudentEnrollment and RolloverRepository.
+        ///
+        /// Any query counting or listing enrolled students must check BOTH fields to be
+        /// accurate — StudentEnrollment.IsActive alone will include soft-disabled students.
+        /// </remarks>
         public ActiveDeactiveUserViewModel ActiveDeactiveUser(ActiveDeactiveUserViewModel activeDeactiveUserViewModel)
         {
             try
@@ -3849,6 +3865,9 @@ namespace opensis.data.Repository
                         var StudentData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == activeDeactiveUserViewModel.SchoolId && e.StudentId == activeDeactiveUserViewModel.UserId);
                         if (StudentData != null)
                         {
+                            // Re-activation: only allowed if the last enrollment is still current
+                            // (no past exit date, enrollment date not in the future).
+                            // If the student was hard-deactivated (dropped), they must re-enroll instead.
                             if (activeDeactiveUserViewModel.IsActive == true)
                             {
                                 var lastEnrollment = StudentData.StudentEnrollment.OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
@@ -3865,6 +3884,8 @@ namespace opensis.data.Repository
                             }
                             else
                             {
+                                // Soft disable: only StudentMaster.IsActive is set to false.
+                                // Enrollment records are preserved for easy re-activation.
                                 StudentData.IsActive = activeDeactiveUserViewModel.IsActive;
                             }
                         }
