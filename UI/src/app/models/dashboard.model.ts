@@ -22,12 +22,16 @@ export class DashboardViewModel extends CommonField{
     public membershipId : number;
     public noticeList: [];
     public enrollmentByGrade: GradeCount[];
+    public repeatersByGrade: GradeCount[];
+    public dropoutsByGrade: GradeCount[];
     public staffByProfile: NameCount[];
     public staffByJobTitle: NameCount[];
     constructor() {
         super();
         this.noticeList = [];
         this.enrollmentByGrade = [];
+        this.repeatersByGrade = [];
+        this.dropoutsByGrade = [];
         this.staffByProfile = [];
         this.staffByJobTitle = [];
     }

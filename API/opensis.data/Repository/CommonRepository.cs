@@ -1231,6 +1231,53 @@ namespace opensis.data.Repository
                     .OrderBy(g => g.SortOrder)
                     .ToList();
 
+                // Repeaters and dropouts by grade.
+                // Due to how enrollment codes currently work, both repeaters and dropouts
+                // share the same "Dropped Out" label (StudentEnrollmentCode.Type = "Drop").
+                // The distinction is:
+                //   - Repeaters: ACTIVE enrollments whose EnrollmentCode matches a "Drop"
+                //     type code (the rollover "Retain" path sets this on the new enrollment)
+                //   - Dropouts: INACTIVE enrollments whose ExitCode matches a "Drop" type
+                //     code (students who actually left the school)
+                // See docs/plans/enrollment-codes-overhaul.md for the full picture and
+                // related issues tracking a cleaner approach.
+                var dropCodeTitles = this.context?.StudentEnrollmentCode
+                    .Where(c => c.TenantId == dashboardViewModel.TenantId
+                        && c.SchoolId == dashboardViewModel.SchoolId
+                        && c.Type == "Drop")
+                    .Select(c => c.Title)
+                    .ToList() ?? new List<string?>();
+
+                // Repeaters: active enrollments that arrived via a "Drop" type code (retained)
+                dashboardView.RepeatersByGrade = enrolledStudents
+                    .Where(e => e.GradeId != null
+                        && !string.IsNullOrEmpty(e.EnrollmentCode)
+                        && dropCodeTitles.Contains(e.EnrollmentCode))
+                    .GroupBy(e => new { e.GradeId, e.GradeLevelTitle })
+                    .Select(g => new GradeCount
+                    {
+                        GradeId = g.Key.GradeId,
+                        GradeLevelTitle = g.Key.GradeLevelTitle,
+                        Count = g.Select(e => e.StudentId).Distinct().Count()
+                    })
+                    .ToList();
+
+                foreach (var gc in dashboardView.RepeatersByGrade)
+                {
+                    gc.SortOrder = gc.GradeId.HasValue && gradeSortOrders.ContainsKey(gc.GradeId.Value)
+                        ? gradeSortOrders[gc.GradeId.Value]
+                        : 999;
+                }
+                dashboardView.RepeatersByGrade = dashboardView.RepeatersByGrade
+                    .OrderBy(g => g.SortOrder)
+                    .ToList();
+
+                // Dropouts by grade: NOT YET RELIABLE.
+                // Current data model cannot distinguish actual dropouts from completers/
+                // graduates — both share ExitCode = "Dropped Out". Held back until the
+                // enrollment codes overhaul is done.
+                // See docs/plans/enrollment-codes-overhaul.md for details.
+
                 // Staff: active during this school year's date range
                 var staffQuery = this.context?.StaffSchoolInfo
                     .Include(x => x.StaffMaster)
