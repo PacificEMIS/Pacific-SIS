@@ -73,6 +73,8 @@ namespace opensis.data.Repository
             {
                 var todayDate = DateTime.Today;
 
+                // No StudentMaster.IsActive check here: soft-disabled students can still
+                // access their portal if portal access (UserMaster.IsActive) is enabled.
                 var studentMasterData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).Include(s => s.Sections).Where(x => x.TenantId == studentDashboardViewModel.TenantId && x.SchoolId == studentDashboardViewModel.SchoolId && x.StudentId == studentDashboardViewModel.StudentId).FirstOrDefault();
                 if (studentMasterData != null)
                 {
