@@ -1188,9 +1188,11 @@ namespace opensis.data.Repository
 
                 // Students: count those enrolled in a calendar for this academic year
                 var enrolledStudents = this.context?.StudentEnrollment
+                    .Include(e => e.StudentMaster)
                     .Where(e => e.TenantId == dashboardViewModel.TenantId
                         && e.SchoolId == dashboardViewModel.SchoolId
                         && e.IsActive == true
+                        && e.StudentMaster.IsActive != false
                         && e.CalenderId != null
                         && calendarIds.Contains(e.CalenderId.Value))
                     .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
@@ -1228,6 +1230,53 @@ namespace opensis.data.Repository
                 dashboardView.EnrollmentByGrade = dashboardView.EnrollmentByGrade
                     .OrderBy(g => g.SortOrder)
                     .ToList();
+
+                // Repeaters and dropouts by grade.
+                // Due to how enrollment codes currently work, both repeaters and dropouts
+                // share the same "Dropped Out" label (StudentEnrollmentCode.Type = "Drop").
+                // The distinction is:
+                //   - Repeaters: ACTIVE enrollments whose EnrollmentCode matches a "Drop"
+                //     type code (the rollover "Retain" path sets this on the new enrollment)
+                //   - Dropouts: INACTIVE enrollments whose ExitCode matches a "Drop" type
+                //     code (students who actually left the school)
+                // See docs/plans/enrollment-codes-overhaul.md for the full picture and
+                // related issues tracking a cleaner approach.
+                var dropCodeTitles = this.context?.StudentEnrollmentCode
+                    .Where(c => c.TenantId == dashboardViewModel.TenantId
+                        && c.SchoolId == dashboardViewModel.SchoolId
+                        && c.Type == "Drop")
+                    .Select(c => c.Title)
+                    .ToList() ?? new List<string?>();
+
+                // Repeaters: active enrollments that arrived via a "Drop" type code (retained)
+                dashboardView.RepeatersByGrade = enrolledStudents
+                    .Where(e => e.GradeId != null
+                        && !string.IsNullOrEmpty(e.EnrollmentCode)
+                        && dropCodeTitles.Contains(e.EnrollmentCode))
+                    .GroupBy(e => new { e.GradeId, e.GradeLevelTitle })
+                    .Select(g => new GradeCount
+                    {
+                        GradeId = g.Key.GradeId,
+                        GradeLevelTitle = g.Key.GradeLevelTitle,
+                        Count = g.Select(e => e.StudentId).Distinct().Count()
+                    })
+                    .ToList();
+
+                foreach (var gc in dashboardView.RepeatersByGrade)
+                {
+                    gc.SortOrder = gc.GradeId.HasValue && gradeSortOrders.ContainsKey(gc.GradeId.Value)
+                        ? gradeSortOrders[gc.GradeId.Value]
+                        : 999;
+                }
+                dashboardView.RepeatersByGrade = dashboardView.RepeatersByGrade
+                    .OrderBy(g => g.SortOrder)
+                    .ToList();
+
+                // Dropouts by grade: NOT YET RELIABLE.
+                // Current data model cannot distinguish actual dropouts from completers/
+                // graduates — both share ExitCode = "Dropped Out". Held back until the
+                // enrollment codes overhaul is done.
+                // See docs/plans/enrollment-codes-overhaul.md for details.
 
                 // Staff: active during this school year's date range
                 var staffQuery = this.context?.StaffSchoolInfo
@@ -3835,6 +3884,22 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="activeDeactiveUserViewModel"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// SOFT vs HARD deactivation — two distinct mechanisms control student visibility:
+        ///
+        /// 1. SOFT disable (this toggle): sets only StudentMaster.IsActive = false.
+        ///    Enrollment records are intentionally left intact (StudentEnrollment.IsActive
+        ///    stays true) so the student can be re-activated without re-enrolling.
+        ///    Used for temporary holds, suspensions, or administrative corrections.
+        ///
+        /// 2. HARD deactivation (drop/transfer/rollover): sets both StudentMaster.IsActive
+        ///    and StudentEnrollment.IsActive to false, records an exit code and exit date,
+        ///    and drops course section schedules. Re-activation requires formal re-enrollment.
+        ///    See StudentRepository.UpdateStudentEnrollment and RolloverRepository.
+        ///
+        /// Any query counting or listing enrolled students must check BOTH fields to be
+        /// accurate — StudentEnrollment.IsActive alone will include soft-disabled students.
+        /// </remarks>
         public ActiveDeactiveUserViewModel ActiveDeactiveUser(ActiveDeactiveUserViewModel activeDeactiveUserViewModel)
         {
             try
@@ -3847,6 +3912,9 @@ namespace opensis.data.Repository
                         var StudentData = this.context?.StudentMaster.Include(x => x.StudentEnrollment).FirstOrDefault(e => e.TenantId == activeDeactiveUserViewModel.TenantId && e.SchoolId == activeDeactiveUserViewModel.SchoolId && e.StudentId == activeDeactiveUserViewModel.UserId);
                         if (StudentData != null)
                         {
+                            // Re-activation: only allowed if the last enrollment is still current
+                            // (no past exit date, enrollment date not in the future).
+                            // If the student was hard-deactivated (dropped), they must re-enroll instead.
                             if (activeDeactiveUserViewModel.IsActive == true)
                             {
                                 var lastEnrollment = StudentData.StudentEnrollment.OrderByDescending(x => x.EnrollmentId).FirstOrDefault();
@@ -3863,6 +3931,8 @@ namespace opensis.data.Repository
                             }
                             else
                             {
+                                // Soft disable: only StudentMaster.IsActive is set to false.
+                                // Enrollment records are preserved for easy re-activation.
                                 StudentData.IsActive = activeDeactiveUserViewModel.IsActive;
                             }
                         }

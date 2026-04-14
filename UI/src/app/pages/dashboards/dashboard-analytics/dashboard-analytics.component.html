@@ -63,6 +63,20 @@
     </div>
   </div>
 
+  <!-- Repeaters by Grade — full width -->
+  <div class="card my-4 px-6 py-4">
+    <h4 class="text-primary font-semibold mb-3">{{'repeatersByGrade' | translate}}</h4>
+    <div *ngIf="repeatersByGrade.length === 0" class="text-xs text-secondary">{{'noRepeatersThisYear' | translate}}</div>
+    <div *ngFor="let g of repeatersByGrade" class="flex items-center mb-2">
+      <span class="w-40 flex-shrink-0 text-xs text-secondary mr-2" [title]="g.gradeLevelTitle">{{g.gradeLevelTitle}}</span>
+      <div class="flex-auto bg-gray-100 rounded h-5 relative">
+        <div class="bg-orange rounded h-5 transition-all duration-300" [style.width]="barWidth(g.count, maxRepeaters)"></div>
+      </div>
+      <span class="ml-2 text-xs font-medium w-8 text-right">{{g.count}}</span>
+    </div>
+  </div>
+  <!-- Dropouts by Grade: hidden until enrollment codes overhaul (see docs/plans/enrollment-codes-overhaul.md) -->
+
   <!-- Staff charts — side by side -->
   <div gdColumns="1fr 1fr" gdColumns.lt-sm="1fr" gdGap="16px" vexContainer>
     <!-- Staff by Profile -->

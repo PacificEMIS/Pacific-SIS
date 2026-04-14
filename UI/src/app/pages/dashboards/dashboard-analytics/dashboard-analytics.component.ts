@@ -188,9 +188,13 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   noticeList = [];
   eventCount = 0;
   enrollmentByGrade: GradeCount[] = [];
+  repeatersByGrade: GradeCount[] = [];
+  dropoutsByGrade: GradeCount[] = [];
   staffByProfile: NameCount[] = [];
   staffByJobTitle: NameCount[] = [];
   maxEnrollment = 0;
+  maxRepeaters = 0;
+  maxDropouts = 0;
   maxStaffByProfile = 0;
   maxStaffByJobTitle = 0;
   constructor(
@@ -276,10 +280,16 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
           this.staffCount = res.totalStaff !== null ? res.totalStaff : 0;
           this.parentCount = res.totalParent !== null ? res.totalParent : 0;
           this.enrollmentByGrade = res.enrollmentByGrade || [];
+          this.repeatersByGrade = res.repeatersByGrade || [];
+          this.dropoutsByGrade = res.dropoutsByGrade || [];
           this.staffByProfile = res.staffByProfile || [];
           this.staffByJobTitle = res.staffByJobTitle || [];
           this.maxEnrollment = this.enrollmentByGrade.length > 0
             ? Math.max(...this.enrollmentByGrade.map(g => g.count)) : 0;
+          this.maxRepeaters = this.repeatersByGrade.length > 0
+            ? Math.max(...this.repeatersByGrade.map(g => g.count)) : 0;
+          this.maxDropouts = this.dropoutsByGrade.length > 0
+            ? Math.max(...this.dropoutsByGrade.map(g => g.count)) : 0;
           this.maxStaffByProfile = this.staffByProfile.length > 0
             ? Math.max(...this.staffByProfile.map(s => s.count)) : 0;
           this.maxStaffByJobTitle = this.staffByJobTitle.length > 0
