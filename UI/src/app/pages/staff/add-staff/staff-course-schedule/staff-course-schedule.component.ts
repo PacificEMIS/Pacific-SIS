@@ -754,33 +754,90 @@ export class StaffCourseScheduleComponent implements OnInit {
     this.staffPrintScheduleReportModel.courseSectionIds = this.courseSectionIds;
 
     this.getStaffPrintScheduleReport().then((res: GetStaffPrintScheduleReportModel) => {
-      const staffDetails = res.staffDetails;
-      staffDetails?.courseDetailsViewModelList?.map(courseDetails => {
-        courseDetails.modifiedDataList = [];
-        courseDetails?.courseSectionDetailsViewModelList?.map(courseSectionDetails => {
-          courseSectionDetails?.dayDetailsViewModelList?.map(dayDetails => {
-            dayDetails?.datePeriodRoomDetailsViewModelList?.map((datePeriodRoomDetails, datePeriodRoomDetailsIndex) => {
-              courseDetails.modifiedDataList.push({
-                date: datePeriodRoomDetails?.date,
-                periodName: datePeriodRoomDetails?.periodName,
-                roomName: datePeriodRoomDetails?.roomName,
-                dayName: dayDetails?.dayName,
-                courseSectionName: courseSectionDetails?.courseSectionName,
-                courseName: courseDetails?.courseName,
-                isFirst: datePeriodRoomDetailsIndex === 0,
-                length: dayDetails?.datePeriodRoomDetailsViewModelList?.length
-              });
-            });
-          });
-        });
-      });
-
       this.staffPrintScheduleReportData = res;
+      this.staffPrintScheduleReportData.weekPages = this.buildWeekPages(res);
 
       setTimeout(() => {
         this.generatePDF();
       }, 100);
     });
+  }
+
+  private buildWeekPages(res: GetStaffPrintScheduleReportModel) {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const parseLocalDate = (s: any): Date => {
+      const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+      const d = new Date(s);
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    };
+    const ymd = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
+    const entries: { date: Date; key: string; periodId: number; periodName: string; roomName: string; courseName: string; courseSectionName: string; }[] = [];
+
+    res.staffDetails?.courseDetailsViewModelList?.forEach(course => {
+      course.courseSectionDetailsViewModelList?.forEach(section => {
+        section.dayDetailsViewModelList?.forEach(day => {
+          day.datePeriodRoomDetailsViewModelList?.forEach(d => {
+            const date = parseLocalDate(d.date);
+            entries.push({
+              date,
+              key: ymd(date),
+              periodId: d.periodId,
+              periodName: d.periodName,
+              roomName: d.roomName,
+              courseName: course.courseName,
+              courseSectionName: section.courseSectionName,
+            });
+          });
+        });
+      });
+    });
+
+    if (!entries.length) return [];
+
+    const periodMap = new Map<number, string>();
+    entries.forEach(e => { if (!periodMap.has(e.periodId)) periodMap.set(e.periodId, e.periodName); });
+    const periods = Array.from(periodMap.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.id - b.id);
+
+    const dowSet = new Set<number>();
+    entries.forEach(e => dowSet.add(e.date.getDay()));
+    const daysOfWeek = Array.from(dowSet).sort((a, b) => a - b);
+
+    const weekMap = new Map<string, typeof entries>();
+    entries.forEach(e => {
+      const sunday = new Date(e.date);
+      sunday.setDate(sunday.getDate() - sunday.getDay());
+      const key = ymd(sunday);
+      if (!weekMap.has(key)) weekMap.set(key, []);
+      weekMap.get(key).push(e);
+    });
+
+    return Array.from(weekMap.entries())
+      .map(([key, weekEntries]) => {
+        const [y, mo, d] = key.split('-').map(Number);
+        return { sunday: new Date(y, mo, d), weekEntries };
+      })
+      .sort((a, b) => a.sunday.getTime() - b.sunday.getTime())
+      .map(({ sunday, weekEntries }) => {
+        const weekDays = daysOfWeek.map(dow => {
+          const dt = new Date(sunday);
+          dt.setDate(dt.getDate() + dow);
+          return { date: dt, dayName: dayNames[dow], dow, key: ymd(dt) };
+        });
+        const rows = periods.map(p => ({
+          periodName: p.name,
+          cells: weekDays.map(wd => ({
+            entries: weekEntries.filter(e => e.periodId === p.id && e.key === wd.key),
+          })),
+        }));
+        const saturday = new Date(sunday);
+        saturday.setDate(saturday.getDate() + 6);
+        return { weekStart: sunday, weekEnd: saturday, days: weekDays, rows };
+      });
   }
 
   generatePDF() {
@@ -800,52 +857,34 @@ export class StaffCourseScheduleComponent implements OnInit {
         <head>
           <title>Print tab</title>
           <style>
+          @page { size: landscape; margin: 12mm; }
           h1, h2, h3, h4, h5, h6, p { margin: 0; }
-          body { -webkit-print-color-adjust: exact; font-family: Arial; background-color: #fff; }
-          table { border-collapse: collapse; width: 100%; }
-          .staff-information-report { width: 1024px; margin: auto; }
-          .float-left { float: left; }
-          .text-center { text-align: center; }
-          .text-right { text-align: right; }
-          .inline-block { display: inline-block; }
-          .border-table { border: 1px solid #000; border-top: none; }
-          .clearfix::after { display: block; clear: both; content: ""; }
-          .report-header { padding: 20px 0; border-bottom: 2px solid #000; }
-          .school-logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #cacaca; margin-right: 20px; text-align: center; overflow: hidden; }
-          .school-logo img { width: 100%; overflow: hidden; }
-          .report-header td { padding: 20px; padding-bottom: 10px; }
-          .report-header td.generate-date { padding: 0; }
-          .report-header .information h4 { font-size: 20px; font-weight: 600; padding: 10px 0; }
-          .report-header .information p, .header-right p { font-size: 16px; }
-          .header-right div { background-color: #000; color: #fff; font-size: 20px; padding: 5px 20px; font-weight: 600; margin-bottom: 8px; }
-          .staff-logo { padding: 20px; }
-          .staff-logo div { width: 100%; height: 100%; border: 1px solid rgb(136, 136, 136); border-radius: 3px; }
-          .staff-logo img { width: 100%; }
-          .staff-details { padding: 20px; vertical-align: top; }
-          .staff-details h4 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-          .staff-details span { color: #817e7e; padding: 0 15px; font-size: 20px; }
-          .staff-details p { color: #121212; font-size: 16px; }
-          .staff-details table { border-collapse: separate; border-spacing: 0; border-radius: 10px; }
-          .staff-details table td, .staff-details table th { border-left: 1px solid #000; border-top: 1px solid #000; padding: 8px 10px; text-align: left; }
-          .information.staff-details table td { width: 33.33%; }
-          .information.staff-details .border-table { border-top: 1px solid #000; }
-          .information.staff-details table tr:first-child td { border-top: none; }
-          .staff-details table td b, .staff-details table span { color: #000; font-size: 16px; }
-          .staff-details table td b { font-weight: 600; }
-          .staff-details table td:first-child, .staff-details table th:first-child { border-left: none; }
-          .staff-details table tr:first-child td { border-bottom: none; }
-          .staff-details table th:first-child { border-top-left-radius: 10px; }
-          .staff-details table th:last-child { border-top-right-radius: 10px; }
-          .p-b-8 { padding-bottom: 8px; }
-          .width-160 { width: 160px; }
-          .m-b-15 { margin-bottom: 15px; }
-          .bg-black { background-color: #000; }
-          .bg-slate { background-color: #E5E5E5; }
-          .information-table td { font-size: 16px; }
-          table td { vertical-align: middle; }
-          .report-header .header-left { width: 65%; }
-          .report-header .header-right { width: 35%; }
-          .report-header .information { width: calc(100% - 110px); }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; font-family: Arial, sans-serif; background-color: #fff; color: #121212; }
+          .week-page { page-break-after: always; }
+          .week-page:last-child { page-break-after: auto; }
+          .report-header { display: flex; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 8px; }
+          .school-logo { width: 56px; height: 56px; border-radius: 50%; border: 1px solid #cacaca; margin-right: 12px; overflow: hidden; flex-shrink: 0; }
+          .school-logo img { width: 100%; height: 100%; object-fit: cover; }
+          .header-info { flex: 1; }
+          .header-info h4 { font-size: 16px; font-weight: 600; }
+          .header-info p { font-size: 12px; color: #555; }
+          .header-right { text-align: right; }
+          .header-right .title { font-size: 14px; font-weight: 600; }
+          .header-right .powered { font-size: 11px; color: #666; }
+          .staff-line { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+          .staff-line .name { font-size: 15px; font-weight: 600; }
+          .staff-line .meta { color: #555; }
+          .week-range { background: #f0f0f0; padding: 6px 10px; font-size: 13px; font-weight: 600; margin-bottom: 6px; border-left: 4px solid #1976d2; }
+          table.timetable-grid { border-collapse: collapse; width: 100%; table-layout: fixed; }
+          table.timetable-grid th, table.timetable-grid td { border: 1px solid #888; padding: 6px 8px; vertical-align: top; font-size: 12px; }
+          table.timetable-grid thead th { background-color: #e3f2fd; text-align: center; font-weight: 600; }
+          table.timetable-grid thead th .day-date { font-size: 10px; color: #555; font-weight: 400; display: block; margin-top: 2px; }
+          table.timetable-grid .period-col { width: 110px; background-color: #f0f0f0; font-weight: 600; text-align: center; }
+          table.timetable-grid td.day-cell { height: 60px; }
+          .cell-entry { padding: 2px 0; }
+          .cell-entry + .cell-entry { border-top: 1px dashed #ccc; margin-top: 2px; padding-top: 4px; }
+          .cell-entry .course-section { font-weight: 600; }
+          .cell-entry .room { font-size: 11px; color: #555; }
           </style>
         </head>
         <body onload="window.print()">${printContents}</body>
