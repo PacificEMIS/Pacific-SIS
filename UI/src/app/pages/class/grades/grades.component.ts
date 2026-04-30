@@ -49,6 +49,10 @@ export class GradesComponent implements OnInit, AfterViewInit {
     this.selectedCourseSection = this.defaultValuesService.getSelectedCourseSection();
   }
 
+  get selectedMarkingPeriodTitle(): string {
+    return this.defaultValuesService.getMarkingPeriodTitle() || '';
+  }
+
   ngOnInit(): void {
     if (this.selectedCourseSection?.gradeScaleType !== 'Ungraded') {
       this.isNotGraded = false;

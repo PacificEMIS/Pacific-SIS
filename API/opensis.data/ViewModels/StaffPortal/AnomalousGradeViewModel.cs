@@ -22,6 +22,10 @@ namespace opensis.data.ViewModels.StaffPortal
         public int? AssignmentTypeId { get; set; }
         public int? AssignmentId { get; set; }
         public decimal? AcademicYear { get; set; }
+        public int? YrMarkingPeriodId { get; set; }
+        public int? SmstrMarkingPeriodId { get; set; }
+        public int? QtrMarkingPeriodId { get; set; }
+        public int? PrgrsprdMarkingPeriodId { get; set; }
         public string? SearchValue { get; set; }
         public bool? IncludeInactive { get; set; }
         public int? TotalCount { get; set; }

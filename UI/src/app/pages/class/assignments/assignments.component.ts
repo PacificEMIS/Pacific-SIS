@@ -102,6 +102,10 @@ export class AssignmentsComponent implements OnInit {
     this.selectedAssignmentType = assignmentType;
   }
 
+  get selectedMarkingPeriodTitle(): string {
+    return this.defaultValueService.getMarkingPeriodTitle() || '';
+  }
+
   addEditAssignmentType(assignmentTypeDetails?) {
     this.dialog
       .open(AddAssignmentComponent, {

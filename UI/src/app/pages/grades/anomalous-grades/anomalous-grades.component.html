@@ -1,0 +1,123 @@
+<vex-page-layout>
+    <vex-mat-spinner-overlay *ngIf="loading" color="accent"></vex-mat-spinner-overlay>
+    <vex-page-layout-header class="pb-16" fxLayout="column" fxLayoutAlign="center start">
+        <vex-secondary-toolbar current="{{ 'anomalousGrades' | translate }}" class="w-full">
+            <vex-breadcrumbs [crumbs]="['grades']" class="flex-auto"></vex-breadcrumbs>
+        </vex-secondary-toolbar>
+    </vex-page-layout-header>
+
+    <vex-page-layout-content class="-mt-6">
+        <div class="card -mt-16 mb-6">
+            <div class="px-4 md:h-16 border-b sticky left-0 pb-4 md:pb-0" fxLayout="row" fxLayoutAlign="start center">
+                <div class="md:flex w-full justify-between items-center">
+                    <div class="py-3 flex items-center" fxFlex="auto">
+                        <input [formControl]="searchCtrl"
+                               class="py-3 border-0 outline-none bg-transparent"
+                               placeholder="{{ 'search' | translate }}..."
+                               type="search">
+                        <button class="ml-2" mat-icon-button type="button">
+                            <mat-icon [icIcon]="icSearch"></mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="py-3 flex items-center gap-4 flex-wrap" fxFlex="none">
+                        <mat-form-field appearance="outline" class="w-64">
+                            <mat-label>{{ 'courseSection' | translate }}</mat-label>
+                            <mat-select [(value)]="selectedCourseSectionId" (selectionChange)="onCourseSectionChange()">
+                                <mat-option [value]="null">{{ 'all' | translate }}</mat-option>
+                                <mat-option *ngFor="let cs of courseSections.courseSectionViewList"
+                                            [value]="cs.courseSectionId">
+                                    {{ cs.courseSectionName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-checkbox [(ngModel)]="includeInactive" (change)="onIncludeInactiveChange()">
+                            {{ 'includeInactive' | translate }}
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto overflow-y-hidden">
+                <table mat-table [dataSource]="dataSource" class="w-full">
+
+                    <ng-container matColumnDef="studentName">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'studentName' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">
+                            {{ row.firstGivenName }}<span *ngIf="row.middleName"> {{ row.middleName }}</span> {{ row.lastFamilyName }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="studentInternalId">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'studentInternalId' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row.studentInternalId }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="courseSection">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'courseSection' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row.courseSectionId }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="assignmentType">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'assignmentType' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row.assignmentTypeTitle }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="assignment">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'assignment' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row.assignmentTitle }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'status' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">
+                            <span [ngClass]="{
+                                    'text-red': statusOf(row) === 'missing',
+                                    'text-orange': statusOf(row) === 'overCap',
+                                    'text-blue': statusOf(row) === 'starred'
+                                  }">
+                                <ng-container [ngSwitch]="statusOf(row)">
+                                    <span *ngSwitchCase="'missing'">{{ 'missing' | translate }}</span>
+                                    <span *ngSwitchCase="'overCap'">{{ 'overCap' | translate }}</span>
+                                    <span *ngSwitchCase="'starred'">{{ 'anomalousGrade' | translate }}</span>
+                                </ng-container>
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="marks">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'marksGiven' | translate }} / {{ 'totalMarks' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">
+                            <ng-container *ngIf="row.allowedMarks !== 'Missing'; else dash">
+                                {{ row.allowedMarks }} / {{ row.points }}
+                            </ng-container>
+                            <ng-template #dash>—</ng-template>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="comment">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'comment' | translate }}</th>
+                        <td mat-cell *matCellDef="let row">{{ row.comment }}</td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell text-center py-6" [attr.colspan]="displayedColumns.length">
+                            {{ 'noRecordFound' | translate }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <mat-paginator [length]="totalCount"
+                           [pageSize]="pageSize"
+                           [pageSizeOptions]="[5, 10, 20, 50]"
+                           (page)="onPageChange($event)"
+                           showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </vex-page-layout-content>
+</vex-page-layout>

@@ -7,6 +7,7 @@ import { AllCourseSectionView } from '../models/course-manager.model';
 import { ScheduledCourseSectionViewModel } from '../models/dashboard.model';
 import { AddAssignmentModel, AddAssignmentTypeModel, GetAllAssignmentsModel } from '../models/staff-portal-assignment.model';
 import { GetAllStaffModel ,GetStaffModel} from '../models/staff.model';
+import { AnomalousGradeViewModel } from '../models/anomalous-grade.model';
 
 @Injectable({
     providedIn: 'root'
@@ -55,5 +56,12 @@ export class StaffPortalService {
         obj.academicYear = this.defaultValuesService.getAcademicYear();
         const apiurl = this.apiUrl + obj._tenantName + '/StaffPortal/getAllMissingAttendanceListForStaff';
         return this.http.post<ScheduledCourseSectionViewModel>(apiurl, obj,this.httpOptions);
+    }
+
+    getAnomalousGrade(obj: AnomalousGradeViewModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        const apiurl = this.apiUrl + obj._tenantName + '/StaffPortal/getAnomalousGrade';
+        return this.http.post<AnomalousGradeViewModel>(apiurl, obj, this.httpOptions);
     }
 }
