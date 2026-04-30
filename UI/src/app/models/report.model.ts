@@ -260,6 +260,25 @@ export class GetPrintScheduleReportModel extends CommonField {
     }
 }
 
+export class GetStaffPrintScheduleReportModel extends CommonField {
+    academicYear: number;
+    staffId: number;
+    courseSectionIds: number[];
+    staffDetails: any;
+    schoolLogo: string;
+    schoolName: string;
+    streetAddress1: string;
+    streetAddress2: string;
+    city: string;
+    district: string;
+    country: string;
+    state: string;
+    zip: string;
+    constructor() {
+        super();
+    }
+}
+
 export class GetStudentRankList extends CommonField {
     academicYear?: number;
     filterParams?: any;

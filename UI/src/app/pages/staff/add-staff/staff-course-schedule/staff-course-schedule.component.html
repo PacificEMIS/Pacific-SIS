@@ -30,7 +30,7 @@
                 <mat-icon [icIcon]="icMoreVert"></mat-icon>
             </button>
             <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-                <button mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate
+                <button (click)="printSchedule()" mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate
                     }}</button>
                 <button (click)="exportScheduledCourses()" mat-menu-item><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="20" class="mr-4 inline-block">{{"exportToExcel" | translate
                     }}</button>
@@ -314,3 +314,61 @@
         </ng-template>
     </mat-card-content>
 </mat-card>
+
+<!-- Staff Print Schedule section start here -->
+<div class="hidden" id="staffPrintSectionId">
+    <div class="week-page" *ngFor="let week of staffPrintScheduleReportData?.weekPages">
+        <div class="report-header">
+            <div class="school-logo">
+                <img *ngIf="staffPrintScheduleReportData?.schoolLogo" [src]="'data:image/jpeg;base64,' + staffPrintScheduleReportData?.schoolLogo">
+            </div>
+            <div class="header-info">
+                <h4>{{staffPrintScheduleReportData?.schoolName}}</h4>
+                <p>{{staffPrintScheduleReportData?.streetAddress1 ? staffPrintScheduleReportData?.streetAddress1 : ''}}{{staffPrintScheduleReportData?.streetAddress2 ? ', '+staffPrintScheduleReportData?.streetAddress2 : ''}}{{staffPrintScheduleReportData?.city ? ', '+staffPrintScheduleReportData?.city : ''}}{{staffPrintScheduleReportData?.district ? ', '+staffPrintScheduleReportData?.district : ''}}{{staffPrintScheduleReportData?.state ? ', '+staffPrintScheduleReportData?.state : ''}}{{staffPrintScheduleReportData?.zip ? ', '+staffPrintScheduleReportData?.zip : ''}}</p>
+            </div>
+            <div class="header-right">
+                <div class="title">{{'staffScheduleReport' | translate}}</div>
+                <p class="powered">{{'reportGeneratedOn' | translate}} {{today | date}}</p>
+                <p class="powered">{{'poweredBy' | translate}} <b>{{'appName' | translate}}</b></p>
+            </div>
+        </div>
+
+        <div class="subject-line">
+            <div>
+                <span class="name">{{staffPrintScheduleReportData?.staffDetails?.firstGivenName}} {{staffPrintScheduleReportData?.staffDetails?.middleName ? staffPrintScheduleReportData?.staffDetails?.middleName + ' ' : ''}}{{staffPrintScheduleReportData?.staffDetails?.lastFamilyName}}</span>
+                <span class="meta" *ngIf="staffPrintScheduleReportData?.staffDetails?.jobTitle"> &mdash; {{staffPrintScheduleReportData?.staffDetails?.jobTitle}}</span>
+            </div>
+            <div class="meta">
+                <span *ngIf="staffPrintScheduleReportData?.staffDetails?.staffInternalId"><b>{{'staffId' | translate}}:</b> {{staffPrintScheduleReportData?.staffDetails?.staffInternalId}}</span>
+            </div>
+        </div>
+
+        <div class="week-range">
+            {{ 'week' | translate }}: {{ week.weekStart | date:'mediumDate' }} &ndash; {{ week.weekEnd | date:'mediumDate' }}
+        </div>
+
+        <table class="timetable-grid">
+            <thead>
+                <tr>
+                    <th class="period-col">{{ 'period' | translate }}</th>
+                    <th *ngFor="let day of week.days">
+                        {{ day.dayName }}
+                        <span class="day-date">{{ day.date | date:'shortDate' }}</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of week.rows">
+                    <td class="period-col">{{ row.periodName }}</td>
+                    <td class="day-cell" *ngFor="let cell of row.cells">
+                        <div class="cell-entry" *ngFor="let entry of cell.entries">
+                            <div class="course-section">{{ entry.courseSectionName }}</div>
+                            <div class="room" *ngIf="entry.roomName">{{ entry.roomName }}</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Staff Print Schedule section end here -->

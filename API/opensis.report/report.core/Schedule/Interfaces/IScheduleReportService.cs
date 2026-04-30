@@ -15,5 +15,6 @@ namespace opensis.report.report.core.Schedule.Interfaces
         public StudentScheduledListModel GetStudentListByCourseSection(StudentScheduledListModel studentList);
         public SchoolwideScheduleReportViewModel GetSchoolwideScheduleReport(SchoolwideScheduleReportViewModel schoolwideScheduleViewModel);
         public PrintScheduleReportViewModel GetPrintScheduleReport(PrintScheduleReportViewModel printScheduleReportViewModel);
+        public StaffPrintScheduleReportViewModel GetStaffPrintScheduleReport(StaffPrintScheduleReportViewModel staffPrintScheduleReportViewModel);
     }
 }

@@ -37,6 +37,9 @@ import {
 import { DefaultValuesService } from "../../../../common/default-values.service";
 import { ExcelService } from "../../../../services/excel.service";
 import { CommonService } from "src/app/services/common.service";
+import { GetStaffPrintScheduleReportModel } from "src/app/models/report.model";
+import { ReportService } from "src/app/services/report.service";
+import { buildSchedulePrintWeekPages, getSchedulePrintStyles } from "src/app/common/schedule-print-pivot";
 @Component({
   selector: "vex-staff-course-schedule",
   templateUrl: "./staff-course-schedule.component.html",
@@ -99,6 +102,10 @@ export class StaffCourseScheduleComponent implements OnInit {
     new GetMarkingPeriodTitleListModel();
   viewStartTime;
   viewEndTime;
+  staffPrintScheduleReportModel: GetStaffPrintScheduleReportModel = new GetStaffPrintScheduleReportModel();
+  staffPrintScheduleReportData;
+  today: Date = new Date();
+  courseSectionIds: number[] = [];
   constructor(
     private dialog: MatDialog,
     public translateService: TranslateService,
@@ -109,6 +116,7 @@ export class StaffCourseScheduleComponent implements OnInit {
     private excelService: ExcelService,
     private defaultService: DefaultValuesService,
     private commonService: CommonService,
+    private reportService: ReportService,
   ) {
     //translateService.use('en');
   }
@@ -167,6 +175,7 @@ export class StaffCourseScheduleComponent implements OnInit {
               res.courseSectionViewList
             );
             this.scheduledCourseSectionModel = res;
+            this.courseSectionIds = res.courseSectionViewList?.map(item => item.courseSectionId) || [];
             this.createTableDataset(res.courseSectionViewList);
             this.generateEvents();
           }
@@ -710,6 +719,75 @@ export class StaffCourseScheduleComponent implements OnInit {
       return item.slice(0, 10) + '....';
     }else{
       return item;
+    }
+  }
+
+  getStaffPrintScheduleReport() {
+    return new Promise((resolve, reject) => {
+      this.reportService.getStaffPrintScheduleReport(this.staffPrintScheduleReportModel).subscribe(res => {
+        if (res) {
+          if (res._failure) {
+            this.commonService.checkTokenValidOrNot(res._message);
+            this.snackBar.open(res._message, '', {
+              duration: 10000
+            });
+          } else {
+            resolve(res);
+          }
+        } else {
+          this.snackBar.open(this.defaultService.getHttpError(), '', {
+            duration: 10000
+          });
+        }
+      });
+    });
+  }
+
+  printSchedule() {
+    if (!this.courseSectionIds.length) {
+      this.snackBar.open(this.defaultService.translateKey('thisStaffHasNotBeenScheduledIntoAnyCourse'), '', {
+        duration: 5000
+      });
+      return;
+    }
+
+    this.staffPrintScheduleReportModel.staffId = this.staffService.getStaffId();
+    this.staffPrintScheduleReportModel.courseSectionIds = this.courseSectionIds;
+
+    this.getStaffPrintScheduleReport().then((res: GetStaffPrintScheduleReportModel) => {
+      this.staffPrintScheduleReportData = res;
+      this.staffPrintScheduleReportData.weekPages = buildSchedulePrintWeekPages(res.staffDetails?.courseDetailsViewModelList);
+
+      setTimeout(() => {
+        this.generatePDF();
+      }, 100);
+    });
+  }
+
+  generatePDF() {
+    let printContents, popupWin;
+    printContents = document.getElementById('staffPrintSectionId').innerHTML;
+    document.getElementById('staffPrintSectionId').className = 'block';
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+    if (popupWin === null || typeof (popupWin) === 'undefined') {
+      document.getElementById('staffPrintSectionId').className = 'hidden';
+      this.snackBar.open("User needs to allow the popup from the browser", '', {
+        duration: 10000
+      });
+    } else {
+      popupWin.document.open();
+      popupWin.document.write(`
+      <html>
+        <head>
+          <title>Print tab</title>
+          <style>${getSchedulePrintStyles()}</style>
+        </head>
+        <body onload="window.print()">${printContents}</body>
+      </html>`
+      );
+      popupWin.document.close();
+      document.getElementById('staffPrintSectionId').className = 'hidden';
+      return;
     }
   }
 }
