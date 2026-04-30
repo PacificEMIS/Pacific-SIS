@@ -165,5 +165,33 @@ namespace opensis.report.report.core.Schedule.Services
             }
             return printScheduleReport;
         }
+
+        /// <summary>
+        /// Get Staff Print Schedule Report
+        /// </summary>
+        /// <param name="staffPrintScheduleReportViewModel"></param>
+        /// <returns></returns>
+        public StaffPrintScheduleReportViewModel GetStaffPrintScheduleReport(StaffPrintScheduleReportViewModel staffPrintScheduleReportViewModel)
+        {
+            StaffPrintScheduleReportViewModel staffPrintScheduleReport = new();
+            try
+            {
+                if (tokenManager.CheckToken(staffPrintScheduleReportViewModel._tenantName + staffPrintScheduleReportViewModel._userName, staffPrintScheduleReportViewModel._token))
+                {
+                    staffPrintScheduleReport = this.scheduleReportRepository.GetStaffPrintScheduleReport(staffPrintScheduleReportViewModel);
+                }
+                else
+                {
+                    staffPrintScheduleReport._failure = true;
+                    staffPrintScheduleReport._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                staffPrintScheduleReport._failure = true;
+                staffPrintScheduleReport._message = es.Message;
+            }
+            return staffPrintScheduleReport;
+        }
     }
 }

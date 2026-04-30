@@ -1943,6 +1943,7 @@
     "uploadPhoto": "Envoyer la photo",
     "uploadLogo": "Télécharger le logo",
     "studentScheduleReport": "Rapport sur l'emploi du temps des étudiants",
+    "staffScheduleReport": "Rapport sur l'emploi du temps du personnel",
     "selectAtLeastOneStudent": "Sélectionnez au moins un élève.",
     "failedToPrintScheduledCourses": "Aucun enregistrement trouvé. Échec de l'impression des cours programmés.",
     "courseTeacher": "Cours/Enseignant",

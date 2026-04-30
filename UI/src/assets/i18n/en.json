@@ -1979,6 +1979,7 @@
     "uploadPhoto": "Upload Photo",
     "uploadLogo": "Upload Logo",
     "studentScheduleReport": "Student Schedule Report",
+    "staffScheduleReport": "Staff Schedule Report",
     "selectAtLeastOneStudent": "Select at least one student.",
     "failedToPrintScheduledCourses": "No records found. Failed to print scheduled courses.",
     "courseTeacher": "Course/Teacher",

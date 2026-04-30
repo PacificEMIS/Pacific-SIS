@@ -30,7 +30,7 @@
                 <mat-icon [icIcon]="icMoreVert"></mat-icon>
             </button>
             <mat-menu #menu="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="below">
-                <button mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate
+                <button (click)="printSchedule()" mat-menu-item><i class="icon icon-printer mr-4"></i>{{ "printSchedule" | translate
                     }}</button>
                 <button (click)="exportScheduledCourses()" mat-menu-item><img src="assets/img/microsoft_office_excel.svg" alt="Excel Icon" width="20" class="mr-4 inline-block">{{"exportToExcel" | translate
                     }}</button>
@@ -314,3 +314,99 @@
         </ng-template>
     </mat-card-content>
 </mat-card>
+
+<!-- Staff Print Schedule section start here -->
+<div class="hidden" id="staffPrintSectionId">
+    <div class="staff-information-report">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td>
+                    <table class="report-header">
+                        <tr>
+                            <td class="header-left">
+                                <div class="float-left school-logo">
+                                    <img *ngIf="staffPrintScheduleReportData?.schoolLogo" [src]="staffPrintScheduleReportData?.schoolLogo ? 'data:image/jpeg;base64,' + staffPrintScheduleReportData?.schoolLogo : ''">
+                                </div>
+                                <div class="float-left information">
+                                    <h4>{{staffPrintScheduleReportData?.schoolName}}</h4>
+                                    <p>{{staffPrintScheduleReportData?.streetAddress1 ? staffPrintScheduleReportData?.streetAddress1 : ''}}{{staffPrintScheduleReportData?.streetAddress2 ? ', '+staffPrintScheduleReportData?.streetAddress2 : ''}}{{staffPrintScheduleReportData?.city ? ', '+staffPrintScheduleReportData?.city : ''}}{{staffPrintScheduleReportData?.district ? ', '+staffPrintScheduleReportData?.district : ''}}{{staffPrintScheduleReportData?.state ? ', '+staffPrintScheduleReportData?.state : ''}}{{staffPrintScheduleReportData?.zip ? ', '+staffPrintScheduleReportData?.zip : ''}}</p>
+                                </div>
+                            </td>
+                            <td class="header-right text-right">
+                                <div class="text-center inline-block">{{'staffScheduleReport' | translate}}</div>
+                                <p class="text-right">{{'poweredBy' | translate}} <b>{{'appName' | translate}}</b></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="generate-date">
+                                <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{today | date}}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td *ngIf="staffPrintScheduleReportData?.staffDetails?.staffPhoto" class="staff-logo width-160">
+                                <div>
+                                    <img [src]="staffPrintScheduleReportData?.staffDetails?.staffPhoto ? 'data:image/jpeg;base64,' + staffPrintScheduleReportData?.staffDetails?.staffPhoto : ''" alt="Staff Photo">
+                                </div>
+                            </td>
+                            <td class="staff-details information">
+                                <h4 class="inline-block">{{staffPrintScheduleReportData?.staffDetails?.firstGivenName}} {{staffPrintScheduleReportData?.staffDetails?.middleName ? ''+staffPrintScheduleReportData?.staffDetails?.middleName+' ':''}} {{staffPrintScheduleReportData?.staffDetails?.lastFamilyName}}</h4><span class="inline-block" *ngIf="staffPrintScheduleReportData?.staffDetails?.homeAddressLineOne"> | </span>
+                                <p class="inline-block">{{staffPrintScheduleReportData?.staffDetails?.homeAddressLineOne}}{{staffPrintScheduleReportData?.staffDetails?.homeAddressLineTwo ? ', ' + staffPrintScheduleReportData?.staffDetails?.homeAddressLineTwo : ''}}{{staffPrintScheduleReportData?.staffDetails?.homeAddressCity ? ', ' + staffPrintScheduleReportData?.staffDetails?.homeAddressCity : ''}}{{staffPrintScheduleReportData?.staffDetails?.homeAddressState ? ', ' + staffPrintScheduleReportData?.staffDetails?.homeAddressState : ''}}{{staffPrintScheduleReportData?.staffDetails?.homeAddressZip ? ', ' + staffPrintScheduleReportData?.staffDetails?.homeAddressZip : ''}}{{staffPrintScheduleReportData?.staffDetails?.homeAddressCountry ? ', ' + staffPrintScheduleReportData?.staffDetails?.homeAddressCountry : ''}}</p>
+                                <table class="border-table">
+                                    <tbody>
+                                        <tr>
+                                            <td><b>{{'staffId' | translate}}</b> : <span>{{staffPrintScheduleReportData?.staffDetails?.staffInternalId}}</span></td>
+                                            <td><b>{{'jobTitle' | translate}}</b> : <span>{{staffPrintScheduleReportData?.staffDetails?.jobTitle}}</span></td>
+                                            <td><b>{{'profile' | translate}}</b> : <span>{{staffPrintScheduleReportData?.staffDetails?.profile}}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>{{'email' | translate}}</b> : <span>{{staffPrintScheduleReportData?.staffDetails?.personalEmail}}</span></td>
+                                            <td><b>{{'mobilePhone' | translate}}</b> : <span>{{staffPrintScheduleReportData?.staffDetails?.mobilePhone}}</span></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="staff-details">
+                    <table class="border-table information-table">
+                        <thead>
+                            <tr>
+                                <th class="bg-slate" width="12%"><strong>{{'date' | translate}}</strong></th>
+                                <th class="bg-slate" width="12%"><strong>{{'day' | translate}}</strong></th>
+                                <th class="bg-slate" width="12%"><strong>{{'period' | translate}}</strong></th>
+                                <th class="bg-slate" width="25%"><strong>{{'courseSection' | translate}}</strong></th>
+                                <th class="bg-slate" width="12%"><strong>{{'room' | translate}}</strong></th>
+                                <th class="bg-slate" width="17%"><strong>{{'course' | translate}}</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let courseDetails of staffPrintScheduleReportData?.staffDetails?.courseDetailsViewModelList">
+                                <tr *ngFor="let dateDetails of courseDetails?.modifiedDataList; first as isFirst">
+                                    <td>{{dateDetails?.date | date}}</td>
+                                    <td *ngIf="dateDetails?.isFirst" [attr.rowspan]="dateDetails?.length">{{dateDetails?.dayName}}</td>
+                                    <td>{{dateDetails?.periodName}}</td>
+                                    <td>{{dateDetails?.courseSectionName}}</td>
+                                    <td>{{dateDetails?.roomName}}</td>
+                                    <td *ngIf="isFirst" [attr.rowspan]="courseDetails?.modifiedDataList?.length">{{dateDetails?.courseName}}</td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- Staff Print Schedule section end here -->

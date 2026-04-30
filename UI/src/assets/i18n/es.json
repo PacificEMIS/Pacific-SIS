@@ -1943,6 +1943,7 @@
     "uploadPhoto": "Subir foto",
     "uploadLogo": "Cargar logotipo",
     "studentScheduleReport": "Informe de horario del estudiante",
+    "staffScheduleReport": "Informe de horario del personal",
     "selectAtLeastOneStudent": "Seleccione al menos un estudiante.",
     "failedToPrintScheduledCourses": "No se encontraron registros. No se pudieron imprimir los cursos programados.",
     "courseTeacher": "Curso / Profesor",

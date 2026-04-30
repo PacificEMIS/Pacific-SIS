@@ -368,6 +368,22 @@ namespace opensisAPI.Controllers
             return printScheduleReport;
         }
 
+        [HttpPost("getStaffPrintScheduleReport")]
+        public ActionResult<StaffPrintScheduleReportViewModel> GetStaffPrintScheduleReport(StaffPrintScheduleReportViewModel staffPrintScheduleReportViewModel)
+        {
+            StaffPrintScheduleReportViewModel staffPrintScheduleReport = new();
+            try
+            {
+                staffPrintScheduleReport = _scheduleReportService.GetStaffPrintScheduleReport(staffPrintScheduleReportViewModel);
+            }
+            catch (Exception es)
+            {
+                staffPrintScheduleReport._failure = true;
+                staffPrintScheduleReport._message = es.Message;
+            }
+            return staffPrintScheduleReport;
+        }
+
         [HttpPost("getCGPARankListReport")]
         public ActionResult<StudentCgpaViewModel> GetCGPARankListReport(PageResult pageResult)
         {
