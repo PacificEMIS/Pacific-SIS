@@ -416,99 +416,61 @@
 
 <!-- Print Schedule section start here -->
 <div class="hidden" id="printSectionId">
-    <div class="student-information-report">
-        <ng-container *ngFor="let studentDetails of printScheduleReportData?.studentDetailsViewModelList; let last = last">
-            <table cellpadding="0" cellspacing="0">
-                <tr>
-                    <td>
-                        <table class="report-header">
-                            <tr>
-                                <td class="header-left">
-                                    <div class="float-left school-logo">
-                                        <img *ngIf="printScheduleReportData?.schoolLogo" [src]="printScheduleReportData?.schoolLogo ? 'data:image/jpeg;base64,' + printScheduleReportData?.schoolLogo : ''">
-                                    </div>
-                                    <div class="float-left information">
-                                        <h4>{{printScheduleReportData?.schoolName}}</h4>
-                                        <p>{{printScheduleReportData?.streetAddress1 ? printScheduleReportData?.streetAddress1 : ''}}{{printScheduleReportData?.streetAddress2 ? ', '+printScheduleReportData?.streetAddress2 : ''}}{{printScheduleReportData?.city ? ', '+printScheduleReportData?.city : ''}}{{printScheduleReportData?.district ? ', '+printScheduleReportData?.district : ''}}{{printScheduleReportData?.state ? ', '+printScheduleReportData?.state : ''}}{{printScheduleReportData?.zip ? ', '+printScheduleReportData?.zip : ''}}</p>
-                                    </div>
-                                </td>
-                                <td class="header-right text-right">
-                                    <div class="text-center inline-block">{{'studentScheduleReport' | translate}}</div>
-                                    <p class="text-right">{{'poweredBy' | translate}} <b>{{'appName' | translate}}</b></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="generate-date">
-                                    <p class="text-center p-b-8">{{'reportGeneratedOn' | translate}} {{today | date}}</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+    <ng-container *ngFor="let studentDetails of printScheduleReportData?.studentDetailsViewModelList">
+        <div class="week-page" *ngFor="let week of studentDetails?.weekPages">
+            <div class="report-header">
+                <div class="school-logo">
+                    <img *ngIf="printScheduleReportData?.schoolLogo" [src]="'data:image/jpeg;base64,' + printScheduleReportData?.schoolLogo">
+                </div>
+                <div class="header-info">
+                    <h4>{{printScheduleReportData?.schoolName}}</h4>
+                    <p>{{printScheduleReportData?.streetAddress1 ? printScheduleReportData?.streetAddress1 : ''}}{{printScheduleReportData?.streetAddress2 ? ', '+printScheduleReportData?.streetAddress2 : ''}}{{printScheduleReportData?.city ? ', '+printScheduleReportData?.city : ''}}{{printScheduleReportData?.district ? ', '+printScheduleReportData?.district : ''}}{{printScheduleReportData?.state ? ', '+printScheduleReportData?.state : ''}}{{printScheduleReportData?.zip ? ', '+printScheduleReportData?.zip : ''}}</p>
+                </div>
+                <div class="header-right">
+                    <div class="title">{{'studentScheduleReport' | translate}}</div>
+                    <p class="powered">{{'reportGeneratedOn' | translate}} {{today | date}}</p>
+                    <p class="powered">{{'poweredBy' | translate}} <b>{{'appName' | translate}}</b></p>
+                </div>
+            </div>
 
-                <tr>
-                    <td>
-                        <table>
-                            <tr>
-                                <td *ngIf="studentDetails?.studentPhoto" class="student-logo width-160">
-                                    <div>
-                                        <img [src]="studentDetails?.studentPhoto ? 'data:image/jpeg;base64,' + studentDetails?.studentPhoto : ''" alt="Student Photo">
-                                    </div>
-                                </td>
-                                <td class="student-details information">
-                                    <h4 class="inline-block">{{studentDetails?.firstGivenName}} {{studentDetails?.middleName ? ''+studentDetails?.middleName+' ':''}} {{studentDetails?.lastFamilyName}}</h4><span class="inline-block" *ngIf="studentDetails?.homeAddressLineOne"> | </span>
-                                    <p class="inline-block">{{studentDetails?.homeAddressLineOne}}{{studentDetails?.homeAddressLineTwo ? ', ' + studentDetails?.homeAddressLineTwo : ''}}{{studentDetails?.homeAddressCity ? ', ' + studentDetails?.homeAddressCity : ''}}{{studentDetails?.homeAddressState ? ', ' + studentDetails?.homeAddressState : ''}}{{studentDetails?.homeAddressZip ? ', ' + studentDetails?.homeAddressZip : ''}}{{studentDetails?.homeAddressCountry ? ', ' + studentDetails?.homeAddressCountry : ''}}</p>
-                                    <table class="border-table">
-                                        <tbody>
-                                            <tr>
-                                                <td><b>{{'studentId' | translate}}</b> : <span>{{studentDetails?.studentInternalId}}</span></td>
-                                                <td><b>{{'alternateId' | translate}}</b> : <span>{{studentDetails?.alternateId}}</span></td>
-                                                <td><b>{{'dateOfBirth' | translate}}</b> : <span>{{studentDetails?.dob | date}}</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>{{'grade' | translate}}</b> : <span>{{studentDetails?.gradeLevelTitle}}</span></td>
-                                                <td><b>{{'gender' | translate}}</b> : <span>{{studentDetails?.gender}}</span></td>
-                                                <td></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+            <div class="subject-line">
+                <div>
+                    <span class="name">{{studentDetails?.firstGivenName}} {{studentDetails?.middleName ? studentDetails?.middleName + ' ' : ''}}{{studentDetails?.lastFamilyName}}</span>
+                    <span class="meta" *ngIf="studentDetails?.gradeLevelTitle"> &mdash; {{studentDetails?.gradeLevelTitle}}</span>
+                </div>
+                <div class="meta">
+                    <span *ngIf="studentDetails?.studentInternalId"><b>{{'studentId' | translate}}:</b> {{studentDetails?.studentInternalId}}</span>
+                </div>
+            </div>
 
-                <tr>
-                    <td class="student-details">
-                        <table class="border-table information-table">
-                            <thead>
-                                <tr>
-                                    <th class="bg-slate" width="12%"><strong>{{'date' | translate}}</strong></th>
-                                    <th class="bg-slate" width="12%"><strong>{{'day' | translate}}</strong></th>
-                                    <th class="bg-slate" width="10%"><strong>{{'period' | translate}}</strong></th>
-                                    <th class="bg-slate" width="25%"><strong>{{'courseSectionTeacher' | translate}}</strong></th>
-                                    <th class="bg-slate" width="10%"><strong>{{'room' | translate}}</strong></th>
-                                    <th class="bg-slate" width="15%"><strong>{{'course' | translate}}</strong></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <ng-container *ngFor="let courseDetails of studentDetails?.courseDetailsViewModelList">
-                                    <tr *ngFor="let dateDetails of courseDetails?.modifiedDataList; first as isFirst">
-                                        <td>{{dateDetails?.date | date}}</td>
-                                        <td *ngIf="dateDetails?.isFirst" [attr.rowspan]="dateDetails?.length">{{dateDetails?.dayName}}</td>
-                                        <td>{{dateDetails?.periodName}}</td>
-                                        <td>{{dateDetails?.courseSectionName}} {{dateDetails?.staffName ? '-' : ''}} {{dateDetails?.staffName}}</td>
-                                        <td>{{dateDetails?.roomName}}</td>
-                                        <td *ngIf="isFirst" [attr.rowspan]="courseDetails?.modifiedDataList?.length">{{dateDetails?.courseName}}</td>
-                                    </tr>
-                                </ng-container>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+            <div class="week-range">
+                {{ 'week' | translate }}: {{ week.weekStart | date:'mediumDate' }} &ndash; {{ week.weekEnd | date:'mediumDate' }}
+            </div>
+
+            <table class="timetable-grid">
+                <thead>
+                    <tr>
+                        <th class="period-col">{{ 'period' | translate }}</th>
+                        <th *ngFor="let day of week.days">
+                            {{ day.dayName }}
+                            <span class="day-date">{{ day.date | date:'shortDate' }}</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of week.rows">
+                        <td class="period-col">{{ row.periodName }}</td>
+                        <td class="day-cell" *ngFor="let cell of row.cells">
+                            <div class="cell-entry" *ngFor="let entry of cell.entries">
+                                <div class="course-section">{{ entry.courseSectionName }}</div>
+                                <div class="teacher" *ngIf="entry.staffName">{{ entry.staffName }}</div>
+                                <div class="room" *ngIf="entry.roomName">{{ entry.roomName }}</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
-            <div *ngIf="!last" style="page-break-before:always">&nbsp;</div>
-        </ng-container>
-    </div>
+        </div>
+    </ng-container>
 </div>
 <!-- Print Schedule section end here -->
