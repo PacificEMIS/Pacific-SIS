@@ -1829,10 +1829,11 @@ namespace opensis.data.Repository
                             scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
 
                             //for assigmnent grade due date notification
-                            var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
+                            var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Include(x => x.AssignmentType).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
                             if (assignmentData?.Any() == true)
                             {
                                 DateTime? GradePostingEndDate = null;
+                                string? markingPeriodTitle = null;
                                 var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
 
                                 if (CourseSections.YrMarkingPeriodId != null)
@@ -1841,6 +1842,7 @@ namespace opensis.data.Repository
                                     if (yrData != null)
                                     {
                                         GradePostingEndDate = yrData.PostEndDate;
+                                        markingPeriodTitle = yrData.Title;
                                     }
                                 }
 
@@ -1850,6 +1852,7 @@ namespace opensis.data.Repository
                                     if (smstrData != null)
                                     {
                                         GradePostingEndDate = smstrData.PostEndDate;
+                                        markingPeriodTitle = smstrData.Title;
                                     }
                                 }
 
@@ -1859,6 +1862,7 @@ namespace opensis.data.Repository
                                     if (qtrData != null)
                                     {
                                         GradePostingEndDate = qtrData.PostEndDate;
+                                        markingPeriodTitle = qtrData.Title;
                                     }
                                 }
 
@@ -1868,6 +1872,7 @@ namespace opensis.data.Repository
                                     if (ppData != null)
                                     {
                                         GradePostingEndDate = ppData.PostEndDate;
+                                        markingPeriodTitle = ppData.Title;
                                     }
                                 }
 
@@ -1875,9 +1880,19 @@ namespace opensis.data.Repository
                                 {
                                     foreach (var assignment in assignmentData)
                                     {
-                                        if (assignment.GradebookGrades.Count == 0)
+                                        var (mpTitle, mpPostEndDate) = ResolveAssignmentMarkingPeriod(scheduledCourseSectionViewModel.TenantId, scheduledCourseSectionViewModel.SchoolId, assignment.AssignmentType, todayDate);
+                                        if (mpPostEndDate == null) continue;
+                                        var enrolledCount = this.context?.StudentCoursesectionSchedule.Count(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == assignment.CourseSectionId && x.IsDropped != true) ?? 0;
+                                        var gradesCount = assignment.GradebookGrades.Count;
+                                        if (enrolledCount > 0 && gradesCount < enrolledCount)
                                         {
-                                            var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                            var dueSegment = assignment.DueDate.HasValue
+                                                ? " (due " + assignment.DueDate.Value.ToShortDateString() + ")"
+                                                : "";
+                                            var statusSegment = gradesCount == 0
+                                                ? " (no grades posted)"
+                                                : " (grades partially entered)";
+                                            var notification = CourseSections.CourseSectionName + ": Assignment " + assignment.AssignmentTitle + (string.IsNullOrEmpty(mpTitle) ? "" : ", " + mpTitle) + dueSegment + " — post grades by " + mpPostEndDate.Value.ToShortDateString() + statusSegment;
                                             scheduledCourseSectionView.NotificationList!.Add(notification);
                                         }
 
@@ -1937,10 +1952,11 @@ namespace opensis.data.Repository
                                     scheduledCourseSectionView.courseSectionViewList.Add(CourseSection);
 
                                     //for assigmnent grade due date notification
-                                    var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSection.CourseSectionId).ToList();
+                                    var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Include(x => x.AssignmentType).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSection.CourseSectionId).ToList();
                                     if (assignmentData?.Any() == true)
                                     {
                                         DateTime? GradePostingEndDate = null;
+                                        string? markingPeriodTitle = null;
                                         var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
 
                                         if (CourseSection.YrMarkingPeriodId != null)
@@ -1949,6 +1965,7 @@ namespace opensis.data.Repository
                                             if (yrData != null)
                                             {
                                                 GradePostingEndDate = yrData.PostEndDate;
+                                                markingPeriodTitle = yrData.Title;
                                             }
                                         }
 
@@ -1958,6 +1975,7 @@ namespace opensis.data.Repository
                                             if (smstrData != null)
                                             {
                                                 GradePostingEndDate = smstrData.PostEndDate;
+                                                markingPeriodTitle = smstrData.Title;
                                             }
                                         }
 
@@ -1967,6 +1985,7 @@ namespace opensis.data.Repository
                                             if (qtrData != null)
                                             {
                                                 GradePostingEndDate = qtrData.PostEndDate;
+                                                markingPeriodTitle = qtrData.Title;
                                             }
                                         }
 
@@ -1976,6 +1995,7 @@ namespace opensis.data.Repository
                                             if (ppData != null)
                                             {
                                                 GradePostingEndDate = ppData.PostEndDate;
+                                                markingPeriodTitle = ppData.Title;
                                             }
                                         }
 
@@ -1983,9 +2003,19 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var assignment in assignmentData)
                                             {
-                                                if (assignment.GradebookGrades.Count == 0)
+                                                var (mpTitle, mpPostEndDate) = ResolveAssignmentMarkingPeriod(scheduledCourseSectionViewModel.TenantId, scheduledCourseSectionViewModel.SchoolId, assignment.AssignmentType, todayDate);
+                                                if (mpPostEndDate == null) continue;
+                                                var enrolledCount = this.context?.StudentCoursesectionSchedule.Count(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == assignment.CourseSectionId && x.IsDropped != true) ?? 0;
+                                                var gradesCount = assignment.GradebookGrades.Count;
+                                                if (enrolledCount > 0 && gradesCount < enrolledCount)
                                                 {
-                                                    var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                                    var dueSegment = assignment.DueDate.HasValue
+                                                        ? " (due " + assignment.DueDate.Value.ToShortDateString() + ")"
+                                                        : "";
+                                                    var statusSegment = gradesCount == 0
+                                                        ? " (no grades posted)"
+                                                        : " (grades partially entered)";
+                                                    var notification = CourseSection.CourseSectionName + ": Assignment " + assignment.AssignmentTitle + (string.IsNullOrEmpty(mpTitle) ? "" : ", " + mpTitle) + dueSegment + " — post grades by " + mpPostEndDate.Value.ToShortDateString() + statusSegment;
                                                     scheduledCourseSectionView.NotificationList!.Add(notification);
                                                 }
 
@@ -2409,10 +2439,11 @@ namespace opensis.data.Repository
                             scheduledCourseSectionView.courseSectionViewList.Add(CourseSections);
 
                             //for assigmnent grade due date notification
-                            var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
+                            var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Include(x => x.AssignmentType).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
                             if (assignmentData?.Any() == true)
                             {
                                 DateTime? GradePostingEndDate = null;
+                                string? markingPeriodTitle = null;
                                 var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
 
                                 if (CourseSections.YrMarkingPeriodId != null)
@@ -2421,6 +2452,7 @@ namespace opensis.data.Repository
                                     if (yrData != null)
                                     {
                                         GradePostingEndDate = yrData.PostEndDate;
+                                        markingPeriodTitle = yrData.Title;
                                     }
                                 }
 
@@ -2430,6 +2462,7 @@ namespace opensis.data.Repository
                                     if (smstrData != null)
                                     {
                                         GradePostingEndDate = smstrData.PostEndDate;
+                                        markingPeriodTitle = smstrData.Title;
                                     }
                                 }
 
@@ -2439,6 +2472,7 @@ namespace opensis.data.Repository
                                     if (qtrData != null)
                                     {
                                         GradePostingEndDate = qtrData.PostEndDate;
+                                        markingPeriodTitle = qtrData.Title;
                                     }
                                 }
 
@@ -2448,6 +2482,7 @@ namespace opensis.data.Repository
                                     if (ppData != null)
                                     {
                                         GradePostingEndDate = ppData.PostEndDate;
+                                        markingPeriodTitle = ppData.Title;
                                     }
                                 }
 
@@ -2455,9 +2490,19 @@ namespace opensis.data.Repository
                                 {
                                     foreach (var assignment in assignmentData)
                                     {
-                                        if (assignment.GradebookGrades.Count == 0)
+                                        var (mpTitle, mpPostEndDate) = ResolveAssignmentMarkingPeriod(scheduledCourseSectionViewModel.TenantId, scheduledCourseSectionViewModel.SchoolId, assignment.AssignmentType, todayDate);
+                                        if (mpPostEndDate == null) continue;
+                                        var enrolledCount = this.context?.StudentCoursesectionSchedule.Count(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == assignment.CourseSectionId && x.IsDropped != true) ?? 0;
+                                        var gradesCount = assignment.GradebookGrades.Count;
+                                        if (enrolledCount > 0 && gradesCount < enrolledCount)
                                         {
-                                            var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                            var dueSegment = assignment.DueDate.HasValue
+                                                ? " (due " + assignment.DueDate.Value.ToShortDateString() + ")"
+                                                : "";
+                                            var statusSegment = gradesCount == 0
+                                                ? " (no grades posted)"
+                                                : " (grades partially entered)";
+                                            var notification = CourseSections.CourseSectionName + ": Assignment " + assignment.AssignmentTitle + (string.IsNullOrEmpty(mpTitle) ? "" : ", " + mpTitle) + dueSegment + " — post grades by " + mpPostEndDate.Value.ToShortDateString() + statusSegment;
                                             scheduledCourseSectionView.NotificationList!.Add(notification);
                                         }
 
@@ -2527,10 +2572,11 @@ namespace opensis.data.Repository
                                     scheduledCourseSectionView.courseSectionViewList.Add(CourseSection);
 
                                     //for assigmnent grade due date notification
-                                    var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSection.CourseSectionId).ToList();
+                                    var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Include(x => x.AssignmentType).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSection.CourseSectionId).ToList();
                                     if (assignmentData?.Any() == true)
                                     {
                                         DateTime? GradePostingEndDate = null;
+                                        string? markingPeriodTitle = null;
                                         var assignmentTitle = assignmentData.Select(s => s.AssignmentTitle).ToList();
 
                                         if (CourseSection.YrMarkingPeriodId != null)
@@ -2539,6 +2585,7 @@ namespace opensis.data.Repository
                                             if (yrData != null)
                                             {
                                                 GradePostingEndDate = yrData.PostEndDate;
+                                                markingPeriodTitle = yrData.Title;
                                             }
                                         }
 
@@ -2548,6 +2595,7 @@ namespace opensis.data.Repository
                                             if (smstrData != null)
                                             {
                                                 GradePostingEndDate = smstrData.PostEndDate;
+                                                markingPeriodTitle = smstrData.Title;
                                             }
                                         }
 
@@ -2557,6 +2605,7 @@ namespace opensis.data.Repository
                                             if (qtrData != null)
                                             {
                                                 GradePostingEndDate = qtrData.PostEndDate;
+                                                markingPeriodTitle = qtrData.Title;
                                             }
                                         }
 
@@ -2566,6 +2615,7 @@ namespace opensis.data.Repository
                                             if (ppData != null)
                                             {
                                                 GradePostingEndDate = ppData.PostEndDate;
+                                                markingPeriodTitle = ppData.Title;
                                             }
                                         }
 
@@ -2573,9 +2623,19 @@ namespace opensis.data.Repository
                                         {
                                             foreach (var assignment in assignmentData)
                                             {
-                                                if (assignment.GradebookGrades.Count == 0)
+                                                var (mpTitle, mpPostEndDate) = ResolveAssignmentMarkingPeriod(scheduledCourseSectionViewModel.TenantId, scheduledCourseSectionViewModel.SchoolId, assignment.AssignmentType, todayDate);
+                                                if (mpPostEndDate == null) continue;
+                                                var enrolledCount = this.context?.StudentCoursesectionSchedule.Count(x => x.TenantId == scheduledCourseSectionViewModel.TenantId && x.SchoolId == scheduledCourseSectionViewModel.SchoolId && x.CourseSectionId == assignment.CourseSectionId && x.IsDropped != true) ?? 0;
+                                                var gradesCount = assignment.GradebookGrades.Count;
+                                                if (enrolledCount > 0 && gradesCount < enrolledCount)
                                                 {
-                                                    var notification = assignment.AssignmentTitle + " " + "Assignment Grades due on" + " " + GradePostingEndDate.Value.ToShortDateString();
+                                                    var dueSegment = assignment.DueDate.HasValue
+                                                        ? " (due " + assignment.DueDate.Value.ToShortDateString() + ")"
+                                                        : "";
+                                                    var statusSegment = gradesCount == 0
+                                                        ? " (no grades posted)"
+                                                        : " (grades partially entered)";
+                                                    var notification = CourseSection.CourseSectionName + ": Assignment " + assignment.AssignmentTitle + (string.IsNullOrEmpty(mpTitle) ? "" : ", " + mpTitle) + dueSegment + " — post grades by " + mpPostEndDate.Value.ToShortDateString() + statusSegment;
                                                     scheduledCourseSectionView.NotificationList!.Add(notification);
                                                 }
                                             }
@@ -3068,7 +3128,7 @@ namespace opensis.data.Repository
         //                }
 
         //                //for assigmnent grade due date notification
-        //                var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
+        //                var assignmentData = this.context?.Assignment.Include(x => x.GradebookGrades).Include(x => x.AssignmentType).Where(c => c.SchoolId == scheduledCourseSectionViewModel.SchoolId && c.TenantId == scheduledCourseSectionViewModel.TenantId && c.CourseSectionId == CourseSections.CourseSectionId).ToList();
         //                if (assignmentData?.Any() == true)
         //                {
         //                    DateTime? GradePostingEndDate = null;
@@ -4047,6 +4107,50 @@ namespace opensis.data.Repository
                 dpValueSortOrderModel._failure = true;
             }
             return dpValueSortOrderModel;
+        }
+
+        // Resolves the marking-period title and grade-posting end date for an
+        // assignment, sourced from the assignment's AssignmentType (the real
+        // binding) — not the course section, which may be year-bound while
+        // the assignment lives inside a quarter/semester/progress period.
+        private (string? title, DateTime? postEndDate) ResolveAssignmentMarkingPeriod(
+            Guid? tenantId, int? schoolId, AssignmentType? assignmentType, DateTime todayDate)
+        {
+            if (assignmentType == null) return (null, null);
+
+            if (assignmentType.YrMarkingPeriodId != null)
+            {
+                var d = this.context?.SchoolYears.FirstOrDefault(x =>
+                    x.TenantId == tenantId && x.SchoolId == schoolId
+                    && x.MarkingPeriodId == assignmentType.YrMarkingPeriodId
+                    && x.PostStartDate <= todayDate);
+                if (d != null) return (d.Title, d.PostEndDate);
+            }
+            if (assignmentType.SmstrMarkingPeriodId != null)
+            {
+                var d = this.context?.Semesters.FirstOrDefault(x =>
+                    x.TenantId == tenantId && x.SchoolId == schoolId
+                    && x.MarkingPeriodId == assignmentType.SmstrMarkingPeriodId
+                    && x.PostStartDate <= todayDate);
+                if (d != null) return (d.Title, d.PostEndDate);
+            }
+            if (assignmentType.QtrMarkingPeriodId != null)
+            {
+                var d = this.context?.Quarters.FirstOrDefault(x =>
+                    x.TenantId == tenantId && x.SchoolId == schoolId
+                    && x.MarkingPeriodId == assignmentType.QtrMarkingPeriodId
+                    && x.PostStartDate <= todayDate);
+                if (d != null) return (d.Title, d.PostEndDate);
+            }
+            if (assignmentType.PrgrsprdMarkingPeriodId != null)
+            {
+                var d = this.context?.ProgressPeriods.FirstOrDefault(x =>
+                    x.TenantId == tenantId && x.SchoolId == schoolId
+                    && x.MarkingPeriodId == assignmentType.PrgrsprdMarkingPeriodId
+                    && x.PostStartDate <= todayDate);
+                if (d != null) return (d.Title, d.PostEndDate);
+            }
+            return (null, null);
         }
     }
 }

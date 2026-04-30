@@ -1,8 +1,15 @@
 <div *ngIf="!isNotGraded" class="card">
+    <div *ngIf="selectedMarkingPeriodTitle" class="px-6 py-4 border-b">
+        <h3 class="text-lg font-semibold">
+            {{ 'assignmentsFor' | translate }} <span class="text-primary">{{ selectedMarkingPeriodTitle }}</span>
+        </h3>
+    </div>
     <!-- Start Add New Assignment Type -->
     <div class="py-24 px-6 text-center" *ngIf="!assignmentModel?.assignmentTypeList?.length;else showTable">
         <mat-icon class="text-4xl">info</mat-icon>
-        <h4 class="text-lg mb-4">{{ 'no' | translate }} <span class="font-semibold">{{ 'assignmentType' | translate }}</span> {{ 'found' | translate }}</h4>
+        <h4 class="text-lg mb-4">
+            {{ 'no' | translate }} <span class="font-semibold">{{ 'assignmentType' | translate }}</span> {{ 'found' | translate }}<ng-container *ngIf="selectedMarkingPeriodTitle"> {{ 'for' | translate }} <span class="font-semibold">{{ selectedMarkingPeriodTitle }}</span></ng-container>
+        </h4>
         <button mat-flat-button color="primary" (click)="addEditAssignmentType()" *ngIf="defaultValueService.checkAcademicYear()"><mat-icon class="mr-2">add</mat-icon>{{ 'addNewAssignmentType' | translate }}</button>
     </div>
     <!-- End Add New Assignment Type -->

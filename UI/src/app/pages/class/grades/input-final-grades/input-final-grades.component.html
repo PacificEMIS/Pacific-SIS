@@ -1,5 +1,5 @@
 <div *ngIf="currentTab === 'inputFinalGrades'">
-    <div class="card" [ngClass]="commentDetails===1?'showing-details':''">
+    <div [ngClass]="commentDetails===1?'showing-details':''">
         <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 col-gap-4 row-gap-2 px-4 pt-4">
             <li>
                 <button (click)="getGradeBookGrades()" [ngClass]="{'opacity-75 cursor-not-allowed': addUpdateStudentFinalGradeModel?.isExamGrade || !this.addUpdateStudentFinalGradeModel.courseSectionId || !this.addUpdateStudentFinalGradeModel.markingPeriodId}" [disabled]="addUpdateStudentFinalGradeModel?.isExamGrade"
@@ -207,7 +207,7 @@
         </div>
     </div>
     <!-- End Input Final Grade -->
-    <div class="text-right mt-4 mb-0">
+    <div class="text-right p-4">
         <button mat-raised-button (click)="submitFinalGrade()" color="primary" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate }}</button>
     </div>
 </div>

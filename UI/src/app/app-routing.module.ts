@@ -401,6 +401,17 @@ const routes: Routes = [
         path: '',
         children: [
           {
+            path: 'grades/anomalous-grades',
+            loadChildren: () => import('./pages/grades/anomalous-grades/anomalous-grades.module').then(m => m.AnomalousGradesModule),
+            canActivate: [AuthGuard, RolePermissionGuard]
+          }
+        ]
+      },
+
+      {
+        path: '',
+        children: [
+          {
             path: 'attendance/teacher-missing-attendance',
             loadChildren: () => import('./pages/attendance/teacher-missing-attendance/teacher-missing-attendance.module').then(m => m.TeacherMissingAttendanceModule),
             canActivate: [AuthGuard]

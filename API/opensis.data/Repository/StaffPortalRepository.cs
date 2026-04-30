@@ -959,7 +959,6 @@ namespace opensis.data.Repository
         /// <returns></returns>
         public AnomalousGradeViewModel GetAnomalousGrade(AnomalousGradeViewModel anomalousGradeViewModel)
         {
-            List<StudentAnomalsGrade> transactionIQ = new List<StudentAnomalsGrade>();
             AnomalousGradeViewModel anomalousGrade = new AnomalousGradeViewModel();
             anomalousGrade.TenantId = anomalousGradeViewModel.TenantId;
             anomalousGrade.SchoolId = anomalousGradeViewModel.SchoolId;
@@ -971,69 +970,222 @@ namespace opensis.data.Repository
 
             try
             {
-                //fetch students whose gradebook grade is not entered yet/missing
-                var staffCoursesectionScheduleData = this.context?.StaffCoursesectionSchedule.Include(x => x.CourseSection).ThenInclude(x => x.StudentCoursesectionSchedule).ThenInclude(s => s.StudentMaster).Where(x => x.TenantId == anomalousGradeViewModel.TenantId && x.SchoolId == anomalousGradeViewModel.SchoolId && x.StaffId == anomalousGradeViewModel.StaffId && x.IsDropped != true && (anomalousGradeViewModel.CourseSectionId == null || x.CourseSectionId == anomalousGradeViewModel.CourseSectionId)).ToList();
+                var tenantId = anomalousGradeViewModel.TenantId;
+                var schoolId = anomalousGradeViewModel.SchoolId;
+                var staffId = anomalousGradeViewModel.StaffId;
+                var academicYear = anomalousGradeViewModel.AcademicYear;
+                var courseSectionFilter = anomalousGradeViewModel.CourseSectionId;
+                var studentFilter = anomalousGradeViewModel.StudentId;
+                var assignmentTypeFilter = anomalousGradeViewModel.AssignmentTypeId;
+                var assignmentFilter = anomalousGradeViewModel.AssignmentId;
+                var includeInactive = anomalousGradeViewModel.IncludeInactive == true;
+                var today = DateTime.Today;
 
-                if (staffCoursesectionScheduleData?.Any() == true)
+                var yrMpId = anomalousGradeViewModel.YrMarkingPeriodId;
+                var smstrMpId = anomalousGradeViewModel.SmstrMarkingPeriodId;
+                var qtrMpId = anomalousGradeViewModel.QtrMarkingPeriodId;
+                var prgrsprdMpId = anomalousGradeViewModel.PrgrsprdMarkingPeriodId;
+                var hasMpFilter = yrMpId != null || smstrMpId != null || qtrMpId != null || prgrsprdMpId != null;
+
+                // Q1: course-section IDs taught by this staff (single query)
+                var courseSectionIds = this.context?.StaffCoursesectionSchedule
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId && x.StaffId == staffId
+                        && x.IsDropped != true
+                        && (courseSectionFilter == null || x.CourseSectionId == courseSectionFilter))
+                    .Select(x => x.CourseSectionId)
+                    .Distinct()
+                    .ToList() ?? new List<int>();
+
+                if (courseSectionIds.Count == 0)
                 {
-                    //this loop for staff's course sections
-                    foreach (var staffCoursesectionSchedule in staffCoursesectionScheduleData)
+                    anomalousGrade._failure = true;
+                    anomalousGrade._message = NORECORDFOUND;
+                    return anomalousGrade;
+                }
+
+                // Q2: enrolled students in those sections (single query)
+                var enrolledStudents = this.context?.StudentCoursesectionSchedule
+                    .Include(x => x.StudentMaster)
+                    .Where(x => x.TenantId == tenantId && x.SchoolId == schoolId
+                        && courseSectionIds.Contains(x.CourseSectionId)
+                        && x.IsDropped != true
+                        && (studentFilter == null || x.StudentId == studentFilter)
+                        && (includeInactive || x.StudentMaster.IsActive != false))
+                    .Select(x => new
                     {
-                        var studentCoursesectionScheduleData = staffCoursesectionSchedule.CourseSection.StudentCoursesectionSchedule.Where(x => x.IsDropped != true && (anomalousGradeViewModel.StudentId == null || x.StudentId == anomalousGradeViewModel.StudentId) && (anomalousGradeViewModel.IncludeInactive == false || anomalousGradeViewModel.IncludeInactive == null ? x.StudentMaster.IsActive != false : true));
+                        x.StudentId,
+                        x.CourseSectionId,
+                        x.StudentMaster.FirstGivenName,
+                        x.StudentMaster.MiddleName,
+                        x.StudentMaster.LastFamilyName,
+                        x.StudentMaster.StudentInternalId
+                    })
+                    .ToList() ?? new();
 
-                        //this loop for students schedules in course section
-                        foreach (var student in studentCoursesectionScheduleData)
+                // Q3: assignments + their type, scoped to the staff's sections.
+                // MP filter applies via AssignmentType. DueDate must be on/before today
+                // — a grade isn't "missing" until the assignment is actually due.
+                var assignments = this.context?.Assignment
+                    .Include(a => a.AssignmentType)
+                    .Where(a => a.TenantId == tenantId && a.SchoolId == schoolId
+                        && a.CourseSectionId != null && courseSectionIds.Contains(a.CourseSectionId.Value)
+                        && (academicYear == null || a.AssignmentType.AcademicYear == academicYear)
+                        && (assignmentTypeFilter == null || a.AssignmentTypeId == assignmentTypeFilter)
+                        && (assignmentFilter == null || a.AssignmentId == assignmentFilter)
+                        && (a.DueDate == null || a.DueDate <= today)
+                        && (!hasMpFilter
+                            || (yrMpId != null && a.AssignmentType.YrMarkingPeriodId == yrMpId)
+                            || (smstrMpId != null && a.AssignmentType.SmstrMarkingPeriodId == smstrMpId)
+                            || (qtrMpId != null && a.AssignmentType.QtrMarkingPeriodId == qtrMpId)
+                            || (prgrsprdMpId != null && a.AssignmentType.PrgrsprdMarkingPeriodId == prgrsprdMpId)))
+                    .Select(a => new
+                    {
+                        a.AssignmentId,
+                        a.AssignmentTypeId,
+                        CourseSectionId = a.CourseSectionId!.Value,
+                        a.AssignmentTitle,
+                        a.Points,
+                        TypeTitle = a.AssignmentType.Title
+                    })
+                    .ToList() ?? new();
+
+                // Q4: existing gradebook entries in those sections (single query)
+                var grades = this.context?.GradebookGrades
+                    .Where(g => g.TenantId == tenantId && g.SchoolId == schoolId
+                        && courseSectionIds.Contains(g.CourseSectionId)
+                        && (academicYear == null || g.AcademicYear == academicYear)
+                        && (studentFilter == null || g.StudentId == studentFilter)
+                        && (assignmentTypeFilter == null || g.AssignmentTypeId == assignmentTypeFilter)
+                        && (assignmentFilter == null || g.AssignmentId == assignmentFilter)
+                        && (!hasMpFilter
+                            || (yrMpId != null && g.YrMarkingPeriodId == yrMpId)
+                            || (smstrMpId != null && g.SmstrMarkingPeriodId == smstrMpId)
+                            || (qtrMpId != null && g.QtrMarkingPeriodId == qtrMpId)
+                            || (prgrsprdMpId != null && g.PrgrsprdMarkingPeriodId == prgrsprdMpId)))
+                    .Select(g => new
+                    {
+                        g.StudentId,
+                        g.CourseSectionId,
+                        g.AssignmentTypeId,
+                        g.AssignmentId,
+                        g.AllowedMarks,
+                        g.Comment
+                    })
+                    .ToList() ?? new();
+
+                // Build (student, courseSection, assignment) keyset for entered grades
+                // so the missing-branch can do a set-difference in memory.
+                var gradedKeys = grades
+                    .Select(g => (g.StudentId, g.CourseSectionId, g.AssignmentId))
+                    .ToHashSet();
+
+                var results = new List<StudentAnomalsGrade>();
+
+                // Missing branch: every (student × assignment) in the student's section
+                // that has no gradebook row.
+                var studentsBySection = enrolledStudents
+                    .GroupBy(s => s.CourseSectionId)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                foreach (var assignment in assignments)
+                {
+                    if (!studentsBySection.TryGetValue(assignment.CourseSectionId, out var students))
+                        continue;
+
+                    foreach (var student in students)
+                    {
+                        if (gradedKeys.Contains((student.StudentId, assignment.CourseSectionId, assignment.AssignmentId)))
+                            continue;
+
+                        results.Add(new StudentAnomalsGrade
                         {
-                            var AssignmentData = this.context?.Assignment.Include(x => x.AssignmentType).Where(x => x.TenantId == anomalousGradeViewModel.TenantId && x.SchoolId == anomalousGradeViewModel.SchoolId && x.CourseSectionId == staffCoursesectionSchedule.CourseSectionId && (anomalousGradeViewModel.AssignmentTypeId == null || x.AssignmentTypeId == anomalousGradeViewModel.AssignmentTypeId) && (anomalousGradeViewModel.AssignmentId == null || x.AssignmentId == anomalousGradeViewModel.AssignmentId)).ToList();
-
-                            if (AssignmentData?.Any() == true)
-                            {
-                                //this loop for assignments in course section
-                                foreach (var assignment in AssignmentData)
-                                {
-                                    var gradebookData = this.context?.GradebookGrades.Where(x => x.SchoolId == anomalousGradeViewModel.SchoolId && x.TenantId == anomalousGradeViewModel.TenantId && x.AcademicYear == anomalousGradeViewModel.AcademicYear && x.StudentId == student.StudentId && x.CourseSectionId == staffCoursesectionSchedule.CourseSectionId && x.AssignmentId == assignment.AssignmentId);
-
-                                    //check if studet's grade not enterd for this assignment then add in list.
-                                    if (gradebookData?.Any() != true)
-                                    {
-                                        var studentAnomalsGradeData = new StudentAnomalsGrade { FirstGivenName = student.FirstGivenName, MiddleName = student.MiddleName, LastFamilyName = student.LastFamilyName, StudentId = student.StudentId, StudentInternalId = student.StudentInternalId, CourseSectionId = staffCoursesectionSchedule.CourseSectionId, AssignmentTypeId = assignment.AssignmentTypeId, AssignmentId = assignment.AssignmentId, Points = 0, AllowedMarks = "Missing", AssignmentTypeTitle = assignment.AssignmentType.Title, AssignmentTitle = assignment.AssignmentTitle, Comment = null };
-                                        transactionIQ.Add(studentAnomalsGradeData);
-                                    }
-                                }
-                            }
-                        }
+                            FirstGivenName = student.FirstGivenName,
+                            MiddleName = student.MiddleName,
+                            LastFamilyName = student.LastFamilyName,
+                            StudentId = student.StudentId,
+                            StudentInternalId = student.StudentInternalId,
+                            CourseSectionId = assignment.CourseSectionId,
+                            AssignmentTypeId = assignment.AssignmentTypeId,
+                            AssignmentId = assignment.AssignmentId,
+                            Points = 0,
+                            AllowedMarks = "Missing",
+                            AssignmentTypeTitle = assignment.TypeTitle,
+                            AssignmentTitle = assignment.AssignmentTitle,
+                            Comment = null
+                        });
                     }
                 }
 
-                //fetch students whose gradebook grade is entered
-                var gradebookGradesData = this.context?.GradebookGrades.Include(s => s.StudentMaster).Include(s => s.Assignment).ThenInclude(s => s.AssignmentType).Where(x => x.SchoolId == anomalousGradeViewModel.SchoolId && x.TenantId == anomalousGradeViewModel.TenantId && x.AcademicYear == anomalousGradeViewModel.AcademicYear && (anomalousGradeViewModel.StudentId == null || x.StudentId == anomalousGradeViewModel.StudentId) && (anomalousGradeViewModel.CourseSectionId == null || x.CourseSectionId == anomalousGradeViewModel.CourseSectionId) && (anomalousGradeViewModel.AssignmentTypeId == null || x.AssignmentTypeId == anomalousGradeViewModel.AssignmentTypeId) && (anomalousGradeViewModel.AssignmentId == null || x.AssignmentId == anomalousGradeViewModel.AssignmentId) && (anomalousGradeViewModel.IncludeInactive == false || anomalousGradeViewModel.IncludeInactive == null ? x.StudentMaster.IsActive != false : true))
-                    .Select(s => new StudentAnomalsGrade { FirstGivenName = s.StudentMaster.FirstGivenName, MiddleName = s.StudentMaster.MiddleName, LastFamilyName = s.StudentMaster.LastFamilyName, StudentId = s.StudentMaster.StudentId, StudentInternalId = s.StudentMaster.StudentInternalId, Points = s.Assignment.Points, AllowedMarks = s.AllowedMarks, CourseSectionId = s.CourseSectionId, AssignmentTypeId = s.AssignmentTypeId, AssignmentId = s.AssignmentId, AssignmentTypeTitle = s.Assignment.AssignmentType.Title, AssignmentTitle = s.Assignment.AssignmentTitle, Comment = s.Comment }).ToList();
+                // Over-cap branch: gradebook entries with the "*" sentinel or numeric
+                // marks above the assignment's points cap.
+                var assignmentLookup = assignments.ToDictionary(
+                    a => (a.CourseSectionId, a.AssignmentId),
+                    a => a);
+                var studentLookup = enrolledStudents
+                    .GroupBy(s => s.StudentId)
+                    .ToDictionary(g => g.Key, g => g.First());
 
-                if (gradebookGradesData?.Any() == true)
+                foreach (var grade in grades)
                 {
-                    gradebookGradesData = gradebookGradesData.Where(x => x.AllowedMarks == "*" || (x.AllowedMarks != "*" && Convert.ToDecimal(x.AllowedMarks) > Convert.ToDecimal(x.Points))).ToList(); //fetch those student's AllowedMarks * and got more than assignment point.
-                    transactionIQ.AddRange(gradebookGradesData);
+                    if (!assignmentLookup.TryGetValue((grade.CourseSectionId, grade.AssignmentId), out var assignment))
+                        continue;
+                    if (!studentLookup.TryGetValue(grade.StudentId, out var student))
+                        continue;
+
+                    bool isAnomalous = grade.AllowedMarks == "*";
+                    if (!isAnomalous && !string.IsNullOrEmpty(grade.AllowedMarks)
+                        && decimal.TryParse(grade.AllowedMarks, out var marks)
+                        && assignment.Points.HasValue
+                        && marks > assignment.Points.Value)
+                    {
+                        isAnomalous = true;
+                    }
+
+                    if (!isAnomalous) continue;
+
+                    results.Add(new StudentAnomalsGrade
+                    {
+                        FirstGivenName = student.FirstGivenName,
+                        MiddleName = student.MiddleName,
+                        LastFamilyName = student.LastFamilyName,
+                        StudentId = student.StudentId,
+                        StudentInternalId = student.StudentInternalId,
+                        CourseSectionId = grade.CourseSectionId,
+                        AssignmentTypeId = grade.AssignmentTypeId,
+                        AssignmentId = grade.AssignmentId,
+                        Points = assignment.Points,
+                        AllowedMarks = grade.AllowedMarks,
+                        AssignmentTypeTitle = assignment.TypeTitle,
+                        AssignmentTitle = assignment.AssignmentTitle,
+                        Comment = grade.Comment
+                    });
                 }
 
-                //this block for searching
                 if (!string.IsNullOrEmpty(anomalousGradeViewModel.SearchValue))
                 {
-                    var searchValue = Regex.Replace(anomalousGradeViewModel.SearchValue, @"\s+", "");
-
-                    transactionIQ = transactionIQ.Where(x => x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(searchValue.ToLower()) ||
-                             x.MiddleName != null && x.MiddleName.ToLower().Contains(searchValue.ToLower()) || x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(searchValue.ToLower()) || x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(searchValue.ToLower()) || x.AssignmentTypeTitle != null && x.AssignmentTypeTitle.ToLower().Contains(searchValue.ToLower()) || x.AssignmentTitle != null && x.AssignmentTitle.ToLower().Contains(searchValue.ToLower())).ToList();
+                    var searchValue = Regex.Replace(anomalousGradeViewModel.SearchValue, @"\s+", "").ToLower();
+                    results = results.Where(x =>
+                        (x.FirstGivenName != null && x.FirstGivenName.ToLower().Contains(searchValue))
+                        || (x.MiddleName != null && x.MiddleName.ToLower().Contains(searchValue))
+                        || (x.LastFamilyName != null && x.LastFamilyName.ToLower().Contains(searchValue))
+                        || (x.StudentInternalId != null && x.StudentInternalId.ToLower().Contains(searchValue))
+                        || (x.AssignmentTypeTitle != null && x.AssignmentTypeTitle.ToLower().Contains(searchValue))
+                        || (x.AssignmentTitle != null && x.AssignmentTitle.ToLower().Contains(searchValue))).ToList();
                 }
 
-                if (transactionIQ?.Any() == true)
+                if (results.Count > 0)
                 {
-                    anomalousGrade.TotalCount = transactionIQ.Count();
+                    anomalousGrade.TotalCount = results.Count;
                     if (anomalousGradeViewModel.PageNumber > 0 && anomalousGradeViewModel.PageSize > 0)
                     {
-                        anomalousGrade.studentAnomalsGrades = transactionIQ.Skip((anomalousGradeViewModel.PageNumber - 1) * anomalousGradeViewModel.PageSize).Take(anomalousGradeViewModel.PageSize).ToList();
+                        anomalousGrade.studentAnomalsGrades = results
+                            .Skip((anomalousGradeViewModel.PageNumber - 1) * anomalousGradeViewModel.PageSize)
+                            .Take(anomalousGradeViewModel.PageSize)
+                            .ToList();
                     }
                     else
                     {
-                        anomalousGrade.studentAnomalsGrades = transactionIQ;
+                        anomalousGrade.studentAnomalsGrades = results;
                     }
                 }
                 else
