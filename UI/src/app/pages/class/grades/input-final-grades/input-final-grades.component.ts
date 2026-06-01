@@ -51,6 +51,7 @@ import { StudentScheduleService } from 'src/app/services/student-schedule.servic
 import { TeacherScheduleService } from 'src/app/services/teacher-schedule.service';
 import { GradebookConfigurationAddViewModel } from 'src/app/models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
+import * as moment from 'moment';
 
 export interface Comment {
   name: string;
@@ -114,6 +115,8 @@ export class InputFinalGradesComponent implements OnInit {
   courseSection: any;
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();  
   selectedMarkingPeriod: any;
+  selectedPostStartDate: string;
+  selectedPostEndDate: string;
   creditHours;
   cloneAddUpdateStudentFinalGradeModel;
   gradebookConfigurationAddViewModel: GradebookConfigurationAddViewModel = new GradebookConfigurationAddViewModel();
@@ -176,7 +179,8 @@ export class InputFinalGradesComponent implements OnInit {
     if(event.value) {
     // this.addUpdateStudentFinalGradeModel.markingPeriodId = event.value;
     const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === event.value);
-    
+    this.selectedPostStartDate = markingPeriodDetails.postStartDate;
+    this.selectedPostEndDate = markingPeriodDetails.postEndDate;
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
       this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
@@ -242,7 +246,18 @@ export class InputFinalGradesComponent implements OnInit {
     this.totalCount = 0;
     this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
     this.selectedMarkingPeriod = undefined;
+    this.selectedPostStartDate = undefined;
+    this.selectedPostEndDate = undefined;
   }
+  }
+
+  canPostGrades(): boolean {
+    if (!this.selectedPostStartDate || !this.selectedPostEndDate) {
+      return this.defaultValuesService.checkAcademicYear();
+    }
+    const today = moment().startOf('day');
+    return today.isSameOrAfter(moment(this.selectedPostStartDate).startOf('day'))
+        && today.isSameOrBefore(moment(this.selectedPostEndDate).startOf('day'));
   }
 
   searchScheduledStudentForGroupDropCall(markingPeriodDetails){
