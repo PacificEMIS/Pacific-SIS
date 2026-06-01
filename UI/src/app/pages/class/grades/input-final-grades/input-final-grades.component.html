@@ -19,10 +19,35 @@
             </li>
         </ul>
         <mat-divider class=""></mat-divider>
+        <div *ngIf="selectedMarkingPeriod && selectedPostStartDate && selectedPostEndDate"
+             class="mx-4 my-3 px-4 py-3 rounded border flex items-center justify-between"
+             [ngClass]="canPostGrades() ? 'bg-green-light border-green text-green' : 'bg-red-light border-red text-red'">
+            <div>
+                <strong>Grade posting window:</strong>
+                {{ selectedPostStartDate | date:'mediumDate' }} &nbsp;&mdash;&nbsp; {{ selectedPostEndDate | date:'mediumDate' }}
+            </div>
+            <span class="px-3 py-1 rounded font-semibold inline-flex items-center"
+                  [ngClass]="canPostGrades() ? 'bg-green text-green-contrast' : 'bg-red text-red-contrast'">
+                <mat-icon class="text-base mr-1">flag</mat-icon>
+                {{ canPostGrades() ? 'Open' : 'Closed' }}
+            </span>
+        </div>
         <div class="md:flex lg:flex-wrap">
             <div class="md:w-2/4">
                 <div class="content-left border-r">
                     <div class="overflow-x-auto overflow-y-hidden rounded border-b mb-2">
+                        <!-- Grade-input gating relies on canPostGrades() (posting window) only.
+                             We intentionally do NOT also gate on student.isDropped: the nightly
+                             background job flips IsDropped on every course-section schedule the
+                             moment a student's enrollment ExitDate passes, which at SY end would
+                             lock teachers out of posting the just-finished marking period's grades.
+                             Trade-off: a student dropped mid-year remains editable within the
+                             posting window of the section they left. Acceptable, because allowing
+                             bad data for a few absent students is preferable to blocking all
+                             legitimate end-of-year posting.
+                             TODO: tighten with a per-row check that also requires
+                             EffectiveDropDate >= selectedMarkingPeriod.StartDate, so truly
+                             mid-year-dropped students are excluded while preserving end-of-year flow. -->
                         <table class="w-full schedule-table">
                             <thead>
                                 <tr>
@@ -73,7 +98,7 @@
                                                 class="appearance-none border border-gray-light rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                                 min="0" max="100" (keyup)="percentToGrade(i)" name="percentMarks"
                                                 [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks"
-                                                type="number" [readonly]="!defaultValuesService.checkAcademicYear()" [disabled]="student.isDropped">
+                                                type="number" [readonly]="!canPostGrades()">
                                         </td>
                                     </ng-container>
                                     <ng-container
@@ -85,7 +110,7 @@
                                                 <select (change)="selectedGrade($event.target.value ,i, student?.gradeScaleList)"
                                                     name="gradeObtained"
                                                     [ngModel]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i]?.gradeObtained" (ngModelChange)="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].gradeObtained = $event"
-                                                    [disabled]="!defaultValuesService.checkAcademicYear() || student.isDropped">
+                                                    [disabled]="!canPostGrades()">
                                                     <option value=null disabled selected>{{'select'|translate}}</option>
                                                     <option *ngFor="let report of student?.gradeScaleList"
                                                         value={{report.title}}>
@@ -97,7 +122,7 @@
                                             <input
                                                 class="border border-gray-light rounded p-2 w-24"
                                                 (paste)="$event.preventDefault()" (keypress)="omitSpecialChar($event)" min="0" max="100" (keyup)="gradeFromPercent(addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks, i, student?.gradeScaleList)"
-                                                [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!defaultValuesService.checkAcademicYear()" [disabled]="student.isDropped">
+                                                [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[i].percentMarks" type="number" [readonly]="!canPostGrades()">
                                         </td>
                                         <td *ngIf="isPercent">
                                             {{addUpdateStudentFinalGradeModel?.studentFinalGradeList[i]?.gradeObtained}}
@@ -127,7 +152,7 @@
                     <div class="w-full pb-0">
                         <mat-form-field class="w-full mat-chips" appearance="outline" color="primary">
                             <mat-label class="mb-2">{{ "searchAndSelectPredefinedComments" | translate }}</mat-label>
-                            <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!defaultValuesService.checkAcademicYear() || addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.isDropped">
+                            <mat-chip-list #chipList aria-label="Fruit selection" [disabled]="!canPostGrades()">
                                 <mat-chip
                                     *ngFor="let report of addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.studentFinalGradeComments"
                                     [selectable]="selectable" [removable]="removable"
@@ -173,7 +198,7 @@
                     <div class="w-full border rounded mb-2 p-2">
                         <textarea placeholder="Comments" name="teacherComment"
                             [(ngModel)]="addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent].teacherComment"
-                            class="w-full" rows="3" [readonly]="!defaultValuesService.checkAcademicYear() || addUpdateStudentFinalGradeModel.studentFinalGradeList[selectedStudent]?.isDropped"></textarea>
+                            class="w-full" rows="3" [readonly]="!canPostGrades()"></textarea>
                     </div>
                     <ng-container *ngIf="courseSectionData?.standardGradeScaleId">
 
@@ -208,7 +233,7 @@
     </div>
     <!-- End Input Final Grade -->
     <div class="text-right p-4">
-        <button mat-raised-button (click)="submitFinalGrade()" color="primary" *ngIf="defaultValuesService.checkAcademicYear()">{{ 'submit' | translate }}</button>
+        <button mat-raised-button (click)="submitFinalGrade()" color="primary" *ngIf="canPostGrades()">{{ 'submit' | translate }}</button>
     </div>
 </div>
 

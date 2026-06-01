@@ -200,6 +200,8 @@ export class MarkingPeriodTitleList{
     text: string;
     startDate: string;
     endDate: string;
+    postStartDate: string;
+    postEndDate: string;
 }
 export class GetAllMarkingPeriodTitle extends CommonField{
     schoolId: number;

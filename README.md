@@ -128,6 +128,12 @@ npm start
 
 UI will be at `http://localhost:4200`. (`ng serve` is equivalent for development.)
 
+> **Serving on a real hostname for proxy tooling.** To inspect traffic through a browser proxy plugin (e.g. ZeroOmega) routed to mitmproxy / mitmweb, serve on a resolvable hostname instead of `localhost`:
+> ```bash
+> npm start -- --host lvh.me
+> ```
+> `lvh.me` resolves to `127.0.0.1`, so the dev server is reachable at `http://lvh.me:4200` while still being local. This avoids the proxy plugin treating `localhost` as a bypass target.
+
 See [UI Commands Reference](#ui-commands-reference) below for the full list of available commands.
 
 ---
@@ -194,6 +200,7 @@ All commands run from the `UI/` directory.
 | Command | Description |
 |---|---|
 | `npm start` | Dev server at `http://localhost:4200` with live reload |
+| `npm start -- --host lvh.me` | Dev server bound to `lvh.me` (resolves to `127.0.0.1`) for use with browser proxy plugins / mitmproxy |
 | `npm run build` | Production build — output to `dist/vex/` |
 | `npm test` | Unit tests via Karma |
 | `npm run lint` | TypeScript linting via TSLint |

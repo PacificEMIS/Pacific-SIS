@@ -36,6 +36,8 @@ namespace opensis.data.ViewModels.MarkingPeriods
         public string? FullName { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public DateTime? PostStartDate { get; set; }
+        public DateTime? PostEndDate { get; set; }
         public bool? DoesExam { get; set; }
         public decimal? CreditHours { get; set; }
     }

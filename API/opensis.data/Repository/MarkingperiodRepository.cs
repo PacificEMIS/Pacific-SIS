@@ -1456,7 +1456,7 @@ namespace opensis.data.Repository
                             Value = "0" + "_" + markingPeriod.MarkingPeriodId,
                             Text = markingPeriod.ShortName,
                             StartDate = markingPeriod.StartDate,
-                            EndDate = markingPeriod.EndDate,
+                            EndDate = markingPeriod.EndDate, PostStartDate = markingPeriod.PostStartDate, PostEndDate = markingPeriod.PostEndDate,
                             FullName = markingPeriod.Title
                         };
                         markingPeriodList.getMarkingPeriodView.Add(schoolYear);
@@ -1470,7 +1470,7 @@ namespace opensis.data.Repository
                             Value = "1" + "_" + semester.MarkingPeriodId,
                             Text = semester.ShortName,
                             StartDate = semester.StartDate,
-                            EndDate = semester.EndDate,
+                            EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                             FullName = semester.Title
                         };
                         markingPeriodList.getMarkingPeriodView.Add(sem);
@@ -1483,7 +1483,7 @@ namespace opensis.data.Repository
                             Value = "2" + "_" + quater.MarkingPeriodId,
                             Text = quater.ShortName,
                             StartDate = quater.StartDate,
-                            EndDate = quater.EndDate,
+                            EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                             FullName = quater.Title
                         };
                         markingPeriodList.getMarkingPeriodView.Add(qtr);
@@ -1496,7 +1496,7 @@ namespace opensis.data.Repository
                             Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                             Text = progressPeriods.ShortName,
                             StartDate = progressPeriods.StartDate,
-                            EndDate = progressPeriods.EndDate,
+                            EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                             FullName = progressPeriods.Title
                         };
                         markingPeriodList.getMarkingPeriodView.Add(prgsPrd);
@@ -1555,7 +1555,7 @@ namespace opensis.data.Repository
                                 Value = "0" + "_" + markingPeriod.MarkingPeriodId,
                                 Text = markingPeriod.ShortName,
                                 StartDate = markingPeriod.StartDate,
-                                EndDate = markingPeriod.EndDate,
+                                EndDate = markingPeriod.EndDate, PostStartDate = markingPeriod.PostStartDate, PostEndDate = markingPeriod.PostEndDate,
                                 FullName = markingPeriod.Title
                             };
                             markingPeriodsByCourse.getMarkingPeriodView.Add(schoolYear);
@@ -1567,7 +1567,7 @@ namespace opensis.data.Repository
                                     Value = "0" + "_" + markingPeriod.MarkingPeriodId + "_" + "E",
                                     Text = markingPeriod.ShortName,
                                     StartDate = markingPeriod.StartDate,
-                                    EndDate = markingPeriod.EndDate,
+                                    EndDate = markingPeriod.EndDate, PostStartDate = markingPeriod.PostStartDate, PostEndDate = markingPeriod.PostEndDate,
                                     FullName = markingPeriod.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
@@ -1583,7 +1583,7 @@ namespace opensis.data.Repository
                                 Value = "1" + "_" + semester.MarkingPeriodId,
                                 Text = semester.ShortName,
                                 StartDate = semester.StartDate,
-                                EndDate = semester.EndDate,
+                                EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                 FullName = semester.Title
                             };
                             markingPeriodsByCourse.getMarkingPeriodView.Add(sem);
@@ -1595,7 +1595,7 @@ namespace opensis.data.Repository
                                     Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
                                     Text = semester.ShortName,
                                     StartDate = semester.StartDate,
-                                    EndDate = semester.EndDate,
+                                    EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                     FullName = semester.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
@@ -1610,7 +1610,7 @@ namespace opensis.data.Repository
                                 Value = "2" + "_" + quater.MarkingPeriodId,
                                 Text = quater.ShortName,
                                 StartDate = quater.StartDate,
-                                EndDate = quater.EndDate,
+                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                 FullName = quater.Title
                             };
                             markingPeriodsByCourse.getMarkingPeriodView.Add(qtr);
@@ -1622,7 +1622,7 @@ namespace opensis.data.Repository
                                     Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
                                     Text = quater.ShortName,
                                     StartDate = quater.StartDate,
-                                    EndDate = quater.EndDate,
+                                    EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                     FullName = quater.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
@@ -1637,7 +1637,7 @@ namespace opensis.data.Repository
                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                                 Text = progressPeriods.ShortName,
                                 StartDate = progressPeriods.StartDate,
-                                EndDate = progressPeriods.EndDate,
+                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                 FullName = progressPeriods.Title
                             };
                             markingPeriodsByCourse.getMarkingPeriodView.Add(prgrsPrd);
@@ -1649,7 +1649,7 @@ namespace opensis.data.Repository
                                     Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
                                     Text = progressPeriods.ShortName,
                                     StartDate = progressPeriods.StartDate,
-                                    EndDate = progressPeriods.EndDate,
+                                    EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                     FullName = progressPeriods.Title + " " + "EXAM",
                                     DoesExam = true
                                 };
@@ -1695,7 +1695,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                                                 Text = progressPeriods.ShortName,
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 CreditHours = prgsCreditHours
                                             };
@@ -1709,7 +1709,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
                                                 Text = progressPeriods.ShortName + " " + "EXAM",
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 DoesExam = true,
                                                 CreditHours = prgsCreditHours
@@ -1735,7 +1735,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId,
                                                 Text = quater.ShortName,
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 CreditHours = qtrCreditHours
                                             };
@@ -1749,7 +1749,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
                                                 Text = quater.ShortName + " " + "EXAM",
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 DoesExam = true,
                                                 CreditHours = qtrCreditHours
@@ -1775,7 +1775,7 @@ namespace opensis.data.Repository
                                                 Value = "1" + "_" + semester.MarkingPeriodId,
                                                 Text = semester.ShortName,
                                                 StartDate = semester.StartDate,
-                                                EndDate = semester.EndDate,
+                                                EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                                 FullName = semester.Title,
                                                 CreditHours = semCreditHours
                                             };
@@ -1789,7 +1789,7 @@ namespace opensis.data.Repository
                                                 Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
                                                 Text = semester.ShortName + " " + "EXAM",
                                                 StartDate = semester.StartDate,
-                                                EndDate = semester.EndDate,
+                                                EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                                 FullName = semester.Title,
                                                 DoesExam = true,
                                                 CreditHours = semCreditHours
@@ -1806,7 +1806,7 @@ namespace opensis.data.Repository
                                                 Value = "0" + "_" + markingPeriod.MarkingPeriodId,
                                                 Text = markingPeriod.ShortName,
                                                 StartDate = markingPeriod.StartDate,
-                                                EndDate = markingPeriod.EndDate,
+                                                EndDate = markingPeriod.EndDate, PostStartDate = markingPeriod.PostStartDate, PostEndDate = markingPeriod.PostEndDate,
                                                 FullName = markingPeriod.Title,
                                                 CreditHours = courseSectionData.CreditHours
                                             };
@@ -1820,7 +1820,7 @@ namespace opensis.data.Repository
                                                 Value = "0" + "_" + markingPeriod.MarkingPeriodId + "_" + "E",
                                                 Text = markingPeriod.ShortName + " " + "EXAM",
                                                 StartDate = markingPeriod.StartDate,
-                                                EndDate = markingPeriod.EndDate,
+                                                EndDate = markingPeriod.EndDate, PostStartDate = markingPeriod.PostStartDate, PostEndDate = markingPeriod.PostEndDate,
                                                 FullName = markingPeriod.Title,
                                                 DoesExam = true,
                                                 CreditHours = courseSectionData.CreditHours
@@ -1857,7 +1857,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                                                 Text = progressPeriods.ShortName,
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 CreditHours = prgsCreditHours
                                             };
@@ -1871,7 +1871,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
                                                 Text = progressPeriods.ShortName + " " + "EXAM",
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 DoesExam = true,
                                                 CreditHours = prgsCreditHours
@@ -1897,7 +1897,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId,
                                                 Text = quater.ShortName,
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 CreditHours = qtrCreditHours
                                             };
@@ -1911,7 +1911,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
                                                 Text = quater.ShortName + " " + "EXAM",
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 DoesExam = true,
                                                 CreditHours = qtrCreditHours
@@ -1929,7 +1929,7 @@ namespace opensis.data.Repository
                                                 Value = "1" + "_" + semester.MarkingPeriodId,
                                                 Text = semester.ShortName,
                                                 StartDate = semester.StartDate,
-                                                EndDate = semester.EndDate,
+                                                EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                                 FullName = semester.Title,
                                                 CreditHours = courseSectionData.CreditHours
                                             };
@@ -1943,7 +1943,7 @@ namespace opensis.data.Repository
                                                 Value = "1" + "_" + semester.MarkingPeriodId + "_" + "E",
                                                 Text = semester.ShortName + " " + "EXAM",
                                                 StartDate = semester.StartDate,
-                                                EndDate = semester.EndDate,
+                                                EndDate = semester.EndDate, PostStartDate = semester.PostStartDate, PostEndDate = semester.PostEndDate,
                                                 FullName = semester.Title,
                                                 DoesExam = true,
                                                 CreditHours = courseSectionData.CreditHours
@@ -1980,7 +1980,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                                                 Text = progressPeriods.ShortName,
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 CreditHours = prgsCreditHours
                                             };
@@ -1994,7 +1994,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
                                                 Text = progressPeriods.ShortName + " " + "EXAM",
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 DoesExam = true,
                                                 CreditHours = prgsCreditHours
@@ -2012,7 +2012,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId,
                                                 Text = quater.ShortName,
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 CreditHours = courseSectionData.CreditHours
                                             };
@@ -2026,7 +2026,7 @@ namespace opensis.data.Repository
                                                 Value = "2" + "_" + quater.MarkingPeriodId + "_" + "E",
                                                 Text = quater.ShortName + " " + "EXAM",
                                                 StartDate = quater.StartDate,
-                                                EndDate = quater.EndDate,
+                                                EndDate = quater.EndDate, PostStartDate = quater.PostStartDate, PostEndDate = quater.PostEndDate,
                                                 FullName = quater.Title,
                                                 DoesExam = true,
                                                 CreditHours = courseSectionData.CreditHours
@@ -2055,7 +2055,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId,
                                                 Text = progressPeriods.ShortName,
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 CreditHours = courseSectionData.CreditHours
                                             };
@@ -2069,7 +2069,7 @@ namespace opensis.data.Repository
                                                 Value = "3" + "_" + progressPeriods.MarkingPeriodId + "_" + "E",
                                                 Text = progressPeriods.ShortName + " " + "EXAM",
                                                 StartDate = progressPeriods.StartDate,
-                                                EndDate = progressPeriods.EndDate,
+                                                EndDate = progressPeriods.EndDate, PostStartDate = progressPeriods.PostStartDate, PostEndDate = progressPeriods.PostEndDate,
                                                 FullName = progressPeriods.Title,
                                                 CreditHours = courseSectionData.CreditHours
                                             };

@@ -54,6 +54,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { CommonService } from 'src/app/services/common.service';
 import { GradebookConfigurationAddViewModel } from 'src/app/models/gradebook-configuration.model';
 import { GradeBookConfigurationService } from 'src/app/services/gradebook-configuration.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'vex-grade-details',
@@ -114,6 +115,8 @@ export class GradeDetailsComponent implements OnInit {
   getMarkingPeriodByCourseSectionModel: GetMarkingPeriodByCourseSectionModel = new GetMarkingPeriodByCourseSectionModel();
   getGradebookGradeinFinalGradeModel: GetGradebookGradeinFinalGradeModel = new GetGradebookGradeinFinalGradeModel();
   selectedMarkingPeriod;
+  selectedPostStartDate: string;
+  selectedPostEndDate: string;
   creditHours;
   cloneAddUpdateStudentFinalGradeModel;
   gradebookConfigurationAddViewModel: GradebookConfigurationAddViewModel = new GradebookConfigurationAddViewModel();
@@ -267,6 +270,8 @@ export class GradeDetailsComponent implements OnInit {
   changeMarkingPeriod(markingPeriodTitle) {
     if(markingPeriodTitle) {
     const markingPeriodDetails = this.markingPeriodList.find(x=> x.text === markingPeriodTitle);
+    this.selectedPostStartDate = markingPeriodDetails.postStartDate;
+    this.selectedPostEndDate = markingPeriodDetails.postEndDate;
     if(markingPeriodDetails.value === 'Custom') {
       this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
       this.addUpdateStudentFinalGradeModel.isCustomMarkingPeriod = true;
@@ -336,6 +341,8 @@ export class GradeDetailsComponent implements OnInit {
     this.totalCount = 0;
     this.addUpdateStudentFinalGradeModel.markingPeriodId = null;
     this.selectedMarkingPeriod = undefined;
+    this.selectedPostStartDate = undefined;
+    this.selectedPostEndDate = undefined;
   }
   }
 
@@ -776,6 +783,15 @@ if(courseSection) {
       });
     }    
     return gradeDataSet;
+  }
+
+  canPostGrades(): boolean {
+    if (!this.selectedPostStartDate || !this.selectedPostEndDate) {
+      return this.defaultValuesService.checkAcademicYear();
+    }
+    const today = moment().startOf('day');
+    return today.isSameOrAfter(moment(this.selectedPostStartDate).startOf('day'))
+        && today.isSameOrBefore(moment(this.selectedPostEndDate).startOf('day'));
   }
 
   checkCommentAndSetNullData(selectedStudent) {
