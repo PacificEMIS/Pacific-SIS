@@ -40,10 +40,12 @@ namespace opensis.core.Rollover.Services
         private static readonly string TOKENINVALID = "Token not Valid";
 
         public IRolloverRepository rolloverRepository;
+        public ICommonRepository commonRepository;
         public ICheckLoginSession tokenManager;
-        public RolloverServices(IRolloverRepository rolloverRepository, ICheckLoginSession checkLoginSession)
+        public RolloverServices(IRolloverRepository rolloverRepository, ICommonRepository commonRepository, ICheckLoginSession checkLoginSession)
         {
             this.rolloverRepository = rolloverRepository;
+            this.commonRepository = commonRepository;
             this.tokenManager = checkLoginSession;
         }
 
@@ -72,6 +74,33 @@ namespace opensis.core.Rollover.Services
                 rollover._message = es.Message;
             }
             return rollover;
+        }
+
+        /// <summary>
+        /// Read-only pre-rollover completeness summary. Informational only —
+        /// never blocks the rollover and performs no writes.
+        /// </summary>
+        public RolloverReadinessViewModel PreflightSummary(RolloverReadinessViewModel readinessViewModel)
+        {
+            RolloverReadinessViewModel readiness = new RolloverReadinessViewModel();
+            try
+            {
+                if (tokenManager.CheckToken(readinessViewModel._tenantName + readinessViewModel._userName, readinessViewModel._token))
+                {
+                    readiness = this.commonRepository.GetRolloverReadiness(readinessViewModel);
+                }
+                else
+                {
+                    readiness._failure = true;
+                    readiness._message = TOKENINVALID;
+                }
+            }
+            catch (Exception es)
+            {
+                readiness._failure = true;
+                readiness._message = es.Message;
+            }
+            return readiness;
         }
     }
 }

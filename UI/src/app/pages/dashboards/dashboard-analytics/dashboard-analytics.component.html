@@ -16,7 +16,7 @@
 <div class="px-gutter py-4" vexContainer>
 
   <!-- Notifications — full width -->
-  <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="showRollOver">
+  <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="showRollOver" (click)="goToRollover()">
     {{'schoolYearIsEndingOrHasEndedRollOverRequiredGoToToolsRolloverToStartTheRolloverProcess'|translate}}
   </div>
   <div class="card px-6 py-4 bg-red mb-4 text-white hide cursor-pointer" *ngIf="missingAttendanceCount>0" (click)="goToMissingAttendence()">

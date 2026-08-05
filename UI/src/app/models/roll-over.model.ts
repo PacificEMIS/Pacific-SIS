@@ -37,3 +37,56 @@ export class SchoolRollover {
     UpdatedBy: string;
     UpdatedOn: string;
 }
+
+// Read-only pre-rollover completeness summary (mirrors RolloverReadinessViewModel).
+export class RolloverReadinessViewModel extends CommonField {
+    academicYear: number;
+    totalStudents: number;
+    studentsByGradeGender: GradeGenderCount[];
+    dispositions: DispositionGradeGender[];
+    terminalGradeNeedsReview: GradeGenderCount[];
+    terminalGradeTitles: string[];
+    exitsByCode: ExitCodeGradeGender[];
+    sectionsMissingAttendance: SectionCompletenessRow[];
+    sectionsMissingGrades: SectionCompletenessRow[];
+    unlinkedEnrollmentCount: number;
+    constructor() {
+        super();
+        this.studentsByGradeGender = [];
+        this.dispositions = [];
+        this.terminalGradeNeedsReview = [];
+        this.terminalGradeTitles = [];
+        this.exitsByCode = [];
+        this.sectionsMissingAttendance = [];
+        this.sectionsMissingGrades = [];
+    }
+}
+
+export class GradeGenderCount {
+    gradeId: number;
+    gradeLevelTitle: string;
+    gender: string;
+    count: number;
+    sortOrder: number;
+}
+
+export class DispositionGradeGender {
+    dispositionKey: string;
+    total: number;
+    rows: GradeGenderCount[];
+}
+
+export class ExitCodeGradeGender {
+    exitCodeTitle: string;
+    total: number;
+    rows: GradeGenderCount[];
+}
+
+export class SectionCompletenessRow {
+    courseSectionId: number;
+    courseTitle: string;
+    courseSectionName: string;
+    teacherName: string;
+    markingPeriodTitle: string;
+    count: number;
+}

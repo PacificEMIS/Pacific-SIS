@@ -33,6 +33,7 @@ using opensis.data.Interface;
 using opensis.data.Models;
 using opensis.data.ViewModels.CommonModel;
 using opensis.data.ViewModels.Membership;
+using opensis.data.ViewModels.Rollover;
 using opensis.data.ViewModels.StaffSchedule;
 using System;
 using System.Collections.Generic;
@@ -2954,6 +2955,293 @@ namespace opensis.data.Repository
             public string? Title { get; set; }
             public bool DoesGrades { get; set; }
             public bool DoesExam { get; set; }
+        }
+
+        /// <summary>
+        /// Read-only pre-rollover completeness summary for the given school year.
+        /// Shown to the operator before the irreversible rollover runs so they can
+        /// self-assess data completeness. Never blocks the rollover and performs
+        /// no writes.
+        /// </summary>
+        /// <remarks>
+        /// Draws from two distinct sources that must not be conflated:
+        /// - StudentEnrollment.RollingOption (the forward-looking disposition the
+        ///   rollover engine branches on: promote / retain / do-not-enroll /
+        ///   enrol-elsewhere), summarized per grade and gender, including a
+        ///   "NotSet" bucket and a terminal-grade review list (students in a grade
+        ///   with no NextGradeId who are still on the promote default — rollover
+        ///   silently converts them to do-not-enroll).
+        /// - Mid-year exits: enrollments with an ExitDate before the school-year
+        ///   end and no RolloverId (excludes the rollover-generated year-end
+        ///   completer batch), grouped by the operator-selected exit code title.
+        /// Missing attendance / grades reuse PopulateCourseSectionStatus over all
+        /// of the year's course sections. Attendance gaps come from
+        /// StudentMissingAttendances, which the nightly background job populates.
+        /// </remarks>
+        public RolloverReadinessViewModel GetRolloverReadiness(RolloverReadinessViewModel readinessViewModel)
+        {
+            RolloverReadinessViewModel readiness = new()
+            {
+                TenantId = readinessViewModel.TenantId,
+                SchoolId = readinessViewModel.SchoolId,
+                AcademicYear = readinessViewModel.AcademicYear,
+                _tenantName = readinessViewModel._tenantName,
+                _token = readinessViewModel._token
+            };
+            try
+            {
+                var todayDate = DateTime.Today;
+                var tenantId = readinessViewModel.TenantId;
+                var schoolId = readinessViewModel.SchoolId;
+                var academicYear = readinessViewModel.AcademicYear;
+
+                // Calendars resolve the academic year (enrollments carry no year
+                // column, only CalenderId).
+                var calendars = this.context?.SchoolCalendars
+                    .Where(c => c.TenantId == tenantId
+                        && c.SchoolId == schoolId
+                        && c.AcademicYear == academicYear)
+                    .ToList() ?? new List<SchoolCalendars>();
+                var calendarIds = calendars.Select(c => c.CalenderId).ToList();
+                var yearEnd = calendars.Count > 0 ? calendars.Max(c => c.EndDate) : null;
+
+                var gradeLevels = this.context?.Gradelevels
+                    .Where(gl => gl.TenantId == tenantId && gl.SchoolId == schoolId)
+                    .ToList() ?? new List<Gradelevels>();
+                var gradeSortOrders = gradeLevels.ToDictionary(gl => gl.GradeId, gl => gl.SortOrder ?? 0);
+
+                // Terminal grades: no next grade configured. At rollover, students
+                // here cannot be promoted (RolloverRepository falls into the
+                // do-not-enroll branch when NextGradeId is null).
+                var terminalGradeIds = gradeLevels
+                    .Where(gl => gl.NextGradeId == null)
+                    .Select(gl => gl.GradeId)
+                    .ToHashSet();
+                readiness.TerminalGradeTitles = gradeLevels
+                    .Where(gl => gl.NextGradeId == null && !string.IsNullOrEmpty(gl.Title))
+                    .OrderBy(gl => gl.SortOrder ?? 0)
+                    .Select(gl => gl.Title!)
+                    .ToList();
+
+                // Same active-enrollment base set as GetDashboardView.
+                var enrolledStudents = this.context?.StudentEnrollment
+                    .Include(e => e.StudentMaster)
+                    .Where(e => e.TenantId == tenantId
+                        && e.SchoolId == schoolId
+                        && e.IsActive == true
+                        && e.StudentMaster.IsActive != false
+                        && e.CalenderId != null
+                        && calendarIds.Contains(e.CalenderId.Value))
+                    .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
+
+                readiness.TotalStudents = enrolledStudents
+                    .Select(e => e.StudentId)
+                    .Distinct()
+                    .Count();
+
+                // Enrollments that belong to no calendar cannot be classified into
+                // any school year; surfaced instead of silently dropped.
+                readiness.UnlinkedEnrollmentCount = this.context?.StudentEnrollment
+                    .Where(e => e.TenantId == tenantId
+                        && e.SchoolId == schoolId
+                        && e.IsActive == true
+                        && e.StudentMaster.IsActive != false
+                        && e.CalenderId == null)
+                    .Count() ?? 0;
+
+                List<GradeGenderCount> BuildGradeGender(IEnumerable<opensis.data.Models.StudentEnrollment> enrollments)
+                {
+                    return enrollments
+                        .GroupBy(e => new
+                        {
+                            e.GradeId,
+                            e.GradeLevelTitle,
+                            Gender = string.IsNullOrWhiteSpace(e.StudentMaster?.Gender) ? null : e.StudentMaster!.Gender!.Trim()
+                        })
+                        .Select(g => new GradeGenderCount
+                        {
+                            GradeId = g.Key.GradeId,
+                            GradeLevelTitle = g.Key.GradeLevelTitle,
+                            Gender = g.Key.Gender,
+                            Count = g.Select(e => e.StudentId).Distinct().Count(),
+                            SortOrder = g.Key.GradeId.HasValue && gradeSortOrders.ContainsKey(g.Key.GradeId.Value)
+                                ? gradeSortOrders[g.Key.GradeId.Value]
+                                : 999
+                        })
+                        .OrderBy(r => r.SortOrder)
+                        .ThenBy(r => r.Gender)
+                        .ToList();
+                }
+
+                readiness.StudentsByGradeGender = BuildGradeGender(enrolledStudents);
+
+                // Dispositions: matched case-insensitively the way the rollover
+                // engine branches on RollingOption; null/blank/unknown -> NotSet.
+                var knownDispositions = new List<string>
+                {
+                    "Next grade at current school",
+                    "Retain",
+                    "Do not enroll after this school year",
+                    "Enrol to another school"
+                };
+
+                string NormalizeDisposition(string? rollingOption)
+                {
+                    if (string.IsNullOrWhiteSpace(rollingOption))
+                        return "NotSet";
+                    var match = knownDispositions.FirstOrDefault(d =>
+                        d.Equals(rollingOption.Trim(), StringComparison.OrdinalIgnoreCase));
+                    return match ?? "NotSet";
+                }
+
+                readiness.Dispositions = knownDispositions
+                    .Concat(new[] { "NotSet" })
+                    .Select(key =>
+                    {
+                        var rows = BuildGradeGender(enrolledStudents
+                            .Where(e => NormalizeDisposition(e.RollingOption) == key));
+                        return new DispositionGradeGender
+                        {
+                            DispositionKey = key,
+                            Rows = rows,
+                            Total = rows.Sum(r => r.Count)
+                        };
+                    })
+                    .ToList();
+
+                readiness.TerminalGradeNeedsReview = BuildGradeGender(enrolledStudents
+                    .Where(e => e.GradeId != null
+                        && terminalGradeIds.Contains(e.GradeId.Value)
+                        && (NormalizeDisposition(e.RollingOption) == "Next grade at current school"
+                            || NormalizeDisposition(e.RollingOption) == "NotSet")));
+
+                // Exit codes of "leaving" type. Real data contains duplicate code
+                // rows and trailing-space typos, so codes are grouped by trimmed
+                // title (case-insensitive).
+                var dropTypeCodes = this.context?.StudentEnrollmentCode
+                    .Where(c => c.TenantId == tenantId && c.SchoolId == schoolId
+                        && (c.Type == "Drop" || c.Type == "Drop (Transfer)"))
+                    .ToList() ?? new List<StudentEnrollmentCode>();
+
+                var codesByTitle = dropTypeCodes
+                    .Where(c => !string.IsNullOrWhiteSpace(c.Title))
+                    .GroupBy(c => c.Title!.Trim(), StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(g => g.Min(c => c.SortOrder ?? 0))
+                    .ToList();
+
+                // Mid-year exits: exited before the year-end date and not produced
+                // by the rollover process itself (RolloverId == null excludes the
+                // year-end completer/graduate batch). IsActive is deliberately not
+                // used here — it is unreliable on exited enrollments.
+                var exitEnrollments = this.context?.StudentEnrollment
+                    .Include(e => e.StudentMaster)
+                    .Where(e => e.TenantId == tenantId
+                        && e.SchoolId == schoolId
+                        && e.CalenderId != null
+                        && calendarIds.Contains(e.CalenderId.Value)
+                        && e.ExitDate != null
+                        && e.RolloverId == null
+                        && e.ExitCode != null)
+                    .ToList() ?? new List<opensis.data.Models.StudentEnrollment>();
+
+                if (yearEnd != null)
+                {
+                    exitEnrollments = exitEnrollments
+                        .Where(e => e.ExitDate!.Value.Date < yearEnd.Value.Date)
+                        .ToList();
+                }
+
+                readiness.ExitsByCode = codesByTitle
+                    .Select(codeGroup =>
+                    {
+                        // The persisted ExitCode is normally the code title; the
+                        // numeric id is accepted too as a defensive fallback.
+                        var idStrings = codeGroup.Select(c => c.EnrollmentCode.ToString()).ToHashSet();
+                        var rows = BuildGradeGender(exitEnrollments.Where(e =>
+                            codeGroup.Key.Equals(e.ExitCode!.Trim(), StringComparison.OrdinalIgnoreCase)
+                            || idStrings.Contains(e.ExitCode!.Trim())));
+                        return new ExitCodeGradeGender
+                        {
+                            ExitCodeTitle = codeGroup.Key,
+                            Rows = rows,
+                            Total = rows.Sum(r => r.Count)
+                        };
+                    })
+                    .ToList();
+
+                // Missing attendance / grades: all of the year's course sections
+                // run through the same completeness rules as the teacher dashboard.
+                var courseSections = this.context?.CourseSection
+                    .Where(x => x.TenantId == tenantId
+                        && x.SchoolId == schoolId
+                        && x.AcademicYear == academicYear)
+                    .Select(x => new CourseSectionViewList
+                    {
+                        CourseSectionId = x.CourseSectionId,
+                        CourseId = x.CourseId,
+                        CourseTitle = x.Course.CourseTitle,
+                        CourseSectionName = x.CourseSectionName,
+                        DurationStartDate = x.DurationStartDate,
+                        DurationEndDate = x.DurationEndDate,
+                        AttendanceTaken = x.AttendanceTaken
+                    })
+                    .ToList() ?? new List<CourseSectionViewList>();
+
+                PopulateCourseSectionStatus(courseSections, tenantId, schoolId, todayDate);
+
+                // Primary teacher per section, for display only.
+                var staffBySection = this.context?.StaffCoursesectionSchedule
+                    .Where(x => x.TenantId == tenantId
+                        && x.SchoolId == schoolId
+                        && x.IsDropped != true)
+                    .Select(x => new
+                    {
+                        x.CourseSectionId,
+                        x.IsPrimaryStaff,
+                        Name = ((x.StaffMaster.FirstGivenName ?? "") + " " + (x.StaffMaster.LastFamilyName ?? "")).Trim()
+                    })
+                    .ToList()
+                    .GroupBy(x => x.CourseSectionId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.OrderByDescending(x => x.IsPrimaryStaff == true).First().Name)
+                    ?? new Dictionary<int, string>();
+
+                SectionCompletenessRow ToRow(CourseSectionViewList cs, int count, string? markingPeriodTitle)
+                {
+                    return new SectionCompletenessRow
+                    {
+                        CourseSectionId = cs.CourseSectionId,
+                        CourseTitle = cs.CourseTitle,
+                        CourseSectionName = cs.CourseSectionName,
+                        TeacherName = cs.CourseSectionId.HasValue && staffBySection.ContainsKey(cs.CourseSectionId.Value)
+                            ? staffBySection[cs.CourseSectionId.Value]
+                            : null,
+                        MarkingPeriodTitle = markingPeriodTitle,
+                        Count = count
+                    };
+                }
+
+                readiness.SectionsMissingAttendance = courseSections
+                    .Where(cs => cs.HasMissingAttendance == true)
+                    .Select(cs => ToRow(cs, cs.MissingAttendanceDaysCount ?? 0, null))
+                    .OrderBy(r => r.CourseTitle)
+                    .ThenBy(r => r.CourseSectionName)
+                    .ToList();
+
+                readiness.SectionsMissingGrades = courseSections
+                    .Where(cs => cs.HasMissingGrades == true)
+                    .Select(cs => ToRow(cs, cs.MissingGradesStudentCount ?? 0, cs.MissingGradesMarkingPeriodTitle))
+                    .OrderBy(r => r.CourseTitle)
+                    .ThenBy(r => r.CourseSectionName)
+                    .ToList();
+            }
+            catch (Exception es)
+            {
+                readiness._failure = true;
+                readiness._message = es.Message;
+            }
+            return readiness;
         }
 
         //public ScheduledCourseSectionViewModel GetDashboardViewForStaff(ScheduledCourseSectionViewModel scheduledCourseSectionViewModel)

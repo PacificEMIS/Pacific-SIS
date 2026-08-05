@@ -1,0 +1,158 @@
+<ng-template #pivotTable let-pivot="pivot">
+    <table class="w-full text-sm summary-table" *ngIf="pivot && pivot.rows.length > 0">
+        <thead>
+            <tr class="border-b">
+                <th class="text-left py-1 px-2">{{ 'grade' | translate }}</th>
+                <th class="text-right py-1 px-2" *ngFor="let g of pivot.genderLabels">{{ g }}</th>
+                <th class="text-right py-1 px-2">{{ 'total' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="border-b" *ngFor="let row of pivot.rows">
+                <td class="py-1 px-2">{{ row.gradeLevelTitle }}</td>
+                <td class="text-right py-1 px-2" *ngFor="let c of row.counts">{{ c }}</td>
+                <td class="text-right py-1 px-2 font-medium">{{ row.total }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="py-1 px-2 font-semibold">{{ 'total' | translate }}</td>
+                <td class="text-right py-1 px-2 font-semibold" *ngFor="let t of pivot.columnTotals">{{ t }}</td>
+                <td class="text-right py-1 px-2 font-semibold">{{ pivot.grandTotal }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</ng-template>
+
+<div class="flex items-center" mat-dialog-title>
+    <mat-icon [icIcon]="icWarning" class="text-orange mr-2 align-middle"></mat-icon>
+    <h2 class="headline m-0 flex-auto">{{ 'rolloverPreflightTitle' | translate }} — {{ data.academicYear }}</h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<mat-divider class="-mx-6 text-border"></mat-divider>
+
+<mat-dialog-content class="py-4">
+    <div class="bg-orange-light px-4 py-3 rounded mb-4">
+        <span class="text-orange font-semibold">
+            <mat-icon [icIcon]="icWarning" class="align-middle"></mat-icon>
+            <span> {{ 'caution' | translate }}</span>
+        </span><span class="mx-1">:</span>
+        <span>{{ (data.reviewOnly ? 'rolloverPreflightReviewBanner' : 'rolloverPreflightBanner') | translate }}</span>
+    </div>
+
+    <div *ngIf="data.loadFailed" class="bg-red-light px-4 py-3 rounded mb-4">
+        <span class="text-red font-semibold">{{ 'rolloverPreflightLoadFailed' | translate }}</span>
+    </div>
+
+    <ng-container *ngIf="!data.loadFailed">
+
+        <h3 class="text-base font-semibold mt-4 mb-2">{{ 'studentsEnrolledByGradeAndGender' | translate }} ({{ totalStudents }})</h3>
+        <ng-container *ngTemplateOutlet="pivotTable; context: {pivot: studentsPivot}"></ng-container>
+        <p *ngIf="!studentsPivot || studentsPivot.rows.length === 0" class="text-sm text-secondary">{{ 'noData' | translate }}</p>
+
+        <mat-divider class="-mx-6 my-4"></mat-divider>
+
+        <h3 class="text-base font-semibold mt-4 mb-2">{{ 'rolloverDispositions' | translate }}</h3>
+        <div *ngIf="notSetTotal > 0" class="bg-red-light px-4 py-2 rounded mb-3">
+            <span class="text-red font-semibold">{{ notSetTotal }}</span>
+            <span class="mx-1">{{ 'rolloverNotSetWarning' | translate }}</span>
+        </div>
+        <ng-container *ngFor="let d of dispositions">
+            <div *ngIf="!d.isNotSet || d.total > 0" class="mb-3">
+                <h4 class="text-sm font-semibold mb-1" [class.text-red]="d.isNotSet">{{ d.labelKey | translate }} ({{ d.total }})</h4>
+                <ng-container *ngIf="d.total > 0">
+                    <ng-container *ngTemplateOutlet="pivotTable; context: {pivot: d.pivot}"></ng-container>
+                </ng-container>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="terminalPivot && terminalPivot.rows.length > 0">
+            <mat-divider class="-mx-6 my-4"></mat-divider>
+            <h3 class="text-base font-semibold text-orange mt-4 mb-2">{{ 'rolloverTerminalGradeReview' | translate }} ({{ terminalPivot.grandTotal }})</h3>
+            <div class="bg-orange-light px-4 py-2 rounded mb-2">
+                <span>{{ 'rolloverTerminalGradeWarning' | translate }}</span>
+                <b class="ml-1">{{ terminalGradeTitlesJoined }}</b>
+            </div>
+            <ng-container *ngTemplateOutlet="pivotTable; context: {pivot: terminalPivot}"></ng-container>
+        </ng-container>
+
+        <mat-divider class="-mx-6 my-4"></mat-divider>
+
+        <h3 class="text-base font-semibold mt-4 mb-2">{{ 'rolloverMidYearExits' | translate }}</h3>
+        <p class="text-xs text-secondary mb-2">{{ 'rolloverMidYearExitsNote' | translate }}</p>
+        <div *ngFor="let e of exitCodes" class="mb-3">
+            <h4 class="text-sm font-semibold mb-1">{{ e.title }} ({{ e.total }})</h4>
+            <ng-container *ngIf="e.total > 0">
+                <ng-container *ngTemplateOutlet="pivotTable; context: {pivot: e.pivot}"></ng-container>
+            </ng-container>
+        </div>
+        <p *ngIf="exitCodes.length === 0" class="text-sm text-secondary">{{ 'noData' | translate }}</p>
+
+        <mat-divider class="-mx-6 my-4"></mat-divider>
+
+        <h3 class="text-base font-semibold mt-4 mb-2" [class.text-red]="missingAttendance.length > 0">
+            {{ 'rolloverMissingAttendance' | translate }} ({{ missingAttendance.length }})</h3>
+        <p class="text-xs text-secondary mb-2">{{ 'rolloverMissingAttendanceNote' | translate }}</p>
+        <table class="w-full text-sm summary-table" *ngIf="missingAttendance.length > 0">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-1 px-2">{{ 'course' | translate }}</th>
+                    <th class="text-left py-1 px-2">{{ 'courseSection' | translate }}</th>
+                    <th class="text-left py-1 px-2">{{ 'teacher' | translate }}</th>
+                    <th class="text-right py-1 px-2">{{ 'rolloverMissingDays' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b" *ngFor="let s of missingAttendance">
+                    <td class="py-1 px-2">{{ s.courseTitle }}</td>
+                    <td class="py-1 px-2">{{ s.courseSectionName }}</td>
+                    <td class="py-1 px-2">{{ s.teacherName }}</td>
+                    <td class="py-1 px-2 text-right text-red font-semibold">{{ s.count }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p *ngIf="missingAttendance.length === 0" class="text-sm text-secondary italic">{{ 'rolloverLooksComplete' | translate }}</p>
+
+        <mat-divider class="-mx-6 my-4"></mat-divider>
+
+        <h3 class="text-base font-semibold mt-4 mb-2" [class.text-red]="missingGrades.length > 0">
+            {{ 'rolloverMissingGrades' | translate }} ({{ missingGrades.length }})</h3>
+        <p class="text-xs text-secondary mb-2">{{ 'rolloverMissingGradesNote' | translate }}</p>
+        <table class="w-full text-sm summary-table" *ngIf="missingGrades.length > 0">
+            <thead>
+                <tr class="border-b">
+                    <th class="text-left py-1 px-2">{{ 'course' | translate }}</th>
+                    <th class="text-left py-1 px-2">{{ 'courseSection' | translate }}</th>
+                    <th class="text-left py-1 px-2">{{ 'teacher' | translate }}</th>
+                    <th class="text-left py-1 px-2">{{ 'markingPeriod' | translate }}</th>
+                    <th class="text-right py-1 px-2">{{ 'rolloverStudentsMissingGrade' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b" *ngFor="let s of missingGrades">
+                    <td class="py-1 px-2">{{ s.courseTitle }}</td>
+                    <td class="py-1 px-2">{{ s.courseSectionName }}</td>
+                    <td class="py-1 px-2">{{ s.teacherName }}</td>
+                    <td class="py-1 px-2">{{ s.markingPeriodTitle }}</td>
+                    <td class="py-1 px-2 text-right text-red font-semibold">{{ s.count }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p *ngIf="missingGrades.length === 0" class="text-sm text-secondary italic">{{ 'rolloverLooksComplete' | translate }}</p>
+
+        <p *ngIf="unlinkedEnrollmentCount > 0" class="text-xs text-red mt-4">
+            {{ unlinkedEnrollmentCount }} {{ 'rolloverUnlinkedEnrollments' | translate }}</p>
+
+    </ng-container>
+</mat-dialog-content>
+
+<mat-divider class="-mx-6 text-border"></mat-divider>
+<mat-dialog-actions align="end">
+    <button *ngIf="data.reviewOnly" mat-flat-button color="primary" type="button" (click)="onCancel()">{{ 'close' | translate }}</button>
+    <button *ngIf="!data.reviewOnly" mat-stroked-button type="button" (click)="onCancel()">{{ 'cancel' | translate }}</button>
+    <button *ngIf="!data.reviewOnly" mat-flat-button color="warn" type="button" class="ml-2" (click)="onConfirm()">
+        <mat-icon class="mr-2">published_with_changes</mat-icon>{{ 'rolloverPreflightConfirm' | translate }}
+    </button>
+</mat-dialog-actions>

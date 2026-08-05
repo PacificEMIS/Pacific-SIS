@@ -61,5 +61,21 @@ namespace opensisAPI.Controllers
             }
             return rollover;
         }
+
+        [HttpPost("preflightSummary")]
+        public ActionResult<RolloverReadinessViewModel> PreflightSummary(RolloverReadinessViewModel readinessViewModel)
+        {
+            RolloverReadinessViewModel readiness = new RolloverReadinessViewModel();
+            try
+            {
+                readiness = _rolloverService.PreflightSummary(readinessViewModel);
+            }
+            catch (Exception es)
+            {
+                readiness._failure = true;
+                readiness._message = es.Message;
+            }
+            return readiness;
+        }
     }
 }

@@ -1,0 +1,13 @@
+// Message card shown next to the global spinner while the pre-rollover
+// completeness summary is being generated (can take a while on big schools).
+// The shared spinner overlay is fixed with z-index 10; sit just above it,
+// below the centered spinner.
+.preflight-wait-message {
+    position: fixed;
+    top: calc(50% + 48px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
+    max-width: 480px;
+    width: 90%;
+}

@@ -33,5 +33,6 @@ namespace opensis.core.Rollover.Interfaces
     public interface IRolloverService
     {
         public RolloverViewModel Rollover(RolloverViewModel rolloverViewModel);
+        public RolloverReadinessViewModel PreflightSummary(RolloverReadinessViewModel readinessViewModel);
     }
 }
