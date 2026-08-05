@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { DefaultValuesService } from '../common/default-values.service';
-import { RolloverViewModel } from '../models/roll-over.model';
+import { RolloverReadinessViewModel, RolloverViewModel } from '../models/roll-over.model';
 
 
 @Injectable({
@@ -28,5 +28,14 @@ export class RollOverService {
         obj.schoolRollover.CreatedBy = this.defaultValuesService.getUserGuidId();
         let apiurl = this.apiUrl + obj._tenantName + '/Rollover/rollover';
         return this.http.post<RolloverViewModel>(apiurl, obj, this.httpOptions);
+    }
+
+    getPreflightSummary(obj: RolloverReadinessViewModel) {
+        obj = this.defaultValuesService.getAllMandatoryVariable(obj);
+        obj.schoolId = this.defaultValuesService.getSchoolID();
+        obj.tenantId = this.defaultValuesService.getTenantID();
+        obj.academicYear = this.defaultValuesService.getAcademicYear();
+        let apiurl = this.apiUrl + obj._tenantName + '/Rollover/preflightSummary';
+        return this.http.post<RolloverReadinessViewModel>(apiurl, obj, this.httpOptions);
     }
 }

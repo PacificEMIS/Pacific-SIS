@@ -1297,7 +1297,7 @@ namespace opensis.data.Repository
                             }
                             this.context?.SaveChanges();
                             rolloverViewModel._failure = false;
-                            rolloverViewModel._message = "School rolled over successfully. Please login again";
+                            rolloverViewModel._message = "School rolled over successfully. The new school year will appear in the school year selector shortly.";
                             transaction?.Commit();
                         }
                     }

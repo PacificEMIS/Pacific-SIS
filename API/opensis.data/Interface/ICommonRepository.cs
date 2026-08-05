@@ -26,6 +26,7 @@ All rights reserved.
 using Microsoft.AspNetCore.Mvc;
 using opensis.data.Models;
 using opensis.data.ViewModels.CommonModel;
+using opensis.data.ViewModels.Rollover;
 using opensis.data.ViewModels.StaffSchedule;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,7 @@ namespace opensis.data.Interface
         public LanguageAddModel DeleteLanguage(LanguageAddModel languageAddModel);
         public LanguageListModel GetAllLanguageForLogin(LanguageListModel languageListModel);
         public DashboardViewModel GetDashboardView(DashboardViewModel dashboardViewModel);
+        public RolloverReadinessViewModel GetRolloverReadiness(RolloverReadinessViewModel readinessViewModel);
         public ReleaseNumberAddViewModel GetReleaseNumber(ReleaseNumberAddViewModel releaseNumberAddViewModel);
         public SearchFilterAddViewModel AddSearchFilter(SearchFilterAddViewModel searchFilterAddViewModel);
         public SearchFilterAddViewModel UpdateSearchFilter(SearchFilterAddViewModel searchFilterAddViewModel);

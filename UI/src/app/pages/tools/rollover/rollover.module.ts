@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { RolloverRoutingModule } from './rollover-routing.module';
 import { RolloverComponent } from './rollover.component';
+import { RolloverSummaryDialogComponent } from './rollover-summary-dialog/rollover-summary-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,7 +24,7 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
 
 
 @NgModule({
-  declarations: [RolloverComponent],
+  declarations: [RolloverComponent, RolloverSummaryDialogComponent],
   imports: [
     CommonModule,
     RolloverRoutingModule,
@@ -41,7 +43,9 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
     FormsModule,
     MatDividerModule,
     MatDatepickerModule,
+    MatDialogModule,
     SharedModuleModule
-  ]
+  ],
+  entryComponents: [RolloverSummaryDialogComponent]
 })
 export class RolloverModule { }
