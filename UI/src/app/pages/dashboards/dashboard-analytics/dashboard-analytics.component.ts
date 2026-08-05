@@ -445,6 +445,16 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  goToRollover() {
+    if (this.pageRolePermission.checkPageRolePermission('/school/tools/rollover').view) {
+      this.router.navigate(['school/tools/rollover']);
+    } else {
+      this.snackbar.open(`You don't have permission to view rollover`, '', {
+        duration: 10000
+      });
+    }
+  }
+
   barWidth(value: number, max: number): string {
     if (max <= 0) return '0%';
     return Math.round((value / max) * 100) + '%';
