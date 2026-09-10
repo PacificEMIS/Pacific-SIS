@@ -44,7 +44,7 @@
   <!-- Summary cards — full width -->
   <div gdColumns="1fr 1fr 1fr" gdColumns.lt-md="1fr 1fr" gdColumns.lt-sm="1fr" gdGap="16px" vexContainer>
     <vex-widget-quick-value-center [icon]="icStudent" cardClass="bg-red" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"
-      label="{{'students' |translate}}" [value]='studentCount' (click)="checkIsActive('students')" class="cursor-pointer"></vex-widget-quick-value-center>
+      label="{{'students' |translate}}" [value]='studentCount' [subtext]='studentStatusText' (click)="checkIsActive('students')" class="cursor-pointer"></vex-widget-quick-value-center>
     <vex-widget-quick-value-center [icon]="icStaff" cardClass="bg-green" iconClass="bg-white-light text-white"
       gdColumn.lt-sm="1" label="{{'staff' |translate}}" [value]='staffCount' (click)="checkIsActive('staff')" class="cursor-pointer"></vex-widget-quick-value-center>
     <vex-widget-quick-value-center [icon]="icParent" cardClass="bg-blue" iconClass="bg-white-light text-white" gdColumn.lt-sm="1"

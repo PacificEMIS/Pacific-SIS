@@ -169,6 +169,7 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
   durationType = '1';
   addCalendarDay = 0;
   studentCount: number;
+  studentStatusText: string = '';
   parentCount: number;
   staffCount: number;
   showRollOver: boolean = false;
@@ -277,6 +278,9 @@ export class DashboardAnalyticsComponent implements OnInit, AfterViewInit, OnDes
         }
         else {
           this.studentCount = res.totalStudent !== null ? res.totalStudent : 0;
+          this.studentStatusText = (res.studentsByStatus || [])
+            .map(s => s.count + ' ' + (s.key ? this.translateService.instant(s.key) : s.name))
+            .join(' · ');
           this.staffCount = res.totalStaff !== null ? res.totalStaff : 0;
           this.parentCount = res.totalParent !== null ? res.totalParent : 0;
           this.enrollmentByGrade = res.enrollmentByGrade || [];

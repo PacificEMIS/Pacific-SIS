@@ -1554,6 +1554,8 @@
     "enrollmentByGrade": "Enrollment by Grade",
     "repeatersByGrade": "Repeaters by Grade",
     "noRepeatersThisYear": "There are no repeaters this year",
+    "stillEnrolled": "still enrolled",
+    "deactivated": "deactivated",
     "dropoutsByGrade": "Dropouts by Grade",
     "dropoutsComingSoon": "Dropout tracking requires enrollment code improvements currently in progress",
     "staffByProfile": "Staff by Profile",
