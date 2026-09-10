@@ -283,7 +283,8 @@ namespace opensis.data.Repository
                                                         // A row may already exist for this student and course section - typically one
                                                         // dropped earlier. The primary key is tenant/school/student/course/course section
                                                         // and does NOT include academic year, so re-inserting would fail. Reuse the
-                                                        // existing row instead, as the conflict-checking branch below does.
+                                                        // existing row instead. The conflict-checking branch below does the same and
+                                                        // the two blocks must stay identical.
                                                         var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.StudentId == student.StudentId && c.CourseId == courseSection.CourseId && c.CourseSectionId == courseSection.CourseSectionId);
 
                                                         if (studentCourseSectionScheduleExists != null)
@@ -416,12 +417,21 @@ namespace opensis.data.Repository
                                                                 // Matched on the full primary key (tenant/school/student/course/course section).
                                                                 // Academic year is deliberately not part of the match because it is not part
                                                                 // of the key, so a row from another year would still collide on insert.
-                                                                var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.TenantId == student.TenantId && c.SchoolId == student.SchoolId && c.StudentId == student.StudentId && c.CourseId == courseSection.CourseId && c.CourseSectionId == courseSection.CourseSectionId);
+                                                                // Key fields come from courseSection, the same source the insert below uses,
+                                                                // so the match and the insert can never disagree on tenant or school.
+                                                                var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.StudentId == student.StudentId && c.CourseId == courseSection.CourseId && c.CourseSectionId == courseSection.CourseSectionId);
                                                                 if (studentCourseSectionScheduleExists != null)
                                                                 {
+                                                                    // Restore the row to what a fresh insert would produce (see the
+                                                                    // allow-conflict branch above, which must stay identical to this).
                                                                     studentCourseSectionScheduleExists.IsDropped = null;
-                                                                    studentCourseSectionScheduleExists.EffectiveDropDate = null;
+                                                                    studentCourseSectionScheduleExists.EffectiveDropDate = courseSection.DurationEndDate;
+                                                                    studentCourseSectionScheduleExists.EffectiveStartDate = courseSection.DurationStartDate;
                                                                     studentCourseSectionScheduleExists.AcademicYear = courseSection.AcademicYear != null ? (decimal)courseSection.AcademicYear : 0;
+                                                                    studentCourseSectionScheduleExists.GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null;
+                                                                    studentCourseSectionScheduleExists.GradeScaleId = courseSection.GradeScaleId;
+                                                                    studentCourseSectionScheduleExists.CourseSectionName = courseSection.CourseSectionName;
+                                                                    studentCourseSectionScheduleExists.CalendarId = courseSection.CalendarId;
                                                                     studentCourseSectionScheduleExists.UpdatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy;
                                                                     studentCourseSectionScheduleExists.UpdatedOn = DateTime.UtcNow;
                                                                 }
