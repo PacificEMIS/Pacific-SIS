@@ -161,6 +161,9 @@ Deployment is managed via Ansible (see local MEMORY for details).
 
 - Always check the Ansible deployment repo before changing config file structure
 - See `~/.claude/CLAUDE.md` for global conventions (commit format, "wrap up" keyword, etc.)
+- Design notes and plans are **not** kept in this repo (they pick up real data). They live in
+  the private Drive folder `repositories-data/Pacific-SIS/docs/plans/`. Code comments that
+  cite `docs/plans/<name>.md` refer to that folder. Never recreate `docs/plans` here.
 
 ---
 
