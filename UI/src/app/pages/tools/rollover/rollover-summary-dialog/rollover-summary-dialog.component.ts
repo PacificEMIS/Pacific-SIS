@@ -54,6 +54,7 @@ export class RolloverSummaryDialogComponent implements OnInit {
   missingAttendance: SectionCompletenessRow[] = [];
   missingGrades: SectionCompletenessRow[] = [];
   unlinkedEnrollmentCount = 0;
+  disabledWithOpenEnrollmentCount = 0;
 
   private dispositionLabelKeys = {
     'Next grade at current school': 'rolloverDispositionPromotees',
@@ -93,6 +94,7 @@ export class RolloverSummaryDialogComponent implements OnInit {
     this.missingAttendance = summary.sectionsMissingAttendance || [];
     this.missingGrades = summary.sectionsMissingGrades || [];
     this.unlinkedEnrollmentCount = summary.unlinkedEnrollmentCount || 0;
+    this.disabledWithOpenEnrollmentCount = summary.disabledWithOpenEnrollmentCount || 0;
   }
 
   buildPivot(items: GradeGenderCount[]): PivotTable {

@@ -3055,6 +3055,21 @@ namespace opensis.data.Repository
                         && e.CalenderId == null)
                     .Count() ?? 0;
 
+                // Disabled students with an open enrollment this year. The rollover only
+                // processes StudentMaster.IsActive == true, so these students would be left
+                // with an open enrollment in a finished year (see docs/plans/student-active-flag.md).
+                readiness.DisabledWithOpenEnrollmentCount = this.context?.StudentEnrollment
+                    .Where(e => e.TenantId == tenantId
+                        && e.SchoolId == schoolId
+                        && e.IsActive == true
+                        && (e.ExitCode == null || e.ExitCode == "")
+                        && e.StudentMaster.IsActive == false
+                        && e.CalenderId != null
+                        && calendarIds.Contains(e.CalenderId.Value))
+                    .Select(e => e.StudentId)
+                    .Distinct()
+                    .Count() ?? 0;
+
                 List<GradeGenderCount> BuildGradeGender(IEnumerable<opensis.data.Models.StudentEnrollment> enrollments)
                 {
                     return enrollments

@@ -50,6 +50,7 @@ export class RolloverReadinessViewModel extends CommonField {
     sectionsMissingAttendance: SectionCompletenessRow[];
     sectionsMissingGrades: SectionCompletenessRow[];
     unlinkedEnrollmentCount: number;
+    disabledWithOpenEnrollmentCount: number;
     constructor() {
         super();
         this.studentsByGradeGender = [];

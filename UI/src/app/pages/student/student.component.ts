@@ -278,11 +278,10 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
   getToggleValues(event) {
     this.toggleValues = event;
-    if (event.inactiveStudents === true) {
-      this.columns[7].visible = true;
-    }
-    else if (event.inactiveStudents === false) {
-      this.columns[7].visible = false;
+    // Reveal the Status column so inactive students can be told apart in the list.
+    const statusColumn = this.columns.find(c => c.property === 'status');
+    if (statusColumn && typeof event.inactiveStudents === 'boolean') {
+      statusColumn.visible = event.inactiveStudents;
     }
   }
   getSearchInput(event) {

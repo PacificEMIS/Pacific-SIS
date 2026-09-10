@@ -144,6 +144,8 @@
 
         <p *ngIf="unlinkedEnrollmentCount > 0" class="text-xs text-red mt-4">
             {{ unlinkedEnrollmentCount }} {{ 'rolloverUnlinkedEnrollments' | translate }}</p>
+        <p *ngIf="disabledWithOpenEnrollmentCount > 0" class="text-xs text-red mt-4">
+            {{ disabledWithOpenEnrollmentCount }} {{ 'rolloverDisabledStudents' | translate }}</p>
 
     </ng-container>
 </mat-dialog-content>
