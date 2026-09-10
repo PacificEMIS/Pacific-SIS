@@ -48,7 +48,12 @@ namespace opensis.data.Models
         public int LangId { get; set; }
         public int MembershipId { get; set; }
         /// <summary>
-        /// valid for only tenantwise superadmin
+        /// Dormant. Inherited from upstream openSIS, where it marked the tenant's
+        /// registering account; nothing in the API, UI or background job reads it,
+        /// and only the original seed row has it set. There is no separate "tenant
+        /// administrator" role: the tenant-wide role is the Super Administrator
+        /// membership (Membership.IsSuperadmin), managed from Settings >
+        /// Administration > Super Administrators (SuperAdministratorRepository).
         /// </summary>
         public bool? IsTenantadmin { get; set; }
         public DateTime? LoginAttemptDate { get; set; }

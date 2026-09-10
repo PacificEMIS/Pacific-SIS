@@ -74,6 +74,9 @@
             </vex-secondary-toolbar>
         </vex-page-layout-header>
         <vex-page-layout-content class="">
+                        <div *ngIf="pageId === 'Super Administrators'">
+                            <vex-super-administrators></vex-super-administrators>
+                        </div>
                         <div *ngIf="pageId === 'profiles-and-permissions'">
                             <vex-access-control></vex-access-control>
                         </div>

@@ -1,0 +1,49 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="flex items-center" mat-dialog-title>
+        <h2 class="headline m-0 flex-auto">{{ 'addSuperAdministrator' | translate }}</h2>
+        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <hr class="-mx-6" />
+    <mat-dialog-content>
+        <p class="text-secondary mt-4 mb-2">{{ 'addSuperAdministratorExplanation' | translate }}</p>
+        <div class="grid sm:grid-cols-2 col-gap-4">
+            <mat-form-field appearance="outline" color="primary">
+                <mat-label>{{ 'firstName' | translate }}</mat-label>
+                <input matInput formControlName="firstGivenName" required>
+                <mat-error *ngIf="form.get('firstGivenName').hasError('required')">{{ 'firstNameIsRequired' | translate }}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" color="primary">
+                <mat-label>{{ 'middleName' | translate }}</mat-label>
+                <input matInput formControlName="middleName">
+            </mat-form-field>
+        </div>
+        <mat-form-field class="w-full" appearance="outline" color="primary">
+            <mat-label>{{ 'lastName' | translate }}</mat-label>
+            <input matInput formControlName="lastFamilyName" required>
+            <mat-error *ngIf="form.get('lastFamilyName').hasError('required')">{{ 'lastNameIsRequired' | translate }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline" color="primary">
+            <mat-label>{{ 'loginEmail' | translate }}</mat-label>
+            <input matInput type="email" formControlName="loginEmailAddress" required>
+            <mat-error *ngIf="form.get('loginEmailAddress').hasError('required')">{{ 'loginEmailIsRequired' | translate }}</mat-error>
+            <mat-error *ngIf="form.get('loginEmailAddress').hasError('email')">{{ 'invalidEmailAddress' | translate }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline" color="primary">
+            <mat-label>{{ 'password' | translate }}</mat-label>
+            <input matInput [type]="inputType" formControlName="password" required autocomplete="new-password">
+            <button (click)="toggleVisibility()" mat-icon-button matSuffix matTooltip="{{ 'toggleVisibility' | translate }}" type="button">
+                <mat-icon *ngIf="visible" [icIcon]="icVisibility"></mat-icon>
+                <mat-icon *ngIf="!visible" [icIcon]="icVisibilityOff"></mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('password').hasError('required')">{{ 'passwordIsRequired' | translate }}</mat-error>
+            <mat-error *ngIf="form.get('password').hasError('minlength')">{{ 'passwordMustBeAtLeast6Characters' | translate }}</mat-error>
+        </mat-form-field>
+        <p class="mb-2"><a (click)="generate()" class="text-primary underline cursor-pointer">{{ 'autoGeneratePassword' | translate }}</a></p>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex justify-end py-4">
+        <button mat-button mat-dialog-close type="button">{{ 'cancel' | translate }}</button>
+        <button color="primary" mat-raised-button type="submit" [disabled]="saving">{{ 'add' | translate }}</button>
+    </mat-dialog-actions>
+</form>

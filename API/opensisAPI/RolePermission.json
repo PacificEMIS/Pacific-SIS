@@ -7642,5 +7642,18 @@
     "CanEdit": true,
     "CanDelete": true,
     "MembershipId": "3"
+  },
+  {
+    "TenantId": "1e93c7bf-0fae-42bb-9e09-a1cedc8c0355",
+    "SchoolId": "1",
+    "RolePermissionId": "697",
+    "PermissionGroupId": "",
+    "PermissionCategoryId": "",
+    "PermissionSubcategoryId": "100",
+    "CanView": true,
+    "CanAdd": true,
+    "CanEdit": true,
+    "CanDelete": true,
+    "MembershipId": "1"
   }
 ]

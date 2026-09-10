@@ -145,6 +145,8 @@ namespace opensisAPI
             services.AddScoped<IGradelevelRepository, GradeLevelRepository>();
             services.AddScoped<IMembershipRepository, MembershipRepository>();
             services.AddScoped<IMembershipService, MembershipService>();
+            services.AddScoped<ISuperAdministratorRepository, SuperAdministratorRepository>();
+            services.AddScoped<ISuperAdministratorService, SuperAdministratorService>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IRoomRegisterService, RoomRegister>();
             services.AddScoped<ISectionRepositiory, SectionRepository>();

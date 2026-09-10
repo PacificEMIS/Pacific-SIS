@@ -196,8 +196,8 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
   }
 
   private setProfileListForSchools() : void{
-    this.staffSchoolInfoModel.staffSchoolInfoList.forEach((school : any)=>{
-      this.getAllMembership(school.schoolAttachedId);
+    this.staffSchoolInfoModel.staffSchoolInfoList.forEach((school : any, index: number)=>{
+      this.getAllMembership(school.schoolAttachedId, index);
     });
   }
 
@@ -378,7 +378,15 @@ export class StaffSchoolinfoComponent implements OnInit, OnDestroy {
             return (item.profileType == 'School Administrator' || item.profileType == 'Admin Assistant'
               || item.profileType == 'Teacher' || item.profileType == 'Homeroom Teacher')
           });
-          indexOfDynamicRow ? this.profileListArray[indexOfDynamicRow]=this.getAllMembersList.getAllMemberList : this.profileListArray.push(this.getAllMembersList.getAllMemberList);
+          // Assign by row index whenever one is given. Index 0 is a valid row:
+          // treating it as "no index" pushed the first row's list into the wrong
+          // slot and left its dropdown empty for staff with no existing attachment
+          // (a Super Administrator adding their first school).
+          if (indexOfDynamicRow !== undefined && indexOfDynamicRow !== null) {
+            this.profileListArray[indexOfDynamicRow] = this.getAllMembersList.getAllMemberList;
+          } else {
+            this.profileListArray.push(this.getAllMembersList.getAllMemberList);
+          }
         }
       }
     })

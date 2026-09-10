@@ -543,8 +543,14 @@ namespace opensis.data.Repository
                 {
                     if (staffData.StaffSchoolInfo.Count() > 0)
                     {
-                       // staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault().Profile;
-                        staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault()?.Profile;
+                        // A Super Administrator is tenant-wide, so the profile on
+                        // the staff row is authoritative. Attachment rows only
+                        // exist for staff promoted from a school role and carry
+                        // that older profile (see SuperAdministratorRepository).
+                        if (!String.Equals(staffData.Profile, "Super Administrator", StringComparison.OrdinalIgnoreCase))
+                        {
+                            staffData.Profile = staffData.StaffSchoolInfo.FirstOrDefault()?.Profile;
+                        }
                         // Skip tombstone rows (past end_date) when deriving
                         // the home school and the list of external school
                         // attachments. Tombstones are historical records
@@ -1191,7 +1197,15 @@ namespace opensis.data.Repository
                     var staffMaster = this.context?.StaffMaster.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.StaffId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId);
                     if (staffMaster != null)
                     {
-                        staffMaster.Profile = staffSchoolInfoAddViewModel.Profile;
+                        // The Super Administrator role is managed from Settings >
+                        // Administration > Super Administrators, never from the
+                        // School Info tab, so a school-info save must not rewrite
+                        // that profile or the login membership.
+                        bool isSuperAdministrator = String.Equals(staffMaster.Profile, "Super Administrator", StringComparison.OrdinalIgnoreCase);
+                        if (!isSuperAdministrator)
+                        {
+                            staffMaster.Profile = staffSchoolInfoAddViewModel.Profile;
+                        }
                         staffMaster.JobTitle = staffSchoolInfoAddViewModel.JobTitle;
                         staffMaster.JoiningDate = staffSchoolInfoAddViewModel.JoiningDate;
                         staffMaster.EndDate = staffSchoolInfoAddViewModel.EndDate;
@@ -1203,7 +1217,7 @@ namespace opensis.data.Repository
 
                         var userMaster = this.context?.UserMaster.Include(x => x.Membership).FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.UserId == staffSchoolInfoAddViewModel.StaffId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId);
 
-                        if (userMaster != null)
+                        if (userMaster != null && !isSuperAdministrator)
                         {
                             var membership = this.context?.Membership.FirstOrDefault(x => x.TenantId == staffSchoolInfoAddViewModel.TenantId && x.SchoolId == staffSchoolInfoAddViewModel.SchoolId && x.Profile == staffSchoolInfoAddViewModel.staffSchoolInfoList.FirstOrDefault()!.Profile);
 

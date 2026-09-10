@@ -1,0 +1,82 @@
+<div class="card">
+    <div class="px-6 py-4">
+        <h5 class="font-bold text-primary">{{ 'superAdministrators' | translate }}</h5>
+        <p class="mt-2 text-secondary">{{ 'superAdministratorsExplanation' | translate }}</p>
+        <p class="mt-1 text-secondary">{{ 'superAdministratorsRulesExplanation' | translate }}</p>
+    </div>
+    <hr />
+    <ng-container *ngIf="isSuperAdministrator; else notAllowed">
+        <div class="px-6 py-3 flex flex-wrap items-center justify-end">
+            <button mat-stroked-button color="primary" class="mr-2 my-1" type="button" (click)="openPromote()">
+                <mat-icon [icIcon]="icArrowUpward" class="mr-1 align-middle"></mat-icon>{{ 'promoteExistingStaff' | translate }}
+            </button>
+            <button mat-raised-button color="primary" class="my-1" type="button" (click)="openAdd()">
+                <mat-icon [icIcon]="icAdd" class="mr-1 align-middle"></mat-icon>{{ 'addSuperAdministrator' | translate }}
+            </button>
+        </div>
+        <div class="border-t overflow-x-auto overflow-y-hidden">
+            <table mat-table [dataSource]="dataSource" class="w-full super-administrators-table">
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'name' | translate }}</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{ fullName(row) }}
+                        <span *ngIf="row.isSelf" class="ml-2 px-2 py-0.5 rounded text-xs bg-primary text-white">{{ 'you' | translate }}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="loginEmail">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'loginEmail' | translate }}</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{ row.loginEmailAddress | EmtyValueCheckPipe }}
+                        <span *ngIf="!row.hasLogin" class="ml-2 text-xs text-red">{{ 'noLogin' | translate }}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="homeSchool">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'homeSchool' | translate }}</th>
+                    <td mat-cell *matCellDef="let row">
+                        {{ row.schoolName | EmtyValueCheckPipe }}
+                        <span *ngIf="row.hasSchoolAttachments" class="ml-2 text-xs text-secondary" matTooltip="{{ 'attachedToSchoolsHint' | translate }}">({{ 'attachedToSchools' | translate }})</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'status' | translate }}</th>
+                    <td mat-cell *matCellDef="let row">
+                        <span [ngClass]="row.isActive ? 'text-green' : 'text-red'">{{ (row.isActive ? 'active' : 'inactive') | translate }}</span>
+                        <span *ngIf="row.isActive && row.staffRecordDisabled" class="ml-2 text-xs text-secondary" matTooltip="{{ 'staffRecordDisabledHint' | translate }}">({{ 'staffRecordDisabled' | translate }})</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastLogin">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'lastLogin' | translate }}</th>
+                    <td mat-cell *matCellDef="let row">{{ row.lastLoginOn ? (row.lastLoginOn | date: 'medium') : '-' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">{{ 'actions' | translate }}</th>
+                    <td mat-cell *matCellDef="let row" class="text-right">
+                        <button mat-icon-button type="button" [matMenuTriggerFor]="rowMenu" [disabled]="row.isSelf"
+                            matTooltip="{{ row.isSelf ? ('superAdministratorSelfHint' | translate) : '' }}">
+                            <mat-icon [icIcon]="icMoreVert"></mat-icon>
+                        </button>
+                        <mat-menu #rowMenu="matMenu" xPosition="before" yPosition="below">
+                            <button mat-menu-item type="button" (click)="viewStaffRecord(row)">{{ 'viewStaffRecord' | translate }}</button>
+                            <button mat-menu-item type="button" (click)="toggleStatus(row)">{{ (row.isActive ? 'deactivate' : 'activate') | translate }}</button>
+                            <button mat-menu-item type="button" (click)="openDemote(row)">{{ 'demoteToSchoolProfile' | translate }}</button>
+                            <button mat-menu-item type="button" (click)="delete(row)">{{ 'delete' | translate }}</button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <p *ngIf="loaded && dataSource.data.length === 0" class="px-6 py-4 text-secondary">{{ 'noSuperAdministratorsFound' | translate }}</p>
+        </div>
+    </ng-container>
+    <ng-template #notAllowed>
+        <p class="px-6 py-4 text-secondary">{{ 'superAdministratorsOnlyForSuperAdministrators' | translate }}</p>
+    </ng-template>
+</div>

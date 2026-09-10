@@ -50,6 +50,7 @@ namespace opensis.data.Repository
         private static readonly string NORECORDFOUND = "No Record Found";
         private static string EMAILMESSAGE = "Email address is not registered in the system";
         private static string PASSWORDMESSAGE = "Login failed. Email and password combination is incorrect. Try again.";
+        private static string INACTIVEACCOUNTMESSAGE = "This account has been deactivated. Please contact your administrator.";
         private static string INCORRECTLOGINATTEMPTMESSAGE = "Due to excessive incorrect login attempts your account has been deactivated. Please contact the school administration to reactivate your account";
         private static string INACTIVITYDAYSMESSAGE = "Due to your long absence from the system, as a measure of security your account has been deactivated. Please contact the school administration to reactivate your account";
         public UserRepository(IDbContextFactory dbContextFactory, ICatalogDBContextFactory catdbContextFactory)
@@ -89,6 +90,16 @@ namespace opensis.data.Repository
 
                 if (user!=null)
                 {
+                    // A deactivated login (portal access removed, or a Super
+                    // Administrator deactivated from Settings) must not get in
+                    // even with the right password. Nothing else checked this.
+                    if (user.IsActive == false)
+                    {
+                        ReturnModel.UserId = null;
+                        ReturnModel._failure = true;
+                        ReturnModel._message = INACTIVEACCOUNTMESSAGE;
+                        return ReturnModel;
+                    }
                     objModel.MembershipId = user.Membership.MembershipId;
                     objModel.MembershipName = user.Membership.Profile;
                     objModel.Name = user.Name;

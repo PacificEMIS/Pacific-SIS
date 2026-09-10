@@ -1,0 +1,34 @@
+<div class="flex items-center" mat-dialog-title>
+    <h2 class="headline m-0 flex-auto">{{ 'promoteExistingStaff' | translate }}</h2>
+    <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+        <mat-icon [icIcon]="icClose"></mat-icon>
+    </button>
+</div>
+<hr class="-mx-6" />
+<mat-dialog-content>
+    <p class="text-secondary mt-4 mb-2">{{ 'promoteExplanation' | translate }}</p>
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+        <mat-label>{{ 'searchStaffByNameOrEmail' | translate }}</mat-label>
+        <input matInput [formControl]="searchCtrl" type="search" autocomplete="off">
+    </mat-form-field>
+    <div class="border rounded promote-candidates">
+        <div *ngFor="let row of candidates" (click)="select(row)"
+            class="px-4 py-2 border-b cursor-pointer flex items-center justify-between"
+            [ngClass]="selected?.staffId === row.staffId ? 'bg-primary text-white' : 'hover:bg-light-grey'">
+            <div>
+                <div class="font-medium">{{ fullName(row) }}</div>
+                <div class="text-xs" [ngClass]="selected?.staffId === row.staffId ? '' : 'text-secondary'">{{ row.loginEmailAddress }}</div>
+            </div>
+            <div class="text-xs text-right" [ngClass]="selected?.staffId === row.staffId ? '' : 'text-secondary'">
+                <div>{{ row.profile | EmtyValueCheckPipe }}</div>
+                <div>{{ row.schoolName | EmtyValueCheckPipe }}</div>
+            </div>
+        </div>
+        <p *ngIf="searched && candidates.length === 0" class="px-4 py-3 text-secondary">{{ 'noMatchingStaff' | translate }}</p>
+    </div>
+    <p *ngIf="selected" class="mt-4">{{ 'confirmPromoteSuperAdministrator' | translate: { name: fullName(selected) } }}</p>
+</mat-dialog-content>
+<mat-dialog-actions class="flex justify-end py-4">
+    <button mat-button mat-dialog-close type="button">{{ 'cancel' | translate }}</button>
+    <button color="primary" mat-raised-button type="button" [disabled]="!selected || saving" (click)="submit()">{{ 'promote' | translate }}</button>
+</mat-dialog-actions>
