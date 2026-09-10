@@ -48,6 +48,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
 import { CommonService } from 'src/app/services/common.service';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { CommonLOV } from '../../../shared-module/lov/common-lov';
 
 @Component({
   selector: 'vex-add-teacher',
@@ -62,11 +63,12 @@ export class AddTeacherComponent implements OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   icClose = icClose;
-  displayedColumns: string[] = ['staffSelected', 'staffName', 'staffId', 'primaryGrade', 'primarySubject', 'homeroomTeacher'];
+  displayedColumns: string[] = ['staffSelected', 'staffName', 'staffId', 'gender', 'primaryGrade', 'primarySubject', 'homeroomTeacher'];
   getAllGradeLevelsModel:GetAllGradeLevelsModel= new GetAllGradeLevelsModel();
   getAllSubjectModel: GetAllSubjectModel = new GetAllSubjectModel();
   staffMasterSearchModel: StaffMasterSearchModel = new StaffMasterSearchModel();
   getAllMembersList: GetAllMembersList = new GetAllMembersList();
+  genderList = [];
   filterParams=[]
   getAllStaff: GetAllStaffModel = new GetAllStaffModel();
   totalCount=0; pageNumber; pageSize;
@@ -90,6 +92,7 @@ export class AddTeacherComponent implements OnInit {
     private loginService:LoginService,
     private commonService: CommonService,
     private defaultValuesService: DefaultValuesService,
+    private commonLOV: CommonLOV,
     @Inject(MAT_DIALOG_DATA) public data
     ) { 
       this.getAllSubjectModel.subjectList= this.data.subjectList,
@@ -103,7 +106,9 @@ export class AddTeacherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.commonLOV.getLovByName('Gender').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+      this.genderList = res;
+    });
   }
 
   someComplete():boolean{

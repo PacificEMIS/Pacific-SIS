@@ -51,6 +51,7 @@ import { MatSort } from '@angular/material/sort';
 import { LoaderService } from '../../../../services/loader.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { CommonLOV } from '../../../shared-module/lov/common-lov';
 @Component({
   selector: 'vex-add-student',
   templateUrl: './add-student.component.html',
@@ -65,6 +66,7 @@ export class AddStudentComponent implements OnInit,OnDestroy {
   sectionList = [];
   params=[];
   gradeLevelList= [];
+  genderList = [];
   selectedList=[];
   studentName: string;
   totalCount:number=0;
@@ -90,7 +92,7 @@ export class AddStudentComponent implements OnInit,OnDestroy {
   studentDetails: MatTableDataSource<any>;
   selection : SelectionModel<StudentMasterModel> = new SelectionModel<StudentMasterModel>(true, []);
   icClose = icClose;
-  displayedColumns: string[] = ['studentSelected', 'studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'firstLanguage'];
+  displayedColumns: string[] = ['studentSelected', 'studentName', 'studentId', 'alternateId', 'gradeLevel', 'section', 'gender', 'firstLanguage'];
   numRows:number;
   constructor(private dialogRef: MatDialogRef<AddStudentComponent>, public translateService:TranslateService,
     private studentService: StudentService,
@@ -101,6 +103,7 @@ export class AddStudentComponent implements OnInit,OnDestroy {
     private loaderService: LoaderService,
     private gradeLevelService: GradeLevelService, 
     private defaultValuesService: DefaultValuesService,
+    private commonLOV: CommonLOV,
     @Inject(MAT_DIALOG_DATA) public data) { 
     //translateService.use('en');
      this.loaderService.isLoading.pipe(takeUntil(this.destroySubject$)).subscribe((val) => {
@@ -112,6 +115,9 @@ export class AddStudentComponent implements OnInit,OnDestroy {
     this.sectionList= this.data.sectionList;
      this.languageList= this.data.languageList;
      this.gradeLevelList= this.data.gradeLevelList;
+     this.commonLOV.getLovByName('Gender').pipe(takeUntil(this.destroySubject$)).subscribe((res) => {
+       this.genderList = res;
+     });
   }
 
   someComplete():boolean{
@@ -188,7 +194,7 @@ export class AddStudentComponent implements OnInit,OnDestroy {
     this.params = [];
     for (let key in this.studentMasterSearchModel) {
       if (this.studentMasterSearchModel.hasOwnProperty(key))
-        if (this.studentMasterSearchModel[key] !== null) {
+        if (this.studentMasterSearchModel[key] !== null && this.studentMasterSearchModel[key] !== undefined && this.studentMasterSearchModel[key] !== '') {
           this.params.push({ "columnName": key, "filterOption": 11, "filterValue": this.studentMasterSearchModel[key] })
         }
     }

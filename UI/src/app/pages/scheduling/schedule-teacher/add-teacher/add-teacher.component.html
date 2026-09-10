@@ -38,6 +38,17 @@
                 <input [(ngModel)]="staffMasterSearchModel.jobTitle" name="jobTitle" matInput />
             </mat-form-field>
         </li>
+        <li>
+            <mat-form-field class="w-full" appearance="outline" color="primary">
+                <mat-label>{{ "gender" | translate }}</mat-label>
+                <mat-select [(ngModel)]="staffMasterSearchModel.gender" name="gender">
+                    <mat-option></mat-option>
+                    <mat-option *ngFor="let gender of genderList" [value]="gender.lovColumnValue">
+                        {{gender.lovColumnValue}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </li>
         <!-- <li>
             <mat-form-field class="w-full" appearance="outline" color="primary">
                 <mat-label>{{ "homeroomTeacher" | translate }}</mat-label>
@@ -148,6 +159,10 @@
             <ng-container matColumnDef="staffId">
                 <th mat-header-cell *matHeaderCellDef>{{ 'staffId' | translate }}</th>
                 <td mat-cell *matCellDef="let element">{{ element.staffInternalId|EmtyValueCheckPipe }}</td>
+            </ng-container>
+            <ng-container matColumnDef="gender">
+                <th mat-header-cell *matHeaderCellDef>{{ 'gender' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.gender|EmtyValueCheckPipe }}</td>
             </ng-container>
             <ng-container matColumnDef="primaryGrade">
                 <th mat-header-cell *matHeaderCellDef>{{ 'primaryGrade' | translate }}</th>
