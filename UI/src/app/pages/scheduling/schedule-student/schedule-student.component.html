@@ -74,7 +74,7 @@
             <div *ngIf="failedScheduling" class="flex">
                 <mat-icon aria-hidden="false" aria-label="icon" class="mt-1 text-red">error</mat-icon>
                 <div class="ml-4">
-                    <span class="text-lg inline-block align-middle text-red font-bold">Scheduling failed</span>
+                    <span class="text-lg inline-block align-middle text-red font-bold">{{'schedulingFailed' | translate}}</span>
                     <p class="">{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
                 </div>
             </div>
@@ -82,7 +82,7 @@
             <div *ngIf="viewReport" class="flex">
                 <mat-icon aria-hidden="false" aria-label="icon" class="mt-1 text-green">check_circle</mat-icon>
                 <div class="ml-4">
-                    <span class="text-lg inline-block align-middle text-green font-bold">Scheduling Completed</span>
+                    <span class="text-lg inline-block align-middle text-green font-bold">{{'schedulingCompleted' | translate}}</span>
                     <p class="">{{studentCourseSectionScheduleAddViewModel.conflictMessage}}</p>
                 </div>
             </div>

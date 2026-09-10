@@ -25,6 +25,7 @@ All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace opensis.data.Models
@@ -64,6 +65,12 @@ namespace opensis.data.Models
         public DateTime CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        /// <summary>
+        /// True when the staff member has attendance or assignments in this course section and
+        /// therefore cannot be removed from it. Not persisted - populated for display only.
+        /// </summary>
+        [NotMapped]
+        public bool? HasAssociation { get; set; }
 
         [ValidateNever]
         public virtual CourseSection CourseSection { get; set; } = null!;

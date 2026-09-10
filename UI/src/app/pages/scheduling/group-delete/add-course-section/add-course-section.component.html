@@ -81,7 +81,10 @@
 
         <ng-container matColumnDef="courseSection">
             <th mat-header-cell *matHeaderCellDef>{{ "courseSection" | translate }}</th>
-            <td mat-cell *matCellDef="let element" class="cursor-pointer" [ngClass]="{'text-blue': element.seats - element.availableSeat > 0, 'text-gray' : element.seats - element.availableSeat === 0}" [matTooltip]="(element.seats - element.availableSeat === 0 ? 'noStudentScheduled' : '') | translate" (click)="element.seats - element.availableSeat > 0 ? cellClicked(element) : ''">{{ element.courseSectionName }}</td>
+            <!-- Gated on every schedule record, dropped and unassigned included: those rows are
+                 still actionable here, so a section holding only them must remain selectable.
+                 Staff counted too - a section can hold teachers and no students at all. -->
+            <td mat-cell *matCellDef="let element" class="cursor-pointer" [ngClass]="{'text-blue': element.totalScheduleRecords > 0 || element.totalStaffScheduleRecords > 0, 'text-gray' : !element.totalScheduleRecords && !element.totalStaffScheduleRecords}" [matTooltip]="(!element.totalScheduleRecords && !element.totalStaffScheduleRecords ? 'noStudentRecordsToDelete' : '') | translate" (click)="(element.totalScheduleRecords > 0 || element.totalStaffScheduleRecords > 0) ? cellClicked(element) : ''">{{ element.courseSectionName }}</td>
         </ng-container>
 
         <ng-container matColumnDef="course">
@@ -113,11 +116,16 @@
 
         <ng-container matColumnDef="available">
             <th mat-header-cell *matHeaderCellDef>{{ "scheduledStudents" | translate }}</th>
-            <td mat-cell *matCellDef="let element">{{  element.seats - element.availableSeat }}</td>
+            <td mat-cell *matCellDef="let element">{{ element.seats - element.availableSeat }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="studentRecords">
+            <th mat-header-cell *matHeaderCellDef>{{ "deletableRecords" | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.totalScheduleRecords }}</td>
         </ng-container>
 
         <ng-container matColumnDef="noData">
-            <td mat-footer-cell *matFooterCellDef colspan="7">
+            <td mat-footer-cell *matFooterCellDef colspan="8">
                 {{loading?('fetchingData' | translate):('noData' | translate) }}
             </td>
         </ng-container>

@@ -80,5 +80,14 @@ namespace opensis.data.ViewModels.StudentSchedule
         public bool? IsDropped { get; set; }
         public string? SchoolName { get; set; }
         public DateTime? GradePostingEndDate { get; set; }
+        /// <summary>
+        /// Date the student was dropped from the course section, when IsDropped is set.
+        /// </summary>
+        public DateTime? EffectiveDropDate { get; set; }
+        /// <summary>
+        /// True when the student has transactional data in this course section (attendance,
+        /// gradebook grades, final grades or effort grades) and therefore cannot be deleted.
+        /// </summary>
+        public bool? HasAssociation { get; set; }
     }
 }

@@ -51,558 +51,6 @@ namespace opensis.data.Repository
         /// </summary>
         /// <param name="studentCourseSectionScheduleAddViewModel"></param>
         /// <returns></returns>
-        public StudentCourseSectionScheduleAddViewModel AddStudentCourseSectionSchedule_old(StudentCourseSectionScheduleAddViewModel studentCourseSectionScheduleAddViewModel)
-        {
-            using (var transaction = this.context?.Database.BeginTransaction())
-            {                
-                try
-                {
-                    //for insert in job fetch max id.
-                    long? Id = 1;
-                    var dataExits = this.context?.ScheduledJobs.Where(x => x.TenantId == studentCourseSectionScheduleAddViewModel.TenantId);
-                    if (dataExits?.Any() == true)
-                    {
-                        var scheduledJobData = this.context?.ScheduledJobs.Where(x => x.TenantId == studentCourseSectionScheduleAddViewModel.TenantId).Max(x => x.JobId);
-                        if (scheduledJobData != null)
-                        {
-                            Id = scheduledJobData + 1;
-                        }
-                    }
-
-
-                    string conflictMessage = "All Student Scheduled Successfully";
-                    studentCourseSectionScheduleAddViewModel._conflictFailure = false;
-                    //if (studentCourseSectionScheduleAddViewModel.courseSectionList.Count > 0)
-                    if (studentCourseSectionScheduleAddViewModel.courseSectionList?.Count > 0)
-                    {
-                        int restSeats = 0;
-                        //List<StudentMaster> studentData = null;
-                        List<StudentMaster>? studentData = null;
-
-                        var studentScheduleViewData = this.context?.StudentScheduleView.Where(e => e.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && e.TenantId == studentCourseSectionScheduleAddViewModel.TenantId).ToList();
-
-                        //if (studentScheduleViewData.Count > 0)
-                        if (studentScheduleViewData!= null && studentScheduleViewData.Any())
-                        {
-                            this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
-                        }
-
-                        // Batch-load all data needed in the student loops (A1 fix)
-                        var allStudentSchedules = this.context?.StudentCoursesectionSchedule
-                            .Where(c => c.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && c.TenantId == studentCourseSectionScheduleAddViewModel.TenantId)
-                            .ToList();
-
-                        var allEnrollments = this.context?.StudentEnrollment.AsNoTracking()
-                            .Where(x => x.TenantId == studentCourseSectionScheduleAddViewModel.TenantId && x.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId)
-                            .ToList();
-
-                        var allCourseSectionViews = this.context?.AllCourseSectionView.AsNoTracking()
-                            .Where(c => c.TenantId == studentCourseSectionScheduleAddViewModel.TenantId && c.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId)
-                            .ToList();
-
-                        foreach (var courseSection in studentCourseSectionScheduleAddViewModel.courseSectionList)
-                        {
-                            courseSection.AcademicYear = Utility.GetCurrentAcademicYear(this.context!, courseSection.TenantId, courseSection.SchoolId);
-
-                            var studentCourseSectionScheduleData = allStudentSchedules?.Where(c => c.SchoolId == courseSection.SchoolId && c.TenantId == courseSection.TenantId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true).ToList();
-
-                            //if (studentCourseSectionScheduleData.Count > 0)
-                            if (studentCourseSectionScheduleData!=null && studentCourseSectionScheduleData.Any())
-                            {
-
-                                restSeats = courseSection.Seats !=null? ((int)courseSection.Seats - studentCourseSectionScheduleData.Count):0;
-                            }
-                            else
-                            {
-                                restSeats = courseSection.Seats != null ? ((int)courseSection.Seats):0;
-                            }
-
-                            if (restSeats > 0)
-                            {
-                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 0)
-                                {
-                                    if (restSeats < studentCourseSectionScheduleAddViewModel.studentMasterList.Count)
-                                    {
-                                        studentData = studentCourseSectionScheduleAddViewModel.studentMasterList.Take(restSeats).ToList();
-                                        
-                                        if (studentData != null && studentData.Any())
-                                        {
-                                            var restStudentCount = studentCourseSectionScheduleAddViewModel.studentMasterList.Count - studentData.Count;
-                                            
-                                            if (restStudentCount > 0)
-                                            {
-                                                var restStudentList = studentCourseSectionScheduleAddViewModel.studentMasterList.TakeLast(restStudentCount).ToList();
-                                                
-                                                if (restStudentList != null && restStudentList.Any())
-                                                {
-                                                    foreach (var restStudent in restStudentList)
-                                                    {
-                                                        var conflictStudent = new StudentScheduleView()
-                                                        {
-                                                            TenantId = restStudent.TenantId,
-                                                            SchoolId = restStudent.SchoolId,
-                                                            StudentId = restStudent.StudentId,
-                                                            CourseId = courseSection.CourseId,
-                                                            CourseSectionId = courseSection.CourseSectionId,
-                                                            CourseSectionName = courseSection.CourseSectionName,
-                                                            StudentInternalId = restStudent.StudentInternalId,
-                                                            StudentName = restStudent.FirstGivenName + " " + restStudent.MiddleName + " " + restStudent.LastFamilyName,
-                                                            Scheduled = false,
-                                                            ConflictComment = "Seats Not Avalaible"
-                                                        };
-                                                        studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                        this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                        if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                                        {
-                                                            conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
-                                                        }
-                                                        else
-                                                        {
-                                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }                                        
-                                    }
-                                    else
-                                    {
-                                        studentData = studentCourseSectionScheduleAddViewModel.studentMasterList.ToList();
-                                    }
-
-                                    if (studentData!=null && studentData.Any())
-                                    {
-                                        //var studentScheduleViewData = this.context?.StudentScheduleView.Where(e => e.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && e.TenantId == studentCourseSectionScheduleAddViewModel.TenantId).ToList();
-
-                                        //if (studentScheduleViewData.Count > 0)
-                                        //{
-                                        //    this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
-                                        //}
-
-                                        foreach (var student in studentData)
-                                        {
-                                            var studentCourseSectionSchedule = allStudentSchedules?.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped != true);
-
-                                            var studentEnrollmentData = allEnrollments?.FirstOrDefault(x => x.TenantId == student.TenantId && x.SchoolId == student.SchoolId && x.StudentId == student.StudentId && x.IsActive == true);
-
-                                            if (studentCourseSectionSchedule != null)
-                                            {
-                                                var conflictStudent = new StudentScheduleView()
-                                                {
-                                                    TenantId = student.TenantId,
-                                                    SchoolId = student.SchoolId,
-                                                    StudentId = student.StudentId,
-                                                    CourseId = courseSection.CourseId,
-                                                    CourseSectionId = courseSection.CourseSectionId,
-                                                    CourseSectionName = courseSection.CourseSectionName,
-                                                    StudentInternalId = student.StudentInternalId,
-                                                    StudentName = student.FirstGivenName +" "+ student.MiddleName +" "+ student.LastFamilyName,
-                                                    Scheduled = false,
-                                                    ConflictComment = "Student is already scheduled in the course section"
-                                                };
-                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                //this.context.StudentScheduleView.Add(conflictStudent);
-                                                this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                                {
-                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below."; 
-                                                }
-                                                else
-                                                {
-                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                                }
-                                            }
-
-                                            //Student future enrollment checking
-                                            else if (studentEnrollmentData != null && studentEnrollmentData.EnrollmentDate > courseSection.DurationStartDate)
-                                            {
-                                                var conflictStudent = new StudentScheduleView()
-                                                {
-                                                    TenantId = student.TenantId,
-                                                    SchoolId = student.SchoolId,
-                                                    StudentId = student.StudentId,
-                                                    CourseId = courseSection.CourseId,
-                                                    CourseSectionId = courseSection.CourseSectionId,
-                                                    CourseSectionName = courseSection.CourseSectionName,
-                                                    StudentInternalId = student.StudentInternalId,
-                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                    Scheduled = false,
-                                                    ConflictComment = "Student enrollment date is greater than scheduled course section date"
-                                                };
-                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                //this.context.StudentScheduleView.Add(conflictStudent);
-                                                this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                                {
-                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
-                                                }
-                                                else
-                                                {
-                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                                }
-                                            }
-
-                                            //Student alredy inactive enrollment checking
-                                            else if (studentEnrollmentData == null || studentEnrollmentData.ExitDate < courseSection.DurationStartDate)
-                                            {
-                                                var conflictStudent = new StudentScheduleView()
-                                                {
-                                                    TenantId = student.TenantId,
-                                                    SchoolId = student.SchoolId,
-                                                    StudentId = student.StudentId,
-                                                    CourseId = courseSection.CourseId,
-                                                    CourseSectionId = courseSection.CourseSectionId,
-                                                    CourseSectionName = courseSection.CourseSectionName,
-                                                    StudentInternalId = student.StudentInternalId,
-                                                    StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                    Scheduled = false,
-                                                    ConflictComment = "Student Exit date is smaller than scheduled course section date"
-                                                };
-                                                studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                                {
-                                                    conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
-                                                }
-                                                else
-                                                {
-                                                    conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                                }
-                                            }
-                                            else
-                                            {
-                                                var courseSectionAllData = allCourseSectionViews?.Where(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.CourseSectionId == courseSection.CourseSectionId).ToList();
-
-                                                if (courseSectionAllData?.FirstOrDefault()?.AllowStudentConflict == true)
-                                                {
-                                                    var studentCourseScheduling = new StudentCoursesectionSchedule()
-                                                    {
-                                                        TenantId = courseSection.TenantId,
-                                                        SchoolId = courseSection.SchoolId,
-                                                        StudentId = student.StudentId,
-                                                        CourseId = courseSection.CourseId,
-                                                        CourseSectionId = courseSection.CourseSectionId,
-                                                        StudentGuid = student.StudentGuid,
-                                                        AlternateId = student.AlternateId,
-                                                        StudentInternalId = student.StudentInternalId,
-                                                        //FirstGivenName = student.FirstGivenName,
-                                                        FirstGivenName = student.FirstGivenName??"",
-                                                        MiddleName = student.MiddleName,
-                                                        //LastFamilyName = student.LastFamilyName,
-                                                        LastFamilyName = student.LastFamilyName ?? "",
-                                                        FirstLanguageId = student.FirstLanguageId,
-                                                        //GradeId = studentEnrollmentData.GradeId,
-                                                        GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
-                                                        //AcademicYear = (decimal)courseSection.AcademicYear,
-                                                        AcademicYear = courseSection.AcademicYear != null? (decimal)courseSection.AcademicYear:0 ,
-                                                        GradeScaleId = courseSection.GradeScaleId,
-                                                        CourseSectionName = courseSection.CourseSectionName,
-                                                        CalendarId = courseSection.CalendarId,
-                                                        CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
-                                                        CreatedOn = DateTime.UtcNow,
-                                                        EffectiveStartDate = courseSection.DurationStartDate,
-                                                        EffectiveDropDate = courseSection.DurationEndDate
-                                                    };
-                                                    //this.context.StudentCoursesectionSchedule.Add(studentCourseScheduling);
-                                                    this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);
-
-                                                    var conflictStudent = new StudentScheduleView()
-                                                    {
-                                                        TenantId = student.TenantId,
-                                                        SchoolId = student.SchoolId,
-                                                        StudentId = student.StudentId,
-                                                        CourseId = courseSection.CourseId,
-                                                        CourseSectionId = courseSection.CourseSectionId,
-                                                        CourseSectionName = courseSection.CourseSectionName,
-                                                        StudentInternalId = student.StudentInternalId,
-                                                        StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                        Scheduled = true,
-                                                    };
-                                                    this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                    //this block for add this req as a job
-                                                    var studentCoursesectionSchedule = new StudentCoursesectionSchedule
-                                                    {
-                                                        CourseSectionId = courseSection.CourseSectionId,
-                                                        EffectiveStartDate = DateTime.UtcNow,
-                                                        EffectiveDropDate = courseSection.DurationEndDate
-                                                    };
-
-                                                    var scheduledStudentDropModel = new ScheduledStudentDropModel
-                                                    {
-                                                        TenantId = student.TenantId,
-                                                        SchoolId = student.SchoolId,
-                                                        StudentId = student.StudentId
-                                                    };                                                 scheduledStudentDropModel.studentCoursesectionScheduleList.Add(studentCoursesectionSchedule);
-
-                                                    var scheduledJob = new ScheduledJob
-                                                    {
-                                                        TenantId = scheduledStudentDropModel.TenantId,
-                                                        SchoolId = scheduledStudentDropModel.SchoolId,
-                                                        JobId = (long)Id,
-                                                        AcademicYear = courseSection.AcademicYear,
-                                                        JobTitle = "DropStudentfromScheduledCourseSections",
-                                                        JobScheduleDate = courseSection.DurationEndDate!.Value.AddDays(1),
-                                                        ApiTitle = "GroupDropForScheduledStudent",
-                                                        ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                                        TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
-                                                        LastRunStatus = null,
-                                                        LastRunTime = null,
-                                                        IsActive = true,
-                                                        CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                                        CreatedOn = DateTime.UtcNow
-                                                    };
-                                                    this.context?.ScheduledJobs.Add(scheduledJob);
-                                                    Id++;
-                                                 
-                                                }
-                                                else
-                                                {
-                                                    //var courseSectionAllData = this.context?.AllCourseSectionView.Where(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.CourseSectionId == courseSection.CourseSectionId).ToList();
-
-
-                                                    if (courseSectionAllData != null && courseSectionAllData.Any())
-                                                    {
-                                                        bool isPeriodConflict = false;
-
-                                                        foreach (var courseSectionAll in courseSectionAllData)
-                                                        {                                                            
-                                                            var courseSectionData = allCourseSectionViews!.
-                                                                                   Join(allStudentSchedules!,
-                                                                                   acsv => acsv.CourseSectionId, scs => scs.CourseSectionId,
-                                                                                   (acsv, scs) => new { acsv, scs }).Where(x => x.scs.TenantId == courseSection.TenantId && x.acsv.TenantId == courseSection.TenantId && x.scs.SchoolId == courseSection.SchoolId && x.acsv.SchoolId == courseSection.SchoolId && x.scs.StudentId == student.StudentId && x.acsv.DurationEndDate > courseSectionAll.DurationStartDate && x.scs.IsDropped != true && x.acsv.AllowStudentConflict != true
-                                                                                   &&
-                                                                                   (
-                                                                                   //courseSectionAll.FixedPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.FixedPeriodId || x.acsv.VarPeriodId == courseSectionAll.FixedPeriodId || x.acsv.CalPeriodId == courseSectionAll.FixedPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch(courseSectionAll.FixedDays.ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && (courseSectionAll.FixedDays.ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   //||
-                                                                                   //courseSectionAll.VarPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.VarPeriodId || x.acsv.VarPeriodId == courseSectionAll.VarPeriodId || x.acsv.CalPeriodId == courseSectionAll.VarPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch(courseSectionAll.VarDay.ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && (courseSectionAll.VarDay.ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && (courseSectionAll.VarDay.ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   //||
-                                                                                   //courseSectionAll.CalPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.CalPeriodId || x.acsv.VarPeriodId == courseSectionAll.CalPeriodId || x.acsv.CalPeriodId == courseSectionAll.CalPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch(courseSectionAll.CalDay.ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && (courseSectionAll.CalDay.ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && (courseSectionAll.CalDay.ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   //||
-                                                                                   courseSectionAll.FixedPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.FixedPeriodId || x.acsv.VarPeriodId == courseSectionAll.FixedPeriodId || x.acsv.CalPeriodId == courseSectionAll.FixedPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.FixedDays??"").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.FixedDays??"").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.FixedDays??"").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   ||
-                                                                                   courseSectionAll.VarPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.VarPeriodId || x.acsv.VarPeriodId == courseSectionAll.VarPeriodId || x.acsv.CalPeriodId == courseSectionAll.VarPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.VarDay??"").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.VarDay??"").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.VarDay??"").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   ||
-                                                                                   courseSectionAll.CalPeriodId != null && ((x.acsv.FixedPeriodId == courseSectionAll.CalPeriodId || x.acsv.VarPeriodId == courseSectionAll.CalPeriodId || x.acsv.CalPeriodId == courseSectionAll.CalPeriodId) && ((x.acsv.FixedDays != null && (Regex.IsMatch((courseSectionAll.CalDay??"").ToLower(), x.acsv.FixedDays.ToLower(), RegexOptions.IgnoreCase))) || (x.acsv.VarDay != null && ((courseSectionAll.CalDay??"").ToLower().Contains(x.acsv.VarDay.ToLower()))) || (x.acsv.CalDay != null && ((courseSectionAll.CalDay??"").ToLower().Contains(x.acsv.CalDay.ToLower())))))
-                                                                                   ||
-                                                                                    courseSectionAll.BlockPeriodId != null && (x.acsv.BlockPeriodId == courseSectionAll.BlockPeriodId && x.acsv.BlockRoomId == courseSectionAll.BlockRoomId && x.acsv.BlockId == courseSectionAll.BlockId)
-                                                                                   )
-                                                                                );
-
-                                                            if (courseSectionData?.Any() == true)
-                                                            {
-                                                                isPeriodConflict = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                        if (!(bool)isPeriodConflict)
-                                                        {
-                                                            //this is for student already exist in cs or not.If exixt then update its value else insert student.
-                                                            var studentCourseSectionScheduleExists = allStudentSchedules?.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped == true && c.EffectiveDropDate!=null);
-                                                            if (studentCourseSectionScheduleExists != null)
-                                                            {
-                                                                studentCourseSectionScheduleExists.IsDropped = null;
-                                                                studentCourseSectionScheduleExists.EffectiveDropDate = null;
-                                                            }
-                                                            else
-                                                            {
-                                                                var studentCourseScheduling = new StudentCoursesectionSchedule()
-                                                                {
-                                                                    TenantId = courseSection.TenantId,
-                                                                    SchoolId = courseSection.SchoolId,
-                                                                    StudentId = student.StudentId,
-                                                                    CourseId = courseSection.CourseId,
-                                                                    CourseSectionId = courseSection.CourseSectionId,
-                                                                    StudentGuid = student.StudentGuid,
-                                                                    AlternateId = student.AlternateId,
-                                                                    StudentInternalId = student.StudentInternalId,
-                                                                    //FirstGivenName = student.FirstGivenName,
-                                                                    FirstGivenName = student.FirstGivenName ?? "",
-                                                                    MiddleName = student.MiddleName,
-                                                                    //LastFamilyName = student.LastFamilyName,
-                                                                    LastFamilyName = student.LastFamilyName ?? "",
-                                                                    FirstLanguageId = student.FirstLanguageId,
-                                                                    //GradeId = studentEnrollmentData.GradeId,
-                                                                    GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
-                                                                    //AcademicYear = (decimal)courseSection.AcademicYear,
-                                                                    AcademicYear = courseSection.AcademicYear !=null? (decimal)courseSection.AcademicYear:0,
-                                                                    GradeScaleId = courseSection.GradeScaleId,
-                                                                    CourseSectionName = courseSection.CourseSectionName,
-                                                                    CalendarId = courseSection.CalendarId,
-                                                                    CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
-                                                                    CreatedOn = DateTime.UtcNow,
-                                                                    EffectiveStartDate = courseSection.DurationStartDate,
-                                                                    EffectiveDropDate = courseSection.DurationEndDate
-
-                                                                };
-                                                                this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);
-                                                            }
-                                                            var conflictStudent = new StudentScheduleView()
-                                                            {
-                                                                TenantId = student.TenantId,
-                                                                SchoolId = student.SchoolId,
-                                                                StudentId = student.StudentId,
-                                                                CourseId = courseSection.CourseId,
-                                                                CourseSectionId = courseSection.CourseSectionId,
-                                                                CourseSectionName = courseSection.CourseSectionName,
-                                                                StudentInternalId = student.StudentInternalId,
-                                                                StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                                Scheduled = true,
-                                                            };
-                                                            this.context?.StudentScheduleView.Add(conflictStudent);
-
-                                                            //this block for add this req as a job
-                                                            var studentCoursesectionSchedule = new StudentCoursesectionSchedule
-                                                            {
-                                                                CourseSectionId = courseSection.CourseSectionId,
-                                                                EffectiveStartDate = DateTime.UtcNow,
-                                                                EffectiveDropDate = courseSection.DurationEndDate
-                                                            };
-
-                                                            var scheduledStudentDropModel = new ScheduledStudentDropModel
-                                                            {
-                                                                TenantId = student.TenantId,
-                                                                SchoolId = student.SchoolId,
-                                                                StudentId = student.StudentId,
-                                                                _tenantName = studentCourseSectionScheduleAddViewModel._tenantName
-                                                            }; scheduledStudentDropModel.studentCoursesectionScheduleList.Add(studentCoursesectionSchedule);
-
-                                                            var scheduledJob = new ScheduledJob
-                                                            {
-                                                                TenantId = scheduledStudentDropModel.TenantId,
-                                                                SchoolId = scheduledStudentDropModel.SchoolId,
-                                                                JobId = (long)Id,
-                                                                AcademicYear = courseSection.AcademicYear,
-                                                                JobTitle = "DropStudentfromScheduledCourseSections",
-                                                                JobScheduleDate = courseSection.DurationEndDate!.Value.AddDays(1),
-                                                                ApiTitle = "GroupDropForScheduledStudent",
-                                                                ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                                                TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
-                                                                LastRunStatus = null,
-                                                                LastRunTime = null,
-                                                                IsActive = true,
-                                                                CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                                                CreatedOn = DateTime.UtcNow
-                                                            };
-                                                            this.context?.ScheduledJobs.Add(scheduledJob);
-                                                            Id++;
-
-                                                        }
-                                                        else
-                                                        {
-                                                            var conflictStudent = new StudentScheduleView()
-                                                            {
-                                                                TenantId = student.TenantId,
-                                                                SchoolId = student.SchoolId,
-                                                                StudentId = student.StudentId,
-                                                                CourseId = courseSection.CourseId,
-                                                                CourseSectionId = courseSection.CourseSectionId,
-                                                                CourseSectionName = courseSection.CourseSectionName,
-                                                                StudentInternalId = student.StudentInternalId,
-                                                                StudentName = student.FirstGivenName + " " + student.MiddleName + " " + student.LastFamilyName,
-                                                                Scheduled = false,
-                                                                ConflictComment = "There is a period conflict"
-                                                            };
-                                                            studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                                            this.context?.StudentScheduleView.Add(conflictStudent);
-                                                            
-                                                            if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                                            {
-                                                                conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
-                                                            }
-                                                            else
-                                                            {
-                                                                conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                                            }
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        studentCourseSectionScheduleAddViewModel._failure = true;
-                                                        studentCourseSectionScheduleAddViewModel._message = "Course Section Does Not Exist";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    studentCourseSectionScheduleAddViewModel._message = "Select Atleast One Student";
-                                    studentCourseSectionScheduleAddViewModel._failure = true;
-                                    studentCourseSectionScheduleAddViewModel.ConflictMessage = null;
-                                    return studentCourseSectionScheduleAddViewModel;
-                                }
-                            }
-                            else
-                            {
-                                if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count>0)
-                                {
-                                    foreach (var studentMaster in studentCourseSectionScheduleAddViewModel.studentMasterList)
-                                    {
-                                        var conflictStudent = new StudentScheduleView()
-                                        {
-                                            TenantId = studentMaster.TenantId,
-                                            SchoolId = studentMaster.SchoolId,
-                                            StudentId = studentMaster.StudentId,
-                                            CourseId = courseSection.CourseId,
-                                            CourseSectionId = courseSection.CourseSectionId,
-                                            CourseSectionName = courseSection.CourseSectionName,
-                                            StudentInternalId = studentMaster.StudentInternalId,
-                                            StudentName = studentMaster.FirstGivenName + " " + studentMaster.MiddleName + " " + studentMaster.LastFamilyName,
-                                            Scheduled = false,
-                                            ConflictComment = "Seats Not Avalaible"
-                                        };
-                                        studentCourseSectionScheduleAddViewModel._conflictFailure = true;
-                                        this.context?.StudentScheduleView.Add(conflictStudent);
-                                        
-                                        if (studentCourseSectionScheduleAddViewModel.studentMasterList.Count > 1)
-                                        {
-                                            conflictMessage = "Some Student could not be scheduled due to conflicts. Please find the detailed report below.";
-                                        }
-                                        else
-                                        {
-                                            conflictMessage = "Some courses cannot be scheduled to the student due to conflict";
-                                        }
-                                    }
-                                }                               
-                            }
-                        }
-                        //var studentScheduleViewData = this.context?.StudentScheduleView.Where(e => e.SchoolId == studentCourseSectionScheduleAddViewModel.SchoolId && e.TenantId == studentCourseSectionScheduleAddViewModel.TenantId).ToList();
-
-                        //if (studentScheduleViewData.Count > 0)
-                        //{
-                        //    this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
-                        //}
-                        this.context?.SaveChanges();
-                        transaction?.Commit();
-                        studentCourseSectionScheduleAddViewModel._message = "Student Schedule added successfully";
-                        studentCourseSectionScheduleAddViewModel.ConflictMessage = conflictMessage;
-                        studentCourseSectionScheduleAddViewModel._failure = false;
-                    }
-                    else
-                    {
-                        studentCourseSectionScheduleAddViewModel._message = "Select Atleast One Course Section";
-                        studentCourseSectionScheduleAddViewModel.ConflictMessage = null;
-                        studentCourseSectionScheduleAddViewModel._failure = true;
-                        return studentCourseSectionScheduleAddViewModel;
-                    }
-                }
-                catch (Exception es)
-                {
-                    transaction?.Rollback();
-                    studentCourseSectionScheduleAddViewModel._failure = true;
-                    studentCourseSectionScheduleAddViewModel.ConflictMessage = null;
-                    studentCourseSectionScheduleAddViewModel._message = es.Message;
-                }
-            }
-            return studentCourseSectionScheduleAddViewModel;
-        }
-
         public StudentCourseSectionScheduleAddViewModel AddStudentCourseSectionSchedule(StudentCourseSectionScheduleAddViewModel studentCourseSectionScheduleAddViewModel)
         {
             using (var transaction = this.context?.Database.BeginTransaction())
@@ -647,6 +95,12 @@ namespace opensis.data.Repository
                         if (studentScheduleViewData != null && studentScheduleViewData.Any())
                         {
                             this.context?.StudentScheduleView.RemoveRange(studentScheduleViewData);
+                            // Flush the deletes before the loop re-adds rows below. These are report
+                            // rows keyed on tenant/school/student/course/course section, so scheduling
+                            // the same student into the same course section again would otherwise be
+                            // rejected by the change tracker as a duplicate key. Still inside the
+                            // surrounding transaction, so a later failure rolls this back too.
+                            this.context?.SaveChanges();
                         }
                         if ( allCourseSectionViewMasterData?.Any() == true)
                         {
@@ -826,36 +280,54 @@ namespace opensis.data.Repository
 
                                                     if (courseSectionAllData?.FirstOrDefault()?.AllowStudentConflict == true)
                                                     {
-                                                        var studentCourseScheduling = new StudentCoursesectionSchedule()
+                                                        // A row may already exist for this student and course section - typically one
+                                                        // dropped earlier. The primary key is tenant/school/student/course/course section
+                                                        // and does NOT include academic year, so re-inserting would fail. Reuse the
+                                                        // existing row instead. The conflict-checking branch below does the same and
+                                                        // the two blocks must stay identical.
+                                                        var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.StudentId == student.StudentId && c.CourseId == courseSection.CourseId && c.CourseSectionId == courseSection.CourseSectionId);
+
+                                                        if (studentCourseSectionScheduleExists != null)
                                                         {
-                                                            TenantId = courseSection.TenantId,
-                                                            SchoolId = courseSection.SchoolId,
-                                                            StudentId = student.StudentId,
-                                                            CourseId = courseSection.CourseId,
-                                                            CourseSectionId = courseSection.CourseSectionId,
-                                                            StudentGuid = student.StudentGuid,
-                                                            AlternateId = student.AlternateId,
-                                                            StudentInternalId = student.StudentInternalId,
-                                                            //FirstGivenName = student.FirstGivenName,
-                                                            FirstGivenName = student.FirstGivenName ?? "",
-                                                            MiddleName = student.MiddleName,
-                                                            //LastFamilyName = student.LastFamilyName,
-                                                            LastFamilyName = student.LastFamilyName ?? "",
-                                                            FirstLanguageId = student.FirstLanguageId,
-                                                            //GradeId = studentEnrollmentData.GradeId,
-                                                            GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
-                                                            //AcademicYear = (decimal)courseSection.AcademicYear,
-                                                            AcademicYear = courseSection.AcademicYear != null ? (decimal)courseSection.AcademicYear : 0,
-                                                            GradeScaleId = courseSection.GradeScaleId,
-                                                            CourseSectionName = courseSection.CourseSectionName,
-                                                            CalendarId = courseSection.CalendarId,
-                                                            CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
-                                                            CreatedOn = DateTime.UtcNow,
-                                                            EffectiveStartDate = courseSection.DurationStartDate,
-                                                            EffectiveDropDate = courseSection.DurationEndDate
-                                                        };
-                                                        //this.context.StudentCoursesectionSchedule.Add(studentCourseScheduling);
-                                                        this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);
+                                                            studentCourseSectionScheduleExists.IsDropped = null;
+                                                            studentCourseSectionScheduleExists.EffectiveDropDate = courseSection.DurationEndDate;
+                                                            studentCourseSectionScheduleExists.EffectiveStartDate = courseSection.DurationStartDate;
+                                                            studentCourseSectionScheduleExists.AcademicYear = courseSection.AcademicYear != null ? (decimal)courseSection.AcademicYear : 0;
+                                                            studentCourseSectionScheduleExists.GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null;
+                                                            studentCourseSectionScheduleExists.GradeScaleId = courseSection.GradeScaleId;
+                                                            studentCourseSectionScheduleExists.CourseSectionName = courseSection.CourseSectionName;
+                                                            studentCourseSectionScheduleExists.CalendarId = courseSection.CalendarId;
+                                                            studentCourseSectionScheduleExists.UpdatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy;
+                                                            studentCourseSectionScheduleExists.UpdatedOn = DateTime.UtcNow;
+                                                        }
+                                                        else
+                                                        {
+                                                            var studentCourseScheduling = new StudentCoursesectionSchedule()
+                                                            {
+                                                                TenantId = courseSection.TenantId,
+                                                                SchoolId = courseSection.SchoolId,
+                                                                StudentId = student.StudentId,
+                                                                CourseId = courseSection.CourseId,
+                                                                CourseSectionId = courseSection.CourseSectionId,
+                                                                StudentGuid = student.StudentGuid,
+                                                                AlternateId = student.AlternateId,
+                                                                StudentInternalId = student.StudentInternalId,
+                                                                FirstGivenName = student.FirstGivenName ?? "",
+                                                                MiddleName = student.MiddleName,
+                                                                LastFamilyName = student.LastFamilyName ?? "",
+                                                                FirstLanguageId = student.FirstLanguageId,
+                                                                GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null,
+                                                                AcademicYear = courseSection.AcademicYear != null ? (decimal)courseSection.AcademicYear : 0,
+                                                                GradeScaleId = courseSection.GradeScaleId,
+                                                                CourseSectionName = courseSection.CourseSectionName,
+                                                                CalendarId = courseSection.CalendarId,
+                                                                CreatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy,
+                                                                CreatedOn = DateTime.UtcNow,
+                                                                EffectiveStartDate = courseSection.DurationStartDate,
+                                                                EffectiveDropDate = courseSection.DurationEndDate
+                                                            };
+                                                            this.context?.StudentCoursesectionSchedule.Add(studentCourseScheduling);
+                                                        }
 
                                                         var conflictStudent = new StudentScheduleView()
                                                         {
@@ -883,28 +355,33 @@ namespace opensis.data.Repository
                                                         {
                                                             TenantId = student.TenantId,
                                                             SchoolId = student.SchoolId,
-                                                            StudentId = student.StudentId
+                                                            StudentId = student.StudentId,
+                                                            _tenantName = studentCourseSectionScheduleAddViewModel._tenantName
                                                         }; scheduledStudentDropModel.studentCoursesectionScheduleList.Add(studentCoursesectionSchedule);
 
-                                                        var scheduledJob = new ScheduledJob
+                                                        // Without an end date there is nothing to schedule the auto-drop against.
+                                                        if (courseSection.DurationEndDate.HasValue)
                                                         {
-                                                            TenantId = scheduledStudentDropModel.TenantId,
-                                                            SchoolId = scheduledStudentDropModel.SchoolId,
-                                                            JobId = (long)Id,
-                                                            AcademicYear = courseSection.AcademicYear,
-                                                            JobTitle = "DropStudentfromScheduledCourseSections",
-                                                            JobScheduleDate = courseSection.DurationEndDate!.Value.AddDays(1),
-                                                            ApiTitle = "GroupDropForScheduledStudent",
-                                                            ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                                            TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
-                                                            LastRunStatus = null,
-                                                            LastRunTime = null,
-                                                            IsActive = true,
-                                                            CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                                            CreatedOn = DateTime.UtcNow
-                                                        };
-                                                        this.context?.ScheduledJobs.Add(scheduledJob);
-                                                        Id++;
+                                                            var scheduledJob = new ScheduledJob
+                                                            {
+                                                                TenantId = scheduledStudentDropModel.TenantId,
+                                                                SchoolId = scheduledStudentDropModel.SchoolId,
+                                                                JobId = (long)Id,
+                                                                AcademicYear = courseSection.AcademicYear,
+                                                                JobTitle = "DropStudentfromScheduledCourseSections",
+                                                                JobScheduleDate = courseSection.DurationEndDate.Value.AddDays(1),
+                                                                ApiTitle = "GroupDropForScheduledStudent",
+                                                                ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
+                                                                TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
+                                                                LastRunStatus = null,
+                                                                LastRunTime = null,
+                                                                IsActive = true,
+                                                                CreatedBy = scheduledStudentDropModel.UpdatedBy,
+                                                                CreatedOn = DateTime.UtcNow
+                                                            };
+                                                            this.context?.ScheduledJobs.Add(scheduledJob);
+                                                            Id++;
+                                                        }
 
                                                     }
                                                     else
@@ -937,11 +414,26 @@ namespace opensis.data.Repository
                                                             if (!(bool)isPeriodConflict)
                                                             {
                                                                 //this is for student already exist in cs or not.If exixt then update its value else insert student.
-                                                                var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.SchoolId == student.SchoolId && c.TenantId == student.TenantId && c.StudentId == student.StudentId && c.CourseSectionId == courseSection.CourseSectionId && c.AcademicYear == courseSection.AcademicYear && c.IsDropped == true && c.EffectiveDropDate != null);
+                                                                // Matched on the full primary key (tenant/school/student/course/course section).
+                                                                // Academic year is deliberately not part of the match because it is not part
+                                                                // of the key, so a row from another year would still collide on insert.
+                                                                // Key fields come from courseSection, the same source the insert below uses,
+                                                                // so the match and the insert can never disagree on tenant or school.
+                                                                var studentCourseSectionScheduleExists = studentCoursesectionScheduleMasterData?.FirstOrDefault(c => c.TenantId == courseSection.TenantId && c.SchoolId == courseSection.SchoolId && c.StudentId == student.StudentId && c.CourseId == courseSection.CourseId && c.CourseSectionId == courseSection.CourseSectionId);
                                                                 if (studentCourseSectionScheduleExists != null)
                                                                 {
+                                                                    // Restore the row to what a fresh insert would produce (see the
+                                                                    // allow-conflict branch above, which must stay identical to this).
                                                                     studentCourseSectionScheduleExists.IsDropped = null;
-                                                                    studentCourseSectionScheduleExists.EffectiveDropDate = null;
+                                                                    studentCourseSectionScheduleExists.EffectiveDropDate = courseSection.DurationEndDate;
+                                                                    studentCourseSectionScheduleExists.EffectiveStartDate = courseSection.DurationStartDate;
+                                                                    studentCourseSectionScheduleExists.AcademicYear = courseSection.AcademicYear != null ? (decimal)courseSection.AcademicYear : 0;
+                                                                    studentCourseSectionScheduleExists.GradeId = studentEnrollmentData != null ? studentEnrollmentData.GradeId : null;
+                                                                    studentCourseSectionScheduleExists.GradeScaleId = courseSection.GradeScaleId;
+                                                                    studentCourseSectionScheduleExists.CourseSectionName = courseSection.CourseSectionName;
+                                                                    studentCourseSectionScheduleExists.CalendarId = courseSection.CalendarId;
+                                                                    studentCourseSectionScheduleExists.UpdatedBy = studentCourseSectionScheduleAddViewModel.CreatedBy;
+                                                                    studentCourseSectionScheduleExists.UpdatedOn = DateTime.UtcNow;
                                                                 }
                                                                 else
                                                                 {
@@ -1006,25 +498,29 @@ namespace opensis.data.Repository
                                                                     _tenantName = studentCourseSectionScheduleAddViewModel._tenantName
                                                                 }; scheduledStudentDropModel.studentCoursesectionScheduleList.Add(studentCoursesectionSchedule);
 
-                                                                var scheduledJob = new ScheduledJob
+                                                                // Without an end date there is nothing to schedule the auto-drop against.
+                                                                if (courseSection.DurationEndDate.HasValue)
                                                                 {
-                                                                    TenantId = scheduledStudentDropModel.TenantId,
-                                                                    SchoolId = scheduledStudentDropModel.SchoolId,
-                                                                    JobId = (long)Id,
-                                                                    AcademicYear = courseSection.AcademicYear,
-                                                                    JobTitle = "DropStudentfromScheduledCourseSections",
-                                                                    JobScheduleDate = courseSection.DurationEndDate!.Value.AddDays(1),
-                                                                    ApiTitle = "GroupDropForScheduledStudent",
-                                                                    ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
-                                                                    TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
-                                                                    LastRunStatus = null,
-                                                                    LastRunTime = null,
-                                                                    IsActive = true,
-                                                                    CreatedBy = scheduledStudentDropModel.UpdatedBy,
-                                                                    CreatedOn = DateTime.UtcNow
-                                                                };
-                                                                this.context?.ScheduledJobs.Add(scheduledJob);
-                                                                Id++;
+                                                                    var scheduledJob = new ScheduledJob
+                                                                    {
+                                                                        TenantId = scheduledStudentDropModel.TenantId,
+                                                                        SchoolId = scheduledStudentDropModel.SchoolId,
+                                                                        JobId = (long)Id,
+                                                                        AcademicYear = courseSection.AcademicYear,
+                                                                        JobTitle = "DropStudentfromScheduledCourseSections",
+                                                                        JobScheduleDate = courseSection.DurationEndDate.Value.AddDays(1),
+                                                                        ApiTitle = "GroupDropForScheduledStudent",
+                                                                        ControllerPath = scheduledStudentDropModel._tenantName + "/StudentSchedule",
+                                                                        TaskJson = JsonConvert.SerializeObject(scheduledStudentDropModel),
+                                                                        LastRunStatus = null,
+                                                                        LastRunTime = null,
+                                                                        IsActive = true,
+                                                                        CreatedBy = scheduledStudentDropModel.UpdatedBy,
+                                                                        CreatedOn = DateTime.UtcNow
+                                                                    };
+                                                                    this.context?.ScheduledJobs.Add(scheduledJob);
+                                                                    Id++;
+                                                                }
 
                                                             }
                                                             else
@@ -2673,11 +2169,9 @@ namespace opensis.data.Repository
                         }
                     }
 
-                    if (studentIds?.Any() == true)
-                    {
-                        scheduledData = scheduledData.Where(x => !studentIds.Contains(x.scs.StudentId)).ToList();
-                    }
-
+                    // Students with transactional data are kept in the list and flagged instead of
+                    // being silently omitted, so the user can see who cannot be deleted and why.
+                    // GroupDeleteForScheduledStudent re-checks and refuses them regardless.
                     scheduledStudentData = scheduledData?.Select(ssv => new ScheduleStudentForView
                     {
                         SchoolId = ssv.sm.SchoolId,
@@ -2726,6 +2220,8 @@ namespace opensis.data.Repository
                         UpdatedOn = ssv.scs.UpdatedOn,
                         UpdatedBy = ssv.scs.UpdatedBy,
                         IsDropped = ssv.scs.IsDropped,
+                        EffectiveDropDate = ssv.scs.EffectiveDropDate,
+                        HasAssociation = studentIds.Contains(ssv.scs.StudentId),
                     }).GroupBy(f => f.StudentId).Select(g => g.First()).ToList();
 
                     if (scheduledStudentData != null && scheduledStudentData.Any())
@@ -2795,16 +2291,18 @@ namespace opensis.data.Repository
                         }
                         else
                         {
+                            // Students with associations are now returned and flagged rather than
+                            // filtered out, so an empty list here simply means nothing matched.
                             scheduleStudentListView.scheduleStudentForView = new();
                             scheduleStudentListView._failure = true;
-                            scheduleStudentListView._message = "Student deletion is not permitted due to transactional associations";
+                            scheduleStudentListView._message = NORECORDFOUND;
                         }
                     }
                     else
                     {
                         scheduleStudentListView.scheduleStudentForView = new();
                         scheduleStudentListView._failure = true;
-                        scheduleStudentListView._message = "Student deletion is not permitted due to transactional associations";
+                        scheduleStudentListView._message = NORECORDFOUND;
                     }
                 }
                 else

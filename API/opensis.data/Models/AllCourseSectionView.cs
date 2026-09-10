@@ -79,6 +79,19 @@ namespace opensis.data.Models
         public int? AvailableSeat { get; set; }
         [NotMapped]
         public string? MarkingPeriod { get; set; }
+        /// <summary>
+        /// Count of every student schedule row for the course section, including dropped ones.
+        /// Used by Group Delete, which removes rows outright rather than honouring seat counts.
+        /// </summary>
+        [NotMapped]
+        public int? TotalScheduleRecords { get; set; }
+        /// <summary>
+        /// Count of every staff assignment row for the course section, including unassigned ones.
+        /// Group Delete manages teachers as well as students, so a section holding only staff
+        /// records must still be selectable there.
+        /// </summary>
+        [NotMapped]
+        public int? TotalStaffScheduleRecords { get; set; }
 
     }
 }

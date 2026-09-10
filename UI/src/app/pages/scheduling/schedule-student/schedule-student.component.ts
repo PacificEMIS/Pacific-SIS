@@ -444,7 +444,9 @@ export class ScheduleStudentComponent implements OnInit, OnDestroy {
     this.studentScheduleService.addStudentCourseSectionSchedule(this.studentCourseSectionScheduleAddViewModel).pipe(takeUntil(this.destroySubject$)).subscribe(data => {
       if (data._failure) {
         this.commonService.checkTokenValidOrNot(data._message);
-        this.studentCourseSectionScheduleAddViewModel.conflictMessage = 'Failed to schedule student(s) to course section(s)';
+        this.studentCourseSectionScheduleAddViewModel.conflictMessage = data._message
+          ? data._message
+          : this.defaultValuesService.translateKey('failedToScheduleStudentsToCourseSections');
         this.failedScheduling = true;
       }
       else {
