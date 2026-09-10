@@ -541,6 +541,12 @@ export class GroupDeleteComponent implements OnInit, AfterViewInit, OnDestroy {
           this.snackbar.open(res._message, '', {
             duration: 10000
           });
+          // A partial delete is committed before the outcome is reported (#853), so the
+          // lists must be refreshed here too or removed rows stay on screen.
+          this.selectedStudents = [];
+          this.selectedStaffs = [];
+          this.getUnassociatedStudentListByCourseSection(this.courseSectionData.courseSectionId);
+          this.getScheduledTeachers();
         } else {
           this.showErrorMessage = '';
           this.isVisible = false;
