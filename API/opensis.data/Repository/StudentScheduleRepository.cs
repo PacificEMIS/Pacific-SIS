@@ -2052,7 +2052,8 @@ namespace opensis.data.Repository
                                 if (StudentAttendanceData != null || AssignmentData != null)
                                 {
                                     staffFailure = true;
-                                    scheduledStudentDeleteViewModel._message = "Some staff could not be deleted from the selected course section. They have association";
+                                    // On the returned object - writing to the input parameter discarded it (#853).
+                                    scheduledStudentDelete._message = "Some staff could not be deleted from the selected course section. They have association";
                                 }
                                 else
                                 {
@@ -2108,19 +2109,20 @@ namespace opensis.data.Repository
                     this.context?.SaveChanges();
                     transaction?.Commit();
 
-                    if (scheduledStudentDeleteViewModel.StudentIds?.Any() == true && scheduledStudentDeleteViewModel.StaffIds?.Any() == true)
+                    // Report the outcome on the object that is actually returned, for every
+                    // combination of selection. Previously _failure was written to the input
+                    // parameter and only when both lists were non-empty, so a refused delete
+                    // was reported to the UI as a success (#853). Per-list messages were set
+                    // above; only the combined case needs its own wording.
+                    bool hasStudents = scheduledStudentDeleteViewModel.StudentIds?.Any() == true;
+                    bool hasStaff = scheduledStudentDeleteViewModel.StaffIds?.Any() == true;
+                    if (hasStudents && hasStaff)
                     {
-                        if (studentFailure == false && staffFailure == false)
-                        {
-                            scheduledStudentDelete._message = "All staffs & students deleted from the selected course section";
-                            scheduledStudentDeleteViewModel._failure = false;
-                        }
-                        else
-                        {
-                            scheduledStudentDelete._message = "Some students or staffs could not be deleted from the selected course section.They have association";
-                            scheduledStudentDeleteViewModel._failure = true;
-                        }
+                        scheduledStudentDelete._message = (studentFailure || staffFailure)
+                            ? "Some students or staffs could not be deleted from the selected course section.They have association"
+                            : "All staffs & students deleted from the selected course section";
                     }
+                    scheduledStudentDelete._failure = studentFailure || staffFailure;
                 }
                 catch (Exception es)
                 {
