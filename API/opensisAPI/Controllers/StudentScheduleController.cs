@@ -26,6 +26,7 @@ All rights reserved.
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using opensis.core.StudentSchedule.Interfaces;
 using opensis.data.Models;
 using opensis.data.ViewModels.StudentSchedule;
@@ -42,9 +43,11 @@ namespace opensisAPI.Controllers
     public class StudentScheduleController : ControllerBase
     {
         private IStudentScheduleService _studentScheduleService;
-        public StudentScheduleController(IStudentScheduleService studentScheduleService)
+        private readonly ILogger<StudentScheduleController> _logger;
+        public StudentScheduleController(IStudentScheduleService studentScheduleService, ILogger<StudentScheduleController> logger)
         {
             _studentScheduleService = studentScheduleService;
+            _logger = logger;
         }
 
         [HttpPost("addStudentCourseSectionSchedule")]
@@ -55,9 +58,20 @@ namespace opensisAPI.Controllers
             {
                 StudentCourseSectionScheduleAddModel = _studentScheduleService.AddStudentCourseSectionSchedule(studentCourseSectionScheduleAddViewModel);
 
+                // The repository swallows exceptions into _message, so log them here or they are lost.
+                if (StudentCourseSectionScheduleAddModel._failure == true)
+                {
+                    _logger.LogError("AddStudentCourseSectionSchedule failed for tenant {TenantId} school {SchoolId}: {Message}",
+                        studentCourseSectionScheduleAddViewModel.TenantId,
+                        studentCourseSectionScheduleAddViewModel.SchoolId,
+                        StudentCourseSectionScheduleAddModel._message);
+                }
             }
             catch (Exception es)
             {
+                _logger.LogError(es, "AddStudentCourseSectionSchedule threw for tenant {TenantId} school {SchoolId}",
+                    studentCourseSectionScheduleAddViewModel.TenantId,
+                    studentCourseSectionScheduleAddViewModel.SchoolId);
                 StudentCourseSectionScheduleAddModel._failure = true;
                 StudentCourseSectionScheduleAddModel._message = es.Message;
             }
