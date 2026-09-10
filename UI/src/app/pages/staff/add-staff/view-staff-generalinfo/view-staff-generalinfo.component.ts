@@ -35,6 +35,8 @@ import { Permissions, RolePermissionListViewModel, RolePermissionViewModel } fro
 import icCheckbox from '@iconify/icons-ic/baseline-check-box';
 import icCheckboxOutline from '@iconify/icons-ic/baseline-check-box-outline-blank';
 import { StaffService } from 'src/app/services/staff.service';
+import { DefaultValuesService } from 'src/app/common/default-values.service';
+import { ProfilesTypes } from 'src/app/enums/profiles.enum';
 @Component({
   selector: 'vex-view-staff-generalinfo',
   templateUrl: './view-staff-generalinfo.component.html',
@@ -58,6 +60,7 @@ export class ViewStaffGeneralinfoComponent implements OnInit {
               private dialog: MatDialog,
               private pageRolePermissions: PageRolesPermission,
               private staffService: StaffService,
+              private defaultValuesService: DefaultValuesService,
               ) {
     //translateService.use('en');
   }
@@ -78,7 +81,12 @@ export class ViewStaffGeneralinfoComponent implements OnInit {
 
   // This openResetPassword method is used for open Reset Password dialog.
   openResetPassword() {
-    if (this.staffViewDetails.staffMaster.profile !== 'Super Administrator') {
+    // Upstream blocked password resets on Super Administrator records for
+    // everyone. Super Administrators are now reachable from Settings >
+    // Administration > Super Administrators, and only another Super
+    // Administrator may manage them, so allow it for that viewer.
+    const viewerIsSuperAdministrator = this.defaultValuesService.getUserMembershipType() === ProfilesTypes.SuperAdmin;
+    if (this.staffViewDetails.staffMaster.profile !== 'Super Administrator' || viewerIsSuperAdministrator) {
       this.dialog.open(ResetPasswordComponent, {
         width: '500px',
         data: { userId: this.staffViewDetails.staffMaster.staffId, emailAddress: this.staffViewDetails.staffMaster.loginEmailAddress }

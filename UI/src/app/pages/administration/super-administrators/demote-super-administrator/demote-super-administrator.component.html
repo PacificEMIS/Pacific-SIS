@@ -1,0 +1,31 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="flex items-center" mat-dialog-title>
+        <h2 class="headline m-0 flex-auto">{{ 'demoteToSchoolProfile' | translate }}</h2>
+        <button class="text-secondary" mat-dialog-close mat-icon-button type="button">
+            <mat-icon [icIcon]="icClose"></mat-icon>
+        </button>
+    </div>
+    <hr class="-mx-6" />
+    <mat-dialog-content>
+        <p class="mt-4 mb-1 font-medium">{{ fullName() }}</p>
+        <p class="text-secondary mb-4">{{ 'demoteExplanation' | translate }}</p>
+        <mat-form-field class="w-full" appearance="outline" color="primary">
+            <mat-label>{{ 'school' | translate }}</mat-label>
+            <mat-select formControlName="targetSchoolId" required>
+                <mat-option *ngFor="let school of schools" [value]="school.schoolId">{{ school.schoolName }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('targetSchoolId').hasError('required')">{{ 'schoolIsRequired' | translate }}</mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline" color="primary">
+            <mat-label>{{ 'profile' | translate }}</mat-label>
+            <mat-select formControlName="targetProfileType" required>
+                <mat-option *ngFor="let profile of profileTypes" [value]="profile">{{ profile }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('targetProfileType').hasError('required')">{{ 'profileIsRequired' | translate }}</mat-error>
+        </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex justify-end py-4">
+        <button mat-button mat-dialog-close type="button">{{ 'cancel' | translate }}</button>
+        <button color="primary" mat-raised-button type="submit" [disabled]="saving">{{ 'demote' | translate }}</button>
+    </mat-dialog-actions>
+</form>

@@ -26,6 +26,22 @@ Pacific-SIS/
 
 **Multi-tenancy:** Each school is a separate MySQL database. The API resolves the tenant from the request subdomain and switches connections dynamically via `MySQLContextFactory`. Migrations run automatically on first connection to each tenant (`context.Database.Migrate()`).
 
+### User roles and administrators
+
+Every login (`user_master`) points at a **membership** (`membership`), which is a per-school row: `membership_id` 1 to 7 are seeded in every school as Super Administrator, School Administrator, Admin Assistant, Teacher, Homeroom Teacher, Parent and Student. Permissions (`role_permission`) hang off the membership, and a staff member's profile per school is recorded on their `staff_school_info` row.
+
+| Role | Scope | How it is granted |
+|---|---|---|
+| **Super Administrator** | Whole tenant: sees every school, holds every permission | Login's membership is the one flagged `is_superadmin` (id 1); staff row has profile `Super Administrator` and no school attachment rows |
+| School Administrator, Admin Assistant, Teacher, Homeroom Teacher | One school per attachment row | Staff > School Info tab; the login's membership follows the home school row |
+| Parent, Student | Their own records | Created with the parent or student record |
+
+Super Administrators are managed from **Settings > Administration > Super Administrators** (Super Administrators only). That page can add a new one, promote an existing staff member with a portal login, demote one back to a school profile (which asks for the school and profile to attach them to, since a Super Administrator has none), activate or deactivate, and delete accounts created by mistake. Delete is refused for anyone who has ever signed in (their GUID may sit in `created_by`/`updated_by` audit columns, which have no foreign key and would stop resolving to a name) or who has school attachments or records; deactivate those instead. Nobody can change their own account there, and at least one other active Super Administrator must always remain. Because they have no school attachment, Super Administrators do not appear in the staff list; open their record from that page instead.
+
+The first Super Administrator of a tenant is created at registration (`UserController.InsertInitialDataAtRegistration`). Existing tenant databases need `API/opensis.data/Scripts/add-super-administrators-permission.sql` run once to get the page; new schools receive it from `SubCategory.json` / `RolePermission.json`.
+
+**There is no "tenant administrator" role.** `user_master.is_tenantadmin` is a column inherited from openSIS that nothing in the API, UI or background job reads. Treat it as dead; the Super Administrator membership is the only tenant-wide role.
+
 ---
 
 ## Prerequisites

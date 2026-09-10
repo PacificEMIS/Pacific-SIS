@@ -30,13 +30,22 @@ import { ScrollbarModule } from '../../../../@vex/components/scrollbar/scrollbar
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SharedModuleModule } from '../../shared-module/shared-module.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { SuperAdministratorsComponent } from '../../administration/super-administrators/super-administrators.component';
+import { AddSuperAdministratorComponent } from '../../administration/super-administrators/add-super-administrator/add-super-administrator.component';
+import { PromoteStaffComponent } from '../../administration/super-administrators/promote-staff/promote-staff.component';
+import { DemoteSuperAdministratorComponent } from '../../administration/super-administrators/demote-super-administrator/demote-super-administrator.component';
 
 
 
 @NgModule({
   declarations: [
     AdministrationSettingsComponent,
-    AccessControlComponent
+    AccessControlComponent,
+    SuperAdministratorsComponent,
+    AddSuperAdministratorComponent,
+    PromoteStaffComponent,
+    DemoteSuperAdministratorComponent
   ],
   imports: [
     CommonModule,
@@ -68,7 +77,8 @@ import { SharedModuleModule } from '../../shared-module/shared-module.module';
     ScrollbarModule,
     MatExpansionModule,
     MatSlideToggleModule,
-    SharedModuleModule
+    SharedModuleModule,
+    MatTooltipModule
   ]
 })
 export class AdministrationSettingsModule { }
